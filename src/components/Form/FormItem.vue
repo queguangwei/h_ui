@@ -1,0 +1,308 @@
+<template>
+    <div :class="classes">
+        <label :class="[prefixCls + '-label']" :style="labelStyles" v-if="label || $slots.label">
+            <slot name="label">{{ label }}</slot>
+        </label>
+        <div :class="[prefixCls + '-requiredIcon']" v-else v-show="isRequired"><span >*</span></div>
+        <div :class="[prefixCls + '-content']" :style="contentStyles">
+            <slot></slot>
+            <transition name="fade">
+                <div class="verify-tip verify-bottom"  v-if="validateState === 'error' && showMessage && form.showMessage">
+                    <div class="verify-tip-arrow"></div>
+                    <div class="verify-tip-inner">{{validateMessage}}</div>
+                </div>
+            </transition>
+        </div>
+    </div>
+</template>
+<script>
+    import AsyncValidator from 'async-validator';
+    import Emitter from '../../mixins/emitter';
+    import { is } from '../../util/tools'
+    import Validate from './validate';
+    const prefixCls = 'h-form-item';
+    const parentPrefixCls = 'h-form';
+    
+    
+    function getPropByPath(obj, path) {
+        let tempObj = obj;
+        path = path.replace(/\[(\w+)\]/g, '.$1');
+        path = path.replace(/^\./, '');
+
+        let keyArr = path.split('.');
+        let i = 0;
+
+        for (let len = keyArr.length; i < len - 1; ++i) {
+            let key = keyArr[i];
+            if (key in tempObj) {
+                tempObj = tempObj[key];
+            } else {
+                throw new Error('[HUI warn]: please transfer a valid prop path to form item!');
+            }
+        }
+        return {
+            o: tempObj,
+            k: keyArr[i],
+            v: tempObj[keyArr[i]]
+        };
+    }
+
+    export default {
+        name: 'FormItem',
+        mixins: [ Emitter, Validate ],
+        props: {
+            label: {
+                type: String,
+                default: ''
+            },
+            labelWidth: {
+                type: Number
+            },
+            prop: {
+                type: String
+            },
+            required: {
+                type: Boolean,
+                default: false
+            },
+            rules: {
+                type: [Object, Array]
+            },
+            error: {
+                type: String
+            },
+            validateStatus: {
+                type: Boolean
+            },
+            showMessage: {
+                type: Boolean,
+                default: true
+            },
+            // 自定义rules,并将自定义对接至asyc-valid库
+            validRules: {
+                type: Array
+            },
+            cols: {
+                type: [String, Number]
+            }
+        },
+        data () {
+            return {
+                prefixCls: prefixCls,
+                isRequired: false,
+                validateState: '',
+                validateMessage: '',
+                validateDisabled: false,
+                validator: {},
+                transCustRules: [],
+                reqRules:[]
+            };
+        },
+        watch: {
+            error (val) {
+                this.validateMessage = val;
+                this.validateState = 'error';
+            },
+            validateStatus (val) {
+                this.validateState = val;
+            }
+        },
+        computed: {
+            classes () {
+                return [
+                    `${prefixCls}`,
+                    {
+                        [`${prefixCls}-required`]: this.required || this.isRequired,
+                        [`${prefixCls}-error`]: this.validateState === 'error',
+                        [`${prefixCls}-validating`]: this.validateState === 'validating',
+                        [`${prefixCls}-reqNoLabel`]: !(this.label || this.$slots.label) && this.isRequired,
+                        [`${parentPrefixCls}-col-`+ this.form.cols]: parseInt(this.form.cols) <= 12,                     
+                        [`${prefixCls}-col-`+ this.cols]: (this.cols && parseInt(this.cols) <= 12 && parseInt(this.cols) <= parseInt(this.form.cols) && parseInt(this.form.cols) <= 12) ? true : false
+                    }
+                ];
+            },
+            form() {
+                let parent = this.$parent;
+                while (parent.$options.name !== 'Form') {
+                    parent = parent.$parent;
+                }
+                return parent;
+            },
+            fieldValue: {
+                cache: false,
+                get() {
+                    const model = this.form.model;
+                    if (!model || !this.prop) { return; }
+
+                    let path = this.prop;
+                    if (path.indexOf(':') !== -1) {
+                        path = path.replace(/:/, '.');
+                    }
+
+                    return getPropByPath(model, path).v;
+                }
+            },
+            labelStyles () {
+                let style = {};
+                const labelWidth = this.labelWidth || this.form.labelWidth;
+                if (labelWidth) {
+                    style.width = `${labelWidth}px`;
+                }
+                return style;
+            },
+            contentStyles () {
+                let style = {};
+                const labelWidth = this.labelWidth || this.form.labelWidth;
+                if (labelWidth) {
+                    style.marginLeft = `${labelWidth}px`;
+                }
+                return style;
+            }
+        },
+        methods: {
+            // rules为String类型时，自定义rules
+            customRules () {
+              for(let rule of this.validRules) {
+                  this.custRuleValid(rule)
+              }          
+            },
+            custRuleValid (rule) {
+                // 默认支持验证的，有intege等,同时是blur触发
+                /**
+                 *自定义验证规则  
+                *{
+                *	 test:FuncOrRegExp,
+                *	 message:'',
+                *    trigger:'' //可选值:blur/change,不配置时默认blur及change时均触发
+                *}
+                */
+                let isString = is("String",rule);
+                let isObj = is("Object",rule);
+                if (isString) {
+                    this.stringRuleValid(rule)
+                } else if (isObj && rule.test) {
+                    //test:为正则表达式
+					let isRegExp = rule.test.constructor && rule.test.constructor.name === "RegExp"
+					// test:为定义函数
+                    let isFunc = is("Function",rule.test)
+                    if(isRegExp){
+						this.regularValid(rule.test,rule.message,rule.trigger)
+					}else if(isFunc){
+                        const funcRule = { validator: rule.test, trigger: rule.trigger }
+                        this.transCustRules.push(funcRule)
+					}
+                }
+            },
+            regularValid (pattern, message, trigger) {
+                const rule = {pattern :pattern, message: message, trigger: trigger}
+                this.transCustRules.push(rule)
+            },
+            getRules () {
+                let formRules = this.form.rules;
+                const selfRules = this.rules;
+                // --自定义封装规则
+                let cuRules
+                if(this.validRules && this.validRules.length > 0) {
+                    cuRules = this.transCustRules
+                }
+                // --自定义封装规则
+                formRules = formRules ? formRules[this.prop] : [];
+
+                return [].concat(this.reqRules).concat(cuRules || selfRules || formRules || []);
+            },
+            getFilteredRule (trigger) {
+                const rules = this.getRules();
+
+                return rules.filter(rule => !rule.trigger || rule.trigger.indexOf(trigger) !== -1);
+            },
+            validate(trigger, callback = function () {}) {
+                const rules = this.getFilteredRule(trigger);
+                if (!rules || rules.length === 0) {
+                    callback();
+                    return true;
+                }
+
+                this.validateState = 'validating';
+
+                let descriptor = {};
+                descriptor[this.prop] = rules;
+
+                const validator = new AsyncValidator(descriptor);
+                let model = {};
+
+                model[this.prop] = this.fieldValue;
+
+                validator.validate(model, { firstFields: true }, errors => {
+                    this.validateState = !errors ? 'success' : 'error';
+                    this.validateMessage = errors ? errors[0].message : '';
+
+                    callback(this.validateMessage);
+                });
+                this.validateDisabled = false;
+            },
+            resetField () {
+                this.validateState = '';
+                this.validateMessage = '';
+
+                let model = this.form.model;
+                let value = this.fieldValue;
+                let path = this.prop;
+                if (path.indexOf(':') !== -1) {
+                    path = path.replace(/:/, '.');
+                }
+
+                let prop = getPropByPath(model, path);
+                if (Array.isArray(value)) {
+                    this.validateDisabled = true;
+                    prop.o[prop.k] = [].concat(this.initialValue);
+                } else {
+                    this.validateDisabled = true;
+                    prop.o[prop.k] = this.initialValue;
+                }
+            },
+            onFieldBlur() {
+                this.validate('blur');
+            },
+            onFieldChange() {
+                if (this.validateDisabled) {
+                    this.validateDisabled = false;
+                    return;
+                }
+
+                this.validate('change');
+            }
+        },
+        mounted () {
+            if (this.prop) {
+                this.dispatch('Form', 'on-form-item-add', this);
+
+                Object.defineProperty(this, 'initialValue', {
+                    value: this.fieldValue
+                });
+                if(this.validRules && this.validRules.length > 0 ) {
+                    this.customRules();
+                }
+                if(this.required) {
+                    this.isRequired = true
+                    const reqRule = {required: true, message: '输入不能为空'}
+                    this.reqRules.push(reqRule)
+                }
+                let rules = this.getRules();
+                
+                if (rules.length) {
+                    rules.every(rule => {
+                        if (rule.required) {
+                            this.isRequired = true;
+                            return false;
+                        }
+                    });
+                    this.$on('on-form-blur', this.onFieldBlur);
+                    this.$on('on-form-change', this.onFieldChange);
+                }
+            }
+        },
+        beforeDestroy () {
+            this.dispatch('Form', 'on-form-item-remove', this);
+        }
+    };
+</script>
