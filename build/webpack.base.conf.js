@@ -89,7 +89,7 @@ module.exports = {
       },
       // url-loader 加载文件，大小大于 limit 设定值会压缩，小于 limit 值直接 base64 编码
       {
-        test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+        test: /\.(woff2|woff?|eot|ttf|otf)(\?.*)?$/,
         loader: 'url-loader',
         query: {
           limit: 1000000,

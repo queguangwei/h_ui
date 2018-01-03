@@ -4,7 +4,8 @@ import Vue from 'vue'
 import App from './App'
 import router from './router/index'
 import Venus from '../src/index.js'
-// import Venus from '../dist/venus.js'
+// import '../dist/h_ui.min.css'
+// import Venus from '../dist/h_ui.min.js'
 // import hello_npm from 'venus_hello_npm'
 
 Vue.use(Venus)
