@@ -4,7 +4,7 @@
     <h1>金额</h1>
     <h2>基本用法</h2>
     <p>未开启四舍五入 整数位2位，小数位3为</p>
-    <h-typefield v-model="value" integerNum="2" suffixNum="3" type="money" placeholder="金额" bigTips isround></h-typefield>
+    <h-typefield v-model="value" integerNum="2" suffixNum="3" type="money" placeholder="金额" bigTips isround @on-blur="s"></h-typefield>
     <h-button @click="getValue">获取值</h-button>
     <h-typefield integerNum="2" type="money" placeholder="金额" disabled></h-typefield>
     <h-typefield integerNum="2" type="money" placeholder="金额" readonly></h-typefield>
@@ -33,7 +33,7 @@ export default {
   name: 'inputs',
   data() {
     return {
-      value:'',
+      value:'12.12',
       msg:'this is input component'
     }
   },
@@ -49,6 +49,9 @@ export default {
     },
     kChange(val){
       console.log('按钮事件已触发'+val);
+    },
+    s(){
+      console.log(this.value);
     }
   } 
 }

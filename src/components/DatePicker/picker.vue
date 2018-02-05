@@ -209,7 +209,8 @@
           internalValue: '',
           disableClickOutSide: false,    // fixed when click a date,trigger clickoutside to close picker
           disableCloseUnderTransfer: false,  // transfer 模式下，点击Drop也会触发关闭
-          currentValue: this.value
+          currentValue: this.value,
+          isFocus: false
       };
     },
     computed: {
@@ -282,10 +283,15 @@
         //if (!this.disableClickOutSide) this.visible = false;
         this.visible = false;
         this.disableClickOutSide = false;
+        if (this.isFocus) {
+            this.dispatch('FormItem', 'on-form-blur', this.currentValue);
+            this.isFocus = false
+        }
       },
       handleFocus () {
         if (this.readonly) return;
         this.visible = true;
+        this.isFocus = true
       },
       handleInputChange (event) {
         const oldValue = this.visualValue;
@@ -419,7 +425,7 @@
           }
 
           this.picker.$on('on-pick', (date, visible = false) => {
-              if (!isConfirm) this.visible = visible;
+            if (!isConfirm) this.visible = visible;
               this.currentValue = date;
               this.picker.value = date;
               this.picker.resetView && this.picker.resetView();
@@ -436,9 +442,9 @@
           this.picker.$on('on-pick-click', () => this.disableClickOutSide = true);
         }
         if (this.internalValue instanceof Date) {
-            this.picker.date = new Date(this.internalValue.getTime());
+          this.picker.date = new Date(this.internalValue.getTime());
         } else {
-            this.picker.value = this.internalValue;
+          this.picker.value = this.internalValue;
         }
         this.picker.resetView && this.picker.resetView();
       },
@@ -494,7 +500,6 @@
               TYPE_VALUE_RESOLVER_MAP[type] ||
               TYPE_VALUE_RESOLVER_MAP['default']
           ).parser;
-
           if (val && type === 'time' && !(val instanceof Date)) {
             val = parser(val, this.format || DEFAULT_FORMATS[type]);
           } else if (val && type === 'timerange' && Array.isArray(val) && val.length === 2 && !(val[0] instanceof Date) && !(val[1] instanceof Date)) {

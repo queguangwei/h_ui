@@ -53,9 +53,6 @@
         <router-link to="/upload">Upload</router-link>
       </li>
       <li>
-        <router-link to="/table">Table</router-link>
-      </li>
-      <li>
         <router-link to="/cascader">Cascader</router-link>
       </li>
       <li>
@@ -111,9 +108,6 @@
         <router-link to="/tabs">Tabs</router-link>
       </li>
       <li>
-        <router-link to="/page">Page</router-link>
-      </li>
-      <li>
         <router-link to="/dropdown">Dropdown</router-link>
       </li>
       <li>
@@ -148,6 +142,23 @@
       <li>
         <router-link to="/affix">Affix</router-link>
       </li>
+      <br>
+      <span>表格组件</span>
+      <li>
+        <router-link to="/page">Page</router-link>
+      </li>
+      <li>
+        <router-link to="/table">Table</router-link>
+      </li>
+      <li>
+        <router-link to="/editgird">EditGird</router-link>
+      </li>
+      <li>
+        <router-link to="/groupTable">GroupTable</router-link>
+      </li>
+      <li>
+        <router-link to="/treeGird">TreeGird</router-link>
+      </li>
     </ul>
     <div>
       <router-view></router-view>
@@ -175,7 +186,7 @@ export default {
 }
 #app ul li{
   display: inline-block;
-  padding: 8px 12px;
+  padding: 2px 3px;
 }
 #app ul li a:link {
   color: blue;

@@ -58,7 +58,7 @@ $border-radius-small: 4px;
 $cursor-disabled: not-allowed;
 // Border color
 $border-color-base: #d7dde4; // outside
-$border-color-split: #e1e1e1; // inside
+$border-color-split: #e2e7eb; // inside
 // Background color
 $background-color-base: #f7f7f7; // base
 $background-color-select-hover: #f3f3f3;
@@ -67,8 +67,12 @@ $head-bg: #f9fafc;
 $table-thead-bg: #fff;
 $table-td-stripe-bg: #f0f3f5;
 $table-td-hover-bg: #e8ecf1;
-$table-td-highlight-bg: #c0cad6;
-$table-td-selected-bg: #c0cad6;
+$table-td-highlight-bg: #d5dde6;
+$table-td-selected-bg: #d5dde6;
+$table-td-group-bg: #c0cad6;
+$table-large-td: 45px;
+$table-small-td: 32px;
+$table-normal-td: 40px;
 $menu-dark-active-bg: #313540;
 $menu-dark-title: #495060;
 $menu-dark-subsidiary-color: rgba(255, 255, 255, .7);

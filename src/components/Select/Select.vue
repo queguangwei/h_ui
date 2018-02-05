@@ -150,7 +150,8 @@
             notFound: false,
             slotChangeDuration: false,
             model: this.value,
-            currentLabel: this.label
+            currentLabel: this.label,
+            isInputFocus: false //是否焦点，为false时触发blur校验
         };
     },
     computed: {
@@ -267,6 +268,7 @@
               return false;
           }
           this.visible = !this.visible;
+          this.isInputFocus = true
       },
       hideMenu () {
           this.visible = false;
@@ -487,6 +489,16 @@
       },
       handleClose () {
           this.hideMenu();
+          if (this.isInputFocus) {
+            if (this.multiple) {
+            // 多选返回数组
+            this.dispatch('FormItem', 'on-form-blur', this.selectedMultiple)          
+            } else {
+            // 单选返回字符串
+            this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
+            }
+            this.isInputFocus = false
+          }
       },
       handleKeydown (e) {
           if (this.visible) {

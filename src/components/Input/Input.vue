@@ -47,7 +47,8 @@
       @keydown="handleKeydown"
       @focus="handleFocus"
       @blur="handleBlur"
-      @input="handleInput">
+      @input="handleInput"
+      @change="handleChange">
     </textarea>
   </div>
 </template>
@@ -76,7 +77,7 @@
       },
       size: {
         validator (value) {
-          return oneOf(value, ['small', 'large']);
+          return oneOf(value, ['small', 'large','normal']);
         }
       },
       placeholder: {
@@ -185,7 +186,7 @@
       },
       handleBlur (event) {
         this.$emit('on-blur', event);
-        if (!findComponentsUpward(this, ['HDatePicker', 'HTimePicker', 'HCascader', 'HSearch'])) {
+        if (!findComponentsUpward(this, ['HDatePicker', 'DatePicker','HTimePicker','TimePicker', 'HCascader','Cascader', 'HSearch','Search'])) {
           this.dispatch('FormItem', 'on-form-blur', this.currentValue);
         }
       },
@@ -205,7 +206,7 @@
           this.resizeTextarea();
         });
         this.currentValue = value;
-        if (!findComponentsUpward(this, ['HDatePicker', 'HTimePicker', 'HCascader', 'HSearch'])) {
+        if (!findComponentsUpward(this, ['HDatePicker', 'DatePicker','HTimePicker','TimePicker', 'HCascader','Cascader', 'HSearch','Search'])) {
           this.dispatch('FormItem', 'on-form-change', value);
         }
       },

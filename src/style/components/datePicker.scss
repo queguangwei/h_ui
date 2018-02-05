@@ -4,7 +4,7 @@ $picker-prefix-cls: "#{$css-prefix}picker";
 $date-picker-cells-width: 196px;
 
 .#{$date-picker-prefix-cls} {
-  //position: relative;
+  position: relative;
   display: inline-block;
   line-height: normal;
   width: 100%;

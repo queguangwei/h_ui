@@ -7,8 +7,8 @@ $selecttree-prefix-cls:  "#{$css-prefix}selectTree";
   vertical-align: middle;
   color: $text-color;
   font-size: $font-size-base;
-  position: relative;
   line-height: normal;
+  position: relative;
 
   &-selection {
     display: block;
@@ -218,6 +218,19 @@ $selecttree-prefix-cls:  "#{$css-prefix}selectTree";
 }
 
 .#{$form-item-prefix-cls}-error{
+    .#{$selecttree-prefix-cls}{
+        &-selection{
+            border: 1px solid $error-color;
+        }
+        &-arrow{
+            color: $error-color;
+        }
+        &-visible .#{$selecttree-prefix-cls}-selection{
+            @include active-error;
+        }
+    }
+}
+.#{$editgird-prefix-cls}-cell-error{
     .#{$selecttree-prefix-cls}{
         &-selection{
             border: 1px solid $error-color;

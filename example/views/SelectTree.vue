@@ -5,7 +5,7 @@
         <h-select-tree v-model="val" style="width:200px" :data="baseData2" size="large" @on-select-change="selectChange" @on-toggle-expand="selectChange"></h-select-tree>
       </h-col>
       <h-col span="8">
-        <h-select-tree v-model="val" style="width:200px" :data="baseData2" placement="top" placeholder="你好"></h-select-tree>
+        <h-select-tree v-model="valc" style="width:200px" :data="baseData1" placement="top" placeholder="你好"></h-select-tree>
       </h-col>
       <h-col span="8">
         <h-select-tree v-model="val" style="width:200px" :data="baseData2" size="small" disabled></h-select-tree>
@@ -31,7 +31,8 @@
   export default {
     data () {
       return {
-        val:'',
+        val:'parent 1',
+        valc: '',
         val1:[],
         val2:[],
         val3:'',
@@ -66,10 +67,38 @@
               }
             ]
           }
+        ],
+        baseData1: [
+          {
+            title: 'parent',
+            id: '1-0',
+            expand: true,
+            children: [
+              {
+                title: 'child1',
+                id: '1-1',
+                expand: true,
+                children: [
+                  {
+                    title: 'child1-1-1',
+                    id: '1-1-1'
+                  },
+                  {
+                    title: 'child1-1-2',
+                    id: '1-1-2'
+                  }
+                ]
+              },
+              {
+                title: 'child2',
+                id: '1-2',
+                children: []
+              }
+            ]
+          }
         ]
         ,baseData2: [{
             expand: true,
-            selected:true,
             title: 'parent 1',
             children: [{
               title: 'parent 1-0',

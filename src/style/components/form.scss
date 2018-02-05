@@ -37,6 +37,7 @@ $form-item-prefix-cls: "#{$form-prefix-cls}-item";
         .#{$form-item-prefix-cls} {
             display: block;
             float: left;
+            padding: 5px;
         }
         @include make-form-grid(form);
         @include make-form-grid(form,form-item);  

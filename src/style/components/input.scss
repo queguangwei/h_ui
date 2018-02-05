@@ -92,3 +92,32 @@ textarea.#{$input-prefix-cls} {
     }
   }
 }
+.#{$editgird-prefix-cls}-cell-error{
+  .#{$input-prefix-cls}{
+    @include input-error();
+    &-icon{
+      color: $error-color;
+    }
+  }
+  .#{$input-prefix-cls}-group{
+    @include input-group-error();
+  }
+  .#{$transfer-prefix-cls} {
+    .#{$input-prefix-cls} {
+      @include input();
+      &-icon{
+        color: $subsidiary-color;
+      }
+    }
+  }
+}
+.#{$editgird-prefix-cls}-validating{
+  .#{$input-prefix-cls}{
+    &-icon-validate{
+        display: inline-block;
+    }
+    &-icon + .#{$input-prefix-cls}{
+        padding-right: 32px;
+    }
+  }
+}

@@ -9,7 +9,6 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
     vertical-align: middle;
     color: $text-color;
     font-size: $font-size-base;
-    //position: relative;
     line-height: normal;
     position: relative;
 
@@ -19,7 +18,6 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
         outline: none;
         user-select: none;
         cursor: pointer;
-        /*position: relative;*/
 
         background-color: #fff;
         border-radius: $btn-border-radius;
@@ -247,6 +245,19 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
 }
 
 .#{$form-item-prefix-cls}-error{
+    .#{$select-prefix-cls}{
+        &-selection{
+            border: 1px solid $error-color;
+        }
+        &-arrow{
+            color: $error-color;
+        }
+        &-visible .#{$select-prefix-cls}-selection{
+            @include active-error;
+        }
+    }
+}
+.#{$editgird-prefix-cls}-cell-error{
     .#{$select-prefix-cls}{
         &-selection{
             border: 1px solid $error-color;

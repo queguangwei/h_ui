@@ -46,6 +46,9 @@ import Steps from '../views/Steps.vue'
 import Circle from '../views/Circle.vue'
 import Affix from '../views/Affix.vue'
 import Card from '../views/Card.vue'
+import EditGird from '../views/EditGird.vue'
+import GroupTable from '../views/GroupTable.vue'
+import TreeGird from '../views/TreeGird.vue'
 Vue.use(Router)
 
 const router = new Router({
@@ -264,6 +267,21 @@ const router = new Router({
         name: 'Card',
         path: '/card',
         component: Card
+    },
+    {
+        name: 'EditGird',
+        path: '/editgird',
+        component: EditGird
+    },
+    {
+        name: 'GroupTable',
+        path: '/groupTable',
+        component: GroupTable
+    },
+    {
+        name: 'TreeGird',
+        path: '/treeGird',
+        component: TreeGird
     }
  ]
 })

@@ -181,7 +181,7 @@
       },
       localeNotFoundData () {
         if (this.notFoundData === undefined) {
-          return this.t('i.transfer.notFoundText');
+          return this.t('i.transfer.notFoundData');
         } else {
           return this.notFoundData;
         }

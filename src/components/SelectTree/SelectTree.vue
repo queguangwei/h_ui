@@ -1,5 +1,5 @@
 <template>
-  <div :class="classes" v-clickoutside="handleClose" :style="multiplestyle" ref="select">
+  <div :class="classes" v-clickoutside="handleClose" :style="multiplestyle" ref="select" >
     <div
       :class="[prefixCls + '-selection']"
       ref="reference"
@@ -39,7 +39,7 @@
         ref="dropdown"
         v-transfer-dom>
         <!--  <ul v-show="notFountShow" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul> -->
-        <Tree ref="tree" :data="data" :show-checkbox="showCheckbox" :multiple="multiple" :checkStrictly="checkStrictly" :showIndeterminate="showIndeterminate" @on-select-change="selectChange" @on-check-change="checkChange" @on-toggle-expand="toggleExpand">
+        <Tree ref="tree" :data="baseDate" :show-checkbox="showCheckbox" :multiple="multiple" :checkStrictly="checkStrictly" :showIndeterminate="showIndeterminate" @on-select-change="selectChange" @on-check-change="checkChange" @on-toggle-expand="toggleExpand">
           
         </Tree>
         
@@ -142,7 +142,10 @@
         notFound: false,
         model: this.value,
         currentLabel: this.label,
-        scrollBarWidth:getScrollBarSize()
+        scrollBarWidth:getScrollBarSize(),
+        isFocus: false,
+        isFirst: false,
+        baseDate: this.data
       }
     },
     computed:{
@@ -223,7 +226,7 @@
         return {
             width: `${this.width}px`,
         };
-      }
+      },
     },
     methods:{
       offsetArrow(){
@@ -243,10 +246,11 @@
           return false;
         }
         this.visible = !this.visible;
+        this.isFocus = true
       },
       hideMenu () {
         this.visible = false;
-        this.focusIndex = 0;
+        // this.focusIndex = 0;
         this.broadcast('Option', 'on-select-close');
       },
       handleClose () {
@@ -255,6 +259,19 @@
         //   this.findQuery(this.data,'');
         // }
         this.hideMenu();
+        if (this.isFocus) {
+          // 点击其他地方时触发blur校验
+          if (this.showCheckbox){
+            // 多选返回数组
+            this.dispatch('FormItem', 'on-form-blur', this.selectedMultiple)          
+          } else {
+            // 单选返回字符串
+            this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
+          }
+          this.isFocus = false
+        }
+        
+
       },
       selectChange(val){
         this.$emit('on-select-change', val); 
@@ -264,7 +281,7 @@
           this.model = this.selectedSingle;
           this.hideMenu();
           this.findQuery(this.data,'');
-        }            
+        }
       },
       checkChange(val){
         if (this.filterable) {
@@ -345,8 +362,13 @@
       value (val) {
         this.model = val;
       },
-      model () {       
+      model () {     
         this.$emit('input', this.model);
+        // 初次会执行
+        if (this.isFirst) {
+          this.dispatch('FormItem', 'on-form-change', this.model)
+        }
+        this.isFirst = true
       },
       selectedMultiple (){
         this.$nextTick(()=>{
@@ -362,6 +384,22 @@
       }
     },
     mounted(){
+      let _this =this
+      if (this.value && this.value.length>0) {
+        function findDown(tdata,curValue){
+          tdata.forEach((item)=>{
+            if (item.title == curValue) {
+              _this.$set(item,'selected',true);
+              return;
+            }else{
+              if (item.children&&item.children.length>0) {
+                findDown(item.children,curValue);
+              }
+            }
+          });
+        }
+        findDown(this.baseDate,this.value);
+      }
       this.$nextTick(()=>{
         let tree = this.$refs.tree;
         if (!!this.showCheckbox) {

@@ -94,7 +94,7 @@
         <h-select v-model="model8" width="200">
             <h-option v-for="(item, index) in uList" :value="item.id" :label="item.name"  :key="item.id">
                 <span>{{ item.name }}</span>
-                <span style="float:right;color:#ccc">{{ item.id }}</span>
+                <span style="float:right;color:#ccc;position:absolute;right:8px">{{ item.id }}</span>
             </h-option>
         </h-select>
     </div>
