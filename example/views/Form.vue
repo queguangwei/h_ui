@@ -1,18 +1,88 @@
 <template>
     <div>
         <h1>测试</h1>
-        <h-form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="250" label-position='left' :showMessage=true>
-            <h-form-item label="姓名" prop="name" :label-width="50" :showMessage=true>
+        <h-form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80"  showMessage>
+            <h-form-item label="姓名" prop="name">
+                <h-input v-model="formValidate.name" placeholder="请输入姓名"></h-input>
+            </h-form-item>
+            <h-form-item label="邮箱" prop="mail">
+                <h-input v-model="formValidate.mail" placeholder="请输入邮箱"></h-input>
+            </h-form-item>
+            <h-form-item label="城市" prop="city">
+                <h-select v-model="formValidate.city" placeholder="请选择所在地">
+                    <h-option value="beijing">北京市</h-option>
+                    <h-option value="shanghai">上海市</h-option>
+                    <h-option value="shenzhen">深圳市</h-option>
+                </h-select>
+            </h-form-item> 
+            <h-form-item label="城市多选" prop="city1">
+                <h-select v-model="formValidate.city1" placeholder="请选择所在地" multiple>
+                    <h-option value="beijing">北京市</h-option>
+                    <h-option value="shanghai">上海市</h-option>
+                    <h-option value="shenzhen">深圳市</h-option>
+                </h-select>
+            </h-form-item> 
+            <h-form-item label="选择日期">
+                <!-- <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date"></h-date-picker> -->
+                 <h-row> 
+                      <h-col span="11">
+                        <h-form-item prop="date">
+                            <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date"></h-date-picker>
+                        </h-form-item>
+                    </h-col> 
+                    <h-col span="2" style="text-align: center">-</h-col> 
+                    <h-col span="11">
+                        <h-form-item prop="time">
+                            <h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time"></h-time-picker>
+                        </h-form-item>
+                    </h-col>  
+                 </h-row> 
+            </h-form-item>
+            <h-form-item label="金额" prop="num">
+                <h-typefield type="money" placeholder="金额" v-model="formValidate.num"></h-typefield>
+            </h-form-item>
+             <h-form-item label="性别" prop="gender">
+                <h-radio-group v-model="formValidate.gender">
+                    <h-radio label="male">男</h-radio>
+                    <h-radio label="female">女</h-radio>
+                </h-radio-group>
+            </h-form-item>
+            <h-form-item label="爱好" prop="interest">
+                <h-checkbox-group v-model="formValidate.interest">
+                    <h-checkbox label="吃饭"></h-checkbox>
+                    <h-checkbox label="睡觉"></h-checkbox>
+                    <h-checkbox label="跑步"></h-checkbox>
+                    <h-checkbox label="看电影"></h-checkbox>
+                </h-checkbox-group>
+            </h-form-item>
+            <h-form-item label="介绍" prop="desc">
+                <h-input v-model="formValidate.desc" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></h-input>
+            </h-form-item> 
+             <h-form-item label="selectTree" prop="selecttree">
+                <h-select-tree v-model="formValidate.selecttree" style="width:200px" :data="baseData2" placement="top" placeholder="你好"></h-select-tree>
+            </h-form-item> 
+              <h-form-item label="selectTree" prop="selecttree1">
+                <h-select-tree v-model="formValidate.selecttree1" style="width:200px" :data="baseData2" placement="top" placeholder="你好" showCheckbox></h-select-tree>
+            </h-form-item> 
+            <h-form-item>
+                <h-button type="primary" @click="handleSubmit('formValidate')">提交</h-button>
+                <h-button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px">重置</h-button>
+            </h-form-item>
+        </h-form>
+
+
+       <!--  <h-form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="250" label-position='left' :showMessage=true>
+            <h-form-item label="金额" prop="name" :label-width="50" :showMessage=true>
               <h-typefield v-model="formValidate.name" type="money" ></h-typefield>
             </h-form-item>   
-            <h-form-item label="姓名" prop="name" :label-width="50" :showMessage=true>
+            <h-form-item label="tree" prop="name" :label-width="50" :showMessage=true>
               <h-select-tree  v-model="formValidate.name" ></h-select-tree>
             </h-form-item>    
             <h-form-item :showMessage=true>
                <h-button type="primary" @click="handleSubmit('formValidate')">提交</h-button>
                <h-button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px">重置</h-button>
             </h-form-item>
-       </h-form>
+       </h-form> -->
         <h1>设置inline,表单元素可以水平排列</h1>
         <br>
         <h-form ref="formInline" :model="formInline" inline>
@@ -358,14 +428,102 @@
                 }, 1000);
             };
             return {
+                // formValidate: {
+                //     name: ''
+                // },
                 formValidate: {
-                    name: ''
+                    name: '',
+                    mail: '',
+                    city: '',
+                    city1: [],
+                    gender: '',
+                    interest: [],
+                    date: '',
+                    time: '',
+                    desc: '',
+                    num: '1.000',
+                    jine: null,
+                    selecttree: '',
+                    selecttree1:[]
                 },
+                baseData2: [{
+                    expand: true,
+                    selected:false,
+                    title: 'parent 1',
+                    children: [{
+                    title: 'parent 1-0',
+                    expand: true,
+                    children: [{
+                        title: 'leaf',
+                        disableCheckbox: true
+                    }, {
+                        title: 'leaf',
+                    }]
+                    }, {
+                    title: 'parent 1-1',
+                    expand: true,
+                    checked: false,
+                    children: [{
+                        title: 'leaf',
+                    }]
+                    }]
+                }],
+                // formValidate: {
+                //     name: '',
+                //     mail: '',
+                //     city: '',
+                //     gender: '',
+                //     interest: [],
+                //     date: '',
+                //     time: '',
+                //     desc: ''
+                // },
                 ruleValidate: {
                     name: [
                         { required: true, message: '姓名不能为空', trigger: 'blur' }
+                    ],
+                    num: [
+                        { required: true,message: '姓名不能为空123', trigger: 'blur' }
+                    ],
+                    mail: [
+                        { required: true, message: '邮箱不能为空', trigger: 'blur' },
+                        { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
+                    ],
+                    city: [
+                        { required: true, message: '请选择城市', trigger: 'blur,change' }
+                    ],
+                    city1: [
+                        { required: true,type:'array', message: '请选择城市1', trigger: 'blur,change' }
+                    ],
+                    gender: [
+                        { required: true, message: '请选择性别', trigger: 'change' }
+                    ],
+                    interest: [
+                        { required: true, type: 'array', min: 1, message: '至少选择一个爱好', trigger: 'change' },
+                        { type: 'array', max: 2, message: '最多选择两个爱好', trigger: 'change' }
+                    ],
+                    date: [
+                        { required: true, type: 'date', message: '请选择日期', trigger: 'blur,change' }
+                    ],
+                    time: [
+                        { required: true, type: 'date', message: '请选择时间', trigger: 'blur,change' }
+                    ],
+                    desc: [
+                        { required: true, message: '请输入个人介绍', trigger: 'blur' },
+                        { type: 'string', min: 20, message: '介绍不能少于20字', trigger: 'blur' }
+                    ],
+                    selecttree: [
+                        { required: true, message: '请输入selecttree', trigger: 'change' }
+                    ],
+                    selecttree1: [
+                        { required: true,type:'array', message: '请输入selecttree1', trigger: 'change' }
                     ]
                 },
+                // ruleValidate: {
+                //     name: [
+                //         { required: true, message: '姓名不能为空', trigger: 'blur' }
+                //     ]
+                // },
                 formInline: {
                     user: '',
                     password: ''

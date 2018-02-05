@@ -133,7 +133,25 @@ export default {
              width: 150,
              sortable: true,
              fixed: "left",
-             sortable: true
+             sortable: true,
+             filters: [
+               {
+                   label: '大于4000',
+                   value: 1
+               },
+               {
+                   label: '小于4000',
+                   value: 2
+               }
+             ],
+             filterMultiple: false,
+             filterMethod (value, row) {
+                 if (value === 1) {
+                     return row.weak > 4000;
+                 } else if (value === 2) {
+                     return row.weak < 4000;
+                 }
+             }
          },
          {
              title: "登录",
@@ -182,14 +200,32 @@ export default {
              key: "week",
              width: 150,
              fixed: "right",
-             sortable: true
+             sortable: true,
          },
          {
              title: "月活跃",
              key: "month",
              fixed: "right",
              width: 150,             
-             sortable: true
+             sortable: true,
+             filters: [
+               {
+                   label: '大于4000',
+                   value: 1
+               },
+               {
+                   label: '小于4000',
+                   value: 2
+               }
+             ],
+             filterMultiple: false,
+             filterMethod (value, row) {
+                 if (value === 1) {
+                     return row.month > 4000;
+                 } else if (value === 2) {
+                     return row.month < 4000;
+                 }
+             }
          }
       ],
       data17: [
@@ -449,6 +485,14 @@ export default {
           ],
           // filteredValue:['18','25'],
           filterMultiple: false,
+          filterRemote(_this,arg1){
+            this.data5.push({
+              name: '王小明1',
+              age: 20,
+              address: '北京市朝阳区芍药居',
+              date: '2016-10-03'
+            },);
+          },
           filterMethod (value, row) {
             if (value === 1) {
               return row.age > 50;
@@ -693,6 +737,7 @@ export default {
           title: "月活跃",
           key: "month",
           width: 150,
+
           // fixed: "right",
           // sortable: true
         }

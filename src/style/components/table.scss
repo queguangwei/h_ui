@@ -262,6 +262,7 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
     top: 0;
     right: 0;
     background-color: $table-thead-bg;
+    border-bottom:1px solid $border-color-split;
     // border-bottom: 1px solid #e6ebf5;
   }
   &-fixed-header{

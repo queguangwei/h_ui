@@ -109,9 +109,6 @@
 
                     this.$emit('on-change', false);
                 }
-                //console.log(elOffset.top);
-                //console.log(this.offsetTop);
-                //console.log(scrollTop);
 
 
                 // Fixed Bottom
@@ -129,10 +126,6 @@
 
                     this.$emit('on-change', false);
                 }
-                //console.log(this.offsetBottom);
-                //console.log(elHeight);
-                //console.log(windowHeight);
-
             }
         }
     };

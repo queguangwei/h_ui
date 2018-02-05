@@ -11,6 +11,8 @@ $tree-prefix-cls: "#{$css-prefix}tree";
       padding: 0;
       white-space: nowrap;
       outline: none;
+      user-select:none;
+
       i {
         font-size: 13px;
       }
@@ -44,6 +46,9 @@ $tree-prefix-cls: "#{$css-prefix}tree";
   }
   &-arrow {
     cursor: pointer;
+    width: 12px;
+    text-align: center;
+    display: inline-block;
     i {
       display: inline-block;
       transition: all $transition-time $ease-in-out;

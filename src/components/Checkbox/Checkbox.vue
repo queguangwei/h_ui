@@ -9,14 +9,16 @@
         :disabled="disabled"
         :value="label"
         v-model="model"
-        @change="change">
+        @change="change"
+        @click="click($event)">
       <input
         v-if="!group"
         type="checkbox"
         :class="inputClasses"
         :disabled="disabled"
         :checked="currentValue"
-        @change="change">
+        @change="change"
+        @click="click($event)">
     </span>
     <slot><span v-if="showSlot">{{ label }}</span></slot>
   </label>
@@ -129,6 +131,9 @@
       },
       updateModel () {
           this.currentValue = this.value === this.trueValue;
+      },
+      click(e){
+        this.$emit('on-click',e);
       }
     },
     watch: {

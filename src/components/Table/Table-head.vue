@@ -22,7 +22,7 @@
               <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
               <span :class="[prefixCls + '-sort']" v-if="column.sortable">
                 <Icon name="android-arrow-dropup" :class="{on: column._sortType === 'asc'}" @on-click="handleSort(index, 'asc')"></Icon>
-                <Icon name="android-arrow-dropdown" :class="{on: column._sortType === 'desc'}" @on-click="handleSort(index, 'desc')"></Icon>
+                <Icon name="android-arrow-dropdo" :class="{on: column._sortType === 'desc'}" @on-click="handleSort(index, 'desc')"></Icon>
                   <!-- <i class="ivu-icon ivu-icon-arrow-up-b" :class="{on: column._sortType === 'asc'}" @click="handleSort(index, 'asc')"></i> -->
                  <!--  <i class="ivu-icon ivu-icon-arrow-down-b" :class="{on: column._sortType === 'desc'}" @click="handleSort(index, 'desc')"></i> -->
               </span>
@@ -75,9 +75,7 @@ import { on, off } from '../../util/dom';
 import {getScrollBarSize,hasClass,addClass,removeClass} from '../../util/tools';
 import Mixin from './mixin';
 import Locale from '../../mixins/locale';
-var tTD;
-var lastChildWidth;
-var totalWidth;
+
 export default {
   name: 'TableHead',
   mixins: [ Mixin, Locale ],
@@ -177,26 +175,20 @@ export default {
       }
     },
     handleFilter (index) {
-      this.$parent.handleFilter(index);
+      let _index = this.columns[index]._index;
+      this.$parent.handleFilter(_index);
     },
     handleSelect (index, value) {
-      this.$parent.handleFilterSelect(index, value);
+      let _index = this.columns[index]._index;
+      this.$parent.handleFilterSelect(_index, value);
     },
     handleReset (index) {
-      this.$parent.handleFilterReset(index);
+      let _index = this.columns[index]._index;
+      this.$parent.handleFilterReset(_index);
     },
     handleFilterHide (index) {
-      this.$parent.handleFilterHide(index);
-    },
-    findInx(){
-      startInx=0;
-      endInx = this.columns.length;
-      while(this.columns[startInx].fixed){
-        startInx++;
-      }
-      while(this.columns[endInx].fixed){
-        endInx--;
-      }
+      let _index = this.columns[index]._index;
+      this.$parent.handleFilterHide(_index);
     },
     mousedown(event,column,index){
       if (this.$isServer) return;
@@ -249,21 +241,15 @@ export default {
           } = _this.dragState;
           const finalLeft = parseInt(resizeProxy.style.left, 10);
           const columnWidth = finalLeft - startColumnLeft;
-          // column.width = column.realWidth = columnWidth;
-          // table.$emit('on-change-width', column.width, startLeft - startColumnLeft, column, event);
-          // let oldWidth = startLeft - startColumnLeft
           let dragWidth = finalLeft - startLeft;//>0为输入框增大，<0为减小
           if (dragWidth>=0) {
-            // debugger;
             lastWidth = (lastWidth-dragWidth)>=80?(lastWidth-dragWidth):80;
           }else{
             if (headWidth+1>=tableWidth) {//此时有滚动条
               if (headWidth+1+dragWidth<=tableWidth) {
-                // debugger;
                 lastWidth =lastWidth+tableWidth-headWidth-dragWidth;
               }
             }else{
-              // debugger;
               lastWidth = lastWidth-dragWidth;
             }
           }

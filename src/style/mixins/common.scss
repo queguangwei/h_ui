@@ -56,10 +56,10 @@
     text-decoration: none;
     text-shadow: none;
     text-transform: none;
-    white-space: normal;
-    word-break: normal;
+    white-space: nowrap;
+    word-break: nowrap;
     word-spacing: normal;
-    word-wrap: normal;
+    word-wrap: nowrap;
     line-height: $input-height-small;
     z-index: 9;
     &.verify-bottom{

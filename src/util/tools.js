@@ -490,3 +490,39 @@ export function toFix(d){
     return this+"";
   // };  
 }
+function vliData(num) {
+  return num>10?num:'0'+num;
+}
+export function getYMD(data){
+  let Y = data.getFullYear();
+  let M = vliData(data.getMonth()+1);
+  let D = vliData(data.getDate());
+  return Y+"-"+M+'-'+D;
+}
+export function getHMS(data){
+  let H = vliData(data.getHours());
+  let M = vliData(data.getMinutes());
+  let S = vliData(data.getSeconds());
+  return H+':'+M+":"+S;
+}
+ // uctToBeijing(utc_datetime){
+    //   utc_datetime = String(utc_datetime);
+    //   // 转为正常的时间格式 年-月-日 时:分:秒
+    //   let T_pos = utc_datetime.indexOf('T');
+    //   let Z_pos = utc_datetime.indexOf('Z');
+    //   let year_month_day = utc_datetime.substr(0,T_pos);
+    //   let hour_minute_second = utc_datetime.substr(T_pos+1,Z_pos-T_pos-1);
+    //   let new_datetime = year_month_day+" "+hour_minute_second; // 2017-03-31 08:02:06
+    //   let timestamp;
+    //   // 处理成为时间戳
+    //   timestamp = new Date(Date.parse(new_datetime));
+    //   timestamp = timestamp.getTime();
+    //   timestamp = timestamp/1000;
+
+    //   // 增加8个小时，北京时间比utc时间多八个时区
+    //   timestamp = timestamp+8*60*60;
+
+    //   // 时间戳转为时间
+    //   let beijing_datetime = new Date(parseInt(timestamp) * 1000).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
+    //   return beijing_datetime;
+    // },

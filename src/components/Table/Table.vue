@@ -295,7 +295,7 @@ export default {
         style.marginRight = `${this.scrollBarWidth}px`;
         this.showScroll = true;
       }else{
-        width += this.scrollBarWidth;
+        width = width==0?0:width+this.scrollBarWidth;
       }
       style.width = `${width}px`;
 
@@ -616,7 +616,17 @@ export default {
             order: type
         });
     },
-    handleFilterHide (index) {    // clear checked that not filter now
+    getIndex(_index){
+      let index;
+      this.cloneColumns.forEach((col,i) => {
+        if (col._index == _index) {
+          index = i;
+        }
+      });
+      return index;
+    },//rightFixed index error
+    handleFilterHide (_index) {    // clear checked that not filter now
+      let index = this.getIndex(_index);
         if (!this.cloneColumns[index]._isFiltered) this.cloneColumns[index]._filterChecked = [];
     },
     filterData (data, column) {
@@ -645,7 +655,13 @@ export default {
         });
         return data;
     },
-    handleFilter (index) {
+    handleFilter (_index,isIndex) {
+        let index;
+        if (isIndex) {
+          index = _index;
+        }else{
+          index = this.getIndex(_index);
+        }
         const column = this.cloneColumns[index];
         let filterData = this.makeDataWithSort();
 
@@ -656,11 +672,13 @@ export default {
         this.cloneColumns[index]._isFiltered = true;
         this.cloneColumns[index]._filterVisible = false;
     },
-    handleFilterSelect (index, value) {
+    handleFilterSelect (_index, value) {
+        let index = this.getIndex(_index);
         this.cloneColumns[index]._filterChecked = [value];
-        this.handleFilter(index);
+        this.handleFilter(index,true);
     },
-    handleFilterReset (index) {
+    handleFilterReset (_index) {
+        let index = this.getIndex(_index);
         this.cloneColumns[index]._isFiltered = false;
         this.cloneColumns[index]._filterVisible = false;
         this.cloneColumns[index]._filterChecked = [];

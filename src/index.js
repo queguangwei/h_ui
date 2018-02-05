@@ -1,12 +1,6 @@
 // es6 polyfill
 require('./style/main.scss')
-// import Components from './components'
 import Directives from './directives'
-// import Message from './components/Message'
-// import Notice from './components/Notice'
-// import hMsgBox from './components/MsgBox'
-// import hAlert from './components/Alert/Alert.vue'
-// import hLoadingBar from './components/Loadingbar';
 
 import Affix from './components/Affix';
 import Alert from './components/Alert';
@@ -56,6 +50,9 @@ import Typefield from './components/Typefield';
 import Upload from './components/Upload';
 import Row from './components/Grid';
 import Select from './components/Select';
+import EditGird from './components/EditGird';
+import GroupTable from './components/GroupTable';
+import TreeGird from './components/TreeGird';
 import locale from './locale';
 
 const h_ui = {
@@ -184,7 +181,13 @@ const h_ui = {
     Typefield,
     hTypefield: Typefield,
     Upload,
-    hUpload:Upload
+    hUpload:Upload,
+    EditGird,
+    hEditGird:EditGird,
+    GroupTable,
+    hGroupTable:GroupTable,
+    TreeGird,
+    hTreeGird:TreeGird
 };
 const install = function(Vue, opts = {}) {
     locale.use(opts.locale);

@@ -5,10 +5,10 @@
       <p>设置属性 type 为 date 或 daterange 分别显示选择单日和选择范围类型。</br>
         设置属性 placement 可以更改选择器出现的方向</p>
       <h-col span="12">
-        <h-date-picker v-model="model1"  format="yyyy年MM月dd日" type="date" placeholder="选择日期" style="width: 200px" readonly></h-date-picker>{{model1}}
+        <h-date-picker v-model="model1"  format="yyyy年MM月dd日" type="date" placeholder="选择日期" style="width: 200px" @on-clickout="s"></h-date-picker>{{model1}}
       </h-col>
       <h-col span="12">
-        <h-date-picker type="daterange" placement="bottom-end" placeholder="选择日期" :editable="false"></h-date-picker> 
+        <h-date-picker type="daterange" placement="bottom-end" placeholder="选择日期"></h-date-picker> 
       </h-col>
     </h-row>
     <h-row>
@@ -198,7 +198,7 @@
         value2: ['2016-01-01', '2016-02-15'],
         open: false,
         value3: '',
-        model1:''
+        model1:'2018-02-01'
       }
     },
     methods:{
@@ -213,6 +213,9 @@
       },
       handleOk () {
         this.open = false;
+      },
+      s(){
+        console.log(1);
       }
     } 
   }

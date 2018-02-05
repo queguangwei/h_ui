@@ -50,10 +50,11 @@ $typefield-prefix-cls: "#{$css-prefix}typefield" ;
   }
   &-tip {
     position: absolute;
+    display: block;
     top: 34px;
     left: 0;
     padding: 6px 5px;
-    z-index: $zindex-select ;
+    z-index: $zindex-tooltip ;
     font-size: 16px;
     font-weight: 700;
     border-radius: $border-radius-small;
@@ -68,8 +69,12 @@ $typefield-prefix-cls: "#{$css-prefix}typefield" ;
         input{
             border: 1px solid $error-color;
         }
-        // &-visible .#{$selecttree-prefix-cls}-selection{
-        //     @include active-error;
-        // }
+    }
+}
+.#{$editgird-prefix-cls}-cell-error{
+    .#{$typefield-prefix-cls}{
+        input{
+            border: 1px solid $error-color;
+        }
     }
 }

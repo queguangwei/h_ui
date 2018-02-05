@@ -8,7 +8,7 @@
     <h2>基础用法</h2>
     <p>可以直接设置 style 来改变输入框的宽度</p>
     <textarea v-model="example"></textarea>
-    <h-input v-model="value" placeholder="请输入..." style="width: 300px" @on-keypress="keypress"></h-input>
+    <h-input v-model="value" placeholder="wolege qy " class="yangshi" @on-keypress="keypress"></h-input>
     <h-input placeholder="请输入..." style="width: 300px" disabled></h-input>
     <h-input placeholder="请输入..." style="width: 300px" readonly></h-input>
     <h-input placeholder="请输入..." style="width: 300px" :editable="false"></h-input>
@@ -84,7 +84,7 @@ export default {
       value3: '',
       value4: '',
       value5: '',
-      value6: '',
+      value6: '123124313424',
       value7: '',
       value8: '',
       value11: '',
@@ -133,6 +133,9 @@ export default {
   watch:{
     value14(){
       // console.log(this.value14);
+    },
+    value6(){
+      console.log(1);
     }
   }
 }
@@ -144,3 +147,8 @@ function validFunc(val) {
   }
 }
 </script>
+<style type="text/css">
+  .yangshi{
+    width: 300px;
+  }
+</style>

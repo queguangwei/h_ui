@@ -16,6 +16,8 @@
 </template>
 <script>
 import {oneOf} from '../../util/tools'
+import Emitter from '../../mixins/emitter';
+
   Number.prototype.toFixed = function (n) {
     if (n > 20 || n < 0) {
         throw new RangeError('toFixed() digits argument must be between 0 and 20');
@@ -71,6 +73,7 @@ export default {
       bigNum:null
     }
   },
+  mixins: [ Emitter ],
   props: {
     type: {
       validator (value){
@@ -141,7 +144,9 @@ export default {
       if (this.inputValue&&this.inputValue!="") {
         this.inputValue = this.formatNum(e.target.value)
       }
+      this.$emit('input', this.inputValue);
       this.$emit('on-blur')
+      this.dispatch('FormItem', 'on-form-blur', this.inputValue)
     },
     focus (e) {
       this.focused = true
@@ -149,13 +154,13 @@ export default {
       this.$emit('on-focus',e)
     },
     val (e) {
-      this.inputValue = e.target.value
-      this.bigShow(this.type,this.bigTips,this.inputValue)
-      this.$emit('input', this.inputValue)
-      this.$emit('on-keyup', this.inputValue)
+      this.inputValue = e.target.value;
+      this.bigShow(this.type,this.bigTips,this.inputValue);
+      this.$emit('input', this.inputValue);
+      this.$emit('on-keyup', this.inputValue);
     },
     changeTipsVal (value){   
-      value  = value.replace(/[^0-9\.-]/g,"");
+      value  = String(value).replace(/[^0-9\.-]/g,"");
       var firstChar = value.substring(0,1); 
       value = this.cutNum(value,this.integerNum);
       if(value.split(".")[1] && value.split(".")[1].length > 2){
@@ -319,7 +324,7 @@ export default {
           break;
         case 16:
           if (perchar != 0)
-          tmpnewchar = tmpnewchar + "吉";
+          tmpnewchar = tmpnewchar + "京";
           break;
         case 17:
           tmpnewchar = tmpnewchar + "拾";
@@ -390,7 +395,7 @@ export default {
         newchar = newchar.replace("亿万", "亿");
         newchar = newchar.replace("兆亿", "兆");
         newchar = newchar.replace("零兆", "兆");
-        newchar = newchar.replace("吉兆", "吉");
+        newchar = newchar.replace("京兆", "京");
       
       if (newchar.charAt(newchar.length - 1) == "元"
           || newchar.charAt(newchar.length - 1) == "角")
