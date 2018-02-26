@@ -294,14 +294,16 @@
         this.isFocus = true
       },
       handleInputChange (event) {
-        const oldValue = this.visualValue;
         const value = event.target.value;
-
+        // if (value==''||String(value).length==0) {
+        //   this.handleClear();
+        //   return false;
+        // }
+        const oldValue = this.visualValue;
         let correctValue = '';
         let correctDate = '';
         const type = this.type;
         const format = this.format || DEFAULT_FORMATS[type];
-
         if (type === 'daterange' || type === 'timerange' || type === 'datetimerange') {
           const parser = (
               TYPE_VALUE_RESOLVER_MAP[type] ||
@@ -314,7 +316,6 @@
           ).formatter;
 
           const parsedValue = parser(value, format);
-
           if (parsedValue[0] instanceof Date && parsedValue[1] instanceof Date) {
               if (parsedValue[0].getTime() > parsedValue[1].getTime()) {
                   correctValue = oldValue;
@@ -353,26 +354,23 @@
           correctDate = parseDate(correctValue, format);
         } else {
           const parsedDate = parseDate(value, format);
-
           if (parsedDate instanceof Date) {
-              const options = this.options || false;
-              if (options && options.disabledDate && typeof options.disabledDate === 'function' && options.disabledDate(new Date(parsedDate))) {
-                  correctValue = oldValue;
-              } else {
-                  correctValue = formatDate(parsedDate, format);
-              }
+            const options = this.options || false;
+            if (options && options.disabledDate && typeof options.disabledDate === 'function' && options.disabledDate(new Date(parsedDate))) {
+                correctValue = oldValue;
+            } else {
+                correctValue = formatDate(parsedDate, format);
+            }
           } else {
-              correctValue = oldValue;
+            correctValue = oldValue;
           }
-
+          if (!correctValue) return false;
           correctDate = parseDate(correctValue, format);
         }
-
         this.visualValue = correctValue;
         event.target.value = correctValue;
         this.internalValue = correctDate;
         this.currentValue = correctDate;
-
         if (correctValue !== oldValue) this.emitChange(correctDate);
       },
       handleInputMouseenter () {

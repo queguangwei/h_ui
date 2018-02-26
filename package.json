@@ -6,7 +6,7 @@
   "main": "dist/venus.min.js",
   "scripts": {
     "dev": "node build/dev-server.js",
-    "locale":"webpack --config build/webpack.dist.locale.js",
+    "locale": "webpack --config build/webpack.dist.locale.js",
     "build:demo": "node build/build.example.js",
     "build": "node build/build.dist.js && npm run locale",
     "test": "karma start test/unit/karma.conf.js --single-run",
@@ -88,6 +88,7 @@
     "stylus-loader": "^2.4.0",
     "url-loader": "^0.5.7",
     "venus_hello_npm": "^1.0.0",
+    "vue": "^2.5.13",
     "vue-loader": "^11.1.3",
     "vue-router": "^2.1.1",
     "vue-style-loader": "^2.0.1",

@@ -270,3 +270,12 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
         }
     }
 }
+.#{$editgird-prefix-cls}-cell{
+    .#{$select-prefix-cls}{
+        &-dropdown{
+            ul{
+                user-select:none;
+            }
+        }
+    }
+}

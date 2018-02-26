@@ -197,7 +197,7 @@ export default {
       let style = {};
       if (this.height) {
         const height = (this.isLeftFixed || this.isRightFixed) ? parseInt(this.height) + this.scrollBarWidth : parseInt(this.height);
-        style.height = `${height}px`;
+        style.height = `${height+2}px`;
       }
       if (this.width) style.width = `${this.width}px`;
       return style;

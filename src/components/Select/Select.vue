@@ -135,38 +135,39 @@
       },
     },
     data () {
-        return {
-            prefixCls: prefixCls,
-            visible: false,
-            options: [],
-            optionInstances: [],
-            selectedSingle: '',  
-            selectedMultiple: [],
-            focusIndex: 0,
-            query: '',
-            lastQuery: '',
-            selectToChangeQuery: false,
-            inputLength: 56,
-            notFound: false,
-            slotChangeDuration: false,
-            model: this.value,
-            currentLabel: this.label,
-            isInputFocus: false //是否焦点，为false时触发blur校验
-        };
+      return {
+        prefixCls: prefixCls,
+        visible: false,
+        options: [],
+        optionInstances: [],
+        selectedSingle: '',  
+        selectedMultiple: [],
+        focusIndex: 0,
+        query: '',
+        lastQuery: '',
+        selectToChangeQuery: false,
+        inputLength: 56,
+        notFound: false,
+        slotChangeDuration: false,
+        model: this.value,
+        currentLabel: this.label,
+        isInputFocus: false, //是否焦点，为false时触发blur校验
+        isLi:true,
+      };
     },
     computed: {
       classes () {
-          return [
-              `${prefixCls}`,
-              {
-                  [`${prefixCls}-visible`]: this.visible,
-                  [`${prefixCls}-disabled`]: this.disabled,
-                  [`${prefixCls}-multiple`]: this.multiple,
-                  [`${prefixCls}-single`]: !this.multiple,
-                  [`${prefixCls}-show-clear`]: this.showCloseIcon,
-                  [`${prefixCls}-${this.size}`]: !!this.size
-              }
-          ];
+        return [
+          `${prefixCls}`,
+          {
+              [`${prefixCls}-visible`]: this.visible,
+              [`${prefixCls}-disabled`]: this.disabled,
+              [`${prefixCls}-multiple`]: this.multiple,
+              [`${prefixCls}-single`]: !this.multiple,
+              [`${prefixCls}-show-clear`]: this.showCloseIcon,
+              [`${prefixCls}-${this.size}`]: !!this.size
+          }
+        ];
       },
       dropdownCls () {
         return {
@@ -237,15 +238,16 @@
           return this.placement === 'bottom' ? 'slide-up' : 'slide-down';
       },
       dropVisible () {
-          let status = true;
-          
-          const options = this.$slots.default || [];
-          if (!this.loading && this.remote && this.query === '' && !options.length) status = false;
-          return this.visible && status;
+        let status = true;         
+        const options = this.$slots.default || [];
+        if (!this.loading && this.remote && this.query === '' && !options.length) status = false;
+        return this.visible && status;
       },
       notFountShow () {
+        this.$nextTick(()=>{
           const options = this.$slots.default || [];
           return (this.notFound && !this.remote) || (this.remote && !this.loading && !options.length)||(!this.remote&&!options.length);
+        });
       },     
       multiplestyle () {
         return {

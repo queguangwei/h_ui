@@ -20,12 +20,13 @@ $collapse-prefix-cls: "#{$css-prefix}collapse";
       position: relative;
 
       > i{
-          transition: transform $transition-time $ease-in-out;
+        display: inline-block;
+        transition: transform $transition-time $ease-in-out;
       }
     }
   }
   &  > &-item.#{$collapse-prefix-cls}-item-active > &-header > i{
-      transform: rotate(90deg);
+    transform: rotate(90deg);
   }
 
   &-content{

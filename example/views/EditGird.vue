@@ -2,72 +2,71 @@
   <div>
     <h2>基础</h2>
     <h3>单选</h3>
+
     <h-edit-gird :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" ref="editGird" stripe :show-header="false"></h-edit-gird>
     <p>小</p>
-    <h-edit-gird :columns="columns1" :data="data1" @on-current-change="click1" @on-row-click="click1" ref="editGird" width="800" 
-    no-data-text="你好呀"></h-edit-gird>
+    <h-edit-gird :columns="columns1" :data="data1" @on-current-change="click1" @on-row-click="click1" ref="editGird" width="800" no-data-text="你好呀"></h-edit-gird>
     <p>中</p>
     <h-edit-gird :columns="columns1" :data="data1" size="large" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" @on-select-cancel="click1" ref="editGird" stripe></h-edit-gird>
     <p>大</p>
-    <Button @click="getData">获取数据</Button>
-    <Button @click = "addData">新增一行</Button>
+    <Button @click="getDate">获取数据</Button>
+    <Button @click = "addDate">新增一行</Button>
     <h3>多选</h3>
-    <h-edit-gird :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-select-cancel="select" height="200"></h-edit-gird>
+<!--     <h-edit-gird :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-select-cancel="select" height="200"></h-edit-gird> -->
     <h-edit-gird :columns="columns4" :data="data1" @on-select-all="allSelect" @on-selection-change="selsetChange" height="200"></h-edit-gird>
     <h3>直接显示编辑框</h3>
     <h-edit-gird :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" :showEditInput="true" height="200"></h-edit-gird>
-
   </div>
 </template>
 
 <script>
 var tData= [
-        {
-          name: '王小明',
-          age: 18,
-          address: '北京市朝阳区芍药居',
-          money: '120.00',
-          cardId: '6223 5678 1234 5678',
-          city: '北京',
-          dating:'2018-01-21',
-          timing:'16:00:00.00',
-          tree:'leaf1'
-          // _highlight: true//默认选择当前项
-        },
-        {
-          name: '张小刚',
-          age: 25,
-          address: '北京市海淀区西二旗',
-          money: '130.00',
-          cardId: '6223 5678 1234 5678',
-          city: '北京',
-          dating:'2018-01-22',
-          timing:'16:00:00.00',
-          tree:'leaf1'
-        },
-        {
-          name: '李小红',
-          age: 30,
-          address: '上海市浦东新区世纪大道',
-          money: '140.00',
-          cardId: '6223 5678 1234 5678',
-          city: '北京',
-          dating:'2018-01-22',
-          timing:'16:00:00.00',
-          tree:'leaf1'
-        },
-        {
-          name: '周小伟',
-          age: 26,
-          address: '深圳市南山区深南大道',
-          money: '150.00',
-          cardId: '6223 5678 1234 5678',
-          city: '北京',
-          dating:'2018-01-22',
-          timing:'16:00:00.00',
-          tree:'leaf1'
-        }
-      ];
+  {
+    name: '王小明',
+    age: 18,
+    address: '北京市朝阳区芍药居',
+    money: '120.00',
+    cardId: '6223 5678 1234 5678',
+    city: '北京',
+    dating:'2018-01-09T16:00:00.000Z',
+    timing:'16:00:00.00',
+    tree:'leaf1'
+    // _highlight: true//默认选择当前项
+  },
+  {
+    name: '张小刚',
+    age: 25,
+    address: '北京市海淀区西二旗',
+    money: '130.00',
+    cardId: '6223 5678 1234 5678',
+    city: '北京',
+    dating:'2018-01-09T16:00:00.000Z',
+    timing:'16:00:00.00',
+    tree:'leaf1'
+  },
+  {
+    name: '李小红',
+    age: 30,
+    address: '上海市浦东新区世纪大道',
+    money: '140.00',
+    cardId: '6223 5678 1234 5678',
+    city: '北京',
+    dating:'2018-01-09T16:00:00.000Z',
+    timing:'16:00:00.00',
+    tree:'leaf1'
+  },
+  {
+    name: '周小伟',
+    age: 26,
+    address: '深圳市南山区深南大道',
+    money: '150.00',
+    cardId: '6223 5678 1234 5678',
+    city: '北京',
+    dating:'2018-01-09T16:00:00.000Z',
+    timing:'16:00:00.00',
+    tree:'leaf1'
+  }
+];
 export default {
   data() {
     return {
@@ -99,8 +98,9 @@ export default {
           type: 'money',
           title: '金额',
           width: 200,
-          integerNum: 3,
-          suffixNum: 2,
+          integerNum: 14,
+          suffixNum: 3,
+          // suffixNum: 2,
           bigTips: true,
           key: 'money',
           rule: { required: true, message: '金额不能为空'},
@@ -135,7 +135,6 @@ export default {
           key: 'dating',
           dateType:'date',
           format: 'yyyy-MM-dd',
-          editable:false,
           rule:{ required: true, message: '请选择日期', trigger: 'blur,change' }
         },
         {
@@ -210,8 +209,9 @@ export default {
           type: 'money',
           title: '金额',
           width: 200,
-          integerNum: 3,
-          suffixNum: 2,
+          integerNum: 14,
+          suffixNum: 3,
+          // suffixNum: 2,
           bigTips: true,
           key: 'money',
         },
@@ -285,6 +285,7 @@ export default {
         }
       ],
       data1: tData,
+
     }
   },
   methods: {
@@ -302,10 +303,10 @@ export default {
     selsetChange (selection){//选项发生变化时触发已选择的项
       console.log(selection);
     },
-    getData(){
+    getDate(){
       console.log(this.$refs.editGird.cloneData); 
     },
-    addData(){
+    addDate(){
       tData = this.data1.push({
         name: '',
         age: null,
@@ -317,7 +318,7 @@ export default {
         timing:'',
         tree:''
       });
-    },
+    }  
   } 
 }
 </script>

@@ -243,5 +243,8 @@
         &-item {
             display: inline-block;
         }
+        & ~ .verify-tip.verify-bottom {
+            margin-top: -5px;
+        }
     }
 }

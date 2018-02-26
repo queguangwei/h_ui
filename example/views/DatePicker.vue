@@ -198,7 +198,7 @@
         value2: ['2016-01-01', '2016-02-15'],
         open: false,
         value3: '',
-        model1:'2018-02-01'
+        model1:''
       }
     },
     methods:{

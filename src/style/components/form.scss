@@ -38,6 +38,21 @@ $form-item-prefix-cls: "#{$form-prefix-cls}-item";
             display: block;
             float: left;
             padding: 5px;
+            &-required {
+                .#{$form-item-prefix-cls}-requiredIcon {
+                    left: -3px;
+                }
+            }
+        }
+        .h-col {
+            .#{$form-item-prefix-cls} {
+                padding: 0;
+                &-required {
+                .#{$form-item-prefix-cls}-requiredIcon {
+                    left: -9px;
+                }
+            }
+            }
         }
         @include make-form-grid(form);
         @include make-form-grid(form,form-item);  
@@ -53,6 +68,7 @@ $form-item-prefix-cls: "#{$form-prefix-cls}-item";
     &-content {
         position: relative;
         line-height: 32px;
+        height: 32px; 
         font-size: $font-size-small;
     }
     & & {
@@ -76,7 +92,7 @@ $form-item-prefix-cls: "#{$form-prefix-cls}-item";
         .#{$form-item-prefix-cls}-label:before {
             content: '*';
             display: inline-block;
-            margin-right: 4px;
+            margin-right: 2px;
             line-height: 1;
             font-family: SimSun;
             font-size: $font-size-small;
@@ -85,16 +101,17 @@ $form-item-prefix-cls: "#{$form-prefix-cls}-item";
         .#{$form-item-prefix-cls}-requiredIcon {
             display: inline-block;
             position: absolute;
-            left: -8px;
+            left: -9px;
             vertical-align: middle;
             line-height: 32px;
+            height: 32px;
             color: $error-color;
             font-family: SimSun;
             font-size: $font-size-small;
         }
     }
-    // &-reqNoLabel.#{$form-item-prefix-cls}-required{
-    //     padding-left: 8px;
+    // &.#{$form-item-prefix-cls}-reqNoLabel{
+    //     padding-right: 15px;
     // }
     &-error {
         // todo

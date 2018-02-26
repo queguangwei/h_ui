@@ -63,6 +63,13 @@
                 let valid = true;
                 let count = 0;
                 this.fields.forEach(field => {
+                    if (field.$children && field.$children.length > 0) {
+                        for(let fidleChild of field.$children) {
+                            if (fidleChild.disabled) {
+                                return 
+                            }
+                        }
+                    }
                     field.validate('', errors => {
                         if (errors) {
                             valid = false;
