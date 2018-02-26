@@ -18,7 +18,7 @@
 <script>
     import AsyncValidator from 'async-validator';
     import Emitter from '../../mixins/emitter';
-    import { is } from '../../util/tools'
+    import { is , findComponentsChildren, findComponentParent} from '../../util/tools'
     import Validate from './validate';
     const prefixCls = 'h-form-item';
     const parentPrefixCls = 'h-form';
@@ -221,7 +221,6 @@
                     callback();
                     return true;
                 }
-
                 this.validateState = 'validating';
 
                 let descriptor = {};
@@ -299,6 +298,13 @@
                     this.$on('on-form-blur', this.onFieldBlur);
                     this.$on('on-form-change', this.onFieldChange);
                 }
+                // 组合formItem时，将自身requiredIcon隐藏，同时，将父元素的formItem的图标显示
+                let parentFormItem = findComponentParent(this, 'FormItem')
+                if (parentFormItem && this.isRequired) {
+                    parentFormItem.isRequired = true
+                    this.isRequired = false 
+                }
+
             }
         },
         beforeDestroy () {

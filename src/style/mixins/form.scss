@@ -3,10 +3,22 @@
     .#{$css-prefix}#{$formClass}-col-#{$index}.#{$css-prefix}#{$formItemClass}-col-#{$itemIndex}{   
       width: percentage(( $itemIndex / $index));            
     }
+     // 日期组，内部定义h-col
+    .h-col {
+      .#{$css-prefix}#{$formClass}-col-#{$index}.#{$css-prefix}#{$formItemClass}-col-#{$itemIndex} {
+        width: 100%;
+      }
+    }
     @include float-formItem($index, ($itemIndex - 1), $formClass, $formItemClass)
   } @else {
     .#{$css-prefix}#{$formClass}-col-#{$index} {
       width: percentage(( 1 / $index));  
+    }
+     // 日期组，内部定义h-col
+    .h-col {
+      .#{$css-prefix}#{$formClass}-col-#{$index} {
+        width: 100%;
+      }
     }
   }
 }
@@ -20,6 +32,12 @@
       // formItem不设置cols
       .#{$css-prefix}#{$formClass}-col-#{$index} {
         width: percentage(( 1 / $index));  
+      }
+      // 日期组，内部定义h-col
+      .h-col {
+        .#{$css-prefix}#{$formClass}-col-#{$index} {
+          width: 100%;
+        }
       }
     }
     @include float-formItem-columns(($index - 1), $itemIndex, $formClass, $formItemClass);

@@ -63,6 +63,6 @@ export default {
                     if (pNode) { pNode.children.push(row); }
                 }
             return parentKeyNodes[attributes.rootParentId];
-            }
+        }
     }
 };

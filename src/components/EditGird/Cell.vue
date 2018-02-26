@@ -220,12 +220,18 @@ export default {
           _parent.cloneData[this.index][this.column.key] = this.columnSelect;
           break;
         case 'date':
-          let curDate = getYMD(this.columnDate);
+          let curDate = '';
+          if (this.columnDate!='' && String(this.columnDate).length>0) {
+            curDate = getYMD(this.columnDate);
+          }
           this.normalDate = curDate;
           _parent.cloneData[this.index][this.column.key] = curDate;
           break; 
         case 'time':
-          let curTime  = getHMS(this.columnTime);
+          let curTime='';
+          if (this.columnTime!='' && String(this.columnTime).length>0) {
+            curTime  = getHMS(this.columnTime);
+          }
           this.normalDate = curTime;
           _parent.cloneData[this.index][this.column.key] = curTime;
           break;

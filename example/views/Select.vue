@@ -11,7 +11,7 @@
     </h-select>
     <br>
     <div>
-        <h-select v-model="model1" width="200" placement="top">
+        <h-select v-model="model1" width="200">
             <h-option v-for="(item, index) in uList" :value="item.id" :key="item.id">{{ item.name }}</h-option>
         </h-select>
         {{model1}}
@@ -146,7 +146,7 @@
     </div>
     <h-select v-model="mode224"  not-found-text="新设置的为空显示的内容" filterable>
         <h-option v-for="item in cityList224" :value="item.value" :key="item.value">{{ item.value }}</h-option>
-  </h-select>
+    </h-select>
 </div>
 </template>
 <script>
@@ -199,14 +199,6 @@
                 mu1:true,
                 d: [],
                 uList : [
-                    {id:1,name:"中国"},
-                    {id:2,name:"美国"},
-                    {id:3,name:"韩国"},
-                    {id:4,name:"韩国"},
-                    {id:5,name:"韩国"},
-                    {id:6,name:"韩国"},
-                    {id:7,name:"韩国"},
-                    {id:8,name:"韩国"}
                 ],
                 list: ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New hampshire', 'New jersey', 'New mexico', 'New york', 'North carolina', 'North dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode island', 'South carolina', 'South dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West virginia', 'Wisconsin', 'Wyoming'],
                 cityList1: [
@@ -261,6 +253,18 @@
                     this.options1 = [];
                 }
             },
+        },
+        mounted(){
+            this.uList=[
+                {id:1,name:"中国"},
+                {id:2,name:"美国"},
+                {id:3,name:"韩国"},
+                {id:4,name:"韩国"},
+                {id:5,name:"韩国"},
+                {id:6,name:"韩国"},
+                {id:7,name:"韩国"},
+                {id:8,name:"韩国"}
+            ];
         }
       }
 </script>

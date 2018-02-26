@@ -2,9 +2,8 @@
   <div>
     <h2>基础</h2>
     <h3>单选分组组件</h3>
-    <h-group-table :columns="columns1" :data="data1" size="large" :highlight-row="true" @on-current-change="click1" ref="groupTable" width="800" height="450" :show-header="false"></h-group-table>
+    <h-group-table :columns="columns1" :data="data1" size="large" :highlight-row="true" @on-current-change="click1" ref="groupTable" width="800" height="450"></h-group-table>
     <h-group-table :columns="columns1" :data="data1"   @on-row-click="click1"></h-group-table>
-    row-
     <h-group-table :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" stripe></h-group-table>
     <h-group-table :columns="columns1" :data="[]" no-data-text="哎呀你好"></h-group-table>
     <Button @click="getDate">获取数据</Button>
@@ -233,7 +232,7 @@ export default {
           title: '年龄',
           width: 200,
           key: 'age',
-          // hiddenCol:true,
+          hiddenCol:true,
         },
         {
           title: '地址',
@@ -378,9 +377,8 @@ export default {
     }
   },
   methods: {
-    click1(s,v){
+    click1(s){
       console.log(s);
-      console.log(v);
     },
     allSelect (allSelection){
       console.log(allSelection);

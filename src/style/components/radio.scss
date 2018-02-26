@@ -14,6 +14,9 @@ $radio-group-button-prefix-cls: "#{$radio-group-prefix-cls}-button";
             line-height: 30px;
         }
     }
+    & ~ .verify-tip.verify-bottom {
+        margin-top: -5px;
+    }
 }
 
 // 普通状态

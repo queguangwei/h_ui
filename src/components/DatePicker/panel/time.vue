@@ -96,6 +96,7 @@
               this.hours = '';
               this.minutes = '';
               this.seconds = '';
+              this.$emit('on-pick', '');
           },
           handleChange (date, emit = true) {
               if (date.hours !== undefined) {
