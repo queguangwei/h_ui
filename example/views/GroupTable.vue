@@ -2,14 +2,17 @@
   <div>
     <h2>基础</h2>
     <h3>单选分组组件</h3>
-    <h-group-table :columns="columns1" :data="data1" size="large" :highlight-row="true" @on-current-change="click1" ref="groupTable" width="800" height="450"></h-group-table>
-    <h-group-table :columns="columns1" :data="data1"   @on-row-click="click1"></h-group-table>
-    <h-group-table :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" stripe></h-group-table>
-    <h-group-table :columns="columns1" :data="[]" no-data-text="哎呀你好"></h-group-table>
+    <h-group-table :columns="columns1" :data="data1" size="large" :highlight-row="true" @on-current-change="click1" ref="groupTable" width="800" height="450" :loading="loading">
+      <P slot="loading">我是自定义de</P>
+    </h-group-table>
+    <Button @click="setLoad">切换loading</Button>
+    <h-group-table :columns="columns1" :data="data1"   @on-row-click="click1" :loading="loading"></h-group-table>
+    <h-group-table :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" stripe :loading="loading"></h-group-table>
+    <h-group-table :columns="columns1" :data="[]" no-data-text="哎呀你好" :loading="loading"></h-group-table>
     <Button @click="getDate">获取数据</Button>
     <h3>多选分组组件</h3>
-    <h-group-table :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange"></h-group-table>
-    <h-group-table :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" @on-selection-change="selsetChange"></h-group-table>
+    <h-group-table :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading"></h-group-table>
+    <h-group-table :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" @on-selection-change="selsetChange" :loading="loading"></h-group-table>
   </div>
 </template>
 
@@ -27,7 +30,7 @@ var tData= [
         money: '120.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating:'2018-01-09T16:00:00.000Z',
+        dating:'2018-03-07',
         timing:'16:00:00.00',
         tree:'leaf1'
         // _highlight: true//默认选择当前项
@@ -39,7 +42,7 @@ var tData= [
         money: '130.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating:'2018-01-09T16:00:00.000Z',
+        dating:'2018-03-07',
         timing:'16:00:00.00',
         tree:'leaf1'
       },
@@ -50,7 +53,7 @@ var tData= [
         money: '140.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating:'2018-01-09T16:00:00.000Z',
+        dating:'2018-03-07',
         timing:'16:00:00.00',
         tree:'leaf1'
       },
@@ -61,7 +64,7 @@ var tData= [
         money: '150.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating:'2018-01-09T16:00:00.000Z',
+        dating:'2018-03-07',
         timing:'16:00:00.00',
         tree:'leaf1'
       }
@@ -77,7 +80,7 @@ var tData= [
         money: '120.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating:'2018-01-09T16:00:00.000Z',
+        dating:'2018-03-07',
         timing:'16:00:00.00',
         tree:'leaf1'
         // _highlight: true//默认选择当前项
@@ -89,7 +92,7 @@ var tData= [
         money: '130.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating:'2018-01-09T16:00:00.000Z',
+        dating:'2018-03-07',
         timing:'16:00:00.00',
         tree:'leaf1'
       },
@@ -100,7 +103,7 @@ var tData= [
         money: '140.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating:'2018-01-09T16:00:00.000Z',
+        dating:'2018-03-07',
         timing:'16:00:00.00',
         tree:'leaf1'
       },
@@ -111,7 +114,7 @@ var tData= [
         money: '150.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating:'2018-01-09T16:00:00.000Z',
+        dating:'2018-03-07',
         timing:'16:00:00.00',
         tree:'leaf1'
       }
@@ -127,7 +130,7 @@ var tData= [
         money: '120.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating:'2018-01-09T16:00:00.000Z',
+        dating:'2018-03-07',
         timing:'16:00:00.00',
         tree:'leaf1'
         // _highlight: true//默认选择当前项
@@ -139,7 +142,7 @@ var tData= [
         money: '130.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating:'2018-01-09T16:00:00.000Z',
+        dating:'2018-03-07',
         timing:'16:00:00.00',
         tree:'leaf1'
       },
@@ -150,7 +153,7 @@ var tData= [
         money: '140.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating:'2018-01-09T16:00:00.000Z',
+        dating:'2018-03-07',
         timing:'16:00:00.00',
         tree:'leaf1'
       },
@@ -161,7 +164,7 @@ var tData= [
         money: '150.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating:'2018-01-09T16:00:00.000Z',
+        dating:'2018-03-07',
         timing:'16:00:00.00',
         tree:'leaf1'
       }
@@ -177,7 +180,7 @@ var tData= [
         money: '120.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating:'2018-01-09T16:00:00.000Z',
+        dating:'2018-03-07',
         timing:'16:00:00.00',
         tree:'leaf1'
         // _highlight: true//默认选择当前项
@@ -189,7 +192,7 @@ var tData= [
         money: '130.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating:'2018-01-09T16:00:00.000Z',
+        dating:'2018-03-07',
         timing:'16:00:00.00',
         tree:'leaf1'
       },
@@ -200,7 +203,7 @@ var tData= [
         money: '140.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating:'2018-01-09T16:00:00.000Z',
+        dating:'2018-03-07',
         timing:'16:00:00.00',
         tree:'leaf1'
       },
@@ -211,7 +214,7 @@ var tData= [
         money: '150.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating:'2018-01-09T16:00:00.000Z',
+        dating:'2018-03-07',
         timing:'16:00:00.00',
         tree:'leaf1'
       }
@@ -222,6 +225,7 @@ export default {
   components:{TexpandRow},
   data() {
     return {
+      loading:true,
       columns1: [
         {
           title: '姓名',
@@ -377,6 +381,9 @@ export default {
     }
   },
   methods: {
+    setLoad(){
+      this.loading = !this.loading;
+    },
     click1(s){
       console.log(s);
     },

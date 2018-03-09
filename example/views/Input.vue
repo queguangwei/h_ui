@@ -10,7 +10,7 @@
     <textarea v-model="example"></textarea>
     <h-input v-model="value" placeholder="请输入..." style="width: 300px" @on-keypress="keypress"></h-input>
     <h-input placeholder="请输入..." style="width: 300px" disabled></h-input>
-    <h-input placeholder="请输入..." style="width: 300px" readonly></h-input>
+    <h-input value="你好呀我不好呀" placeholder="请输入..." style="width: 300px" readonly></h-input>
     <h-input placeholder="请输入..." style="width: 300px" :editable="false"></h-input>
     <h1>Type</h1>
     <h-input type="password" style="width: 300px" autofocus></h-input>

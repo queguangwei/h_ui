@@ -55,6 +55,7 @@
       :format="column.format||'yyyy-MM-dd'" 
       :placeholder="column.placeholder"
       :editable ="column.editable"
+      :showFormat = "true"
       class="canEdit"></Date>
     </template>
     <template v-if="renderType === 'time'">
@@ -68,6 +69,7 @@
     </template>
     <template v-if="renderType === 'selectTree'">
       <SelectTree v-model="columnTree"
+        :firstValue = "firstTreeValue"
         :data="baseData" 
         :placeholder="column.placeholder"
         :showCheckbox="column.showCheckbox" 
@@ -136,7 +138,8 @@ export default {
       columnDate: this.row[this.column.key],
       columnTime: this.row[this.column.key],
       columnSelect: this.row[this.column.key],
-      columnTree: this.row[this.column.key],
+      columnTree: '',
+      firstTreeValue:this.row[this.column.key],
       uid: -1,
       context: this.parent.currentContext,
       showSlot:true,
@@ -220,20 +223,12 @@ export default {
           _parent.cloneData[this.index][this.column.key] = this.columnSelect;
           break;
         case 'date':
-          let curDate = '';
-          if (this.columnDate!='' && String(this.columnDate).length>0) {
-            curDate = getYMD(this.columnDate);
-          }
-          this.normalDate = curDate;
-          _parent.cloneData[this.index][this.column.key] = curDate;
+          this.normalDate = this.columnDate;
+          _parent.cloneData[this.index][this.column.key] = this.columnDate;
           break; 
         case 'time':
-          let curTime='';
-          if (this.columnTime!='' && String(this.columnTime).length>0) {
-            curTime  = getHMS(this.columnTime);
-          }
-          this.normalDate = curTime;
-          _parent.cloneData[this.index][this.column.key] = curTime;
+          this.normalDate =this.columnTime;
+          _parent.cloneData[this.index][this.column.key] = this.columnTime;
           break;
         case 'selectTree':
           this.normalDate = this.columnTree;
@@ -266,11 +261,10 @@ export default {
       }
       this.validateState = 'validating';
       let descriptor = {};
-      descriptor[name] = rules;
+      descriptor['name'] = rules;
       const validator = new AsyncValidator(descriptor);
       let model = {};
-      model[name] = this.normalDate;
-
+      model['name'] = this.normalDate;
       validator.validate(model, { firstFields: true }, errors => {
         this.validateState = !errors ? 'success' : 'error';
         this.validateMessage = errors ? errors[0].message : '';

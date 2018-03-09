@@ -55,7 +55,7 @@
   import Tree from '../Tree/Tree.vue'
   import clickoutside from '../../directives/clickoutside';
   import TransferDom from '../../directives/transfer-dom';
-  import { oneOf, findComponentChildren,getScrollBarSize, getStyle,hasClass} from '../../util/tools';
+  import { oneOf, findComponentChildren,getScrollBarSize, getStyle,hasClass,typeOf} from '../../util/tools';
   import Emitter from '../../mixins/emitter';
   import Locale from '../../mixins/locale';
   const prefixCls = 'h-selectTree';
@@ -66,6 +66,10 @@
     components:{Icon,Drop,Tree},
     props:{
       value: {
+        type: [String, Number, Array],
+        default: ''
+      },
+      firstValue:{
         type: [String, Number, Array],
         default: ''
       },
@@ -129,6 +133,14 @@
       autoComplete: {
         type: Boolean,
         default: false
+      },
+      formatValue:{//设置v-model返回的值
+        type:String,
+        default:'title'
+      },
+      isString:{//多选专用，v-model输入输出值以逗号隔开
+        type:Boolean,
+        default:false,
       }
     },
     data(){
@@ -145,7 +157,7 @@
         scrollBarWidth:getScrollBarSize(),
         isFocus: false,
         isFirst: false,
-        baseDate: this.data
+        baseDate: this.data,
       }
     },
     computed:{
@@ -274,24 +286,30 @@
 
       },
       selectChange(val){
-        this.$emit('on-select-change', val); 
+        let strModel = this.formatValue;
+        if (this.visible) {
+          this.$emit('on-select-change', val); 
+        }
         if (!this.showCheckbox) {
           this.selectedSingle=val.length!=0?val[0].title:'';
           this.query = this.filterable?this.selectedSingle:'';
-          this.model = this.selectedSingle;
+          this.model = val.length!=0?val[0][strModel]:'';
           this.hideMenu();
           this.findQuery(this.data,'');
         }
       },
       checkChange(val){
+        let strModel = this.formatValue;
         if (this.filterable) {
           this.query='';
         }
-        var arr=[];
+        let arr=[];
+        let arrModel = [];
         val.forEach(item=>{
           arr.push(item.title);
+          arrModel.push(item[strModel]);
         })
-        this.model=arr;
+        this.model=arrModel;
         this.selectedMultiple=arr;
         this.$emit('on-check-change', val);
         // this.$nextTick(()=>{
@@ -357,13 +375,69 @@
           this.removeTag(this.model.length - 1);
         }
       },
+      strtoArr(val){
+        if (this.showCheckbox && this.isString) {
+          if (val==''||val==' '||val == null||val == undefined) {
+            return [];
+          }else if(val.length>0&&val.indexOf(',')==-1){
+            return new Array(val);
+          }else{
+            return val.split(',');
+          }
+        }else{
+          return val;
+        }
+      },
+      arrtoStr(val){
+        if (this.showCheckbox && this.isString && typeOf(val) == 'array') {
+          if (val.length == 0) {
+            return '';
+          }else{
+            return val.join(',');
+          } 
+        }else{
+          return val;
+        }
+      },
+      setInit(data,value){
+        let _this = this;
+        function findDown(tdata,curValue){
+          tdata.forEach((item)=>{
+            if (item[_this.formatValue] == curValue) {
+              _this.$set(item,'selected',true);
+              return;
+            }else{
+              if (item.children&&item.children.length>0) {
+                findDown(item.children,curValue);
+              }
+            }
+          });
+        }
+        findDown(data,value);
+        this.$nextTick(()=>{
+          let tree = this.$refs.tree;     
+          this.selectChange(tree.getSelectedNodes());
+        });
+      }
     },
     watch:{
-      value (val) {
-        this.model = val;
+      firstValue:{
+        immediate:true,
+        handler(val){
+          if (val && val != ' ' && val != []) {
+            this.$nextTick(()=>{
+              this.setInit(this.baseDate,val);
+            });
+          }
+        }
       },
-      model () {     
-        this.$emit('input', this.model);
+      value(val){
+        this.model = this.strtoArr(val);
+      },
+      model () {  
+        let backModel = this.arrtoStr(this.model);   
+        // this.$emit('input', this.model);
+        this.$emit('input', backModel);
         // 初次会执行
         if (this.isFirst) {
           this.dispatch('FormItem', 'on-form-change', this.model)
@@ -381,25 +455,19 @@
         } else {
           this.broadcast('Drop', 'on-destroy-popper');
         }
+      },
+      data : {
+        deep: true,
+        handler: function (cur) {
+          // if (this.firstValue && this.firstValue.length>0 && cur) {
+          //   this.setInit(cur,this.firstValue);
+          //   this.firstValue = '';
+          // }
+          this.baseDate = cur;
+        }
       }
     },
     mounted(){
-      let _this =this
-      if (this.value && this.value.length>0) {
-        function findDown(tdata,curValue){
-          tdata.forEach((item)=>{
-            if (item.title == curValue) {
-              _this.$set(item,'selected',true);
-              return;
-            }else{
-              if (item.children&&item.children.length>0) {
-                findDown(item.children,curValue);
-              }
-            }
-          });
-        }
-        findDown(this.baseDate,this.value);
-      }
       this.$nextTick(()=>{
         let tree = this.$refs.tree;
         if (!!this.showCheckbox) {
@@ -409,7 +477,6 @@
         }
         this.offsetArrow();
       });
-      // this.swidth = parseInt(this.$refs.select.getBoundingClientRect().width)||0;
     }
   }
 </script>

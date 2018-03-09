@@ -38,10 +38,16 @@ $form-item-prefix-cls: "#{$form-prefix-cls}-item";
             display: block;
             float: left;
             padding: 5px;
+            margin: 0;
             &-required {
                 .#{$form-item-prefix-cls}-requiredIcon {
                     left: -3px;
                 }
+            }
+            &-content {
+                // height: 32px; 
+                line-height: 31px;
+
             }
         }
         .h-col {
@@ -68,7 +74,6 @@ $form-item-prefix-cls: "#{$form-prefix-cls}-item";
     &-content {
         position: relative;
         line-height: 32px;
-        height: 32px; 
         font-size: $font-size-small;
     }
     & & {

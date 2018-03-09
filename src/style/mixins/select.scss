@@ -3,6 +3,7 @@
         margin: 0;
         line-height: normal;
         padding: 7px 16px;
+        // margin-right: 5px;
         clear: both;
         color: $text-color;
         font-size: $font-size-small !important;
@@ -31,8 +32,9 @@
         }
 
         &-selected,&-selected:hover{
-            color: #fff;
-            background: $selected-color;
+            color: $selected-color;
+            // color: #fff;
+            // background: $selected-color;
         }
 
         &-selected &-focus {

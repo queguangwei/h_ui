@@ -93,11 +93,18 @@
       <div :class="[prefixCls + '-fixed-right-patch']" :style="fixedRightPatchStyle" v-if="isRightFixed&&showScroll" ref="rightPatch"></div>
       <div :class="[prefixCls + '-footer']" v-if="showSlotFooter" ref="footer"><slot name="footer"></slot></div>
     </div>
+    <Spin fix size="large" v-if="loading">
+      <slot name="loading">
+        <h-icon name="load-c" size=18 class='h-load-loop'></h-icon>
+        <div v-html="loadingText"></div>
+      </slot>
+    </Spin>
   </div>
 </template>
 <script>
 import tableHead from './Table-head.vue';
 import tableBody from './Table-body.vue';
+import Spin from '../Spin/Spin.vue';
 import { oneOf, getStyle, deepCopy, getScrollBarSize,findInx} from '../../util/tools';
 import { on, off } from '../../util/dom';
 import Csv from '../../util/csv';
@@ -178,7 +185,11 @@ export default {
     rowSelect:{
       type:Boolean,//多选时是否支持点击行选中
       default:false
-    }
+    },
+    loading: {
+      type: Boolean,
+      default: false
+    },
   },
   data () {
     return {
@@ -206,6 +217,9 @@ export default {
     };
   },
   computed: {
+    loadingText(){
+      return this.t('i.table.loadingText');
+    },
     localeNoDataText () {
       if (this.noDataText === undefined) {
         return this.t('i.table.noDataText');
@@ -430,12 +444,12 @@ export default {
              // if (column.width) width = column.width||'';
              // 自适应列在表格宽度较小时显示异常，为自适应列设置最小宽度100（拖拽后除外）
               if (column.width) {
-                  width = column.width||''
+                  width = column.width||'';
               } else {
-                  if (width < 100) width = 100
+                  if (width < 100) width = 100;
               }
-
               this.cloneColumns[i]._width = width||'';
+              this.tableWidth = this.cloneColumns.map(cell => cell.width).reduce((a, b) => a + b);
 
               columnsWidth[column._index] = {
                   width: width
@@ -762,7 +776,7 @@ export default {
         column._index = index;
         column._columnKey = columnKey++;
         column._width = column.width ? column.width : '';    // update in handleResize()
-        if(!!column.hiddenCol && Number(column._width)>0 && column._width!=''){
+        if(!!column.hiddenCol){
           that.columns[index].width = 0;
           column.width = 0;
           column._width = 0;

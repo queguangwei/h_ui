@@ -7,7 +7,8 @@
     </div>
     <div v-if="showElevator" :class="ElevatorClasses">
       {{ t('i.page.goto') }}
-      <input type="text" :value="_current" @keyup.enter="changePage">
+      <input v-if="!isBlur" type="text" :value="_current" @keyup.enter="changePage">
+      <input v-if="isBlur" type="text" :value="_current" @blur="changePage">
       {{ t('i.page.p') }}
     </div>
   </div>
@@ -36,7 +37,8 @@
             pageSize: Number,
             allPages: Number,
             isSmall: Boolean,
-            placement: String
+            placement: String,
+            isBlur:Boolean,
         },
         data () {
             return {
@@ -46,7 +48,7 @@
         watch: {
             pageSize (val) {
                 this.currentPageSize = val;
-            }
+            },
         },
         computed: {
             size () {

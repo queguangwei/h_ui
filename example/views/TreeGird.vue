@@ -1,6 +1,7 @@
 <template>
   <div>
-   <h-tree-gird :columns="columns1" :data="data1" size="small" :highlight-row="true" @on-current-change="click1" @on-row-click="click2" ref="editGird" height="400"></h-tree-gird>
+   <h-tree-gird :columns="columns1" :data="data1" size="small" :highlight-row="true" @on-current-change="click1" @on-row-click="click2" ref="editGird" height="400" :loading="loading"></h-tree-gird>
+   <Button @click="setLoad">切换loading</Button>
   </div>
 </template>
 <script>
@@ -13,7 +14,7 @@ var tData= [
           money: '120.00',
           cardId: '6223 5678 1234 5678',
           city: '北京',
-          dating:'2018-01-09T16:00:00.000Z',
+          dating:'2018-03-07',
           timing:'16:00:00.00',
           tree:'leaf1'
           // _highlight: true//默认选择当前项
@@ -26,7 +27,7 @@ var tData= [
           money: '130.00',
           cardId: '6223 5678 1234 5678',
           city: '北京',
-          dating:'2018-01-09T16:00:00.000Z',
+          dating:'2018-03-07',
           timing:'16:00:00.00',
           tree:'leaf1',
           _parentId: 1,
@@ -39,7 +40,7 @@ var tData= [
           money: '130.00',
           cardId: '6223 5678 1234 5678',
           city: '北京',
-          dating:'2018-01-09T16:00:00.000Z',
+          dating:'2018-03-07',
           timing:'16:00:00.00',
           tree:'leaf1',
           _parentId: 11,
@@ -52,7 +53,7 @@ var tData= [
           money: '130.00',
           cardId: '6223 5678 1234 5678',
           city: '北京',
-          dating:'2018-01-09T16:00:00.000Z',
+          dating:'2018-03-07',
           timing:'16:00:00.00',
           tree:'leaf1',
           _parentId: 111,
@@ -65,7 +66,7 @@ var tData= [
           money: '130.00',
           cardId: '6223 5678 1234 5678',
           city: '北京',
-          dating:'2018-01-09T16:00:00.000Z',
+          dating:'2018-03-07',
           timing:'16:00:00.00',
           tree:'leaf1',
           _parentId: 111,
@@ -78,7 +79,7 @@ var tData= [
           money: '130.00',
           cardId: '6223 5678 1234 5678',
           city: '北京',
-          dating:'2018-01-09T16:00:00.000Z',
+          dating:'2018-03-07',
           timing:'16:00:00.00',
           tree:'leaf1',
           _parentId: 11,
@@ -91,7 +92,7 @@ var tData= [
           money: '140.00',
           cardId: '6223 5678 1234 5678',
           city: '北京',
-          dating:'2018-01-09T16:00:00.000Z',
+          dating:'2018-03-07',
           timing:'16:00:00.00',
           tree:'leaf1',
           _parentId: 1,
@@ -104,7 +105,7 @@ var tData= [
           money: '150.00',
           cardId: '6223 5678 1234 5678',
           city: '北京',
-          dating:'2018-01-09T16:00:00.000Z',
+          dating:'2018-03-07',
           timing:'16:00:00.00',
           tree:'leaf1',
           _parentId: 1,
@@ -117,7 +118,7 @@ var tData= [
           money: '120.00',
           cardId: '6223 5678 1234 5678',
           city: '北京',
-          dating:'2018-01-09T16:00:00.000Z',
+          dating:'2018-03-07',
           timing:'16:00:00.00',
           tree:'leaf1',
           // _highlight: true//默认选择当前项
@@ -130,7 +131,7 @@ var tData= [
           money: '130.00',
           cardId: '6223 5678 1234 5678',
           city: '北京',
-          dating:'2018-01-09T16:00:00.000Z',
+          dating:'2018-03-07',
           timing:'16:00:00.00',
           tree:'leaf1',
           _parentId: 2,
@@ -143,7 +144,7 @@ var tData= [
           money: '140.00',
           cardId: '6223 5678 1234 5678',
           city: '北京',
-          dating:'2018-01-09T16:00:00.000Z',
+          dating:'2018-03-07',
           timing:'16:00:00.00',
           tree:'leaf1',
           _parentId: 2,
@@ -156,7 +157,7 @@ var tData= [
           money: '150.00',
           cardId: '6223 5678 1234 5678',
           city: '北京',
-          dating:'2018-01-09T16:00:00.000Z',
+          dating:'2018-03-07',
           timing:'16:00:00.00',
           tree:'leaf1',
           _parentId: 2,
@@ -169,7 +170,7 @@ var tData= [
           money: '120.00',
           cardId: '6223 5678 1234 5678',
           city: '北京',
-          dating:'2018-01-09T16:00:00.000Z',
+          dating:'2018-03-07',
           timing:'16:00:00.00',
           tree:'leaf1',
           // _highlight: true//默认选择当前项
@@ -182,7 +183,7 @@ var tData= [
           money: '130.00',
           cardId: '6223 5678 1234 5678',
           city: '北京',
-          dating:'2018-01-09T16:00:00.000Z',
+          dating:'2018-03-07',
           timing:'16:00:00.00',
           tree:'leaf1',
           _parentId: 3,
@@ -195,7 +196,7 @@ var tData= [
           money: '140.00',
           cardId: '6223 5678 1234 5678',
           city: '北京',
-          dating:'2018-01-09T16:00:00.000Z',
+          dating:'2018-03-07',
           timing:'16:00:00.00',
           tree:'leaf1',
           _parentId: 3,
@@ -208,7 +209,7 @@ var tData= [
           money: '150.00',
           cardId: '6223 5678 1234 5678',
           city: '北京',
-          dating:'2018-01-09T16:00:00.000Z',
+          dating:'2018-03-07',
           timing:'16:00:00.00',
           tree:'leaf1',
           _parentId: 3,
@@ -217,6 +218,7 @@ var tData= [
   export default {
     data () {
       return {
+        loading:true,
         columns1: [
           {
             type: 'index',
@@ -323,6 +325,9 @@ var tData= [
       }
     },
     methods: {
+      setLoad(){
+        this.loading = !this.loading;
+      },
       click1(s){
         console.log(s);
       },

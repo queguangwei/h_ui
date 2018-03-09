@@ -57,6 +57,7 @@
         :current="currentPage"
         :all-pages="allPages"
         :is-small="isSmall"
+        :is-blur = "isBlur"
         @on-size="onSize"
         @on-page="onPage">
       </Options>
@@ -125,6 +126,10 @@
       },
       styles: {
         type: Object
+      },
+      isBlur:{
+        type: Boolean,
+        default: false
       }
     },
     data () {
@@ -137,6 +142,7 @@
     watch: {
       total (val) {
         let maxPage = Math.ceil(val / this.currentPageSize);
+        if (Number(val) == 0) maxPage = 1;
         if (maxPage < this.currentPage && maxPage > 0) {
             this.currentPage = maxPage;
         }

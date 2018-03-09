@@ -1,5 +1,6 @@
 export default {
   i: {
+    locale: 'zh-CN',
     select: {
         placeholder: '请选择',
         noMatch: '无匹配数据',
@@ -10,7 +11,8 @@ export default {
         noFilteredDataText: '暂无筛选结果',
         confirmFilter: '筛选',
         resetFilter: '重置',
-        clearFilter: '全部'
+        clearFilter: '全部',
+        loadingText:'加载中'
     },
     datepicker: {
         selectDate: '选择日期',
@@ -19,6 +21,7 @@ export default {
         endTime: '结束时间',
         clear: '清空',
         ok: '确定',
+        datePanelLabel: '[yyyy年] [m月]',
         month: '月',
         month1: '1 月',
         month2: '2 月',
@@ -33,6 +36,7 @@ export default {
         month11: '11 月',
         month12: '12 月',
         year: '年',
+        weekStartDay: '0',
         weeks: {
             sun: '日',
             mon: '一',

@@ -1,12 +1,14 @@
 <template>
   <div>
     <h-row>
-      <h-time-picker :value="val" format="HH’mm’ss" type="timerange" placement="bottom-end" placeholder="选择时间" size="large" :steps= "[2, 15,10]"  style="width:200px"></h-time-picker>
+      <h-time-picker v-model="val" format="HH’mm’ss" type="timerange" placement="bottom-end" placeholder="选择时间" size="large" :steps= "[2, 15,10]"  style="width:200px"></h-time-picker>
+      {{val}}
       <h2>基本用法</h2>
       <p>设置属性 type 为 time 或 timerange 分别显示选择单个时间和选择范围时间类型</br>
         设置属性 placement 可以更改选择器出现的方向</p>
       <h-col span="12">
-        <h-time-picker type="time" placeholder="选择时间" style="width: 168px"></h-time-picker>
+        <h-time-picker v-model="val1" type="time" placeholder="选择时间" style="width: 168px"></h-time-picker>
+        {{val1}}
       </h-col>
       <h-col span="12">
         <h-time-picker type="timerange" placement="bottom-end" placeholder="选择时间" style="width: 168px"></h-time-picker>
@@ -99,21 +101,7 @@
         <h-time-picker size="large" placeholder="选择日期"></h-time-picker>
       </h-col>
     </h-row>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
   </div>
 </template>
 <script>
@@ -198,6 +186,10 @@
           }
         },
         val:['08:30:10', '12:00:10'],
+        val1:'',
+        val2:'',
+        val3:'',
+        val4:'',
         value1: '09:41:00',
         value2: ['09:41:00', '12:00:00'],
         open: false,
