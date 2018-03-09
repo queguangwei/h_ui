@@ -42,11 +42,18 @@
         </table>
       </div>
     </div>
+    <Spin fix size="large" v-if="loading">
+      <slot name="loading">
+        <h-icon name="load-c" size=18 class='h-load-loop'></h-icon>
+        <div v-html="loadingText"></div>
+      </slot>
+    </Spin>
   </div>
 </template>
 <script>
 import GirdHead from './Gird-head.vue';
 import GirdBody from './Gird-body.vue';
+import Spin from '../Spin/Spin.vue';
 import Mixin from './mixin';
 import { oneOf, getStyle, deepCopy, getScrollBarSize,findInx} from '../../util/tools';
 import { on, off } from '../../util/dom';
@@ -134,7 +141,11 @@ export default {
     checkStrictly:{
       type:Boolean,
       default:false
-    }
+    },
+    loading: {
+      type: Boolean,
+      default: false
+    },
   },
   data () {
     return {
@@ -159,6 +170,9 @@ export default {
     };
   },
   computed: {
+    loadingText(){
+      return this.t('i.table.loadingText');
+    },
     localeNoDataText () {
       if (this.noDataText === undefined) {
         return this.t('i.table.noDataText');
@@ -371,7 +385,7 @@ export default {
       for (let i in this.objData) {
         if (this.objData[i]._isChecked) selectionIndexes.push(parseInt(i));
       }
-      return JSON.parse(JSON.stringify(this.data.filter((data, index) => selectionIndexes.indexOf(index) > -1)));
+      return JSON.parse(JSON.stringify(this.cloneData.filter((data, index) => selectionIndexes.indexOf(index) > -1)));
     },
     getGroupSelection(){
       var _this =this;

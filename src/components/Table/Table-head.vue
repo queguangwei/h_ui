@@ -202,7 +202,7 @@ export default {
       const table = this.$parent; 
       const tableEl = table.$el;
       const tableLeft = tableEl.getBoundingClientRect().left;
-      const columnEl = this.$el.querySelector(`th.${column.key}`);
+      const columnEl = this.$el.querySelector(`th.h-ui-${column.key}`);
       const columnRect = columnEl.getBoundingClientRect();
       const minLeft = columnRect.left - tableLeft + 30;
 

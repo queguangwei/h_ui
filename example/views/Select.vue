@@ -6,15 +6,19 @@
     <p>使用v-model双向绑定数据,默认为单选</p>
     <br>
     <p>单选时，value只接受字符串和数字类型，多选时，value只接受数组类型</p>
-    <h-select v-model="model44" multiple>
+    <h-select v-model="model34" style="width:120px" @on-change="change">
         <h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>
     </h-select>
+    {{model34}}
+    <h-select v-model="model44" multiple style="width:320px" :isString="true" isCheckall @on-change="change">
+        <h-option v-for="item in cityList" multiple :value="item.value" :key="item.value">{{ item.label }}</h-option>
+    </h-select>
+    {{model44}}
     <br>
     <div>
-        <h-select v-model="model1" width="200">
+        <h-select v-model="model1" width="200" @on-change="change">
             <h-option v-for="(item, index) in uList" :value="item.id" :key="item.id">{{ item.name }}</h-option>
         </h-select>
-        {{model1}}
     </div>
     <h1>
         设置select尺寸
@@ -74,7 +78,7 @@
     <br>
     <div>
         <span>分组:</span>
-        <h-select v-model="model7" width="200" multiple>
+        <h-select v-model="model7" width="200" multiple :isString="true">
             <h-option-group label="热门城市">
                 <h-option v-for="(item, index) in cityList1" :value="item.value" :key="item.value">{{ item.label }}</h-option>
             </h-option-group>
@@ -105,12 +109,12 @@
     <br>
     <div>
         <span>多选123:</span>
-        <h-select v-model="model9" width="260"  multiple size="large">
+        <h-select v-model="model9" width="260"  multiple size="large" :isString="true">
             <h-option v-for="(item, index) in uList" :value="item.id" :key="item.id">{{ item.name }}</h-option>
         </h-select>
-        <h-select v-model="model9" width="260"  multiple size="small">
+        <!-- <h-select v-model="model9" width="260"  multiple size="small" :isString="true">
             <h-option v-for="(item, index) in uList" :value="item.id" :key="item.id">{{ item.name }}</h-option>
-        </h-select>
+        </h-select> -->
         {{model9}}
     </div>
     <br>
@@ -124,9 +128,10 @@
             <h-option v-for="(item, index) in uList" :value="item.id" :key="item.id">{{ item.name }}</h-option>
         </h-select>
          <span>多选可搜索:</span>
-        <h-select v-model="model11" width="200"  multiple filterable>
+        <h-select v-model="model11" width="200"  multiple filterable :isString="true">
             <h-option v-for="(item, index) in uList" :value="item.id" :key="item.id">{{ item.name }}</h-option>
         </h-select>
+        {{model11}}
     </div>
     <h1>
          remote:远程可搜索，需同时设置 filterable、remote、remote-method、loading 四个 props，其中 loading 用于控制是否正在搜索中，remote-method 是远程搜索的方法。设置初始显示值，需设置 label 属性。
@@ -156,11 +161,11 @@
                 cityList: [
                         {
                             value: 'beijing',
-                            label: '北京市'
+                            label: '北京市北京市北京市北京市北京市北京市'
                         },
                         {
                             value: 'shanghai',
-                            label: '上海市'
+                            label: '上海市上海市上海市上海市上海市上海市上海市'
                         },
                         {
                             value: 'shenzhen',
@@ -177,9 +182,31 @@
                         {
                             value: 'shenzhen222',
                             label: '重庆市222'
-                        }
+                        },
+                        {
+                            value: 'shenzhen223',
+                            label: '重庆市223'
+                        }, 
+                        {
+                            value: 'shenzhen224',
+                            label: '重庆市224'
+                        }, 
+                        {
+                            value: 'shenzhen225',
+                            label: '重庆市225'
+                        },
+                        {
+                            value: 'shenzhen226',
+                            label: '重庆市226'
+                        },
+                        {
+                            value: 'shenzhen227',
+                            label: '重庆市227'
+                        },
+
                     ],
-                model44: [],
+                model34: '',
+                model44: 'shenzhen,hangzhou',
                 mode224:'',
                 model1: '',
                 model2: '',
@@ -187,11 +214,11 @@
                 model4: '',
                 model5: '',
                 model6: '',
-                model7: [],
+                model7: '',
                 model8: '',
-                model9: [],
+                model9: '',
                 model10: '',
-                model11: [],
+                model11: '',
                 model13: '',
                 loading1: false,
                 options1:[],
@@ -233,6 +260,9 @@
             }
         },
         methods: {
+            change(e){
+                console.log(e);
+            },
             clear(){
                 this.d = [];
             },
@@ -241,6 +271,7 @@
                     this.loading1 = true;
                     setTimeout(() => {
                         this.loading1 = false;
+                        this.options1 = [];
                         const list = this.list.map(item => {
                             return {
                                 value: item,
@@ -256,14 +287,14 @@
         },
         mounted(){
             this.uList=[
-                {id:1,name:"中国"},
-                {id:2,name:"美国"},
-                {id:3,name:"韩国"},
-                {id:4,name:"韩国"},
-                {id:5,name:"韩国"},
-                {id:6,name:"韩国"},
-                {id:7,name:"韩国"},
-                {id:8,name:"韩国"}
+                {id:'1',name:"中国"},
+                {id:'2',name:"美国"},
+                {id:'3',name:"韩国"},
+                {id:'4',name:"韩国"},
+                {id:'5',name:"韩国"},
+                {id:'6',name:"韩国"},
+                {id:'7',name:"韩国"},
+                {id:'8',name:"韩国"}
             ];
         }
       }

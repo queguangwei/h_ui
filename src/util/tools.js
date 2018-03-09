@@ -287,6 +287,7 @@ function typeOf(obj) {
   };
   return map[toString.call(obj)];
 }
+export {typeOf};
 // deepCopy
 function deepCopy(data) {
   const t = typeOf(data);

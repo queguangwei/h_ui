@@ -1,11 +1,12 @@
 <template>
   <div>
     <h2>基础用法 </h2>
-    <h-page :total="100" @on-change="pageChange" class-name="wrap"></h-page>
+    <h-page :total="val" @on-change="pageChange" class-name="wrap"></h-page>
+    <Button @click="setTotal">设置total为0</Button>
     <p>显示每页数量</p>
     <h-page :total="100" show-sizer @on-page-size-change="numChange" placement="top"></h-page>
     <p>快速跳转到某一页</p>
-    <h-page :total="100" show-elevator></h-page>
+    <h-page :total="100" show-elevator :isBlur="true"></h-page>
     <p>显示总数</p>
     <h-page :total="100" show-total></h-page>
     <p>迷你型</p>
@@ -537,6 +538,7 @@
         item.key = '';
       })
   		return {
+        val:100,
   			tData:data.slice(0,10),
   			columns:columns,
   			totalNum:data.length,
@@ -559,6 +561,9 @@
     computed:{
     },
   	methods:{
+      setTotal(){
+        this.val = 0;
+      },
       pickerChange(num){
         this.pickerNum = num;
         this.tData=data.slice(0,num);

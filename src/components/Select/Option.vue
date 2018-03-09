@@ -1,6 +1,7 @@
 <template>
-  <li :class="classes" @click.stop="select" @mouseout.stop="blur" v-show="!hidden"><slot>{{ showLabel }}</slot>
+  <li :class="classes" @click.stop="select" @mouseout.stop="blur" v-show="!hidden">
     <checkbox v-show="multiple" v-model="selected" :disabled="disabled" @on-change="checkChange"></checkbox>
+    <slot>{{ showLabel }}</slot>
   </li>
 </template>
 <script>
@@ -73,7 +74,7 @@
     mounted () {
       var str=this.$el.innerHTML
       // console.log(str);
-      this.searchLabel =str.slice(0,str.indexOf('<label'));
+      this.searchLabel =str.slice(Number(str.indexOf('</label>')+8));
       // console.log(this.searchLabel)
       this.dispatch('Select', 'append');
       this.$on('on-select-close', () => {

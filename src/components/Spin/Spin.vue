@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div :class="classes">
+    <div :class="classes" v-if="fullscreenVisible">
       <div :class="mainClasses">
         <span :class="dotClasses"></span>
         <div :class="textClasses"><slot></slot></div>
@@ -10,11 +10,13 @@
 </template>
 <script>
   import { oneOf } from '../../util/tools';
+  import ScrollbarMixins from '../MsgBox/mixins-scrollbar';
 
   const prefixCls = 'h-spin';
 
   export default {
     name: 'Spin',
+    mixins: [ ScrollbarMixins ],
     props: {
       size: {
         validator (value) {
@@ -24,11 +26,16 @@
       fix: {
         type: Boolean,
         default: false
+      },
+      fullscreen: {
+        type: Boolean,
+        default: false
       }
     },
     data () {
       return {
-        showText: false
+        showText: false,
+        visible: false
       };
     },
     computed: {
@@ -39,6 +46,7 @@
             [`${prefixCls}-${this.size}`]: !!this.size,
             [`${prefixCls}-fix`]: this.fix,
             [`${prefixCls}-show-text`]: this.showText,
+            [`${prefixCls}-fullscreen`]: this.fullscreen,
           }
         ];
       },
@@ -50,6 +58,22 @@
       },
       textClasses () {
         return `${prefixCls}-text`;
+      },
+      fullscreenVisible () {
+        if (this.fullscreen) {
+          return this.visible;
+        } else {
+          return true;
+        }
+      },
+    },
+    watch: {
+      visible (val) {
+        if (val) {
+            this.addScrollEffect();
+        } else {
+            this.removeScrollEffect();
+        }
       }
     },
     mounted () {

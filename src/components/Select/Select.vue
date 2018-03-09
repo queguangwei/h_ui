@@ -37,15 +37,22 @@
         :data-transfer="transfer" 
         ref="dropdown"
         v-transfer-dom>
-        <ul v-show="notFountShow" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul>
-        <ul v-show="(!notFound && !remote) || (remote && !loading && !notFound)" :class="[prefixCls + '-dropdown-list']"><slot></slot></ul>
-        <ul v-show="loading" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
+        <div :class="content">
+          <ul v-show="notFoundShow" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul>
+          <ul v-show="(!notFound && !remote) || (remote && !loading && !notFound)" :class="[prefixCls + '-dropdown-list']"><slot></slot></ul>
+          <ul v-show="loading" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
+        </div>
+        <div v-if="isCheckall&&multiple&&!notFoundShow" :class="checkAll">
+          <Button size="small" @click="toggleSelect(false)">反选</Button>
+          <Button type ="primary" size="small" @click="toggleSelect(true)">全选</Button>
+        </div>
       </Drop>
     </transition>
   </div>
 </template>
 <script>
   import Icon from '../Icon/Icon.vue';
+  import Button from '../Button/Button.vue';
   import Drop from './Dropdown.vue';
   import clickoutside from '../../directives/clickoutside';
   import TransferDom from '../../directives/transfer-dom';
@@ -133,6 +140,14 @@
         type: Boolean,
         default: false
       },
+      isString:{//多选时支持string类型，选项并以','隔开
+        type: Boolean,
+        default: false
+      },
+      isCheckall:{//多选 是否显示全选
+        type:Boolean,
+        default:false
+      }
     },
     data () {
       return {
@@ -149,7 +164,7 @@
         inputLength: 56,
         notFound: false,
         slotChangeDuration: false,
-        model: this.value,
+        model: null,
         currentLabel: this.label,
         isInputFocus: false, //是否焦点，为false时触发blur校验
         isLi:true,
@@ -176,6 +191,9 @@
           ['h-auto-complete']: this.autoComplete,
         };
       },
+      content(){
+        return `${prefixCls}-dropdown-content`
+      },
       selectionCls () {
         return {
           [`${prefixCls}-selection`]: !this.autoComplete
@@ -183,7 +201,6 @@
       },
       showPlaceholder () {
           let status = false;
-
           if ((typeof this.model) === 'string') {
               if (this.model === '') {
                   status = true;
@@ -242,20 +259,34 @@
         const options = this.$slots.default || [];
         if (!this.loading && this.remote && this.query === '' && !options.length) status = false;
         return this.visible && status;
-      },
-      notFountShow () {
-        this.$nextTick(()=>{
-          const options = this.$slots.default || [];
-          return (this.notFound && !this.remote) || (this.remote && !this.loading && !options.length)||(!this.remote&&!options.length);
-        });
-      },     
+      },    
       multiplestyle () {
         return {
             width: `${this.width}px`,
         };
-      }
+      },
+      checkAll(){
+        return `${prefixCls}-checkall`
+      },
+      notFoundShow () {
+          let options = this.remote?this.$slots.default:this.options;
+          options = options || [];
+          let state= (this.notFound && !this.remote) || (this.remote && !this.loading && !options.length)||(!this.remote&&!options.length);
+          return state;
+      }, 
     },
     methods: {
+      toggleSelect(val){
+        if (val) {
+          let arr=[];
+          this.options.forEach((item)=>{
+            arr.push(item.value);
+          })
+          this.model = arr;
+        }else{
+          this.model=[];
+        }
+      },
       offsetArrow(){
         if (!this.multiple) return;
         let el = this.$refs.reference;
@@ -307,7 +338,7 @@
           this.findChild((child) => {
               options.push({
                 value: child.value,
-                label: (child.label === undefined) ? child.$el.innerHTML.slice(0,child.$el.innerHTML.indexOf('<label')) : child.label
+                label: (child.label === undefined) ? child.$el.innerHTML.slice(Number(child.$el.innerHTML.indexOf('</label>')+8)) : child.label
               });
               child.index = index++;
 
@@ -327,7 +358,6 @@
       },
       updateSingleSelected (init = false, slot = false) {
           const type = typeof this.model;
-
           if (type === 'string' || type === 'number') {
               let findModel = false;
 
@@ -387,7 +417,6 @@
                     selectedObject[item.value] = 1;
                 }
             });
-
             this.selectedMultiple = this.remote ? selectedArray : selected;
 
             if (slot) {
@@ -432,7 +461,7 @@
           this.findChild((child) => {
               if (child.value === value) {
                   child.selected = true;
-                  label = (child.label === undefined) ? child.$el.innerHTML.slice(0,child.$el.innerHTML.indexOf('<label')) : child.label;
+                  label = (child.label === undefined) ? child.$el.innerHTML.slice(child.$el.innerHTML.indexOf('/label>')) : child.label;
               } else {
                   child.selected = false;
               }
@@ -465,14 +494,13 @@
                 value: value[i]
               });
           }
-          /*console.log(hybridValue.length);*/
 
           this.findChild((child) => {
               const index = value.indexOf(child.value);
 
               if (index >= 0) {
                   child.selected = true;
-                  hybridValue[index].label = (child.label === undefined) ? child.$el.innerHTML.slice(0,child.$el.innerHTML.indexOf('<label')) : child.label;
+                  hybridValue[index].label = (child.label === undefined) ? child.$el.innerHTML.slice(Number(child.$el.innerHTML.indexOf('</label>')+8)) : child.label;
               } else {
                   child.selected = false;
               }
@@ -666,7 +694,31 @@
             });
           }
         }
-      }
+      },
+      strtoArr(val){
+        if (this.multiple && this.isString) {
+          if (val==''||val==' '||val == null||val == undefined) {
+            return [];
+          }else if(val.length>0&&val.indexOf(',')==-1){
+            return new Array(val);
+          }else{
+            return val.split(',');
+          }
+        }else{
+          return val;
+        }
+      },
+      arrtoStr(val){
+        if (this.multiple && this.isString) {
+          if (val.length == 0) {
+            return '';
+          }else{
+            return val.join(',');
+          } 
+        }else{
+          return val;
+        }
+      },
     },
     mounted () {
       this.modelToQuery();
@@ -750,9 +802,16 @@
       document.removeEventListener('keydown', this.handleKeydown);
     },
     watch: {
-      value (val) {
-          this.model = val;
+      value:{
+        immediate: true,
+        handler(val) {
+          if (this.multiple && this.isString) {
+            this.model = this.strtoArr(val);
+          }else{
+            this.model = val;
+          }
           if (val === '') this.query = '';
+        }
       },
       label (val) {
           this.currentLabel = val;
@@ -764,7 +823,8 @@
         })
       },
       model () {
-          this.$emit('input', this.model);
+        let backModel = this.arrtoStr(this.model);
+        this.$emit('input', backModel);
           this.modelToQuery();
           if (this.multiple) {
               if (this.slotChangeDuration) {
@@ -794,7 +854,6 @@
                           child.selected = this.multiple ? this.model.indexOf(child.value) > -1 : this.model === child.value;
                       });
                       // remote下，设置了默认值，第一次打开时，搜索一次
-                      
                       const options = this.$slots.default || [];
                       if (this.query !== '' && !options.length) {
                           this.remoteMethod(this.query);
@@ -842,6 +901,8 @@
           }
           this.selectToChangeQuery = false;
           this.broadcast('Drop', 'on-update-popper');
+      },
+      options(){
       }
     }
   };

@@ -3,19 +3,23 @@
     <h2>基础</h2>
     <h3>单选</h3>
 
-    <h-edit-gird :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" ref="editGird" stripe :show-header="false"></h-edit-gird>
+    <h-edit-gird :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" ref="editGird" stripe :show-header="false" :loading="loading">
+      <p slot='loading'>我是自定义loading</p>
+    </h-edit-gird>
+    <Button @click="setLoad">切换loading</Button>
     <p>小</p>
-    <h-edit-gird :columns="columns1" :data="data1" @on-current-change="click1" @on-row-click="click1" ref="editGird" width="800" no-data-text="你好呀"></h-edit-gird>
+    <h-edit-gird :columns="columns1" :data="data1" @on-current-change="click1" @on-row-click="click1" ref="editGird" width="800" no-data-text="你好呀" :loading="loading"></h-edit-gird>
     <p>中</p>
-    <h-edit-gird :columns="columns1" :data="data1" size="large" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" @on-select-cancel="click1" ref="editGird" stripe></h-edit-gird>
+    <h-edit-gird :columns="columns1" :data="data1" size="large" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" @on-select-cancel="click1" ref="editGird" stripe :loading="loading"></h-edit-gird>
     <p>大</p>
     <Button @click="getDate">获取数据</Button>
     <Button @click = "addDate">新增一行</Button>
     <h3>多选</h3>
-<!--     <h-edit-gird :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-select-cancel="select" height="200"></h-edit-gird> -->
-    <h-edit-gird :columns="columns4" :data="data1" @on-select-all="allSelect" @on-selection-change="selsetChange" height="200"></h-edit-gird>
+    <h-edit-gird :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-select-cancel="select" height="200"></h-edit-gird>
+    <h-edit-gird :columns="columns4" :data="data1" @on-select-all="allSelect" @on-selection-change="selsetChange" height="200" :loading="loading"></h-edit-gird>
     <h3>直接显示编辑框</h3>
-    <h-edit-gird :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" :showEditInput="true" height="200"></h-edit-gird>
+    <h-edit-gird :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" :showEditInput="true" height="200" :loading="loading"></h-edit-gird>
+    <Button @click="setLoad">切换loading</Button>
   </div>
 </template>
 
@@ -28,7 +32,7 @@ var tData= [
     money: '120.00',
     cardId: '6223 5678 1234 5678',
     city: '北京',
-    dating:'2018-01-09T16:00:00.000Z',
+    dating:'2018-03-07',
     timing:'16:00:00.00',
     tree:'leaf1'
     // _highlight: true//默认选择当前项
@@ -40,7 +44,7 @@ var tData= [
     money: '130.00',
     cardId: '6223 5678 1234 5678',
     city: '北京',
-    dating:'2018-01-09T16:00:00.000Z',
+    dating:'2018-03-07',
     timing:'16:00:00.00',
     tree:'leaf1'
   },
@@ -51,7 +55,7 @@ var tData= [
     money: '140.00',
     cardId: '6223 5678 1234 5678',
     city: '北京',
-    dating:'2018-01-09T16:00:00.000Z',
+    dating:'2018-03-07',
     timing:'16:00:00.00',
     tree:'leaf1'
   },
@@ -62,7 +66,7 @@ var tData= [
     money: '150.00',
     cardId: '6223 5678 1234 5678',
     city: '北京',
-    dating:'2018-01-09T16:00:00.000Z',
+    dating:'2018-03-07',
     timing:'16:00:00.00',
     tree:'leaf1'
   }
@@ -70,6 +74,7 @@ var tData= [
 export default {
   data() {
     return {
+      loading:true,
       columns1: [
         {
           type: 'text',
@@ -289,6 +294,9 @@ export default {
     }
   },
   methods: {
+    setLoad(){
+      this.loading = !this.loading;
+    },
     click1(s,v){
       console.log(s);
       console.log(v);

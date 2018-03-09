@@ -2,6 +2,7 @@ $date-picker-prefix-cls: "#{$css-prefix}date-picker";
 $picker-prefix-cls: "#{$css-prefix}picker";
 
 $date-picker-cells-width: 196px;
+$date-picker-cells-width-with-weeknumbers: 226px;
 
 .#{$date-picker-prefix-cls} {
   position: relative;
@@ -44,6 +45,11 @@ $date-picker-cells-width: 196px;
       color: $btn-disable-color;
     }
     &-cell{
+      span.#{$date-picker-prefix-cls}-cells-cell{
+          width: 28px;
+          height: 28px;
+          cursor: pointer;
+      }
       &:hover{
         em{
           background: $date-picker-cell-hover-bg;
@@ -59,15 +65,17 @@ $date-picker-cells-width: 196px;
           }
         }
       }
-      // span.#{$date-picker-prefix-cls}-cells-cell-disabled,span.#{$date-picker-prefix-cls}-cells-cell-disabled:hover{
-      //   cursor: $cursor-disabled;
-      //   background: $btn-disable-bg;
-      //   color: $btn-disable-color;
-      //   em{
-      //     color: inherit;
-      //     background: inherit;
-      //   }
-      // }
+      span.#{$date-picker-prefix-cls}-cells-cell-week-label,span.#{$date-picker-prefix-cls}-cells-cell-week-label:hover,span.#{$date-picker-prefix-cls}-cells-cell-disabled,span.#{$date-picker-prefix-cls}-cells-cell-disabled:hover{
+          cursor: $cursor-disabled;
+          color: $btn-disable-color;
+          em{
+              color: inherit;
+              background: inherit;
+          }
+      }
+      span.#{$date-picker-prefix-cls}-cells-cell-disabled,span.#{$date-picker-prefix-cls}-cells-cell-disabled:hover{
+          background: $btn-disable-bg;
+      }
       &-today{
         em {
           position: relative;
@@ -110,26 +118,30 @@ $date-picker-cells-width: 196px;
           color: #fff;
         }
       }
-      // span.#{$date-picker-prefix-cls}-cells-cell-disabled.#{$date-picker-prefix-cls}-cells-cell-selected{
-      //   em {
-      //     background: $btn-disable-color;
-      //     color: $btn-disable-bg;
-      //   }
-      // }
-      // &-today.#{$date-picker-prefix-cls}-cells-cell-selected
-      // {
-      //   em{
-      //     &:after{
-      //         background: #fff;
-      //     }
-      //   }
-      // }
+      span.#{$date-picker-prefix-cls}-cells-cell-disabled.#{$date-picker-prefix-cls}-cells-cell-selected{
+          em {
+              background: $btn-disable-color;
+              color: $btn-disable-bg;
+          }
+      }
+      &-today.#{$date-picker-prefix-cls}-cells-cell-selected
+      {
+          em{
+              &:after{
+                  background: #fff;
+              }
+          }
+      }
     }
+  }
+
+  &-cells-show-week-numbers {
+      width: $date-picker-cells-width-with-weeknumbers;
   }
 
   &-cells-year,&-cells-month{
     margin-top: 14px;
-    padding-left: 11px;
+    // padding-left: 11px;
     span{
       width: 40px;
       height: 28px;
@@ -188,40 +200,52 @@ $date-picker-cells-width: 196px;
         float: left;
       }
     }
+    .#{$picker-prefix-cls}-cells-show-week-numbers {
+        min-width: ($date-picker-cells-width-with-weeknumbers + 20) * 2;
+    }
   }
+  &-with-week-numbers{
+    .#{$picker-prefix-cls}-panel{
+        &-body{
+          min-width: ($date-picker-cells-width-with-weeknumbers + 20) * 2;
+        }
+    }
+  }
+
   &-transfer{
     z-index: $zindex-transfer;
     max-height: none;
+    width: auto;
   }
 }
-span.#{$date-picker-prefix-cls}-cells-cell{
-  width: 28px;
-  height: 28px;
-  cursor: pointer;
-}
-span.#{$date-picker-prefix-cls}-cells-cell-disabled,span.#{$date-picker-prefix-cls}-cells-cell-disabled:hover{
-  cursor: $cursor-disabled;
-  background: $btn-disable-bg;
-  color: $btn-disable-color;
-  em{
-    color: inherit;
-    background: inherit;
-  }
-}
-span.#{$date-picker-prefix-cls}-cells-cell-disabled.#{$date-picker-prefix-cls}-cells-cell-selected{
-  em {
-    background: $btn-disable-color;
-    color: $btn-disable-bg;
-  }
-}
-&-today.#{$date-picker-prefix-cls}-cells-cell-selected
-{
-  em{
-    &:after{
-        background: #fff;
-    }
-  }
-}
+// span.#{$date-picker-prefix-cls}-cells-cell{
+//   width: 28px;
+//   height: 28px;
+//   cursor: pointer;
+// }
+// span.#{$date-picker-prefix-cls}-cells-cell-disabled,span.#{$date-picker-prefix-cls}-cells-cell-disabled:hover{
+//   cursor: $cursor-disabled;
+//   background: $btn-disable-bg;
+//   color: $btn-disable-color;
+//   em{
+//     color: inherit;
+//     background: inherit;
+//   }
+// }
+// span.#{$date-picker-prefix-cls}-cells-cell-disabled.#{$date-picker-prefix-cls}-cells-cell-selected{
+//   em {
+//     background: $btn-disable-color;
+//     color: $btn-disable-bg;
+//   }
+// }
+// &-today.#{$date-picker-prefix-cls}-cells-cell-selected
+// {
+//   em{
+//     &:after{
+//         background: #fff;
+//     }
+//   }
+// }
 .#{$picker-prefix-cls} {
   &-panel{
     &-icon-btn{

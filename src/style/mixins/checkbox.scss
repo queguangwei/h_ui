@@ -225,7 +225,7 @@
     .#{$checkbox-prefix-cls}-wrapper {
         cursor: pointer;
         font-size: $font-size-small;
-        display: inline-block;
+        display: inline;
         margin-right: 8px;
         &-disabled{
             cursor: $cursor-disabled;

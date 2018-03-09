@@ -18,7 +18,7 @@
 <script>
     import AsyncValidator from 'async-validator';
     import Emitter from '../../mixins/emitter';
-    import { is , findComponentsChildren, findComponentParent} from '../../util/tools'
+    import { is , findComponentChildren, findComponentParent} from '../../util/tools'
     import Validate from './validate';
     const prefixCls = 'h-form-item';
     const parentPrefixCls = 'h-form';
@@ -95,7 +95,8 @@
                 validateDisabled: false,
                 validator: {},
                 transCustRules: [],
-                reqRules:[]
+                reqRules:[],
+                curCols: null
             };
         },
         watch: {
@@ -105,6 +106,9 @@
             },
             validateStatus (val) {
                 this.validateState = val;
+            },
+            cols (val) {
+                this.curCols = val
             }
         },
         computed: {
@@ -117,7 +121,7 @@
                         [`${prefixCls}-validating`]: this.validateState === 'validating',
                         [`${prefixCls}-reqNoLabel`]: !(this.label || this.$slots.label) && this.isRequired,
                         [`${parentPrefixCls}-col-`+ this.form.cols]: parseInt(this.form.cols) <= 12,                     
-                        [`${prefixCls}-col-`+ this.cols]: (this.cols && parseInt(this.cols) <= 12 && parseInt(this.cols) <= parseInt(this.form.cols) && parseInt(this.form.cols) <= 12) ? true : false
+                        [`${prefixCls}-col-`+ this.curCols]: (this.curCols && parseInt(this.curCols) <= 12 && parseInt(this.curCols) <= parseInt(this.form.cols) && parseInt(this.form.cols) <= 12) ? true : false
                     }
                 ];
             },
@@ -272,6 +276,14 @@
             }
         },
         mounted () {
+            // 当form设置cols时，忽略textarea，slider中设置的cols,该组件独占一行,默认formItem子组件仅有一个textarea/slider/upload
+            if(this.form.cols) {
+                this.$nextTick(() => {
+                    if (this.$children[0] && this.$children[0].$options.name == 'Input' && this.$children[0].type == "textarea" || this.$children[0] && this.$children[0].$options.name == 'Slider' || this.$children[0] && this.$children[0].$options.name == 'Upload') {
+                        this.curCols = this.form.cols
+                    }
+                })
+            }
             if (this.prop) {
                 this.dispatch('Form', 'on-form-item-add', this);
 
@@ -309,6 +321,9 @@
         },
         beforeDestroy () {
             this.dispatch('Form', 'on-form-item-remove', this);
+        },
+        created () {
+            
         }
     };
 </script>

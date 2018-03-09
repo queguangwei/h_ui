@@ -5,10 +5,10 @@
       <p>设置属性 type 为 date 或 daterange 分别显示选择单日和选择范围类型。</br>
         设置属性 placement 可以更改选择器出现的方向</p>
       <h-col span="12">
-        <h-date-picker v-model="model1"  format="yyyy年MM月dd日" type="date" placeholder="选择日期" style="width: 200px" @on-clickout="s"></h-date-picker>{{model1}}
+        <h-date-picker v-model="model1"  format="yyyy-MM-dd" type="date" placeholder="选择日期" style="width: 200px" @on-clickout="s" :showFormat="true"></h-date-picker>{{model1}}
       </h-col>
       <h-col span="12">
-        <h-date-picker type="daterange" placement="bottom-end" placeholder="选择日期"></h-date-picker> 
+        <h-date-picker v-model="model2" type="daterange" placement="bottom-end" placeholder="选择日期"></h-date-picker> {{model2}}
       </h-col>
     </h-row>
     <h-row>
@@ -38,7 +38,8 @@
       <h2>日期时间选择</h2>
       <p>设置属性 type 为 datetime 或 datetimerange 可以选择时间。<br>
       设置 format 并且忽略秒，可以只设置小时和分钟维度。</p>
-      <h-date-picker type="datetime" placeholder="选择日期和时间" style="width: 200px"></h-date-picker>
+      <h-date-picker v-model="timePicker" type="datetime" placeholder="选择日期和时间" style="width: 200px" :showFormat="true"></h-date-picker>
+      {{timePicker}}
       <br>
       <h-date-picker type="datetime" format="yyyy-MM-dd HH:mm" placeholder="选择日期和时间（不含秒）" style="width: 200px"></h-date-picker>
       <br>
@@ -197,8 +198,15 @@
         value1: '2016-01-01',
         value2: ['2016-01-01', '2016-02-15'],
         open: false,
+        timePicker:'',
         value3: '',
-        model1:''
+        model1:'',
+        model2:[],
+        model3:'',
+        model4:'',
+        model5:'',
+        model6:'',
+        model7:'',
       }
     },
     methods:{
@@ -217,6 +225,10 @@
       s(){
         console.log(1);
       }
+    },
+    mounted(){
+      this.model1='2018-3-6';
+      this.model2=['2018年3月9日','2018年3月19日'];
     } 
   }
 </script>
