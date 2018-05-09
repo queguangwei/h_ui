@@ -3,10 +3,10 @@
     <h2>基础</h2>
     <h3>单选</h3>
 
-    <h-edit-gird :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" ref="editGird" stripe :show-header="false" :loading="loading">
+    <h-edit-gird :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" ref="editGird" stripe :show-header="false" :loading="loading"@on-expand="expand" :option="options1" :treeOption="treeOption">
       <p slot='loading'>我是自定义loading</p>
     </h-edit-gird>
-    <Button @click="setLoad">切换loading</Button>
+    <!-- <Button @click="setLoad">切换loading</Button>
     <p>小</p>
     <h-edit-gird :columns="columns1" :data="data1" @on-current-change="click1" @on-row-click="click1" ref="editGird" width="800" no-data-text="你好呀" :loading="loading"></h-edit-gird>
     <p>中</p>
@@ -20,6 +20,7 @@
     <h3>直接显示编辑框</h3>
     <h-edit-gird :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" :showEditInput="true" height="200" :loading="loading"></h-edit-gird>
     <Button @click="setLoad">切换loading</Button>
+    <Button @click="addDate">添加一行</Button> -->
   </div>
 </template>
 
@@ -71,17 +72,68 @@ var tData= [
     tree:'leaf1'
   }
 ];
-export default {
-  data() {
-    return {
-      loading:true,
-      columns1: [
+var columns=[
+        {
+          type: 'expand',
+          width: 50,
+          render: (h, params) => {
+            return h(TexpandRow, {
+              props: {
+                  row: params.row
+              }
+            })
+          }
+        },
+        {
+          type: 'selection',
+          width: 50,
+        },
         {
           type: 'text',
           title: '姓名',
           key: 'name',
           width: 200,
           rule: { required: true, message: '姓名不能为空'},
+          typeWidth:150,
+          render: (h, params) => {
+            return h('div', [
+              h('h-button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '5px'
+                },
+                on: {
+                  'click': () => {
+                    // this.show(params.index)
+                  }
+                }
+              }, '查看')
+            ]);
+          }
+        },
+        {
+          width:80,
+          render: (h, params) => {
+            return h('div', [
+              h('h-button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '5px'
+                },
+                on: {
+                  'click': () => {
+                    this.show(params.index)
+                  }
+                }
+              }, '查看')
+            ]);
+          }
         },
         {
           type: 'number',
@@ -182,26 +234,77 @@ export default {
           checkStrictly: false,
           rule:{ required: true, message: '请选择子节点', trigger: 'blur,change' }
         }
-      ],
-      columns4: [
+      ]
+import TexpandRow from './Texpand-row.vue'
+export default {
+  data() {
+    return {
+      loading:false,
+      columns1: [
         {
-          type: 'selection',
-          width: 60,
-          align: 'center',
+          type: 'expand',
+          width: 50,
+          render: (h, params) => {
+            return h(TexpandRow, {
+              props: {
+                  row: params.row
+              }
+            })
+          }
         },
         {
           type: 'text',
           title: '姓名',
           key: 'name',
-          placeholder:'哎呀妈呀',
-          icon: 'add',
           width: 200,
+          rule: { required: true, message: '姓名不能为空'},
+          render: (h, params) => {
+            return h('div', [
+              h('h-button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '5px'
+                },
+                on: {
+                  'click': () => {
+                    this.show(params.index)
+                  }
+                }
+              }, '查看')
+            ]);
+          }
+        },
+        {
+          width:80,
+          render: (h, params) => {
+            return h('div', [
+              h('h-button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '5px'
+                },
+                on: {
+                  'click': () => {
+                    this.show(params.index)
+                  }
+                }
+              }, '查看')
+            ]);
+          }
         },
         {
           type: 'number',
           title: '年龄',
           width: 200,
           key: 'age',
+          hiddenCol:false,
+          rule: { required: true, message: '年龄不能为空'},
         },
         {
           type: 'textArea',
@@ -209,6 +312,7 @@ export default {
           width: 200,
           title: '地址',
           key: 'address',
+          rule: { required: true, message: '地址不能为空'},
         },
         {
           type: 'money',
@@ -219,28 +323,26 @@ export default {
           // suffixNum: 2,
           bigTips: true,
           key: 'money',
+          rule: { required: true, message: '金额不能为空'},
         },
         {
           type: 'card',
           title: '卡号',
           width: 200,
           key: 'cardId',
+          rule: { required: true, message: '卡号不能为空'},
         },
         {
           type: 'select',
           title: '地区',
-          width: 200,
+          filterable: true,
+          remote:true,
+          remoteMethod:this.remoteMethod1,
+          // loading:true,
           key: 'city',
           multiple:false,
-          notFoundText:'我了个去',
-          option: [
-            {value:"北京"},
-            {value:"上海"},
-            {value:"天津"},
-            {value:"沈阳"},
-            {value:"杭州"},
-            {value:"武汉"},
-          ],
+          option:[],
+          rule:{ required: true, message: '请选择城市', trigger: 'blur,change' }
         },
         {
           type: 'date',
@@ -248,7 +350,8 @@ export default {
           width: 200,
           key: 'dating',
           dateType:'date',
-          format: 'yyyy-MM-dd'
+          format: 'yyyy-MM-dd',
+          rule:{ required: true, message: '请选择日期', trigger: 'blur,change' }
         },
         {
           type: 'time',
@@ -257,43 +360,42 @@ export default {
           key: 'timing',
           dateType:'time',
           format: 'HH:mm:ss',
-          steps: [],
+          steps: [2,2,2],
+          rule:{ required: true, message: '请选择时间', trigger: 'blur,change' }
         },
         {
           type: 'selectTree',
           title: '下拉树',
           width: 200,
           key: 'tree',
-          treeData:[{
-            expand: true,
-            title: 'parent 1',
-            children: [{
-              title: 'parent 1-0',
-              expand: true,
-              children: [{
-                title: 'leaf1',
-                disableCheckbox: true
-              }, {
-                title: 'leaf2',
-              }]
-            }, {
-              title: 'parent 1-1',
-              expand: true,
-              checked: true,
-              children: [{
-                title: 'leaf3',
-              }]
-            }]
-          }],
           showCheckbox: false,
           checkStrictly: false,
+          rule:{ required: true, message: '请选择子节点', trigger: 'blur,change' }
         }
       ],
-      data1: tData,
-
-    }
+      columns4: [
+      {
+          type: 'expand',
+          width: 50,
+          render: (h, params) => {
+            return h(TexpandRow, {
+              props: {
+                  row: params.row
+              }
+            })
+          }
+        },
+      ],
+      data1: [],
+      options1:[],
+      list: ['北京','Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New hampshire', 'New jersey', 'New mexico', 'New york', 'North carolina', 'North dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode island', 'South carolina', 'South dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West virginia', 'Wisconsin', 'Wyoming'],
+      treeOption:[],
+      }
   },
   methods: {
+    expand(e,status){
+      console.log(e);
+    },
     setLoad(){
       this.loading = !this.loading;
     },
@@ -315,8 +417,20 @@ export default {
       console.log(this.$refs.editGird.cloneData); 
     },
     addDate(){
-      tData = this.data1.push({
-        name: '',
+      // tData = this.data1.push({
+      //   name: '1234',
+      //   age: null,
+      //   address: '',
+      //   money: '',
+      //   cardId: '',
+      //   city: '',
+      //   dating:'',
+      //   timing:'',
+      //   tree:''
+      // });
+      let cloneData = this.data1;
+      cloneData.push({
+        name: '1234',
         age: null,
         address: '',
         money: '',
@@ -325,8 +439,55 @@ export default {
         dating:'',
         timing:'',
         tree:''
-      });
-    }  
-  } 
+      })
+      this.data1 = cloneData
+    },
+    remoteMethod1 (query) {
+      if (query !== '') {
+          setTimeout(() => {
+              this.options1 = [];
+              const list = this.list.map(item => {
+                  return {
+                      value: item,
+                      label: item
+                  };
+              });
+              this.options1[7] = list.filter(item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1);
+          }, 200);
+      } else {
+          this.options1[7] = [];
+      }
+    },  
+  },
+  mounted(){
+    // this.data1=tData
+    this.treeOption[10]=[{
+              expand: true,
+              title: 'parent 1',
+              children: [{
+                title: 'parent 1-0',
+                expand: true,
+                children: [{
+                  title: 'leaf1',
+                  disableCheckbox: true
+                }, {
+                  title: 'leaf2',
+                }]
+              }, {
+                title: 'parent 1-1',
+                expand: true,
+                checked: true,
+                children: [{
+                  title: 'leaf3',
+                }]
+              }]
+            }]
+  },
+  created() {
+    // setTimeout(()=>{
+      this.columns4 = columns;
+      this.data1 = tData;
+    // }, 3000);
+  }
 }
 </script>

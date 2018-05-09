@@ -62,6 +62,9 @@
     background-image: none;
     position: relative;
     cursor: text;
+    overflow: hidden;  /*溢出隐藏*/
+    text-overflow: ellipsis; /*以省略号...显示*/
+    white-space: nowrap;  /*强制不换行*/
     @include placeholder();
     transition: border $transition-time $ease-in-out, background $transition-time $ease-in-out, box-shadow $transition-time $ease-in-out;
 

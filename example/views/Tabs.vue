@@ -18,6 +18,9 @@
         <h-tooltip content="Top Left 文字提示" placement="bottom" :transfer="true">
             <h-button>上左</h-button>
         </h-tooltip>
+         <h-table :columns="columns1" :data="data1"></h-table>
+      <span slot="loading">我是自定义加载！！！</span>
+    </h-table>
       </h-tab-pane>
       <h-tab-pane label="标签三" name="name3">
         <h-poptip title="提示标题" content="提示内容" placement="bottom" :transfer="true">
@@ -115,6 +118,20 @@
   export default {  
     data () {
       return { 
+        columns1:[{
+          title: '姓名',
+          key: 'name'
+        },
+        {
+          title: '年龄',
+          key: 'age',
+        },
+        {
+          title: '地址',
+          key: 'address',
+          sortType:'asc'
+        }],
+        data1:[],
         modal1:false,
         tab0: true,
         tab1: true,

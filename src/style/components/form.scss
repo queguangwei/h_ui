@@ -73,7 +73,7 @@ $form-item-prefix-cls: "#{$form-prefix-cls}-item";
     @include clearfix();
     &-content {
         position: relative;
-        line-height: 32px;
+        line-height: 31px;
         font-size: $font-size-small;
     }
     & & {
@@ -98,7 +98,7 @@ $form-item-prefix-cls: "#{$form-prefix-cls}-item";
             content: '*';
             display: inline-block;
             margin-right: 2px;
-            line-height: 1;
+            line-height: 0;
             font-family: SimSun;
             font-size: $font-size-small;
             color: $error-color;
@@ -108,8 +108,8 @@ $form-item-prefix-cls: "#{$form-prefix-cls}-item";
             position: absolute;
             left: -9px;
             vertical-align: middle;
-            line-height: 32px;
-            height: 32px;
+            line-height: 31px;
+            height: 31px;
             color: $error-color;
             font-family: SimSun;
             font-size: $font-size-small;

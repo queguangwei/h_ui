@@ -47,6 +47,9 @@
         <router-link to="/datePicker">datePicker</router-link>
       </li>
       <li>
+        <router-link to="/fastDate">fastDate</router-link>
+      </li>
+      <li>
         <router-link to="/timePicker">timePicker</router-link>
       </li>
       <li>
@@ -60,6 +63,9 @@
       </li>
       <li>
         <router-link to="/selectTree">SelectTree</router-link>
+      </li>
+      <li>
+        <router-link to="/selectTable">selectTable</router-link>
       </li>
       <li>
         <router-link to="/form">Form</router-link>

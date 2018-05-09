@@ -1,5 +1,5 @@
 // es6 polyfill
-require('./style/main.scss')
+import './style/main.scss'
 import Directives from './directives'
 
 import Affix from './components/Affix';
@@ -53,6 +53,8 @@ import Select from './components/Select';
 import EditGird from './components/EditGird';
 import GroupTable from './components/GroupTable';
 import TreeGird from './components/TreeGird';
+import SelectTable from './components/SelectTable';
+import FastDate from './components/FastDate';
 import locale from './locale';
 
 const h_ui = {
@@ -187,7 +189,13 @@ const h_ui = {
     GroupTable,
     hGroupTable:GroupTable,
     TreeGird,
-    hTreeGird:TreeGird
+    hTreeGird:TreeGird,
+    SelectTable:SelectTable,
+    hSelectTable:SelectTable,
+    hTableOption:SelectTable.Option,
+    TableOption:SelectTable.Option,
+    FastDate:FastDate,
+    hFastDate:FastDate    
 };
 const install = function(Vue, opts = {}) {
     locale.use(opts.locale);

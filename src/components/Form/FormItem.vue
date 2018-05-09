@@ -7,7 +7,7 @@
         <div :class="[prefixCls + '-content']" :style="contentStyles">
             <slot></slot>
             <transition name="fade">
-                <div class="verify-tip verify-bottom"  v-if="validateState === 'error' && showMessage && form.showMessage">
+                <div class="verify-tip verify-bottom"  v-if="isShowError">
                     <div class="verify-tip-arrow"></div>
                     <div class="verify-tip-inner">{{validateMessage}}</div>
                 </div>
@@ -96,7 +96,9 @@
                 validator: {},
                 transCustRules: [],
                 reqRules:[],
-                curCols: null
+                curCols: this.cols,
+                mustShowError: false,
+                mustShowErrorList: []
             };
         },
         watch: {
@@ -161,6 +163,9 @@
                     style.marginLeft = `${labelWidth}px`;
                 }
                 return style;
+            },
+            isShowError () {
+                return this.mustShowError ? this.mustShowError : this.validateState === 'error' && this.showMessage && this.form.showMessage
             }
         },
         methods: {
@@ -176,8 +181,9 @@
                  *自定义验证规则  
                 *{
                 *	 test:FuncOrRegExp,
-                *	 message:'',
-                *    trigger:'' //可选值:blur/change,不配置时默认blur及change时均触发
+                *	 message:'',// 若有mustShowFlag时,必填
+                *    trigger:'', //可选值:blur/change,不配置时默认blur及change时均触发
+                *    mustShowFlag: false // 是否必须显示提示，此时showMessage无效 --by 估值:某些校验必须提示，解决：现在遍历rule时保存必须显示校验提示的message，然后在校验完后（返回的error只有message）进行检索比对
                 *}
                 */
                 let isString = is("String",rule);
@@ -189,6 +195,11 @@
 					let isRegExp = rule.test.constructor && rule.test.constructor.name === "RegExp"
 					// test:为定义函数
                     let isFunc = is("Function",rule.test)
+                    // 保存必须显示校验提示的message
+                    if (rule.mustShowFlag) {
+                        this.mustShowErrorList.push(rule.message)
+                    }
+
                     if(isRegExp){
 						this.regularValid(rule.test,rule.message,rule.trigger)
 					}else if(isFunc){
@@ -229,16 +240,23 @@
 
                 let descriptor = {};
                 descriptor[this.prop] = rules;
-
                 const validator = new AsyncValidator(descriptor);
                 let model = {};
 
                 model[this.prop] = this.fieldValue;
-
                 validator.validate(model, { firstFields: true }, errors => {
                     this.validateState = !errors ? 'success' : 'error';
                     this.validateMessage = errors ? errors[0].message : '';
-
+                    // error是否为必须显示的校验
+                    if (this.mustShowErrorList && this.mustShowErrorList.length) {
+                        if (this.mustShowErrorList.indexOf(this.validateMessage) >= 0 ) {
+                            this.mustShowError = true
+                        } else {
+                            this.mustShowError = false
+                        }
+                    }
+                    // 外部可通过this.$ref.form.validMsgList获取验证信息
+                    this.form.validMsgList.push(errors)  
                     callback(this.validateMessage);
                 });
                 this.validateDisabled = false;

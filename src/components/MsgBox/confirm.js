@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue from 'Vue';
 import Modal from './MsgBox.vue';
 import Icon from '../Icon/Icon.vue';
 import Button from '../Button/Button.vue';

@@ -1,7 +1,10 @@
 <template>
   <div>
     <h2>基础</h2>
-    <h-table :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" :loading="loading">
+    <h-table :columns="columns1" :data="[]" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag">
+      <span slot="loading">我是自定义加载！！！</span>
+    </h-table>
+    <h-table :columns="columns1" :data="[]" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="200">
       <span slot="loading">我是自定义加载！！！</span>
     </h-table>
     <h-button @click="setLoading">切换状态</h-button>
@@ -27,7 +30,7 @@
     <p>通过给数据 columns 的项设置 fixed 为 left 或 right，可以左右固定需要的列。</p>
     <h-table width="1000" border :columns="columns2" :data="data3" :loading="loading"></h-table>
     <h2>固定表头和列</h2>
-    <h-table width="550" height="300" border :columns="columns2" :data="data4" :loading="loading"></h-table>
+    <h-table width="550" height="300" border :columns="columns2" :data="data4" :loading="loading" @on-scroll="scroll"></h-table>
     <h2>单选</h2>
     <p>通过设置属性 highlight-row，可以选中某一行。</p>
     <p>给 data 项设置特殊 key _highlight: true 可以默认选中当前项。</p>
@@ -76,7 +79,7 @@
     <h-button type="primary" size="large" @click="exportData(2)"><h-icon name="document"></h-icon> 导出排序和过滤后的数据</h-button>
     <h-button type="primary" size="large" @click="exportData(3)"><h-icon name="document"></h-icon> 导出自定义数据</h-button>
     <h2>测试</h2>
-    <h-table height="300" :stripe="true" :columns="columns18" :data="data17" border size="small" ref="table" :rowSelect="true" :loading="loading">
+    <h-table height="300" :stripe="true" :columns="columns18" :data="data17" border size="small" ref="table" :loading="loading" :highlightRow="true" @on-selection-change="change">
         <span slot="header">证券日活数据表</span>
         <span slot="footer">恒生电子有限公司提供</span>
     </h-table>
@@ -90,12 +93,12 @@ export default {
   components:{TexpandRow},
   data () {
     return {
-      loading:true,
+      loading:false,
       columns18: [
          {
              type: "selection",
              width: 60,
-             align: "left",
+             align: "center",
              fixed: "left",
          },
          {
@@ -385,19 +388,11 @@ export default {
         }
       ],
       columns1: [
-        {
-          title: '姓名',
-          key: 'name'
-        },
-        {
-          title: '年龄',
-          key: 'age',
-        },
-        {
-          title: '地址',
-          key: 'address',
-          sortType:'asc'
-        }
+       {
+        title:'测试',
+        key:'ceshi',
+        algin:'center',
+       }
       ],
       columns3: [
         {
@@ -772,6 +767,10 @@ export default {
               }
             })
           }
+        },
+        {
+          type:'selection',
+          width:60
         },
         {
           title: '姓名',
@@ -1230,6 +1229,16 @@ export default {
     }
   },
   methods:{
+    onDrag(e,i){
+      console.log(e);
+      console.log(i);
+    },
+    change(e){
+      console.log(e);
+    },
+    scroll(num){
+      console.log(num);
+    },
     setLoading(){
       this.loading = !this.loading;
     },
@@ -1239,7 +1248,7 @@ export default {
     rowclick(){
       console.log('你点击了某一行');
     },
-    rowdblclick(){
+    rowdblclick(e,i){
       console.log('你双击了某一行');
     },
     expand(row,status){
@@ -1304,6 +1313,43 @@ export default {
         });
       }
     }      
+  },
+  mounted(){
+    this.columns1=[{
+          title: '姓名',
+          key: 'name',
+          align: 'center',
+          width: 200
+        },
+        {
+          title: '年龄',
+          key: 'age',
+          width: 200
+        },
+        {
+          title: '地址',
+          key: 'address',
+          sortType:'asc',
+          width: 200
+        },
+        {
+          title: '地址1',
+          key: 'address1',
+          sortType:'asc',
+          width: 200
+        },
+        {
+          title: '地址2',
+          key: 'address2',
+          sortType:'asc',
+          width: 200
+        },
+        {
+          title: '地址3',
+          key: 'address3',
+          sortType:'asc',
+          width: 200
+        }]
   }
 }
 </script>

@@ -3,8 +3,10 @@ export default {
         locale: 'en-US',
         select: {
             placeholder: 'Select',
+            searchHolder: 'Enter Matching Field',
             noMatch: 'No matching data',
-            loading: 'Loading'
+            loading: 'Loading',
+            noMoreData:' No more data'
         },
         table: {
             noDataText: 'No Data',
@@ -96,6 +98,11 @@ export default {
         },
         tree: {
             emptyText: 'No Data'
+        },
+        typefield: {
+            placeholder: 'Select',
+            bigData: 'Gigantic',
+            smallData: 'Infinitesimal'
         }
     }
 };

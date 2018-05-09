@@ -225,7 +225,7 @@ export default {
   components:{TexpandRow},
   data() {
     return {
-      loading:true,
+      loading:false,
       columns1: [
         {
           title: '姓名',

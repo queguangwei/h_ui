@@ -32,7 +32,6 @@
           <td :colspan="columns.length" :class="prefixCls + '-expanded-cell'">
 
             <Expand :key="row._rowKey" :row="row" :render="expandRender" :index="row._index"></Expand>
-            {{row._rowKey}} 
           </td>
         </tr>
       </template>
@@ -61,7 +60,8 @@
         fixed: {
             type: [Boolean, String],
             default: false
-        }
+        },
+        bodyAlgin:String,
       },
       computed: {
         expandRender () {
@@ -94,14 +94,17 @@
           this.$parent.handleMouseOut(_index);
         },
         clickCurrentRow (_index) {
-          this.$parent.clickCurrentRow(_index);
           if(this.rowSelect){
             // this.objData[_index]._isChecked=!this.objData[_index]._isChecked;
             this.$parent.toggleSelect(_index);
+          }else{
+            this.$parent.clickCurrentRow(_index);
           }
         },
         dblclickCurrentRow (_index) {
-          this.$parent.dblclickCurrentRow(_index);
+          if (!this.rowSelect) {
+            this.$parent.dblclickCurrentRow(_index);
+          }
         }
       }
     };

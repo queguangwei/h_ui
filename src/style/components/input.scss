@@ -50,6 +50,15 @@ $input-prefix-cls: "#{$css-prefix}input";
     //    padding-right: 24px;
     //}
   }
+  &-left{
+    text-align:left;
+  }
+  &-center{
+    text-align:center;
+  }
+  &-right{
+    text-align:right;
+  }
 }
 // Reset height for textarea
 textarea.#{$input-prefix-cls} {
@@ -57,6 +66,8 @@ textarea.#{$input-prefix-cls} {
   height: auto;
   vertical-align: bottom;
   font-size: $font-size-base;
+  overflow:auto;
+  white-space:normal; 
 }
 
 .#{$input-prefix-cls}-group{

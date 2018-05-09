@@ -1,87 +1,95 @@
 <template>
   <!-- :tabindex="row._rowKey+column._columnKey" -->
-  <div :class="classes" ref="cell" v-clickoutside="handleClose"  @dblclick="dblclickCurrentCell($event)">
-    <template v-if="showSlot"><slot></slot></template>
-    <template v-if="renderType === 'index'">
-      <span v-if="typeName!='treeGird'">{{naturalIndex + 1}}</span>
-      <span v-else>{{Number(row._index)+1}}</span>
-    </template>
-    <template v-if="renderType === 'selection'">
-      <Checkbox :value="checked" @click.native.stop="handleClick" @on-change="toggleSelect" :disabled="disabled"></Checkbox>
-    </template>
-    <template v-if="renderType === 'normal'">
-      <span v-html="normalDate">    
-      </span>
-    </template>
-    <template v-if="renderType === 'expand' && !row._disableExpand">
-      <div :class="expandCls" @click="toggleExpand($event)">
-        <Icon name="enter"></Icon>
-      </div>
-    </template>
-    <template v-if="renderType === 'text'">
-      <Input v-model="columnText" :placeholder="column.placeholder" :icon="column.icon" class="canEdit"></Input>
-    </template>
-    <template v-if="renderType === 'textArea'">
-      <Input v-model="columnArea" type="textarea" :placeholder="column.placeholder" :rows="column.rows" class="canEdit"></Input>
-    </template>
-    <template v-if="renderType === 'number'"> 
-      <Input v-model="columnNumber" class="canEdit"></Input>
-    </template>
-    <template v-if="renderType === 'money'">
-      <Typefield 
-        v-model="columnMoney" 
+  <div :class="classes" ref="cell" v-clickoutside="handleClose">
+    <div :style="renderSty" @dblclick="dblclickCurrentCell($event)">
+      <template v-if="showSlot"><slot></slot></template>
+      <template v-if="renderType === 'index'">
+        <span v-if="typeName!='treeGird'">{{naturalIndex + 1}}</span>
+        <span v-else>{{Number(row._index)+1}}</span>
+      </template>
+      <template v-if="renderType === 'selection'">
+        <Checkbox :value="checked" @click.native.stop="handleClick" @on-change="toggleSelect" :disabled="disabled"></Checkbox>
+      </template>
+      <template v-if="renderType === 'normal'">
+        <span v-html="normalDate">    
+        </span>
+      </template>
+      <template v-if="renderType === 'text'">
+        <Input v-model="columnText" :placeholder="column.placeholder" :icon="column.icon" class="canEdit"></Input>
+      </template>
+      <template v-if="renderType === 'textArea'">
+        <Input v-model="columnArea" type="textarea" :placeholder="column.placeholder" :rows="column.rows" class="canEdit"></Input>
+      </template>
+      <template v-if="renderType === 'number'"> 
+        <Input v-model="columnNumber" class="canEdit"></Input>
+      </template>
+      <template v-if="renderType === 'money'">
+        <Typefield 
+          v-model="columnMoney" 
+          :placeholder="column.placeholder"
+          :integerNum="column.integerNum || '10'" 
+          :suffixNum="column.suffixNum ||'3' " 
+          :bigTips="column.bigTips || false" 
+          :isround="column.isround || false" 
+          class="canEdit"></Typefield>
+      </template>
+      <template v-if="renderType === 'card'">
+        <Typefield v-model="columnCard" type="cardNo" class="canEdit"></Typefield>
+      </template>
+      <template v-if="renderType === 'select'">
+        <Select v-model="columnSelect"  
+          :placeholder="column.placeholder"
+          :not-found-text ="column.notFoundText"
+          :multiple="column.multiple||false" 
+          :filterable="column.filterable||false"
+          :filterMethod="filterMethod()"
+          :remote="column.remote"
+          :remoteMethod="remoteMethod()"
+          :loading ="column.loading"
+          class="canEdit">
+          <Option v-for="(item,i) in option" :key="i" :value="item.value">{{item.value}}</Option>
+        </Select>
+      </template>
+      <template v-if="renderType === 'date'">
+        <Date v-model="columnDate" 
+        :type="column.dateType||'date'" 
+        :format="column.format||'yyyy-MM-dd'" 
         :placeholder="column.placeholder"
-        :integerNum="column.integerNum || '10'" 
-        :suffixNum="column.suffixNum ||'3' " 
-        :bigTips="column.bigTips || false" 
-        :isround="column.isround || false" 
-        class="canEdit"></Typefield>
-    </template>
-    <template v-if="renderType === 'card'">
-      <Typefield v-model="columnCard" type="cardNo" class="canEdit"></Typefield>
-    </template>
-    <template v-if="renderType === 'select'">
-      <Select v-model="columnSelect"  
+        :editable ="column.editable"
+        :showFormat = "true"
+        class="canEdit"></Date>
+      </template>
+      <template v-if="renderType === 'time'">
+        <Time v-model="columnTime" 
+        :type="column.timeType||'time'" 
+        :format="column.format||'yyyy-MM-dd'" 
         :placeholder="column.placeholder"
-        :not-found-text ="column.notFoundText"
-        :multiple="column.multiple||false" 
-        class="canEdit">
-        <Option v-for="(item,i) in column.option" :key="i" :value="item.value">{{item.value}}</Option>
-      </Select>
-    </template>
-    <template v-if="renderType === 'date'">
-      <Date v-model="columnDate" 
-      :type="column.dateType||'date'" 
-      :format="column.format||'yyyy-MM-dd'" 
-      :placeholder="column.placeholder"
-      :editable ="column.editable"
-      :showFormat = "true"
-      class="canEdit"></Date>
-    </template>
-    <template v-if="renderType === 'time'">
-      <Time v-model="columnTime" 
-      :type="column.timeType||'time'" 
-      :format="column.format||'yyyy-MM-dd'" 
-      :placeholder="column.placeholder"
-      :editable ="column.editable"
-      :steps="column.steps||[]" 
-      class="canEdit"></Time>
-    </template>
-    <template v-if="renderType === 'selectTree'">
-      <SelectTree v-model="columnTree"
-        :firstValue = "firstTreeValue"
-        :data="baseData" 
-        :placeholder="column.placeholder"
-        :showCheckbox="column.showCheckbox" 
-        :checkStrictly="column.checkStrictly" 
-        :clearable="true"  
-        class="canEdit">        
-      </SelectTree>
-    </template>
+        :editable ="column.editable"
+        :steps="column.steps||[]" 
+        class="canEdit"></Time>
+      </template>
+      <template v-if="renderType === 'selectTree'">
+        <SelectTree v-model="columnTree"
+          :firstValue = "firstTreeValue"
+          :data="baseData" 
+          :placeholder="column.placeholder"
+          :showCheckbox="column.showCheckbox" 
+          :checkStrictly="column.checkStrictly" 
+          :clearable="true"  
+          :filterable="true"
+          class="canEdit">        
+        </SelectTree>
+      </template>
+      <template v-if="renderType === 'expand' && !row._disableExpand">
+        <div :class="expandCls" @click="toggleExpand($event)">
+          <Icon name="enter"></Icon>
+        </div>
+      </template>
+    </div>
     <Cell
-      v-if="renderType === 'render'"
+      v-if="render&&renderType != 'expand'"
       :row="row"
-      :column="column"
+      :column="column"s
       :index="index"
       :render="column.render"></Cell>
     <transition name="fade">
@@ -105,7 +113,7 @@ import SelectTree from '../SelectTree/SelectTree.vue'
 import Date from '../DatePicker'
 import Time from '../TimePicker'
 import clickoutside from '../../directives/clickoutside';
-import {addClass,removeClass,findComponentsUpward,deepCopy,getYMD,getHMS} from '../../util/tools.js'
+import {addClass,removeClass,findComponentsUpward,deepCopy,getYMD,getHMS,typeOf} from '../../util/tools.js'
 const Option = Select.Option;
 const OptionGroup = Select.OptionGroup;
 
@@ -125,6 +133,8 @@ export default {
     expanded: Boolean,
     showEditInput: Boolean,
     typeName:String,
+    option:Array,
+    treeOption:Array,
   },
   data () {
     return {
@@ -147,16 +157,28 @@ export default {
       validateMessage:'',
       rule:null,
       baseData:[],
+      render:false,
     };
   },
   computed: {
+    renderSty(){
+      let style={}
+      let typeWidth = this.column.typeWidth;
+      if (typeWidth) {
+        style.width = this.render?typeWidth+'px':'100%';
+      }else{
+        style.width = this.render?'70':'100%';
+      }
+      return style;
+    },
     classes () {
       return [
         `${this.prefixCls}-cell`,
         {
           [`${this.prefixCls}-cell-ellipsis`]: this.column.ellipsis || false,
           [`${this.prefixCls}-cell-error`]: this.validateState === 'error',
-          [`${this.prefixCls}-cell-with-expand`]: this.renderType === 'expand'
+          [`${this.prefixCls}-cell-with-expand`]: this.renderType === 'expand',
+          [`${this.prefixCls}-cell-with-render`]: this.render&&this.renderType != 'expand',
         }
       ];
     },
@@ -195,57 +217,66 @@ export default {
         removeClass(this.$parent,`${this.prefixCls}-row-hover`)
       }
     },
-    save(str){  
-      var _parent = this.parent;
-      switch(str){
-        case 'text':
-          this.normalDate = this.columnText;
-          _parent.cloneData[this.index][this.column.key] = this.columnText;
-          break;
-        case 'textArea':
-          this.normalDate = this.columnArea;
-          _parent.cloneData[this.index][this.column.key] = this.columnArea;
-          break;
-        case 'number':
-          this.normalDate = this.columnNumber;
-          _parent.cloneData[this.index][this.column.key] = this.columnNumber;
-          break;
-        case 'money':
-          this.normalDate = this.columnMoney;
-          _parent.cloneData[this.index][this.column.key] = this.columnMoney;
-          break;
-        case 'card':
-          this.normalDate = this.columnCard;
-          _parent.cloneData[this.index][this.column.key] = this.columnCard;
-          break;
-        case 'select':
-          this.normalDate = this.columnSelect;
-          _parent.cloneData[this.index][this.column.key] = this.columnSelect;
-          break;
-        case 'date':
-          this.normalDate = this.columnDate;
-          _parent.cloneData[this.index][this.column.key] = this.columnDate;
-          break; 
-        case 'time':
-          this.normalDate =this.columnTime;
-          _parent.cloneData[this.index][this.column.key] = this.columnTime;
-          break;
-        case 'selectTree':
-          this.normalDate = this.columnTree;
-          _parent.cloneData[this.index][this.column.key] = this.columnTree;
-          break;    
-      }
-      if (this.rule) {
-        this.validate('blur');
-      }
+    save(str){ 
+      this.$nextTick(()=>{
+        var _parent = this.parent;
+        if (!_parent.cloneData || _parent.cloneData.length==0) return;
+        switch(str){
+          case 'text':
+            this.normalDate = this.columnText;
+            _parent.cloneData[this.index][this.column.key] = this.columnText;
+            break;
+          case 'textArea':
+            this.normalDate = this.columnArea;
+            _parent.cloneData[this.index][this.column.key] = this.columnArea;
+            break;
+          case 'number':
+            this.normalDate = this.columnNumber;
+            _parent.cloneData[this.index][this.column.key] = this.columnNumber;
+            break;
+          case 'money':
+            this.normalDate = this.columnMoney;
+            _parent.cloneData[this.index][this.column.key] = this.columnMoney;
+            break;
+          case 'card':
+            this.normalDate = this.columnCard;
+            _parent.cloneData[this.index][this.column.key] = this.columnCard;
+            break;
+          case 'select':
+            this.normalDate = this.columnSelect;
+            _parent.cloneData[this.index][this.column.key] = this.columnSelect;
+            break;
+          case 'date':
+            this.normalDate = this.columnDate;
+            _parent.cloneData[this.index][this.column.key] = this.columnDate;
+            break; 
+          case 'time':
+            this.normalDate =this.columnTime;
+            _parent.cloneData[this.index][this.column.key] = this.columnTime;
+            break;
+          case 'selectTree':
+            this.normalDate = this.columnTree;
+            _parent.cloneData[this.index][this.column.key] = this.columnTree;
+            break;    
+        }
+        if (this.rule) {
+          this.validate('blur');
+        }
+      })
     },
     dblclickCurrentCell(e){
       e.stopPropagation(); 
       this.showSlot = false;
+      if (this.showEditInput) return;
       if (!this.column.type ||this.column.type === 'html') {
         return;
       }else {
         this.renderType = this.column.type;
+        this.$nextTick(()=>{
+          var inputEl = this.$refs.cell.querySelector('input') || this.$refs.cell.querySelector('textarea');
+          if (!inputEl) return;
+          inputEl.focus();
+        });
       }
     },
     getFilteredRule (trigger) {
@@ -270,6 +301,16 @@ export default {
         this.validateMessage = errors ? errors[0].message : '';
         callback(this.validateMessage);
       });
+    },
+    filterMethod(){
+      if (this.column.filterMethod) {
+        return this.column.filterMethod;
+      }
+    },
+    remoteMethod(){
+      if (this.column.remoteMethod){
+        return this.column.remoteMethod;
+      };
     },
   },
   watch: {
@@ -313,6 +354,9 @@ export default {
           }
         })
       }
+    },
+    treeOption(val){
+      this.baseData = deepCopy(val);
     }
   },
   created () {
@@ -326,11 +370,12 @@ export default {
       }
     }
     if (this.column.type === 'selectTree') {
-      this.baseData = deepCopy(this.column.treeData);
+      this.baseData = deepCopy(this.treeOption);
     }
+    this.render = this.column.render?true:false;
   },
   mounted(){
     this.rule = this.column.rule;
-  }
+  },
 };
 </script>

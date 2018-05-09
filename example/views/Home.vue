@@ -1,9 +1,236 @@
 <template>
-<div>
-  <h-edit-gird :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange" height="200" ref="table1">
-  </h-edit-gird>
-  <Button @click = "click">获取数据</Button>
-</div>
+  <div>
+    <input>
+    <input disabled="disabled">
+    <input disabled="disabled">
+    <h-form ref="formItem" :model="formItem" :label-width="80" errorFocus>
+      <h-form-item label="输入框" prop="input" required>
+        <h-input v-model="formItem.input" placeholder="请输入"></h-input>
+      </h-form-item>
+      <h-form-item label="日期控件">
+        <h-row>
+          <h-col span="11">
+            <h-form-item prop="date" required>
+              <h-datePicker type="date" placeholder="选择日期" v-model="formItem.date"></h-datePicker>
+            </h-form-item>
+          </h-col>
+          <h-col span="2" style="text-align: center">-</h-col>
+          <h-col span="11">
+            <h-form-item prop="time" required>
+              <h-timePicker type="time" placeholder="选择时间" v-model="formItem.time"></h-timePicker>
+            </h-form-item>
+          </h-col>
+        </h-row>
+      </h-form-item>
+      <h-form-item label="选择器" prop="select" required>
+        <h-select v-model="formItem.select" placeholder="请选择">
+          <h-option value="beijing">北京市</h-option>
+          <h-option value="shanghai">上海市</h-option>
+          <h-option value="shenzhen">深圳市</h-option>
+        </h-select>
+      </h-form-item>
+      <h-form-item label="金额框" prop="money" required>
+        <h-typefield v-model="formItem.money">
+         <!--  <h-select v-model="select1" slot="prepend" style="width: 80px">
+            <h-option value="http">http://</h-option>
+            <h-option value="https">https://</h-option>
+          </h-select> -->
+
+          <h-select v-model="select2" placeholder="" slot="append" style="width: 45px" :isArrow="false" :clearable="false" :tranfer="true">
+          <h-option value="com">.com</h-option>
+          <h-option value="org">.org</h-option>
+          <h-option value="io">.io</h-option>
+        </h-select>
+        </h-typefield>
+      </h-form-item>
+      <h-form-item label="单选框" prop="radio" required>
+        <h-radio-group v-model="formItem.radio">
+          <h-radio label="male">男</h-radio>
+          <h-radio label="female">女</h-radio>
+        </h-radio-group>
+      </h-form-item>
+      <h-form-item label="多选框" prop="checkbox" required>
+        <h-checkbox-group v-model="formItem.checkbox">
+            <h-checkbox label="吃饭"></h-checkbox>
+            <h-checkbox label="睡觉"></h-checkbox>
+            <h-checkbox label="跑步"></h-checkbox>
+            <h-checkbox label="看电影"></h-checkbox>
+        </h-checkbox-group>
+      </h-form-item>
+      <h-form-item label="特殊日期" required prop="fatdate" required>
+        <h-fast-date v-model="formItem.fatdate"></h-fast-date>
+      </h-form-item>
+      <h-form-item label="下拉表" prop='slider' required>
+        <h-select-table v-model="formItem.slider">
+          <h-table-option border :columns="columns1" :data="data1"></h-table-option>
+        </h-select-table>
+      </h-form-item>
+      <h-form-item label="下拉树" prop='tree' required>
+        <h-select-tree v-model="formItem.tree" :first-value="firstValc" style="width:200px" :data="baseData1" placement="top" placeholder="你好"></h-select-tree>
+      </h-form-item>
+      <h-form-item label="文本域" prop="textarea" required>
+        <h-input v-model="formItem.textarea" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></h-input>
+      </h-form-item>
+      <h-form-item>
+          <h-button type="primary" @click="handleSubmit('formItem')">提交</h-button>
+          <h-button type="ghost" style="margin-left: 8px" @click="handleReset('formItem')">取消</h-button>
+      </h-form-item>
+    </h-form>
+    <h-form ref="formValid" :model="formValid">
+        <h-form-item prop="user" required>
+            <h-input type="text" v-model="formValid.user" placeholder="仅required验证">
+                <h-icon name="people" slot="prepend"></h-icon>
+            </h-input>
+        </h-form-item>
+        <h-form-item prop="stringInput" :validRules="stringRule">
+            <h-input type="text" v-model="formValid.stringInput" placeholder="stringInput验证">
+                <h-icon name="people" slot="prepend"></h-icon>
+            </h-input>
+        </h-form-item>
+        <h-form-item prop="password" required>
+            <h-input type="text" v-model="formValid.password" placeholder="仅正则[全是字母]验证">
+                <h-icon name="lock" slot="prepend"></h-icon>
+            </h-input>
+        </h-form-item>
+        <h-form-item prop="test1" required>
+            <h-input type="text" v-model="formValid.test1" placeholder="仅Func[值为test]验证">
+                <h-icon name="people" slot="prepend"></h-icon>
+            </h-input>
+        </h-form-item>
+        <h-form-item prop="test2" required>
+            <h-input type="text" v-model="formValid.test2" placeholder="混合验证">
+                <h-icon name="people" slot="prepend"></h-icon>
+            </h-input>
+        </h-form-item>
+        <h-form-item>
+            <h-button type="primary" @click="handleSubmit('formValid')">提交</h-button>
+        </h-form-item>
+    </h-form>
+  </div>
+</template>
+<script>
+  export default {
+    data () {
+      return {
+        formItem: {
+          input: '',
+          select: '',
+          radio: '',
+          money: '',
+          checkbox: [],
+          fatdate: '',
+          date: '',
+          time: '',
+          slider: '',
+          tree:'',
+          textarea: ''
+        },
+        formValid: {
+          user: '你好',
+          stringInput:'',
+          password: '',
+          test1: '',
+          test2: ''
+        },
+        select1:'',
+        select2:'',
+        stringRule:['email'],
+        regRule: [{test:/^[a-zA-Z]+$/, message:'不全是字母',trigger:'blur'}],
+        columns1: [
+          {
+            title: '姓名',
+            key: 'name',
+            ellipsis: true
+          },
+          {
+            title: '年龄',
+            key: 'age',
+            hiddenCol:true
+          },
+          {
+            title: '地址',
+            key: 'address'
+          }
+        ],
+        data1:[
+          {
+            name: '王小明',
+            age: 18,
+            address: '北京市朝阳区芍药居'
+            // _highlight: true//默认选择当前项
+          },
+          {
+            name: '张小刚',
+            age: 25,
+            address: '北京市海淀区西二旗'
+          },
+          {
+            name: '李小红',
+            age: 30,
+            address: '上海市浦东新区世纪大道'
+          },
+          {
+            name: '周小伟',
+            age: 26,
+            address: '深圳市南山区深南大道'
+          },
+        ],
+        baseData1: [
+          {
+            title: 'parent',
+            id: '1-0',
+            children: [
+              {
+                title: 'child1',
+                id: '1-1',
+                children: [
+                  {
+                    title: 'child1-1-1',
+                    id: '1-1-1'
+                  },
+                  {
+                    title: 'child1-1-2',
+                    id: '1-1-2'
+                  }
+                ]
+              },
+              {
+                title: 'child2',
+                id: '1-2',
+                children: []
+              }
+            ]
+          }
+        ],
+        firstValc: 'parent',
+      }
+    },
+    methods: {
+      handleSubmit (name) {
+        let _this=this
+        this.$refs[name].validate((valid) => {
+            if (valid) {
+              _this.$hMessage.success('提交成功!');
+            } else {
+              _this.$hMessage.error('表单验证失败!');
+            }
+        })
+      },
+      handleReset (name) {
+        this.$refs[name].resetFields();
+      }
+    }
+  }
+</script>
+
+
+<!-- <template>
+<div> -->
+<!--   <h-edit-gird :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange" height="200" ref="table1">
+  </h-edit-gird> -->
+<!--   <h-table :columns="columns3" :data="data2" border></h-table>
+  <Button @click = "click">获取数据</Button> -->
+<!-- </div>
 </template>
 <script>
 var tData= [
@@ -17,7 +244,6 @@ var tData= [
           dating:'2018-01-09T16:00:00.000Z',
           timing:'16:00:00.00',
           tree:'leaf1'
-          // _highlight: true//默认选择当前项
         },
         {
           name: '张小刚',
@@ -158,8 +384,32 @@ var tData= [
               showCheckbox: false,
               checkStrictly: false,
             }
-          ],
-        data1: tData
+        ],
+        data1: tData,
+        columns3: [
+          {key:"fund_account",title:"资金账号"},
+          {key:"mobile_tel",title:"手机号"},
+          {key:"trade_times",title:"交易天数"},
+          {key:"business_amount",title:"交易量"},
+          {key:"income_ratio",title:"收益率"},
+          {key:"open_amount",title:"开仓数量"},
+          {key:"drop_amount",title:"平仓数量"},
+          {key:"buy_right_amount",title:"认购权利仓"},
+          {key:"buy_duty_amount",title:"认购义务仓"},
+          {key:"buy_duty_cover_amount",title:"认购备兑义务仓"},
+          {key:"sell_right_amount",title:"认沽权利仓"},
+          {key:"sell_duty_amount",title:"认沽义务仓"},
+          {key:"fare0",title:"佣金"},
+          {key:"sharp_30",title:"近30天夏普比率"},
+          {key:"sharp_120",title:"近120天夏普比率"},
+          {key:"sharp_360",title:"近360天夏普比率"},
+          {key:"drawdown_30",title:"近30天最大回撤率"},
+          {key:"drawdown_120",title:"近120天最大回撤率"},
+          {key:"drawdown_360",title:"近360天最大回撤率"}
+        ],
+        data2:[
+          {fund_account:'1',mobile_tel:'1'}
+        ],
       }
     },
     methods: {
@@ -182,7 +432,7 @@ var tData= [
     }
   }
 </script>
-
+ -->
 
 
 <!-- <template>

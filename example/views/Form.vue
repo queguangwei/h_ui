@@ -1,14 +1,14 @@
 <template>
     <div>
          <h1>测试</h1>
-        <h-form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="250" label-position='left' :showMessage=true>
-            <h-form-item label="姓名" prop="name" :label-width="50" :showMessage=true>
+        <h-form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="250" label-position='left' :showMessage="true">
+            <h-form-item label="姓名" prop="name" :label-width="50" :showMessage="true">
               <h-typefield v-model="formValidate.name" type="money" ></h-typefield>
             </h-form-item>   
-            <h-form-item label="姓名" prop="name" :label-width="50" :showMessage=true>
+            <h-form-item label="姓名" prop="name" :label-width="50" :showMessage='true'>
               <h-select-tree  v-model="formValidate.name" ></h-select-tree>
             </h-form-item>    
-            <h-form-item :showMessage=true>
+            <h-form-item :showMessage='true'>
                <h-button type="primary" @click="handleSubmit('formValidate')">提交</h-button>
                <h-button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px">重置</h-button>
             </h-form-item>
@@ -50,7 +50,7 @@
                         <h-input v-model="formItem.input" placeholder="请输入"></h-input>
                     </h-form-item>
                     <h-form-item label="选择器">
-                        <h-select v-model="formItem.select" placeholder="请选择">
+                        <h-select v-model="formItem.select" placeholder="请选择" :readonly="true">
                             <h-option value="beijing">北京市</h-option>
                             <h-option value="shanghai">上海市</h-option>
                             <h-option value="shenzhen">深圳市</h-option>
@@ -456,7 +456,7 @@
             </h-form>
         </h-row>
         <h2>表单提交校验时忽略disabled元素</h2>
-         <h-row>
+        <h-row>
             <h-form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="150" :showMessage=true  label-position="right">
                 <h-row>
                     <h-col span="8">

@@ -23,6 +23,7 @@ import Col from './Grid'
 import Select from './Select'
 import Option from './Select'
 import OptionGroup from './Select'
+import SelectTable from './SelectTable'
 import Menu from './Menu'
 import MenuGroup from './Menu'
 import MenuItem from './Menu'
@@ -86,6 +87,7 @@ export default init(
   Select,
   Option,
   OptionGroup,
+  SelectTable,
   Menu,
   MenuGroup,
   MenuItem,

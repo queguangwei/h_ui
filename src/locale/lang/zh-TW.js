@@ -3,8 +3,10 @@ export default {
         locale: 'zh-TW',
         select: {
             placeholder: '請選擇',
+            searchHolder: '請輸入匹配字段',
             noMatch: '無匹配數據',
-            loading: '加載中'
+            loading: '加載中',
+            noMoreData:'没有更多数据'
         },
         table: {
             noDataText: '暫無數據',
@@ -96,6 +98,11 @@ export default {
         },
         tree: {
             emptyText: '暫無數據'
+        },
+        typefield: {
+            placeholder: '請選擇',
+            bigData: '無窮大',
+            smallData: '無窮大'
         }
     }
 };

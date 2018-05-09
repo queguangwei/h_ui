@@ -1,30 +1,35 @@
 <template>
-  <div :class="classes" v-clickoutside="handleClose" :style="multiplestyle" ref="select" >
+  <div :class="classes" :style="multiplestyle" ref="select" v-clickoutside="handleClose">
     <div
       :class="[prefixCls + '-selection']"
       ref="reference"
-      @click="toggleMenu">
+      :tabindex="tabIndex" 
+      @click="toggleMenu" 
+      @keyup="keyup" 
+      @keydown="keydown">
       <!-- 多选时输入框内选中值模拟 -->
       <div class="h-tag" v-for="(item, index) in selectedMultiple">
         <span class="h-tag-text">{{ item }}</span>
         <!-- <Icon name="close" @click.native.stop="removeTag(index)"></Icon>  -->
       </div>
       <!-- 输入框模拟 -->
-      <span :class="[prefixCls + '-placeholder']" v-show="showPlaceholder && !filterable">{{ localePlaceholder }}</span>
-      <span :class="[prefixCls + '-selected-value']" v-show="!showPlaceholder && !showCheckbox && !filterable">{{ selectedSingle }}</span>
+      <span :class="[prefixCls + '-placeholder']" v-show="showPlaceholder && (!filterable ||showBottom)">{{ localePlaceholder }}</span>
+      <span :class="[prefixCls + '-selected-value']" v-show="!showPlaceholder && !showCheckbox && (!filterable ||showBottom)">{{ selectedSingle }}</span>
       <!-- 模糊匹配输入框模拟 -->
       <input
         type="text"
-        v-if="filterable"
+        v-if="filterable && !showBottom"
         v-model="query"
         :disabled="disabled"
+        :readonly = "!editable||readonly"
         :class="[prefixCls + '-input']"
-        :placeholder="showPlaceholder ? localePlaceholder : ''"
+        :placeholder="showPlaceholder?localePlaceholder:''"
         :style="inputStyle"
         @focus="handleFocus"
         @blur="handleBlur"
         @input="handleInputDown"
         @keydown.delete="handleInputDelete"
+        tabindex="-1" 
         ref="input">
       <!-- 单选时清空按钮 -->
       <Icon name="close" :class="[prefixCls + '-arrow']" v-show="showCloseIcon" @click.native.stop="clearSingleSelect"
@@ -34,14 +39,35 @@
     <transition :name="transitionName">
       <Drop v-show="dropVisible" 
         :placement="placement" 
+        :dropWidth="dropWidth"
         :class="dropdownCls"
         :data-transfer="transfer" 
         ref="dropdown"
         v-transfer-dom>
         <!--  <ul v-show="notFountShow" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul> -->
-        <Tree ref="tree" :data="baseDate" :show-checkbox="showCheckbox" :multiple="multiple" :checkStrictly="checkStrictly" :showIndeterminate="showIndeterminate" @on-select-change="selectChange" @on-check-change="checkChange" @on-toggle-expand="toggleExpand">
-          
-        </Tree>
+        <div :class="[prefixCls + '-dropdown-content']" ref="content">
+          <div :class="searchClass" ref='search' v-if="filterable && showBottom">
+            <input
+                type="text"
+                v-model="query"
+                :disabled="disabled"
+                :readonly = "!editable||readonly"
+                :class="[prefixCls + '-input']"
+                :placeholder="localeSearchHolder"
+                :style="inputStyle"
+                @focus="handleFocus"
+                @blur="handleBlur"
+                @input="handleInputDown"
+                @keydown.delete="handleInputDelete"
+                tabindex="-1" 
+                ref="input">
+          </div>
+          <div class="h-selectTree-dropdown-list" ref="list" :style="listStyle">
+            <Tree ref="tree" :data="baseDate" :show-checkbox="showCheckbox" :multiple="multiple" :checkStrictly="checkStrictly" :showIndeterminate="showIndeterminate" @on-select-change="selectChange" @on-check-change="checkChange" @on-toggle-expand="toggleExpand">
+            
+          </Tree>
+          </div>
+        </div>
         
         <!-- 加载中 -->
         <!-- <ul v-show="loading" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul> -->
@@ -55,7 +81,7 @@
   import Tree from '../Tree/Tree.vue'
   import clickoutside from '../../directives/clickoutside';
   import TransferDom from '../../directives/transfer-dom';
-  import { oneOf, findComponentChildren,getScrollBarSize, getStyle,hasClass,typeOf} from '../../util/tools';
+  import { oneOf, findComponentChildren,getScrollBarSize, getStyle,hasClass,typeOf,scrollAnimate} from '../../util/tools';
   import Emitter from '../../mixins/emitter';
   import Locale from '../../mixins/locale';
   const prefixCls = 'h-selectTree';
@@ -75,6 +101,9 @@
       },
       placeholder: {
         type: String
+      },
+      searchHolder:{
+        type:String
       },
       clearable: {
         type: Boolean,
@@ -123,6 +152,14 @@
         type:Boolean,
         default:false
       },
+      readonly:{
+        type:Boolean,
+        default:false
+      },
+      editable:{
+        type:Boolean,
+        default:true,
+      },
       width: {
         type: [String, Number]
       },
@@ -141,6 +178,20 @@
       isString:{//多选专用，v-model输入输出值以逗号隔开
         type:Boolean,
         default:false,
+      },
+      dropWidth:{//下拉框的宽度
+        type:[String,Number],
+      },
+      searchHolder:{
+        type:String,
+      },
+      showBottom:{
+        type:Boolean,
+        default:false,
+      },
+      expanLevel:{
+        type:[Number,String],
+        default:2,
       }
     },
     data(){
@@ -158,15 +209,26 @@
         isFocus: false,
         isFirst: false,
         baseDate: this.data,
+        tabIndex:0,
       }
     },
     computed:{
+      listStyle(){
+        let style = {};
+        style.paddingTop=this.showBottom?'30px':'0';
+        return style;
+      },
+      searchClass(){
+        return `${prefixCls}-search`
+      },
       classes () {
         return [
           `${prefixCls}`,
           {
             [`${prefixCls}-visible`]: this.visible,
             [`${prefixCls}-disabled`]: this.disabled,
+            [`${prefixCls}-readonly`]: this.readonly,
+            [`${prefixCls}-editable`]: this.editable,
             [`${prefixCls}-multiple`]: this.showCheckbox,
             [`${prefixCls}-single`]: !this.showCheckbox,
             [`${prefixCls}-show-clear`]: this.showCloseIcon,
@@ -217,6 +279,13 @@
               return this.placeholder;
           }
       },
+      localeSearchHolder () {
+          if (this.searchHolder === undefined) {
+              return this.t('i.select.searchHolder');
+          } else {
+              return this.searchHolder;
+          }
+      },
       localeNotFoundText () {
           if (this.notFoundText === undefined) {
               return this.t('i.select.noMatch');
@@ -226,7 +295,6 @@
       },
       dropVisible () {
           let status = true;
-          
           const options = this.$slots.default || [];
           if (!this.loading && this.remote && this.query === '' && !options.length) status = false;
           return this.visible && status;
@@ -241,6 +309,19 @@
       },
     },
     methods:{
+      keyup(e){
+        if (this.disabled || this.readonly||!this.editable) {
+          return false;
+        }
+        if (event.keyCode == 9) {
+          this.toggleMenu();
+        }
+      },
+      keydown(e){
+        if (event.keyCode == 9) {
+          this.hideMenu();
+        }
+      },
       offsetArrow(){
         if (!this.showCheckbox) return;
         if (navigator.userAgent.indexOf('Firefox') >= 0) return;//firefox scrollBar bug
@@ -254,7 +335,7 @@
         }
       },
       toggleMenu () {
-        if (this.disabled) {
+        if (this.disabled || this.readonly ||!this.editable) {
           return false;
         }
         this.visible = !this.visible;
@@ -265,7 +346,7 @@
         // this.focusIndex = 0;
         this.broadcast('Option', 'on-select-close');
       },
-      handleClose () {
+      handleClose() {
         // if (this.filterable) {
         //   this.query = this.filterable?this.model:'';
         //   this.findQuery(this.data,'');
@@ -292,7 +373,13 @@
         }
         if (!this.showCheckbox) {
           this.selectedSingle=val.length!=0?val[0].title:'';
-          this.query = this.filterable?this.selectedSingle:'';
+          if (this.filterable&&!this.showBottom) {
+            this.query = this.selectedSingle;
+          }
+          if(!this.filterable){
+            this.query ='';
+          }
+          // this.query = this.filterable?this.selectedSingle:'';
           this.model = val.length!=0?val[0][strModel]:'';
           this.hideMenu();
           this.findQuery(this.data,'');
@@ -300,7 +387,7 @@
       },
       checkChange(val){
         let strModel = this.formatValue;
-        if (this.filterable) {
+        if (this.filterable && !this.showBottom) {
           this.query='';
         }
         let arr=[];
@@ -320,6 +407,7 @@
         this.$emit('on-toggle-expand', val);
       },
       clearSingleSelect () {
+        if (this.disabled || this.readonly || !this.editable) return false;
         if (this.showCloseIcon) {
           resetDate(this.data);
           if (!this.showCheckbox) {
@@ -328,7 +416,7 @@
             this.model=[];
             this.selectedMultiple=[];
           }
-          if (this.filterable) {
+          if (this.filterable&& !this.showBottom) {
             this.query = '';
           }
         }
@@ -350,7 +438,7 @@
         }
       },
       handleFocus(){
-        this.query = '';
+        // this.query = '';
       },
       handleBlur () {
       },
@@ -369,6 +457,19 @@
             this.findQuery(col.children,val);
           }
         });
+        this.$nextTick(()=>{
+            let firstItem = this.$refs.tree.$el.querySelectorAll('.h-tree-title-filterable')[0];
+            if (firstItem) {
+              let top = firstItem.offsetTop;
+              if (this.showBottom) {
+                top = top -30;
+              }
+              scrollAnimate(this.$refs.list,this.$refs.list.scrollTop,top)
+
+            }else{
+              scrollAnimate(this.$refs.list,this.$refs.list.scrollTop,0)
+            }
+          });
       },
       handleInputDelete () {
         if (this.multiple && this.model.length && this.query === '') {
@@ -405,11 +506,11 @@
           tdata.forEach((item)=>{
             if (item[_this.formatValue] == curValue) {
               _this.$set(item,'selected',true);
-              return;
             }else{
-              if (item.children&&item.children.length>0) {
-                findDown(item.children,curValue);
-              }
+              _this.$set(item,'selected',false);
+            }
+            if (item.children&&item.children.length>0) {
+              findDown(item.children,curValue);
             }
           });
         }
@@ -418,7 +519,31 @@
           let tree = this.$refs.tree;     
           this.selectChange(tree.getSelectedNodes());
         });
-      }
+      },
+      expandLevels(data){
+        let index = 0;
+        let _this = this;
+        function findDown(tdata){
+          index =index+1;
+          tdata.forEach((item)=>{
+            _this.$set(item,'expand',true);
+            if (item.children&&item.children.length>0 && index<_this.expanLevel) {
+              findDown(item.children);
+            }
+          });
+        }
+        if (index<_this.expanLevel) {
+          findDown(data);
+        }
+        return data;
+      },
+      searchStyle(){
+        if (this.filterable && this.showBottom) {
+          let width =this.dropWidth>0?this.dropWidth:parseInt(getStyle(this.$el, 'width'));
+          width = width-getScrollBarSize()+'px';
+          this.$refs.search.style.width = width;
+        }
+      },
     },
     watch:{
       firstValue:{
@@ -440,7 +565,12 @@
         this.$emit('input', backModel);
         // 初次会执行
         if (this.isFirst) {
-          this.dispatch('FormItem', 'on-form-change', this.model)
+          this.dispatch('FormItem', 'on-form-change', this.model);
+        }
+        if (!this.model) {
+          this.$nextTick(()=>{
+            this.setInit(this.baseDate,'');
+          });
         }
         this.isFirst = true
       },
@@ -453,21 +583,27 @@
         if (val) {
           this.broadcast('Drop', 'on-update-popper');
         } else {
+          if (this.filterable&&this.showBottom) {
+            this.query='';
+          }
           this.broadcast('Drop', 'on-destroy-popper');
         }
       },
       data : {
         deep: true,
         handler: function (cur) {
-          // if (this.firstValue && this.firstValue.length>0 && cur) {
-          //   this.setInit(cur,this.firstValue);
-          //   this.firstValue = '';
-          // }
-          this.baseDate = cur;
+          if (cur&&cur.lenght!=0) {
+            this.baseDate = this.expandLevels(cur);
+          }else{
+            this.baseDate =cur;
+          }
         }
       }
     },
     mounted(){
+      if (this.data &&this.data.length!=0) {
+        this.baseDate = this.expandLevels(this.data);
+      }
       this.$nextTick(()=>{
         let tree = this.$refs.tree;
         if (!!this.showCheckbox) {
@@ -476,7 +612,12 @@
           this.selectChange(tree.getSelectedNodes());
         }
         this.offsetArrow();
+        this.searchStyle();
       });
+      if (this.disabled) {
+        this.tabIndex = -1;
+      }
+
     }
   }
 </script>
