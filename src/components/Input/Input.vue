@@ -118,7 +118,11 @@
       autofocus: {
         type: Boolean,
         default: false
-      }
+      },
+      algin:{//金额组件内部显示
+        type:String,
+        default:'left',
+      },
     },
     data () {
       return {
@@ -148,11 +152,12 @@
       inputClasses () {
         return [
           `${prefixCls}`,
+          `${prefixCls}-${this.algin}`,
           {
-              [`${prefixCls}-${this.size}`]: !!this.size,
-              [`${prefixCls}-disabled`]: this.disabled,
-              [`${prefixCls}-readonly`]: this.readonly,
-              [`${prefixCls}-editable`]: !this.editable
+            [`${prefixCls}-${this.size}`]: !!this.size,
+            [`${prefixCls}-disabled`]: this.disabled,
+            [`${prefixCls}-readonly`]: this.readonly,
+            [`${prefixCls}-editable`]: !this.editable
           }
         ];
       },

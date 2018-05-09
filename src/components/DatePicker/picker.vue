@@ -103,7 +103,7 @@
       },
       open: {
           type: Boolean,
-          default: null
+          default: null,
       },
       multiple: {
           type: Boolean,

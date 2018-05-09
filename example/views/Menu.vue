@@ -398,7 +398,7 @@ export default {
       console.log(s)
     },
     openChange(s){
-        console.log(s)
+        // console.log(s)
     },
     activetest() {
       // this.active = ["2"];

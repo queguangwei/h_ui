@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue from 'Vue';
 import Notification from './Notification.vue';
 import { camelcaseToHyphen } from '../../../util/tools';
 

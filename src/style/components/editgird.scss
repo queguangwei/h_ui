@@ -146,6 +146,15 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
       padding: 0;
       text-align: center;
     }
+    &-with-render{
+      overflow:auto;
+      div{
+        float:left;
+      }
+      div:first-child{
+        padding-right:10px;
+      }
+    }
     &-group{
       width: 100%;
     }

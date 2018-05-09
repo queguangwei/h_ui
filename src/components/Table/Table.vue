@@ -4,6 +4,7 @@
       <div :class="[prefixCls + '-title']" v-if="showSlotHeader" ref="title"><slot name="header"></slot></div>
       <div :class="[prefixCls + '-header']" v-if="showHeader" ref="header" @mousewheel="handleMouseWheel">
         <table-head
+          ref="thead"
           :prefix-cls="prefixCls"
           :styleObject="tableStyle"
           :columns="cloneColumns"
@@ -12,6 +13,7 @@
           :data="rebuildData"
           @on-change-width="changeWidth"
           :canDrag="canDrag &&!!border"
+          :headAlgin="headAlgin"
           ></table-head>
       </div>
       <div :class="[prefixCls + '-body']" :style="bodyStyle" ref="body" @scroll="handleBodyScroll"
@@ -23,12 +25,13 @@
           :columns="cloneColumns"
           :data="rebuildData"
           :columns-width="columnsWidth"
-          :rowSelect = "rowSelect && selectType"
+          :rowSelect = "rowSelect"
+          :bodyAlgin ="bodyAlgin"
           :obj-data="objData"></table-body>
       </div>
-      <div :class="[prefixCls + '-tip']"
-        v-show="((!!localeNoDataText && (!data || data.length === 0)) || (!!localeNoFilteredDataText && (!rebuildData || rebuildData.length === 0)))">
-        <table cellspacing="0" cellpadding="0" border="0">
+      <div :class="[prefixCls + '-tip'] "
+        v-show="((!!localeNoDataText && (!data || data.length === 0)) || (!!localeNoFilteredDataText && (!rebuildData || rebuildData.length === 0)))" @scroll="handleBodyScroll" :style="bodyStyle">
+        <table cellspacing="0" cellpadding="0" border="0" :style="tableStyle">
           <tbody>
             <tr>
               <td :style="{ 'height': bodyStyle.height }">
@@ -50,6 +53,7 @@
             :columns-width="columnsWidth"
             :data="rebuildData"
             :canDrag="Boolean(false)"
+            :headAlgin="headAlgin"
             ></table-head>
         </div>
         <div :class="[prefixCls + '-fixed-body']" :style="fixedBodyStyle" ref="fixedBody">
@@ -60,7 +64,8 @@
             :columns="leftFixedColumns"
             :data="rebuildData"
             :columns-width="columnsWidth"
-            :rowSelect = "rowSelect && selectType"
+            :rowSelect = "rowSelect"
+            :bodyAlgin ="bodyAlgin"
             :obj-data="objData"></table-body>
         </div>
       </div>
@@ -75,6 +80,7 @@
             :columns-width="columnsWidth"
             :data="rebuildData"
             :canDrag="Boolean(false)"
+            :headAlgin="headAlgin"
             ></table-head>
         </div>
         <div :class="[prefixCls + '-fixed-body']" :style="fixedBodyStyle" ref="fixedRightBody">
@@ -85,7 +91,8 @@
             :columns="rightFixedColumns"
             :data="rebuildData"
             :columns-width="columnsWidth"
-            :rowSelect = "rowSelect && selectType"
+            :rowSelect = "rowSelect"
+            :bodyAlgin ="bodyAlgin"
             :obj-data="objData"></table-body>
         </div>
       </div>
@@ -105,7 +112,7 @@
 import tableHead from './Table-head.vue';
 import tableBody from './Table-body.vue';
 import Spin from '../Spin/Spin.vue';
-import { oneOf, getStyle, deepCopy, getScrollBarSize,findInx} from '../../util/tools';
+import { oneOf, getStyle, deepCopy, getScrollBarSize,findInx,getBarBottom} from '../../util/tools';
 import { on, off } from '../../util/dom';
 import Csv from '../../util/csv';
 import ExportCsv from './export-csv';
@@ -190,6 +197,21 @@ export default {
       type: Boolean,
       default: false
     },
+    hasWidth:{
+      type:[String,Number],
+    },
+    headAlgin:{
+      validator (value) {
+        return oneOf(value, ['left', 'center', 'right']);
+      },
+      default:'left'
+    },
+    bodyAlgin:{
+      validator (value) {
+        return oneOf(value, ['left', 'center', 'right']);
+      },
+      default:'left'
+    }
   },
   data () {
     return {
@@ -411,19 +433,21 @@ export default {
       if (this.cloneColumns[lastInx].fixed!='right' && this.tableWidth<this.initWidth) {
         this.tableWidth = this.initWidth-1;
       }
-
+      this.$emit('on-drag', width, key);
     },
     handleMouseLeave() {
       
     },
     handleResize () {
       this.$nextTick(() => {
-        // console.log(this.columns);
         const allWidth = !this.columns.some(cell => !cell.width&&cell.width!==0);    // each column set a width
         if (allWidth) {
           this.tableWidth = this.columns.map(cell => cell.width).reduce((a, b) => a + b);
         } else {
           this.tableWidth = parseInt(getStyle(this.$el, 'width')) - 1;
+          if (!this.tableWidth&&this.hasWidth) {
+            this.tableWidth = this.hasWidth-1;
+          }
         }
         this.columnsWidth = {};
         this.$nextTick(() => {
@@ -456,11 +480,36 @@ export default {
               };
             }
             this.columnsWidth = columnsWidth;
+          }else{
+            if (!this.$refs.thead) return;
+            const $th = this.$refs.thead.$el.querySelectorAll('thead tr')[0].querySelectorAll('th');
+            for (let i = 0; i < $th.length; i++) {    // can not use forEach in Firefox
+              const column = this.cloneColumns[i];
+
+              let width = parseInt(getStyle($th[i], 'width'));
+              if (i === autoWidthIndex) {
+                  width = parseInt(getStyle($th[i], 'width')) - 1;
+              }
+             // if (column.width) width = column.width||'';
+             // 自适应列在表格宽度较小时显示异常，为自适应列设置最小宽度100（拖拽后除外）
+              if (column.width) {
+                  width = column.width||'';
+              } else {
+                  if (width < 100) width = 100;
+              }
+              this.cloneColumns[i]._width = width||'';
+              this.tableWidth = this.cloneColumns.map(cell => cell.width).reduce((a, b) => a + b);
+
+              columnsWidth[column._index] = {
+                  width: width
+              };
+            }
+            this.columnsWidth = columnsWidth;
           }
 
         });
         // get table real height,for fixed when set height prop,but height < table's height,show scrollBarWidth
-        this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'));
+        this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
       });
     },
     handleMouseIn (_index) {
@@ -473,27 +522,40 @@ export default {
         this.objData[_index]._isHover = false;
     },
     highlightCurrentRow (_index) {
-        if (!this.highlightRow || this.objData[_index]._isHighlight) return;
-
+        if (!this.highlightRow) return;
+        const curStatus = this.objData[_index]._isHighlight;
         let oldIndex = -1;
         for (let i in this.objData) {
+          this.objData[i]._isChecked = false;//单选时取消多选项，估值6.0专用
             if (this.objData[i]._isHighlight) {
-                oldIndex = parseInt(i);
-                this.objData[i]._isHighlight = false;
+              oldIndex = parseInt(i);
+              this.objData[i]._isHighlight = false;//单选是上一项取消选中
             }
         }
-        this.objData[_index]._isHighlight = true;
         const oldData = oldIndex < 0 ? null : JSON.parse(JSON.stringify(this.cloneData[oldIndex]));
-        this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
+        if (curStatus) {
+          this.objData[_index]._isHighlight = false;
+          this.objData[_index]._isChecked = false;
+          this.$emit('on-current-change-cancle',JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
+        }else{
+          this.objData[_index]._isHighlight = true;
+          this.objData[_index]._isChecked = true;
+          this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
+        }
+        if (this.columns[0].type=='selection') {
+          let selection = []
+          selection.push(this.cloneData[_index]);
+          this.$emit('on-selection-change', JSON.parse(JSON.stringify(selection)));
+        }
     },
     clickCurrentRow (_index) {
-        if (!this.rowSelect || !this.selectType) {
-          this.highlightCurrentRow (_index);
-        }
-        this.$emit('on-row-click', [JSON.parse(JSON.stringify(this.cloneData[_index])),_index]);
+      if (!this.rowSelect) {
+        this.highlightCurrentRow (_index);
+      }
+      this.$emit('on-row-click', [JSON.parse(JSON.stringify(this.cloneData[_index])),_index]);
     },
     dblclickCurrentRow (_index) {
-      if (!this.rowSelect || !this.selectType) {
+      if (!this.rowSelect) {
         this.highlightCurrentRow (_index);
       }
       this.$emit('on-row-dblclick', JSON.parse(JSON.stringify(this.cloneData[_index])));
@@ -507,19 +569,70 @@ export default {
     },
     toggleSelect (_index) {
         let data = {};
-
         for (let i in this.objData) {
-            if (parseInt(i) === _index) {
-                data = this.objData[i];
-            }
+          if (parseInt(i) === _index) {
+            data = this.objData[i];
+          }
         }
         const status = !data._isChecked;
-
         this.objData[_index]._isChecked = status;
+        if (!status) {
+          this.objData[_index]._isHighlight = false;
+        }
 
         const selection = this.getSelection();
         this.$emit(status ? 'on-select' : 'on-select-cancel', selection, JSON.parse(JSON.stringify(this.data[_index])));
         this.$emit('on-selection-change', selection);
+    },
+    clearAllRow(){
+      for (let i in this.objData) {
+          if (this.objData[i]._isHighlight) {
+            this.objData[i]._isHighlight = false;
+          }
+      }
+    },
+    clearSingle(_index,status){
+      this.$nextTick(()=>{
+        this.objData[_index]._isHighlight=status;
+      })
+    },
+    clearSelect(_index,status){
+      this.$nextTick(()=>{
+        this.objData[_index]._isChecked=status;
+      })
+    },
+    enterSingle(_index,status){
+      this.$nextTick(()=>{
+        this.objData[_index]._isHighlight=status;
+        this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])), '');
+      });
+    },
+    enterSelect(_index,status){
+      this.$nextTick(()=>{
+        this.objData[_index]._isChecked=status;
+        const selection = this.getSelection();
+        this.$emit('on-select' , selection, JSON.parse(JSON.stringify(this.data[_index])));
+      });
+    },
+    changeHover(_index,status){
+      this.$nextTick(()=>{
+        this.objData[_index]._isHover=status;
+      })
+    },
+    toggleMached(arr){
+      for (let i in this.objData) {
+        this.objData[i]._isMatched = false;//取消所有匹配项，估值6.0专用
+      }
+      if (arr.length == 0) return false;
+      arr.map(inx=>{this.objData[inx]._isMatched = true;});
+    },
+    selectFilterData(arr){
+      let filterData = [];
+      let data = this.makeData();
+      arr.forEach(col=>{
+        filterData.push(data[col]);
+      })
+      this.rebuildData = filterData;
     },
     toggleExpand (_index) {
         let data = {};
@@ -534,20 +647,13 @@ export default {
         this.$emit('on-expand', JSON.parse(JSON.stringify(this.cloneData[_index])), status);
     },
     selectAll (status) {
-        // this.rebuildData.forEach((data) => {
-        //     if(this.objData[data._index]._isDisabled){
-        //         this.objData[data._index]._isChecked = false;
-        //     }else{
-        //         this.objData[data._index]._isChecked = status;
-        //     }
-            
-        // });
         for(const data of this.rebuildData){
-            if(this.objData[data._index]._isDisabled){
-                continue;
-            }else{
-                this.objData[data._index]._isChecked = status;
-            }
+          this.objData[data._index]._isHighlight=false;
+          if(this.objData[data._index]._isDisabled){
+            continue;
+          }else{
+            this.objData[data._index]._isChecked = status;
+          }
         }
         const selection = this.getSelection();
         if (status) {
@@ -580,6 +686,8 @@ export default {
         if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = event.target.scrollTop;
         if (this.isRightFixed) this.$refs.fixedRightBody.scrollTop = event.target.scrollTop;
         this.hideColumnFilter();
+        let buttomNum = getBarBottom(event.target,this.scrollBarWidth);
+        this.$emit('on-scroll',buttomNum)
     },
     handleMouseWheel (event) {
         const deltaX = event.deltaX;
@@ -761,6 +869,11 @@ export default {
         } else {
             newRow._isHighlight = false;
         }
+        if (newRow._isMatched) {
+            newRow._isMatched = newRow._isMatched;
+        } else {
+            newRow._isMatched = false;
+        }
         data[index] = newRow;
       });
       return data;
@@ -906,6 +1019,9 @@ export default {
       },
       height () {
           this.fixedHeader();
+      },
+      hasWidth(){
+        this.handleResize();
       }
   }
 };

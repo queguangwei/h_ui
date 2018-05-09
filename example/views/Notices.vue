@@ -38,7 +38,8 @@
       info (nodesc) {
         this.$hNotice.info({
           title: '这是通知标题',
-          desc: nodesc ? '' : '这里是通知描述这里,是通知描述这里是通知描述这里,是通知描述这里,是通知描述这里是通知描述这里是通知描述'
+          desc: nodesc ? '' : '这里是通知描述这里,是通知描述这里是通知描述这里,是通知描述这里,是通知描述这里是通知描述这里是通知描述',
+          duration: 0
         });
       },
       success (nodesc) {

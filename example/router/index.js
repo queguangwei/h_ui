@@ -49,6 +49,8 @@ import Card from '../views/Card.vue'
 import EditGird from '../views/EditGird.vue'
 import GroupTable from '../views/GroupTable.vue'
 import TreeGird from '../views/TreeGird.vue'
+import SelectTable from '../views/SelectTable.vue'
+import FastDate from '../views/FastDate.vue'
 Vue.use(Router)
 
 const router = new Router({
@@ -282,6 +284,16 @@ const router = new Router({
         name: 'TreeGird',
         path: '/treeGird',
         component: TreeGird
+    },
+    {
+        name: 'SelectTable',
+        path: '/selectTable',
+        component: SelectTable
+    },
+    {
+        name: 'FastDate',
+        path: '/fastDate',
+        component: FastDate
     }
  ]
 })

@@ -109,8 +109,8 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
     transition: background-color $transition-time $ease-in-out;
   }
 
-  th.#{$table-prefix-cls}-column,
-  td.#{$table-prefix-cls}-column
+  th.#{$table-prefix-cls}-head-column,
+  td.#{$table-prefix-cls}-body-column
   {
     &-left{
         text-align: left;
@@ -122,7 +122,18 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
         text-align: right;
     }
   }
-
+  th.#{$table-prefix-cls}-column,
+  td.#{$table-prefix-cls}-column,{
+    &-left{
+        text-align: left;
+    }
+    &-center{
+        text-align: center;
+    }
+    &-right{
+        text-align: right;
+    }
+  }
   & table{
     //width: 100%;
     table-layout: fixed;
@@ -231,6 +242,11 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
   {
     td{
       background-color: $table-td-highlight-bg;
+    }
+  }
+  &-row-filterable{
+    td{
+      color: darken($error-color, 10%);
     }
   }
 
@@ -342,6 +358,7 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
   }
 
   &-tip {
+    overflow:auto;
     table {
       width: 100%;
 

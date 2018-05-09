@@ -3,7 +3,7 @@ $transfer-no-max-height: "#{$css-prefix}transfer-no-max-height";
 
 .#{$select-dropdown-prefix-cls} {
     width: inherit;
-    max-height: 250px;
+    // max-height: $max-height;
     // overflow: auto;
     margin: 5px 0;
     // padding: 5px 0;

@@ -249,17 +249,17 @@
         const isEmptyString = val.length === 0;
         val = Number(val);
         if (!isNaN(val) && !isEmptyString) {
-            this.currentValue = val;
+          this.currentValue = val;
 
-            if (val > max) {
-                this.setValue(max);
-            } else if (val < min) {
-                this.setValue(min);
-            } else {
-                this.setValue(val);
-            }
+          if (val > max) {
+              this.setValue(max);
+          } else if (val < min) {
+              this.setValue(min);
+          } else {
+              this.setValue(val);
+          }
         } else {
-            event.target.value = this.currentValue;
+          event.target.value = this.currentValue;
         }
       },
       changeVal (val) {

@@ -26,6 +26,8 @@
           :typeName="typeName"
           :isCheckbox="isCheckbox"
           :checkStrictly="checkStrictly"
+          :option="option"
+          :treeOption="treeOption"
           @on-select-change="selectChange"
           ></gird-body>
       </div>
@@ -55,7 +57,7 @@ import GirdHead from './Gird-head.vue';
 import GirdBody from './Gird-body.vue';
 import Spin from '../Spin/Spin.vue';
 import Mixin from './mixin';
-import { oneOf, getStyle, deepCopy, getScrollBarSize,findInx} from '../../util/tools';
+import { oneOf, getStyle, deepCopy, getScrollBarSize,getBarBottom,findInx} from '../../util/tools';
 import { on, off } from '../../util/dom';
 import Locale from '../../mixins/locale';
 
@@ -146,6 +148,18 @@ export default {
       type: Boolean,
       default: false
     },
+    option:{
+      type: Array,
+      default () {
+        return [];
+      }
+    },
+    treeOption:{
+      type: Array,
+      default () {
+        return [];
+      }
+    }
   },
   data () {
     return {
@@ -450,7 +464,7 @@ export default {
         _this.objData[_index]._isChecked = status;
 
         const selection = this.getSelection();
-        this.$emit(status ? 'on-select' : 'on-select-cancel', selection, JSON.parse(JSON.stringify(this.data[_index])));
+        this.$emit(status ? 'on-select' : 'on-select-cancel', selection, JSON.parse(JSON.stringify(this.cloneData[_index])));
         this.$emit('on-selection-change', selection);
       }
     },
@@ -467,8 +481,8 @@ export default {
       if (this.typeName!='treeGird') {
         this.$set(this.rebuildData[_index],'expand',status);
       }
-      // this.$emit('on-expand', JSON.parse(JSON.stringify(this.cloneData[_index])), status);
-      this.$emit('on-expand',status);
+      this.$emit('on-expand', JSON.parse(JSON.stringify(this.cloneData[_index])), status);
+      // this.$emit('on-expand',status);
     },
     selectAll (status) {
         // this.rebuildData.forEach((data) => {
@@ -509,8 +523,9 @@ export default {
     },
     handleBodyScroll (event) {
       let _this = this;
+      let buttomNum = getBarBottom(event.target,this.scrollBarWidth);
+      this.$emit('on-scroll',buttomNum)
       if (this.showHeader) this.$refs.header.scrollLeft = event.target.scrollLeft;
-      // console.log(event.target.scrollLeft);
       const verifyTips = this.$refs.tbody.$el.querySelectorAll('.verify-tip')
       if (verifyTips && verifyTips.length>0) {
         for (let i = 0; i < verifyTips.length; i++) {
@@ -762,7 +777,7 @@ export default {
       },
       height () {
           this.fixedHeader();
-      }
+      },
   }
 };
 </script>

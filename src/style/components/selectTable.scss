@@ -1,8 +1,8 @@
-$select-prefix-cls:  "#{$css-prefix}select";
-$select-item-prefix-cls:  "#{$css-prefix}select-item";
-$select-group-prefix-cls:  "#{$css-prefix}select-group";
+$selectTable-prefix-cls:  "#{$css-prefix}selectTable";
+$selectTable-item-prefix-cls:  "#{$css-prefix}selectTable-item";
+$select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
 
-.#{$select-prefix-cls} {
+.#{$selectTable-prefix-cls} {
     display: inline-block;
     width: 100%;
     box-sizing: border-box;
@@ -25,19 +25,19 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
         transition: all $transition-time $ease-in-out;
 
 
-        .#{$select-prefix-cls}-arrow:nth-of-type(1) {
+        .#{$selectTable-prefix-cls}-arrow:nth-of-type(1) {
             display: none;
             cursor: pointer;
         }
 
         &:hover {
             @include hover();
-            .#{$select-prefix-cls}-arrow:nth-of-type(1) {
+            .#{$selectTable-prefix-cls}-arrow:nth-of-type(1) {
                 display: inline-block;
             }
         }
     }
-    &-show-clear &-selection:hover .#{$select-prefix-cls}-arrow:nth-of-type(2) {
+    &-show-clear &-selection:hover .#{$selectTable-prefix-cls}-arrow:nth-of-type(2) {
         display: none;
     }
 
@@ -46,38 +46,36 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
     }
 
     &-visible{
-        .#{$select-prefix-cls}-selection{
+        .#{$selectTable-prefix-cls}-selection{
             @include active();
         }
 
-        .#{$select-prefix-cls}-arrow:nth-of-type(2) {
+        .#{$selectTable-prefix-cls}-arrow:nth-of-type(2) {
             transform: rotate(180deg);
         }
     }
-
     &-disabled,&-readonly{
-        .#{$select-prefix-cls}-selection {
-            .#{$select-prefix-cls}-arrow:nth-of-type(1) {
+        .#{$selectTable-prefix-cls}-selection {
+            .#{$selectTable-prefix-cls}-arrow:nth-of-type(2) {
                 display: none;
             }
-
             &:hover {
                 border-color: $border-color-base;
                 box-shadow: none;
 
-                .#{$select-prefix-cls}-arrow:nth-of-type(2) {
+                .#{$selectTable-prefix-cls}-arrow:nth-of-type(1) {
                     display: inline-block;
                 }
             }
         }
     }
     &-disabled {
-        .#{$select-prefix-cls}-selection {
+        .#{$selectTable-prefix-cls}-selection {
             @include disabled();
         }
     }
     &-readonly {
-        .#{$select-prefix-cls}-selection {
+        .#{$selectTable-prefix-cls}-selection {
             @include readonly();
         }
     }
@@ -86,11 +84,11 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
         height: $input-height-base;
         position: relative;
 
-        .#{$select-prefix-cls}-placeholder{
+        .#{$selectTable-prefix-cls}-placeholder{
             color: $input-placeholder-color;
         }
 
-        .#{$select-prefix-cls}-placeholder, .#{$select-prefix-cls}-selected-value{
+        .#{$selectTable-prefix-cls}-placeholder, .#{$selectTable-prefix-cls}-selected-value{
             display: block;
             height: $input-height-base - 2px;
             line-height: $input-height-base - 2px;
@@ -103,21 +101,21 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
         }
     }
 
-    .#{$select-prefix-cls}-large.#{$select-prefix-cls}-single &-selection{
+    .#{$selectTable-prefix-cls}-large.#{$selectTable-prefix-cls}-single &-selection{
         height: $input-height-large;
 
-        .#{$select-prefix-cls}-placeholder, .#{$select-prefix-cls}-selected-value{
+        .#{$selectTable-prefix-cls}-placeholder, .#{$selectTable-prefix-cls}-selected-value{
             height: $input-height-large - 2px;
             line-height: $input-height-large - 2px;
             font-size: $font-size-base;
         }
     }
 
-    .#{$select-prefix-cls}-small.#{$select-prefix-cls}-single &-selection{
+    .#{$selectTable-prefix-cls}-small.#{$selectTable-prefix-cls}-single &-selection{
         height: $input-height-small;
         border-radius: $btn-border-radius-small;
 
-        .#{$select-prefix-cls}-placeholder, .#{$select-prefix-cls}-selected-value{
+        .#{$selectTable-prefix-cls}-placeholder, .#{$selectTable-prefix-cls}-selected-value{
             height: $input-height-small - 2px;
             line-height: $input-height-small - 2px;
         }
@@ -126,9 +124,10 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
     &-multiple &-selection{
         overflow: auto;
         height: $input-height-base;
+        padding-left:2px;
         padding-right:30px;
 
-        .#{$select-prefix-cls}-placeholder{
+        .#{$selectTable-prefix-cls}-placeholder{
             display: block;
             height: $input-height-base - 2px;
             line-height: $input-height-base - 2px;
@@ -137,13 +136,13 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            padding-left: 4px;
+            padding-left: 8px;
             padding-right: 22px;
         }
     }
 
     // input
-    &-input,&-content-input{
+    &-input{
         display: inline-block;
         height: $input-height-base;
         line-height: $input-height-base;
@@ -157,9 +156,6 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
         position: relative;
         cursor: pointer;
         @include placeholder();
-    }
-    &-content-input{
-        width:100%;
     }
 
     &-single &-input{
@@ -178,7 +174,7 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
     &-multiple &-input{
         height: $input-height-base - 3px;
         line-height: $input-height-base;
-        padding: 0 0 0 4px;
+        padding: 0 0 0 8px;
     }
 
     &-not-found{
@@ -199,14 +195,14 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
 
     // select-arrow
     &-single &-selection {
-        .#{$select-prefix-cls}-arrow {
+        .#{$selectTable-prefix-cls}-arrow {
             right: 8px!important;
         }
     }
 
     // select-dropdown-list checkbox
     &-dropdown &-dropdown-list {
-        .#{$select-prefix-cls}-item {
+        .#{$selectTable-prefix-cls}-item {
             position: relative;
             & label {
                 // position: absolute;
@@ -216,9 +212,112 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
     }
 
     &-dropdown-content{
-        max-height:$max-height;
-        padding: 5px 0;
-        overflow:auto;
+        // max-height:$max-height;
+        // padding: 0;
+        // overflow:auto;
+        .h-selectTable-search {
+            position: absolute;
+            background: #fff;
+            height: 52px;
+            padding: 10px;
+            left: 0;
+            top: 0;
+            z-index: 1;
+            input {
+                height: 32px;
+                line-height: 32px;
+                padding: 0 5px;
+                border: 1px solid #D7DDE4; 
+            }
+            input:focus {
+                box-shadow: none;
+            }
+        }
+        .h-selectTable-dropdown-list {
+            max-height:$max-height;
+            overflow:auto;
+            position:relative;
+
+            .h-table-wrapper {
+                border: 0;
+                // margin-top: 52px;
+                // padding: 0 10px;
+                .h-table:after {
+                    width: 0;
+                } 
+                .h-table:before{
+                    background-color:#fff;
+                }
+                .h-table th,
+                .h-table td {
+                    border-bottom: 0;
+                    border-top: 1px solid #E8E9EB;
+                }
+                .h-table-row-highlight td, 
+                .h-table-row-checked td {
+                    background: #fff;
+                    color: #3591E0;
+                }
+                .h-table-row-hover td {
+                    background:$background-color-select-hover;
+                }
+            }
+        }
+    }
+    &-dropdown-noline-content {
+        padding: 0;
+        .h-selectTable-search {
+            position: absolute;
+            background: #fff;
+            height: 38px;
+            padding: 5px 5px 0;
+            left: 0;
+            top: 0;
+            z-index: 1;
+            input {
+                height: 33px;
+                line-height: 33px;
+                border: 0;
+                padding: 0 5px;
+                border-radius: 0;
+                border-bottom: 1px solid #D7DDE4; 
+            }
+            input:focus {
+                box-shadow: none;
+            }
+        }
+        .h-selectTable-dropdown-list {
+            max-height:$max-height;
+            overflow:auto;
+            position: relative;
+
+            .h-table-wrapper {
+                border: 0;
+                // margin-top: 38px;
+                // padding: 0 5px;
+                .h-table:after {
+                    width: 0;
+                } 
+                .h-table:before{
+                    background-color:#fff;
+                }
+                .h-table th {
+                    border-bottom: 0;
+                } 
+                .h-table td {
+                    border-bottom: 0;
+                }
+                .h-table-row-highlight td, 
+                .h-table-row-checked td{
+                    background: #fff;
+                    color: #3591E0;
+
+                }
+                .h-table-row-hover td {
+                    background:$background-color-select-hover;
+                }
+            }
+        }
     }
     &-left{
         text-align:left;
@@ -231,9 +330,9 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
     }
 }
 
-@include select-item($select-prefix-cls, $select-item-prefix-cls);
+@include select-item($selectTable-prefix-cls, $selectTable-item-prefix-cls);
 
-.#{$select-prefix-cls}-multiple .#{$select-item-prefix-cls} {
+.#{$selectTable-prefix-cls}-multiple .#{$selectTable-item-prefix-cls} {
     &-selected{
         color: $selected-color;
         background: #fff;
@@ -243,7 +342,7 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
         background: $background-color-select-hover;
     }
 
-    .#{$select-item-prefix-cls}-selected.#{$select-item-prefix-cls}-focus {
+    .#{$selectTable-item-prefix-cls}-selected.#{$selectTable-item-prefix-cls}-focus {
         color: shade($selected-color, 10%);
         background: #fff;
     }
@@ -274,7 +373,7 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
 }
 
 .#{$form-item-prefix-cls}-error{
-    .#{$select-prefix-cls}{
+    .#{$selectTable-prefix-cls}{
         &-selection{
             border: 1px solid $error-color;
             &:hover{
@@ -284,26 +383,26 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
         &-arrow{
             color: $error-color;
         }
-        &-visible .#{$select-prefix-cls}-selection{
+        &-visible .#{$selectTable-prefix-cls}-selection{
             @include active-error;
         }
     }
 }
 .#{$editgird-prefix-cls}-cell-error{
-    .#{$select-prefix-cls}{
+    .#{$selectTable-prefix-cls}{
         &-selection{
             border: 1px solid $error-color;
         }
         &-arrow{
             color: $error-color;
         }
-        &-visible .#{$select-prefix-cls}-selection{
+        &-visible .#{$selectTable-prefix-cls}-selection{
             @include active-error;
         }
     }
 }
 .#{$editgird-prefix-cls}-cell{
-    .#{$select-prefix-cls}{
+    .#{$selectTable-prefix-cls}{
         &-dropdown{
             ul{
                 user-select:none;
@@ -311,8 +410,8 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
         }
     }
 }
-.#{$select-prefix-cls}-multiple{
-    .#{$select-prefix-cls}{
+.#{$selectTable-prefix-cls}-multiple{
+    .#{$selectTable-prefix-cls}{
         &-checkall{
             border-top: 1px solid #e1e1e1;
             text-align: right;

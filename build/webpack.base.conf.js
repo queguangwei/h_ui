@@ -29,7 +29,7 @@ module.exports = {
       resolve('node_modules')
     ],
     alias: {
-      'vue': 'vue/dist/vue.esm.js',
+      'Vue': 'vue/dist/vue.esm.js',
       'src': path.resolve(__dirname, '../src'),
       'example': path.resolve(__dirname, '../example'),
       'assets': path.resolve(__dirname, '../example/assets'),

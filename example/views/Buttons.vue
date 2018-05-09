@@ -3,7 +3,7 @@
     <h1>基础按钮</h1>
     <i class="icon iconfont icon-arrowdownb"></i>
     <h-button>Default</h-button>
-    <h-button type="primary">Primary</h-button>
+    <h-button type="primary" @click="btnClick">Primary</h-button>
     <h-button type="ghost">Ghost</h-button>
     <h-button type="dashed">Dashed</h-button>
     <h-button type="text">Text</h-button>

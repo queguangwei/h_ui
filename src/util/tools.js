@@ -494,11 +494,12 @@ export function toFix(d){
 function vliData(num) {
   return num>10?num:'0'+num;
 }
-export function getYMD(data){
+export function getYMD(data,str,num){
+  data.setDate(data.getDate() + num);
   let Y = data.getFullYear();
   let M = vliData(data.getMonth()+1);
   let D = vliData(data.getDate());
-  return Y+"-"+M+'-'+D;
+  return Y+str+M+str+D;
 }
 export function getHMS(data){
   let H = vliData(data.getHours());
@@ -506,24 +507,91 @@ export function getHMS(data){
   let S = vliData(data.getSeconds());
   return H+':'+M+":"+S;
 }
- // uctToBeijing(utc_datetime){
-    //   utc_datetime = String(utc_datetime);
-    //   // 转为正常的时间格式 年-月-日 时:分:秒
-    //   let T_pos = utc_datetime.indexOf('T');
-    //   let Z_pos = utc_datetime.indexOf('Z');
-    //   let year_month_day = utc_datetime.substr(0,T_pos);
-    //   let hour_minute_second = utc_datetime.substr(T_pos+1,Z_pos-T_pos-1);
-    //   let new_datetime = year_month_day+" "+hour_minute_second; // 2017-03-31 08:02:06
-    //   let timestamp;
-    //   // 处理成为时间戳
-    //   timestamp = new Date(Date.parse(new_datetime));
-    //   timestamp = timestamp.getTime();
-    //   timestamp = timestamp/1000;
+export function getCurrentYear(){
+  let date = new Date()
+  return date.getFullYear();
+}
+export function getCurrentMonth(){
+  let date = new Date()
+  return vliData(date.getMonth()+1);
+}
+export function getCurrentDay(){
+  let date = new Date()
+  return vliData(date.getDate());
+}
 
-    //   // 增加8个小时，北京时间比utc时间多八个时区
-    //   timestamp = timestamp+8*60*60;
+export function getBarBottom(obj,barWidth) {
+  let width = obj.getBoundingClientRect().width;
+  let conentWidth = obj.scrollWidth;
+  let height = obj.getBoundingClientRect().height;
+  let top = obj.scrollTop;
+  let sheight =conentWidth+barWidth>width?height-barWidth:height;
+  let conentHeight = obj.scrollHeight;
+  return conentHeight-top-sheight;
+}
 
-    //   // 时间戳转为时间
-    //   let beijing_datetime = new Date(parseInt(timestamp) * 1000).toLocaleString().replace(/年|月/g, "-").replace(/日/g, " ");
-    //   return beijing_datetime;
-    // },
+export function formatnumber(fnumber,fdivide,fpoint,fround){
+  var fnum = fnumber + '';
+  var revalue="";
+  if(fnum==null){
+    for(var i=0;i<fpoint;i++)revalue+="0";
+    return "0."+revalue;
+  }
+  fnum = fnum.replace(/^sall|sall$/g,'');
+  if(fnum==""){
+    for(var i=0;i<fpoint;i++)revalue+="0";
+    return "0."+revalue;
+  }
+  fnum=fnum.replace(/,/g,"");
+  if(fround){
+    var temp = "0.";
+    for(var i=0;i<fpoint;i++)temp+="0";
+    temp += "5";
+    fnum = Number(fnum) + Number(temp);
+    fnum += '';
+  }
+  var arrayf=fnum.split(".");
+  if(fdivide){
+    if(arrayf[0].length>3){
+      while(arrayf[0].length>3){
+        revalue=","+arrayf[0].substring(arrayf[0].length-3,arrayf[0].length)+revalue;
+        arrayf[0]=arrayf[0].substring(0,arrayf[0].length-3);
+      }
+    }
+  }
+  revalue=arrayf[0]+revalue;
+  if(arrayf.length==2&&fpoint!=0){
+    arrayf[1]=arrayf[1].substring(0,(arrayf[1].length<=fpoint)?arrayf[1].length:fpoint);
+    if(arrayf[1].length<fpoint)
+    for(var i=0;i<fpoint-arrayf[1].length;i++)arrayf[1]+="0";
+    revalue+="."+arrayf[1];
+  }else if(arrayf.length==1&&fpoint!=0){
+    revalue+=".";
+  for(var i=0;i<fpoint;i++)revalue+="0";
+  }
+  return revalue;
+}
+
+export function isdate(intYear,intMonth,intDay){ 
+ if(isNaN(intYear)||isNaN(intMonth)||isNaN(intDay)) return false;   
+ if(intMonth>12||intMonth<1) return false; 
+ if ( intDay<1||intDay>31)return false; 
+ if((intMonth==4||intMonth==6||intMonth==9||intMonth==11)&&(intDay>30)) return false; 
+ if(intMonth==2){ 
+   if(intDay>29) return false;  
+   if((((intYear%100==0)&&(intYear%400!=0))||(intYear%4!=0))&&(intDay>28))return false; 
+  }
+ return true; 
+}
+let timer 
+// 滚动公用方法
+export function scrollAnimate(obj,curTop,newTop){
+  clearInterval(timer);
+  timer = setInterval(()=>{
+    curTop = curTop<newTop?curTop+1:curTop-1;
+    obj.scrollTop = curTop;
+    if (curTop==newTop) {
+      clearInterval(timer);
+    }
+  },5);
+}

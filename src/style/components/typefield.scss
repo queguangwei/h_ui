@@ -6,29 +6,27 @@ $typefield-prefix-cls: "#{$css-prefix}typefield" ;
   input{
     width: 100%;
     height: 32px;
-    padding: 5px 10px;
+    padding-left:8px;
     outline: 0;
     font-size: 12px;
     line-height: 1.42857143;
     -webkit-box-shadow: none;
     box-shadow: none;
-    -webkit-border-radius: $border-radius-small;
-    -moz-border-radius: $border-radius-small;
-    border-radius: $border-radius-small;
     -webkit-transition: border-color ease-in-out $transition-time, -webkit-box-shadow ease-in-out $transition-time;
     -o-transition: border-color ease-in-out $transition-time, box-shadow ease-in-out $transition-time;
     transition: border-color ease-in-out $transition-time, box-shadow ease-in-out $transition-time;
     color: #555;
     background-color: #fff;
     background-image: none;
-    border: 1px solid #ccd0d4;
+    border: 1px solid $border-color-base;
+    border-radius: $border-radius-small;
     @include placeholder();
   }
   input[disabled]:focus, 
   input[readonly]:focus {
     box-shadow: none;
     -webkit-box-shadow: none;
-    border: 1px solid #ccd0d4;
+    border: 1px solid $border-color-base;
   }
   input:focus {
     outline: 0;
@@ -36,16 +34,13 @@ $typefield-prefix-cls: "#{$css-prefix}typefield" ;
   }
   &-disabled{
     input[disabled], {
-      opacity: 1;
-      filter: alpha(opacity=90);
-      background: $input-disabled-bg;
+      @include disabled();
     }
   }
   &-readonly{
     input[readonly] {
-      opacity: 0.5;
-      filter: alpha(opacity=90);
-      background: $input-disabled-bg;
+      // background: $input-readonly-bg;
+      @include readonly();
     }
   }
   &-tip {
@@ -63,18 +58,54 @@ $typefield-prefix-cls: "#{$css-prefix}typefield" ;
     color: #ff8000;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
   }
+  &-left{
+    text-align:left;
+  }
+  &-center{
+    text-align:center;
+  }
+  &-right{
+    text-align:right;
+  }
 }
+
+.#{$typefield-prefix-cls}-group{
+  @include input-group("#{$typefield-prefix-cls}");
+  input{
+    border-radius: 0;
+  }
+  .h-typefield-left {
+      border-bottom-left-radius: $border-radius-small;
+      border-top-left-radius: $border-radius-small;
+      border-bottom-right-radius: 0;
+      border-top-right-radius: 0;
+  }
+  .h-select-selection {
+      border-bottom-left-radius: 0;
+      border-top-left-radius: 0;
+  }
+}
+
 .#{$form-item-prefix-cls}-error{
-    .#{$typefield-prefix-cls}{
-        input{
-            border: 1px solid $error-color;
-        }
-    }
+  .#{$typefield-prefix-cls}{
+      input{
+        border: 1px solid $error-color;
+      }
+      input:focus{
+        border: 1px solid $error-color;
+      }
+  }
+  .#{$input-prefix-cls}-group{
+    @include input-group-error();
+  }
 }
 .#{$editgird-prefix-cls}-cell-error{
     .#{$typefield-prefix-cls}{
         input{
             border: 1px solid $error-color;
         }
+    }
+    .#{$input-prefix-cls}-group{
+      @include input-group-error();
     }
 }

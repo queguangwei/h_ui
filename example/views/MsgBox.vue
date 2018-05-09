@@ -68,13 +68,24 @@
     <h2>自定义内容/有问题</h2>
     <h-button @click="render">自定义内容</h-button>{{value}}
     <h2>MsgBox</h2>
-    <h-msg-box v-model="showModal2" title="弹窗">
+    <h-msg-box v-model="showModal2" title="弹窗" width="800px">
+      <h-select :transfer="true" style="width:400px;">
+        <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>
+      </h-select>
+      <br><br><br><br><br>
+
       <h-tabs>
-        <h-tab-pane label="演示" style="height: 80px;">
-          <h-select :transfer="true" style="width:200px;">
+        <h-tab-pane label="演示" style="height: 1000px;">
+          <h-select :transfer="true" style="width:400px;">
               <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>
           </h-select>
-          <h-select :transfer="true" style="width:200px;">
+          <h-select :transfer="true" style="width:400px;">
+              <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>
+          </h-select>
+          <h-select :transfer="true" style="width:400px;">
+              <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>
+          </h-select>
+          <h-select :transfer="true" style="width:400px;">
               <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>
           </h-select>
         </h-tab-pane>

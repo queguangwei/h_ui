@@ -13,7 +13,7 @@
           @mouseenter.native.stop="handleMouseIn(row._index)"
           @mouseleave.native.stop="handleMouseOut(row._index)"
           @click.native="clickCurrentRow(row._index)">
-          <td v-for="column in columns" :class="alignCls(column, row)">
+          <td v-for="(column,inx) in columns" :class="alignCls(column, row)">
             <Cell
               :prefix-cls="prefixCls"
               :row="row"
@@ -26,9 +26,17 @@
               :disabled="rowDisabled(row._index)"
               :expanded="rowExpanded(row._index)"
               :showEditInput="showEditInput"
+              :option="option[inx]"
+              :treeOption="treeOption[inx]"
             ></Cell>
           </td>
         </table-tr>
+        <tr v-if="rowExpanded(row._index)">
+          <td :colspan="columns.length" :class="prefixCls + '-expanded-cell'">
+
+            <Expand :key="row._rowKey" :row="row" :render="expandRender" :index="row._index"></Expand>
+          </td>
+        </tr>
       </template>
       <template v-if="typeName=='groupTable'" v-for="(rowTitle, index) in data">
         <group-tr
@@ -140,6 +148,8 @@
         showEditInput:Boolean,
         isCheckbox:Boolean,
         checkStrictly:Boolean,
+        option:Array,
+        treeOption:Array,
       },
       data(){
         return{

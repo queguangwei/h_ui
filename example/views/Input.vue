@@ -1,13 +1,10 @@
 <template>
   <div id="h-input1" class="wrapper">
-    <textarea rows="6" cols="200">
-    在w3school，你可以找到你所需要的所有的网站建设教程。
-    </textarea>
-
-    <h-input v-model="value6" type="textarea" :rows="4" placeholder="请输入..."></h-input>
+    <h-input algin="left"  placeholder="请输入..."></h-input>
+    <h-input algin="center" placeholder="请输入..."></h-input>
+    <h-input algin="right" placeholder="请输入..."></h-input>
     <h2>基础用法</h2>
     <p>可以直接设置 style 来改变输入框的宽度</p>
-    <textarea v-model="example"></textarea>
     <h-input v-model="value" placeholder="请输入..." style="width: 300px" @on-keypress="keypress"></h-input>
     <h-input placeholder="请输入..." style="width: 300px" disabled></h-input>
     <h-input value="你好呀我不好呀" placeholder="请输入..." style="width: 300px" readonly></h-input>
@@ -28,7 +25,7 @@
       </h-col>
     </h-row>  
     <h2>适应文本高度的文本域</h2>
-    <h-input v-model="value7" type="textarea" :autosize="true" placeholder="请输入..." style="width: 200px"></h-input>
+    <h-input v-model="value7" type="textarea" :autosize="true" placeholder="请输入..." style="width: 200px" :disabled="true"></h-input>
     <h-input v-model="value8" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..." style="width: 200px"></h-input>
     <h2>输入框尺寸</h2>
     <h-input v-model="value1" size="large" placeholder="large size" style="width: 300px"></h-input>
@@ -55,6 +52,7 @@
             <h-option value="io">.io</h-option>
         </h-select>
     </h-input>
+    {{value12}}
     <br>
     <h-input v-model="value13">
       <h-select v-model="select3" slot="prepend" style="width: 80px">
@@ -85,7 +83,7 @@ export default {
       value4: '',
       value5: '',
       value6: '',
-      value7: '',
+      value7: '11111111\r\n111111\r\n1111111111111111111111111111111\r\n111111111111111111111111111111111111111111111111111111111111111111\r\n1111111111111111111111111111111111111111111111111111',
       value8: '',
       value11: '',
       value12: '',

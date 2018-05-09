@@ -89,7 +89,7 @@
       }
       this.multiple=hasClass(el,'h-select-multiple')?true:false;
     },
-    beforeDestroy () {
+    destroyed () {
       this.dispatch('Select', 'remove');
     }
   };

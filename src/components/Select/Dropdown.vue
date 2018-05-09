@@ -2,7 +2,7 @@
   <div class="h-select-dropdown" :style="styles" @click="handleClick"><slot></slot></div>
 </template>
 <script>
-import Vue from 'vue';
+import Vue from 'Vue';
 const isServer = Vue.prototype.$isServer;
 import { getStyle } from '../../util/tools';
 const Popper = isServer ? function() {} : require('popper.js');
@@ -15,6 +15,9 @@ export default {
 		},
 		className: {
             type: String
+        },
+        dropWidth:{
+        	type:[String,Number]
         }
 	},
 	data () {
@@ -54,8 +57,12 @@ export default {
 					});
 				});
 			}
-			if (this.$parent.$options.name === 'Select'|| this.$parent.$options.name === 'SelectTree') {
-				this.width = parseInt(getStyle(this.$parent.$el, 'width'));
+			if (this.$parent.$options.name === 'Select'|| this.$parent.$options.name === 'SelectTree' || this.$parent.$options.name === 'SelectTable') {
+				if (!this.dropWidth) {
+					this.width = parseInt(getStyle(this.$parent.$el, 'width'));
+				}else{
+					this.width = this.dropWidth;
+				}
 			}
 		},
 		destroy () {

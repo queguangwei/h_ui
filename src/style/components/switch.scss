@@ -122,7 +122,7 @@ $switch-prefix-cls: "#{$css-prefix}switch";
         border-color: #e5e5e5;
         .slide {
             background: #fff;
-            cursor: not-allowed;
+            cursor: $cursor-disabled;
         }
         .#{$switch-prefix-cls}-inner {
             color: #ccc;

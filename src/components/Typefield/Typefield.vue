@@ -1,22 +1,27 @@
 <template>
   <div v-if="!hidden" :class="clazz">
-    <input 
+    <div :class="[prefixCls + '-group-prepend']" v-if="prepend"><slot name="prepend"></slot></div>
+    <input
+      :class="classes" 
       :disabled="disabled" 
       :readonly="!editable||readonly" 
-      :placeholder="placeholder" 
+      :placeholder="localePlaceholder" 
       :value="inputValue" 
       @blur="blur" 
-      @input="val" 
+      @input="val"
+      @change="val"
       @focus="focus($event)" 
       ref="input">
     <transition name="label-fade">
       <div v-show="tipShow" :class="tipzz">{{bigNum}}</div>
     </transition>
+    <div :class="[prefixCls + '-group-append']" v-if="append"><slot name="append"></slot></div>
   </div>
 </template>
 <script>
-import {oneOf} from '../../util/tools'
+import {oneOf,formatnumber} from '../../util/tools'
 import Emitter from '../../mixins/emitter';
+import Locale from '../../mixins/locale';
 
   Number.prototype.toFixed = function (n) {
     if (n > 20 || n < 0) {
@@ -66,14 +71,19 @@ export default {
   name: 'Typefield',
   data(){
     return {
+      prefixCls:prefixCls,
       focused: false,
+      havefocused: false,
       inputValue: '',
       checked:false,
       tipShow:false,
-      bigNum:null
+      bigNum:null,
+      currentValue: this.value,
+      prepend: true,
+      append: true,
     }
   },
-  mixins: [ Emitter ],
+  mixins: [ Emitter,Locale ],
   props: {
     type: {
       validator (value){
@@ -101,14 +111,42 @@ export default {
     isround:Boolean,
     integerNum: {
       type: [Number,String],
-      default: 10
+      default: 13
     },
     suffixNum:{
       type: [Number,String],
-      default: 3
+      default: 2
     },
     bigTips:Boolean,
     position:String,
+    // maxNum: {//最大金额限制
+    //   type: [Number,String],
+    //   default: Infinity,
+    // },
+    // minNum: {//最小金额限制
+    //   type: [Number,String],
+    //   default: -Infinity,
+    // },
+    divided: {//是否添加分隔符
+      type: Boolean,
+      default: false,
+    },
+    algin:{//金额组件内部显示
+      type:String,
+      default:'left',
+    },
+    notFillin:{//格式化金额时，当小数点少于指定位数是否需要补0
+      type: Boolean,
+      default: false,
+    },
+    notFormat:{//不对数据进行格式化,输入什么是什么
+      type: Boolean,
+      default: false,
+    },
+    setNull:{
+      type: Boolean,//设置空值为0
+      default: false,
+    }
   },
   computed: {
     clazz () {
@@ -119,45 +157,118 @@ export default {
           'input-field-active': this.inputValue || this.placeholder || (this.$refs.input && this.$refs.input.value),
           [`${prefixCls}-disabled`]: this.disabled,
           [`${prefixCls}-readonly`]: this.readonly,
-          [`${prefixCls}-editable`]: !this.editable
+          [`${prefixCls}-editable`]: !this.editable,
+          [`${prefixCls}-group`]: this.prepend || this.append,
+          [`${prefixCls}-group-with-prepend`]: this.prepend,
+          [`${prefixCls}-group-with-append`]: this.append,
         }
       ]
     },
     tipzz () {
-      return `${prefixCls}-tip`
-    }
+      return `${prefixCls}-tip`;
+    },
+    classes () {
+      return `${prefixCls}-${this.algin}`;
+    },
+    localePlaceholder () {
+      if (this.setNull) {
+        return '';
+      }
+      if (this.placeholder === undefined) {
+          return this.t('i.typefield.placeholder');
+      } else {
+          return this.placeholder;
+      }
+    },
   },
   watch: {
-    value (value) {
-      this.inputValue = value;
+    value (val) {
+      this.initValue(val);
+    },
+    inputValue(val){
     }
   },
   mounted () {
-    this.inputValue = this.value
+    this.prepend = this.$slots.prepend !== undefined;
+    this.append = this.$slots.append !== undefined;
+    this.initValue(this.value);
   },
   methods:{
     //keyup,focus,blur
     blur (e) {
+      this.havefocused = false;
       if (this.type=='money') {
-        this.tipShow=false
+        this.tipShow=false;
       }
-      if (this.inputValue&&this.inputValue!="") {
-        this.inputValue = this.formatNum(e.target.value)
+      let val = this.inputValue?this.inputValue.trim():this.inputValue;
+      if (val && val!="") {
+        val = this.notFormat?e.target.value:this.formatNum(e.target.value);
+        if (this.divided && this.type=="money") {
+          this.inputValue = this.divideNum(val);
+        }else{
+          this.inputValue = val;
+        }
+        e.target.value = this.inputValue;
+      }else{
+        if (this.setNull && this.type=="money") {
+          val = this.setNullStr()
+          e.target.value = val;
+        }
       }
-      this.$emit('input', this.inputValue);
+      this.$emit('input', val);
       this.$emit('on-blur')
-      this.dispatch('FormItem', 'on-form-blur', this.inputValue)
+      this.dispatch('FormItem', 'on-form-blur', val)
     },
     focus (e) {
-      this.focused = true
+      if (this.readonly||this.disabled) return false;
+      this.focused = true;
+      this.havefocused = true;
+      if (this.type=="money") {
+        if (this.setNull && Number(this.inputValue.trim())==0) {
+          this.currentValue= '';
+          this.inputValue='';
+          e.target.value='';
+        }else{
+          if (this.notFillin&&this.inputValue) {
+            this.inputValue = String(parseFloat(this.inputValue));
+          }
+          this.currentValue = this.inputValue?this.inputValue.trim().replace(/,/g, ""):this.inputValue;
+          this.inputValue = this.currentValue;
+        }
+      }
+      if (this.type == "cardNo") {
+        this.inputValue = this.inputValue?String(this.inputValue).replace(/\s+/g,""):'';
+      }
       this.bigShow(this.type,this.bigTips,this.inputValue)
       this.$emit('on-focus',e)
     },
-    val (e) {
-      this.inputValue = e.target.value;
-      this.bigShow(this.type,this.bigTips,this.inputValue);
-      this.$emit('input', this.inputValue);
-      this.$emit('on-keyup', this.inputValue);
+    val (event) {
+      let value = event.target.value.trim();
+      // if (event.type == 'input' && value.match(/^\-?\.?$|\.$/)) return; // prevent fire early if decimal. If no more input the change event will fire later
+      // if (event.type == 'change' && Number(value) == this.currentValue) return; // already fired change for input event 
+      if (!isNaN(value)) {
+        this.currentValue = value;
+      } else {
+        event.target.value = this.currentValue;
+        value = this.currentValue;
+      }
+      this.inputValue = value;
+      this.bigShow(this.type,value);
+      this.$emit('input', value);
+      this.$emit('on-keyup', value);
+    },
+    divideNum(num){
+      let revalue="";
+      let array=String(num).split(".");
+      let pointStr = array[1]?'.'+array[1]:''
+      array[0] = array[0].replace(/-/g, "")
+      if(array[0].length>3){
+        while(array[0].length>3){
+          revalue=","+array[0].substring(array[0].length-3,array[0].length)+revalue;
+          array[0]=array[0].substring(0,array[0].length-3);
+        }
+      }
+      return num>=0?array[0]+revalue+pointStr:'-'+array[0]+revalue+pointStr;
     },
     changeTipsVal (value){   
       value  = String(value).replace(/[^0-9\.-]/g,"");
@@ -175,6 +286,7 @@ export default {
       return this.numtochinese(value + "",this.suffixNum);
     },
     formatNum (value){
+      value = value.trim().replace(/,/g, "");
       var suffixNum = this.suffixNum;
       var integerNum = this.integerNum;  
       value  = value.replace(/[^0-9\.-]/g,"")||'';
@@ -195,14 +307,18 @@ export default {
         value=value.replace("-", "")
         value = this.cutNum(value,this.integerNum);
         if (value=='') return;
+
         if (this.isround) {
           value = Number(value).toFixed(suffixNum);
         }else {
-          value = this.fillZero(Number(value),suffixNum)
+          value = this.fillZero(value,Number(suffixNum))
         }
         value = this.setNum(value,suffixNum,integerNum)
         if (firstChar=='-') {
           value = '-'+value;
+        }
+        if (value.substring(value.length-1,value.length)=='.') {
+          value = value.substring(0,value.length-1);
         }
       }
       return value
@@ -427,7 +543,7 @@ export default {
       }
       return newchar;
     },
-    fillZero(number, bitNum) {  
+    fillZero(number, bitNum) { 
       /// 小数位不够，用0补足位数   
       var f_x = parseFloat(number);  
       if (isNaN(f_x)) {  
@@ -438,10 +554,13 @@ export default {
       if (pos_decimal < 0) {  
         pos_decimal = s_x.length;  
         s_x += '.';  
+      } 
+      while (s_x.length <= pos_decimal + bitNum && !this.notFillin) {  
+          s_x += '0';  
       }  
-      while (s_x.length <= pos_decimal + bitNum) {  
-        s_x += '0';  
-      }  
+      if (bitNum==0) {
+        s_x = s_x.slice(0,pos_decimal);
+      }
       return s_x;  
     },
     cutNum(value,integerNum){
@@ -461,15 +580,36 @@ export default {
       if (suffixNum>0) {
         var arrNum=value.split(".");
         var integerNumber = arrNum[0].substring(0,integerNum);
-        value = integerNumber+'.'+arrNum[1].substring(0,suffixNum);
+        value = Number(integerNumber)+'.'+arrNum[1].substring(0,suffixNum);
       }
       return value
     },
-    bigShow(type,bigTips,value){
-      if (type=='money'&&this.bigTips&&value) {
-        this.bigNum = this.changeTipsVal(value)
-        this.tipShow = Boolean(this.bigNum)
+    bigShow(type,value){
+      if (type=='money'&&value) {
+        if (this.bigTips) {
+          this.bigNum = this.changeTipsVal(value);
+          this.tipShow = Boolean(this.bigNum);
+        }
       }
+    },
+    setNullStr(){
+      let str =this.suffixNum==0?'0':'0.';
+      for (var i = this.suffixNum - 1; i >= 0; i--) {
+        str +='0';
+      }
+      return str;
+    },
+    initValue(val){
+      if ((!val||Number(val)==0)&&this.setNull&&this.type=='money'&& !this.focused) {
+        this.inputValue=this.setNullStr();
+      }else{
+        if (val && this.divided && this.type=='money'&&!this.havefocused) {
+          this.inputValue = this.divideNum(val);
+        }else{
+          this.inputValue = val;
+        }
+      }
+
     }  
 
   }

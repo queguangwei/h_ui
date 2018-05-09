@@ -1,5 +1,8 @@
 <template>
   <div>
+    <h-date-picker type="date" placeholder="选择日期" v-model="formItem.date" format="yyyy/MM/dd" :showFormat="true" style="width:180px"></h-date-picker>
+    <span>{{formItem.date}}</span>
+
     <h-row>
       <h2>基本用法</h2>
       <p>设置属性 type 为 date 或 daterange 分别显示选择单日和选择范围类型。</br>
@@ -195,6 +198,7 @@
             return disabledDay === 15;
           }
         },
+        formItem:{date:''},
         value1: '2016-01-01',
         value2: ['2016-01-01', '2016-02-15'],
         open: false,

@@ -24,7 +24,7 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
-      'vue': 'vue/dist/vue.runtime.js',
+      'Vue': 'vue/dist/vue.runtime.js',
     }
   },
   module: {
@@ -59,10 +59,10 @@ module.exports = {
   },
   externals: {
     vue: {
-      root: 'vue',
-      commonjs: 'vue',
-      commonjs2: 'vue',
-      amd: 'vue'
+      root: 'Vue',
+      commonjs: 'Vue',
+      commonjs2: 'Vue',
+      amd: 'Vue'
     }
   },
   plugins: [

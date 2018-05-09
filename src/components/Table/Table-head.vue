@@ -15,7 +15,8 @@
           <div :class="cellClasses(column)">
             <template v-if="column.type === 'expand'"></template>
             <template v-else-if="column.type === 'selection'">
-              <Checkbox :value="isSelectAll" @on-change="selectAll"></Checkbox>
+              <Checkbox v-if="!column.title" size="large" :value="isSelectAll" @on-change="selectAll"></Checkbox>
+              <span v-else>{{column.title}}</span>
             </template>
             <template v-else>
               <span v-if="!column.renderHeader" @click="handleSortByHead(index)">{{ column.title || '#' }}</span>
@@ -91,7 +92,8 @@ export default {
       type: [Boolean, String],
       default: false
     },
-    canDrag:Boolean
+    canDrag:Boolean,
+    headAlgin:String,
   },
   data(){
     return{
