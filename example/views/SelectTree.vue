@@ -7,8 +7,10 @@
        <h-button @click="click('1-0-0')">设置3</h-button>
        <h-button @click="click('1-0-1')">设置4</h-button>
       </h-col>
+      <Button @on-click="testClick(true)">获取焦点</Button>
+      <Button @on-click="testClick(false)">失去焦点</Button>s
       <h-col span="8">
-        <h-select-tree v-model="valc" :first-value="firstValc" style="width:200px" :data="baseData1" placement="top" placeholder="你好"></h-select-tree>
+        <h-select-tree v-model="valc" :first-value="firstValc" style="width:200px" :data="baseData1" placement="top" placeholder="你好" ref="test"></h-select-tree>
       </h-col>
       <h-button @click="ceshi">清空</h-button>
       <h-col span="8">
@@ -21,9 +23,10 @@
     {{val}}
     {{valc}}
     <br><br><br>
-    <h-select-tree v-model="val1" style="width:200px" :data="baseData3" showCheckbox checkStrictly @on-check-change="selectChange" isString expanLevel=1</h-select-tree>
+          12334
+    <h-select-tree v-model="val1" style="width:200px" :data="baseData3" showCheckbox checkStrictly @on-check-change="selectChange" isString expanLevel=1></h-select-tree>
     {{val1}}
-    <h-select-tree v-model="val2" style="width:200px" :data="baseData" showCheckbox isString ></h-select-tree>
+    <h-select-tree v-model="val2" onlyChild style="width:200px" :data="baseData" showCheckbox isString ></h-select-tree>
     {{val2}}
     <h-select-tree v-model="val4" :data="baseData" showCheckbox disabled></h-select-tree>
     <br><br><br>
@@ -73,6 +76,7 @@
           {
             title: 'parent',
             id: '1-0',
+            expand:true,
             children: [
               {
                 title: 'child1',
@@ -225,6 +229,13 @@
       }
     },
     methods: {
+      testClick(val){
+        if (val) {
+          this.$refs.test.focus();
+        }else{
+          this.$refs.test.blur();
+        }
+      },
       ceshi(){
         this.valc='';
       },

@@ -13,6 +13,7 @@
     :disabledHover="disabledHover"
     :loading="loading"
     :highlightRow="highlightRow"
+    :selectOption="true"
     @on-current-change="currentchange"
     @on-current-change-cancle="currentchangecancle"
     @on-select="select"
@@ -191,10 +192,7 @@
       this.$on('on-query-change', (val) => {
         this.queryChange(val);
       });
-      var el = this.$el.parentNode;
-      while(!hasClass(el,'h-selectTable')){
-        el = el.parentNode;
-      }
+      let el = this.$parent.$parent.$el;
       this.multiple=hasClass(el,'h-selectTable-multiple')?true:false;
       let width =this.$parent.dropWidth>0?this.$parent.dropWidth:parseInt(getStyle(el, 'width'));
       this.hasWidth = width-getScrollBarSize();
@@ -202,7 +200,6 @@
       this.matchWay = this.$parent.$parent.matchWay;
       this.matchable = this.$parent.$parent.matchable;
       this.col = this.$parent.$parent.matchCol;
-      console.log(this.rowSelect);
     },
     beforeDestroy () {
       this.dispatch('SelectTable', 'remove');
@@ -210,7 +207,15 @@
     watch:{
       matchArr(val){
         if (!this.matchable) {
-          this.$refs.table.selectFilterData(val);
+          let filterData = []
+          val.forEach((i)=>{
+            filterData.push(this.data[i]);
+          })
+          this.rebuildData = filterData;
+          this.$nextTick(()=>{
+            this.$parent.$parent.updateOptions(false);
+          })
+          // this.$refs.table.selectFilterData(val);
         }else{
           this.$refs.table.toggleMached(val);
           this.$nextTick(()=>{
@@ -218,10 +223,8 @@
             if (firstItem) {
               let top = firstItem.offsetTop;
               scrollAnimate(this.$parent.$parent.$refs.list,this.$parent.$parent.$refs.list.scrollTop,top);
-              // this.$parent.$parent.$refs.list.scrollTop = top;
             }else{
               scrollAnimate(this.$parent.$parent.$refs.list,this.$parent.$parent.$refs.list.scrollTop,0);
-              // this.$parent.$parent.$refs.content.scrollTop = 0;
             }
           });
         }
@@ -233,6 +236,7 @@
         }
       },
       columns(val){
+        this.tabColumns = val;
         this.tabColumns = this.$parent.$parent.multiple?mutiArr.concat(this.tabColumns):this.tabColumns; 
       },
     }

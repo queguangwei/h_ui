@@ -98,7 +98,8 @@
                 reqRules:[],
                 curCols: this.cols,
                 mustShowError: false,
-                mustShowErrorList: []
+                mustShowErrorList: [],
+                modeChanged:false,
             };
         },
         watch: {
@@ -120,6 +121,7 @@
                     {
                         [`${prefixCls}-required`]: this.required || this.isRequired,
                         [`${prefixCls}-error`]: this.validateState === 'error',
+                        [`${prefixCls}-changed`]: this.modeChanged,
                         [`${prefixCls}-validating`]: this.validateState === 'validating',
                         [`${prefixCls}-reqNoLabel`]: !(this.label || this.$slots.label) && this.isRequired,
                         [`${parentPrefixCls}-col-`+ this.form.cols]: parseInt(this.form.cols) <= 12,                     

@@ -1,6 +1,6 @@
 // es6 polyfill
 import './style/main.scss'
-import Directives from './directives'
+// import Directives from './directives'
 
 import Affix from './components/Affix';
 import Alert from './components/Alert';
@@ -55,6 +55,8 @@ import GroupTable from './components/GroupTable';
 import TreeGird from './components/TreeGird';
 import SelectTable from './components/SelectTable';
 import FastDate from './components/FastDate';
+import SplicePanel from './components/SplicePanel';
+import FieldPanel from './components/Panel';
 import locale from './locale';
 
 const h_ui = {
@@ -195,7 +197,11 @@ const h_ui = {
     hTableOption:SelectTable.Option,
     TableOption:SelectTable.Option,
     FastDate:FastDate,
-    hFastDate:FastDate    
+    hFastDate:FastDate, 
+    SplicePanel:SplicePanel,   
+    hSplicePanel:SplicePanel,
+    FieldPanel:FieldPanel,
+    hFieldPanel:FieldPanel  
 };
 const install = function(Vue, opts = {}) {
     locale.use(opts.locale);
@@ -204,34 +210,15 @@ const install = function(Vue, opts = {}) {
     Object.keys(h_ui).forEach(key => {
         Vue.component(key, h_ui[key]);
     });
-    Object.keys(Directives).forEach(key => {
-      Vue.directive(key, Directives[key])
-    })
+    // Object.keys(Directives).forEach(key => {
+    //   Vue.directive(key, Directives[key])
+    // })s
     Vue.prototype.$hLoading = LoadingBar;
     Vue.prototype.$hMessage = Message;
     Vue.prototype.$hMsgBox = MsgBox;
     Vue.prototype.$hNotice = Notice;
     Vue.prototype.$hSpin = Spin;
 };
-// function Venus(Vue, opts = {}) {
-//   // 引用语言
-//   locale.use(opts.locale);
-//   locale.i18n(opts.i18n);
-
-//   Object.keys(Directives).forEach(key => {
-//     Vue.directive(key, Directives[key])
-//   })
-//   Object.keys(Components).forEach(key => {
-//     Vue.component(key, Components[key])
-//   })
-//   Object.keys(View).forEach(key => {
-//     Vue.component(key, View[key])
-//   })
-//   Vue.prototype.$hLoading = hLoadingBar;
-//   Vue.prototype.$hMessage = Message;
-//   Vue.prototype.$hNotice = Notice;
-//   Vue.prototype.$hMsgBox = hMsgBox;
-// }
 
 if (typeof window !== 'undefined' && window.Vue) {
   // Venus(window.Vue)

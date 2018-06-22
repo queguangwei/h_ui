@@ -6,20 +6,23 @@
     <p>使用v-model双向绑定数据,默认为单选</p>
     <br>
     <p>单选时，value只接受字符串和数字类型，多选时，value只接受数组类型</p>
+    <Button @on-click="testClick(true)">获取焦点</Button>
+    <Button @on-click="testClick(false)">失去焦点</Button>
+    <h-select ref="test"></h-select>
     <h-select v-model="model34" style="width:120px" @on-change="change" @on-scroll="scroll" algin="right" :setDefSelect="true">
         <h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>
     </h-select>
     <h-button @click="fuzhi">赋值</h-button>
     <h-button @click="qk">清空</h-button>
     {{model34}}
-    <!-- <h-select v-model="model44" multiple style="width:320px" :isString="true" isCheckall @on-change="change" @on-scroll="scroll" :isComputed="isComputed" noMoreText="哈哈哈哈" algin="center" :specialIndex="true">
+    <h-select v-model="model44" multiple style="width:320px" :isString="true" isCheckall @on-change="change" @on-scroll="scroll" :isComputed="isComputed" noMoreText="哈哈哈哈" algin="center" :specialIndex="true">
         <h-option value="-1" key="-1">-1  所有</h-option>
         <h-option v-for="item in cityList" multiple :value="item.value" :key="item.value">{{ item.label }}</h-option>
     </h-select>
     {{model44}}
     <br>
     <div>
-        <h-select v-model="model1" width="200" @on-change="change" :setDefSelect="true" disabled>
+        <h-select v-model="model1" label-in-value width="200" @on-change="change" :setDefSelect="true">
             <h-option v-for="(item, index) in uList" :value="item.id" :key="item.id">{{ item.name }}</h-option>
         </h-select>
     </div>
@@ -87,7 +90,7 @@
     <br>
     <div>
         <span>分组:</span>
-        <h-select v-model="model7" width="200" multiple :isString="true">
+        <h-select v-model="model7" width="200" multiple :isString="true" isCheckall>
             <h-option-group label="热门城市">
                 <h-option v-for="(item, index) in cityList1" :value="item.value" :key="item.value">{{ item.label }}</h-option>
             </h-option-group>
@@ -134,7 +137,7 @@
             <h-option v-for="(item, index) in uList" :value="item.id" :key="item.id">{{ item.name }}</h-option>
         </h-select>
          <span>多选可搜索:</span>
-        <h-select v-model="model11" width="200"  multiple filterable :isString="true">
+        <h-select v-model="model11" width="200"  multiple filterable :isString="true" isCheckall>
             <h-option v-for="(item, index) in uList" :value="item.id" :key="item.id">{{ item.name }}</h-option>
         </h-select>
         {{model11}}
@@ -144,7 +147,7 @@
             <h-option v-for="(item, index) in uList" :value="item.id" :key="item.id">{{ item.name }}</h-option>
         </h-select>
          <span>多选可搜索:</span>
-        <h-select v-model="model11" width="200"  multiple filterable :isString="true" :showBottom="true">
+        <h-select v-model="model11" width="200"  multiple filterable :isString="true" :showBottom="true" checkToHead>
             <h-option v-for="(item, index) in uList" :value="item.id" :key="item.id">{{ item.name }}</h-option>
         </h-select>
         {{model11}}
@@ -167,7 +170,7 @@
     </div>
     <h-select v-model="mode224"  not-found-text="新设置的为空显示的内容" filterable>
         <h-option v-for="item in cityList224" :value="item.value" :key="item.value">{{ item.value }}</h-option>
-    </h-select> -->
+    </h-select>
 </div>
 </template>
 
@@ -358,6 +361,13 @@ const data = [
             }
         },
         methods: {
+            testClick(val){
+              if (val) {
+                this.$refs.test.focus();
+              }else{
+                this.$refs.test.blur();
+              }
+            },
             fuzhi(){
                 this.cityList = data.slice(0,2);
             },
@@ -408,9 +418,9 @@ const data = [
         mounted(){
             var _this=this;
             this.cityList = [];
-            // var timer=setTimeout(()=>{
-            //     _this.cityList = data.slice(0,10);
-            // }, 10);
+            var timer=setTimeout(()=>{
+                _this.cityList = data.slice(0,10);
+            }, 10);
             this.uList=[
                 {id:'1',name:"中国"},
                 {id:'2',name:"美国"},

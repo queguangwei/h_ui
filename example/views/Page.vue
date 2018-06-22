@@ -1,10 +1,12 @@
 <template>
   <div>
     <h2>基础用法 </h2>
-    <h-page :total="val" @on-change="pageChange" class-name="wrap"></h-page>
+    <h-page :total="val" @on-change="pageChange" class-name="wrap" :current="curPage"></h-page>
+    <h-button @click="pageChange1">改变当前page</h-button>
+    <br>
     <Button @click="setTotal">设置total为0</Button>
     <p>显示每页数量</p>
-    <h-page :total="100" show-sizer @on-page-size-change="numChange" placement="top"></h-page>
+    <h-page :total="100" :pageSize='5'show-sizer @on-page-size-change="numChange" placement="top" :pageSizeOpts="pageSizeOpts"></h-page>
     <p>快速跳转到某一页</p>
     <h-page :total="100" show-elevator :isBlur="true"></h-page>
     <p>显示总数</p>
@@ -15,6 +17,7 @@
     <h-page :total="40" size="small" show-total></h-page>
     <p>简洁版</p>
     <h-page :current="2" :total="50" simple></h-page>
+    <h-page :current="2" :total="50" simple isBlur></h-page>
   	<h2>分页表格</h2>
     <p>结合表格组件和分页组件以及表单组件</p>
     <div class="pageTable">
@@ -538,6 +541,7 @@
         item.key = '';
       })
   		return {
+        curPage:1,
         val:100,
   			tData:data.slice(0,10),
   			columns:columns,
@@ -561,6 +565,9 @@
     computed:{
     },
   	methods:{
+      pageChange1(){
+        this.curPage++;
+      },
       setTotal(){
         this.val = 0;
       },

@@ -1,4 +1,4 @@
-import Vue from 'Vue';
+import Vue from 'vue';
 import Spin from './Spin.vue';
 
 Spin.newInstance = properties => {

@@ -31,6 +31,9 @@ export default {
         handlePickClick () {
             this.$emit('on-pick-click');
         },
+        handleSelectRange (val,status) {
+            this.$emit('on-select-range',val,status);
+        },
         resetView(){
             setTimeout(
                 () => this.currentView = this.selectionMode,

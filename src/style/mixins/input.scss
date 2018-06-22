@@ -107,6 +107,9 @@
         @include active-error;
     }
 }
+@mixin changed() {
+    color:$changed-color;
+}
 
 @mixin input-required($inputClass) {
     display: inline-block;

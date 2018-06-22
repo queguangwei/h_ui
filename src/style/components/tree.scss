@@ -16,6 +16,7 @@ $tree-prefix-cls: "#{$css-prefix}tree";
       i {
         font-size: 13px;
       }
+      .#{$tree-prefix-cls}-item:focus {outline: none;} 
     }
   }
   li {
@@ -67,5 +68,8 @@ $tree-prefix-cls: "#{$css-prefix}tree";
     &-disabled {
       cursor: $cursor-disabled;
     }
+  }
+  &-empty {
+    padding: 5px 0;
   }
 }

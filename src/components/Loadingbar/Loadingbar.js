@@ -1,5 +1,5 @@
 import LoadingBar from './Loadingbar.vue';
-import Vue from 'Vue';
+import Vue from 'vue';
 
 LoadingBar.newInstance = properties => {
     const _props = properties || {};

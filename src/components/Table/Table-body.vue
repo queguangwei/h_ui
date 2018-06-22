@@ -25,6 +25,7 @@
               :checked="rowChecked(row._index)"
               :disabled="rowDisabled(row._index)"
               :expanded="rowExpanded(row._index)"
+              :showTitle = "showTitle"
             ></Cell>
           </td>
         </table-tr>
@@ -58,10 +59,12 @@
         columnsWidth: Object,
         rowSelect: Boolean,
         fixed: {
-            type: [Boolean, String],
-            default: false
+          type: [Boolean, String],
+          default: false
         },
         bodyAlgin:String,
+        showTitle:Boolean,
+
       },
       computed: {
         expandRender () {

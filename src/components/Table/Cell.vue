@@ -1,10 +1,11 @@
 <template>
-  <div :class="classes" ref="cell">
+  <div :class="classes" ref="cell" :title="titleText">
     <template v-if="renderType === 'index'">{{naturalIndex + 1}}</template>
     <template v-if="renderType === 'selection'">
       <Checkbox size="large" :value="checked" @click.native.stop="handleClick" @on-change="toggleSelect" :disabled="disabled"></Checkbox>
+<!--       <input type="checkbox" v-model="tChecked" @click.native.stop="handleClick" @change="toggleSelect" :disabled="disabled"> -->
     </template>
-    <template v-if="renderType === 'normal'"><span v-html="row[column.key]"></span><!-- {{row[column.key]}} --></template>
+    <template v-if="renderType === 'normal'" ><span v-html="row[column.key]"></span><!-- {{row[column.key]}} --></template>
     <template v-if="renderType === 'expand' && !row._disableExpand">
       <div :class="expandCls" @click="toggleExpand">
         <Icon name="enter"></Icon>
@@ -39,13 +40,16 @@ export default {
     fixed: {
       type: [Boolean, String],
       default: false
-    }
+    },
+    showTitle:Boolean,
   },
   data () {
     return {
       renderType: '',
       uid: -1,
-      context: this.$parent.$parent.$parent.currentContext
+      context: this.$parent.$parent.$parent.currentContext,
+      titleText:null,
+      tChecked:this.checked,
     };
   },
   computed: {
@@ -66,7 +70,7 @@ export default {
           [`${this.prefixCls}-cell-expand-expanded`]: this.expanded
         }
       ];
-    }
+    },
   },
   methods: {
       toggleSelect () {
@@ -98,6 +102,18 @@ export default {
       } else {
           this.renderType = 'normal';
       }
+  },
+  mounted(){
+    if (this.showTitle && this.column.ellipsis ) {
+      this.titleText = this.row[this.column.key];
+    }else{
+      this.titleText = null;
+    }
+  },
+  watch:{
+    checked(val){
+      this.tChecked=val;
+    }
   }
 };
 </script>

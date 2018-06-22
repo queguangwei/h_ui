@@ -9,7 +9,6 @@ import Venus from '../src/index.js'
 // import hello_npm from 'venus_hello_npm'
 
 Vue.use(Venus)
-console.log(Venus);
 // Vue.component('Markup', Markup)
 
 new Vue({

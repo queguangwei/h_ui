@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>基础用法</h1>
-    <h-input-number :max="10" :min="1" :value="value1"></h-input-number>
+    <h-input-number :max="10" :min="1" :value="value1" style="width:200px"></h-input-number>
     <h-input-number :max="10" :min="1" :step="1.2" v-model="value2"></h-input-number><br>
     <br>
     <h-input-number :max="10" :min="1" :step="1.2" v-model="value2" disabled></h-input-number>

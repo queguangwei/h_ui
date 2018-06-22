@@ -3,21 +3,23 @@
     <!-- <ul :class="classes" v-show="visible"> -->
     <ul :class="classes">
       <li>
-        <span :class="arrowClasses" @click="handleExpand">
-          <Icon v-if="showArrow" name="play_fill"></Icon>
-          <Icon v-if="showLoading" name="load-c" class="h-load-loop"></Icon>
-        </span>
-        <h-checkbox
-          v-if="showCheckbox"
-          :value="data.checked"
-          :indeterminate="data.indeterminate"
-          :disabled="data.disabled || data.disableCheckbox"
-          @click.native.prevent="handleCheck"></h-checkbox>
-        <Render v-if="data.render" :render="data.render" :data="data" :node="node"></Render>
-        <Render v-else-if="isParentRender" :render="parentRender" :data="data" :node="node"></Render>
-        <span v-else :class="titleClasses" @click="handleSelect">{{data.title}}</span>
+        <div :class="`${prefixCls}-item`" tabindex="-1" @keydown="handleKeydown">
+          <span :class="arrowClasses" @click="handleExpand">
+            <Icon v-if="showArrow" name="play_fill"></Icon>
+            <Icon v-if="showLoading" name="load-c" class="h-load-loop"></Icon>
+          </span>
+          <h-checkbox
+            v-if="showCheckbox"
+            :value="data.checked"
+            :indeterminate="data.indeterminate"
+            :disabled="data.disabled || data.disableCheckbox"
+            @click.native.prevent="handleCheck"></h-checkbox>
+          <Render v-if="data.render" :render="data.render" :data="data" :node="node"></Render>
+          <Render v-else-if="isParentRender" :render="parentRender" :data="data" :node="node"></Render>
+          <span v-else :class="titleClasses" @click="handleSelect">{{data.title}}</span>          
+        </div>
         <Tree-node
-          v-if="data.expand"
+          v-if="data.expand && !data.leaf"
           v-for="(item,i) in data.children"
           :key="i"
           :data="item"
@@ -109,10 +111,12 @@
         ];
       },
       showArrow () {
-          return (this.data.children && this.data.children.length) || ('loading' in this.data && !this.data.loading);
+          // 添加leaf子节点属性--fof系统（数据库存在loading字段，无论loading为true或false,均会被渲染成父节点）
+          return (this.data.children && this.data.children.length) && !this.data.leaf || ('loading' in this.data && !this.data.loading) && !this.data.leaf;
       },
       showLoading () {
-        return 'loading' in this.data && this.data.loading;
+        // 添加leaf子节点属性--fof系统（数据库存在loading字段，无论loading为true或false,均会被渲染成父节点）
+        return 'loading' in this.data && this.data.loading && !this.data.leaf;
       },
       isParentRender () {
         const Tree = findComponentsUpward(this, 'Tree');
@@ -136,11 +140,31 @@
         }
       }
     },
+    watch:{
+      'data.autoLoad': function (val) {
+        if (val) {
+          this.handleExpand()
+        }
+      },
+      'data.currentPage': function (val) { //默认为1
+        const item = this.data;
+        if (val && this.data.hasPage) {
+          const tree = findComponentsUpward(this, 'Tree');
+          if (tree && tree.loadData) {
+            tree.loadData(item, children => {
+              if (children.length) {
+                this.$set(this.data, 'children', children);
+              }
+            });
+            return;
+          }
+        }
+      }
+    },
     methods: {
       handleExpand () {
         const item = this.data;
         if (item.disabled) return;
-
         // async loading
         if (item.children.length === 0) {
           const tree = findComponentsUpward(this, 'Tree');
@@ -157,25 +181,34 @@
           }
         }
         if (item.children && item.children.length) {
-          this.$set(this.data, 'expand', !this.data.expand);
-          this.dispatch('Tree', 'toggle-expand', this.data);
+          // 问题：autoLoad为true时，expand设置无效，原因：autoLoad会触发两次expand
+          // 解决：需动态管理autoLoad，在有子数据时，关闭autoLoad,expand维持原有值，autoLoad为false时，触发expand切换，兼容点击按钮进行loadData方式
+          if (this.data.autoLoad) {
+            this.$set(this.data, 'autoLoad', !this.data.autoLoad);
+            this.$set(this.data, 'expand', this.data.expand);
+          } else {
+            this.$set(this.data, 'expand', !this.data.expand);
+            this.dispatch('Tree', 'toggle-expand', this.data);
+          }
+          // this.$set(this.data, 'expand', !this.data.expand);
+          // this.dispatch('Tree', 'toggle-expand', this.data);
         }
       },
       handleSelect () {
         if (this.data.disabled) return;
         this.dispatch('Tree', 'on-selected', this.data.nodeKey);
       },
-      // handleSelect () {
-      //   if (this.data.disabled) return;
-      //   if (this.data.selected) {
-      //     this.data.selected = false;
-      //   } else if (this.multiple) {
-      //     this.$set(this.data, 'selected', !this.data.selected);
-      //   } else {
-      //     this.dispatch('Tree', 'selected', this.data);
-      //   }
-      //   this.dispatch('Tree', 'on-selected', this.data.nodeKey);
-      // },
+      handleKeydown (e) {
+        let code  = e.keyCode;
+        if (code == 37) {//left
+          this.$set(this.data, 'expand', false);
+          this.dispatch('Tree', 'toggle-expand', this.data);
+        }
+        if (code == 39) {//right
+          this.$set(this.data, 'expand', true);
+          this.dispatch('Tree', 'toggle-expand', this.data);
+        }
+      },
       handleCheck () {
         if (this.data.disabled) return;
         var checked;
@@ -190,25 +223,6 @@
         };
         this.dispatch('Tree', 'on-check', changes);
       }
-      // handleCheck () {
-      //   if (this.disabled) return;
-      //   const checked = !this.data.checked;//true
-      //   if (!!this.checkStrictly || !!this.showIndeterminate) {
-      //     if (!checked || this.indeterminate) {
-      //       findComponentsDownward(this, 'TreeNode').forEach(node => node.data.checked = false);
-      //     } else {          
-      //       findComponentsDownward(this, 'TreeNode').forEach(node => node.data.checked = true);
-      //     }
-      //   }
-      //   this.data.checked = checked;
-      //   this.dispatch('Tree', 'checked');
-      //   this.dispatch('Tree', 'on-checked');
-      // },
-      // setIndeterminate () {
-      //   if (!!this.showIndeterminate) {
-      //     this.indeterminate = this.data.checked ? false : findComponentsDownward(this, 'TreeNode').some(node => node.data.checked);
-      //   }
-      // }
     },
     created () {
       // if (!!this.checkStrictly || !!this.showIndeterminate) {
@@ -216,8 +230,14 @@
       // }
       // created node.vue first, mounted tree.vue second
       // if (!this.data.checked) this.$set(this.data, 'checked', false);
+      // tree分页
+      // 若autoLoad为true 则自动展开并触发loadData -- fof章杰灵提出
+      if (this.data.autoLoad) {
+        this.handleExpand()
+      }
     },
     mounted () {
+      // this.$refs.item.addEventListener('keydown', this.handleKeydown);
       // this.$on('indeterminate', () => {
       //   this.broadcast('TreeNode', 'indeterminate');
       //   this.setIndeterminate();

@@ -199,3 +199,8 @@ $input-number-prefix-cls: "#{$css-prefix}input-number";
       }
   }
 }
+.#{$form-item-prefix-cls}-changed {
+  .#{$input-number-prefix-cls}{
+      @include changed;
+  }
+}

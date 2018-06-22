@@ -102,6 +102,10 @@
       precision: {
         type: Number
       },
+      setzero: {
+        type: Boolean,
+        default: false
+      }
     },
     data () {
       return {
@@ -242,6 +246,8 @@
       },
       change (event) {
         let val = event.target.value.trim();
+        // 设置setzero后 清空后置为0(有min时置为min[后续判断])
+        val = (val == '' && this.setzero) ? '0' : val
         if (event.type == 'input' && val.match(/^\-?\.?$|\.$/)) return; // prevent fire early if decimal. If no more input the change event will fire later
         if (event.type == 'change' && Number(val) === this.currentValue) return; // already fired change for input event
 

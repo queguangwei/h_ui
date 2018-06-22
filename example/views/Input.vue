@@ -1,6 +1,9 @@
 <template>
   <div id="h-input1" class="wrapper">
-    <h-input algin="left"  placeholder="请输入..."></h-input>
+    <!-- <h-input algin="left"  placeholder="请输入..." ref="test"></h-input> -->
+    <h-input algin="left" type="textarea"  placeholder="请输入..." ref="test"></h-input>
+    <Button @on-click="testClick(true)">获取焦点</Button>
+    <Button @on-click="testClick(false)">失去焦点</Button>
     <h-input algin="center" placeholder="请输入..."></h-input>
     <h-input algin="right" placeholder="请输入..."></h-input>
     <h2>基础用法</h2>
@@ -120,6 +123,13 @@ export default {
     }
   },
   methods:{
+    testClick(val){
+      if (val) {
+        this.$refs.test.focus();
+      }else{
+        this.$refs.test.blur();
+      }
+    },
     click(e){
       console.log(this.$refs.input)
       this.$refs.input.focus();

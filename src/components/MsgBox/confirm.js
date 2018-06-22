@@ -1,8 +1,7 @@
-import Vue from 'Vue';
+import Vue from 'vue';
 import Modal from './MsgBox.vue';
 import Icon from '../Icon/Icon.vue';
 import Button from '../Button/Button.vue';
-import { camelcaseToHyphen } from '../../util/tools';
 import Locale from '../../mixins/locale';
 
 const prefixCls = 'h-modal-confirm';
@@ -24,7 +23,8 @@ Modal.newInstance = properties => {
           showCancel: false,
           loading: false,
           buttonLoading: false,
-          scrollable: false
+          scrollable: false,
+          closable: false
       }),
       render (h) {
           let footerVNodes = [];
@@ -82,7 +82,8 @@ Modal.newInstance = properties => {
           return h(Modal, {
               props: Object.assign({}, _props, {
                   width: this.width,
-                  scrollable: this.scrollable
+                  scrollable: this.scrollable,
+                  closable: this.closable
               }),
               domProps: {
                   value: this.visible
@@ -211,6 +212,8 @@ Modal.newInstance = properties => {
 
       if ('width' in props) {
         modal.$parent.width = props.width;
+      }else{
+        modal.$parent.width = Instance.width;
       }
 
       if ('title' in props) {

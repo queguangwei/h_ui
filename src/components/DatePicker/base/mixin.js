@@ -26,7 +26,8 @@ export default {
                 selecting: false
             })
         },
-
+        spliceDirec:String,
+        maxDate:[Date,String],
     },
     computed: {
         dates(){
@@ -39,8 +40,7 @@ export default {
         handleClick (cell) {
             if (cell.disabled || cell.type === 'weekLabel') return;
             const newDate = new Date(clearHours(cell.date));
-
-            this.$emit('on-pick', newDate);
+            this.$emit('on-pick', newDate,this.spliceDirec);
             this.$emit('on-pick-click');
         },
         handleMouseMove (cell) {
@@ -49,5 +49,5 @@ export default {
             const newDate = cell.date;
             this.$emit('on-change-range', newDate);
         },
-    }
+    },
 };

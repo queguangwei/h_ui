@@ -93,6 +93,11 @@ textarea.#{$input-prefix-cls} {
     }
   }
 }
+.#{$form-item-prefix-cls}-changed{
+  .#{$input-prefix-cls}{
+    @include changed();
+  }
+}
 .#{$form-item-prefix-cls}-validating{
   .#{$input-prefix-cls}{
     &-icon-validate{

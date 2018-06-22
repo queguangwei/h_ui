@@ -1,5 +1,5 @@
 <template>
-  <button ref="btn" :type="nativeType" :class="classes" :disabled="disabled" @click="handleClick">
+  <button ref="btn" :type="nativeType" :class="classes" :disabled="disabled" @click="handleClick" @keyup="keyup">
   	<Icon name="load-c" v-if="loading" class='h-load-loop'></Icon>
     <Icon :name="icon" v-if="icon && !loading"></Icon>
     <span v-if="$slots.default"><slot></slot></span>
@@ -15,9 +15,9 @@ export default {
 	props:{
 		type: {
       validator (value) {
-        return oneOf(value, ['primary', 'ghost', 'dashed', 'text', 'info', 'success', 'warning', 'error']);
-      }
-    },
+	        return oneOf(value, ['primary', 'ghost', 'dashed', 'text', 'info', 'success', 'warning', 'error']);
+	      }
+	    },
 		btnWith: {
 	    type:Number,
 	    default: 0
@@ -54,8 +54,12 @@ export default {
 		},
 		icon: String,
 		long: {
-	    type: Boolean,
-	    default: false
+		    type: Boolean,
+		    default: false
+		},
+		canFocus:{
+			type: Boolean,
+			default: false
 		}
 	}, 
 	data() {
@@ -74,7 +78,8 @@ export default {
             [`${prefixCls}-${this.shape}`]: !!this.shape,
             [`${prefixCls}-${this.size}`]: !!this.size,
             [`${prefixCls}-loading`]: this.loading != null && this.loading,
-            [`${prefixCls}-icon-only`]: !this.showSlot && (!!this.icon || this.loading)
+            [`${prefixCls}-icon-only`]: !this.showSlot && (!!this.icon || this.loading),
+            [`${prefixCls}-focus`]: this.canFocus,
         }
       ];
     }
@@ -82,9 +87,21 @@ export default {
 	watch:{
 	},
 	methods: {
-    handleClick (event) {
-      this.$emit('click', event);
-    }
+	    handleClick (event) {
+	      this.$emit('click', event);
+	      this.$emit('on-click', event);
+	    },
+	    focus(){
+	    	if (!this.canFocus) return;
+	    	this.$refs.btn.focus();
+	    },
+	    keyup(event){
+	    	if (!this.canFocus) return;
+	    	let code = event.keycode;
+	    	if (code == 13) {
+	    		this.handleClick(event);
+	    	}
+	    }
 	},
 	mounted () {
 	  this.showSlot = this.$slots.default !== undefined;

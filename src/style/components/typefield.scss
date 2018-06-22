@@ -99,6 +99,15 @@ $typefield-prefix-cls: "#{$css-prefix}typefield" ;
     @include input-group-error();
   }
 }
+
+.#{$form-item-prefix-cls}-changed{
+  .#{$typefield-prefix-cls}{
+      input{
+        color:$changed-color;
+      }
+  }
+}
+
 .#{$editgird-prefix-cls}-cell-error{
     .#{$typefield-prefix-cls}{
         input{

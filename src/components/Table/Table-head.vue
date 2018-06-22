@@ -1,5 +1,5 @@
 <template>
-  <table cellspacing="0" cellpadding="0" border="0" :style="styles">
+  <table cellspacing="0" cellpadding="0" border="0" :style="styles" ref="tHead">
   <!-- 签用于对表格中的列进行组合，以便对其进行格式化。 -->
     <colgroup>
       <col v-for="(column, index) in columns" :width="setCellWidth(column, index, true)">
@@ -15,15 +15,15 @@
           <div :class="cellClasses(column)">
             <template v-if="column.type === 'expand'"></template>
             <template v-else-if="column.type === 'selection'">
-              <Checkbox v-if="!column.title" size="large" :value="isSelectAll" @on-change="selectAll"></Checkbox>
+              <Checkbox v-if="!column.title" size="large" @mousedown.native.stop="handleClick" :value="isSelectAll" @on-change="selectAll"></Checkbox>
               <span v-else>{{column.title}}</span>
             </template>
             <template v-else>
               <span v-if="!column.renderHeader" @click="handleSortByHead(index)">{{ column.title || '#' }}</span>
               <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
               <span :class="[prefixCls + '-sort']" v-if="column.sortable">
-                <Icon name="android-arrow-dropup" :class="{on: column._sortType === 'asc'}" @on-click="handleSort(index, 'asc')"></Icon>
-                <Icon name="android-arrow-dropdo" :class="{on: column._sortType === 'desc'}" @on-click="handleSort(index, 'desc')"></Icon>
+                <Icon name="android-arrow-dropup" :class="{on: column._sortType === 'asc'}" @on-click="handleSort(index, 'asc')" @mousedown.native.stop="handleClick"></Icon>
+                <Icon name="android-arrow-dropdo" :class="{on: column._sortType === 'desc'}" @on-click="handleSort(index, 'desc')" @mousedown.native.stop="handleClick"></Icon>
                   <!-- <i class="ivu-icon ivu-icon-arrow-up-b" :class="{on: column._sortType === 'asc'}" @click="handleSort(index, 'asc')"></i> -->
                  <!--  <i class="ivu-icon ivu-icon-arrow-down-b" :class="{on: column._sortType === 'desc'}" @click="handleSort(index, 'desc')"></i> -->
               </span>
@@ -33,7 +33,7 @@
                 placement="bottom"
                 @on-popper-hide="handleFilterHide(index)">
                 <span :class="[prefixCls + '-filter']">
-                  <Icon name="keyboard" :class="{on: column._isFiltered}"></Icon>
+                  <Icon name="keyboard" @mousedown.native.stop="handleClick" :class="{on: column._isFiltered}"></Icon>
                 </span>
                 <div slot="content" :class="[prefixCls + '-filter-list']" v-if="column._filterMultiple">
                   <div :class="[prefixCls + '-filter-list-item']">
@@ -93,13 +93,18 @@ export default {
       default: false
     },
     canDrag:Boolean,
+    canMove:Boolean,
     headAlgin:String,
   },
   data(){
     return{
       draggingColumn: null,
+      moveingColumn: null,
       dragging: false,
-      dragState: {}
+      dragState: {},
+      moveState: {},
+      moveing:false,
+      cloumnsLeft:{},
     }
   },
   computed: {
@@ -122,10 +127,8 @@ export default {
     }
   },
   mounted(){
-    // var that = this;
-    // this.columns.forEach(function (column,index) {
-    //   that.$set(column,"xxx",that.setCellWidth(column, index, true))
-    // })
+     this.getLeftWidth();
+     on(window, 'resize', this.getLeftWidth);
   },
   methods: {
     cellClasses (column) {
@@ -192,109 +195,218 @@ export default {
       let _index = this.columns[index]._index;
       this.$parent.handleFilterHide(_index);
     },
+    getLeftWidth (){
+      this.$nextTick(()=>{
+        for (let i = 0; i<this.columns.length; i++) {
+          let leftWidth = 0;
+          for (let j = 0; j<i; j++) {
+            leftWidth = leftWidth + this.columns[j]._width;
+          }
+          this.cloumnsLeft[i] = leftWidth;
+        }
+      })
+    },
     mousedown(event,column,index){
       if (this.$isServer) return;
       if (!column) return;
       let _this = this;
-      if (!this.canDrag) return;
-      if (!this.draggingColumn) return;
-      this.dragging = true;      
-      this.$parent.resizeProxyVisible = true;
+      if (!this.canDrag && !this.canMove) return;
+      if (this.draggingColumn) {
+        this.dragging = true;      
+        this.$parent.resizeProxyVisible = true;
+        const table = this.$parent; 
+        const tableEl = table.$el;
+        const tableLeft = tableEl.getBoundingClientRect().left;
+        const columnEl = this.$el.querySelector(`th.h-ui-${column.key}`);
+        const columnRect = columnEl.getBoundingClientRect();
+        const minLeft = columnRect.left - tableLeft + 30;
 
-      const table = this.$parent; 
-      const tableEl = table.$el;
-      const tableLeft = tableEl.getBoundingClientRect().left;
-      const columnEl = this.$el.querySelector(`th.h-ui-${column.key}`);
-      const columnRect = columnEl.getBoundingClientRect();
-      const minLeft = columnRect.left - tableLeft + 30;
+        let lastWidth =this.findObj(event,"TR").lastChild.offsetWidth;
+        let tableWidth = this.$el.parentElement.offsetWidth-1;
+        let headWidth = this.$el.offsetWidth;
+        addClass(columnEl, 'noclick');
 
-      let lastWidth =this.findObj(event,"TR").lastChild.offsetWidth;
-      // console.log(this.findObj(event,"TR").lastChild);
-      // console.log(lastWidth);
-      let tableWidth = this.$el.parentElement.offsetWidth-1;
-      let headWidth = this.$el.offsetWidth;
-      addClass(columnEl, 'noclick');
+        this.dragState = {
+          startMouseLeft: event.clientX,
+          startLeft: columnRect.right - tableLeft,
+          startColumnLeft: columnRect.left - tableLeft,
+          tableLeft
+        };
 
-      this.dragState = {
-        startMouseLeft: event.clientX,
-        startLeft: columnRect.right - tableLeft,
-        startColumnLeft: columnRect.left - tableLeft,
-        tableLeft
-      };
+        const resizeProxy = table.$refs.resizeProxy;
+        resizeProxy.style.left = this.dragState.startLeft + 'px';
 
-      const resizeProxy = table.$refs.resizeProxy;
-      resizeProxy.style.left = this.dragState.startLeft + 'px';
+        document.onselectstart = function() { return false; };
+        document.ondragstart = function() { return false; };
+        
+        const handleMouseMove = (event) => {
+          const deltaLeft = event.clientX - this.dragState.startMouseLeft;
+          const proxyLeft = this.dragState.startLeft + deltaLeft;
 
-      document.onselectstart = function() { return false; };
-      document.ondragstart = function() { return false; };
-      
-      const handleMouseMove = (event) => {
-        const deltaLeft = event.clientX - this.dragState.startMouseLeft;
-        const proxyLeft = this.dragState.startLeft + deltaLeft;
+          resizeProxy.style.left = Math.max(minLeft, proxyLeft) + 'px';
+        };
 
-        resizeProxy.style.left = Math.max(minLeft, proxyLeft) + 'px';
-      };
-
-      const handleMouseUp = () => {
-        if (_this.dragging) {
-          const {
-            startColumnLeft,
-            startLeft
-          } = _this.dragState;
-          const finalLeft = parseInt(resizeProxy.style.left, 10);
-          const columnWidth = finalLeft - startColumnLeft;
-          let dragWidth = finalLeft - startLeft;//>0为输入框增大，<0为减小
-          if (dragWidth>=0) {
-            lastWidth = (lastWidth-dragWidth)>=80?(lastWidth-dragWidth):80;
-          }else{
-            if (headWidth+1>=tableWidth) {//此时有滚动条
-              if (headWidth+1+dragWidth<=tableWidth) {
-                lastWidth =lastWidth+tableWidth-headWidth-dragWidth;
-              }
+        const handleMouseUp = () => {
+          if (_this.dragging) {
+            const {
+              startColumnLeft,
+              startLeft
+            } = _this.dragState;
+            const finalLeft = parseInt(resizeProxy.style.left, 10);
+            const columnWidth = finalLeft - startColumnLeft;
+            let dragWidth = finalLeft - startLeft;//>0为输入框增大，<0为减小
+            if (dragWidth>=0) {
+              lastWidth = (lastWidth-dragWidth)>=80?(lastWidth-dragWidth):80;
             }else{
-              lastWidth = lastWidth-dragWidth;
+              if (headWidth+1>=tableWidth) {//此时有滚动条
+                if (headWidth+1+dragWidth<=tableWidth) {
+                  lastWidth =lastWidth+tableWidth-headWidth-dragWidth;
+                }
+              }else{
+                lastWidth = lastWidth-dragWidth;
+              }
             }
+            if (table.bodyHeight !== 0) {
+              lastWidth = lastWidth - getScrollBarSize();
+            }
+            _this.$emit('on-change-width', columnWidth, column.key,lastWidth);
+
+            document.body.style.cursor = '';
+            _this.dragging = false;
+            _this.draggingColumn = null;
+            _this.dragState = {};
+
+            table.resizeProxyVisible = false;
           }
-          if (table.bodyHeight !== 0) {
-            lastWidth = lastWidth - getScrollBarSize();
+
+          document.removeEventListener('mousemove', handleMouseMove);
+          document.removeEventListener('mouseup', handleMouseUp);
+          document.onselectstart = null;
+          document.ondragstart = null;
+
+          setTimeout(function() {
+            removeClass(columnEl, 'noclick');
+          }, 0);
+        };
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+      }
+      if(this.moveingColumn){
+        this.moveing = true;  
+        this.$parent.moveProxyVisible = true;
+        let dom = this.findObj(event,'TH').cloneNode(true);
+        dom.width = column._width;
+        addClass(dom,'move-proxy-th');
+        const table = this.$parent; 
+        const tableEl = table.$el;
+        const tableLeft = tableEl.getBoundingClientRect().left;
+        const tableTop = tableEl.getBoundingClientRect().top;
+        const columnEl = this.$el.querySelector(`th.h-ui-${column.key}`);
+        const columnRect = columnEl.getBoundingClientRect();
+        addClass(columnEl, 'noclick');
+        this.moveState = {
+          startMouseLeft: event.clientX,
+          startLeft: columnRect.left - tableLeft-1,
+          tableLeft
+        };
+        const moveProxy = table.$refs.moveProxy;
+        const resizeProxy = table.$refs.resizeProxy;
+        moveProxy.style.left = this.moveState.startLeft + 'px';
+        moveProxy.style.top = event.clientY -tableTop-20 + 'px';
+        // table.setMoveProxy(index);
+        moveProxy.appendChild(dom);
+        let resizeIndex = Number(index);
+        let resizeLeft;
+        const handleMouseMove = (event) => {
+          this.$parent.resizeProxyVisible = true;
+          const deltaLeft = event.clientX - this.moveState.startMouseLeft;
+          const moveLeft = this.moveState.startLeft + deltaLeft;
+          if (deltaLeft>0) {
+            let changeRight = this.cloumnsLeft[index]+deltaLeft;
+            changeRight = changeRight+column._width;
+            for (let i in _this.cloumnsLeft) {
+              if (changeRight >_this.cloumnsLeft[i]+30) resizeIndex = Number(i);
+            }
+            resizeLeft = this.$el.querySelectorAll(`th`)[resizeIndex].getBoundingClientRect().right - tableLeft -1;
           }
-          _this.$emit('on-change-width', columnWidth, column.key,lastWidth);
+          if (deltaLeft<0){
+            let changeLeft = this.cloumnsLeft[index]+deltaLeft;
+            for (let i in _this.cloumnsLeft) {
+              if (changeLeft >_this.cloumnsLeft[i]-50) resizeIndex = Number(i);
+            }
+            resizeLeft = this.$el.querySelectorAll(`th`)[resizeIndex].getBoundingClientRect().left - tableLeft -1;
+          }
+          moveProxy.style.left = moveLeft + 'px';
+          moveProxy.style.top = event.clientY-tableTop-20 + 'px';
+          resizeProxy.style.left = resizeLeft + 'px';
+        };
 
-          document.body.style.cursor = '';
-          _this.dragging = false;
-          _this.draggingColumn = null;
-          _this.dragState = {};
+        const handleMouseUp = () => {
+          if (_this.moveing) {
+            table.sortCloumn(index,resizeIndex,column._index);
+            document.body.style.cursor = '';
+            document.body.style.userSelect = 'text';
+            _this.moveing = false;
+            _this.moveingColumn = null;
+            _this.moveState = {};
+            moveProxy.removeChild(dom);
+            table.resizeProxyVisible = false;
+            table.moveProxyVisible = false;
+          }
 
-          table.resizeProxyVisible = false;
-        }
+          document.removeEventListener('mousemove', handleMouseMove);
+          document.removeEventListener('mouseup', handleMouseUp);
+          // document.onselectstart = null;
+          // document.ondragstart = null;
 
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-        document.onselectstart = null;
-        document.ondragstart = null;
+          setTimeout(function() {
+            removeClass(columnEl, 'noclick');
+          }, 0);
+        };
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
 
-        setTimeout(function() {
-          removeClass(columnEl, 'noclick');
-        }, 0);
-      };
+      }
 
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
     },
     mousemove(event,column,index){
-      if (!this.canDrag || !column ) return;
+      // if (!this.canDrag || !column ) return;
+      if (!column ) return;
       if (column.children && column.children.length > 0) return;
       let target = this.findObj(event,"TH");
-      if (!this.dragging) {
+      if(this.canDrag){
+        // moveDrag需传入event win7下FF60版本不可拖拽
+        this.moveDrag(event, target,column);
+      }
+      if(this.canMove){
+        this.moveMove(event, target,column)
+      }
+    },
+    moveDrag(event, target,column){
+      if (!this.dragging && !this.moveing) {
         let rect = target.getBoundingClientRect();
-
         const bodyStyle = document.body.style;
         if (rect.width > 12 && rect.right - event.pageX < 8) {
           bodyStyle.cursor = 'col-resize';
           this.draggingColumn = column;
         } else if (!this.dragging) {
-          bodyStyle.cursor = '';
+          if(!this.canMove) bodyStyle.cursor = '';
           this.draggingColumn = null;
+        }
+      }
+    },
+    moveMove(event, target,column){
+      if (!this.moveing && !this.dragging) {
+        let rect = target.getBoundingClientRect();
+        const bodyStyle = document.body.style;
+        if (rect.right - event.pageX > 8 && rect.right - event.pageX<rect.width) {
+          bodyStyle.cursor = 'pointer';
+          bodyStyle.userSelect = 'none';
+          this.moveingColumn = column;
+        } else if (!this.moveing) {
+          if(!this.canDrag) bodyStyle.cursor = '';
+          bodyStyle.userSelect = 'text';
+          this.moveingColumn = null;
         }
       }
     },
@@ -308,6 +420,17 @@ export default {
         obj=obj.parentElement
       }
       return obj;      
+    },
+    handleClick (event) {
+      event.stopPropagation();
+    },
+  },
+  watch:{
+    columns:{
+      deep:true,
+      handler(){
+        this.getLeftWidth();
+      }
     }
   }
 };

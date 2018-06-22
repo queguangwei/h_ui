@@ -181,10 +181,6 @@
         this.$emit('on-keypress', event);
       },
       handleKeyup (event) {
-        let value = event.target.value;
-        if (value=''||String(value).length==0||event.keyCode == 13 || event.charCode == 13) {//ie google 兼容
-          this.handleChange(event);
-        }
         this.$emit('on-keyup', event);
       },
       handleIconClick (event) {
@@ -235,6 +231,13 @@
           this.$refs.textarea.focus();
         } else {
           this.$refs.input.focus();
+        }
+      },
+      blur() {
+        if (this.type === 'textarea') {
+          this.$refs.textarea.blur();
+        } else {
+          this.$refs.input.blur();
         }
       }
     },

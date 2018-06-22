@@ -211,8 +211,6 @@
                     to: this.dates[1],
                     selecting: false
                 };
-
-
                 // set panels positioning
                 const leftPanelDate = this.startDate || this.dates[0] || new Date();
                 this.leftPanelDate = leftPanelDate;
@@ -330,6 +328,7 @@
                             to: maxDate,
                             selecting: false
                         };
+                        this.handleSelectRange(val,true)
                     }
                     this.handleConfirm(false);
                 } else {
@@ -338,6 +337,7 @@
                         to: null,
                         selecting: true
                     };
+                    this.handleSelectRange(val,false)
                 }
             },
             handleChangeRange (val) {

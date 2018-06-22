@@ -263,6 +263,11 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
                 }
             }
         }
+        .#{$selectTable-prefix-cls}-checkHead{
+            .h-checkbox-wrapper{
+                margin-left:8px;
+            }
+        }
     }
     &-dropdown-noline-content {
         padding: 0;
@@ -317,6 +322,16 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
                     background:$background-color-select-hover;
                 }
             }
+        }
+        .#{$selectTable-prefix-cls}-checkHead{
+            .h-checkbox-wrapper{
+                margin-left:12px;
+            }
+        }
+    }
+    &-checkHead{
+        input{
+            width: calc(100% - 40px)
         }
     }
     &-left{
@@ -385,6 +400,16 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
         }
         &-visible .#{$selectTable-prefix-cls}-selection{
             @include active-error;
+        }
+    }
+}
+.#{$form-item-prefix-cls}-changed{
+    .#{$selectTable-prefix-cls}{
+        &-selection{
+            color:$changed-color;
+        }
+        .h-tag{
+            color:$changed-color; 
         }
     }
 }

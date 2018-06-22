@@ -1,5 +1,7 @@
 <template>
-	<div>		
+	<div>	
+	    <i class="icon iconfont icon-doublearrow"></i>
+	    <h-icon name="doublearrow"></h-icon>	
 		<div>
 			<h1>Icon-mine-add</h1>
 			<div class="position">

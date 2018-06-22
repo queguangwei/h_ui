@@ -26,9 +26,14 @@
           :typeName="typeName"
           :isCheckbox="isCheckbox"
           :checkStrictly="checkStrictly"
-          :option="option"
-          :treeOption="treeOption"
+          :option="options"
+          :treeOption="treeOptions"
           @on-select-change="selectChange"
+          @on-editselect-change="editselectChange"
+          @on-editinput-change="editinputChange"
+          @on-editinput-blur="editinputBlur"
+          @on-editarea-change="editAreaChange"
+          @on-editarea-blur="editAreaBlur"
           ></gird-body>
       </div>
       <div :class="[prefixCls + '-tip']"
@@ -181,6 +186,8 @@ export default {
       showScroll:false,
       headerRealHeight:0,
       selectType:false,
+      options:this.option,
+      treeOptions:this.treeOption,
     };
   },
   computed: {
@@ -708,6 +715,21 @@ export default {
     },
     selectChange(){
       this.$emit('on-select-change', this.getTreeSelection());
+    },
+    editselectChange(val,i,j){
+      this.$emit('on-editselect-change', val,i,j);
+    },
+    editinputChange(val,i,j){
+      this.$emit('on-editinput-change',val,i,j);
+    },
+    editinputBlur(val,i,j){
+      this.$emit('on-editinput-blur',val,i,j);
+    },
+    editAreaChange(val,i,j){
+      this.$emit('on-editarea-change',val,i,j);
+    },
+    editAreaBlur(val,i,j){
+      this.$emit('on-editarea-blur',val,i,j);
     }
   },
   created () {
@@ -778,6 +800,18 @@ export default {
       height () {
           this.fixedHeader();
       },
+      option:{
+        deep:true,
+        handler(val){
+          this.options = val;
+        }
+      },
+      treeOption:{
+        deep:true,
+        handler(val){
+          this.treeOptions = val;
+        }
+      }
   }
 };
 </script>

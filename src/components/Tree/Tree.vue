@@ -9,6 +9,7 @@
       :show-checkbox="showCheckbox"
       :showIndeterminate="showIndeterminate"
       :checkStrictly="checkStrictly"
+      :disableHover = "disableHover"
       >
     </Tree-node>
     <div :class="[prefixCls + '-empty']" v-if="!data.length">{{ localeEmptyText }}</div>
@@ -61,6 +62,17 @@
         type:Boolean,
         default:false
       },
+      disableHover:{
+        type:Boolean,
+        default:false
+      },
+      currentPageInfo: { //保存当前子节点分页第几页及当前节点信息
+        // {
+        //   page: 1,
+        //   nodeKey: ''
+        // }
+        type: Object,
+      },
     },
     data () {
       return {
@@ -77,6 +89,18 @@
             this.flatState = this.compileFlatState();
             this.rebuildTree();
         }
+      },
+      currentPageInfo: {
+        handler: function (val) {
+          if (val && val.nodeKey >= 0 && val.page) {           
+            let node = this.flatState[val.nodeKey].node;
+            if (node.hasPage) {
+              this.$set(node, 'currentPage', val.page);
+              if(!node.expand) this.$set(node, 'expand', true);
+            }
+          }
+        },
+        deep: true
       }
     },
     computed: {
@@ -129,6 +153,7 @@
       },
       rebuildTree () { // only called when `data` prop changes
         const checkedNodes = this.getCheckedNodes();
+        const autoLoadNodes = this.getAutoLoadNodes()
         checkedNodes.forEach(node => {
             this.updateTreeDown(node, {checked: true});
             // propagate upwards
@@ -140,6 +165,10 @@
               this.updateTreeUp(node.nodeKey); // update tree upwards
             }
         });
+        autoLoadNodes.forEach(node =>  {
+          // this.updateTreeDown(node, {autoLoad: true})
+          this.$set(node, 'autoLoad', true)
+        })
       },
       getSelectedNodes () {
         return this.flatState.filter(obj => obj.node.selected).map(obj => obj.node);
@@ -147,11 +176,15 @@
       getCheckedNodes () {
         return this.flatState.filter(obj => obj.node.checked).map(obj => obj.node);
       },
+      getAutoLoadNodes () {
+        return this.flatState.filter(obj => obj.node.autoLoad).map(obj => obj.node);
+      },
       updateTreeDown(node, changes = {}) {
         for (let key in changes) {
           this.$set(node, key, changes[key]);
         }
-        if (node.children && !this.checkStrictly) {
+        // 如果当前节点leaf属性为true，则返回当前节点        
+        if (node.children && !this.checkStrictly && !node.leaf) {
           node.children.forEach(child => {
               this.updateTreeDown(child, changes);
           });

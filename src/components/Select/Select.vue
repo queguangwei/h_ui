@@ -44,27 +44,28 @@
         ref="dropdown"
         v-transfer-dom>
         <div :class="content" @scroll="handleSelectScroll">
-          <input
-            type="text"
-            v-if="filterable && showBottom"
-            v-model="query"
-            :disabled="disabled"
-            :readonly = "!editable||readonly"
-            :class="[prefixCls + '-content-input']"
-            :placeholder="localeSearchHolder"
-            @blur="handleBlur"
-            @keydown="resetInputState"
-            @keydown.delete="handleInputDelete"
-            tabindex="-1" 
-            ref="input">
-
+          <span v-if="filterable && showBottom" :class="checkHeadClass">
+            <Checkbox v-model="selectHead" v-if="checkToHead&&multiple"></Checkbox>
+            <input
+              type="text"
+              v-model="query"
+              :disabled="disabled"
+              :readonly = "!editable||readonly"
+              :class="[prefixCls + '-content-input']"
+              :placeholder="localeSearchHolder"
+              @blur="handleBlur"
+              @keydown="resetInputState"
+              @keydown.delete="handleInputDelete"
+              tabindex="-1" 
+              ref="input">
+          </span>
           <ul v-show="notFoundShow" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul>
           <ul v-show="(!notFound && !remote) || (remote && !loading && !notFound)" :class="[prefixCls + '-dropdown-list']"><slot></slot></ul>
           <ul v-show="loading" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
           <ul v-show="isComputed" :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>          
         </div>
         <div v-if="isCheckall&&multiple&&!notFoundShow" :class="checkAll">
-          <Button size="small" @click="toggleSelect(false)">反选</Button>
+          <Button size="small" @click="toggleSelect(false)">全不选</Button>
           <Button type ="primary" size="small" @click="toggleSelect(true)">全选</Button>
         </div>
       </Drop>
@@ -77,6 +78,7 @@
   import Drop from './Dropdown.vue';
   import clickoutside from '../../directives/clickoutside';
   import TransferDom from '../../directives/transfer-dom';
+  import Checkbox from '../Checkbox/Checkbox.vue';
   import { oneOf, findComponentChildren, getScrollBarSize, getStyle,getBarBottom } from '../../util/tools';
   import Emitter from '../../mixins/emitter';
   import Locale from '../../mixins/locale';
@@ -84,7 +86,7 @@
   export default {
     name: 'Select',
     mixins: [ Emitter, Locale ],
-    components: { Icon, Drop },
+    components: { Icon, Drop, Checkbox},
     directives: { clickoutside,TransferDom},
     props: {
       disabled:{
@@ -209,6 +211,10 @@
       specialIndex:{
         type:Boolean,
         default:false,
+      },
+      checkToHead:{//只在多选且筛选框下有效
+        type:Boolean,
+        default:false,        
       }
     },
     data () {
@@ -233,6 +239,7 @@
         scrollBarWidth: getScrollBarSize(),
         isfirstSelect: false,
         tabIndex:0,
+        selectHead:false,
       };
     },
     computed: {
@@ -250,6 +257,9 @@
               [`${prefixCls}-${this.size}`]: !!this.size
           }
         ];
+      },
+      checkHeadClass(){
+        return {[`${prefixCls}-checkHead`]:this.checkToHead&&this.showBottom&&this.filterable}
       },
       dropdownCls () {
         return {
@@ -353,14 +363,15 @@
         return `${prefixCls}-checkall`
       },
       notFoundShow () {
-          let options = this.remote?this.$slots.default:this.options;
-          options = options || [];
-          let state= (this.notFound && !this.remote) || (this.remote && !this.loading && !options.length)||(!this.remote&&!options.length);
-          return state;
+        let options = this.options||this.$slots.default;
+        options = options || [];
+        let state= (this.notFound && !this.remote) || (this.remote && !this.loading && !options.length)||(!this.remote&&!options.length);
+        return state;
+
       }, 
     },
     methods: {
-      keyup(e){
+      keyup(event){
         if (event.keyCode == 9) {
           if (this.disabled || this.readonly||!this.editable) {
             return false;
@@ -369,9 +380,28 @@
           }
         }
       },
-      keydown(e){
+      keydown(event){
         if (event.keyCode == 9) {
           this.hideMenu();
+        }
+      },
+      focus(){
+        if (this.disabled) return;
+        this.$nextTick(()=>{
+          this.visible = true;
+          if (this.filterable) {
+            this.$refs.input.focus();
+          }else{
+            this.$refs.reference.focus();
+          }
+        })
+      },
+      blur(){
+        this.visible = false;
+        if (this.filterable) {
+          this.$refs.input.blur();
+        }else{
+          this.$refs.reference.blur();
         }
       },
       handleSelectScroll(event){
@@ -453,7 +483,6 @@
               }
           });
           this.options = options;
-
           if (init) {
               if (!this.remote) {
                   this.updateSingleSelected(true, slot);
@@ -499,7 +528,7 @@
       },
       updateMultipleSelected (init = false, slot = false) {
         if (this.multiple && Array.isArray(this.model)) {
-            let selected = this.remote ? this.selectedMultiple : [];
+            let selected = this.remote && this.model.length > 0 ? this.selectedMultiple : [];
 
             for (let i = 0; i < this.model.length; i++) {
                 const model = this.model[i];
@@ -567,12 +596,12 @@
           this.findChild((child) => {
               if (child.value === value) {
                   child.selected = true;
-                  label = (child.label === undefined) ? child.$el.innerHTML.slice(child.$el.innerHTML.indexOf('/label>')) : child.label;
+                  label = (child.label === undefined) ? child.$el.innerHTML.slice(child.$el.innerHTML.indexOf('</label>')+8) : child.label;
               } else {
                   child.selected = false;
               }
           });
-            this.hideMenu();
+            // this.hideMenu();
           if (!init) {
               if (this.labelInValue) {
                   this.$emit('on-change', {
@@ -824,6 +853,7 @@
           return val;
         }
       },
+      
     },
     mounted () {
       if (!this.multiple && this.setDefSelect && this.value == ''){
@@ -997,7 +1027,6 @@
         }
       },
       query (val) {
-        console.log('query'+val);
         if (this.remote && this.remoteMethod) {
             if (!this.selectToChangeQuery) {
                 this.$emit('on-query-change', val);
@@ -1024,6 +1053,20 @@
                 this.notFound = is_hidden;
             });
         }
+        if (this.filterable&&!this.remote) {
+          this.$nextTick(()=>{
+            this.focusIndex = 1;
+            let index = 0;
+            this.findChild(child => {
+              if (index==0&& !child.hidden) {
+                index++;
+                child.isFocus = true;
+              }else{
+                 child.isFocus = false;
+              }
+            });
+          })
+        }
         this.selectToChangeQuery = false;
         this.broadcast('Drop', 'on-update-popper');
       },
@@ -1035,6 +1078,19 @@
           this.model = val[0].value;
           this.isfirstSelect = false;
         }
+        if (this.remote) {
+          this.$nextTick(()=>{
+            this.focusIndex = 1;
+            this.findChild(child => {
+              if (child.index == 1) {
+                child.isFocus = true;
+              }
+            });
+          })
+        }
+      },
+      selectHead(val){
+        this.toggleSelect(val);        
       }
     }
   };

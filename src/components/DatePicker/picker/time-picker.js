@@ -9,25 +9,36 @@ export default {
     mixins: [Picker, Options],
     components: { TimePickerPanel, RangeTimePickerPanel },
     props: {
-        type: {
-            validator (value) {
-                return oneOf(value, ['time', 'timerange']);
-            },
-            default: 'time'
+      type: {
+        validator (value) {
+          return oneOf(value, ['time', 'timerange']);
         },
+        default: 'time'
+      },
+      splitPanels: {
+        type: Boolean,
+        default: false
+      },
     },
     computed: {
-        panel(){
-            const isRange =  this.type === 'timerange';
-            return isRange ? 'RangeTimePickerPanel' : 'TimePickerPanel';
-        },
-        ownPickerProps(){
-            return {
-                disabledHours: this.disabledHours,
-                disabledMinutes: this.disabledMinutes,
-                disabledSeconds: this.disabledSeconds,
-                hideDisabledOptions: this.hideDisabledOptions
-            };
+      panel(){
+        const isRange =  this.type === 'timerange';
+        return isRange ? 'RangeTimePickerPanel' : 'TimePickerPanel';
+      },
+      ownPickerProps(){
+        return {
+          disabledHours: this.disabledHours,
+          disabledMinutes: this.disabledMinutes,
+          disabledSeconds: this.disabledSeconds,
+          hideDisabledOptions: this.hideDisabledOptions
+        };
+      },
+      localePlaceholder () {
+        if (this.placeholder === undefined) {
+          return this.t('i.datepicker.selectTime');
+        } else {
+          return this.placeholder;
         }
+      },
     },
 };

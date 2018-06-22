@@ -2,10 +2,10 @@
   <div class="h-select-dropdown" :style="styles" @click="handleClick"><slot></slot></div>
 </template>
 <script>
-import Vue from 'Vue';
+import Vue from 'vue';
 const isServer = Vue.prototype.$isServer;
 import { getStyle } from '../../util/tools';
-const Popper = isServer ? function() {} : require('popper.js');
+const Popper = isServer ? function() {} : require('../../util/popper.js');
 export default {
 	name: 'Drop',
 	props: {
