@@ -145,7 +145,11 @@
     &,
     &:active,
     &:focus {
-        outline: 0;
+        outline-width: 0;
+    }
+    &.h-btn-focus:active,
+    &.h-btn-focus:focus {
+        outline-width: 1px;
     }
 
     &:not([disabled]):hover {

@@ -73,9 +73,7 @@
     },
     mounted () {
       var str=this.$el.innerHTML
-      // console.log(str);
       this.searchLabel =str.slice(Number(str.indexOf('</label>')+8));
-      // console.log(this.searchLabel)
       this.dispatch('Select', 'append');
       this.$on('on-select-close', () => {
         this.isFocus = false;
@@ -83,10 +81,7 @@
       this.$on('on-query-change', (val) => {
         this.queryChange(val);
       });
-      var el = this.$el.parentNode;
-      while(!hasClass(el,'h-select')){
-        el = el.parentNode;
-      }
+      let el = this.$parent.$parent.$el;
       this.multiple=hasClass(el,'h-select-multiple')?true:false;
     },
     destroyed () {

@@ -2,15 +2,17 @@
 <div>   
   <h1>Select组件</h1>
   <p>选择器支持单选、多选、搜索，以及键盘快捷操作。</p>
-  <h1>基础用法</h1>
+  <!-- <h1>基础用法</h1>
   <p>使用v-model双向绑定数据,默认为单选</p>
   <br>
   <p>单选时，value只接受字符串和数字类型，多选时，value只接受数组类型</p>
   <h2>多选</h2>
-  <h-select-table v-model="model1" width="800" @on-change="change" dropWidth="850" :multiple="true" @on-scroll="scroll" isCheckall :isComputed="isComputed">
+  <Button @on-click="testClick(true)">获取焦点</Button>
+  <Button @on-click="testClick(false)">失去焦点</Button> -->
+<!--   <h-select-table v-model="model1" width="800" @on-change="change" dropWidth="850" :multiple="true" @on-scroll="scroll" isCheckall :isComputed="isComputed" disabled >
     <h-table-option border :columns="columns1" :data="data1" @on-select-all="allSelect" @on-select="select" @on-selection-change="selsetChange" :highlightRow="true"></h-table-option>
   </h-select-table>
-  <h-button @click="ceshi">清空</h-button>
+  <h-button @click="ceshi">清空</h-button> -->
   <!-- <h-select-table v-model="model1" width="800" @on-change="change" dropWidth="850" :multiple="true" @on-scroll="scroll" isCheckall :isComputed="isComputed" readonly>
     <h-table-option border :columns="columns1" :data="data1" @on-select-all="allSelect" @on-select="select" @on-selection-change="selsetChange" :highlightRow="true"></h-table-option>
   </h-select-table> -->
@@ -19,13 +21,13 @@
   </h-select-table> -->
   {{model1}}
   <h2>单选</h2> 
-  <h-select-table v-model="model2" @on-change="change">
-    <h-table-option border :columns="columns1" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange"></h-table-option>
-  </h-select-table>
+  <!-- <h-select-table v-model="model2" @on-change="change" disabled>
+    <h-table-option border :columns="columns1" :data="data1" @on-select-all="allSelect" @on-select="select" @on-selection-change="selsetChange"></h-table-option>
+  </h-select-table> -->
   {{model2}}
   <h1>筛选框在上</h1>
   <h2>模糊多列匹配</h2>
-  <h-select-table v-model="model3" :filterable="true" matchable :matchCol="matchCol" :multiple="true" isCheckall>
+  <h-select-table v-model="model3" :filterable="true" matchable :matchCol="matchCol" :multiple="true" isCheckall ref="test" placement="bottom-start" :dropWidth='800'>
     <h-table-option border :columns="columns1" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange"></h-table-option>
   </h-select-table>
   <h2>左列多列搜索</h2>
@@ -39,7 +41,7 @@
   {{model5}}
   <h1>筛选框在下</h1>
   <h2>模糊多列匹配</h2>
-  <h-select-table v-model="model6" :filterable="true" showBottom matchable :matchCol="matchCol" :multiple="true" isCheckall showBorder searchHolder="123">
+  <h-select-table v-model="model6" :filterable="true" showBottom matchable :matchCol="matchCol" :multiple="true" isCheckall searchHolder="123" checkToHead>
     <h-table-option border :columns="columns1" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange"></h-table-option>
   </h-select-table>
   <h2>左列多列搜索</h2>
@@ -181,6 +183,13 @@ export default {
     }
   },
   methods: {
+    testClick(val){
+      if (val) {
+        this.$refs.test.focus();
+      }else{
+        this.$refs.test.blur();
+      }
+    },
     ceshi(){
       this.model1 = [];
       this.model2 = '';

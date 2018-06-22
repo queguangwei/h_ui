@@ -1,15 +1,19 @@
 <template>
   <div>
     <h2>基础</h2>
-    <h-table :columns="columns1" :data="[]" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag">
+<!--     <h-msg-box v-model="msgbox">
+      <p slot="header">你好呀</p>
+      <h-table :columns="columns1" :data="[]" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag">
+        <span slot="loading">我是自定义加载！！！</span>
+      </h-table>
+    </h-msg-box> -->
+    <Button @click="changemsg">显示</Button>
+    <h-table :columns="columns1" :data="[]" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="200" canMove @on-move="onMove">
       <span slot="loading">我是自定义加载！！！</span>
     </h-table>
-    <h-table :columns="columns1" :data="[]" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="200">
-      <span slot="loading">我是自定义加载！！！</span>
-    </h-table>
-    <h-button @click="setLoading">切换状态</h-button>
+    <h-button @click="setLoading">切换状态</h-button>/
     <h2>带边线</h2>
-    <h-table border :columns="columns1" :data="data0" stripe no-data-text="数据为空" :show-header="false" :loading="loading">
+    <h-table border :columns="columns1" :data="data0" stripe no-data-text="数据为空" :show-header="false" :loading="loading" canMove>
       <div slot="header">我是表头</div>
       <div slot="footer">我是表尾</div>
     </h-table>
@@ -18,14 +22,14 @@
     <p>列：通过给列 columns 设置字段 className 可以给某一列指定一个样式。</p>
     <p>单元格：通过给数据 data 设置字段 cellClassName 可以给任意一个单元格指定样式。</p>
     <p>自定义行样式：</p>
-    <h-table :row-class-name="rowClassName" :columns="columns1" :data="data1" :loading="loading"></h-table>
+    <h-table :row-class-name="rowClassName" :columns="columns1" :data="data1" :loading="loading" :highlight-row='true' canMove></h-table>
     <p>自定义列样式：</p>
     <h-table :columns="columns9" :data="data1" :loading="loading"></h-table>
     <p>自定义任意单元格样式：</p>
     <h-table :columns="columns1" :data="data8" @on-row-click="click1" :loading="loading"></h-table>
     <h2>固定表头</h2>
     <p>通过设置属性 height 给表格指定高度后，会自动固定表头。当纵向内容过多时可以使用</p>
-    <h-table height="200" :columns="columns1" :data="data2" border :loading="loading"></h-table>
+    <h-table height="200" :columns="columns1" :data="data2" border :loading="loading" showTitle></h-table>
     <h2>固定列</h2>
     <p>通过给数据 columns 的项设置 fixed 为 left 或 right，可以左右固定需要的列。</p>
     <h-table width="1000" border :columns="columns2" :data="data3" :loading="loading"></h-table>
@@ -41,7 +45,7 @@
     <p>@on-select，选中某一项触发，返回值为 selection 和 row，分别为已选项和刚选择的项。</p>
     <p>@on-select-all，点击全选时触发，返回值为 selection，已选项。</p>
     <p>@on-selection-change，只要选中项发生变化时就会触发，返回值为 selection，已选项。</p>
-    <h-table border :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading"></h-table>
+    <h-table border :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading" canMove></h-table>
     <h2>排序</h2>
     <p>通过给 columns 数据的项，设置 sortable: true，即可对该列数据进行排序。</p>
     <p>排序默认使用升序和降序，也可以通过设置属性 sortMethod 指定一个自定义排序函数，接收三个参数 a 、 b 和 type。</p>
@@ -73,7 +77,7 @@
     支持IE9~IE11、Edge、Chrome、Safari、Firefox 全系列浏览器。
     IE9、Safari 需要手动修改后缀名为 .csv。
     IE9暂时只支持英文，中文会显示为乱码。</p>
-    <h-table height="300" border :columns="columns8" :data="data7" :loading="loading"></h-table>
+    <h-table height="300" border :columns="columns8" :data="data7" :loading="loading" canMove></h-table>
     <br>
     <h-button type="primary" size="large" @click="exportData(1)"><h-icon name="document"></h-icon> 导出原始数据</h-button>
     <h-button type="primary" size="large" @click="exportData(2)"><h-icon name="document"></h-icon> 导出排序和过滤后的数据</h-button>
@@ -93,6 +97,7 @@ export default {
   components:{TexpandRow},
   data () {
     return {
+      msgbox:false,
       loading:false,
       columns18: [
          {
@@ -488,7 +493,7 @@ export default {
             this.data5.push({
               name: '王小明1',
               age: 20,
-              address: '北京市朝阳区芍药居',
+              address: '北京市朝阳区<\/br>芍药居',
               date: '2016-10-03'
             },);
           },
@@ -790,7 +795,7 @@ export default {
         {
           name: '王小明',
           age: 18,
-          address: '北京市朝阳区芍药居'
+          address: '北京市朝阳区\r芍药居'
           // _highlight: true//默认选择当前项
         },
         {
@@ -813,7 +818,7 @@ export default {
         {
           name: '王小明',
           age: 18,
-          address: '北京市朝阳区芍药居'
+          address: '北京市朝阳\r区芍药居'
         },
         {
           name: '张小刚',
@@ -833,7 +838,7 @@ export default {
         {
           name: '王小明',
           age: 18,
-          address: '北京市朝阳区芍药居'
+          address: '北京市朝阳\r区芍药居'
         },
         {
           name: '张小刚',
@@ -855,7 +860,7 @@ export default {
         {
           name: '王小明',
           age: 18,
-          address: '北京市朝阳区芍药居',
+          address: '北京市朝阳\r区芍药居',
           province: '北京市',
           city: '朝阳区',
           zip: 100000
@@ -889,7 +894,7 @@ export default {
         {
           name: '王小明',
           age: 18,
-          address: '北京市朝阳区芍药居',
+          address: '北京市朝阳<\/br>区芍药居',
           date: '2016-10-03'
         },
         {
@@ -1229,9 +1234,16 @@ export default {
     }
   },
   methods:{
+    changemsg(){
+      this.msgbox = !this.msgbox;
+    },
     onDrag(e,i){
       console.log(e);
       console.log(i);
+    },
+    onMove(i,j){
+      console.log(i);
+      console.log(j);
     },
     change(e){
       console.log(e);
@@ -1319,36 +1331,46 @@ export default {
           title: '姓名',
           key: 'name',
           align: 'center',
-          width: 200
         },
         {
           title: '年龄',
           key: 'age',
-          width: 200
         },
         {
           title: '地址',
+          ellipsis:true,
           key: 'address',
           sortType:'asc',
-          width: 200
         },
         {
           title: '地址1',
           key: 'address1',
           sortType:'asc',
-          width: 200
         },
         {
           title: '地址2',
           key: 'address2',
           sortType:'asc',
-          width: 200
         },
         {
           title: '地址3',
           key: 'address3',
           sortType:'asc',
-          width: 200
+        },
+        {
+          title: '地址4',
+          key: 'address4',
+          sortType:'asc',
+        },
+        {
+          title: '地址5',
+          key: 'address5',
+          sortType:'asc',
+        },
+        {
+          title: '地址6',
+          key: 'address6',
+          sortType:'asc',
         }]
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div :class="classes" :style="multiplestyle" ref="select" v-clickoutside="handleClose" >
+  <div :class="classes" v-clickoutside="handleClose" :style="multiplestyle" ref="select" >
     <div
       :class="selectionCls"
       ref="reference"
@@ -46,29 +46,30 @@
         <div :class="content" ref="content">
           <!-- 单选时清空按钮 -->
           <!-- <ul v-show="notFoundShow" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul> -->
-          <div :class="searchClass" ref='search' v-if="filterable && showBottom">
+          <span :class="searchClass" ref='search' v-if="filterable && showBottom">
+            <Checkbox v-model="selectHead" size="large" v-if="checkToHead&&multiple"></Checkbox>
             <input
-            type="text"
-            v-model="query"
-            :disabled="disabled"
-            :readonly = "!editable||readonly"
-            :class="[prefixCls + '-input']"
-            class="h-input h-input-left"
-            :placeholder="localeSearchHolder"
-            @blur="handleBlur"
-            @keydown="resetInputState"
-            @keydown.delete="handleInputDelete"
-            tabindex="-1" 
-            ref="input">
+              type="text"
+              v-model="query"
+              :disabled="disabled"
+              :readonly = "!editable||readonly"
+              :class="[prefixCls + '-input']"
+              class="h-input h-input-left"
+              :placeholder="localeSearchHolder"
+              @blur="handleBlur"
+              @keydown="resetInputState"
+              @keydown.delete="handleInputDelete"
+              tabindex="-1" 
+              ref="input">
             <!-- <input type="text" placeholder="请输入..." class="h-input h-input-left">  -->
-          </div>
+          </span>
           <div v-show="(!notFound && !remote) || (remote && !loading && !notFound)" :class="[prefixCls + '-dropdown-list']" :style="listStyle" ref='list' @scroll="handleSelectScroll"><slot></slot>
             <ul v-show="isComputed" :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>
           </div>
           <ul v-show="loading" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
         </div>
         <div v-if="isCheckall&&multiple&&!notFoundShow" :class="checkAll">
-          <Button size="small" @click="toggleSelect(false)">反选</Button>
+          <Button size="small" @click="toggleSelect(false)">全不选</Button>
           <Button type ="primary" size="small" @click="toggleSelect(true)">全选</Button>
         </div>
       </Drop>
@@ -81,6 +82,7 @@
   import Drop from '../Select/Dropdown.vue';
   import clickoutside from '../../directives/clickoutside';
   import TransferDom from '../../directives/transfer-dom';
+  import Checkbox from '../Checkbox/Checkbox.vue';
   import { oneOf, findComponentChildren, getScrollBarSize, getStyle,getBarBottom } from '../../util/tools';
   import Emitter from '../../mixins/emitter';
   import Locale from '../../mixins/locale';
@@ -88,7 +90,7 @@
   export default {
     name: 'SelectTable',
     mixins: [ Emitter, Locale ],
-    components: { Icon, Drop },
+    components: { Icon, Drop ,Checkbox},
     directives: { clickoutside,TransferDom},
     props: {
       disabled:{
@@ -221,6 +223,10 @@
       showBorder:{
         type:Boolean,
         default:false,
+      },
+      checkToHead:{
+        type:Boolean,
+        default:false,
       }
     },
     data () {
@@ -245,11 +251,17 @@
         scrollBarWidth: getScrollBarSize(),
         highlightRow:false,
         tabIndex:0,
+        selectHead:false,
       };
     },
     computed: {
       searchClass(){
-        return `${prefixCls}-search`
+        return [ 
+          `${prefixCls}-search`,
+          {
+            [`${prefixCls}-checkHead`]:this.checkToHead&&this.showBottom&&this.filterable
+          }        
+        ]
       },
       listStyle(){
         let style = {};
@@ -310,7 +322,7 @@
           return status;
       },
       showCloseIcon () {
-          return !this.multiple && this.clearable && !this.showPlaceholder;
+          return !this.multiple && this.clearable && !this.showPlaceholder && !this.readonly && !this.disabled;
       },
       inputStyle () {
           let style = {};
@@ -384,7 +396,7 @@
       }, 
     },
     methods: {
-      keyup(e){
+      keyup(event){
         if (this.disabled || this.readonly||!this.editable) {
           return false;
         }
@@ -392,7 +404,7 @@
           this.toggleMenu();
         }
       },
-      keydown(e){
+      keydown(event){
         if (event.keyCode == 9) {
           this.hideMenu();
         }
@@ -430,7 +442,6 @@
       },
       hideMenu () {
           this.visible = false;
-          this.focusIndex = 0;
           this.broadcast('TabelOption', 'on-select-close');
       },
       findChild (cb) {
@@ -461,7 +472,7 @@
         let options = [];
         let index = 1;
         this.findChild((child) => {
-          let data =  child.data;
+          let data =  child.rebuildData;
           data.forEach((col,i)=>{
             options.push({
               value: _this.getFormatValue(col),
@@ -495,7 +506,6 @@
                       break;
                   }
               }
-
               if (slot && !findModel) {
                   this.model = '';
                   this.query = '';
@@ -505,6 +515,7 @@
           this.toggleSingleSelected(this.model, init);
       },
       clearSingleSelect () {
+        if(this.readonly || this.disabled) return;
         if (this.showCloseIcon) {
           this.findChild((child) => {
               child.$refs.table.clearAllRow();
@@ -589,8 +600,10 @@
                let index = value.indexOf(col.value);
                if (index >= 0) {
                  child.$refs.table.clearSelect(col.index,true);
+                 child.$refs.table.clearSingle(col.index,true);
                } else {
                 child.$refs.table.clearSelect(col.index,false);
+                child.$refs.table.clearSingle(col.index,false);
                }
             });
           });
@@ -704,22 +717,9 @@
             this.focusIndex = (this.focusIndex <= 1) ? this.options.length : prev;
         }
 
-        // let child_status = {
-        //     disabled: false,
-        //     hidden: false
-        // };
-
-        // let find_deep = false; 
-
         this.findChild((child) => {
           child.$refs.table.changeHover(this.focusIndex-1,true);
         });
-
-        // this.resetScrollTop();
-
-        // if ((child_status.disabled || child_status.hidden) && find_deep) {
-        //     this.navigateOptions(direction);
-        // }
       },
       resetScrollTop () {
         const index = this.focusIndex - 1;
@@ -831,6 +831,25 @@
         // let style = {}
         // style.width="600psx";
         // return style;
+      },
+      focus(){
+        if (this.disabled) return;
+        this.$nextTick(()=>{
+          this.visible = true;
+          if (this.filterable) {
+            this.$refs.input.focus();
+          }else{
+            this.$refs.reference.focus();
+          }
+        })
+      },
+      blur(){
+        this.visible = false;
+        if (this.filterable) {
+          this.$refs.input.blur();
+        }else{
+          this.$refs.reference.blur();
+        }
       },
     },
     mounted () {
@@ -983,16 +1002,15 @@
             }
             this.broadcastQuery(val);
 
-            // let is_hidden = true;
-
-            // this.$nextTick(() => {
-            //     this.findChild((child) => {
-            //         if (!child.hidden) {
-            //             is_hidden = false;
-            //         }
-            //     });
-            //     this.notFound = is_hidden;
-            // });
+            if (this.filterable&&val) {
+              this.$nextTick(()=>{
+                this.findChild(child => {
+                  if (this.focusIndex>0)child.$refs.table.changeHover(this.focusIndex-1,false);
+                  this.focusIndex = 1;
+                  child.$refs.table.changeHover(this.focusIndex-1,true);
+                });
+              });
+            }
         }
         this.selectToChangeQuery = false;
         // this.broadcast('Drop', 'on-update-popper');
@@ -1011,6 +1029,9 @@
         this.$nextTick(()=>{
           this.offsetArrow();
         })
+      },
+      selectHead(val){
+        this.toggleSelect(val);        
       }
     }
   };

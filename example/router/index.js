@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '../views/Home.vue'
+import Hello from '../views/hello.vue'
 import Switchs from '../views/Switchs.vue'
 import Typefield from '../views/Typefield.vue'
 import Waves from '../views/Waves.vue'
@@ -51,6 +52,8 @@ import GroupTable from '../views/GroupTable.vue'
 import TreeGird from '../views/TreeGird.vue'
 import SelectTable from '../views/SelectTable.vue'
 import FastDate from '../views/FastDate.vue'
+import SplicePanel from '../views/SplicePanel.vue'
+import Panel from '../views/Panel.vue'
 Vue.use(Router)
 
 const router = new Router({
@@ -294,6 +297,21 @@ const router = new Router({
         name: 'FastDate',
         path: '/fastDate',
         component: FastDate
+    },
+    {
+        name: 'SplicePanel',
+        path: '/splicePanel',
+        component: SplicePanel
+    },
+    {
+        name: 'Panel',
+        path: '/panel',
+        component: Panel
+    },
+    {
+        name: 'Hello',
+        path: '/hello',
+        component: Hello
     }
  ]
 })

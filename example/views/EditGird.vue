@@ -3,9 +3,10 @@
     <h2>基础</h2>
     <h3>单选</h3>
 
-    <h-edit-gird :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" ref="editGird" stripe :show-header="false" :loading="loading"@on-expand="expand" :option="options1" :treeOption="treeOption">
+    <h-edit-gird :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" ref="editGird" stripe :show-header="false" :loading="loading"@on-expand="expand" :option="options1" :treeOption="treeOption" @on-editselect-change="selectchange" @on-editinput-change="selectchange" @on-editinput-blur="selectchange" @on-editarea-change="selectchange" @on-editarea-blur="selectchange" showEditInput>
       <p slot='loading'>我是自定义loading</p>
     </h-edit-gird>
+    <Button @click="getData">获取数据</Button>
     <!-- <Button @click="setLoad">切换loading</Button>
     <p>小</p>
     <h-edit-gird :columns="columns1" :data="data1" @on-current-change="click1" @on-row-click="click1" ref="editGird" width="800" no-data-text="你好呀" :loading="loading"></h-edit-gird>
@@ -165,7 +166,6 @@ var columns=[
         {
           type: 'card',
           title: '卡号',
-          width: 200,
           key: 'cardId',
           rule: { required: true, message: '卡号不能为空'},
         },
@@ -175,6 +175,7 @@ var columns=[
           width: 200,
           key: 'city',
           multiple:false,
+          transfer:true,
           option: [
               {value:"北京"},
               {value:"上海"},
@@ -301,7 +302,7 @@ export default {
         {
           type: 'number',
           title: '年龄',
-          width: 200,
+          width: 100,
           key: 'age',
           hiddenCol:false,
           rule: { required: true, message: '年龄不能为空'},
@@ -317,7 +318,7 @@ export default {
         {
           type: 'money',
           title: '金额',
-          width: 200,
+          width: 100,
           integerNum: 14,
           suffixNum: 3,
           // suffixNum: 2,
@@ -335,6 +336,8 @@ export default {
         {
           type: 'select',
           title: '地区',
+          width: 200,
+          transfer:true,
           filterable: true,
           remote:true,
           remoteMethod:this.remoteMethod1,
@@ -388,7 +391,7 @@ export default {
       ],
       data1: [],
       options1:[],
-      list: ['北京','Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New hampshire', 'New jersey', 'New mexico', 'New york', 'North carolina', 'North dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode island', 'South carolina', 'South dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West virginia', 'Wisconsin', 'Wyoming'],
+      list: ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New hampshire', 'New jersey', 'New mexico', 'New york', 'North carolina', 'North dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode island', 'South carolina', 'South dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West virginia', 'Wisconsin', 'Wyoming'],
       treeOption:[],
       }
   },
@@ -413,7 +416,7 @@ export default {
     selsetChange (selection){//选项发生变化时触发已选择的项
       console.log(selection);
     },
-    getDate(){
+    getData(){
       console.log(this.$refs.editGird.cloneData); 
     },
     addDate(){
@@ -445,19 +448,24 @@ export default {
     remoteMethod1 (query) {
       if (query !== '') {
           setTimeout(() => {
-              this.options1 = [];
               const list = this.list.map(item => {
                   return {
                       value: item,
                       label: item
                   };
               });
-              this.options1[7] = list.filter(item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1);
+              let arr = list.filter(item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1);
+              this.$set(this.options1,7,arr)
           }, 200);
       } else {
           this.options1[7] = [];
       }
-    },  
+    }, 
+    selectchange(val,i,j){
+      console.log(val);
+      console.log(i);
+      console.log(j);
+    } 
   },
   mounted(){
     // this.data1=tData
@@ -482,6 +490,14 @@ export default {
                 }]
               }]
             }]
+    this.options1[7]=[{value:'Alabama',label:'Alabama'},{value:'beijing',label:'北京'},{value:'Delaware',label:'Delaware'}]
+    const list = this.list.map(item => {
+        return {
+            value: item,
+            label: item
+        };
+    });
+    // this.options1[7] = list;
   },
   created() {
     // setTimeout(()=>{

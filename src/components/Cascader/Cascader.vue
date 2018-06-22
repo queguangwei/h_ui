@@ -314,8 +314,17 @@
           }
           return new_item;
         }
-
         return data.map(item => deleteData(item));
+      },
+      focus(){
+        this.visible=true;
+        this.$nextTick(()=>{
+          this.$refs.input.focus();
+        });
+      },
+      blur(){
+        this.visible=false;
+        this.$refs.input.blur();
       }
     },
     created () {

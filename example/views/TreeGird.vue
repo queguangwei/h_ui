@@ -218,7 +218,7 @@ var tData= [
   export default {
     data () {
       return {
-        loading:true,
+        loading:false,
         columns1: [
           {
             type: 'index',
@@ -321,12 +321,25 @@ var tData= [
             checkStrictly: false,
           }
         ],
-        data1: tData
+        data1:[ {
+          id: 1,
+          name: '王小明',
+          age: 18,
+          address: '北京市朝阳区芍药居',
+          money: '120.00',
+          cardId: '6223 5678 1234 5678',
+          city: '北京',
+          dating:'2018-03-07',
+          timing:'16:00:00.00',
+          tree:'leaf1'
+          // _highlight: true//默认选择当前项
+        }],
       }
     },
     methods: {
       setLoad(){
-        this.loading = !this.loading;
+        this.data1 = tData;
+        // this.loading = !this.loading;
       },
       click1(s){
         console.log(s);
@@ -334,8 +347,10 @@ var tData= [
       click2(s){
         console.log(s);
       },
+
     },
     mounted () {
+      // this.data1=tData;
       // this.updateTree(this.baseData);
     }
   }

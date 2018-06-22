@@ -4,7 +4,9 @@
     <h1>金额</h1>
     <h2>基本用法</h2>
     <h1>algin设置左中右</h1>    
-      <h-typefield v-model="value11" integerNum="7" suffixNum="1" type="money" placeholder="金额" bigTips @on-blur="s" style="width:300px" algin="left"></h-typefield>
+      <h-typefield v-model="value11" integerNum="7" suffixNum="1" type="money" placeholder="金额" bigTips @on-blur="s" style="width:300px" algin="left" ref="test"></h-typefield>
+      <Button @on-click="testClick(true)">获取焦点</Button>
+      <Button @on-click="testClick(false)">失去焦点</Button>
       <h-typefield v-model="value12" integerNum="7" suffixNum="1" type="money" placeholder="金额" bigTips @on-blur="s" style="width:300px" algin="center"></h-typefield>
       <h-typefield v-model="value13" integerNum="7" suffixNum="1" type="money" placeholder="金额" bigTips @on-blur="s" style="width:300px" algin="right"></h-typefield>
     <h1>divided 和 isround设置四舍五入 整数位7位，小数位3为</h1>
@@ -82,6 +84,13 @@ export default {
     }
   },
   methods: {
+    testClick(val){
+      if (val) {
+        this.$refs.test.focus();
+      }else{
+        this.$refs.test.blur();
+      }
+    },
     getValue(){
       console.log(this.value)
     },

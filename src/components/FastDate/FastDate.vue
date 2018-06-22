@@ -18,7 +18,7 @@
       <div :class="innerClass">
         <div :class="classSingle" @click="handleSingleClick" @keydown="changeFocus($event,false)" ref="single">
           <span>
-            <DateInput ref="year" v-model="year" type="year" :readonly="readonly" :disabled="disabled"  @focus="rangeSelect" @blur="editBlur($event,'year',false)" :style="yearStyle" :class="yearClass" :placeholder="placeholder"></DateInput>
+            <DateInput ref="year" v-model="year" type="year" :readonly="readonly" :disabled="disabled"  @focus="rangeSelect" @blur="editBlur($event,'year',false)" :style="yearStyle" :class="yearClass" :placeholder="yearPlaceholder"></DateInput>
           </span>
           <span v-show="year||months||day">{{dateSplit}}</span>
           <span v-show="year||months||day">
@@ -34,7 +34,7 @@
         <div v-show="showRange" :class="[prefixCls+'-inner-split']">--</div>
         <div v-show="showRange" :class="classRange" @click="handleRangeClick" @keydown="changeFocus($event,true)" ref="range">
           <span>
-            <DateInput  ref="year1" type="year" v-model="year1" @focus="rangeSelect" :readonly="readonly" :disabled="disabled" @blur="editBlur($event,'year',true)" :style="yearStyle" :class="yearClass" :placeholder="placeholder"></DateInput>
+            <DateInput  ref="year1" type="year" v-model="year1" @focus="rangeSelect" :readonly="readonly" :disabled="disabled" @blur="editBlur($event,'year',true)" :style="yearStyle" :class="yearClass" :placeholder="yearPlaceholder"></DateInput>
           </span>
           <span v-show="year1||months1||day1">{{dateSplit}}</span>
           <span v-show="year1||months1||day1">
@@ -60,10 +60,11 @@ import { on, off } from '../../util/dom';
 import clickoutside from '../../directives/clickoutside';
 import {oneOf,getYMD,isdate,getCurrentYear,getCurrentMonth,getCurrentDay,typeOf} from '../../util/tools';
 import Locale from '../../mixins/locale';
+import Emitter from '../../mixins/emitter';
 const prefixCls = 'h-fast-date'
 export default {
   name: 'FastDate',
-  mixins: [ Locale ],
+  mixins: [ Locale,Emitter],
   components: {hButton,Icon,Datepicker,DateInput},
   directives: { clickoutside},
   props: {
@@ -146,14 +147,17 @@ export default {
       year1:'',
       months1:'',
       day1:'',
+      yearPlaceholder:'',
     }
   },
   computed: {
     yearStyle(){
       let style={}
       if (!this.year&&!this.months&&!this.day) {
-        style.width='150px';
+        this.yearPlaceholder = this.placeholder;
+        style.width='120px';
       }else{
+        this.yearPlaceholder='';
         style.width='32px';
       }
       return style;
@@ -326,6 +330,7 @@ export default {
       }
     },
     closeClick(){
+      if (this.readonly || this.disabled) return;
       this.$emit('on-clear')
       if (this.type!='daterange') {
         this.inputValue='';
@@ -441,6 +446,10 @@ export default {
       }else{
         return '';
       }
+    },
+    focus(){
+      this.opened = true;
+      this.$refs.year.focus();
     }
   },
   watch:{
@@ -455,6 +464,7 @@ export default {
     },
     inputValue(val){
       this.$emit('input',val);
+      this.dispatch('FormItem', 'on-form-change',val);
       this.setDate(val);
     },
     value(val){

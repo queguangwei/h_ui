@@ -49,6 +49,9 @@
       this.setNextError();
       this.updateCurrent(true);
     },
+    updated () {
+      this.updateChildProps()
+    },
     methods: {
       updateChildProps (isInit) {
         const total = this.$children.length;

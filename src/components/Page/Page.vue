@@ -12,7 +12,8 @@
         :value="currentPage"
         @keydown="keyDown"
         @keyup="keyUp"
-        @change="keyUp">
+        @change="keyUp"
+        @blur = "simpleBlur">
       <span>/</span>
       {{ allPages }}
     </div>
@@ -136,19 +137,26 @@
       return {
         prefixCls: prefixCls,
         currentPage: this.current,
-        currentPageSize: this.pageSize
+        currentPageSize: this.pageSize,
+        maxPage:null,
       };
     },
     watch: {
       total (val) {
-        let maxPage = Math.ceil(val / this.currentPageSize);
-        if (Number(val) == 0) maxPage = 1;
-        if (maxPage < this.currentPage && maxPage > 0) {
-            this.currentPage = maxPage;
+        this.maxPage = Math.ceil(val / this.currentPageSize);
+        if (Number(val) == 0) this.maxPage = 1;
+        if (this.maxPage < this.currentPage && this.maxPage > 0) {
+            this.currentPage = this.maxPage;
         }
       },
       current (val) {
-        this.currentPage = val;
+        if (this.maxpage && this.maxpage>0) {
+          if (this.currentPage>this.maxpage) {
+            this.currentPage = 1;
+          }
+        }else{
+          this.currentPage = val;
+        }
       },
       pageSize (val) {
         this.currentPageSize = val;
@@ -278,7 +286,7 @@
           this.prev();
         } else if (key === 40) {
           this.next();
-        } else if (key == 13) {
+        } else if (key == 13 && !this.isBlur) {
           let page = 1;
 
           if (val > this.allPages) {
@@ -292,7 +300,24 @@
           e.target.value = page;
           this.changePage(page);
         }
+      },
+      simpleBlur(e){
+        const val = parseInt(e.target.value);
+        if (!this.isBlur) return false;
+        let page = 1;
+        if (val > this.allPages) {
+            page = this.allPages;
+        } else if (val <= 0) {
+            page = 1;
+        } else {
+            page = val;
+        }
+        e.target.value = page;
       }
+    },
+    mounted(){
+      let pageAll = Math.ceil(this.total / this.currentPageSize);
+      this.maxPage = pageAll === 0? 1 : pageAll;
     }
-  };
+  }
 </script>

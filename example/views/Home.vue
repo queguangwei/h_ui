@@ -1,81 +1,96 @@
 <template>
   <div>
-    <input>
-    <input disabled="disabled">
-    <input disabled="disabled">
-    <h-form ref="formItem" :model="formItem" :label-width="80" errorFocus>
-      <h-form-item label="输入框" prop="input" required>
-        <h-input v-model="formItem.input" placeholder="请输入"></h-input>
-      </h-form-item>
-      <h-form-item label="日期控件">
-        <h-row>
-          <h-col span="11">
-            <h-form-item prop="date" required>
-              <h-datePicker type="date" placeholder="选择日期" v-model="formItem.date"></h-datePicker>
-            </h-form-item>
-          </h-col>
-          <h-col span="2" style="text-align: center">-</h-col>
-          <h-col span="11">
-            <h-form-item prop="time" required>
-              <h-timePicker type="time" placeholder="选择时间" v-model="formItem.time"></h-timePicker>
-            </h-form-item>
-          </h-col>
-        </h-row>
-      </h-form-item>
-      <h-form-item label="选择器" prop="select" required>
-        <h-select v-model="formItem.select" placeholder="请选择">
-          <h-option value="beijing">北京市</h-option>
-          <h-option value="shanghai">上海市</h-option>
-          <h-option value="shenzhen">深圳市</h-option>
-        </h-select>
-      </h-form-item>
-      <h-form-item label="金额框" prop="money" required>
-        <h-typefield v-model="formItem.money">
-         <!--  <h-select v-model="select1" slot="prepend" style="width: 80px">
-            <h-option value="http">http://</h-option>
-            <h-option value="https">https://</h-option>
-          </h-select> -->
+    <!-- <h-msg-box v-model="changeform" width="900"> -->
+      <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus cols="2">
+        <h-form-item label="输入框" prop="input" required>
+          <h-input v-model="formItem1.input" placeholder="请输入"></h-input>
+        </h-form-item>
+        <h-form-item label="日期控件">
+          <h-row>
+            <h-col span="11">
+              <h-form-item prop="date" required>
+                <h-datePicker type="date" placeholder="选择日期" v-model="formItem1.date"></h-datePicker>
+              </h-form-item>
+            </h-col>
+            <h-col span="2" style="text-align: center">-</h-col>
+            <h-col span="11">
+              <h-form-item prop="time" required>
+                <h-timePicker type="time" placeholder="选择时间" v-model="formItem1.time"></h-timePicker>
+              </h-form-item>
+            </h-col>
+          </h-row>
+        </h-form-item>
+        <h-form-item label="选择器" prop="select" required>
+          <h-select v-model="formItem1.select" filterable>
+            <h-option value="beijing">北京市</h-option>
+            <h-option value="shanghai">上海市</h-option>
+            <h-option value="shenzhen">深圳市</h-option>
+          </h-select>
+        </h-form-item>
+        <h-form-item label="金额框" prop="money" required>
+          <h-typefield v-model="formItem1.money">
+           <!--  <h-select v-model="select1" slot="prepend" style="width: 80px">
+              <h-option value="http">http://</h-option>
+              <h-option value="https">https://</h-option>
+            </h-select> -->
 
-          <h-select v-model="select2" placeholder="" slot="append" style="width: 45px" :isArrow="false" :clearable="false" :tranfer="true">
-          <h-option value="com">.com</h-option>
-          <h-option value="org">.org</h-option>
-          <h-option value="io">.io</h-option>
-        </h-select>
-        </h-typefield>
-      </h-form-item>
-      <h-form-item label="单选框" prop="radio" required>
-        <h-radio-group v-model="formItem.radio">
-          <h-radio label="male">男</h-radio>
-          <h-radio label="female">女</h-radio>
-        </h-radio-group>
-      </h-form-item>
-      <h-form-item label="多选框" prop="checkbox" required>
-        <h-checkbox-group v-model="formItem.checkbox">
-            <h-checkbox label="吃饭"></h-checkbox>
-            <h-checkbox label="睡觉"></h-checkbox>
-            <h-checkbox label="跑步"></h-checkbox>
-            <h-checkbox label="看电影"></h-checkbox>
-        </h-checkbox-group>
-      </h-form-item>
-      <h-form-item label="特殊日期" required prop="fatdate" required>
-        <h-fast-date v-model="formItem.fatdate"></h-fast-date>
-      </h-form-item>
-      <h-form-item label="下拉表" prop='slider' required>
-        <h-select-table v-model="formItem.slider">
-          <h-table-option border :columns="columns1" :data="data1"></h-table-option>
-        </h-select-table>
-      </h-form-item>
-      <h-form-item label="下拉树" prop='tree' required>
-        <h-select-tree v-model="formItem.tree" :first-value="firstValc" style="width:200px" :data="baseData1" placement="top" placeholder="你好"></h-select-tree>
-      </h-form-item>
-      <h-form-item label="文本域" prop="textarea" required>
-        <h-input v-model="formItem.textarea" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></h-input>
-      </h-form-item>
-      <h-form-item>
-          <h-button type="primary" @click="handleSubmit('formItem')">提交</h-button>
-          <h-button type="ghost" style="margin-left: 8px" @click="handleReset('formItem')">取消</h-button>
-      </h-form-item>
-    </h-form>
+            <h-select v-model="select2" placeholder="" slot="append" style="width: 45px" :isArrow="false" :clearable="false" :tranfer="true">
+            <h-option value="com">.com</h-option>
+            <h-option value="org">.org</h-option>
+            <h-option value="io">.io</h-option>
+          </h-select>
+          </h-typefield>
+        </h-form-item>
+        <h-form-item label="单选框" prop="radio" required>
+          <h-radio-group v-model="formItem1.radio">
+            <h-radio label="male">男</h-radio>
+            <h-radio label="female">女</h-radio>
+          </h-radio-group>
+        </h-form-item>
+        <h-form-item label="多选框" prop="checkbox" required>
+          <h-checkbox-group v-model="formItem1.checkbox">
+              <h-checkbox label="吃饭"></h-checkbox>
+              <h-checkbox label="睡觉"></h-checkbox>
+              <h-checkbox label="跑步"></h-checkbox>
+              <h-checkbox label="看电影"></h-checkbox>
+          </h-checkbox-group>
+        </h-form-item>
+        <h-form-item label="特殊日期" required prop="fatdate" required>
+          <h-fast-date v-model="formItem1.fatdate"></h-fast-date>
+        </h-form-item>
+        <h-form-item label="特殊日期" required prop="fatdate" required>
+          <h-fast-date v-model="formItem1.fatdate"></h-fast-date>
+        </h-form-item>
+        <h-form-item label="特殊日期" required prop="fatdate" required>
+          <h-fast-date v-model="formItem1.fatdate"></h-fast-date>
+        </h-form-item>
+        <h-form-item label="下拉表" prop='slider' required>
+          <h-select-table v-model="formItem1.slider" >
+            <h-table-option border :columns="columns1" :data="data1"></h-table-option>
+          </h-select-table>
+        </h-form-item>
+        <h-form-item label="下拉树" prop='tree' required>
+          <h-select-tree v-model="formItem1.tree" :first-value="firstValc" style="width:200px" :data="baseData1" placement="top" placeholder="你好"></h-select-tree>
+        </h-form-item>
+        <h-form-item label="文本域" prop="textarea" required>
+          <h-input v-model="formItem1.textarea" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></h-input>
+        </h-form-item>
+        <h-form-item label="文本域" prop="cascader" required>
+          <h-cascader v-model="formItem1.cascader" :data="data2" trigger="hover" style="width:200px"></h-cascader>
+        </h-form-item>
+        <h-form-item>
+            <h-button type="primary" @click="handleSubmit('formItem1')">提交</h-button>
+            <h-button type="ghost" style="margin-left: 8px" @click="handleReset('formItem1')">取消</h-button>
+        </h-form-item>
+      </h-form>
+    <!-- </h-msg-box> -->
+    <!-- <Button @on-click="changeform1">显示隐藏</Button> -->
+    <h-select-table v-model="model1" ref="changeDrop">
+      <h-table-option border :columns="columns1" :data="data1"></h-table-option>
+    </h-select-table>
+      <h-button type="primary"  @click="totest">
+          <span>方法</span>
+      </h-button>
     <h-form ref="formValid" :model="formValid">
         <h-form-item prop="user" required>
             <h-input type="text" v-model="formValid.user" placeholder="仅required验证">
@@ -112,8 +127,26 @@
   export default {
     data () {
       return {
-        formItem: {
-          input: '',
+        phone:0,
+        lists:[{data_value:'男'},{data_value:'女'}],
+        model1:'',
+        changeform:false,
+        formItem1: {
+          input: '1',
+          select: [],
+          radio: '',
+          money: '',
+          checkbox: [],
+          fatdate: '',
+          date: '',
+          time: '',
+          slider: '',
+          tree:'',
+          textarea: '',
+          cascader:[]
+        },
+        formItem2:{
+          input: '1',
           select: '',
           radio: '',
           money: '',
@@ -123,8 +156,57 @@
           time: '',
           slider: '',
           tree:'',
-          textarea: ''
+          textarea: '',
         },
+        data2: [{
+          value: 'beijing',
+          label: '北京',
+          children: [
+            {
+              value: 'gugong',
+              label: '故宫'
+            },
+            {
+              value: 'tiantan',
+              label: '天坛'
+            },
+            {
+              value: 'wangfujing',
+              label: '王府井'
+            }
+          ]
+          }, 
+          {
+            value: 'jiangsu',
+            label: '江苏',
+            children: [
+              {
+                value: 'nanjing',
+                label: '南京',
+                children: [
+                  {
+                      value: 'fuzimiao',
+                      label: '夫子庙',
+                  }
+                ]
+              },
+              {
+                value: 'suzhou',
+                label: '苏州',
+                children: [
+                  {
+                    value: 'zhuozhengyuan',
+                    label: '拙政园',
+                  },
+                  {
+                    value: 'shizilin',
+                    label: '狮子林',
+                  }
+                ]
+              }
+            ],
+          }
+        ],
         formValid: {
           user: '你好',
           stringInput:'',
@@ -206,6 +288,9 @@
       }
     },
     methods: {
+      changeform1(){
+        this.changeform = !this.changeform;
+      },
       handleSubmit (name) {
         let _this=this
         this.$refs[name].validate((valid) => {
@@ -218,7 +303,10 @@
       },
       handleReset (name) {
         this.$refs[name].resetFields();
-      }
+      },
+      totest() {
+        this.$refs.changeDrop.focus();
+      },
     }
   }
 </script>

@@ -12,6 +12,9 @@ export default {
     model: {
         type: Object
     },
+    compareModel:{
+      type:Object
+    },
     rules: {
         type: Object
     },
@@ -48,19 +51,20 @@ export default {
   data () {
     return {
         fields: [],
-        validMsgList: []
+        validMsgList: [],
+        changeObj:{},
     };
   },
   computed: {
     classes () {
-        return [
-            `${prefixCls}`,
-            `${prefixCls}-label-${this.labelPosition}`,
-            {
-                [`${prefixCls}-inline`]: this.inline,
-                [`${prefixCls}-row`]: this.cols && parseInt(this.cols) <= 12,
-            }
-        ];
+      return [
+          `${prefixCls}`,
+          `${prefixCls}-label-${this.labelPosition}`,
+          {
+              [`${prefixCls}-inline`]: this.inline,
+              [`${prefixCls}-row`]: this.cols && parseInt(this.cols) <= 12,
+          }
+      ];
     }
   },
   methods: {
@@ -98,7 +102,6 @@ export default {
         this.$nextTick(()=>{
           for (var i = 0; i < this.fields.length ; i++) {
             if(hasClass(this.fields[i].$el,'h-form-item-error')){
-              debugger;
               this.fields[i].$children[0].focus();
               break;
             }
@@ -126,6 +129,20 @@ export default {
           }
         });
       });
+    },
+    changeStyle(obj){
+      if (!this.compareModel || this.compareModel == {}) return;
+      for (let item in obj) {
+        let status = true;
+        if (obj[item] == this.compareModel[item] || this.compareModel[item] == undefined) {
+          status = false;
+        }
+        this.changeObj[item]=status;
+      }
+      this.fields.forEach(col=>{
+        col.modeChanged = this.changeObj[col.prop];
+      });
+      
     }
   },
   watch: {
@@ -134,6 +151,12 @@ export default {
     },
     readonly(){
       this.setReadonly();
+    },
+    model:{
+      deep:true,
+      handler(val){
+       this.changeStyle(val);
+      }
     }
   },
   created () {

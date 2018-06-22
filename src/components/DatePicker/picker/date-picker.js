@@ -12,7 +12,11 @@ export default {
       },
       default: 'date'
     },
-    value: {}
+    value: {},
+    splitPanels: {
+      type: Boolean,
+      default: false
+    },
   },
   components: { DatePickerPanel, RangeDatePickerPanel },
   computed: {
@@ -22,6 +26,13 @@ export default {
     },
     ownPickerProps(){
         return this.options;
-    }
+    },
+    localePlaceholder () {
+      if (this.placeholder === undefined) {
+          return this.t('i.datepicker.selectDate');
+      } else {
+          return this.placeholder;
+      }
+    },
   },
 };

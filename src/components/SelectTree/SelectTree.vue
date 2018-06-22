@@ -34,7 +34,7 @@
       <!-- 单选时清空按钮 -->
       <Icon name="close" :class="[prefixCls + '-arrow']" v-show="showCloseIcon" @click.native.stop="clearSingleSelect"
       ref="close"></Icon>
-      <Icon name="arrowdownb" :class="[prefixCls + '-arrow']" ref="arrowb"></Icon>
+      <Icon name="arrowdownb" :class="[prefixCls + '-arrow']" ref="arrowb" v-if="!remote"></Icon>
     </div>
     <transition :name="transitionName">
       <Drop v-show="dropVisible" 
@@ -62,15 +62,14 @@
                 tabindex="-1" 
                 ref="input">
           </div>
-          <div class="h-selectTree-dropdown-list" ref="list" :style="listStyle">
-            <Tree ref="tree" :data="baseDate" :show-checkbox="showCheckbox" :multiple="multiple" :checkStrictly="checkStrictly" :showIndeterminate="showIndeterminate" @on-select-change="selectChange" @on-check-change="checkChange" @on-toggle-expand="toggleExpand">
+          <div class="h-selectTree-dropdown-list" ref="list" :style="listStyle"> 
+            <Tree ref="tree" :data="baseDate" :show-checkbox="showCheckbox" :multiple="multiple" :checkStrictly="checkStrictly" :showIndeterminate="showIndeterminate" @on-select-change="selectChange" @on-check-change="checkChange" @on-toggle-expand="toggleExpand" v-show="remote && !loading || !remote">
             
           </Tree>
           </div>
+          <!-- 远程搜索loading -->
+          <ul v-show="loading" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
         </div>
-        
-        <!-- 加载中 -->
-        <!-- <ul v-show="loading" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul> -->
       </Drop>
     </transition>
   </div>
@@ -81,7 +80,7 @@
   import Tree from '../Tree/Tree.vue'
   import clickoutside from '../../directives/clickoutside';
   import TransferDom from '../../directives/transfer-dom';
-  import { oneOf, findComponentChildren,getScrollBarSize, getStyle,hasClass,typeOf,scrollAnimate} from '../../util/tools';
+  import { oneOf, findComponentChildren,getScrollBarSize, getStyle,hasClass,typeOf,scrollAnimate,deepCopy} from '../../util/tools';
   import Emitter from '../../mixins/emitter';
   import Locale from '../../mixins/locale';
   const prefixCls = 'h-selectTree';
@@ -192,6 +191,24 @@
       expanLevel:{
         type:[Number,String],
         default:2,
+      },
+      remote: {
+        type: Boolean,
+        default: false
+      },
+      remoteMethod: {
+        type: Function
+      },
+      loading: {
+          type: Boolean,
+          default: false
+      },
+      loadingText: {
+          type: String
+      },
+      onlyChild:{
+        type:Boolean,
+        default:false,
       }
     },
     data(){
@@ -208,8 +225,10 @@
         scrollBarWidth:getScrollBarSize(),
         isFocus: false,
         isFirst: false,
-        baseDate: this.data,
+        baseDate:[],
         tabIndex:0,
+        lastquery: '',
+        lastDataCopy: []
       }
     },
     computed:{
@@ -238,7 +257,7 @@
       },
       dropdownCls () {
         return {
-          [prefixCls + '-dropdown-transfer']: this.transfer,
+          ['h-select-dropdown-transfer']: this.transfer,
           // [prefixCls + '-multiple']: this.multiple && this.transfer,
           ['h-auto-complete']: this.autoComplete,
         };
@@ -293,9 +312,16 @@
               return this.notFoundText;
           }
       },
+      localeLoadingText () {
+          if (this.loadingText === undefined) {
+              return this.t('i.select.loading');
+          } else {
+              return this.loadingText;
+          }
+      },
       dropVisible () {
           let status = true;
-          const options = this.$slots.default || [];
+          const options = this.baseDate || [];
           if (!this.loading && this.remote && this.query === '' && !options.length) status = false;
           return this.visible && status;
       },
@@ -306,18 +332,18 @@
         return {
             width: `${this.width}px`,
         };
-      },
+      }
     },
     methods:{
-      keyup(e){
+      keyup(event){
         if (this.disabled || this.readonly||!this.editable) {
           return false;
         }
-        if (event.keyCode == 9) {
+        if (event.keyCode == 9) {//tab
           this.toggleMenu();
         }
       },
-      keydown(e){
+      keydown(event){
         if (event.keyCode == 9) {
           this.hideMenu();
         }
@@ -347,10 +373,6 @@
         this.broadcast('Option', 'on-select-close');
       },
       handleClose() {
-        // if (this.filterable) {
-        //   this.query = this.filterable?this.model:'';
-        //   this.findQuery(this.data,'');
-        // }
         this.hideMenu();
         if (this.isFocus) {
           // 点击其他地方时触发blur校验
@@ -363,8 +385,6 @@
           }
           this.isFocus = false
         }
-        
-
       },
       selectChange(val){
         let strModel = this.formatValue;
@@ -382,19 +402,27 @@
           // this.query = this.filterable?this.selectedSingle:'';
           this.model = val.length!=0?val[0][strModel]:'';
           this.hideMenu();
-          this.findQuery(this.data,'');
+          this.findQuery(this.baseDate,'');
         }
       },
       checkChange(val){
         let strModel = this.formatValue;
+        this.lastquery = this.query
         if (this.filterable && !this.showBottom) {
           this.query='';
         }
         let arr=[];
         let arrModel = [];
         val.forEach(item=>{
-          arr.push(item.title);
-          arrModel.push(item[strModel]);
+          if (this.onlyChild && !this.checkStrictly) {
+            if (!item.children || item.children.length==0) {
+              arr.push(item.title);
+              arrModel.push(item[strModel]);
+            }
+          }else{
+            arr.push(item.title);
+            arrModel.push(item[strModel]);
+          }
         })
         this.model=arrModel;
         this.selectedMultiple=arr;
@@ -409,7 +437,7 @@
       clearSingleSelect () {
         if (this.disabled || this.readonly || !this.editable) return false;
         if (this.showCloseIcon) {
-          resetDate(this.data);
+          resetDate(this.baseDate);
           if (!this.showCheckbox) {
             this.model='';
           }else{
@@ -418,6 +446,10 @@
           }
           if (this.filterable&& !this.showBottom) {
             this.query = '';
+            this.findQuery(this.baseDate,'');
+          }
+          if (this.remote) {
+            this.lastquery = ''
           }
         }
         function resetDate(data) {
@@ -444,9 +476,15 @@
       },
       handleInputDown () {
         var val = this.query;
-        this.findQuery(this.data,val);
+        this.lastquery = this.query
+        if (this.remote && this.remoteMethod) {
+          this.visible = val == '' ? false : true
+        } else {
+          this.findQuery(this.baseDate,val);
+        }
       },
       findQuery(data,val){
+        // debugger
         var that = this;
         data.forEach((col,i)=>{
           that.$set(col, 'filterable', false);
@@ -474,6 +512,16 @@
       handleInputDelete () {
         if (this.multiple && this.model.length && this.query === '') {
           this.removeTag(this.model.length - 1);
+        }
+      },
+      handleKeydown (e) {
+        if (this.visible) {
+            const keyCode = e.keyCode;
+            // Esc slide-up
+            if (keyCode === 27) {
+                e.preventDefault();
+                this.hideMenu();
+            }
         }
       },
       strtoArr(val){
@@ -508,6 +556,7 @@
               _this.$set(item,'selected',true);
             }else{
               _this.$set(item,'selected',false);
+              _this.$set(item,'checked',false);
             }
             if (item.children&&item.children.length>0) {
               findDown(item.children,curValue);
@@ -526,7 +575,8 @@
         function findDown(tdata){
           index =index+1;
           tdata.forEach((item)=>{
-            _this.$set(item,'expand',true);
+            // _this.$set(item,'expand',true);
+            item.expand = true;
             if (item.children&&item.children.length>0 && index<_this.expanLevel) {
               findDown(item.children);
             }
@@ -544,6 +594,25 @@
           this.$refs.search.style.width = width;
         }
       },
+      focus(){
+        if (this.disabled) return;
+        this.$nextTick(()=>{
+          this.visible = true;
+          if (this.filterable) {
+            this.$refs.input.focus();
+          }else{
+            this.$refs.reference.focus();
+          }
+        })
+      },
+      blur(){
+        this.visible = false;
+        if (this.filterable) {
+          this.$refs.input.blur();
+        }else{
+          this.$refs.reference.blur();
+        }
+      },
     },
     watch:{
       firstValue:{
@@ -559,6 +628,13 @@
       value(val){
         this.model = this.strtoArr(val);
       },
+      query (val) {
+        let query = val || this.lastquery
+      //  query改变时触发remote，兼容check选中后（lastquery有值）重复触发
+        if (this.remote && this.remoteMethod && (!this.model || this.model.length == 0)) {
+          this.remoteMethod(query)
+        }
+      },
       model () {  
         let backModel = this.arrtoStr(this.model);   
         // this.$emit('input', this.model);
@@ -567,7 +643,7 @@
         if (this.isFirst) {
           this.dispatch('FormItem', 'on-form-change', this.model);
         }
-        if (!this.model) {
+        if (!this.model || this.model.length == 0) {
           this.$nextTick(()=>{
             this.setInit(this.baseDate,'');
           });
@@ -582,9 +658,23 @@
       visible (val){
         if (val) {
           this.broadcast('Drop', 'on-update-popper');
+          // remote下，query设值时会自动触发监听搜索，若query无值且model存在时，下拉搜索用lastDataCopy
+          if (this.remote && this.query == '') this.baseDate = this.lastquery != '' ?  this.lastDataCopy : []
         } else {
-          if (this.filterable&&this.showBottom) {
-            this.query='';
+          if (this.filterable) {
+            if (this.showBottom) {
+              this.query = '';
+            }
+            if (this.remote) {
+              this.query = ''
+              // model为空是清空lastquery(model有值时关闭后无法打开)
+              if (!this.model || this.model.length == 0) {
+                this.lastquery = ''
+              } else {
+                // model有值时保存当前数组
+                this.lastDataCopy = deepCopy(this.baseDate)
+              }
+            }
           }
           this.broadcast('Drop', 'on-destroy-popper');
         }
@@ -592,17 +682,17 @@
       data : {
         deep: true,
         handler: function (cur) {
-          if (cur&&cur.lenght!=0) {
-            this.baseDate = this.expandLevels(cur);
+          if (cur&&cur.length!=0) {
+            this.baseDate = this.expandLevels(deepCopy(cur));
           }else{
-            this.baseDate =cur;
+            this.baseDate =deepCopy(cur);
           }
         }
       }
     },
     mounted(){
       if (this.data &&this.data.length!=0) {
-        this.baseDate = this.expandLevels(this.data);
+        this.baseDate = this.expandLevels(deepCopy(this.data));
       }
       this.$nextTick(()=>{
         let tree = this.$refs.tree;
@@ -614,6 +704,7 @@
         this.offsetArrow();
         this.searchStyle();
       });
+      document.addEventListener('keydown', this.handleKeydown);
       if (this.disabled) {
         this.tabIndex = -1;
       }

@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h2>单独使用</h2>
-        <h-radio v-model="single1" size="large" true-value="1" false-value="0">Radio</h-radio>
+        <h-radio v-model="single1" size="large" true-value="1" false-value="0">Radio</h-radio>s
         <h-radio v-model="single">Radio</h-radio>
 		<h-radio v-model="single" size="small">Radio</h-radio>
         {{single1}}
@@ -22,10 +22,12 @@
       </h-radio>
     </h-radio-group><br>
     <h-radio-group v-model="animal">
-      <h-radio label="金斑蝶"></h-radio>
-      <h-radio label="爪哇犀牛"></h-radio>
-      <h-radio label="印度黑羚"></h-radio>
+      <h-radio label="金斑蝶" :disabled="status"></h-radio>
+      <h-radio label="爪哇犀牛" :disabled="status"></h-radio>
+      <h-radio label="印度黑羚" :disabled="status"></h-radio>
     </h-radio-group>
+    {{animal}}
+    <h-button @click="changeStatus">改变disabled状态</h-button>
     <h2>不可用</h2>
     <h-radio v-model="disabledSingle" disabled>h-radio</h-radio><br>
     <h-radio-group v-model="disabledGroup">
@@ -101,21 +103,27 @@
 		name:'radio',
 		data(){
 			return {
+                status:true,
                 single1: 0,
 				single: false,
 				phone: 'apple',
-        animal: '爪哇犀牛',
-        disabledSingle: true,
-        disabledGroup: '爪哇犀牛',	
-        vertical: 'apple',
-        button1: '北京',
-        button2: '北京',
-        button3: '北京',
-        button4: '北京',
-        button5: '北京',
-        button6: '北京'
+                animal: '爪哇犀牛',
+                disabledSingle: true,
+                disabledGroup: '爪哇犀牛',	
+                vertical: 'apple',
+                button1: '北京',
+                button2: '北京',
+                button3: '北京',
+                button4: '北京',
+                button5: '北京',
+                button6: '北京'
 			}
-		}
+		},
+        methods:{
+            changeStatus(){
+                this.status = !this.status
+            }
+        }
 	}
 </script>
 <style>

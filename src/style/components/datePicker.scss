@@ -9,6 +9,8 @@ $date-picker-cells-width-with-weeknumbers: 226px;
   // display: inline-block;
   line-height: normal;
   width: 100%;
+  display: inline-block;
+  vertical-align: middle;
   &-rel{
     position: relative;
   }
@@ -222,34 +224,6 @@ $date-picker-cells-width-with-weeknumbers: 226px;
     width: auto;
   }
 }
-// span.#{$date-picker-prefix-cls}-cells-cell{
-//   width: 28px;
-//   height: 28px;
-//   cursor: pointer;
-// }
-// span.#{$date-picker-prefix-cls}-cells-cell-disabled,span.#{$date-picker-prefix-cls}-cells-cell-disabled:hover{
-//   cursor: $cursor-disabled;
-//   background: $btn-disable-bg;
-//   color: $btn-disable-color;
-//   em{
-//     color: inherit;
-//     background: inherit;
-//   }
-// }
-// span.#{$date-picker-prefix-cls}-cells-cell-disabled.#{$date-picker-prefix-cls}-cells-cell-selected{
-//   em {
-//     background: $btn-disable-color;
-//     color: $btn-disable-bg;
-//   }
-// }
-// &-today.#{$date-picker-prefix-cls}-cells-cell-selected
-// {
-//   em{
-//     &:after{
-//         background: #fff;
-//     }
-//   }
-// }
 .#{$picker-prefix-cls} {
   &-panel{
     &-icon-btn{
@@ -325,5 +299,23 @@ $date-picker-cells-width-with-weeknumbers: 226px;
       color: $btn-disable-color;
       cursor: $cursor-disabled;
     }
+  }
+}
+.#{$date-picker-prefix-cls}-cells-cell-end.#{$date-picker-prefix-cls}-cells-cell-left{
+  em{
+    background: $date-picker-cell-hover-bg;
+    color:$text-color;
+  }
+}
+.#{$date-picker-prefix-cls}-cells-cell-start.#{$date-picker-prefix-cls}-cells-cell-right{
+  em{
+    background: $date-picker-cell-hover-bg;
+    color:$text-color;
+  }
+}
+.#{$date-picker-prefix-cls}-cells-cell-start.#{$date-picker-prefix-cls}-cells-cell-end{
+  em{
+    background: $primary-color;
+    color: #fff;
   }
 }

@@ -6,6 +6,9 @@
         <router-link to="/home">安装</router-link>
       </li>
       <li>
+        <router-link to="/hello">Hello</router-link>
+      </li>
+      <li>
         <router-link to="/icon">Icon</router-link>
       </li>
       <li>
@@ -48,6 +51,9 @@
       </li>
       <li>
         <router-link to="/fastDate">fastDate</router-link>
+      </li>
+      <li>
+        <router-link to="/splicePanel">splicePanel</router-link>
       </li>
       <li>
         <router-link to="/timePicker">timePicker</router-link>
@@ -98,6 +104,9 @@
       </li>
       <li>
         <router-link to="/collapse">Collapse</router-link>
+      </li>
+      <li>
+        <router-link to="/panel">Panel</router-link>
       </li>
       <li>
         <router-link to="/card">Card</router-link>

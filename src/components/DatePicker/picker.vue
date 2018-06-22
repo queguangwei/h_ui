@@ -3,6 +3,7 @@
     <div ref="reference" :class="[prefixCls + '-rel']">
       <slot>
         <h-input
+          ref="input"
           :key="forceInputRerender"
           :element-id="elementId"
           :class="[prefixCls + '-editor']"
@@ -10,7 +11,7 @@
           :editable="editable"
           :disabled="disabled"
           :size="size"
-          :placeholder="placeholder"
+          :placeholder="localePlaceholder"
           :value="visualValue"
           :name="name"
           @on-input-change="handleInputChange"
@@ -46,6 +47,7 @@
                :split-panels="splitPanels"
                :show-week-numbers="showWeekNumbers"
                :picker-type="type"
+               :range-num="controlRange?selectRange:0"
 
                v-bind="ownPickerProps"
 
@@ -54,6 +56,7 @@
                @on-pick-success="onPickSuccess"
                @on-pick-click="disableClickOutSide = true"
                @on-selection-mode-change="onSelectionModeChange"
+               @on-select-range="handleSelectRange"
             ></component>
        </div>
       </Drop>
@@ -68,13 +71,14 @@
   import { oneOf } from '../../util/tools';
   import {DEFAULT_FORMATS, TYPE_VALUE_RESOLVER_MAP } from './util';
   import Emitter from '../../mixins/emitter';
+  import Locale from '../../mixins/locale';
 
   const prefixCls = 'h-date-picker';
   const isEmptyArray = val => val.reduce((isEmpty, str) => isEmpty && !str || (typeof str === 'string' && str.trim() === ''), true);
 
   export default {
     name: 'CalendarPicker',
-    mixins: [ Emitter ],
+    mixins: [ Emitter,Locale ],
     components: { hInput, Drop },
     directives: { clickoutside, TransferDom },
     props: {
@@ -109,16 +113,12 @@
           type: Boolean,
           default: false
       },
-      splitPanels: {
-          type: Boolean,
-          default: false
-      },
       showWeekNumbers: {
           type: Boolean,
           default: false
       },
       startDate: {
-          type: Date
+          type: [Date,String]
       },
       size: {
           validator (value) {
@@ -127,7 +127,6 @@
       },
       placeholder: {
           type: String,
-          default: ''
       },
       placement: {
           validator (value) {
@@ -159,11 +158,20 @@
         type:Boolean,
         default:false,
       },
+      controlRange:{
+        type:Boolean,
+        default:false,
+      },
+      selectRange:{//可选择范围 多系统交易
+        type:[String,Number],
+        default:1
+      }
     },
     data () {
       const isRange = this.type.includes('range');
       const emptyArray = isRange ? [null, null] : [null];
-      const initialValue = isEmptyArray((isRange ? this.value : [this.value]) || []) ? emptyArray : this.parseDate(this.value);
+      let initialValue = isEmptyArray((isRange ? this.value : [this.value]) || []) ? emptyArray : this.parseDate(this.value);
+      if (this.name=='splicePanel') initialValue=this.parseDate(this.value);
       return {
         prefixCls: prefixCls,
         showClose: false,
@@ -173,7 +181,8 @@
         disableCloseUnderTransfer: false,  // transfer 模式下，点击Drop也会触发关闭
         selectionMode: this.onSelectionModeChange(this.type),
         forceInputRerender: 1,
-        isFocus: false
+        isFocus: false,
+        rangeNum:0,
       };
     },
     computed: {
@@ -183,7 +192,6 @@
         } else {
             const isRange = this.type.includes('range');
             let val = this.internalValue.map(date => date instanceof Date ? new Date(date) : (date || ''));
-
             if (this.type.match(/^time/)) val = val.map(this.formatDate);
             return (isRange || this.multiple) ? val : val[0];
         }
@@ -211,45 +219,7 @@
       },
       isConfirm(){
           return this.confirm || this.type === 'datetime' || this.type === 'datetimerange' || this.multiple;
-      }
-      // selectionMode() {
-      //   if (this.type === 'month') {
-      //       return 'month';
-      //   } else if (this.type === 'year') {
-      //       return 'year';
-      //   }
-
-      //   return 'day';
-      // },
-      // visualValue: {
-      //   get () {
-      //     const value = this.internalValue;
-      //     if (!value) return;
-      //     const formatter = (
-      //         TYPE_VALUE_RESOLVER_MAP[this.type] ||
-      //         TYPE_VALUE_RESOLVER_MAP['default']
-      //     ).formatter;
-      //     const format = DEFAULT_FORMATS[this.type];
-
-      //     return formatter(value, this.format || format);
-      //   },
-
-      //   set (value) {
-      //     if (value) {
-      //         const type = this.type;
-      //         const parser = (
-      //             TYPE_VALUE_RESOLVER_MAP[type] ||
-      //             TYPE_VALUE_RESOLVER_MAP['default']
-      //         ).parser;
-      //         const parsedValue = parser(value, this.format || DEFAULT_FORMATS[type]);
-      //         if (parsedValue) {
-      //             if (this.picker) this.picker.value = parsedValue;
-      //         }
-      //         return;
-      //     }
-      //     if (this.picker) this.picker.value = value;
-      //   }
-      // }
+      },
     },
     methods: {
       onSelectionModeChange(type){
@@ -276,10 +246,25 @@
         }
       },
       handleFocus () {
-        if (this.readonly) return;
+        if (this.readonly||this.disabled) return;
         this.visible = true;
         this.$refs.pickerPanel.onToggleVisibility(true);
         this.isFocus = true
+      },
+      focus(){
+        if (this.disabled) return false;
+        this.$nextTick(()=>{
+          this.visible = true;
+          this.$refs.pickerPanel.onToggleVisibility(true);
+          this.isFocus = true
+          if(this.$refs.input) this.$refs.input.focus();
+        })
+      },
+      blur(){
+        this.visible = false;
+        this.$refs.pickerPanel.onToggleVisibility(false);
+        this.isFocus = false
+        if(this.$refs.input) this.$refs.input.blur();
       },
       handleBlur () {
         this.visible = false;
@@ -417,78 +402,9 @@
           this.$emit('on-ok');
           this.reset();
       },
-      // showPicker () {
-      //   if (!this.picker) {
-      //     let isConfirm = this.confirm;
-      //     const type = this.type;
-
-      //     this.picker = this.Panel.$mount(this.$refs.picker);
-      //     if (type === 'datetime' || type === 'datetimerange') {
-      //       isConfirm = true;
-      //       this.picker.showTime = true;
-      //     }
-      //     this.picker.value = this.internalValue;
-      //     this.picker.confirm = isConfirm;
-      //     this.picker.selectionMode = this.selectionMode;
-      //     if (this.format) this.picker.format = this.format;
-
-      //     // TimePicker
-      //     if (this.disabledHours) this.picker.disabledHours = this.disabledHours;
-      //     if (this.disabledMinutes) this.picker.disabledMinutes = this.disabledMinutes;
-      //     if (this.disabledSeconds) this.picker.disabledSeconds = this.disabledSeconds;
-      //     if (this.hideDisabledOptions) this.picker.hideDisabledOptions = this.hideDisabledOptions;
-
-      //     const options = this.options;
-      //     for (const option in options) {
-      //         this.picker[option] = options[option];
-      //     }
-
-      //     this.picker.$on('on-pick', (date, visible = false) => {
-      //       if (!isConfirm) this.visible = visible;
-      //         this.currentValue = date;
-      //         this.picker.value = date;
-      //         this.picker.resetView && this.picker.resetView();
-      //         this.emitChange(date);
-      //     });
-
-      //     this.picker.$on('on-pick-clear', () => {
-      //         this.handleClear();
-      //     });
-      //     this.picker.$on('on-pick-success', () => {
-      //         this.visible = false;
-      //         this.$emit('on-ok');
-      //     });
-      //     this.picker.$on('on-pick-click', () => this.disableClickOutSide = true);
-      //   }
-      //   if (this.internalValue instanceof Date) {
-      //     this.picker.date = new Date(this.internalValue.getTime());
-      //   } else {
-      //     this.picker.value = this.internalValue;
-      //   }
-      //   this.picker.resetView && this.picker.resetView();
-      // },
-      // emitChange (date) {
-      //   const newDate = this.formattingDate(date);
-
-      //   this.$emit('on-change', newDate);
-      //   this.$nextTick(() => {
-      //       this.dispatch('FormItem', 'on-form-change', newDate);
-      //   });
-      // },
-      // formattingDate (date) {
-      //   const type = this.type;
-      //   const format = this.format || DEFAULT_FORMATS[type];
-      //   const formatter = (
-      //       TYPE_VALUE_RESOLVER_MAP[type] ||
-      //       TYPE_VALUE_RESOLVER_MAP['default']
-      //   ).formatter;
-
-      //   let newDate = formatter(date, format);
-      //   if (type === 'daterange' || type === 'timerange' || type === 'datetimerange') {
-      //       newDate = [newDate.split(RANGE_SEPARATOR)[0], newDate.split(RANGE_SEPARATOR)[1]];
-      //   }
-      //   return newDate;
-      // }
+      handleSelectRange(val,status){
+        this.$emit('on-select-range',val,status);
+      }
     },
     watch: {
       visible (state) {

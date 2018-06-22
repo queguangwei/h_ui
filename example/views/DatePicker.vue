@@ -1,17 +1,19 @@
 <template>
   <div>
-    <h-date-picker type="date" placeholder="选择日期" v-model="formItem.date" format="yyyy/MM/dd" :showFormat="true" style="width:180px"></h-date-picker>
+    <Button @on-click="testClick(true)">获取焦点</Button>
+    <Button @on-click="testClick(false)">失去焦点</Button>
+    <h-date-picker type="date" v-model="formItem.date" format="yyyy/MM/dd" :showFormat="true" style="width:180px" :disabled="changeable" ref="test"></h-date-picker>
     <span>{{formItem.date}}</span>
-
+    <Button @click = "changedis">改变状态</Button>
     <h-row>
       <h2>基本用法</h2>
       <p>设置属性 type 为 date 或 daterange 分别显示选择单日和选择范围类型。</br>
         设置属性 placement 可以更改选择器出现的方向</p>
       <h-col span="12">
-        <h-date-picker v-model="model1"  format="yyyy-MM-dd" type="date" placeholder="选择日期" style="width: 200px" @on-clickout="s" :showFormat="true"></h-date-picker>{{model1}}
+        <h-date-picker v-model="model1"  format="yyyy-MM-dd" type="date" style="width: 200px" @on-clickout="s" :showFormat="true"></h-date-picker>{{model1}}
       </h-col>
       <h-col span="12">
-        <h-date-picker v-model="model2" type="daterange" placement="bottom-end" placeholder="选择日期"></h-date-picker> {{model2}}
+        <h-date-picker v-model="model2" type="daterange" format="yyyy年MM月dd日" placement="bottom-end" placeholder="选择日期"></h-date-picker> {{model2}}
       </h-col>
     </h-row>
     <h-row>
@@ -89,10 +91,12 @@
         :open="open"
         :value="value3"
         confirm
-        type="date"
+        type="daterange"
+        :options="options5"
         @on-change="handleChange"
         @on-clear="handleClear"
-        @on-ok="handleOk">
+        @on-ok="handleOk"
+        @on-select-range="handleRange">
         <a href="javascript:void(0)" @click="handleClick">
           <h-icon name="activity"></h-icon>
           <template v-if="value3 === ''">选择日期</template>
@@ -189,7 +193,7 @@
         },
         options3: {
           disabledDate (date) {
-            return date && date.valueOf() < Date.now() - 86400000;
+            return date && date.valueOf() > Date.now() - 86400000;
           }
         },
         options4: {
@@ -197,6 +201,9 @@
             const disabledDay = date.getDate();
             return disabledDay === 15;
           }
+        },
+        options5: {
+
         },
         formItem:{date:''},
         value1: '2016-01-01',
@@ -211,9 +218,20 @@
         model5:'',
         model6:'',
         model7:'',
+        changeable:false,
       }
     },
     methods:{
+      testClick(val){
+        if (val) {
+          this.$refs.test.focus();
+        }else{
+          this.$refs.test.blur();
+        }
+      },
+      changedis() {
+        this.changeable = !this.changeable;
+      },
       handleClick () {
         this.open = !this.open;
       },
@@ -228,7 +246,18 @@
       },
       s(){
         console.log(1);
-      }
+      },
+      handleRange(val,status){
+        this.options5={
+          disabledDate (date) {
+            if (status) {
+              return false;
+            }else{
+              return date.valueOf()>val.valueOf()+86400000*30||date.valueOf()<val.valueOf()-86400000*30;
+            }
+          }
+        }
+      },
     },
     mounted(){
       this.model1='2018-3-6';

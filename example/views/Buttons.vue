@@ -2,11 +2,14 @@
   <div>
     <h1>基础按钮</h1>
     <i class="icon iconfont icon-arrowdownb"></i>
+    <button ref="exp" >bbb</button>
+    <button @click="fclick">aaa</button>
+
     <h-button>Default</h-button>
-    <h-button type="primary" @click="btnClick">Primary</h-button>
-    <h-button type="ghost">Ghost</h-button>
-    <h-button type="dashed">Dashed</h-button>
-    <h-button type="text">Text</h-button>
+    <h-button ref="btn" type="primary" @click="btnClick" canFocus>Primary</h-button>
+    <h-button type="ghost" canFocus>Ghost</h-button>
+    <h-button type="dashed" canFocus>Dashed</h-button>
+    <h-button type="text" canFocus>Text</h-button>
     <br><br>
     <h-button type="info">信息按钮</h-button>
     <h-button type="success">成功按钮</h-button>
@@ -162,9 +165,12 @@ export default {
   },
   methods:{
     btnClick(){
-      alert('按钮被点击了！');
+      console.log('按钮被点击了！');
+    },
+    fclick(){
+        this.$refs.btn.focus();
     }
-  }
+  },
 }
 </script>
 <style type="text/css">

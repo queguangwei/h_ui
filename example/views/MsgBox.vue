@@ -11,28 +11,32 @@
       :mask-closable="false"
       :loading="true"
       :scrollable="false"
-      @on-visible-change="vChange">
+      @on-visible-change="vChange"
+      :escClose="false"
+      top="0"
+      class-name="vertical-center-modal"
+      >
       <p>对话框内容</p>
       <p>对话框内容</p>
       <p>对话框内容</p>
     </h-msg-box>
     <h-button @click="modal2 = true">自定义页头和页脚</h-button>
-    <h-msg-box v-model="modal2" width="360">
+    <h-msg-box v-model="modal2" width="360" scrollable isBeyond>
       <p slot="header" style="color:#f60;text-align:center">
         <h-icon name="prompt"></h-icon>
         <span>删除确认</span>
       </p>
       <span slot="close">删除</span>
       <div style="text-align:center">
-          <p>此任务删除后，下游 10 个任务将无法执行。</p>
-          <p>是否继续删除？</p>
+        <p>此任务删除后，下游 10 个任务将无法执行。</p>
+        <p>是否继续删除？</p>
       </div>
       <div slot="footer">
-          <h-button type="error" size="large" long :loading="modal_loading" @click="del">删除</h-button>
+        <h-button type="error" size="large" long :loading="modal_loading" @click="del">删除</h-button>
       </div>
     </h-msg-box>
     <h-button @click="modal3 = true">不带标题栏</h-button>
-    <h-msg-box v-model="modal3">
+    <h-msg-box v-model="modal3" @on-close="onClose">
         <p>对话框内容</p>
         <p>对话框内容</p>
         <p>对话框内容</p>
@@ -42,6 +46,7 @@
         v-model="modal4"
         title="Modal Title"
         ok-text="OK"
+        :zIndex="10001"
         cancel-text="Cancel">
         <p>Something...</p>
         <p>Something...</p>
@@ -68,29 +73,34 @@
     <h2>自定义内容/有问题</h2>
     <h-button @click="render">自定义内容</h-button>{{value}}
     <h2>MsgBox</h2>
-    <h-msg-box v-model="showModal2" title="弹窗" width="800px">
-      <h-select :transfer="true" style="width:400px;">
-        <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>
-      </h-select>
-      <br><br><br><br><br>
-
-      <h-tabs>
-        <h-tab-pane label="演示" style="height: 1000px;">
-          <h-select :transfer="true" style="width:400px;">
-              <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>
-          </h-select>
-          <h-select :transfer="true" style="width:400px;">
-              <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>
-          </h-select>
-          <h-select :transfer="true" style="width:400px;">
-              <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>
-          </h-select>
-          <h-select :transfer="true" style="width:400px;">
-              <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>
-          </h-select>
-        </h-tab-pane>
-        <h-tab-pane label="演示1"></h-tab-pane>
-      </h-tabs>
+    <h-msg-box v-model="showModal2" title="弹窗" width="800">
+      <div style="height: 200px;" class="tabWarp">
+        <h-select v-model="mulmodel" :transfer="true" style="width:400px;" multiple ref="select">
+          <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>
+        </h-select>
+        <h-tabs style="height: 200px;overflow:auto">
+          <h-tab-pane label="演示">
+          <Button @click="showSec">显示第二个弹框</Button>
+         <!--  <h-table border :columns="columns6" :data="data5" no-filtered-data-text="筛选后结果为空123"></h-table> -->
+            <h-select :transfer="true" style="width:400px;">
+                <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>
+            </h-select>
+            <h-select-tree :transfer="true" v-model="val3" style="width:200px" showCheckbox :data="baseData4" filterable></h-select-tree>
+          </h-tab-pane>
+          <h-tab-pane label="演示1">
+      <!--     <h-table border :columns="columns6" :data="data5" no-filtered-data-text="筛选后结果为空123"></h-table> -->
+            <h-select :transfer="true" style="width:400px;">
+                <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>
+            </h-select>
+            <h-select :transfer="true" style="width:400px;">
+                <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>
+            </h-select>
+            <h-select :transfer="true" style="width:400px;">
+                <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>
+            </h-select>
+          </h-tab-pane>
+        </h-tabs>
+      </div>
     </h-msg-box>
     <h-button @click="showModal2 = true">Modal无Tabs</h-button>
 	</div>
@@ -104,8 +114,10 @@
         modal2: false,
         modal_loading: false,
         modal3: false,
+        val3:[],
         modal4: false,
         modal5: false,
+        mulmodel:[],
         value: '',
         showModal2: false,
         options: [
@@ -134,9 +146,179 @@
                 label: '重庆市'
             }
         ],
+        baseData4: [
+          {
+            title: 'parent',
+            id: '1-0',
+            children: [
+              {
+                title: 'child1',
+                id: '1-1',
+        
+                children: [
+                  {
+                    title: 'child1-1-1',
+                    id: '1-1-1',
+                    children: [
+                      {
+                        title: 'child1-1-1-1',
+                        id: '1-1-1-1'
+                      }]
+                  },
+                  {
+                    title: 'child1-1-2',
+                    id: '1-1-2',
+                  }
+                ]
+              },
+              {
+                title: 'child2',
+                id: '1-2',
+                children: [
+                  {
+                    title: 'child1-2-1',
+                    id: '1-2-1',
+                    children: [
+                      {
+                        title: 'child1-2-1-1',
+                        id: '1-2-1-1'
+                      }]
+                  },
+                  {
+                    title: 'child1-2-2',
+                    id: '1-2-2',
+                  }
+                ]
+              },
+              {
+                title: 'child3',
+                id: '1-3',
+                children: [
+                  {
+                    title: 'child1-3-1',
+                    id: '1-3-1',
+                    children: [
+                      {
+                        title: 'child1-3-1-1',
+                        id: '1-3-1-1'
+                      }]
+                  },
+                  {
+                    title: 'child1-3-2',
+                    id: '1-3-2',
+                  }
+                ]
+              },
+              {
+                title: 'child4',
+                id: '1-4',
+                children: []
+              },
+              {
+                title: 'child5',
+                id: '1-5',
+                children: []
+              }
+            ]
+          }
+        ],
+        columns6: [
+          {
+            title: '日期',
+            key: 'date'
+          },
+          {
+            title: '姓名',
+            key: 'name'
+          },
+          {
+            title: '年龄',
+            key: 'age',
+            filters: [
+              {
+                label: '大于50岁',
+                value: 1
+              },
+              {
+                label: '小于50岁',
+                value: 2
+              }
+            ],
+            // filteredValue:['18','25'],
+            filterMultiple: false,
+            filterRemote(_this,arg1){
+              this.data5.push({
+                name: '王小明1',
+                age: 20,
+                address: '北京市朝阳区芍药居',
+                date: '2016-10-03'
+              },);
+            },
+            filterMethod (value, row) {
+              if (value === 1) {
+                return row.age > 50;
+              } else if (value === 2) {
+                return row.age < 50;
+              }
+            }
+          },
+          {
+            title: '地址',
+            key: 'address',
+            filters: [
+              {
+                label: '北京',
+                value: '北京'
+              },
+              {
+                label: '上海',
+                value: '上海'
+              },
+              {
+                label: '深圳',
+                value: '深圳'
+              }
+            ],
+            filterMethod (value, row) {
+              return row.address.indexOf(value) > -1;
+            }
+          }
+        ],
+        data5: [
+          {
+            name: '王小明',
+            age: 18,
+            address: '北京市朝阳区芍药居',
+            date: '2016-10-03'
+          },
+          {
+            name: '张小刚',
+            age: 25,
+            address: '北京市海淀区西二旗',
+            date: '2016-10-01'
+          },
+          {
+            name: '李小红',
+            age: 30,
+            address: '上海市浦东新区世纪大道',
+            date: '2016-10-02'
+          },
+          {
+            name: '周小伟',
+            age: 26,
+            address: '深圳市南山区深南大道',
+            date: '2016-10-04'
+          }
+        ],
       }
 		},
 		methods: {
+      onClose(){
+        console.log('你点击了关闭按钮');
+      },
+      showSec(){
+        this.modal4=true;
+      },
       vChange(s){
         console.log(s);
       },
@@ -162,14 +344,15 @@
             this.$hMsgBox.info({
                 title: title,
                 content: content,
-                width:'800px',
+                width:800,
                 scrollable:true,
                 okText:'确定1',
-                loading:true
+                // loading:true
             });
             break;
           case 'success':
             this.$hMsgBox.success({
+                width:600,
                 title: title,
                 content: content
             });
@@ -246,9 +429,24 @@
       destroy () {
         this.$hMsgBox.remove();
       }
-		}
+		},
+    watch:{
+      showModal2(val){
+        if (val) {
+          this.$refs.select.focus();
+        }
+      }
+    }
 	}
 </script>
 <style>
-	
+	.tabWarp{
+    overflow:auto;
+  }
+  .vertical-center-modal{
+    display: flex;
+    align-items: center;
+    /*justify-content: center;*/
+
+  }
 </style>

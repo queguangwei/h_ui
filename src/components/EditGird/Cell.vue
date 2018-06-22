@@ -15,10 +15,10 @@
         </span>
       </template>
       <template v-if="renderType === 'text'">
-        <Input v-model="columnText" :placeholder="column.placeholder" :icon="column.icon" class="canEdit"></Input>
+        <Input v-model="columnText" :placeholder="column.placeholder" :icon="column.icon" class="canEdit" @on-change="editinputChange" @on-blur="editinputBlur"></Input>
       </template>
       <template v-if="renderType === 'textArea'">
-        <Input v-model="columnArea" type="textarea" :placeholder="column.placeholder" :rows="column.rows" class="canEdit"></Input>
+        <Input v-model="columnArea" type="textarea" :placeholder="column.placeholder" :rows="column.rows" class="canEdit" @on-change="editAreaChange" @on-blur="editAreaBlur"></Input>
       </template>
       <template v-if="renderType === 'number'"> 
         <Input v-model="columnNumber" class="canEdit"></Input>
@@ -46,8 +46,10 @@
           :remote="column.remote"
           :remoteMethod="remoteMethod()"
           :loading ="column.loading"
+          :transfer ="column.transfer"
+          @on-change = "editselectChange"
           class="canEdit">
-          <Option v-for="(item,i) in option" :key="i" :value="item.value">{{item.value}}</Option>
+          <Option v-for="(item,i) in option" :key="i" :value="item.value" :label="item.label">{{item.label}}</Option>
         </Select>
       </template>
       <template v-if="renderType === 'date'">
@@ -77,6 +79,7 @@
           :checkStrictly="column.checkStrictly" 
           :clearable="true"  
           :filterable="true"
+          :transfer ="column.transfer"
           class="canEdit">        
         </SelectTree>
       </template>
@@ -127,6 +130,7 @@ export default {
     column: Object,
     parent:Object,
     naturalIndex: Number,    // index of rebuildData
+    columnIndex:Number,
     index: Number,           // _index of data
     checked: Boolean,
     disabled: Boolean,
@@ -312,9 +316,25 @@ export default {
         return this.column.remoteMethod;
       };
     },
+    editselectChange(val){
+      this.$emit('on-editselect-change',val,this.columnIndex,this.index);
+    },
+    editinputChange(){
+      this.$emit('on-editinput-change',this.columnText,this.columnIndex,this.index);
+    },
+    editinputBlur(){
+      this.$emit('on-editinput-blur',this.columnText,this.columnIndex,this.index);
+    },
+    editAreaChange(){
+      this.$emit('on-editarea-change',this.columnArea,this.columnIndex,this.index);
+    },
+    editAreaBlur(){
+      this.$emit('on-editarea-blur',this.columnArea,this.columnIndex,this.index);
+    }
   },
   watch: {
-    columnTree(){
+    columnTree(val){
+      this.$emit('on-selecttree-change',val)
       this.save('selectTree');
     },
     columnTime(){

@@ -158,3 +158,8 @@ $cascader-item-prefix-cls: "#{$css-prefix}cascader-menu-item";
       }
   }
 }
+.#{$form-item-prefix-cls}-changed{
+  .#{$cascader-prefix-cls} {
+      color: $changed-color;
+  }
+}

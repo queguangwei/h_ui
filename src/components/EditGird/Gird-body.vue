@@ -20,7 +20,8 @@
               :key="column._columnKey"
               :parent="parent"
               :column="column"
-              :natural-index="index"
+              :naturalIndex="index"
+              :columnIndex = "inx"
               :index="row._index"
               :checked="rowChecked(row._index)"
               :disabled="rowDisabled(row._index)"
@@ -28,6 +29,11 @@
               :showEditInput="showEditInput"
               :option="option[inx]"
               :treeOption="treeOption[inx]"
+              @on-editselect-change="editselectChange"
+              @on-editinput-change="editinputChange"
+              @on-editinput-blur="editinputBlur"
+              @on-editarea-change="editAreaChange"
+              @on-editarea-blur="editAreaBlur"
             ></Cell>
           </td>
         </table-tr>
@@ -278,6 +284,21 @@
             });
           }
         },
+        editselectChange(val,i,j){
+          this.$emit('on-editselect-change',val,i,j);
+        },
+        editinputChange(val,i,j){
+          this.$emit('on-editinput-change',val,i,j);
+        },
+        editinputBlur(val,i,j){
+          this.$emit('on-editinput-blur',val,i,j);
+        },
+        editAreaChange(val,i,j){
+          this.$emit('on-editarea-change',val,i,j);
+        },
+        editAreaBlur(val,i,j){
+          this.$emit('on-editarea-blur',val,i,j);
+        }
       },
       mounted(){
         if (this.typeName == 'treeGird') {
@@ -285,5 +306,13 @@
           this.flatState = this.compileFlatState();
         }
       },
+      watch:{
+        data(){
+          if (this.typeName == 'treeGird') {
+            this.treeData = this.data;
+            this.flatState = this.compileFlatState();
+          }
+        }
+      }
     };
 </script>

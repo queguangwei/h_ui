@@ -275,6 +275,16 @@ $selecttree-prefix-cls:  "#{$css-prefix}selectTree";
         }
     }
 }
+.#{$form-item-prefix-cls}-changed{
+    .#{$selecttree-prefix-cls}{
+        &-selection{
+          color:$changed-color;
+        }
+        .h-tag{
+          color:$changed-color;
+        }
+    }
+}
 .#{$editgird-prefix-cls}-cell-error{
     .#{$selecttree-prefix-cls}{
         &-selection{
