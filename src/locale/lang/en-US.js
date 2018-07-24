@@ -72,6 +72,13 @@ export default {
             notFoundText: 'Not Found',
             notFoundData: 'Not Found'
         },
+        transfer: {
+            lTitle: 'Source',
+            rTitle: 'Target',
+            filterPlaceholder: 'Search here',
+            notFoundText: 'Not Found',
+            notFoundData: 'Not Found'
+        },
         modal: {
             okText: 'OK',
             cancelText: 'Cancel'
@@ -81,6 +88,8 @@ export default {
             cancelText: 'Cancel'
         },
         page: {
+            first: 'First Page',
+            last: 'Last Page',
             prev: 'Previous Page',
             next: 'Next Page',
             total: 'Total',

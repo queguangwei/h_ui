@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2>基础用法 </h2>
-    <h-page :total="val" @on-change="pageChange" class-name="wrap" :current="curPage"></h-page>
+    <h-page :total="val" @on-change="pageChange" class-name="wrap" :current="curPage" fastArrival></h-page>
     <h-button @click="pageChange1">改变当前page</h-button>
     <br>
     <Button @click="setTotal">设置total为0</Button>

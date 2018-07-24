@@ -32,9 +32,9 @@
     <h-table height="200" :columns="columns1" :data="data2" border :loading="loading" showTitle></h-table>
     <h2>固定列</h2>
     <p>通过给数据 columns 的项设置 fixed 为 left 或 right，可以左右固定需要的列。</p>
-    <h-table width="1000" border :columns="columns2" :data="data3" :loading="loading"></h-table>
+    <h-table border :columns="columns2" :data="data3" :loading="loading" canMove height="250"></h-table>
     <h2>固定表头和列</h2>
-    <h-table width="550" height="300" border :columns="columns2" :data="data4" :loading="loading" @on-scroll="scroll"></h-table>
+    <h-table height="300" width="550" border :columns="columns2" :data="data4" :loading="loading" @on-scroll="scroll"></h-table>
     <h2>单选</h2>
     <p>通过设置属性 highlight-row，可以选中某一行。</p>
     <p>给 data 项设置特殊 key _highlight: true 可以默认选中当前项。</p>
@@ -45,8 +45,8 @@
     <p>@on-select，选中某一项触发，返回值为 selection 和 row，分别为已选项和刚选择的项。</p>
     <p>@on-select-all，点击全选时触发，返回值为 selection，已选项。</p>
     <p>@on-selection-change，只要选中项发生变化时就会触发，返回值为 selection，已选项。</p>
-    <h-table border :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading" canMove></h-table>
-    <h2>排序</h2>
+    <h-table border :columns="columns4" :data="data1" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading"></h-table>
+   <!--  <h2>排序</h2>
     <p>通过给 columns 数据的项，设置 sortable: true，即可对该列数据进行排序。</p>
     <p>排序默认使用升序和降序，也可以通过设置属性 sortMethod 指定一个自定义排序函数，接收三个参数 a 、 b 和 type。</p>
     <p>通过给某一列设置 sortType 可以在初始化时使用排序。</p>
@@ -81,22 +81,24 @@
     <br>
     <h-button type="primary" size="large" @click="exportData(1)"><h-icon name="document"></h-icon> 导出原始数据</h-button>
     <h-button type="primary" size="large" @click="exportData(2)"><h-icon name="document"></h-icon> 导出排序和过滤后的数据</h-button>
-    <h-button type="primary" size="large" @click="exportData(3)"><h-icon name="document"></h-icon> 导出自定义数据</h-button>
+    <h-button type="primary" size="large" @click="exportData(3)"><h-icon name="document"></h-icon> 导出自定义数据</h-button> -->
     <h2>测试</h2>
-    <h-table height="300" :stripe="true" :columns="columns18" :data="data17" border size="small" ref="table" :loading="loading" :highlightRow="true" @on-selection-change="change">
+    <h-table height="300" :stripe="true" :columns="columns18" :data="data17" border size="small" ref="table" :loading="loading" :highlightRow="true" @on-selection-change="selsetChange">
         <span slot="header">证券日活数据表</span>
         <span slot="footer">恒生电子有限公司提供</span>
     </h-table>
     <br>
-    <h-table border :columns="columns6" :data="data5" no-filtered-data-text="找不到数据" :loading="loading"></h-table>
+    <!-- <h-table border :columns="columns6" :data="data5" no-filtered-data-text="找不到数据" :loading="loading"></h-table> -->
   </div>
 </template>
 <script>
+let jsonData =require('../assets/aa.json'); 
 import TexpandRow from './Texpand-row.vue'
 export default {
   components:{TexpandRow},
   data () {
     return {
+      bigData:jsonData,
       msgbox:false,
       loading:false,
       columns18: [
@@ -532,19 +534,42 @@ export default {
           title: '姓名',
           key: 'name',
           render: (h, params) => {
-            return h('div', [
-              h('h-icon', {
-                props: {
-                  name: 'addressbook'
-                }
-              }),
-              h('strong', params.row.name)
-            ]);
+            if (params.row._index==3) {
+              return h('div', [
+                h('h-icon', {
+                  props: {
+                    name: 'addressbook'
+                  }
+                }),
+                h('strong', params.row.name)
+              ]);
+            }else{
+              return h('span',params.row.name)
+            }
+
+          },
+          renderHeader:(h, params)=>{
+            return h('span','123')
           }
         },
         {
           title: '年龄',
-          key: 'age'
+          key: 'age',
+          render:(h,params)=>{
+            return h('div', [
+              h('Input', {
+                props: {
+                  value:params.row.age,
+                },
+                on:{
+                   'on-change': (event)=>{ 
+                      // params.row.numLots = event.target.value;
+                      // this.data[params.index] = params.row;
+                  } 
+                 }
+              })
+            ])
+          }
         },
         {
           title: '地址',
@@ -621,13 +646,12 @@ export default {
         {
           title: '邮编',
           key: 'zip',
-          width: 100,
+          width: 120,
           ellipsis:true
         },
         {
           title: '操作',
           key: 'action',
-          width: 120,
           fixed: 'right',
           render: (h, params) => {
             return h('div', [
@@ -1295,8 +1319,9 @@ export default {
       console.log(selection);
       console.log(row);
     },
-    selsetChange (selection){//选项发生变化时触发已选择的项
+    selsetChange (selection,inx){//选项发生变化时触发已选择的项
       console.log(selection);
+      console.log(inx);
     },
     show (index) {
       this.$hMsgBox.info({
@@ -1327,7 +1352,11 @@ export default {
     }      
   },
   mounted(){
-    this.columns1=[{
+    this.columns1=[
+        { type: 'selection',
+          align: 'center',
+        },
+        {
           title: '姓名',
           key: 'name',
           align: 'center',
@@ -1336,42 +1365,39 @@ export default {
           title: '年龄',
           key: 'age',
         },
-        {
-          title: '地址',
-          ellipsis:true,
-          key: 'address',
-          sortType:'asc',
-        },
-        {
-          title: '地址1',
-          key: 'address1',
-          sortType:'asc',
-        },
-        {
-          title: '地址2',
-          key: 'address2',
-          sortType:'asc',
-        },
-        {
-          title: '地址3',
-          key: 'address3',
-          sortType:'asc',
-        },
-        {
-          title: '地址4',
-          key: 'address4',
-          sortType:'asc',
-        },
-        {
-          title: '地址5',
-          key: 'address5',
-          sortType:'asc',
-        },
-        {
-          title: '地址6',
-          key: 'address6',
-          sortType:'asc',
-        }]
+        // {
+        //   title: '地址',
+        //   ellipsis:true,
+        //   key: 'address',
+        // },
+        // {
+        //   title: '地址1',
+        //   key: 'address1',
+        // },
+        // {
+        //   title: '地址2',
+        //   key: 'address2',
+        // },
+        // {
+        //   title: '地址3',
+        //   key: 'address3',
+        // },
+        // {
+        //   title: '地址4',
+        //   key: 'address4',
+        //   sortType:'asc',
+        // },
+        // {
+        //   title: '地址5',
+        //   key: 'marketNo',
+        //   sortType:'asc',
+        // },
+        // {
+        //   title: '地址6',
+        //   key: 'tradeQuantity',
+        //   sortType:'asc',
+        // }
+    ]
   }
 }
 </script>

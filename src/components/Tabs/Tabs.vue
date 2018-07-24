@@ -1,30 +1,76 @@
 <template>
   <div :class="classes">
-    <div :class="[prefixCls + '-bar']">
-      <div :class="[prefixCls + '-nav-container']">
-        <div v-if="showArrow" :class="[prefixCls + '-return']" v-on:click = "leftClick($event)" >
-          <Icon name="return"></Icon>
-        </div>
-        <div :class="navWrap"  style="float:left">
-          <div :class="[prefixCls + '-nav-scroll']">
-            <div :class="[prefixCls + '-nav']" ref="nav">
-              <div :class="barClasses" :style="barStyle"></div>
-              <div :class="tabCls(item)" v-for="(item, index) in navList" @click="handleChange(index)">
-                <Icon v-if="item.icon !== ''" :name="item.icon">{{item.icon}}</Icon>
-                <Render v-if="item.labelType === 'function'" :render="item.label"></Render>
-                <template v-else>{{ item.label }}</template>
-                <Icon v-if="showClose(item)" name="close" @click.native.stop="handleRemove(index)"></Icon>
+    <template v-if="panelAbove">
+      <div :class="contentClasses" :style="contentStyle"><slot></slot></div>
+      <!-- <div :class="[prefixCls + '-bar']"> -->
+      <div :class="barTop">
+        <div :class="[prefixCls + '-nav-container']">
+          <div v-if="showArrow" :class="[prefixCls + '-return']" v-on:click = "leftClick($event)" >
+            <Icon name="return"></Icon>
+          </div>
+          <div :class="navWrap"  style="float:left">
+            <div :class="[prefixCls + '-nav-scroll']">
+              <div :class="[prefixCls + '-nav']" ref="nav">
+                <div :class="barClasses" :style="barStyle"></div>
+                <div :class="tabCls(item)" v-for="(item, index) in navList" @click="handleChange(index)">
+                  <Icon v-if="item.icon !== ''" :name="item.icon">{{item.icon}}</Icon>
+                  <Render v-if="item.labelType === 'function'" :render="item.label"></Render>
+                  <template v-else>{{ item.label }}</template>
+                  <Icon v-if="showClose(item)" name="close" @click.native.stop="handleRemove(index)"></Icon>
+                </div>
               </div>
+              <div :class="[prefixCls + '-nav-right']" v-if="showSlot"><slot name="extra"></slot></div>
             </div>
-            <div :class="[prefixCls + '-nav-right']" v-if="showSlot"><slot name="extra"></slot></div>
+          </div>
+          <div v-if="showArrow" :class="[prefixCls + '-enter']" v-on:click = "rightClick($event)">
+            <Icon name="enter"></Icon>
           </div>
         </div>
-        <div v-if="showArrow" :class="[prefixCls + '-enter']" v-on:click = "rightClick($event)">
-          <Icon name="enter"></Icon>
+      </div>
+    </template>
+    <template v-if="panelRight">
+      <div :class="barRight" :style="barRightStyle">
+        <div :class="[prefixCls + '-nav-container']">
+          <div :class="[prefixCls + '-nav-right']" ref="nav">
+            <!-- <div :class="barClasses" :style="barStyle"></div> -->
+            <div :class="tabCls(item)" v-for="(item, index) in navList" @click="handleChange(index)">
+              <Render v-if="item.labelType === 'function'" :render="item.label"></Render>
+              <template v-else>{{ item.label }}</template>
+              <Icon name="arrow-right-b" size="14"></Icon>
+            </div>
+          </div>          
         </div>
       </div>
-    </div>
-    <div :class="contentClasses" :style="contentStyle"><slot></slot></div>
+      <div :class="contentClasses" :style="contentRightStyle"><slot></slot></div>
+      <!-- <div :class="contentClasses"><slot></slot></div> -->
+    </template>
+    <template v-else>
+      <div :class="[prefixCls + '-bar']">
+        <div :class="[prefixCls + '-nav-container']">
+          <div v-if="showArrow" :class="[prefixCls + '-return']" v-on:click = "leftClick($event)" >
+            <Icon name="return"></Icon>
+          </div>
+          <div :class="navWrap"  style="float:left">
+            <div :class="[prefixCls + '-nav-scroll']">
+              <div :class="[prefixCls + '-nav']" ref="nav">
+                <div :class="barClasses" :style="barStyle"></div>
+                <div :class="tabCls(item)" v-for="(item, index) in navList" @click="handleChange(index)">
+                  <Icon v-if="item.icon !== ''" :name="item.icon">{{item.icon}}</Icon>
+                  <Render v-if="item.labelType === 'function'" :render="item.label"></Render>
+                  <template v-else>{{ item.label }}</template>
+                  <Icon v-if="showClose(item)" name="close" @click.native.stop="handleRemove(index)"></Icon>
+                </div>
+              </div>
+              <div :class="[prefixCls + '-nav-right']" v-if="showSlot"><slot name="extra"></slot></div>
+            </div>
+          </div>
+          <div v-if="showArrow" :class="[prefixCls + '-enter']" v-on:click = "rightClick($event)">
+            <Icon name="enter"></Icon>
+          </div>
+        </div>
+      </div>
+      <div :class="contentClasses" :style="contentStyle"><slot></slot></div>
+    </template>
   </div>
 </template>
 <script>
@@ -66,6 +112,32 @@
       showArrow:{
         type:Boolean,
         default: false
+      },
+      panelAbove:{
+        type:Boolean,
+        default: false,
+      },
+      panelRight:{
+        type:Boolean,
+        default: false,
+      },
+      panelLeft:{
+        type:Boolean,
+        default: false,
+      },
+      height:{//panelRight panelLeft
+        type:[Number,String],
+        default:300,
+      },
+      labelWidth:{
+        type:Number,
+        default:20,
+      },
+      alginDre:{
+        validator (value) {
+          return oneOf(value, ['left', 'right']);
+        },
+        default: 'right'
       }
     },
     data () {
@@ -85,11 +157,30 @@
         return [
           `${prefixCls}`,
           {
-            [`${prefixCls}-card`]: this.type === 'card',
-            [`${prefixCls}-mini`]: this.size === 'small' && this.type === 'line',
-            [`${prefixCls}-no-animation`]: !this.animated
+            [`${prefixCls}-card`]: this.type === 'card'&&!this.panelAbove&&!this.panelRight,
+            [`${prefixCls}-card-top`]: this.type === 'card'&&this.panelAbove&&!this.panelRight,
+            [`${prefixCls}-mini`]: this.size === 'small' && this.type === 'line'&&!this.panelRight,
+            [`${prefixCls}-no-animation`]: !this.animated,
+            [`${prefixCls}-panel-right`]: this.panelRight,
+            [`clearfix`]: this.panelRight,
           }
         ];
+      },
+      barTop(){
+        return {
+          [`${prefixCls}-bar`]:this.type !== 'card',
+          [`${prefixCls}-bar-top`]:this.type === 'card',
+        }
+      },
+      barRight(){
+        return {
+          [`${prefixCls}-bar-right`]:this.panelRight,
+        }
+      },
+      barRightStyle(){
+        let style={}
+        style.width = this.labelWidth+'%';
+        return style;
       },
       navWrap(){
         return [
@@ -103,7 +194,8 @@
         return [
           `${prefixCls}-content`,
           {
-            [`${prefixCls}-content-animated`]: this.animated
+            [`${prefixCls}-content-animated`]: this.animated,
+            [`${prefixCls}-content-right`]: this.panelRight,
           }
         ];
       },
@@ -126,6 +218,12 @@
             transform: `translateX(${p}) translateZ(0px)`
           };
         }
+        return style;
+      },
+      contentRightStyle(){
+        let style={};
+        style.minHeight=this.height+'px';
+        style.width = Number(100-Number(this.labelWidth))+'%';
         return style;
       },
       barStyle () {
@@ -200,14 +298,19 @@
       },
       updateStatus () {
         const tabs = this.getTabs();
-        tabs.forEach(tab => tab.show = (tab.currentName === this.activeKey) || this.animated);
+        if (!this.panelRight) {
+          tabs.forEach(tab => tab.show = (tab.currentName === this.activeKey) || this.animated);
+        }else{
+          tabs.forEach(tab => tab.show = (tab.currentName === this.activeKey));
+        }
       },
       tabCls (item) {
         return [
           `${prefixCls}-tab`,
           {
             [`${prefixCls}-tab-disabled`]: item.disabled,
-            [`${prefixCls}-tab-active`]: item.name === this.activeKey
+            [`${prefixCls}-tab-active`]: item.name === this.activeKey,
+            [`${prefixCls}-tab-alginleft`]: this.alginDre == 'left',
           }
         ];
       },

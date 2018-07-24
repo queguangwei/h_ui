@@ -1,7 +1,8 @@
 <template>
   <div>
     <h2>基本用法</h2>
-    <h-tabs :value="val">
+    {{val}}
+    <h-tabs v-model="val" panelRight :height="200" :labelWidth="15" alginDre="left">
       <h-tab-pane label="标签一" name="name1">
         <h-select v-model="model6" style="width:200px" :transfer="true">
          <h-option value="beijing">北京市</h-option>
@@ -18,9 +19,36 @@
         <h-tooltip content="Top Left 文字提示" placement="bottom" :transfer="true">
             <h-button>上左</h-button>
         </h-tooltip>
-         <h-table :columns="columns1" :data="data1"></h-table>
-      <span slot="loading">我是自定义加载！！！</span>
-    </h-table>
+          <h-table :columns="columns1" :data="data1"></h-table>
+          <span slot="loading">我是自定义加载！！！</span>
+          </h-table>
+      </h-tab-pane>
+      <h-tab-pane label="标签三" name="name3">
+        <h-poptip title="提示标题" content="提示内容" placement="bottom" :transfer="true">
+            <h-button>左下</h-button>
+        </h-poptip>
+      </h-tab-Pane>
+    </h-tabs>
+    <h-tabs v-model="val" panelRight :height="200" :labelWidth="25" alginDre="right">
+      <h-tab-pane label="标签一" name="name1">
+        <h-select v-model="model6" style="width:200px" :transfer="true">
+         <h-option value="beijing">北京市</h-option>
+         <h-option value="shanghai" >上海市</h-option>
+         <h-option value="shenzhen">深圳市</h-option>
+        </h-select>
+        <h-select v-model="model6" style="width:200px" :transfer="true">
+         <h-option value="beijing">北京市</h-option>
+         <h-option value="shanghai" >上海市</h-option>
+         <h-option value="shenzhen">深圳市</h-option>
+        </h-select>
+      </h-tab-pane>
+      <h-tab-pane label="标签二" name="name2">
+        <h-tooltip content="Top Left 文字提示" placement="bottom" :transfer="true">
+            <h-button>上左</h-button>
+        </h-tooltip>
+          <h-table :columns="columns1" :data="data1"></h-table>
+          <span slot="loading">我是自定义加载！！！</span>
+          </h-table>
       </h-tab-pane>
       <h-tab-pane label="标签三" name="name3">
         <h-poptip title="提示标题" content="提示内容" placement="bottom" :transfer="true">
@@ -192,3 +220,15 @@
     }
   }
 </script>
+<style type="text/css">
+ /* .h-tabs-nav-right{
+    padding-right: 0px !important;
+    border-right: 1px solid #d7dde4;
+  }
+  .h-tabs-nav-right i{
+    display: none;
+  }
+  .h-tabs-content-right{
+    border: none !important;
+  }*/
+</style>

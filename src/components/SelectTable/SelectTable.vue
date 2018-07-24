@@ -43,7 +43,7 @@
         :data-transfer="transfer" 
         ref="dropdown"
         v-transfer-dom>
-        <div :class="content" ref="content">
+        <div :class="content" ref="content" @click="handleclick">
           <!-- 单选时清空按钮 -->
           <!-- <ul v-show="notFoundShow" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul> -->
           <span :class="searchClass" ref='search' v-if="filterable && showBottom">
@@ -83,7 +83,7 @@
   import clickoutside from '../../directives/clickoutside';
   import TransferDom from '../../directives/transfer-dom';
   import Checkbox from '../Checkbox/Checkbox.vue';
-  import { oneOf, findComponentChildren, getScrollBarSize, getStyle,getBarBottom } from '../../util/tools';
+  import { oneOf, findComponentChildren, getScrollBarSize, getStyle,getBarBottom,scrollAnimate} from '../../util/tools';
   import Emitter from '../../mixins/emitter';
   import Locale from '../../mixins/locale';
   const prefixCls = 'h-selectTable';
@@ -396,6 +396,9 @@
       }, 
     },
     methods: {
+      handleclick(e){
+        e.stopPropagation();
+      },
       keyup(event){
         if (this.disabled || this.readonly||!this.editable) {
           return false;
@@ -685,7 +688,7 @@
             // prev
             if (keyCode === 38) {
                 e.preventDefault();
-                this.navigateOptions('prev');
+                this.navigateOptions('prev')
             }
             // enter
             if (keyCode === 13) {
@@ -703,6 +706,7 @@
         }
       },
       navigateOptions (direction) {
+        let curTop = this.$refs.list.scrollTop;
         if (this.focusIndex-1>=0) {
           this.findChild((child) => {
             child.$refs.table.changeHover(this.focusIndex-1,false);
@@ -716,10 +720,11 @@
             const prev = this.focusIndex - 1;
             this.focusIndex = (this.focusIndex <= 1) ? this.options.length : prev;
         }
-
+        let top = this.$refs.list.children[0].querySelectorAll('.h-table-row')[this.focusIndex-1].offsetTop;
         this.findChild((child) => {
           child.$refs.table.changeHover(this.focusIndex-1,true);
         });
+        scrollAnimate(this.$refs.list,curTop,top);
       },
       resetScrollTop () {
         const index = this.focusIndex - 1;

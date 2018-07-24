@@ -10,6 +10,7 @@
     <Button @on-click="testClick(false)">失去焦点</Button>
     <h-select ref="test"></h-select>
     <h-select v-model="model34" style="width:120px" @on-change="change" @on-scroll="scroll" algin="right" :setDefSelect="true">
+        <h-option value="index"><a href=http://www.google.com/>link</A></h-option>
         <h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>
     </h-select>
     <h-button @click="fuzhi">赋值</h-button>
@@ -22,7 +23,7 @@
     {{model44}}
     <br>
     <div>
-        <h-select v-model="model1" label-in-value width="200" @on-change="change" :setDefSelect="true">
+        <h-select v-model="model1" label-in-value width="200" @on-change="change" :setDefSelect="true" showTitle>
             <h-option v-for="(item, index) in uList" :value="item.id" :key="item.id">{{ item.name }}</h-option>
         </h-select>
     </div>
@@ -78,6 +79,7 @@
     </h1>
     <br>
     <div>
+        <h1>黄沙</h1>
         <span>可清空</span>
         <h-select v-model="model6" width="200" clearable>
             <h-option v-for="(item, index) in uList" :value="item.id" :key="item.id">{{ item.name }}</h-option>
@@ -121,7 +123,7 @@
     <br>
     <div>
         <span>多选123:</span>
-        <h-select v-model="model9" width="260"  multiple size="large" :isString="true">
+        <h-select v-model="model9" width="260"  multiple size="large" :isString="true" showTitle>
             <h-option v-for="(item, index) in uList" :value="item.id" :key="item.id">{{ item.name }}</h-option>
         </h-select>
         {{model9}}
@@ -143,11 +145,11 @@
         {{model11}}
         <h2>搜索框在下</h2>
         <span>单选可搜索:</span>
-        <h-select v-model="model10" width="200"  filterable :showBottom="true" searchHolder="123">
+        <h-select v-model="model10" width="200"  filterable :showBottom="true" searchHolder="123" :transfer="true">
             <h-option v-for="(item, index) in uList" :value="item.id" :key="item.id">{{ item.name }}</h-option>
         </h-select>
          <span>多选可搜索:</span>
-        <h-select v-model="model11" width="200"  multiple filterable :isString="true" :showBottom="true" checkToHead>
+        <h-select v-model="model11" width="200"  multiple filterable :isString="true" :showBottom="true" checkToHead :transfer="true">
             <h-option v-for="(item, index) in uList" :value="item.id" :key="item.id">{{ item.name }}</h-option>
         </h-select>
         {{model11}}

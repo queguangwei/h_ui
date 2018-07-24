@@ -53,11 +53,19 @@ import Select from './components/Select';
 import EditGird from './components/EditGird';
 import GroupTable from './components/GroupTable';
 import TreeGird from './components/TreeGird';
+import AsycTreeGird from './components/AsycTreeGird';
 import SelectTable from './components/SelectTable';
 import FastDate from './components/FastDate';
 import SplicePanel from './components/SplicePanel';
 import FieldPanel from './components/Panel';
+import SimpleTable from './components/SimpleTable';
+import TransferTable from './components/TransferTable';
+import FormGird from './components/FormGird';
+import Rate from './components/Rate';
+import Textdiff from './components/Textdiff';
+
 import locale from './locale';
+
 
 const h_ui = {
     Affix,
@@ -192,6 +200,8 @@ const h_ui = {
     hGroupTable:GroupTable,
     TreeGird,
     hTreeGird:TreeGird,
+    AsycTreeGird,
+    hAsycTreeGird:AsycTreeGird,
     SelectTable:SelectTable,
     hSelectTable:SelectTable,
     hTableOption:SelectTable.Option,
@@ -201,7 +211,17 @@ const h_ui = {
     SplicePanel:SplicePanel,   
     hSplicePanel:SplicePanel,
     FieldPanel:FieldPanel,
-    hFieldPanel:FieldPanel  
+    hFieldPanel:FieldPanel,
+    SimpleTable:SimpleTable,
+    hSimpleTable:SimpleTable,
+    TransferTable:TransferTable,
+    hTransferTable:TransferTable,
+    FormGird:FormGird,    
+    hFormGird:FormGird,
+    Rate:Rate,
+    hRate:Rate,  
+    Textdiff,
+    HTextdiff: Textdiff  
 };
 const install = function(Vue, opts = {}) {
     locale.use(opts.locale);

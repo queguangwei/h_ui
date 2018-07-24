@@ -37,7 +37,7 @@
           <span v-html="localeNoDataText" v-if="!data || data.length === 0"></span>
           <span v-html="localeNoFilteredDataText" v-else></span>
         </div>
-        <table cellspacing="0" cellpadding="0" border="0" :style="tableStyle">
+        <table cellspacing="0" cellpadding="0" border="0" :style="tipStyle">
           <tbody>
             <tr>
               <td :style="{ 'height': bodyStyle.height}">
@@ -235,6 +235,10 @@ export default {
     showTitle:{
       type:Boolean,
       default:false,
+    },
+    patibleHeight:{//兼容高度
+      type:Boolean,
+      default:false,
     }
   },
   data () {
@@ -261,6 +265,7 @@ export default {
       showScroll:false,
       headerRealHeight:0,
       selectType:false,
+      buttomNum:null,
     };
   },
   computed: {
@@ -314,7 +319,7 @@ export default {
       let style = {};
       if (this.height) {
         const height = (this.isLeftFixed || this.isRightFixed) ? parseInt(this.height) + this.scrollBarWidth : parseInt(this.height);
-        style.height = `${height+2}px`;
+        style.height = this.patibleHeight?`${this.height}px`:`${height+2}px`;
       }
       if (this.width) style.width = `${this.width}px`;
       return style;
@@ -326,12 +331,20 @@ export default {
         if (this.bodyHeight === 0) {
           width = this.tableWidth;
         } else {
-          if (this.bodyHeight > this.bodyRealHeight) {
+          if (this.bodyHeight > this.bodyRealHeight && this.data.length>0) {
             width = this.tableWidth;
           } else {
             width = this.tableWidth - this.scrollBarWidth;
           }
         }
+        style.width = `${width}px`;
+      }
+      return style;
+    },
+    tipStyle () {
+      let style = {};
+      if (this.tableWidth !== 0) {
+        let width = this.tableWidth;
         style.width = `${width}px`;
       }
       return style;
@@ -348,10 +361,15 @@ export default {
     fixedRightTableStyle () {
       let style = {};
       let width = 0;
+      let height = 0;
       this.rightFixedColumns.forEach((col) => {
         if (col.fixed && col.fixed === 'right') width += col._width;
       });
-      if (!!this.height && this.height < this.bodyRealHeight) {
+      if (this.bodyHeight !== 0) {
+        height = (this.isLeftFixed || this.isRightFixed) ? this.bodyHeight + this.scrollBarWidth : this.bodyHeight;
+        height = this.patibleHeight?this.bodyHeight:height;
+      }
+      if (height && height < this.bodyRealHeight) {
         style.marginRight = `${this.scrollBarWidth}px`;
         this.showScroll = true;
       }else{
@@ -376,16 +394,16 @@ export default {
       if (this.bodyHeight !== 0) {
         // add a height to resolve scroll bug when browser has a scrollBar in fixed type and height prop
         const height = (this.isLeftFixed || this.isRightFixed) ? this.bodyHeight + this.scrollBarWidth : this.bodyHeight;
-        style.height = `${height}px`;
+        style.height = this.patibleHeight?`${this.bodyHeight}px`:`${height}px`;
       }
       return style;
     },
     fixedBodyStyle () {
       let style = {};
       if (this.bodyHeight !== 0) {
-        let height = this.bodyHeight;
+        let height =this.patibleHeight?this.bodyHeight-this.scrollBarWidth:this.bodyHeight;
         if (this.tableWidth < this.initWidth+1) {
-          height = this.bodyHeight + this.scrollBarWidth-1;
+          height = height + this.scrollBarWidth-1;
         }
         style.height = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`;
       }
@@ -395,7 +413,8 @@ export default {
       let style = {};
       // style.width = this.initWidth!=0?this.initWidth+'px': this.hasWidth ? this.hasWidth+'px' : '100%';
       style.width = this.initWidth!=0?this.initWidth+'px':'100%';
-      const height = (this.isLeftFixed || this.isRightFixed) ? this.bodyHeight + this.scrollBarWidth : this.bodyHeight;
+      let height = (this.isLeftFixed || this.isRightFixed) ? this.bodyHeight + this.scrollBarWidth : this.bodyHeight;
+      height = this.patibleHeight?height-2:height;
       style.height = this.height?Number(height-this.scrollBarWidth)+'px':null;
       style.lineHeight = this.height?Number(height-this.scrollBarWidth)+'px':null;
       return style;
@@ -497,9 +516,7 @@ export default {
                   if (width < 100) width = 100;
               }
               this.cloneColumns[i]._width = width||'';
-              // this.cloneColumns[i].leftWidth = $td[i].getBoundingClientRect().left||'';
-              this.tableWidth = this.cloneColumns.map(cell => cell.width).reduce((a, b) => a + b);
-
+              this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)||this.tableWidth;
               columnsWidth[column._index] = {
                   width: width
               };
@@ -565,9 +582,9 @@ export default {
           this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
         }
         if (this.columns[0].type=='selection') {
-          let selection = []
-          selection.push(this.data[_index]);
-          this.$emit('on-selection-change', JSON.parse(JSON.stringify(selection)));
+          const selection = this.getSelection();
+          const selectionInx = this.getSelection(true);
+          this.$emit('on-selection-change', selection,selectionInx);
         }
     },
     clickCurrentRow (_index) {
@@ -582,12 +599,12 @@ export default {
       }
       this.$emit('on-row-dblclick', JSON.parse(JSON.stringify(this.cloneData[_index])));
     },
-    getSelection () {
+    getSelection (status=false) {
       let selectionIndexes = [];
       for (let i in this.objData) {
           if (this.objData[i]._isChecked) selectionIndexes.push(parseInt(i));
       }
-      return JSON.parse(JSON.stringify(this.data.filter((data, index) => selectionIndexes.indexOf(index) > -1)));
+      return status?selectionIndexes:JSON.parse(JSON.stringify(this.data.filter((data, index) => selectionIndexes.indexOf(index) > -1)));
     },
     toggleSelect (_index) {
       let data = {};
@@ -603,8 +620,9 @@ export default {
       }
 
       const selection = this.getSelection();
+      const selectionInx = this.getSelection(true);
       this.$emit(status ? 'on-select' : 'on-select-cancel', selection, JSON.parse(JSON.stringify(this.data[_index])));
-      this.$emit('on-selection-change', selection);
+      this.$emit('on-selection-change', selection,selectionInx);
     },
     clearAllRow(){
       for (let i in this.objData) {
@@ -672,18 +690,27 @@ export default {
         this.objData[_index]._isExpanded = status;
         this.$emit('on-expand', JSON.parse(JSON.stringify(this.cloneData[_index])), status);
     },
+    itemSelect(i,status){
+      let index = this.rebuildData[i]._index;
+      // if (index == undefined) return;
+      this.objData[index]._isHighlight=false;
+      if(!this.objData[index]._isDisabled){
+        this.objData[index]._isChecked = status;
+      }
+    },
     selectAll (status) {
-        for(const data of this.rebuildData){
-          this.objData[data._index]._isHighlight=false;
-          if(this.objData[data._index]._isDisabled){
-            continue;
-          }else{
-            this.objData[data._index]._isChecked = status;
-          }
+      for(const data of this.rebuildData){
+        this.objData[data._index]._isHighlight=false;
+        if(this.objData[data._index]._isDisabled){
+          continue;
+        }else{
+          this.objData[data._index]._isChecked = status;
         }
-        const selection = this.getSelection();
-        this.$emit('on-select-all', selection);
-        this.$emit('on-selection-change', selection);
+      }
+      const selection = this.getSelection();
+      const selectionInx = this.getSelection(true);
+      this.$emit('on-select-all', selection);
+      this.$emit('on-selection-change', selection,selectionInx);
     },
     fixedHeader () {
         if (this.height) {
@@ -694,7 +721,7 @@ export default {
                   if(this.$refs.rightF)this.$refs.rightF.style.marginTop=titleHeight+'px';
                 }
                 // const headerHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
-                const headerHeight = this.headerRealHeight;
+                const headerHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
                 const footerHeight = parseInt(getStyle(this.$refs.footer, 'height')) || 0;
                 this.bodyHeight = this.height - titleHeight - headerHeight - footerHeight;
             });
@@ -710,8 +737,7 @@ export default {
         if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = event.target.scrollTop;
         if (this.isRightFixed) this.$refs.fixedRightBody.scrollTop = event.target.scrollTop;
         this.hideColumnFilter();
-        let buttomNum = getBarBottom(event.target,this.scrollBarWidth);
-        this.$emit('on-scroll',buttomNum)
+        this.buttomNum = getBarBottom(event.target,this.scrollBarWidth);
     },
     handleMouseWheel (event) {
         const deltaX = event.deltaX;
@@ -763,6 +789,7 @@ export default {
         });
     },
     sortCloumn (curIndex,insertIndex,_index){
+      if (this.cloneColumns[insertIndex].fixed) return;
       const item = this.cloneColumns[curIndex];
       this.cloneColumns.splice(curIndex,1);
       this.cloneColumns.splice(insertIndex,0,item);
@@ -992,13 +1019,13 @@ export default {
       this.rebuildData = this.makeDataWithSortAndFilter();
   },
   mounted () {
-    if (this.showHeader) {
-      if (!!this.size) {
-        this.headerRealHeight = this.size=='small'?35:48;
-      }else{
-        this.headerRealHeight=42;
-      }
-    }
+    // if (this.showHeader) {
+    //   if (!!this.size) {
+    //     this.headerRealHeight = this.size=='small'?35:48;
+    //   }else{
+    //     this.headerRealHeight=42;
+    //   }
+    // }
     if (this.columns[0].type && this.columns[0].type=='selection') {
       this.selectType=true;
     }
@@ -1007,6 +1034,7 @@ export default {
     this.$nextTick(() => {
       this.ready = true;
       this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
+      this.headerRealHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
     });
     //window.addEventListener('resize', this.handleResize, false);
     on(window, 'resize', this.handleResize);
@@ -1057,7 +1085,11 @@ export default {
       },
       hasWidth(){
         this.handleResize();
-      }
+      },
+      buttomNum(){
+        if (this.buttomNum==null) return;
+        this.$emit('on-scroll',this.buttomNum);
+      } 
   }
 };
 </script>
