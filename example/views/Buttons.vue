@@ -17,7 +17,9 @@
     <h-button type="error">错误按钮</h-button>
     <h1>带图标按钮</h1>
     <h-icon name="search"></h-icon>
+    <h-button type="primary" shape="circle" size='large' icon="search"></h-button>
     <h-button type="primary" shape="circle" icon="search"></h-button>
+    <h-button type="primary" shape="circle" size='small' icon="search"></h-button>
     <h-button type="primary" icon="search">搜索</h-button>
     <h-button type="primary" shape="circle" icon="search">搜索</h-button>
     <h-button type="primary" shape="circle">圆角按钮</h-button>

@@ -4,7 +4,6 @@ import Home from '../views/Home.vue'
 import Hello from '../views/hello.vue'
 import Switchs from '../views/Switchs.vue'
 import Typefield from '../views/Typefield.vue'
-import Waves from '../views/Waves.vue'
 import Input from '../views/Input.vue'
 import Checkbox from '../views/Checkbox.vue'
 import Radio from '../views/Radio.vue'
@@ -50,10 +49,16 @@ import Card from '../views/Card.vue'
 import EditGird from '../views/EditGird.vue'
 import GroupTable from '../views/GroupTable.vue'
 import TreeGird from '../views/TreeGird.vue'
+import AsycTreeGird from '../views/AsycTreeGird.vue'
 import SelectTable from '../views/SelectTable.vue'
 import FastDate from '../views/FastDate.vue'
 import SplicePanel from '../views/SplicePanel.vue'
 import Panel from '../views/Panel.vue'
+import SimpleTable from '../views/SimpleTable.vue'
+import TransferTable from '../views/TransferTable.vue'
+import FormGird from '../views/FormGird.vue'
+import Rate from '../views/Rate.vue'
+import Textdiff from '../views/Textdiff.vue'
 Vue.use(Router)
 
 const router = new Router({
@@ -62,7 +67,6 @@ const router = new Router({
     { name: 'home', path: '/home', component: Home },
     { name: 'switchs', path: '/switchs', component: Switchs },
     { name: 'typefield', path: '/typefield', component: Typefield },
-    { name: 'waves', path: '/waves', component: Waves },
     {
         name: 'Input',
         path: '/Input',
@@ -289,6 +293,11 @@ const router = new Router({
         component: TreeGird
     },
     {
+        name: 'AsycTreeGird',
+        path: '/asyctreeGird',
+        component: AsycTreeGird
+    },
+    {
         name: 'SelectTable',
         path: '/selectTable',
         component: SelectTable
@@ -312,6 +321,31 @@ const router = new Router({
         name: 'Hello',
         path: '/hello',
         component: Hello
+    },
+    {
+        name: 'SimpleTable',
+        path: '/simpleTable',
+        component: SimpleTable
+    },
+    {
+        name: 'TransferTable',
+        path: '/transferTable',
+        component: TransferTable
+    },
+    {
+        name:'FormGird',
+        path:'/formGird',
+        component:FormGird
+    },
+    {
+        name:'Rate',
+        path:'/rate',
+        component:Rate
+    },
+    {
+        name: 'Textdiff',
+        path: '/textdiff',
+        component: Textdiff
     }
  ]
 })

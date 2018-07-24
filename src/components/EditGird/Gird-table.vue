@@ -3,6 +3,7 @@
     <div :class="classes">
       <div :class="[prefixCls + '-header']" v-if="showHeader" ref="header" @mousewheel="handleMouseWheel">
         <gird-head
+          ref="thead"
           :prefix-cls="prefixCls"
           :styleObject="tableStyle"
           :columns="cloneColumns"
@@ -11,7 +12,7 @@
           :data="rebuildData"
           ></gird-head>
       </div>
-      <div :class="[prefixCls + '-body']" :style="bodyStyle" ref="body" @scroll="handleBodyScroll"
+      <div :class="[prefixCls + '-body']" :style="bodyStyle" ref="body" @scroll="handleBodyScroll" @click="handlerClick"
         v-show="!((!!localeNoDataText && (!data || data.length === 0)) || ((!rebuildData || rebuildData.length === 0)))">
         <gird-body
           ref="tbody"
@@ -37,12 +38,14 @@
           ></gird-body>
       </div>
       <div :class="[prefixCls + '-tip']"
-        v-show="((!!localeNoDataText && (!data || data.length === 0)) || (!rebuildData || rebuildData.length === 0))">
-        <table cellspacing="0" cellpadding="0" border="0">
+        v-show="((!!localeNoDataText && (!data || data.length === 0)) || (!rebuildData || rebuildData.length === 0))" @scroll="handleBodyScroll" :style="bodyStyle">
+        <div class="h-table-tiptext" :style="textStyle" >
+          <span v-html="localeNoDataText" v-if="!data || data.length === 0"></span>
+        </div>
+        <table cellspacing="0" cellpadding="0" border="0" :style="tipStyle">
           <tbody>
             <tr>
               <td :style="{ 'height': bodyStyle.height }">
-                <span v-html="localeNoDataText" v-if="!data || data.length === 0"></span>
               </td>
             </tr>
           </tbody>
@@ -62,6 +65,7 @@ import GirdHead from './Gird-head.vue';
 import GirdBody from './Gird-body.vue';
 import Spin from '../Spin/Spin.vue';
 import Mixin from './mixin';
+import Emitter from '../../mixins/emitter'
 import { oneOf, getStyle, deepCopy, getScrollBarSize,getBarBottom,findInx} from '../../util/tools';
 import { on, off } from '../../util/dom';
 import Locale from '../../mixins/locale';
@@ -73,7 +77,7 @@ let columnKey = 1;
 
 export default {
   name: 'EditGird',
-  mixins: [ Locale,Mixin ],
+  mixins: [ Locale,Mixin,Emitter],
   components: { GirdHead, GirdBody },
   props: {
     typeName:{
@@ -188,6 +192,7 @@ export default {
       selectType:false,
       options:this.option,
       treeOptions:this.treeOption,
+      canVisible:true,
     };
   },
   computed: {
@@ -208,6 +213,22 @@ export default {
           [`${prefixCls}-hide`]: !this.ready,
         }
       ];
+    },
+    textStyle(){
+      let style = {};
+      style.width = this.initWidth!=0?this.initWidth+'px':'100%';
+      const height = (this.isLeftFixed || this.isRightFixed) ? this.bodyHeight + this.scrollBarWidth : this.bodyHeight;
+      style.height = this.height?Number(height-this.scrollBarWidth)+'px':null;
+      style.lineHeight = this.height?Number(height-this.scrollBarWidth)+'px':null;
+      return style;
+    },
+    tipStyle () {
+      let style = {};
+      if (this.tableWidth !== 0) {
+        let width = this.tableWidth;
+        style.width = `${width}px`;
+      }
+      return style;
     },
     classes () {
       return [
@@ -244,7 +265,7 @@ export default {
         if (this.bodyHeight === 0) {
           width = this.tableWidth;
         } else {
-          if (this.bodyHeight > this.bodyRealHeight) {
+          if (this.bodyHeight > this.bodyRealHeight && this.data.length>0) {
             width = this.tableWidth;
           } else {
             width = this.tableWidth - this.scrollBarWidth;
@@ -307,6 +328,28 @@ export default {
 
               this.cloneColumns[i]._width = width||'';
 
+              columnsWidth[column._index] = {
+                  width: width
+              };
+            }
+            this.columnsWidth = columnsWidth;
+          }else{
+            if (!this.$refs.thead) return;
+            const $th = this.$refs.thead.$el.querySelectorAll('thead tr')[0].querySelectorAll('th');
+            for (let i = 0; i < $th.length; i++) {    // can not use forEach in Firefox
+              const column = this.cloneColumns[i]; 
+              let width = parseInt(getStyle($th[i], 'width'));
+              if (i === autoWidthIndex) {
+                width = parseInt(getStyle($th[i], 'width')) - 1;
+              }
+             // 自适应列在表格宽度较小时显示异常，为自适应列设置最小宽度100（拖拽后除外）
+              if (column.width) {
+                  width = column.width||'';
+              } else {
+                  if (width < 100) width = 100;
+              }
+              this.cloneColumns[i]._width = width||'';
+              this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b);
               columnsWidth[column._index] = {
                   width: width
               };
@@ -401,12 +444,12 @@ export default {
       }
       this.$emit('on-row-dblclick', JSON.parse(JSON.stringify(this.cloneData[_index])));
     },
-    getSelection () {
+    getSelection (str) {
       let selectionIndexes = [];
       for (let i in this.objData) {
         if (this.objData[i]._isChecked) selectionIndexes.push(parseInt(i));
       }
-      return JSON.parse(JSON.stringify(this.cloneData.filter((data, index) => selectionIndexes.indexOf(index) > -1)));
+      return str!='transfer'?JSON.parse(JSON.stringify(this.cloneData.filter((data, index) => selectionIndexes.indexOf(index) > -1))):selectionIndexes;
     },
     getGroupSelection(){
       var _this =this;
@@ -467,7 +510,6 @@ export default {
             }
         }
         const status = !data._isChecked;
-
         _this.objData[_index]._isChecked = status;
 
         const selection = this.getSelection();
@@ -529,6 +571,10 @@ export default {
         }
     },
     handleBodyScroll (event) {
+      if (this.canVisible) {
+        this.broadcast('GirdCell', 'close-visible');
+        this.canVisible = false;
+      }
       let _this = this;
       let buttomNum = getBarBottom(event.target,this.scrollBarWidth);
       this.$emit('on-scroll',buttomNum)
@@ -556,6 +602,9 @@ export default {
           }        
         }
       }
+    },
+    handlerClick(){
+      this.canVisible=true;
     },
     handleMouseWheel (event) {
         const deltaX = event.deltaX;

@@ -72,6 +72,13 @@ export default {
             notFoundText: '列表爲空',
             notFoundData: '無匹配數據'
         },
+        transferTable: {
+            lTitle: '源列表',
+            rTitle: '目的列表',
+            filterPlaceholder: '請輸入搜索內容',
+            notFoundText: '列表爲空',
+            notFoundData: '無匹配數據'
+        },
         modal: {
             okText: '確定',
             cancelText: '取消'

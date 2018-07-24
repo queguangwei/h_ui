@@ -45,7 +45,7 @@
         ref="dropdown"
         v-transfer-dom>
         <!--  <ul v-show="notFountShow" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul> -->
-        <div :class="[prefixCls + '-dropdown-content']" ref="content">
+        <div :class="[prefixCls + '-dropdown-content']" ref="content" @click="handleclick">
           <div :class="searchClass" ref='search' v-if="filterable && showBottom">
             <input
                 type="text"
@@ -63,7 +63,7 @@
                 ref="input">
           </div>
           <div class="h-selectTree-dropdown-list" ref="list" :style="listStyle"> 
-            <Tree ref="tree" :data="baseDate" :show-checkbox="showCheckbox" :multiple="multiple" :checkStrictly="checkStrictly" :showIndeterminate="showIndeterminate" @on-select-change="selectChange" @on-check-change="checkChange" @on-toggle-expand="toggleExpand" v-show="remote && !loading || !remote">
+            <Tree ref="tree" :data="baseDate" :show-checkbox="showCheckbox" :multiple="multiple" :checkStrictly="checkStrictly" :showIndeterminate="!checkIndeter" @on-select-change="selectChange" @on-check-change="checkChange" @on-toggle-expand="toggleExpand" v-show="remote && !loading || !remote">
             
           </Tree>
           </div>
@@ -209,6 +209,10 @@
       onlyChild:{
         type:Boolean,
         default:false,
+      },
+      checkIndeter:{//显示半选中状态，并选中
+        type:Boolean,
+        default:false
       }
     },
     data(){
@@ -335,6 +339,9 @@
       }
     },
     methods:{
+      handleclick(e){
+        e.stopPropagation();
+      },
       keyup(event){
         if (this.disabled || this.readonly||!this.editable) {
           return false;
@@ -419,17 +426,21 @@
               arr.push(item.title);
               arrModel.push(item[strModel]);
             }
-          }else{
+          }else {
             arr.push(item.title);
             arrModel.push(item[strModel]);
           }
-        })
+        });
+        if(this.checkIndeter && !this.checkStrictly){
+          let interArr = this.$refs.tree.getIndeterminateNodes();
+          interArr.forEach((ite)=>{
+            arr.push(ite.title);
+            arrModel.push(ite[strModel]);
+          })
+        }
         this.model=arrModel;
         this.selectedMultiple=arr;
         this.$emit('on-check-change', val);
-        // this.$nextTick(()=>{
-        //   this.offsetArrow();
-        // });
       },
       toggleExpand(val){
         this.$emit('on-toggle-expand', val);
@@ -469,8 +480,7 @@
           });
         }
       },
-      handleFocus(){
-        // this.query = '';
+      handleFocus(e){
       },
       handleBlur () {
       },
@@ -552,8 +562,10 @@
         let _this = this;
         function findDown(tdata,curValue){
           tdata.forEach((item)=>{
-            if (item[_this.formatValue] == curValue) {
+            if (typeOf(curValue) == 'string'&&item[_this.formatValue] == curValue) {
               _this.$set(item,'selected',true);
+            }else if(typeOf(curValue) == 'array'&&curValue.indexOf(item[_this.formatValue])!=-1){
+              _this.$set(item,'checked',true);
             }else{
               _this.$set(item,'selected',false);
               _this.$set(item,'checked',false);
@@ -565,8 +577,12 @@
         }
         findDown(data,value);
         this.$nextTick(()=>{
-          let tree = this.$refs.tree;     
-          this.selectChange(tree.getSelectedNodes());
+          let tree = this.$refs.tree;   
+          if (typeOf(value) == 'string') {
+            this.selectChange(tree.getSelectedNodes());
+          }else{
+            this.checkChange(tree.getCheckedNodes());
+          }  
         });
       },
       expandLevels(data){

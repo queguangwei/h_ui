@@ -5,6 +5,7 @@
       <Checkbox size="large" :value="checked" @click.native.stop="handleClick" @on-change="toggleSelect" :disabled="disabled"></Checkbox>
 <!--       <input type="checkbox" v-model="tChecked" @click.native.stop="handleClick" @change="toggleSelect" :disabled="disabled"> -->
     </template>
+    <template v-if="renderType === 'text'" ><span>{{row[column.key]}}</span></template>
     <template v-if="renderType === 'normal'" ><span v-html="row[column.key]"></span><!-- {{row[column.key]}} --></template>
     <template v-if="renderType === 'expand' && !row._disableExpand">
       <div :class="expandCls" @click="toggleExpand">
@@ -99,7 +100,9 @@ export default {
           this.renderType = 'expand';
       } else if (this.column.render) {
           this.renderType = 'render';
-      } else {
+      } else if(this.column.type === 'text'){
+          this.renderType = 'text';
+      }else{
           this.renderType = 'normal';
       }
   },

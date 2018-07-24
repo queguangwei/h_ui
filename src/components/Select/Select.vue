@@ -1,6 +1,7 @@
 <template>
   <div :class="classes" v-clickoutside="handleClose" :style="multiplestyle" ref="select">
     <div
+      :title="titleTip"
       :class="selectionCls"
       ref="reference"
       :tabindex="tabIndex" 
@@ -43,7 +44,7 @@
         :data-transfer="transfer" 
         ref="dropdown"
         v-transfer-dom>
-        <div :class="content" @scroll="handleSelectScroll">
+        <div :class="content" @scroll="handleSelectScroll" ref="content" @click="handleclick">
           <span v-if="filterable && showBottom" :class="checkHeadClass">
             <Checkbox v-model="selectHead" v-if="checkToHead&&multiple"></Checkbox>
             <input
@@ -79,7 +80,7 @@
   import clickoutside from '../../directives/clickoutside';
   import TransferDom from '../../directives/transfer-dom';
   import Checkbox from '../Checkbox/Checkbox.vue';
-  import { oneOf, findComponentChildren, getScrollBarSize, getStyle,getBarBottom } from '../../util/tools';
+  import { oneOf, findComponentChildren, getScrollBarSize, getStyle,getBarBottom,scrollAnimate} from '../../util/tools';
   import Emitter from '../../mixins/emitter';
   import Locale from '../../mixins/locale';
   const prefixCls = 'h-select';
@@ -215,6 +216,10 @@
       checkToHead:{//只在多选且筛选框下有效
         type:Boolean,
         default:false,        
+      },
+      showTitle:{
+        type:Boolean,
+        default:false,
       }
     },
     data () {
@@ -240,6 +245,7 @@
         isfirstSelect: false,
         tabIndex:0,
         selectHead:false,
+        titleTip:'',
       };
     },
     computed: {
@@ -371,6 +377,9 @@
       }, 
     },
     methods: {
+      handleclick(e){
+        e.stopPropagation();
+      },
       keyup(event){
         if (event.keyCode == 9) {
           if (this.disabled || this.readonly||!this.editable) {
@@ -514,17 +523,18 @@
       },
       clearSingleSelect () {
         if (this.readobly || !this.editable) return false;
-          if (this.showCloseIcon) {
-              this.findChild((child) => {
-                  child.selected = false;
-              });
-              this.model = '';
+        if (this.showCloseIcon) {
+            this.findChild((child) => {
+                child.selected = false;
+            });
+            this.model = '';
 
-              if (this.filterable && !this.showBottom) {
-                  this.query = '';
-              }
-              this.hideMenu();
-          }
+            if (this.filterable && !this.showBottom) {
+                this.query = '';
+            }
+            this.hideMenu();
+            this.titleTip='';
+        }
       },
       updateMultipleSelected (init = false, slot = false) {
         if (this.multiple && Array.isArray(this.model)) {
@@ -694,6 +704,7 @@
         }
       },
       navigateOptions (direction) {
+        let curTop = this.$refs.content.scrollTop;
           if (direction === 'next') {
               const next = this.focusIndex + 1;
               this.focusIndex = (this.focusIndex === this.options.length) ? 1 : next;
@@ -725,7 +736,8 @@
                   find_deep = true;
               }
           });
-
+          let top = 32*(this.focusIndex-1);
+          scrollAnimate(this.$refs.content,curTop,top);
           this.resetScrollTop();
 
           if ((child_status.disabled || child_status.hidden) && find_deep) {
@@ -970,10 +982,17 @@
           this.currentLabel = val;
           this.updateLabel();
       },
-      selectedMultiple (){
+      selectedMultiple (val){
         this.$nextTick(()=>{
           this.offsetArrow();
         })
+        if (val.length>0&&this.showTitle) {
+          let labelarr=[]
+          val.forEach((item)=>{
+            labelarr.push(item.label);
+          })
+          this.titleTip = labelarr.join(',');
+        }
       },
       model () {
         let backModel = this.arrtoStr(this.model);
@@ -1070,8 +1089,11 @@
         this.selectToChangeQuery = false;
         this.broadcast('Drop', 'on-update-popper');
       },
-      selectedSingle(){
+      selectedSingle(val){
         this.hideMenu();
+        if (val&&this.showTitle) {
+          this.titleTip=val
+        }
       },
       options(val){
         if (val.length!=0 && this.isfirstSelect) {

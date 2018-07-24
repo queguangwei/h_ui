@@ -18,7 +18,9 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
   &-hide{
     opacity: 0;
   }
-
+  &-tip{
+    overflow:auto;
+  }
   &:before{
     content: '';
     width: 100%;
@@ -286,5 +288,8 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
       }
     }
   }
+}
+.dbClass{
+  min-height:18px;
 }
 

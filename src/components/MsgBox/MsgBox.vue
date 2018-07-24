@@ -180,9 +180,9 @@ export default {
   },
   methods: {
     close () {
-      this.visible = false;
       this.$emit('input', false);
       this.$emit('on-close');
+      this.visible = false;
     },
     mask () {
       if (this.maskClosable) {

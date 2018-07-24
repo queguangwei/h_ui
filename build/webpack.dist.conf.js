@@ -59,10 +59,11 @@ module.exports = {
   },
   externals: {
     vue: {
-      root: 'Vue',
-      commonjs: 'Vue',
-      commonjs2: 'Vue',
-      amd: 'Vue'
+      global: 'Vue', //外部 library 能够作为全局变量使用。用户可以通过在 script 标签中引入来实现。
+      root: 'Vue',//如果库运行在Node.js环境中
+      commonjs: 'vue',//如果运行在Node.js环境中
+      commonjs2: 'vue',//如果运行在Node.js环境中
+      amd: 'vue' //如果使用require.js等加载
     }
   },
   plugins: [

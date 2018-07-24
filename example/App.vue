@@ -76,6 +76,9 @@
       <li>
         <router-link to="/form">Form</router-link>
       </li>
+      <li>
+        <router-link to="/formGird">FormGird</router-link>
+      </li>
       </br>
       <span>视图组件</span>
       <li>
@@ -174,6 +177,20 @@
       <li>
         <router-link to="/treeGird">TreeGird</router-link>
       </li>
+      <li>
+        <router-link to="/simpleTable">SimpleTable</router-link>
+      </li>
+      <li>
+        <router-link to="/transferTable">TransferTable</router-link>
+      </li>
+      <li>
+        <router-link to="/asyctreeGird">AsycTreeGird</router-link>
+      </li>
+       <br>
+      <span>特殊</span>
+      <li>
+        <router-link to="/textdiff">Textdiff</router-link>
+      </li>
     </ul>
     <div>
       <router-view></router-view>
@@ -195,6 +212,19 @@ export default {
   
 }
 </script>
+<style type="text/css">
+  /*body{
+    overflow: hidden !important;
+  }
+  #app{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+  }*/
+</style>
 <style scoped>
 #app ul {
   border-bottom: solid 1px #eee;

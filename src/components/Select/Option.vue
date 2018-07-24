@@ -1,6 +1,6 @@
 <template>
   <li :class="classes" @click.stop="select" @mouseout.stop="blur" v-show="!hidden">
-    <checkbox v-show="multiple" v-model="selected" :disabled="disabled" @on-change="checkChange"></checkbox>
+    <checkbox v-show="multiple" v-model="selected" @click.native.stop="handleclick" :disabled="disabled" @on-change="checkChange"></checkbox>
     <slot>{{ showLabel }}</slot>
   </li>
 </template>
@@ -55,7 +55,7 @@
     },
     methods: {
       select () {
-        if (this.disabled||this.multiple) {
+        if (this.disabled) {
           return false;
         }
         this.dispatch('Select', 'on-select-selected', this.value);
@@ -69,6 +69,8 @@
       queryChange (val) {
         const parsedQuery = val.replace(/(\^|\(|\)|\[|\]|\$|\*|\+|\.|\?|\\|\{|\}|\|)/g, '\\$1');
         this.hidden = !new RegExp(parsedQuery, 'i').test(this.searchLabel);
+      },
+      handleclick(){ 
       }
     },
     mounted () {
