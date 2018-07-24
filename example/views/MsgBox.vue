@@ -433,7 +433,11 @@
     watch:{
       showModal2(val){
         if (val) {
-          this.$refs.select.focus();
+          // this.$refs.select.focus();
+          this.options=[{
+                value: 'beijing',
+                label: '北京市'
+            }]
         }
       }
     }

@@ -102,6 +102,8 @@
               :disabled="rowDisabled(row._index)"
               :expanded="rowExpanded(row._index)"
               :showEditInput="showEditInput"
+              :option="option[inx]"
+              :treeOption="treeOption[inx]"
             >
               <span v-if="inx==(columns[0].type=='index'?1:0)">
                 <Icon name = "play_fill" :class="iconClass(row._index)" v-if="row.children && row.children.length!=0" @on-click="toggleExpand(row._index,$event)"></Icon>
@@ -121,6 +123,8 @@
           :typeName = "typeName"
           :columns = "columns"
           :showEditInput="showEditInput"
+          :option="option[inx]"
+          :treeOption="treeOption[inx]"
           :isCheckbox="isCheckbox">
         </Tree-table>
         </collapse-transition>

@@ -1,7 +1,7 @@
 <template>
   <!-- :tabindex="row._rowKey+column._columnKey" -->
   <div :class="classes" ref="cell" v-clickoutside="handleClose">
-    <div :style="renderSty" @dblclick="dblclickCurrentCell($event)">
+    <div :style="renderSty" @dblclick="dblclickCurrentCell($event)" class="dbClass">
       <template v-if="showSlot"><slot></slot></template>
       <template v-if="renderType === 'index'">
         <span v-if="typeName!='treeGird'">{{naturalIndex + 1}}</span>
@@ -38,6 +38,7 @@
       </template>
       <template v-if="renderType === 'select'">
         <Select v-model="columnSelect"  
+          ref="select"
           :placeholder="column.placeholder"
           :not-found-text ="column.notFoundText"
           :multiple="column.multiple||false" 
@@ -54,6 +55,7 @@
       </template>
       <template v-if="renderType === 'date'">
         <Date v-model="columnDate" 
+        ref="date"
         :type="column.dateType||'date'" 
         :format="column.format||'yyyy-MM-dd'" 
         :placeholder="column.placeholder"
@@ -63,6 +65,7 @@
       </template>
       <template v-if="renderType === 'time'">
         <Time v-model="columnTime" 
+        ref="time"
         :type="column.timeType||'time'" 
         :format="column.format||'yyyy-MM-dd'" 
         :placeholder="column.placeholder"
@@ -72,6 +75,7 @@
       </template>
       <template v-if="renderType === 'selectTree'">
         <SelectTree v-model="columnTree"
+          ref="tree"
           :firstValue = "firstTreeValue"
           :data="baseData" 
           :placeholder="column.placeholder"
@@ -92,7 +96,7 @@
     <Cell
       v-if="render&&renderType != 'expand'"
       :row="row"
-      :column="column"s
+      :column="column"
       :index="index"
       :render="column.render"></Cell>
     <transition name="fade">
@@ -260,6 +264,7 @@ export default {
             break;
           case 'selectTree':
             this.normalDate = this.columnTree;
+            if (!_parent.cloneData[this.index]) return;
             _parent.cloneData[this.index][this.column.key] = this.columnTree;
             break;    
         }
@@ -330,6 +335,13 @@ export default {
     },
     editAreaBlur(){
       this.$emit('on-editarea-blur',this.columnArea,this.columnIndex,this.index);
+    },
+    setvisible(){
+      ['select','date','time','tree'].forEach((item)=>{
+        if (this.$refs[item] && this.$refs[item].visible) {
+          this.$refs[item].visible = false;
+        }
+      })
     }
   },
   watch: {
@@ -396,6 +408,9 @@ export default {
   },
   mounted(){
     this.rule = this.column.rule;
+    this.$on('close-visible',()=>{
+     this.setvisible();
+    })
   },
 };
 </script>

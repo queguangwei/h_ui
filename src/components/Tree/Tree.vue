@@ -179,6 +179,9 @@
       getAutoLoadNodes () {
         return this.flatState.filter(obj => obj.node.autoLoad).map(obj => obj.node);
       },
+      getIndeterminateNodes (){
+        return this.flatState.filter(obj => obj.node.indeterminate).map(obj => obj.node);
+      },
       updateTreeDown(node, changes = {}) {
         for (let key in changes) {
           this.$set(node, key, changes[key]);

@@ -23,15 +23,16 @@
     {{val}}
     {{valc}}
     <br><br><br>
-          12334
-    <h-select-tree v-model="val1" style="width:200px" :data="baseData3" showCheckbox checkStrictly @on-check-change="selectChange" isString expanLevel=1></h-select-tree>
+    <h2>showCheckbox表示多选默认不显示半选中状态</h2>
+    <h-select-tree v-model="val1" style="width:200px" :data="baseData3" showCheckbox checkStrictly @on-check-change="selectChange" isString expanLevel=1  :firstValue="firstVal1"></h-select-tree>
     {{val1}}
-    <h-select-tree v-model="val2" onlyChild style="width:200px" :data="baseData" showCheckbox isString ></h-select-tree>
+    <h-select-tree v-model="val2" style="width:200px" :firstValue="firstVal2" :data="baseData" showCheckbox isString 
+    checkIndeter></h-select-tree>
     {{val2}}
     <h-select-tree v-model="val4" :data="baseData" showCheckbox disabled></h-select-tree>
     <br><br><br>
     {{val4}}
-    <h-select-tree v-model="val5" style="width:200px" :data="baseData3" showCheckbox checkStrictly></h-select-tree>
+    <h-select-tree v-model="val5" style="width:200px" :data="baseData3" :first-value="firstVal5" showCheckbox checkStrictly></h-select-tree>
     {{val5}}
     <h2>输入框在上搜索</h2>
     <h-select-tree v-model="val3" style="width:200px" :data="baseData4" filterable></h-select-tree>
@@ -41,14 +42,14 @@
     <h-select-tree v-model="val7" style="width:200px" :data="baseData5" showCheckbox filterable></h-select-tree>
     {{val7}}
     <h2>输入框在下搜索</h2>
-    <h-select-tree v-model="val31" style="width:200px" :data="baseData4" filterable showBottom searchHolder="123"></h-select-tree>
+    <h-select-tree v-model="val31" style="width:200px" :data="baseData4" filterable showBottom searchHolder="123" transfer></h-select-tree>
     {{val3}}
-    <h-select-tree v-model="val61" style="width:200px" :data="baseData5" showCheckbox checkStrictly filterable showBottom></h-select-tree>
+    <h-select-tree v-model="val61" style="width:200px" :data="baseData5" showCheckbox checkStrictly filterable showBottom transfer></h-select-tree>
     {{val6}}
     <h-select-tree v-model="val71" style="width:200px" :data="baseData5" showCheckbox filterable showBottom></h-select-tree>
     {{val7}}
     <h-msg-box v-model="showBox">
-       <h-select-tree v-model="val" :first-value="firstVal" style="width:200px" :data="baseData2" size="large" @on-select-change="selectChange" @on-toggle-expand="selectChange" format-value="id"></h-select-tree>
+      <h-select-tree v-model="val" :first-value="firstVal" style="width:200px" :data="baseData2" size="large" @on-select-change="selectChange" @on-toggle-expand="selectChange" format-value="id"></h-select-tree>
     </h-msg-box>
 
   </div>
@@ -64,10 +65,13 @@
         firstValc: 'parent',
         val1:[],
         val2:[],
+        firstVal2:['child1'],
+        firstVal1:['leaf1','leaf2'],
         val3:'',
         val31:'',
         val4:[],
         val5:[],
+        firstVal5:["parent 1-0", "leaf"],
         val6:[],
         val61:[],
         val7:[],
@@ -138,14 +142,12 @@
                 title: 'leaf',
                 disableCheckbox: true
               }, {
-                title: 'leaf',
+                title: 'leaf1',
               }]
             }, {
               title: 'parent 1-1',
-
-              checked: true,
               children: [{
-                title: 'leaf',
+                title: 'leaf2',
               }]
             }]
         }],

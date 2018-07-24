@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- <h-msg-box v-model="changeform" width="900"> -->
-      <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus cols="2">
+      <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus cols="3">
         <h-form-item label="输入框" prop="input" required>
           <h-input v-model="formItem1.input" placeholder="请输入"></h-input>
         </h-form-item>

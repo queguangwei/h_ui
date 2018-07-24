@@ -34,7 +34,7 @@
         <div v-show="showRange" :class="[prefixCls+'-inner-split']">--</div>
         <div v-show="showRange" :class="classRange" @click="handleRangeClick" @keydown="changeFocus($event,true)" ref="range">
           <span>
-            <DateInput  ref="year1" type="year" v-model="year1" @focus="rangeSelect" :readonly="readonly" :disabled="disabled" @blur="editBlur($event,'year',true)" :style="yearStyle" :class="yearClass" :placeholder="yearPlaceholder"></DateInput>
+            <DateInput  ref="year1" type="year" v-model="year1" @focus="rangeSelect" :readonly="readonly" :disabled="disabled" @blur="editBlur($event,'year',true)" :style="yearStyle1" :class="yearClass" :placeholder="yearPlaceholder"></DateInput>
           </span>
           <span v-show="year1||months1||day1">{{dateSplit}}</span>
           <span v-show="year1||months1||day1">
@@ -154,6 +154,17 @@ export default {
     yearStyle(){
       let style={}
       if (!this.year&&!this.months&&!this.day) {
+        this.yearPlaceholder = this.placeholder;
+        style.width='120px';
+      }else{
+        this.yearPlaceholder='';
+        style.width='32px';
+      }
+      return style;
+    },
+    yearStyle1(){
+      let style={}
+      if (!this.year1&&!this.months1&&!this.day1) {
         this.yearPlaceholder = this.placeholder;
         style.width='120px';
       }else{
@@ -450,6 +461,17 @@ export default {
     focus(){
       this.opened = true;
       this.$refs.year.focus();
+    },
+    isClear(){
+      if (this.type!='daterange') {
+        if (!this.year&&!this.months&&!this.day) {
+          this.inputValue = '';
+        }
+      }else{
+        if (!this.year&&!this.months&&!this.day&&!this.year1&&!this.months1&&!this.day1) {
+          this.inputValue = ['',''];
+        }
+      }
     }
   },
   watch:{
@@ -457,10 +479,24 @@ export default {
       this.$emit('on-open-change',val);
     },
     year(val){
+      this.isClear();
       this.yearInput(val)
     },
     year1(val){
+      this.isClear();
       this.yearInput(val,true)
+    },
+    months(){
+      this.isClear();
+    },
+    months1(){
+      this.isClear();
+    },
+    day(){
+      this.isClear();
+    },
+    day1(){
+      this.isClear();
     },
     inputValue(val){
       this.$emit('input',val);
@@ -476,17 +512,17 @@ export default {
         this.setDate(this.value);
       }
     },
-    yorMethods(){
-      let _this = this;
-      _this.dateArr.forEach((col,i)=>{
-        let obj={
-          renderHeader:(h,params)=>{
-            return h('td',_this.dateArr[i])
-          }
-        };
-        _this.columns[i]=obj;
-      })
-    }
+    // yorMethods(){
+    //   let _this = this;
+    //   _this.dateArr.forEach((col,i)=>{
+    //     let obj={
+    //       renderHeader:(h,params)=>{
+    //         return h('td',_this.dateArr[i])
+    //       }
+    //     };
+    //     _this.columns[i]=obj;
+    //   })
+    // }
   },
   mounted(){
     if (this.format) {
