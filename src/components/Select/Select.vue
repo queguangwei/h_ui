@@ -4,14 +4,14 @@
       :title="titleTip"
       :class="selectionCls"
       ref="reference"
-      :tabindex="tabIndex" 
-      @click="toggleMenu" 
-      @keyup="keyup" 
+      :tabindex="tabIndex"
+      @click="toggleMenu"
+      @keyup="keyup"
       @keydown="keydown">
       <!-- 多选时输入框内选中值模拟 -->
       <div class="h-tag" v-for="(item, index) in selectedMultiple">
         <span class="h-tag-text">{{ item.label }}</span>
-        <Icon name="close" @click.native.stop="removeTag(index)"></Icon> 
+        <Icon name="close" @click.native.stop="removeTag(index)"></Icon>
       </div>
         <!-- 下拉输入框模拟（非远程搜索时渲染）  -->
       <span :class="[prefixCls + '-placeholder']" v-show="showPlaceholder && (!filterable || showBottom)">{{ localePlaceholder }}</span>
@@ -29,19 +29,19 @@
         @blur="handleBlur"
         @keydown="resetInputState"
         @keydown.delete="handleInputDelete"
-        tabindex="-1" 
+        tabindex="-1"
         ref="input">
       <!-- 单选时清空按钮 -->
       <Icon name="close" :class="[prefixCls + '-arrow']" v-if="showCloseIcon" @click.native.stop="clearSingleSelect"></Icon>
       <Icon name="arrowdownb" :class="[prefixCls + '-arrow']" v-if="!remote && isArrow" ref="arrowb"></Icon>
     </div>
     <transition :name="transitionName">
-      <Drop 
+      <Drop
         :class="dropdownCls"
-        v-show="dropVisible" 
+        v-show="dropVisible"
         :dropWidth="dropWidth"
         :placement="placement"
-        :data-transfer="transfer" 
+        :data-transfer="transfer"
         ref="dropdown"
         v-transfer-dom>
         <div :class="content" @scroll="handleSelectScroll" ref="content" @click="handleclick">
@@ -57,13 +57,13 @@
               @blur="handleBlur"
               @keydown="resetInputState"
               @keydown.delete="handleInputDelete"
-              tabindex="-1" 
+              tabindex="-1"
               ref="input">
           </span>
           <ul v-show="notFoundShow" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul>
           <ul v-show="(!notFound && !remote) || (remote && !loading && !notFound)" :class="[prefixCls + '-dropdown-list']"><slot></slot></ul>
           <ul v-show="loading" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
-          <ul v-show="isComputed" :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>          
+          <ul v-show="isComputed" :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>
         </div>
         <div v-if="isCheckall&&multiple&&!notFoundShow" :class="checkAll">
           <Button size="small" @click="toggleSelect(false)">全不选</Button>
@@ -215,7 +215,7 @@
       },
       checkToHead:{//只在多选且筛选框下有效
         type:Boolean,
-        default:false,        
+        default:false,
       },
       showTitle:{
         type:Boolean,
@@ -228,7 +228,7 @@
         visible: false,
         options: [],
         optionInstances: [],
-        selectedSingle: '',  
+        selectedSingle: '',
         selectedMultiple: [],
         focusIndex: 0,
         query: '',
@@ -355,11 +355,11 @@
           return this.placement === 'bottom' ? 'slide-up' : 'slide-down';
       },
       dropVisible () {
-        let status = true;         
+        let status = true;
         const options = this.$slots.default || [];
         if (!this.loading && this.remote && this.query === '' && !options.length) status = false;
         return this.visible && status;
-      },    
+      },
       multiplestyle () {
         return {
             width: `${this.width}px`,
@@ -374,7 +374,7 @@
         let state= (this.notFound && !this.remote) || (this.remote && !this.loading && !options.length)||(!this.remote&&!options.length);
         return state;
 
-      }, 
+      },
     },
     methods: {
       handleclick(e){
@@ -479,14 +479,12 @@
       updateOptions (init, slot = false) {
           let options = [];
           let index = 1;
-          
           this.findChild((child) => {
               options.push({
                 value: child.value,
-                label: (child.label === undefined) ? child.$el.innerHTML.slice(Number(child.$el.innerHTML.indexOf('</label>')+8)) : child.label
+                label: (child.label === undefined) ? child.$el.innerText.replace(/\s*\w{4,5} /, '') : child.label
               });
               child.index = index++;
-
               if (init) {
                   this.optionInstances.push(child);
               }
@@ -506,7 +504,7 @@
 
               for (let i = 0; i < this.options.length; i++) {
                   if (this.model === this.options[i].value) {
-                      
+
                       this.selectedSingle = this.options[i].label;
                       findModel = true;
                       break;
@@ -665,7 +663,7 @@
           if (this.isInputFocus) {
             if (this.multiple) {
             // 多选返回数组
-            this.dispatch('FormItem', 'on-form-blur', this.selectedMultiple)          
+            this.dispatch('FormItem', 'on-form-blur', this.selectedMultiple)
             } else {
             // 单选返回字符串
             this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
@@ -718,7 +716,7 @@
               hidden: false
           };
 
-          let find_deep = false; 
+          let find_deep = false;
 
           this.findChild((child) => {
               if (child.index === this.focusIndex) {
@@ -860,12 +858,12 @@
             return '';
           }else{
             return val.join(',');
-          } 
+          }
         }else{
           return val;
         }
       },
-      
+
     },
     mounted () {
       if (!this.multiple && this.setDefSelect && this.value == ''){
@@ -1112,7 +1110,7 @@
         }
       },
       selectHead(val){
-        this.toggleSelect(val);        
+        this.toggleSelect(val);
       }
     }
   };
