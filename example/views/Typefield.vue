@@ -4,12 +4,16 @@
     <h1>金额</h1>
     <h2>基本用法</h2>
     <h1>algin设置左中右</h1>    
+      {{value11}}
       <h-typefield v-model="value11" integerNum="7" suffixNum="1" type="money" placeholder="金额" bigTips @on-blur="s" style="width:300px" algin="left" ref="test"></h-typefield>
       <Button @on-click="testClick(true)">获取焦点</Button>
       <Button @on-click="testClick(false)">失去焦点</Button>
+      {{value12}}
       <h-typefield v-model="value12" integerNum="7" suffixNum="1" type="money" placeholder="金额" bigTips @on-blur="s" style="width:300px" algin="center"></h-typefield>
+      {{value13}}
       <h-typefield v-model="value13" integerNum="7" suffixNum="1" type="money" placeholder="金额" bigTips @on-blur="s" style="width:300px" algin="right"></h-typefield>
     <h1>divided 和 isround设置四舍五入 整数位7位，小数位3为</h1>
+    {{value0}}
       <h-typefield v-model="value0" integerNum="7" suffixNum="3" bigTips @on-blur="s" style="width:300px" isround>
         <h-select v-model="select1" slot="prepend" style="width: 80px">
           <h-option value="http">http://</h-option>
@@ -21,6 +25,7 @@
           <h-option value="io">.io</h-option>
         </h-select>
       </h-typefield>
+      {{value00}}
       <h-typefield v-model="value00" integerNum="7" suffixNum="3" bigTips @on-blur="s" divided style="width:300px">
       </h-typefield>
       <h-typefield v-model="value000" integerNum="7" suffixNum="3" bigTips @on-blur="s" divided isround style="width:300px">

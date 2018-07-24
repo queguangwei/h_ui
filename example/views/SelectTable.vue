@@ -41,7 +41,7 @@
   {{model5}}
   <h1>筛选框在下</h1>
   <h2>模糊多列匹配</h2>
-  <h-select-table v-model="model6" :filterable="true" showBottom matchable :matchCol="matchCol" :multiple="true" isCheckall searchHolder="123" checkToHead>
+  <h-select-table v-model="model6" :filterable="true" showBottom matchable :matchCol="matchCol" :multiple="true" isCheckall searchHolder="123" checkToHead transfer>
     <h-table-option border :columns="columns1" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange"></h-table-option>
   </h-select-table>
   <h2>左列多列搜索</h2>

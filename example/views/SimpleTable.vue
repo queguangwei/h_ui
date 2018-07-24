@@ -1,0 +1,1481 @@
+<template>
+  <div>
+    <h2>基础</h2>
+    <Button @click="changemsg">显示</Button>
+    <h2>带边线 多选</h2>
+    <h-simple-table :columns="columnsBig" disabled-hover :data="bigData" border stripe @on-select="select" @on-select-cancel="select" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="500" @on-select-all='change' @on-scroll="change" @on-selection-change="change" width="1200" :canDrag="false">
+      <span slot="loading">我是自定义加载！！！</span>
+    </h-simple-table>
+    <h-button @click="setLoading">切换状态</h-button>/
+    <h2>不带边线 单选 on-current-change</h2>
+    <h-simple-table :columns="columnsBig1" :data="bigData" no-data-text="数据为空" :show-header="false" :loading="loading" height="400" :highlight-row="true" @on-current-change="select" on-current-change-cnacle="select">
+    </h-simple-table>
+    <h2>自定义样式</h2>
+    <p>行：通过属性 row-class-name 可以给某一行指定一个样式名称。</p>
+    <p>列：通过给列 columns 设置字段 className 可以给某一列指定一个样式。</p>
+    <p>单元格：通过给数据 data 设置字段 cellClassName 可以给任意一个单元格指定样式。</p>
+    <p>自定义行样式：</p>
+    <h-simple-table :row-class-name="rowClassName" :columns="columns1" :data="data2" :loading="loading" :highlight-row='true' @on-selection-change="change" @on-row-click="change"></h-simple-table>
+    <p>自定义列样式：</p>
+    <h-simple-table :columns="columns9" :data="data2" :loading="loading" @on-row-click="change"></h-simple-table>
+    <p>自定义任意单元格样式：</p>
+    <h-simple-table :columns="columns3" :data="data2" @on-row-click="click1" :loading="loading"></h-simple-table>
+    <h2>固定表头</h2>
+    <p>通过设置属性 height 给表格指定高度后，会自动固定表头。当纵向内容过多时可以使用</p>
+    <h-simple-table height="200" :columns="columns3" :data="data2" border :loading="loading" showTitle></h-simple-table>
+    <h2>单选</h2>
+    <p>通过设置属性 highlight-row，可以选中某一行。</p>
+    <p>给 data 项设置特殊 key _highlight: true 可以默认选中当前项。</p>
+    <h-simple-table highlight-row :columns="columns3" :data="data1" @on-current-change='radioChange' :loading="loading"></h-simple-table>
+    <h2>多选</h2>
+    <p>给 data 项设置特殊 key _checked: true 可以默认选中当前项。</p>
+    <p>给 data 项设置特殊 key _disabled: true 可以禁止选择当前项。</p>
+    <p>@on-select，选中某一项触发，返回值为 selection 和 row，分别为已选项和刚选择的项。</p>
+    <p>@on-select-all，点击全选时触发，返回值为 selection，已选项。</p>
+    <p>@on-selection-change，只要选中项发生变化时就会触发，返回值为 selection，已选项。</p>
+    <h-simple-table border :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading" canMove></h-simple-table>
+    
+    <h2>自定义列模板</h2>
+    <p>通过给 columns 数据的项，设置一个函数 render，可以自定义渲染当前列，包括渲染自定义组件，它基于 Vue 的 Render 函数。</p>
+    <p>render 函数传入两个参数，第一个是 h，第二个是对象，包含 row、column 和 index，分别指当前单元格数据，当前列数据，当前是第几行。</p>
+    <h-simple-table border :columns="columns7" :data="data6" :loading="loading"></h-simple-table>
+    <h2>设置大小</h2>
+    <p>通过设置属性 size 为 large 或 small 可以调整表格尺寸为大或小，默认不填或填写 default 为中。</p>
+    <h-simple-table size="large" :columns="columns1" :data="data1" :loading="loading"></h-simple-table>
+    <h-simple-table size="small" :columns="columns1" :data="data1" :loading="loading"></h-simple-table>
+  </div>
+</template>
+<script>
+import TexpandRow from './Texpand-row.vue'
+let jsonData=[];
+let tData =require('../assets/aa.json'); 
+for (let i = 0; i < 1; i++) {
+      jsonData = jsonData.concat(tData);
+    }
+console.log(jsonData.length);
+export default {
+
+  components:{TexpandRow},
+  data () {
+    return {
+      checked:false,
+      msgbox:false,
+      loading:false,
+      bigData:jsonData,
+      columzns18: [
+         {
+             type: "selection",
+             width: 60,
+             align: "center",
+             fixed: "left",
+         },
+         {
+             title: "名称",
+             key: "name",
+             align: "center",
+             width: 100,
+             fixed: "left",
+             hiddenCol:true,
+         },
+         {
+             title: "展示",
+             key: "show",
+             width: 200,
+             align: "center",
+             sortable: true,
+             filters: [
+               {
+                   label: '大于4000',
+                   value: 1
+               },
+               {
+                   label: '小于4000',
+                   value: 2
+               }
+             ],
+             filterMultiple: false,
+             filterMethod (value, row) {
+                 if (value === 1) {
+                     return row.show > 4000;
+                 } else if (value === 2) {
+                     return row.show < 4000;
+                 }
+             }
+         },
+         {
+             title: "唤醒",
+             key: "weak",
+             width: 150,
+             sortable: true,
+             fixed: "left",
+             sortable: true,
+             filters: [
+               {
+                   label: '大于4000',
+                   value: 1
+               },
+               {
+                   label: '小于4000',
+                   value: 2
+               }
+             ],
+             filterMultiple: false,
+             filterMethod (value, row) {
+                 if (value === 1) {
+                     return row.weak > 4000;
+                 } else if (value === 2) {
+                     return row.weak < 4000;
+                 }
+             }
+         },
+         {
+             title: "登录",
+             key: "signin",
+             width: 150,
+             sortable: true
+         },
+         {
+             title: "点击",
+             key: "click",
+             width: 150,
+             sortable: true
+         },
+         {
+             title: "激活",
+             key: "active",
+             width: 150,
+             sortable: true
+         },
+         {
+             title: "7日留存",
+             key: "day7",
+             width: 150,
+             sortable: true
+         },
+         {
+             title: "30日留存",
+             key: "day30",
+             width: 150,
+             sortable: true
+         },
+         {
+             title: "次日留存",
+             key: "tomorrow",
+             width: 150,
+             sortable: true
+         },
+         {
+             title: "日活跃",
+             key: "day",
+             width: 150,
+             sortable: true
+         },
+         {
+             title: "周活跃",
+             key: "week",
+             width: 150,
+             fixed: "right",
+             sortable: true,
+         },
+         {
+             title: "月活跃",
+             key: "month",
+             fixed: "right",
+             width: 150,             
+             sortable: true,
+             filters: [
+               {
+                   label: '大于4000',
+                   value: 1
+               },
+               {
+                   label: '小于4000',
+                   value: 2
+               }
+             ],
+             filterMultiple: false,
+             filterMethod (value, row) {
+                 if (value === 1) {
+                     return row.month > 4000;
+                 } else if (value === 2) {
+                     return row.month < 4000;
+                 }
+             }
+         }
+      ],
+      data17: [
+        {
+            "name": "推广名称1",
+            "fav": 0,
+            "show": 7302,
+            "weak": 5627,
+            "signin": 1563,
+            "click": 4254,
+            "active": 1438,
+            "day7": 274,
+            "day30": 285,
+            "tomorrow": 1727,
+            "day": 558,
+            "week": 4440,
+            "month": 5610
+        },
+        {
+            "name": "推广名称2",
+            "fav": 0,
+            "show": 4720,
+            "weak": 4086,
+            "signin": 3792,
+            "click": 8690,
+            "active": 8470,
+            "day7": 8172,
+            "day30": 5197,
+            "tomorrow": 1684,
+            "day": 2593,
+            "week": 2507,
+            "month": 1537
+        },
+        {
+            "name": "推广名称3",
+            "fav": 0,
+            "show": 7181,
+            "weak": 8007,
+            "signin": 8477,
+            "click": 1879,
+            "active": 16,
+            "day7": 2249,
+            "day30": 3450,
+            "tomorrow": 377,
+            "day": 1561,
+            "week": 3219,
+            "month": 1588
+        },
+        {
+            "name": "推广名称4",
+            "fav": 0,
+            "show": 9911,
+            "weak": 8976,
+            "signin": 8807,
+            "click": 8050,
+            "active": 7668,
+            "day7": 1547,
+            "day30": 2357,
+            "tomorrow": 7278,
+            "day": 5309,
+            "week": 1655,
+            "month": 9043
+        },
+        {
+            "name": "推广名称5",
+            "fav": 0,
+            "show": 934,
+            "weak": 1394,
+            "signin": 6463,
+            "click": 5278,
+            "active": 9256,
+            "day7": 209,
+            "day30": 3563,
+            "tomorrow": 8285,
+            "day": 1230,
+            "week": 4840,
+            "month": 9908
+        },
+        {
+            "name": "推广名称6",
+            "fav": 0,
+            "show": 6856,
+            "weak": 1608,
+            "signin": 457,
+            "click": 4949,
+            "active": 2909,
+            "day7": 4525,
+            "day30": 6171,
+            "tomorrow": 1920,
+            "day": 1966,
+            "week": 904,
+            "month": 6851
+        },
+        {
+            "name": "推广名称7",
+            "fav": 0,
+            "show": 5107,
+            "weak": 6407,
+            "signin": 4166,
+            "click": 7970,
+            "active": 1002,
+            "day7": 8701,
+            "day30": 9040,
+            "tomorrow": 7632,
+            "day": 4061,
+            "week": 4359,
+            "month": 3676
+        },
+        {
+            "name": "推广名称8",
+            "fav": 0,
+            "show": 862,
+            "weak": 6520,
+            "signin": 6696,
+            "click": 3209,
+            "active": 6801,
+            "day7": 6364,
+            "day30": 6850,
+            "tomorrow": 9408,
+            "day": 2481,
+            "week": 1479,
+            "month": 2346
+        },
+        {
+            "name": "推广名称9",
+            "fav": 0,
+            "show": 567,
+            "weak": 5859,
+            "signin": 128,
+            "click": 6593,
+            "active": 1971,
+            "day7": 7596,
+            "day30": 3546,
+            "tomorrow": 6641,
+            "day": 1611,
+            "week": 5534,
+            "month": 3190
+        },
+        {
+            "name": "推广名称10",
+            "fav": 0,
+            "show": 3651,
+            "weak": 1819,
+            "signin": 4595,
+            "click": 7499,
+            "active": 7405,
+            "day7": 8710,
+            "day30": 5518,
+            "tomorrow": 428,
+            "day": 9768,
+            "week": 2864,
+            "month": 5811
+        }
+      ],
+      columnsBig: [
+       {
+        title:'测试',
+        key:'ceshi',
+        algin:'center',
+       }
+      ],
+      columnsBig1:[
+       {
+        title:'测试',
+        key:'ceshi',
+        algin:'center',
+       }
+      ],
+      columns1: [
+       {
+        title:'测试',
+        key:'ceshi',
+        algin:'center',
+       }
+      ],
+      columns3: [
+        {
+          type: 'index',
+          width: 60,
+          align: 'center'
+        },
+        {
+          title: '姓名',
+          key: 'name',
+          render: (h, params) => {
+            if (params.row._index==1) {
+              return h('div', [
+                h('h-icon', {
+                  props: {
+                    name: 'addressbook'
+                  }
+                }),
+                h('strong', params.row.name)
+              ]);
+            }else{
+              return h('span',params.row.name)
+            }
+          },
+          renderHeader:(h, params)=>{
+            return h('span','123')
+          }
+        },
+        {
+          title: '年龄',
+          key: 'age'
+        },
+        {
+          title: '地址',
+          key: 'address'
+        }
+      ],
+      columns4: [
+        {
+          type: 'selection',
+          width: 60,
+          align: 'center',
+        },
+        {
+          title: '姓名',
+          key: 'name',
+          ellipsis: true
+        },
+        {
+          title: '年龄',
+          key: 'age'
+        },
+        {
+          title: '地址',
+          key: 'address'
+        }
+      ],
+      columns5: [
+        {
+          title: '日期',
+          key: 'date',
+          sortable: 'custom',
+        },
+        {
+          title: '姓名',
+          key: 'name'
+        },
+        {
+          title: '年龄',
+          key: 'age',
+          sortable: true,
+          sortMethod(a,b,type){
+            if (type=='desc') {
+              return a>b;
+            }else{
+              return b>a;
+            }
+          }
+        },
+        {
+          title: '地址',
+          key: 'address'
+        }
+      ],
+      columns6: [
+        {
+          title: '日期',
+          key: 'date'
+        },
+        {
+          title: '姓名',
+          key: 'name'
+        },
+        {
+          title: '年龄',
+          key: 'age',
+          filters: [
+            {
+              label: '大于50岁',
+              value: 1
+            },
+            {
+              label: '小于50岁',
+              value: 2
+            }
+          ],
+          // filteredValue:['18','25'],
+          filterMultiple: false,
+          filterRemote(_this,arg1){
+            this.data5.push({
+              name: '王小明1',
+              age: 20,
+              address: '北京市朝阳区<\/br>芍药居',
+              date: '2016-10-03'
+            },);
+          },
+          filterMethod (value, row) {
+            if (value === 1) {
+              return row.age > 50;
+            } else if (value === 2) {
+              return row.age < 50;
+            }
+          }
+        },
+        {
+          title: '地址',
+          key: 'address',
+          filters: [
+            {
+              label: '北京',
+              value: '北京'
+            },
+            {
+              label: '上海',
+              value: '上海'
+            },
+            {
+              label: '深圳',
+              value: '深圳'
+            }
+          ],
+          filterMethod (value, row) {
+            return row.address.indexOf(value) > -1;
+          }
+        }
+      ],
+      columns7: [
+        {
+          title: '姓名',
+          key: 'name',
+          render: (h, params) => {
+            return h('div', [
+              h('h-icon', {
+                props: {
+                  name: 'addressbook'
+                }
+              }),
+              h('strong', params.row.name)
+            ]);
+          }
+        },
+        {
+          title: '年龄',
+          key: 'age'
+        },
+        {
+          title: '地址',
+          key: 'address'
+        },
+        {
+          title: '操作',
+          key: 'action',
+          width: 150,
+          align: 'center',
+          render: (h, params) => {
+            return h('div', [
+              h('h-button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '5px'
+                },
+                on: {
+                  'click': () => {
+                    this.show(params.index)
+                  }
+                }
+              }, '查看'),
+              h('h-button', {
+                props: {
+                  type: 'error',
+                  size: 'small'
+                },
+                on: {
+                  'click': () => {
+                    this.remove(params.index)
+                  }
+                }
+              }, '删除')
+            ]);
+          }
+        }
+      ],
+      columns2: [
+        {
+          title: '姓名',
+          key: 'name',
+          width: 100,
+          fixed: 'left',
+          ellipsis:true
+        },
+        {
+          title: '年龄',
+          key: 'age',
+          width: 100,
+          ellipsis:true
+        },
+        {
+          title: '省份',
+          key: 'province',
+          width: 100,
+          ellipsis:true
+        },
+        {
+          title: '市区',
+          key: 'city',
+          width: 100,
+          ellipsis:true
+        },
+        {
+          title: '地址',
+          key: 'address',
+          width: 200,
+          ellipsis:true
+        },
+        {
+          title: '邮编',
+          key: 'zip',
+          width: 100,
+          ellipsis:true
+        },
+        {
+          title: '操作',
+          key: 'action',
+          width: 120,
+          fixed: 'right',
+          render: (h, params) => {
+            return h('div', [
+              h('h-button', {
+                  props: {
+                    type: 'info',
+                    size: 'small'
+                  }
+              }, '查看'),
+              h('h-button', {
+                  props: {
+                    type: 'text',
+                    size: 'small'
+                  }
+              }, '编辑')
+            ]);
+          },
+          ellipsis:true
+        }
+      ],
+      columns8: [
+        {
+          title: "名称",
+          key: "name",
+          width: 100,
+          fixed: "left",
+        },
+        {
+          title: "展示",
+          key: "show",
+          width: 150,
+          sortable: true,
+          // fixed: "left",
+          // hiddenCol:true,//通过在column中设置hiddenCol表示该列是否隐藏
+          filters: [
+            {
+              label: '大于4000',
+              value: 1
+            },
+            {
+              label: '小于4000',
+              value: 2
+            }
+          ],
+          filterMultiple: false,
+          filterMethod (value, row) {
+            if (value === 1) {
+              return row.show > 4000;
+            } else if (value === 2) {
+              return row.show < 4000;
+            }
+          }
+        },
+        {
+          title: "唤醒",
+          key: "weak",
+          width: 150,
+          sortable: true,
+          // hiddenCol:true,
+        },
+        {
+          title: "登录",
+          key: "signin",
+          width: 150,
+          sortable: true
+        },
+        {
+          title: "点击",
+          key: "click",
+          width: 150,
+          sortable: true
+        },
+        {
+          title: "激活",
+          key: "active",
+          width: 150,
+          sortable: true
+        },
+        {
+          title: "7日留存",
+          key: "day7",
+          width: 150,
+          // sortable: true
+        },
+        {
+          title: "30日留存",
+          key: "day30",
+          width: 150,
+          // sortable: true
+        },
+        {
+          title: "次日留存",
+          key: "tomorrow",
+          width: 150,
+          // sortable: true
+        },
+        {
+          title: "日活跃",
+          key: "day",
+          width: 150,
+          // sortable: true
+        },
+        {
+          title: "周活跃",
+          key: "week",
+          width: 150,
+          // fixed: "right",
+          // sortable: true
+        },
+        {
+          title: "月活跃",
+          key: "month",
+          width: 150,
+
+          // fixed: "right",
+          // sortable: true
+        }
+      ],
+      columns9: [
+        {
+          title: '姓名',
+          key: 'name'
+        },
+        {
+          title: '年龄',
+          key: 'age',
+          className: 'demo-table-info-column'
+        },
+        {
+          title: '地址',
+          key: 'address'
+        }
+      ],
+      columns10: [
+        {
+          type: 'expand',
+          width: 50,
+          render: (h, params) => {
+            return h(TexpandRow, {
+              props: {
+                  row: params.row
+              }
+            })
+          }
+        },
+        {
+          type:'selection',
+          width:60
+        },
+        {
+          title: '姓名',
+          key: 'name'
+        },
+        {
+          title: '年龄',
+          key: 'age'
+        },
+        {
+          title: '地址',
+          key: 'address'
+        }
+      ],
+      data0:[],
+      data1: [
+        {
+          name: '王小明',
+          age: 18,
+          address: '北京市朝阳区\r芍药居'
+          // _highlight: true//默认选择当前项
+        },
+        {
+          name: '张小刚',
+          age: 25,
+          address: '北京市海淀区西二旗'
+        },
+        {
+          name: '李小红',
+          age: 30,
+          address: '上海市浦东新区世纪大道'
+        },
+        {
+          name: '周小伟',
+          age: 26,
+          address: '深圳市南山区深南大道'
+        }
+      ],
+      data2: [
+        {
+          name: '王小明',
+          age: 18,
+          address: '北京市朝阳\r区芍药居'
+        },
+        {
+          name: '张小刚',
+          age: 25,
+          address: '北京市海淀区西二旗'
+        },
+        {
+          name: '李小红',
+          age: 30,
+          address: '上海市浦东新区世纪大道'
+        },
+        {
+          name: '周小伟',
+          age: 26,
+          address: '深圳市南山区深南大道'
+        },
+        {
+          name: '王小明',
+          age: 18,
+          address: '北京市朝阳\r区芍药居'
+        },
+        {
+          name: '张小刚',
+          age: 25,
+          address: '北京市海淀区西二旗'
+        },
+        {
+          name: '李小红',
+          age: 30,
+          address: '上海市浦东新区世纪大道'
+        },
+        {
+          name: '周小伟',
+          age: 26,
+          address: '深圳市南山区深南大道'
+        }
+      ],
+      data3: [
+        {
+          name: '王小明',
+          age: 18,
+          address: '北京市朝阳\r区芍药居',
+          province: '北京市',
+          city: '朝阳区',
+          zip: 100000
+        },
+        {
+          name: '张小刚',
+          age: 25,
+          address: '北京市海淀区西二旗',
+          province: '北京市',
+          city: '海淀区',
+          zip: 100000
+        },
+        {
+          name: '李小红',
+          age: 30,
+          address: '上海市浦东新区世纪大道',
+          province: '上海市',
+          city: '浦东新区',
+          zip: 100000
+        },
+        {
+          name: '周小伟',
+          age: 26,
+          address: '深圳市南山区深南大道',
+          province: '广东',
+          city: '南山区',
+          zip: 100000
+        }
+      ],
+      data5: [
+        {
+          name: '王小明',
+          age: 18,
+          address: '北京市朝阳<\/br>区芍药居',
+          date: '2016-10-03'
+        },
+        {
+          name: '张小刚',
+          age: 25,
+          address: '北京市海淀区西二旗',
+          date: '2016-10-01'
+        },
+        {
+          name: '李小红',
+          age: 30,
+          address: '上海市浦东新区世纪大道',
+          date: '2016-10-02'
+        },
+        {
+          name: '周小伟',
+          age: 26,
+          address: '深圳市南山区深南大道',
+          date: '2016-10-04'
+        }
+      ],
+      data6: [
+        {
+          name: '王小明',
+          age: 18,
+          address: '北京市朝阳区芍药居'
+        },
+        {
+          name: '张小刚',
+          age: 25,
+          address: '北京市海淀区西二旗'
+        },
+        {
+          name: '李小红',
+          age: 30,
+          address: '上海市浦东新区世纪大道'
+        },
+        {
+          name: '周小伟',
+          age: 26,
+          address: '深圳市南山区深南大道'
+        }
+      ],
+      data4: [
+        {
+          name: '王小明',
+          age: 18,
+          address: '北京市朝阳区芍药居',
+          province: '北京市',
+          city: '朝阳区',
+          zip: 100000
+        },
+        {
+          name: '张小刚',
+          age: 25,
+          address: '北京市海淀区西二旗',
+          province: '北京市',
+          city: '海淀区',
+          zip: 100000
+        },
+        {
+          name: '李小红',
+          age: 30,
+          address: '上海市浦东新区世纪大道',
+          province: '上海市',
+          city: '浦东新区',
+          zip: 100000
+        },
+        {
+          name: '周小伟',
+          age: 26,
+          address: '深圳市南山区深南大道',
+          province: '广东',
+          city: '南山区',
+          zip: 100000
+        },
+        {
+          name: '王小明',
+          age: 18,
+          address: '北京市朝阳区芍药居',
+          province: '北京市',
+          city: '朝阳区',
+          zip: 100000
+        },
+        {
+          name: '张小刚',
+          age: 25,
+          address: '北京市海淀区西二旗',
+          province: '北京市',
+          city: '海淀区',
+          zip: 100000
+        },
+        {
+          name: '李小红',
+          age: 30,
+          address: '上海市浦东新区世纪大道',
+          province: '上海市',
+          city: '浦东新区',
+          zip: 100000
+        },
+        {
+          name: '周小伟',
+          age: 26,
+          address: '深圳市南山区深南大道',
+          province: '广东',
+          city: '南山区',
+          zip: 100000
+        }
+      ],
+      data7: [
+        {
+          name: "推广名称1",
+          fav: 0,
+          show: 7302,
+          weak: 5627,
+          signin: 1563,
+          click: 4254,
+          active: 1438,
+          day7: 274,
+          day30: 285,
+          tomorrow: 1727,
+          day: 558,
+          week: 4440,
+          month: 5610
+        },
+        {
+          name: "推广名称2",
+          fav: 0,
+          show: 4720,
+          weak: 4086,
+          signin: 3792,
+          click: 8690,
+          active: 8470,
+          day7: 8172,
+          day30: 5197,
+          tomorrow: 1684,
+          day: 2593,
+          week: 2507,
+          month: 1537
+        },
+        {
+          name: "推广名称3",
+          fav: 0,
+          show: 7181,
+          weak: 8007,
+          signin: 8477,
+          click: 1879,
+          active: 16,
+          day7: 2249,
+          day30: 3450,
+          tomorrow: 377,
+          day: 1561,
+          week: 3219,
+          month: 1588
+        },
+        {
+          name: "推广名称4",
+          fav: 0,
+          show: 9911,
+          weak: 8976,
+          signin: 8807,
+          click: 8050,
+          active: 7668,
+          day7: 1547,
+          day30: 2357,
+          tomorrow: 7278,
+          day: 5309,
+          week: 1655,
+          month: 9043
+        },
+        {
+          name: "推广名称5",
+          fav: 0,
+          show: 934,
+          weak: 1394,
+          signin: 6463,
+          click: 5278,
+          active: 9256,
+          day7: 209,
+          day30: 3563,
+          tomorrow: 8285,
+          day: 1230,
+          week: 4840,
+          month: 9908
+        },
+        {
+          name: "推广名称6",
+          fav: 0,
+          show: 6856,
+          weak: 1608,
+          signin: 457,
+          click: 4949,
+          active: 2909,
+          day7: 4525,
+          day30: 6171,
+          tomorrow: 1920,
+          day: 1966,
+          week: 904,
+          month: 6851
+        },
+        {
+          name: "推广名称7",
+          fav: 0,
+          show: 5107,
+          weak: 6407,
+          signin: 4166,
+          click: 7970,
+          active: 1002,
+          day7: 8701,
+          day30: 9040,
+          tomorrow: 7632,
+          day: 4061,
+          week: 4359,
+          month: 3676
+        },
+        {
+          name: "推广名称8",
+          fav: 0,
+          show: 862,
+          weak: 6520,
+          signin: 6696,
+          click: 3209,
+          active: 6801,
+          day7: 6364,
+          day30: 6850,
+          tomorrow: 9408,
+          day: 2481,
+          week: 1479,
+          month: 2346
+        },
+        {
+          name: "推广名称9",
+          fav: 0,
+          show: 567,
+          weak: 5859,
+          signin: 128,
+          click: 6593,
+          active: 1971,
+          day7: 7596,
+          day30: 3546,
+          tomorrow: 6641,
+          day: 1611,
+          week: 5534,
+          month: 3190
+        },
+        {
+          name: "推广名称10",
+          fav: 0,
+          show: 3651,
+          weak: 1819,
+          signin: 4595,
+          click: 7499,
+          active: 7405,
+          day7: 8710,
+          day30: 5518,
+          tomorrow: 428,
+          day: 9768,
+          week: 2864,
+          month: 5811
+        }
+      ],
+      data8: [
+        {
+          name: '王小明',
+          age: 18,
+          address: '北京市朝阳区芍药居'
+        },
+        {
+          name: '张小刚',
+          age: 25,
+          address: '北京市海淀区西二旗',
+          cellClassName: {
+              age: 'demo-table-info-cell-age',
+              address: 'demo-table-info-cell-address'
+          }
+        },
+        {
+          name: '李小红',
+          age: 30,
+          address: '上海市浦东新区世纪大道'
+        },
+        {
+          name: '周小伟',
+          age: 26,
+          address: '深圳市南山区深南大道',
+          cellClassName: {
+              name: 'demo-table-info-cell-name'
+          }
+        }
+      ],
+      data9: [
+        {
+          name: '王小明',
+          age: 18,
+          address: '北京市朝阳区芍药居',
+          job: '数据工程师',
+          interest: '羽毛球',
+          birthday: '1991-05-14',
+          book: '乔布斯传',
+          movie: '致命魔术',
+          music: 'I Cry'
+        },
+        {
+          name: '张小刚',
+          age: 25,
+          address: '北京市海淀区西二旗',
+          job: '数据科学家',
+          interest: '排球',
+          birthday: '1989-03-18',
+          book: '我的奋斗',
+          movie: '罗马假日',
+          music: 'My Heart Will Go On'
+        },
+        {
+          name: '李小红',
+          age: 30,
+          address: '上海市浦东新区世纪大道',
+          job: '数据产品经理',
+          interest: '网球',
+          birthday: '1992-01-31',
+          book: '赢',
+          movie: '乔布斯',
+          music: 'Don’t Cry'
+        },
+        {
+          name: '周小伟',
+          age: 26,
+          address: '深圳市南山区深南大道',
+          job: '数据分析师',
+          interest: '桌球，跑步',
+          birthday: '1988-7-25',
+          book: '红楼梦',
+          movie: '倩女幽魂',
+          music: '演员'
+        }
+      ]
+    }
+  },
+  methods:{
+    changemsg(){
+      this.msgbox = !this.msgbox;
+    },
+    onDrag(e,i){
+      console.log(e);
+      console.log(i);
+    },
+    onMove(i,j){
+      console.log(i);
+      console.log(j);
+    },
+    change(e){
+      console.log(e);
+    },
+    scroll(num){
+      console.log(num);
+    },
+    setLoading(){
+      this.loading = !this.loading;
+    },
+    click1 (selection) {
+      console.log(selection);
+    },
+    rowclick(){
+      console.log('你点击了某一行');
+    },
+    rowdblclick(e,i){
+      console.log('你双击了某一行');
+    },
+    expand(row,status){
+      console.log(status);
+    },
+    sortChange(obj){
+      if (obj.order == 'asc') {
+        let len = this.data5.length-1;
+        let item = this.data5[len];
+        this.data5.splice(len,1);
+        this.data5.splice(0,0,item);
+      }else{
+        console.log('你点击勒向下排序按钮');
+      }
+    },
+    rowClassName (row, index) {
+      if (index === 1) {
+        return 'demo-table-info-row';
+      } else if (index === 3) {
+        return 'demo-table-error-row';
+      }
+      return '';
+    },
+    radioChange (currentRow,oldRow){
+      console.log(currentRow);
+      console.log(oldRow);
+    },
+    allSelect (allSelection){
+      console.log(allSelection);
+    },
+    select (selection,row){//已选择的项和刚刚选择的项
+      console.log(selection);
+      console.log(row);
+    },
+    selsetChange (selection){//选项发生变化时触发已选择的项
+      console.log(selection);
+    },
+    show (index) {
+      this.$hMsgBox.info({
+        title: '用户信息',
+        content: `姓名：${this.data6[index].name}<br>年龄：${this.data6[index].age}<br>地址：${this.data6[index].address}`
+      });
+    },
+    remove (index) {
+      this.data6.splice(index, 1);
+    }, 
+  },
+  mounted(){
+    this.columns1=[
+        { 
+          type: 'selection',
+          align: 'center',
+        },
+        { 
+          type: 'index',
+          align: 'center',
+        },
+        {
+          title: '姓名',
+          key: 'name',
+          align: 'center',
+        },
+        {
+          title: '年龄',
+          key: 'age',
+        },
+        {
+          title: '地址',
+          ellipsis:true,
+          key: 'address',
+        },
+        {
+          title: '地址1',
+          key: 'address1',
+        },
+        {
+          title: '地址2',
+          key: 'address2',
+        },
+        {
+          title: '地址3',
+          key: 'address3',
+        },
+        {
+          title: '地址4',
+          key: 'address4',
+        },
+        {
+          title: '地址5',
+          key: 'address5',
+        },
+        {
+          title: '地址6',
+          key: 'address6',
+          sortType:'address',
+        }
+    ]
+    this.columnsBig=[
+        { 
+          type: 'selection',
+          align: 'center',
+        },
+        { 
+          type: 'index',
+          align: 'center',
+          key:'index'
+        },
+        {
+          title: '姓名',
+          key: 'fundId',
+          align: 'center',
+          ellipsis:true,
+        },
+        {
+          title: '年龄',
+          key: 'tradeDate',
+        },
+        {
+          title: '地址',
+          key: 'securityCode',
+        },
+        {
+          title: '地址1',
+          key: 'securityName',
+          ellipsis:true,
+        },
+        {
+          title: '地址2',
+          key: 'securityId',
+        },
+        {
+          title: '地址3',
+          key: 'tradeDir',
+        },
+        {
+          title: '地址4',
+          key: 'tradeSubtype',
+        },
+        {
+          title: '地址5',
+          key: 'marketNo',
+        },
+        {
+          title: '地址6',
+          key: 'tradeQuantity',
+        }
+    ]
+    this.columnsBig1=[
+        {
+          title: '姓名',
+          key: 'fundId',
+          width:200,
+          align: 'center',
+        },
+        {
+          title: '年龄',
+          key: 'tradeDate',
+        },
+        {
+          title: '地址',
+          ellipsis:true,
+          key: 'securityCode',
+        },
+        {
+          title: '地址1',
+          key: 'securityName',
+        },
+        {
+          title: '地址2',
+          key: 'securityId',
+        },
+        {
+          title: '地址3',
+          key: 'tradeDir',
+        },
+        {
+          title: '地址4',
+          key: 'tradeSubtype',
+          sortType:'asc',
+        },
+        {
+          title: '地址5',
+          key: 'marketNo',
+          sortType:'asc',
+        },
+        {
+          title: '地址6',
+          key: 'tradeQuantity',
+          sortType:'asc',
+        }
+    ]
+  }
+}
+</script>
+<style type="text/css">
+.h-table .demo-table-info-row td{
+  background-color: #2db7f5 !important;
+  color: #fff;
+}
+.h-table .demo-table-error-row td{
+  background-color: #ff6600!important;
+  color: #fff;
+}
+.h-table td.demo-table-info-column{
+  background-color: #2db7f5!important;
+  color: #fff;
+}
+.h-table .demo-table-info-cell-name {
+  background-color: #2db7f5!important;
+  color: #fff;
+}
+.h-table .demo-table-info-cell-age {
+  background-color: #ff6600!important;
+  color: #fff;
+}
+.h-table .demo-table-info-cell-address {
+  background-color: #187!important;
+  color: #fff;
+}
+.h-table-title, .h-table-footer{
+  background-color: #7eb8f1;
+  text-align: center;
+}
+</style>

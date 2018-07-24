@@ -48,7 +48,7 @@
       <br>
       <h-row>
       <h-col span="8">
-          <h-menu  mode="vertical" :theme="theme2"  active-name="2" :open-names="['1','3']" :accordion="false" @on-open-change="openChange" :width="120">
+          <h-menu  mode="vertical" :theme="theme2"  active-name="2" :open-names="['1','3']" :accordion="false" @on-open-change="openChange" :width="120" @on-select="s">
           <h-submenu name="1">
               <template slot="title">
                   <h-icon name="ios-paper"></h-icon>
@@ -241,7 +241,7 @@
       </h-radio-group>
       <h-row>
           <h-col span='12'>
-              <h-menu theme="dark" active-name="1-2" :open-names="['1']" :collapse="isCollapse ==='true'" @on-open-change="openChange">
+              <h-menu theme="dark" active-name="1-2" :open-names="['1']" :collapse="isCollapse ==='true'" @on-open-change="openChange" @on-select="s">
                   <h-submenu name="1">
                       <template slot="title">
                           <h-icon name="computer"></h-icon>

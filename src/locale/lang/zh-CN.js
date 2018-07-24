@@ -72,6 +72,13 @@ export default {
         notFoundText: '无匹配内容',
         notFoundData: '列表为空'
     },
+    transferTable: {
+        lTitle: '源列表',
+        rTitle: '目的列表',
+        filterPlaceholder: '请输入搜索内容',
+        notFoundText: '无匹配内容',
+        notFoundData: '列表为空'
+    },
     modal: {
         okText: '确定',
         cancelText: '取消'
@@ -81,6 +88,8 @@ export default {
         cancelText: '取消'
     },
     page: {
+        first: '首页',
+        last: '尾页',
         prev: '上一页',
         next: '下一页',
         total: '共',

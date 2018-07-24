@@ -1,6 +1,6 @@
 <template>
   <div>
-   <h-tree-gird :columns="columns1" :data="data1" size="small" :highlight-row="true" @on-current-change="click1" @on-row-click="click2" ref="editGird" height="400" :loading="loading"></h-tree-gird>
+   <h-tree-gird :columns="columns1" :data="data1" size="small" :highlight-row="true" @on-current-change="click1" @on-row-click="click2" ref="editGird" height="200" :loading="loading" :option="options1" :treeOption="treeOption"></h-tree-gird>
    <Button @click="setLoad">切换loading</Button>
   </div>
 </template>
@@ -9,7 +9,7 @@ var tData= [
         {
           id: 1,
           name: '王小明',
-          age: 18,
+          age: '',
           address: '北京市朝阳区芍药居',
           money: '120.00',
           cardId: '6223 5678 1234 5678',
@@ -219,6 +219,8 @@ var tData= [
     data () {
       return {
         loading:false,
+        options1:[],
+        treeOption:[],
         columns1: [
           {
             type: 'index',
@@ -350,8 +352,28 @@ var tData= [
 
     },
     mounted () {
-      // this.data1=tData;
-      // this.updateTree(this.baseData);
+      this.options1[6]=[{value:'Alabama',label:'Alabama'},{value:'beijing',label:'北京'},{value:'Delaware',label:'Delaware'}]
+      this.treeOption[9]=[{
+              expand: true,
+              title: 'parent 1',
+              children: [{
+                title: 'parent 1-0',
+                expand: true,
+                children: [{
+                  title: 'leaf1',
+                  disableCheckbox: true
+                }, {
+                  title: 'leaf2',
+                }]
+              }, {
+                title: 'parent 1-1',
+                expand: true,
+                checked: true,
+                children: [{
+                  title: 'leaf3',
+                }]
+              }]
+            }]
     }
   }
 </script>

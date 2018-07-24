@@ -27,7 +27,11 @@ $tabs-prefix-cls: "#{$css-prefix}tabs";
     border-bottom: 1px solid $border-color-base;
     margin-bottom: 16px;
   }
-
+  &-bar-top{
+    border-top: 1px solid $border-color-base;
+    margin-bottom: 16px;
+    // margin-top: -1px;
+  }
   &-nav-container {
     margin-bottom: -1px;
     line-height: $line-height-base;
@@ -167,13 +171,17 @@ $tabs-prefix-cls: "#{$css-prefix}tabs";
   }
 
   // card style
-  &.#{$tabs-prefix-cls}-card > &-bar &-nav-container {
+  &.#{$tabs-prefix-cls}-card > &-bar &-nav-container,&.#{$tabs-prefix-cls}-card-top > &-bar-top &-nav-container {
       height: 32px;
   }
-  &.#{$tabs-prefix-cls}-card > &-bar &-ink-bar {
+  &.#{$tabs-prefix-cls}-card-top > &-bar-top &-nav-container {
+    margin-top:-1px;
+    margin-bottom: 0px;
+  }
+  &.#{$tabs-prefix-cls}-card > &-bar &-ink-bar,&.#{$tabs-prefix-cls}-card-top > &-bar-top &-ink-bar {
       visibility: hidden;
   }
-  &.#{$tabs-prefix-cls}-card > &-bar &-tab {
+  &.#{$tabs-prefix-cls}-card > &-bar &-tab, &.#{$tabs-prefix-cls}-card-top > &-bar-top &-tab{
       margin: 0;
       margin-right: 4px;
       height: 31px;
@@ -184,6 +192,10 @@ $tabs-prefix-cls: "#{$css-prefix}tabs";
       transition: all 0.3s $ease-in-out;
       background: $table-thead-bg;
   }
+  &.#{$tabs-prefix-cls}-card-top > &-bar-top &-tab{
+    border-bottom: 1px solid $border-color-base;
+    border-radius: 0 0 $btn-border-radius $btn-border-radius;
+  }
   &.#{$tabs-prefix-cls}-card > &-bar &-tab-active {
       height: 32px;
       padding-bottom: 5px;
@@ -192,10 +204,19 @@ $tabs-prefix-cls: "#{$css-prefix}tabs";
       border-color: $border-color-base;
       color: $primary-color;
   }
+  &.#{$tabs-prefix-cls}-card-top > &-bar-top &-tab-active{
+    height: 32px;
+    padding-bottom: 5px;
+    background: #fff;
+    transform: translateZ(0);
+    border-color: $border-color-base;
+    color: $primary-color;
+    border-top:1px solid transparent;
+  }
   &.#{$tabs-prefix-cls}-card > &-bar &-nav-wrap {
       margin-bottom: 0;
   }
-  &.#{$tabs-prefix-cls}-card > &-bar &-tab .#{$css-prefix-iconfont}-ios-close-empty {
+  &.#{$tabs-prefix-cls}-card > &-bar &-tab .#{$css-prefix-iconfont}-ios-close-empty,&.#{$tabs-prefix-cls}-card-top > &-bar-top &-tab .#{$css-prefix-iconfont}-ios-close-empty {
       width: 0;
       height: 22px;
       font-size: 22px;
@@ -209,13 +230,77 @@ $tabs-prefix-cls: "#{$css-prefix}tabs";
       transform-origin: 100% 50%;
       transition: all 0.3s $ease-in-out;
       &:hover {
-          color: #444;
+        color: #444;
       }
   }
 
   &.#{$tabs-prefix-cls}-card > &-bar &-tab-active .#{$css-prefix-iconfont}-ios-close-empty,
-  &.#{$tabs-prefix-cls}-card > &-bar &-tab:hover .#{$css-prefix-iconfont}-ios-close-empty {
+  &.#{$tabs-prefix-cls}-card > &-bar &-tab:hover .#{$css-prefix-iconfont}-ios-close-empty,
+  &.#{$tabs-prefix-cls}-card-top > &-bar-top &-tab-active .#{$css-prefix-iconfont}-ios-close-empty,
+  &.#{$tabs-prefix-cls}-card-top > &-bar-top &-tab:hover .#{$css-prefix-iconfont}-ios-close-empty {
     ssform: translateZ(0);
+  }
+  &-panel-right{
+    width:100%;
+    .#{$tabs-prefix-cls}-content-animated {
+      display: flex;
+      flex-direction: column;
+      will-change: transform;
+      transition: transform .3s $ease-in-out;
+    }
+  }
+  &-bar-right{
+    float:left;
+  }
+  &-content-right{
+    float:left;
+    border-left:1px solid $border-color-base;
+    .h-tabs-tabpane{
+      padding:10px 20px;
+    }
+  }
+  &-nav-right{
+    padding-top:10px 0px;
+    padding-right:15px;
+    width:100%;
+    .h-tabs-tab{
+      width:100%;
+      height:36px;
+      line-height:36px;
+      text-align:right;
+      position:relative;
+      padding: 0 10px;
+      i{
+        color:transparent;
+        position: absolute;
+        right:0px;
+        margin-right:-9px;
+      }
+    }
+    .h-tabs-tab-alginleft{
+      text-align:left;
+    }
+    .h-tabs-tab:hover{
+      background:$border-color-base;
+      cursor:pointer;
+      i{
+        color:$border-color-base;
+      }
+    }
+    .h-tabs-tab-active{
+      background:$primary-color;
+      color:#fff;
+      font-weight:bold;
+      i{
+        color:$primary-color;
+      }
+    }
+    .h-tabs-tab-active:hover{
+      background:$primary-color;
+      i{
+        color:$primary-color;
+      }
+    }
   }
 }
 

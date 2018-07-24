@@ -25,6 +25,8 @@
                   :disabled="rowDisabled(row._index)"
                   :expanded="rowExpanded(row._index)"
                   :showEditInput="showEditInput"
+                  :option="option"
+                  :treeOption="treeOption"
                 >
                   <span v-if="inx==(columns[0].type=='index'?1:0)" :style="indentCls" >
                     <Icon v-if="row.children && row.children.length!=0" :class="iconClass(row._index)" name = "play_fill" @on-click="toggleExpand(row._index,$event)"></Icon>
@@ -71,6 +73,8 @@
       typeName:String,
       showEditInput:Boolean,
       isCheckbox:Boolean,
+      option:Array,
+      treeOption:Array,
     },
     computed: {
       objData () {
