@@ -604,7 +604,7 @@
           this.findChild((child) => {
               if (child.value === value) {
                   child.selected = true;
-                  label = (child.label === undefined) ? child.$el.innerHTML.slice(child.$el.innerHTML.indexOf('</label>')+8) : child.label;
+                  label = (child.label === undefined) ? child.$el.innerText.replace(/\s*\w{4,5} /, '') : child.label;
               } else {
                   child.selected = false;
               }
