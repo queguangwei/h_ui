@@ -5,8 +5,12 @@
       <Checkbox size="large" :value="checked" @click.native.stop="handleClick" @on-change="toggleSelect" :disabled="disabled"></Checkbox>
 <!--       <input type="checkbox" v-model="tChecked" @click.native.stop="handleClick" @change="toggleSelect" :disabled="disabled"> -->
     </template>
-    <template v-if="renderType === 'text'" ><span>{{row[column.key]}}</span></template>
-    <template v-if="renderType === 'normal'" ><span v-html="row[column.key]"></span><!-- {{row[column.key]}} --></template>
+    <template v-if="renderType === 'normal'" >
+      <span v-html="row[column.key]"></span>
+    </template>
+    <template v-if="renderType === 'text'" >
+      <span>{{row[column.key]}}</span>
+    </template>
     <template v-if="renderType === 'expand' && !row._disableExpand">
       <div :class="expandCls" @click="toggleExpand">
         <Icon name="enter"></Icon>
@@ -92,19 +96,8 @@ export default {
       }
   },
   created () {
-      if (this.column.type === 'index') {
-          this.renderType = 'index';
-      } else if (this.column.type === 'selection') {
-          this.renderType = 'selection';
-      } else if (this.column.type === 'expand') {
-          this.renderType = 'expand';
-      } else if (this.column.render) {
-          this.renderType = 'render';
-      } else if(this.column.type === 'text'){
-          this.renderType = 'text';
-      }else{
-          this.renderType = 'normal';
-      }
+    let render = this.column.render ? 'render' : '';
+    this.renderType = this.column.type || render || 'normal';
   },
   mounted(){
     if (this.showTitle && this.column.ellipsis ) {
