@@ -168,7 +168,7 @@
       }
     },
     data () {
-      const isRange = this.type.includes('range');
+      const isRange = this.type.indexOf('range')>-1?true:false;
       const emptyArray = isRange ? [null, null] : [null];
       let initialValue = isEmptyArray((isRange ? this.value : [this.value]) || []) ? emptyArray : this.parseDate(this.value);
       if (this.name=='splicePanel') initialValue=this.parseDate(this.value);
@@ -190,7 +190,8 @@
         if (this.multiple){
             return this.internalValue.slice();
         } else {
-            const isRange = this.type.includes('range');
+            // const isRange = this.type.includes('range');
+            const isRange = this.type.indexOf('range')>-1?true:false;
             let val = this.internalValue.map(date => date instanceof Date ? new Date(date) : (date || ''));
             if (this.type.match(/^time/)) val = val.map(this.formatDate);
             return (isRange || this.multiple) ? val : val[0];
@@ -281,7 +282,8 @@
         //   this.handleClear();
         //   return false;
         // }
-        const isArrayValue = this.type.includes('range') || this.multiple;
+        // const isArrayValue = this.type.includes('range') || this.multiple;
+        const isArrayValue = this.type.indexOf('range')>-1?true:false || this.multiple;
         const oldValue = this.visualValue;
         const newValue = event.target.value;
         const newDate = this.parseDate(newValue);
@@ -336,7 +338,8 @@
           });
       },
       parseDate(val) {
-          const isRange = this.type.includes('range');
+          // const isRange = this.type.includes('range');
+          const isRange = this.type.indexOf('range')>-1?true:false;
           const type = this.type;
           const parser = (
               TYPE_VALUE_RESOLVER_MAP[type] ||

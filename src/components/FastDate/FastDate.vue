@@ -354,11 +354,16 @@ export default {
       let inputList =isrange?this.$refs.range.querySelectorAll('input'):this.$refs.single.querySelectorAll('input');
       let activeInx; 
       let nextInx;
-      inputList.forEach((col,i)=>{
-        if (col == document.activeElement) {
+      for (var i = inputList.length - 1; i >= 0; i--) {
+        if(inputList[i]== document.activeElement){
           activeInx = i;
         }
-      });
+      }
+      // inputList.forEach((col,i)=>{//ie 11 不支持foreach
+      //   if (col == document.activeElement) {
+      //     activeInx = i;
+      //   }
+      // });
       if (code==37) {
         event.preventDefault();
         nextInx = (activeInx-1)>=0?(activeInx-1):2;

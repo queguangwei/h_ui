@@ -46,7 +46,7 @@
     <p>@on-select-all，点击全选时触发，返回值为 selection，已选项。</p>
     <p>@on-selection-change，只要选中项发生变化时就会触发，返回值为 selection，已选项。</p>
     <h-table border :columns="columns4" :data="data1" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading"></h-table>
-   <!--  <h2>排序</h2>
+    <h2>排序</h2>
     <p>通过给 columns 数据的项，设置 sortable: true，即可对该列数据进行排序。</p>
     <p>排序默认使用升序和降序，也可以通过设置属性 sortMethod 指定一个自定义排序函数，接收三个参数 a 、 b 和 type。</p>
     <p>通过给某一列设置 sortType 可以在初始化时使用排序。</p>
@@ -81,7 +81,7 @@
     <br>
     <h-button type="primary" size="large" @click="exportData(1)"><h-icon name="document"></h-icon> 导出原始数据</h-button>
     <h-button type="primary" size="large" @click="exportData(2)"><h-icon name="document"></h-icon> 导出排序和过滤后的数据</h-button>
-    <h-button type="primary" size="large" @click="exportData(3)"><h-icon name="document"></h-icon> 导出自定义数据</h-button> -->
+    <h-button type="primary" size="large" @click="exportData(3)"><h-icon name="document"></h-icon> 导出自定义数据</h-button>
     <h2>测试</h2>
     <h-table height="300" :stripe="true" :columns="columns18" :data="data17" border size="small" ref="table" :loading="loading" :highlightRow="true" @on-selection-change="selsetChange">
         <span slot="header">证券日活数据表</span>
@@ -811,6 +811,7 @@ export default {
         },
         {
           title: '地址',
+          fixed:'right',
           key: 'address'
         }
       ],

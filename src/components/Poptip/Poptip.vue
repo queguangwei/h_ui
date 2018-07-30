@@ -98,6 +98,10 @@ export default {
     transfer: {
       type: Boolean,
       default: false
+    },
+    always:{
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -155,6 +159,7 @@ export default {
       if (this.transfer) this.disableCloseUnderTransfer = true;
     },
     handleClose () {
+      if(this.always)return;
       if (this.disableCloseUnderTransfer) {
         this.disableCloseUnderTransfer = false;
         return false;

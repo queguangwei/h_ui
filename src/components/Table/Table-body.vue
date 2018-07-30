@@ -31,8 +31,7 @@
         </table-tr>
         <tr v-if="rowExpanded(row._index)">
           <td :colspan="columns.length" :class="prefixCls + '-expanded-cell'">
-
-            <Expand :key="row._rowKey" :row="row" :render="expandRender" :index="row._index"></Expand>
+            <Expand :key="row._rowKey" :row="row" :render="expandRender" :index="row._index" :fixed="fixed"></Expand>
           </td>
         </tr>
       </template>

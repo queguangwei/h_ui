@@ -293,6 +293,7 @@ export default {
       }
       if(this.moveingColumn){
         this.moveing = true;  
+         addClass(document.body, 'useSelect');
         this.$parent.moveProxyVisible = true;
         let dom = this.findObj(event,'TH').cloneNode(true);
         dom.width = column._width;
@@ -345,7 +346,7 @@ export default {
           if (_this.moveing) {
             table.sortCloumn(index,resizeIndex,column._index);
             document.body.style.cursor = '';
-            document.body.style.userSelect = 'text';
+            removeClass(document.body, 'useSelect');
             _this.moveing = false;
             _this.moveingColumn = null;
             _this.moveState = {};
@@ -356,8 +357,6 @@ export default {
 
           document.removeEventListener('mousemove', handleMouseMove);
           document.removeEventListener('mouseup', handleMouseUp);
-          // document.onselectstart = null;
-          // document.ondragstart = null;
 
           setTimeout(function() {
             removeClass(columnEl, 'noclick');
@@ -401,11 +400,11 @@ export default {
         const bodyStyle = document.body.style;
         if (rect.right - event.pageX > 8 && rect.right - event.pageX<rect.width) {
           bodyStyle.cursor = 'pointer';
-          bodyStyle.userSelect = 'none';
+          // bodyStyle.userSelect = 'none';
           this.moveingColumn = column;
         } else if (!this.moveing) {
           if(!this.canDrag) bodyStyle.cursor = '';
-          bodyStyle.userSelect = 'text';
+          // bodyStyle.userSelect = 'text';
           this.moveingColumn = null;
         }
       }

@@ -1,5 +1,9 @@
 $page-prefix-cls: "#{$css-prefix}page";
 .#{$page-prefix-cls} {
+  user-select:none;
+  -webkit-user-slect:none;
+  -ms-user-slect:none;
+  -moz-user-slect:none;
   &:after {
     content: '';
     display: block;

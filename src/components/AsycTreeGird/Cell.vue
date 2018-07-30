@@ -459,10 +459,6 @@ export default {
       this.baseData = deepCopy(this.treeOption);
     }
     this.render = this.column.render?true:false;
-    // console.log('123')
-    // console.log(this.row.name)
-    
-    // console.log('123')
   },
   mounted(){
     this.rule = this.column.rule;

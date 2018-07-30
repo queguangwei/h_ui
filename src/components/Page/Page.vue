@@ -51,13 +51,13 @@
       <li :title="t('i.page.next5')" v-if="currentPage + 3 < allPages" :class="[prefixCls + '-item-jump-next']" @click="fastNext"><a><icon name="enter"></icon></a></li>
       <li :title="allPages" v-if="allPages > 1" :class="lastPageClasses" @click="changePage(allPages)"><a>{{ allPages }}</a></li>
       <li
-        v-if="fastArrival"
         :title="t('i.page.next')"
         :class="nextClasses"
         @click="next">
         <a><icon name="enter"></icon></a>
       </li>
       <li
+        v-if="fastArrival"
         :title="t('i.page.last')"
         :class="nextClasses"
         @click="toLast">
