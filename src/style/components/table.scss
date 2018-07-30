@@ -425,4 +425,9 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
   right: 0;
   top: 0;
 }
-
+.useSelect{
+  -ms-user-select:none;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  user-select:none;
+}

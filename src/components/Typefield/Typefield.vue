@@ -119,14 +119,6 @@ export default {
     },
     bigTips:Boolean,
     position:String,
-    // maxNum: {//最大金额限制
-    //   type: [Number,String],
-    //   default: Infinity,
-    // },
-    // minNum: {//最小金额限制
-    //   type: [Number,String],
-    //   default: -Infinity,
-    // },
     divided: {//是否添加分隔符
       type: Boolean,
       default: false,

@@ -275,20 +275,21 @@
           const index = this.navList.findIndex((nav) => nav.name === this.activeKey);
           const prevTabs = this.$refs.nav.querySelectorAll(`.${prefixCls}-tab`);
           const tab = prevTabs[index];
-          this.barWidth = parseFloat(getStyle(tab, 'width'));
-
-          if (!!window.ActiveXObject || "ActiveXObject" in window) {
-            this.barWidth = parseFloat(getStyle(tab, 'width')) + 32;
-          }
+          // this.barWidth = parseFloat(getStyle(tab, 'width'));
+          this.barWidth = tab.getBoundingClientRect().width;
+          // if (!!window.ActiveXObject || "ActiveXObject" in window) {
+          //   this.barWidth = parseFloat(getStyle(tab, 'width')) + 32;
+          // }
 
           if (index > 0) {
             let offset = 0;
             const gutter = this.size === 'small' ? 0 : 16;
             for (let i = 0; i < index; i++) {
-              offset += parseFloat(getStyle(prevTabs[i], 'width')) + gutter;
-              if (!!window.ActiveXObject || "ActiveXObject" in window) {
-                offset = (parseFloat(getStyle(tab, 'width')) + 32)*(i+1) + gutter*(i+1);
-              }
+              offset += prevTabs[i].getBoundingClientRect().width + gutter;
+              // offset += parseFloat(getStyle(prevTabs[i], 'width')) + gutter;
+              // if (!!window.ActiveXObject || "ActiveXObject" in window) {
+              //   offset = (parseFloat(getStyle(tab, 'width')) + 32)*(i+1) + gutter*(i+1);
+              // }
             }
             this.barOffset = offset;
           } else {

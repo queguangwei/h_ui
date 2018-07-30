@@ -1,25 +1,25 @@
 <template>  
   <div class="h-textdiff h-row">
     <div class='h-textdiff-wrapper h-col-span-12'>
-      <div class='h-textdiff-title no-border-right'>{{leftTitle}}</div>
+      <div class='h-textdiff-title no-border-right' v-if="isShowTitle">{{leftTitle}}</div>
       <div class="h-textdiff-content no-border-right">  
         <pre @scroll.native="scrollLeft" ref="leftArea" class="h-textdiff-leftContent">
-            <div v-for="(item, index) in leftListRebuild" :key="index" @click.stop.prevent="rowClick" v-html="item"></div>   
+            <div v-for="(item, index) in leftListRebuild" :key="index" @click.stop.prevent="rowClick($event, index)" v-html="item"></div>   
         </pre>  
         <textarea v-model='leftTextValue'  ref="left" :autofocus="leftautofocus"></textarea>
       </div> 
     </div>  
     <div class='h-textdiff-wrapper h-col-span-12'>
-      <div class='h-textdiff-title'>{{rightTitle}}</div>
+      <div class='h-textdiff-title' v-if="isShowTitle">{{rightTitle}}</div>
       <div class="h-textdiff-content">  
         <pre @scroll.native="scrollRight" ref="rightArea" class="h-textdiff-rightContent">
-            <div v-for="(item, index) in rightListRebuild" :key="index" @click.stop.prevent="rowClick" v-html="item"></div> 
+            <div v-for="(item, index) in rightListRebuild" :key="index" @click.stop.prevent="rowClick($event, index)" v-html="item"></div> 
         </pre>  
         <textarea v-model='rightTextValue' ref="right" right="rightautofocus"></textarea>  
       </div>  
     </div>
-    <div class="h-textdiff-selectContent h-col h-col-span-24"><span>leftCurrentSelect:</span>{{leftSelectRowContent}}</div>
-    <div class="h-textdiff-selectContent h-col h-col-span-24"><span>rightCurrentSelect:</span>{{rightSelectRowContent}}</div>
+    <div class="h-textdiff-selectContent h-col h-col-span-24" v-if="isShowSelect" :title="leftSelectRowContent"><span>leftCurrentSelect:</span>{{leftSelectRowContent}}</div>
+    <div class="h-textdiff-selectContent h-col h-col-span-24" v-if="isShowSelect" :title="rightSelectRowContent"><span>rightCurrentSelect:</span>{{rightSelectRowContent}}</div>
   </div>
 </template>  
   
@@ -50,6 +50,16 @@
     moreColor: {
       type: String,
       default: 'blue'
+    },
+    isShowTitle: {
+      // 是否显示title(无论是否设置title)
+      type: Boolean,
+      default: true
+    },
+    isShowSelect: {
+      // 是否显示currentSelect
+      type: Boolean,
+      default: true
     }
   },
   watch:{  
@@ -121,20 +131,32 @@
         this.$refs.leftArea.scrollTop = this.$refs.rightArea.scrollTop; 
       }
     }, 
-    rowClick (e) {
+    rowClick(e, index) {
       // 可优化，记住上次点击位置
-      let selectedRow = e.currentTarget.parentElement.getElementsByClassName('h-textdiff-rowSelect')
-      if (selectedRow.length > 0) {
-        for (let i = 0; i < selectedRow.length; i++) {
-          selectedRow[i].className = ''
-        }
+      // 左右看做一行，同时被点击
+      // let selectedRow = e.currentTarget.parentElement.getElementsByClassName('h-textdiff-rowSelect')
+      let selectedRow = document.getElementsByClassName('h-textdiff-rowSelect')
+      // if (selectedRow.length > 0) {
+      //   for (let i = 0; i < selectedRow.length; i++) {
+      //     selectedRow[i].className = ''
+      //   }
+      // }
+      // 当 class为''时，会自动从selectRow中移除
+      while (selectedRow.length > 0) {
+        selectedRow[0].className = ''
       }
       e.currentTarget.className = 'h-textdiff-rowSelect'
       if(e.currentTarget.parentElement.className == 'h-textdiff-leftContent') {
         this.leftSelectRowContent = e.currentTarget.innerText.trim()
+        // 
+        this.$refs.rightArea.children[index].className = 'h-textdiff-rowSelect'
+        this.rightSelectRowContent = this.$refs.rightArea.children[index].innerText.trim()
         this.$emit('on-left-select', this.leftSelectRowContent)
       } else {
         this.rightSelectRowContent = e.currentTarget.innerText.trim()
+        //
+        this.$refs.leftArea.children[index].className = 'h-textdiff-rowSelect'
+        this.leftSelectRowContent = this.$refs.leftArea.children[index].innerText.trim()
         this.$emit('on-right-select', this.rightSelectRowContent)       
       }
     },
@@ -143,8 +165,8 @@
         return  
       }  
       if (!op.left || !op.right) {  
-        this.leftListRebuild = op.left.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\'/g, "&apos;").replace(/\"/g, "&quot;").split('\n')
-        this.rightListRebuild = op.right.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\'/g, "&apos;").replace(/\"/g, "&quot;").split('\n')
+        if (op.left != '') this.leftListRebuild = op.left.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\'/g, "&apos;").replace(/\"/g, "&quot;").split('\n')
+        if (op.right != '') this.rightListRebuild = op.right.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\'/g, "&apos;").replace(/\"/g, "&quot;").split('\n')
         return 
       }
       let leftListInit =  op.left.split('\n') //左侧初始化数据数组
