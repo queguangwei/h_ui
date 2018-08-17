@@ -2,7 +2,7 @@
   <div>
     <h1>气泡提示组件基本用法</h1>
     <h2>基本用法</h2>
-    <h-poptip trigger="hover" title="提示标题" content="提示内容">
+    <h-poptip trigger="hover" title="提示标题" content="提示内容" closeOutClick>
       <h-button>hover 激活</h-button>
     </h-poptip>
     <h-poptip title="提示标题" content="提示内容">
@@ -16,7 +16,7 @@
     </h-poptip>
     <h2>位置</h2>
     <div class="top">
-      <h-poptip title="提示标题" content="提示内容" placement="top-start">
+      <h-poptip title="提示标题" content="提示内容" placement="top-start" closeOutClick>
         <h-button>上左</h-button>
       </h-poptip>
       <h-poptip title="提示标题" content="提示内容" placement="top">

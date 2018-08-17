@@ -23,6 +23,7 @@ $confirm-prefix-cls: "#{$css-prefix}modal-confirm";
       // z-index: $zindex-modal;
       -webkit-overflow-scrolling: touch;
       outline: 0;
+      user-select: none;
   }
 
   &-wrap * {

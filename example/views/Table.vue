@@ -8,7 +8,7 @@
       </h-table>
     </h-msg-box> -->
     <Button @click="changemsg">显示</Button>
-    <h-table :columns="columns1" :data="[]" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="200" canMove @on-move="onMove">
+    <h-table :columns="columns1" :data="[]" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="200" canMove @on-move="onMove" :lastColWidth="150">
       <span slot="loading">我是自定义加载！！！</span>
     </h-table>
     <h-button @click="setLoading">切换状态</h-button>/
@@ -32,7 +32,7 @@
     <h-table height="200" :columns="columns1" :data="data2" border :loading="loading" showTitle></h-table>
     <h2>固定列</h2>
     <p>通过给数据 columns 的项设置 fixed 为 left 或 right，可以左右固定需要的列。</p>
-    <h-table border :columns="columns2" :data="data3" :loading="loading" canMove height="250"></h-table>
+    <h-table border :columns="columns2" :data="data3" :loading="loading" canMove height="250" canDragFixed :minDragWidth="60"></h-table>
     <h2>固定表头和列</h2>
     <h-table height="300" width="550" border :columns="columns2" :data="data4" :loading="loading" @on-scroll="scroll"></h-table>
     <h2>单选</h2>
@@ -638,6 +638,7 @@ export default {
           ellipsis:true
         },
         {
+          type: 'text',
           title: '地址',
           key: 'address',
           width: 200,
@@ -820,8 +821,8 @@ export default {
         {
           name: '王小明',
           age: 18,
-          address: '北京市朝阳区\r芍药居'
-          // _highlight: true//默认选择当前项
+          address: '北京市朝阳区\r芍药居',
+          _highlight: true//默认选择当前项
         },
         {
           name: '张小刚',
@@ -883,9 +884,9 @@ export default {
       ],
       data3: [
         {
-          name: '王小明',
+          name: '<b>王小明',
           age: 18,
-          address: '北京市朝阳\r区芍药居',
+          address: '<b>北京市朝阳\r区芍药居</b>',
           province: '北京市',
           city: '朝阳区',
           zip: 100000

@@ -18,8 +18,8 @@
         <textarea v-model='rightTextValue' ref="right" right="rightautofocus"></textarea>  
       </div>  
     </div>
-    <div class="h-textdiff-selectContent h-col h-col-span-24" v-if="isShowSelect" :title="leftSelectRowContent"><span>leftCurrentSelect:</span>{{leftSelectRowContent}}</div>
-    <div class="h-textdiff-selectContent h-col h-col-span-24" v-if="isShowSelect" :title="rightSelectRowContent"><span>rightCurrentSelect:</span>{{rightSelectRowContent}}</div>
+    <div class="h-textdiff-selectContent h-col h-col-span-24" v-if="isShowSelect" :title="leftSelectRowContent" placeholder="leftCurrentSelect">{{leftSelectRowContent}}</div>
+    <div class="h-textdiff-selectContent h-col h-col-span-24" v-if="isShowSelect" :title="rightSelectRowContent" placeholder="rightCurrentSelect">{{rightSelectRowContent}}</div>
   </div>
 </template>  
   
@@ -148,15 +148,23 @@
       e.currentTarget.className = 'h-textdiff-rowSelect'
       if(e.currentTarget.parentElement.className == 'h-textdiff-leftContent') {
         this.leftSelectRowContent = e.currentTarget.innerText.trim()
-        // 
-        this.$refs.rightArea.children[index].className = 'h-textdiff-rowSelect'
-        this.rightSelectRowContent = this.$refs.rightArea.children[index].innerText.trim()
+        // 右侧对应行不存在
+        if (this.$refs.rightArea.children[index]) {
+          this.$refs.rightArea.children[index].className = 'h-textdiff-rowSelect'
+          this.rightSelectRowContent = this.$refs.rightArea.children[index].innerText.trim()
+        } else {
+          this.rightSelectRowContent = ''
+        }
         this.$emit('on-left-select', this.leftSelectRowContent)
       } else {
         this.rightSelectRowContent = e.currentTarget.innerText.trim()
-        //
-        this.$refs.leftArea.children[index].className = 'h-textdiff-rowSelect'
-        this.leftSelectRowContent = this.$refs.leftArea.children[index].innerText.trim()
+        // 左侧对应行不存在
+        if (this.$refs.leftArea.children[index]) {
+          this.$refs.leftArea.children[index].className = 'h-textdiff-rowSelect'
+          this.leftSelectRowContent = this.$refs.leftArea.children[index].innerText.trim()
+        } else {
+          this.leftSelectRowContent = ''
+        }
         this.$emit('on-right-select', this.rightSelectRowContent)       
       }
     },
@@ -164,6 +172,8 @@
       if (!op) {  
         return  
       }  
+      this.leftTextValue = op.left
+      this.rightTextValue = op.right
       if (!op.left || !op.right) {  
         if (op.left != '') this.leftListRebuild = op.left.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\'/g, "&apos;").replace(/\"/g, "&quot;").split('\n')
         if (op.right != '') this.rightListRebuild = op.right.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\'/g, "&apos;").replace(/\"/g, "&quot;").split('\n')

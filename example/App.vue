@@ -20,7 +20,7 @@
       <li>
         <router-link to="/buttons">buttons</router-link>
       </li>
-      </br>
+      <br>
       <span>表单组件</span>
       <li>
         <router-link to="/Input">1Input</router-link>
@@ -36,6 +36,9 @@
       </li>
       <li>
         <router-link to="/typefield">Typefield</router-link>
+      </li>
+      <li>
+        <router-link to="/typefieldRange">TypefieldRange</router-link>
       </li>
       <li>
         <router-link to="/slider">Slider</router-link>
@@ -79,7 +82,7 @@
       <li>
         <router-link to="/formGird">FormGird</router-link>
       </li>
-      </br>
+      <br>
       <span>视图组件</span>
       <li>
         <router-link to="/alerts">Alerts</router-link>
@@ -114,7 +117,7 @@
       <li>
         <router-link to="/card">Card</router-link>
       </li>
-      </br>
+      <br>
       <span>导航组件</span>
       <li>
         <router-link to="/menu">Menu</router-link>
@@ -131,7 +134,7 @@
       <li>
         <router-link to="/steps">Steps</router-link>
       </li>
-      </br>
+      <br>
       <span>其他组件</span>
       <li>
         <router-link to="/waves">Waves</router-link>

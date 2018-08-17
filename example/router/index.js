@@ -59,6 +59,7 @@ import TransferTable from '../views/TransferTable.vue'
 import FormGird from '../views/FormGird.vue'
 import Rate from '../views/Rate.vue'
 import Textdiff from '../views/Textdiff.vue'
+import TypefieldRange from '../views/TypefieldRange.vue'
 Vue.use(Router)
 
 const router = new Router({
@@ -346,6 +347,11 @@ const router = new Router({
         name: 'Textdiff',
         path: '/textdiff',
         component: Textdiff
+    },
+    {
+        name: 'TypefieldRange',
+        path: '/typefieldRange',
+        component: TypefieldRange
     }
  ]
 })

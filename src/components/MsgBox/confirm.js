@@ -24,7 +24,8 @@ Modal.newInstance = properties => {
           loading: false,
           buttonLoading: false,
           scrollable: false,
-          closable: false
+          closable: false,
+          height: undefined
       }),
       render (h) {
           let footerVNodes = [];
@@ -54,15 +55,24 @@ Modal.newInstance = properties => {
           let body_render;
           if (this.render) {
               body_render = h('div', {
-                  attrs: {
-                      class: `${prefixCls}-body ${prefixCls}-body-render`
-                  }
+                attrs: {
+                    class: `${prefixCls}-body ${prefixCls}-body-render`
+                },
+                style: {
+                    height: this.height + 'px',
+                    overflowY: this.height ? 'auto' : ''
+                }
+
               }, [this.render(h)]);
           } else {
               body_render = h('div', {
-                  attrs: {
-                      class: `${prefixCls}-body`
-                  }
+                attrs: {
+                    class: `${prefixCls}-body`
+                },
+                style: {
+                    height: this.height + 'px',
+                    overflowY: this.height ? 'auto' : ''
+                }
               }, [
                   h('div', {
                       class: this.iconTypeCls
@@ -248,7 +258,9 @@ Modal.newInstance = properties => {
       if ('scrollable' in props) {
         modal.$parent.scrollable = props.scrollable;
       }
-
+      if ('height' in props) {
+        modal.$parent.height = props.height;
+      }
       // notice when component destroy
       modal.$parent.onRemove = props.onRemove;
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="!cy.flag">
+    <div>
       <h1>Select组件</h1>
       <p>选择器支持单选、多选、搜索，以及键盘快捷操作。</p>
       <h1>基础用法</h1>
@@ -9,12 +9,14 @@
       <p>单选时，value只接受字符串和数字类型，多选时，value只接受数组类型</p>
       <Button @on-click="testClick(true)">获取焦点</Button>
       <Button @on-click="testClick(false)">失去焦点</Button>
-      <h-select ref="test"></h-select>
+      <h-select ref="test" placement="bottom-start" :dropWidth="400"></h-select>
       <h-select v-model="model34"
                 style="width:120px"
                 @on-change="change"
                 @on-scroll="scroll"
                 algin="right"
+                placement="top-start"
+                :dropWidth="400"
                 :setDefSelect="true">
         <h-option value="index">
           <a href=http://www.google.com/>link</A>
@@ -270,6 +272,7 @@
       <div>
         <span>远程搜索:</span>
         <h-select width="200"
+                  placement = "top-start"
                   v-model="model13"
                   filterable
                   remote
@@ -288,11 +291,8 @@
                   :value="item.value"
                   :key="item.value">{{ item.value }}</h-option>
       </h-select>
-    </div>
-
-    <div v-if="cy.flag">
-      <!-- 分支select-h-tag-issue-fixed测试完删除 -->
       <h2>test 1</h2>
+      {{cy.value1}}
       <h-select v-model="cy.value1"
                 width="260"
                 multiple
@@ -304,6 +304,7 @@
                   :value="item.value"
                   :key="item.value">{{ item.label }}</h-option>
       </h-select>
+      {{cy.value2}}
       <h-select v-model="cy.value2"
                 width="260"
                 size="large"
@@ -462,9 +463,22 @@ export default {
       model9: '',
       model10: '',
       model11: '',
-      model13: '',
+      model13: 'hangzhou',
       loading1: false,
-      options1: [],
+      options1: [
+        {
+          value: 'hangzhou',
+          label: '杭州市'
+        },
+        {
+          value: 'nanjing',
+          label: '南京市'
+        },
+        {
+          value: 'chongqing',
+          label: '重庆市'
+        }
+      ],
       mu: true,
       mu1: true,
       d: [],
@@ -557,7 +571,7 @@ export default {
         options1: [
           {
             value: '1',
-            label: '<a herf="www.google.com"></a>'
+            label: '&nbsp;<a herf="www.google.com"></a><script><\/script>'
           },
           {
             value: '2',

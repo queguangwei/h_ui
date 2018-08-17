@@ -44,6 +44,9 @@ $transfer-item-prefix-cls: "#{$css-prefix}transfer-list-content-item";
         margin: 0 !important;
         float: right;
       }
+      .head-clear{
+        cursor: pointer;
+      }
     }
 
     &-body{
@@ -76,6 +79,16 @@ $transfer-item-prefix-cls: "#{$css-prefix}transfer-list-content-item";
 
         & > span{
           padding-left: 4px;
+        }
+        &>.delete-icon{
+          display: none;
+          float: right;
+        }
+      }
+      &-item:hover{
+        background: $table-td-hover-bg;
+        &>.delete-icon{
+          display: block;
         }
       }
 

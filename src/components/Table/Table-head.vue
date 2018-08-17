@@ -95,6 +95,8 @@ export default {
     canDrag:Boolean,
     canMove:Boolean,
     headAlgin:String,
+    lastColWidth:[Number,String],
+    minDragWidth:[Number,String],
   },
   data(){
     return{
@@ -219,7 +221,7 @@ export default {
         const tableLeft = tableEl.getBoundingClientRect().left;
         const columnEl = this.$el.querySelector(`th.h-ui-${column.key}`);
         const columnRect = columnEl.getBoundingClientRect();
-        const minLeft = columnRect.left - tableLeft + 30;
+        const minLeft = columnRect.left - tableLeft + this.minDragWidth;
 
         let lastWidth =this.findObj(event,"TR").lastChild.offsetWidth;
         let tableWidth = this.$el.parentElement.offsetWidth-1;
@@ -256,7 +258,7 @@ export default {
             const columnWidth = finalLeft - startColumnLeft;
             let dragWidth = finalLeft - startLeft;//>0为输入框增大，<0为减小
             if (dragWidth>=0) {
-              lastWidth = (lastWidth-dragWidth)>=80?(lastWidth-dragWidth):80;
+              lastWidth = (lastWidth-dragWidth)>=this.lastColWidth?(lastWidth-dragWidth):this.lastColWidth;
             }else{
               if (headWidth+1>=tableWidth) {//此时有滚动条
                 if (headWidth+1+dragWidth<=tableWidth) {

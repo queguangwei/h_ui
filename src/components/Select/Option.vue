@@ -84,6 +84,9 @@
         this.queryChange(val);
       });
       let el = this.$parent.$parent.$el;
+      if (!hasClass(el,'h-select')) {
+        el = this.$parent.$parent.$parent.$el
+      }
       this.multiple=hasClass(el,'h-select-multiple')?true:false;
     },
     destroyed () {

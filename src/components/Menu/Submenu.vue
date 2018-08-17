@@ -4,7 +4,7 @@
       <slot name="title"></slot>
       <Icon :name="subIcon" :class="[prefixCls + '-submenu-title-icon']"></Icon>
     </div>
-    <collapse-transition v-if="mode === 'vertical'">
+    <collapse-transition v-if="mode === 'vertical' &&shrinked">
       <ul :class="[prefixCls]" v-show="opened"><slot></slot></ul>
     </collapse-transition>
     <transition name="slide-up" v-else>
@@ -46,7 +46,8 @@ export default {
       active: false,
       opened: false,
       dropWidth: parseFloat(getStyle(this.$el, 'width')),
-      parent: findComponentsUpward(this, 'Menu')
+      parent: findComponentsUpward(this, 'Menu'),
+      shrinked:true,
     };
   },
   computed: {
@@ -157,6 +158,13 @@ export default {
     this.$on('on-update-active-name', (status) => {
       this.active = status;
     });
+    this.$on('on-collapse-close',()=>{
+      this.shrinked = false;
+      this.opened=false;
+      this.$nextTick(()=>{
+        this.shrinked = true;
+      })
+    })
   }
 };
 </script>

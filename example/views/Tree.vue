@@ -1,7 +1,9 @@
 <template>
   <div>
     <h-row>
-      <h-col span='6'><h2>基本用法</h2><h-tree :data="data1"></h-tree></h-col>
+      <h-col span='6'><h2>基本用法</h2><h-tree :data="test"></h-tree></h-col>
+      <h-button @on-click="ok">赋值</h-button>
+      <h-button @on-click="cancle">取消</h-button>
       <h-col span='6'><h2>显示勾选框</h2><h-tree :data="data2" show-checkbox @on-check-change="checkChnage"></h-tree></h-col>
       <h-col span='6'><h2>异步加载</h2><h-tree :data="data3" :load-data="loadData" show-checkbox></h-tree> </h-col>
       <h-col span='6'><h2>默认展开、选中、勾选和禁用</h2><h-tree :data="data4" show-checkbox multiple></h-tree> </h-col>
@@ -38,6 +40,7 @@
   </div>
 </template>
 <script>
+import {deepCopy} from '../../src/util/tools.js'
   export default {
     data () {
       return {
@@ -436,7 +439,8 @@
         buttonProps: {
           type: 'ghost',
           size: 'small',
-        }
+        },
+        test:[],
       }
     },
     methods: {
@@ -537,6 +541,12 @@
       },
       checkChnage(data){
         console.log(data);
+      },
+      ok(){
+        this.test = this.data1;
+      },
+      cancle(){
+        this.test = [];
       }
     },
     mounted () {

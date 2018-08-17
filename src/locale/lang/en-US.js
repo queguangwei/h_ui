@@ -112,6 +112,10 @@ export default {
             placeholder: 'Select',
             bigData: 'Gigantic',
             smallData: 'Infinitesimal'
+        },
+        typefieldRange:{
+            rPlaceholder:'Lowest value',
+            lPlaceholder:'Highest value'
         }
     }
 };
