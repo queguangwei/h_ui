@@ -612,8 +612,7 @@ let timer
 export function scrollAnimate(obj,curTop,newTop){
   let status=curTop<newTop?true:false;
   let offset = Math.abs(Number(curTop-newTop))
-  let ins = 1000/offset>5?5:1000/offset;
-
+  let ins = 500/offset>1?1:500/offset;
   clearInterval(timer);
   timer = setInterval(()=>{
     curTop = status?curTop+1:curTop-1;

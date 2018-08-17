@@ -4,11 +4,12 @@
       <div :class="[prefixCls + '-header']" v-if="showHeader" ref="header" @mousewheel="handleMouseWheel">
         <table cellspacing="0" cellpadding="0" border="0" :style="headStyles" ref="thead">
           <colgroup>
-            <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, true)">
+            <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, true)" :key="index">
           </colgroup>
           <thead>
             <tr>
               <th v-for="(column, index) in cloneColumns"
+                :key="index"
                 v-on:mousedown="mousedown($event,column,index)" 
                 v-on:mouseout="mouseout($event,column,index)" 
                 v-on:mousemove="mousemove($event,column,index)"
@@ -36,7 +37,7 @@
         <div class="h-simple-content"  ref="content">
           <table cellspacing="0" cellpadding="0" border="0" :style="tableStyle" ref="tbody">
             <colgroup>
-              <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, false)">
+              <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, false)" :key="index">
             </colgroup>
             <tbody :class="[prefixCls + '-tbody']">
              <!-- <template v-for="(row, index) in rebuildData"> -->
@@ -48,7 +49,7 @@
                   @mouseleave.stop="handleMouseOut(row._index)"
                   @click="clickCurrentRowTr($event,row._index,$event)"
                   @dblclick.native.stop="dblclickCurrentRowTr(row._index)">
-                  <td v-for="column in columns" :class="alignCls(column, row)">
+                  <td v-for="column in columns" :class="alignCls(column, row)" :key="column._index">
                     <div :class="classesTd(column)">
                       <template v-if="column.type === 'index'">{{row._index}}</template>
                       <template v-if="column.type === 'selection'">

@@ -103,6 +103,10 @@ export default {
     collapse: {
       type: Boolean,
       default: false
+    },
+    shrinkClose: {
+      type: Boolean,
+      default: false,
     }
     // --collapse--
   },
@@ -193,6 +197,9 @@ export default {
     collapse(value) {
       this.openedMenu = [];
       this.openName = [];
+      if(value && this.shrinkClose){
+        this.broadcast("Submenu", 'on-collapse-close');
+      }
     }
     // --collapse--
   }

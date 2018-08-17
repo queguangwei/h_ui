@@ -2,12 +2,12 @@
   <div>
     <Button @on-click="testClick(true)">获取焦点</Button>
     <Button @on-click="testClick(false)">失去焦点</Button>
-    <h-date-picker type="date" v-model="formItem.date" format="yyyy/MM/dd" :showFormat="true" style="width:180px" :disabled="changeable" ref="test"></h-date-picker>
+    <h-date-picker placement="top-start" v-model="formItem.date" format="yyyy/MM/dd" :showFormat="true" style="width:180px" :disabled="changeable" ref="test"></h-date-picker>
     <span>{{formItem.date}}</span>
     <Button @click = "changedis">改变状态</Button>
     <h-row>
       <h2>基本用法</h2>
-      <p>设置属性 type 为 date 或 daterange 分别显示选择单日和选择范围类型。</br>
+      <p>设置属性 type 为 date 或 daterange 分别显示选择单日和选择范围类型。<br>
         设置属性 placement 可以更改选择器出现的方向</p>
       <h-col span="12">
         <h-date-picker v-model="model1"  format="yyyy-MM-dd" type="date" style="width: 200px" @on-clickout="s" :showFormat="true"></h-date-picker>{{model1}}

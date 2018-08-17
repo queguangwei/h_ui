@@ -99,7 +99,7 @@ export default {
       type: Boolean,
       default: false
     },
-    always:{
+    closeOutClick:{
       type: Boolean,
       default: false
     }
@@ -159,7 +159,7 @@ export default {
       if (this.transfer) this.disableCloseUnderTransfer = true;
     },
     handleClose () {
-      if(this.always)return;
+      if(this.closeOutClick)return;
       if (this.disableCloseUnderTransfer) {
         this.disableCloseUnderTransfer = false;
         return false;

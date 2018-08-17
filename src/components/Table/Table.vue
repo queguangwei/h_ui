@@ -15,6 +15,8 @@
           :canDrag="canDrag &&!!border"
           :canMove="canMove"
           :headAlgin="headAlgin"
+          :lastColWidth="lastColWidth"
+          :minDragWidth="minDragWidth"
           ></table-head>
       </div>
       <div :class="[prefixCls + '-body']" :style="bodyStyle" ref="body" @scroll="handleBodyScroll"
@@ -50,6 +52,7 @@
       </div>
       <div :class="[prefixCls + '-fixed']" :style="fixedTableStyle" v-if="isLeftFixed" ref="leftF">
         <div :class="fixedHeaderClasses" v-if="showHeader">
+          <!-- :canDrag="Boolean(false)" -->
           <table-head
             fixed="left"
             :prefix-cls="prefixCls"
@@ -58,9 +61,12 @@
             :obj-data="objData"
             :columns-width="columnsWidth"
             :data="rebuildData"
-            :canDrag="Boolean(false)"
+            :canDrag="canDrag &&!!border && canDragFixed"
             :canMove="Boolean(false)"
             :headAlgin="headAlgin"
+            :lastColWidth="lastColWidth"
+            :minDragWidth="minDragWidth"
+            @on-change-width="changeWidth"
             ></table-head>
         </div>
         <div :class="[prefixCls + '-fixed-body']" :style="fixedBodyStyle" ref="fixedBody">
@@ -201,6 +207,10 @@ export default {
       type:Boolean,
       default:true
     },
+    canDragFixed:{
+      type:Boolean,
+      default:false
+    },
     canMove:{
       type:Boolean,
       default:false
@@ -236,10 +246,18 @@ export default {
       type:Boolean,
       default:false,
     },
+    lastColWidth:{
+      type:[Number,String],
+      default:80,
+    },
+    minDragWidth:{
+      type:[Number,String],
+      default:30,
+    },
     patibleHeight:{//兼容高度
       type:Boolean,
       default:false,
-    }
+    },
   },
   data () {
     return {
@@ -326,6 +344,7 @@ export default {
     },
     tableStyle () {
       let style = {};
+      // debugger;
       if (this.tableWidth !== 0) {
         let width = '';
         if (this.bodyHeight === 0) {
@@ -515,7 +534,7 @@ export default {
               } else {
                   if (width < 100) width = 100;
               }
-              this.cloneColumns[i]._width = width||'';
+              this.cloneColumns[i]._width = this.hasWidth?width:width||'';
               this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)||this.tableWidth;
               columnsWidth[column._index] = {
                   width: width

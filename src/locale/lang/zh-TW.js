@@ -110,6 +110,10 @@ export default {
             placeholder: '請選擇',
             bigData: '無窮大',
             smallData: '無窮大'
+        },
+        typefieldRange:{
+            rPlaceholder:'最低值',
+            lPlaceholder:'最高值'
         }
     }
 };

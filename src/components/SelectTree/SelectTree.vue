@@ -8,7 +8,7 @@
       @keyup="keyup" 
       @keydown="keydown">
       <!-- 多选时输入框内选中值模拟 -->
-      <div class="h-tag" v-for="(item, index) in selectedMultiple">
+      <div class="h-tag" v-for="(item, index) in selectedMultiple" :key="index">
         <span class="h-tag-text">{{ item }}</span>
         <!-- <Icon name="close" @click.native.stop="removeTag(index)"></Icon>  -->
       </div>
@@ -38,7 +38,7 @@
     </div>
     <transition :name="transitionName">
       <Drop v-show="dropVisible" 
-        :placement="placement" 
+        :placement="fPlacement" 
         :dropWidth="dropWidth"
         :class="dropdownCls"
         :data-transfer="transfer" 
@@ -65,7 +65,7 @@
           <div class="h-selectTree-dropdown-list" ref="list" :style="listStyle"> 
             <Tree ref="tree" :data="baseDate" :show-checkbox="showCheckbox" :multiple="multiple" :checkStrictly="checkStrictly" :showIndeterminate="!checkIndeter" @on-select-change="selectChange" @on-check-change="checkChange" @on-toggle-expand="toggleExpand" v-show="remote && !loading || !remote">
             
-          </Tree>
+            </Tree>
           </div>
           <!-- 远程搜索loading -->
           <ul v-show="loading" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
@@ -139,7 +139,7 @@
       },
       placement: {
         validator (value) {
-            return oneOf(value, ['top', 'bottom']);
+            return oneOf(value, ['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left', 'left-start', 'left-end', 'right', 'right-start', 'right-end']);
         },
         default: 'bottom'
       },
@@ -232,7 +232,8 @@
         baseDate:[],
         tabIndex:0,
         lastquery: '',
-        lastDataCopy: []
+        lastDataCopy: [],
+        fPlacement:this.placement
       }
     },
     computed:{
@@ -330,7 +331,9 @@
           return this.visible && status;
       },
       transitionName () {
-          return this.placement === 'bottom' ? 'slide-up' : 'slide-down';
+        const bottomPlaced = this.fPlacement.match(/^bottom/);
+        return bottomPlaced ? 'slide-up' : 'slide-down';
+          // return this.placement === 'bottom' ? 'slide-up' : 'slide-down';
       },
       multiplestyle () {
         return {
@@ -505,19 +508,6 @@
             this.findQuery(col.children,val);
           }
         });
-        this.$nextTick(()=>{
-            let firstItem = this.$refs.tree.$el.querySelectorAll('.h-tree-title-filterable')[0];
-            if (firstItem) {
-              let top = firstItem.offsetTop;
-              if (this.showBottom) {
-                top = top -30;
-              }
-              scrollAnimate(this.$refs.list,this.$refs.list.scrollTop,top)
-
-            }else{
-              scrollAnimate(this.$refs.list,this.$refs.list.scrollTop,0)
-            }
-          });
       },
       handleInputDelete () {
         if (this.multiple && this.model.length && this.query === '') {
@@ -646,10 +636,23 @@
       },
       query (val) {
         let query = val || this.lastquery
-      //  query改变时触发remote，兼容check选中后（lastquery有值）重复触发
+        //  query改变时触发remote，兼容check选中后（lastquery有值）重复触发
         if (this.remote && this.remoteMethod && (!this.model || this.model.length == 0)) {
           this.remoteMethod(query)
         }
+        this.$nextTick(()=>{
+          let firstItem = this.$refs.tree.$el.querySelectorAll('.h-tree-title-filterable')[0];
+          if (firstItem && this.dropVisible) {
+            let top = firstItem.offsetTop;
+            if (this.showBottom) {
+              top = top -30;
+            }
+            this.$refs.list.scrollTop = top;
+            // scrollAnimate(this.$refs.list,this.$refs.list.scrollTop,top)
+          }else{
+            this.$refs.list.scrollTop = 0;
+          }
+        });
       },
       model () {  
         let backModel = this.arrtoStr(this.model);   
@@ -704,6 +707,9 @@
             this.baseDate =deepCopy(cur);
           }
         }
+      },
+      placement(val){
+        this.fPlacement = val
       }
     },
     mounted(){

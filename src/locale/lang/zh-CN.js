@@ -112,6 +112,10 @@ export default {
         placeholder: '请选择',
         bigData: '无穷大',
         smallData: '无穷小'
+    },
+    typefieldRange:{
+        rPlaceholder:'最低值',
+        lPlaceholder:'最高值'
     }
   }
 };

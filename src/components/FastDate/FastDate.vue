@@ -11,7 +11,7 @@
       :transfer="transfer"
       :format="format"
       :options="options"
-      :placement="placement"
+      :placement="fPlacement"
       @on-change="handleChange"
       @on-clear="handleClear"
       @on-ok="handleOk">
@@ -148,6 +148,7 @@ export default {
       months1:'',
       day1:'',
       yearPlaceholder:'',
+      fPlacement:this.placement,
     }
   },
   computed: {
@@ -517,17 +518,9 @@ export default {
         this.setDate(this.value);
       }
     },
-    // yorMethods(){
-    //   let _this = this;
-    //   _this.dateArr.forEach((col,i)=>{
-    //     let obj={
-    //       renderHeader:(h,params)=>{
-    //         return h('td',_this.dateArr[i])
-    //       }
-    //     };
-    //     _this.columns[i]=obj;
-    //   })
-    // }
+    placement(val){
+      this.fPlacement = val;
+    }
   },
   mounted(){
     if (this.format) {

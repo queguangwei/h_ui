@@ -5,16 +5,16 @@
     <h2>基本用法</h2>
     <h1>algin设置左中右</h1>    
       {{value11}}
-      <h-typefield v-model="value11" integerNum="7" suffixNum="1" type="money" placeholder="金额" bigTips @on-blur="s" style="width:300px" algin="left" ref="test"></h-typefield>
+      <h-typefield v-model="value11" integerNum="17" suffixNum="1" type="money" placeholder="金额" bigTips @on-blur="s" style="width:300px" algin="left" ref="test"></h-typefield>
       <Button @on-click="testClick(true)">获取焦点</Button>
       <Button @on-click="testClick(false)">失去焦点</Button>
       {{value12}}
-      <h-typefield v-model="value12" integerNum="7" suffixNum="1" type="money" placeholder="金额" bigTips @on-blur="s" style="width:300px" algin="center"></h-typefield>
+      <h-typefield v-model="value12" integerNum="17" suffixNum="2" type="money"  @on-blur="s" style="width:300px" algin="center" isround></h-typefield>
       {{value13}}
       <h-typefield v-model="value13" integerNum="7" suffixNum="1" type="money" placeholder="金额" bigTips @on-blur="s" style="width:300px" algin="right"></h-typefield>
     <h1>divided 和 isround设置四舍五入 整数位7位，小数位3为</h1>
     {{value0}}
-      <h-typefield v-model="value0" integerNum="7" suffixNum="3" bigTips @on-blur="s" style="width:300px" isround>
+      <h-typefield v-model="value0" integerNum="16" suffixNum="3" bigTips @on-blur="s" style="width:300px" isround>
         <h-select v-model="select1" slot="prepend" style="width: 80px">
           <h-option value="http">http://</h-option>
           <h-option value="https">https://</h-option>
@@ -26,9 +26,9 @@
         </h-select>
       </h-typefield>
       {{value00}}
-      <h-typefield v-model="value00" integerNum="7" suffixNum="3" bigTips @on-blur="s" divided style="width:300px">
+      <h-typefield v-model="value00" integerNum="16" suffixNum="3" bigTips @on-blur="s" immeDivided style="width:300px">
       </h-typefield>
-      <h-typefield v-model="value000" integerNum="7" suffixNum="3" bigTips @on-blur="s" divided isround style="width:300px">
+      <h-typefield v-model="value000" integerNum="16" suffixNum="3" bigTips @on-blur="s" divided isround style="width:300px">
       </h-typefield>
     {{value}}
     <h1>notFillin设置金额时，当小数点少于指定位数是否需要补0</h1>
@@ -54,11 +54,11 @@
     <h-typefield integerNum="2" suffixNum="2" type="money" placeholder="金额" bigTips isround></h-typefield>
     <h-typefield integerNum="2" suffixNum="3" type="money" placeholder="金额" bigTips isround></h-typefield>
     <h-typefield integerNum="2" suffixNum="4" type="money" placeholder="金额" bigTips isround></h-typefield>
-    </br>
+    <br>
     <h1>卡号</h1>
     <h2>基本用法</h2>
     <h-typefield type="cardNo" placeholder="卡号" bigTips></h-typefield>
-    </br>
+    <br>
     <h1>事件</h1>
     <h-typefield placeholder="焦点事件" @on-blur="bChange" @on-focus="fChange" @on-keyup="kChange"></h-typefield>
   </div>

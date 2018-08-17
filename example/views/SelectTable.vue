@@ -31,7 +31,7 @@
     <h-table-option border :columns="columns1" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange"></h-table-option>
   </h-select-table>
   <h2>左列多列搜索</h2>
-  <h-select-table v-model="model4" :filterable="true" :matchCol="matchCol" matchWay="left">
+  <h-select-table v-model="model4" :filterable="true" :matchCol="matchCol" matchWay="left" placement="top-start">
     <h-table-option border :columns="columns1" :data="data1" @on-select-all="allSelect" @on-select="select" @on-selection-change="selsetChange" :highlightRow="true"></h-table-option>
   </h-select-table>
   <h2>全匹配多列搜索</h2>
@@ -47,7 +47,7 @@
   <h2>左列多列搜索</h2>
   <h-select-table v-model="model7" :filterable="true" showBottom :matchCol="matchCol" matchWay="left" 
   searchHolder="123">
-    <h-table-option border :columns="columns1" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange" :highlightRow="true"></h-table-option showBorder>
+    <h-table-option border :columns="columns1" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange" :highlightRow="true" showBorder></h-table-option>
   </h-select-table>
   <h2>全匹配多列搜索</h2>
   <h-select-table v-model="model8" :filterable="true" showBottom :matchCol="matchCol" matchWay="all" :format="format">

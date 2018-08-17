@@ -14,6 +14,7 @@
       @on-visible-change="vChange"
       :escClose="false"
       top="0"
+      isOriginal
       class-name="vertical-center-modal"
       >
       <p>对话框内容</p>
@@ -21,7 +22,7 @@
       <p>对话框内容</p>
     </h-msg-box>
     <h-button @click="modal2 = true">自定义页头和页脚</h-button>
-    <h-msg-box v-model="modal2" width="360" scrollable isBeyond>
+    <h-msg-box v-model="modal2" width="360" scrollable isBeyond isOriginal>
       <p slot="header" style="color:#f60;text-align:center">
         <h-icon name="prompt"></h-icon>
         <span>删除确认</span>

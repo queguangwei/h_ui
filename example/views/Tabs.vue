@@ -19,8 +19,8 @@
         <h-tooltip content="Top Left 文字提示" placement="bottom" :transfer="true">
             <h-button>上左</h-button>
         </h-tooltip>
-          <h-table :columns="columns1" :data="data1"></h-table>
-          <span slot="loading">我是自定义加载！！！</span>
+          <h-table :columns="columns1" :data="data1">
+            <span slot="loading">我是自定义加载！！！</span>
           </h-table>
       </h-tab-pane>
       <h-tab-pane label="标签三" name="name3">
@@ -46,8 +46,8 @@
         <h-tooltip content="Top Left 文字提示" placement="bottom" :transfer="true">
             <h-button>上左</h-button>
         </h-tooltip>
-          <h-table :columns="columns1" :data="data1"></h-table>
-          <span slot="loading">我是自定义加载！！！</span>
+          <h-table :columns="columns1" :data="data1">
+            <span slot="loading">我是自定义加载！！！</span>
           </h-table>
       </h-tab-pane>
       <h-tab-pane label="标签三" name="name3">
@@ -134,7 +134,7 @@
      <h-button type="ghost" @click="handleTabsAdd" size="small" slot="extra">增加</h-button>
     <h2>不使用动画</h2>
     <p>通过设置属性 animated 为 false 可以禁用动画。</p>
-    <h-tabs :animated="false">
+    <h-tabs :animated="false" panelAbove>
       <h-tab-pane label="标签一"><div>标签一的内容</div><h-button type='error'>鸟</h-button></h-tab-pane>
       <h-tab-pane label="标签二">标签二的内容</h-tab-pane>
       <h-tab-pane label="标签三">标签三的内容</h-tab-Pane>

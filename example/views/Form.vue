@@ -1,7 +1,7 @@
 <template>
     <div>
          <h1>测试</h1>
-        <h-form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="250" label-position='left' :showMessage="true">
+        <h-form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="250" label-position='left' :showMessage="true" placement="top-start">
             <h-form-item label="姓名" prop="name" :label-width="50" :showMessage="true">
               <h-typefield v-model="formValidate.name" type="money" ></h-typefield>
             </h-form-item>   
@@ -889,8 +889,16 @@
                     ]
                 },
                 userValid: [
-                     { required: true, message: '请输入用户名', trigger: 'blur' },
-                     { type: 'string', min: 20, message: '介绍不能少于20字', trigger: 'change' }
+                    {
+                      validator(rule, value, callback) {
+                        setTimeout(() => {
+                          callback([new Error(rule.message)]);
+                        }, 100);
+                      },
+                      message: 'async fails',
+                    },
+                     // { required: true, message: '请输入用户名', trigger: 'blur' },
+                     // { type: 'string', min: 20, message: '介绍不能少于20字', trigger: 'change' }
                 ],
                 
                 ruleCustom: {

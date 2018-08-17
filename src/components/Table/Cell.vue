@@ -96,8 +96,19 @@ export default {
       }
   },
   created () {
-    let render = this.column.render ? 'render' : '';
-    this.renderType = this.column.type || render || 'normal';
+    if (this.column.type === 'index') {
+        this.renderType = 'index';
+    } else if (this.column.type === 'selection') {
+        this.renderType = 'selection';
+    } else if (this.column.type === 'expand') {
+        this.renderType = 'expand';
+    } else if (this.column.render) {
+        this.renderType = 'render';
+    } else if(this.column.type === 'text'){
+        this.renderType = 'text';
+    }else{
+        this.renderType = 'normal';
+    }
   },
   mounted(){
     if (this.showTitle && this.column.ellipsis ) {

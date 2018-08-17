@@ -8,7 +8,7 @@
       @keydown="keydown"
       @click="toggleMenu">
       <!-- 多选时输入框内选中值模拟 -->
-      <div class="h-tag" v-for="(item, index) in selectedMultiple">
+      <div class="h-tag" v-for="(item, index) in selectedMultiple" :key="index">
         <span class="h-tag-text">{{ item.label }}</span>
         <Icon name="close" @click.native.stop="removeTag(index)"></Icon> 
       </div>
@@ -39,7 +39,7 @@
         :dropWidth="dropWidth"
         :multiple="multiple"
         v-show="dropVisible" 
-        :placement="placement"
+        :placement="fPlacement"
         :data-transfer="transfer" 
         ref="dropdown"
         v-transfer-dom>
@@ -252,6 +252,7 @@
         highlightRow:false,
         tabIndex:0,
         selectHead:false,
+        fPlacement:this.placement,
       };
     },
     computed: {
@@ -372,7 +373,9 @@
           }
       },
       transitionName () {
-          return this.placement === 'bottom' ? 'slide-up' : 'slide-down';
+        const bottomPlaced = this.fPlacement.match(/^bottom/);
+        return bottomPlaced ? 'slide-up' : 'slide-down';
+          // return this.placement === 'bottom' ? 'slide-up' : 'slide-down';
       },
       dropVisible () {
         let status = true;         
@@ -724,6 +727,7 @@
         this.findChild((child) => {
           child.$refs.table.changeHover(this.focusIndex-1,true);
         });
+        // this.$refs.list.scrollTop = top;
         scrollAnimate(this.$refs.list,curTop,top);
       },
       resetScrollTop () {
@@ -1037,6 +1041,9 @@
       },
       selectHead(val){
         this.toggleSelect(val);        
+      },
+      placement(val){
+        this.fPlacement = val;
       }
     }
   };

@@ -28,7 +28,7 @@
           @click.native="handleTransferClick"
           v-show="opened"
           :class="{ [prefixCls + '-transfer']: transfer }"
-          :placement="placement"
+          :placement="fPlacement"
           ref="drop"
           :data-transfer="transfer"
           v-transfer-dom>
@@ -183,6 +183,7 @@
         forceInputRerender: 1,
         isFocus: false,
         rangeNum:0,
+        fPlacement:this.placement
       };
     },
     computed: {
@@ -212,7 +213,7 @@
         return icon;
       },
       transition () {
-        const bottomPlaced = this.placement.match(/^bottom/);
+        const bottomPlaced = this.fPlacement.match(/^bottom/);
         return bottomPlaced ? 'slide-up' : 'slide-down';
       },
       visualValue() {
@@ -325,7 +326,6 @@
         this.dispatch('FormItem', 'on-form-change', '');
         this.emitChange();
         this.reset();
-
         setTimeout(
             () => this.onSelectionModeChange(this.type),
             500 // delay to improve dropdown close visual effect
@@ -438,6 +438,9 @@
           // this.$emit('input', now); // to update v-model
         } 
       },
+      placement(val){
+          this.fPlacement = val;
+      }
     },
     beforeDestroy () {
       if (this.picker) {

@@ -1,5 +1,27 @@
+<style type="text/css">
+  .nide span {
+    display: inline-block;
+    height: 36px;
+    line-height: 36px;
+    overflow: auto;
+    margin-bottom: -4px;
+  }
+  .nide span > div{
+    float: right;
+    margin-left: 5px;
+    height: 36px;
+    line-height: 18px;
+  }
+</style>
 <template>
   <div>
+    <h-button-group class="nide">
+        <h-button>增加层次</h-button>
+        <h-button>增加层次</h-button>
+        <h-button><input type="checkbox" name=""><div>过滤没有股<br>票池的层次</div></h-button>
+    </h-button-group>
+
+
     <h1>基础按钮</h1>
     <i class="icon iconfont icon-arrowdownb"></i>
     <button ref="exp" >bbb</button>
@@ -175,5 +197,3 @@ export default {
   },
 }
 </script>
-<style type="text/css">
-</style>

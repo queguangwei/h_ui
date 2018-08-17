@@ -12,7 +12,7 @@
             <div :class="[prefixCls + '-nav-scroll']">
               <div :class="[prefixCls + '-nav']" ref="nav">
                 <div :class="barClasses" :style="barStyle"></div>
-                <div :class="tabCls(item)" v-for="(item, index) in navList" @click="handleChange(index)">
+                <div :class="tabCls(item)" v-for="(item, index) in navList" @click="handleChange(index)" :key="index">
                   <Icon v-if="item.icon !== ''" :name="item.icon">{{item.icon}}</Icon>
                   <Render v-if="item.labelType === 'function'" :render="item.label"></Render>
                   <template v-else>{{ item.label }}</template>
@@ -33,7 +33,7 @@
         <div :class="[prefixCls + '-nav-container']">
           <div :class="[prefixCls + '-nav-right']" ref="nav">
             <!-- <div :class="barClasses" :style="barStyle"></div> -->
-            <div :class="tabCls(item)" v-for="(item, index) in navList" @click="handleChange(index)">
+            <div :class="tabCls(item)" v-for="(item, index) in navList" @click="handleChange(index)" :key="index">
               <Render v-if="item.labelType === 'function'" :render="item.label"></Render>
               <template v-else>{{ item.label }}</template>
               <Icon name="arrow-right-b" size="14"></Icon>
@@ -44,7 +44,7 @@
       <div :class="contentClasses" :style="contentRightStyle"><slot></slot></div>
       <!-- <div :class="contentClasses"><slot></slot></div> -->
     </template>
-    <template v-else>
+    <template v-if="!panelAbove&&!panelRight">
       <div :class="[prefixCls + '-bar']">
         <div :class="[prefixCls + '-nav-container']">
           <div v-if="showArrow" :class="[prefixCls + '-return']" v-on:click = "leftClick($event)" >
@@ -54,7 +54,7 @@
             <div :class="[prefixCls + '-nav-scroll']">
               <div :class="[prefixCls + '-nav']" ref="nav">
                 <div :class="barClasses" :style="barStyle"></div>
-                <div :class="tabCls(item)" v-for="(item, index) in navList" @click="handleChange(index)">
+                <div :class="tabCls(item)" v-for="(item, index) in navList" @click="handleChange(index)" :key="index">
                   <Icon v-if="item.icon !== ''" :name="item.icon">{{item.icon}}</Icon>
                   <Render v-if="item.labelType === 'function'" :render="item.label"></Render>
                   <template v-else>{{ item.label }}</template>
@@ -276,7 +276,9 @@
           const prevTabs = this.$refs.nav.querySelectorAll(`.${prefixCls}-tab`);
           const tab = prevTabs[index];
           // this.barWidth = parseFloat(getStyle(tab, 'width'));
-          this.barWidth = tab.getBoundingClientRect().width;
+          if (tab) {
+            this.barWidth = tab.getBoundingClientRect().width;
+          }
           // if (!!window.ActiveXObject || "ActiveXObject" in window) {
           //   this.barWidth = parseFloat(getStyle(tab, 'width')) + 32;
           // }
@@ -285,7 +287,9 @@
             let offset = 0;
             const gutter = this.size === 'small' ? 0 : 16;
             for (let i = 0; i < index; i++) {
-              offset += prevTabs[i].getBoundingClientRect().width + gutter;
+              if (prevTabs[i]) {
+                 offset += prevTabs[i].getBoundingClientRect().width + gutter;
+              }
               // offset += parseFloat(getStyle(prevTabs[i], 'width')) + gutter;
               // if (!!window.ActiveXObject || "ActiveXObject" in window) {
               //   offset = (parseFloat(getStyle(tab, 'width')) + 32)*(i+1) + gutter*(i+1);

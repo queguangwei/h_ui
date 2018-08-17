@@ -91,9 +91,9 @@ $typefield-prefix-cls: "#{$css-prefix}typefield" ;
       input{
         border: 1px solid $error-color;
       }
-      input:focus{
-        border: 1px solid $error-color;
-      }
+      // input:focus{
+      //   border: 1px solid $error-color;
+      // }
   }
   .#{$input-prefix-cls}-group{
     @include input-group-error();

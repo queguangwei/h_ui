@@ -9,7 +9,7 @@
       @keyup="keyup"
       @keydown="keydown">
       <!-- 多选时输入框内选中值模拟 -->
-      <div class="h-tag" v-for="(item, index) in selectedMultiple">
+      <div class="h-tag" v-for="(item, index) in selectedMultiple" :key="index">
         <span class="h-tag-text">{{ item.label }}</span>
         <Icon name="close" @click.native.stop="removeTag(index)"></Icon>
       </div>
@@ -41,7 +41,7 @@
         :class="dropdownCls"
         v-show="dropVisible"
         :dropWidth="dropWidth"
-        :placement="placement"
+        :placement="fPlacement"
         :data-transfer="transfer"
         ref="dropdown"
         v-transfer-dom>
@@ -159,7 +159,7 @@
       },
       placement: {
           validator (value) {
-              return oneOf(value, ['top', 'bottom']);
+              return oneOf(value, ['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left', 'left-start', 'left-end', 'right', 'right-start', 'right-end']);
           },
           default: 'bottom'
       },
@@ -248,6 +248,7 @@
         tabIndex:0,
         selectHead:false,
         titleTip:'',
+        fPlacement:this.placement
       };
     },
     computed: {
@@ -354,7 +355,9 @@
           }
       },
       transitionName () {
-          return this.placement === 'bottom' ? 'slide-up' : 'slide-down';
+        const bottomPlaced = this.fPlacement.match(/^bottom/);
+        return bottomPlaced ? 'slide-up' : 'slide-down';
+        // return this.placement === 'bottom' ? 'slide-up' : 'slide-down';
       },
       dropVisible () {
         let status = true;
@@ -484,6 +487,7 @@
           this.findChild((child) => {
               options.push({
                 value: child.value,
+                // label: (child.label === undefined) ? child.$el.innerHTML.slice(Number(child.$el.innerHTML.indexOf('</label>')+8)) : child.label
                 label: (child.label === undefined) ? child.$el.innerText.replace(/\s*\w{4,5} /, '') : child.label
               });
               child.index = index++;
@@ -606,6 +610,7 @@
           this.findChild((child) => {
               if (child.value === value) {
                   child.selected = true;
+                  // label: (child.label === undefined) ? child.$el.innerHTML.slice(Number(child.$el.innerHTML.indexOf('</label>')+8)) : child.label
                   label = (child.label === undefined) ? child.$el.innerText.replace(/\s*\w{4,5} /, '') : child.label;
               } else {
                   child.selected = false;
@@ -643,7 +648,8 @@
 
               if (index >= 0) {
                   child.selected = true;
-                  hybridValue[index].label = (child.label === undefined) ? child.$el.innerHTML.slice(Number(child.$el.innerHTML.indexOf('</label>')+8)) : child.label;
+                  hybridValue[index].label  = (child.label === undefined) ? child.$el.innerText.replace(/\s*\w{4,5} /, '') : child.label;
+                  // hybridValue[index].label = (child.label === undefined) ? child.$el.innerHTML.slice(Number(child.$el.innerHTML.indexOf('</label>')+8)) : child.label;
               } else {
                   child.selected = false;
               }
@@ -768,14 +774,15 @@
                 this.findChild((child) => {
                     if (child.value === model) {
                         this.query = child.label === undefined ? child.searchLabel : child.label;
+                        this.query = this.query.trim();
                     }
                 });
                 // 如果删除了搜索词，下拉列表也清空了，所以强制调用一次remoteMethod
-                if (this.remote && this.query !== this.lastQuery) {
-                    this.$nextTick(() => {
-                        this.query = this.lastQuery;
-                    });
-                }
+                // if (this.remote && this.query !== this.lastQuery) {
+                //     this.$nextTick(() => {
+                //         this.query = this.lastQuery.trim();
+                //     });
+                // }
             } else {
                 this.query = '';
             }
@@ -804,11 +811,11 @@
           this.findChild((child) => {
             if (this.model === child.value) {
                 if (child.label) {
-                    this.query = child.label;
+                    this.query = child.label.trim();
                 } else if (child.searchLabel) {
-                    this.query = child.searchLabel;
+                    this.query = child.searchLabel.trim();
                 } else {
-                    this.query = child.value;
+                    this.query = child.value.trim();
                 }
             }
           });
@@ -965,6 +972,7 @@
     },
     beforeDestroy () {
       document.removeEventListener('keydown', this.handleKeydown);
+      this.broadcast('Drop', 'on-destroy-popper');
     },
     watch: {
       value:{
@@ -1042,18 +1050,19 @@
               this.broadcastQuery('');
             }, 300);
           }
-          this.broadcast('Drop', 'on-destroy-popper');
+          // this.broadcast('Drop', 'on-destroy-popper');
         }
       },
       query (val) {
         if (this.remote && this.remoteMethod) {
             if (!this.selectToChangeQuery) {
                 this.$emit('on-query-change', val);
+                if(this.readonly || this.disabled) return false;
                 this.remoteMethod(val);
             }
             this.focusIndex = 0;
             this.findChild(child => {
-                child.isFocus = false;
+              child.isFocus = false;
             });
         } else {
             if (!this.selectToChangeQuery) {
@@ -1113,6 +1122,9 @@
       },
       selectHead(val){
         this.toggleSelect(val);
+      },
+      placement(val){
+        this.fPlacement = val;
       }
     }
   };

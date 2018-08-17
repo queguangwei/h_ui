@@ -18,7 +18,7 @@
 <script>
     import AsyncValidator from 'async-validator';
     import Emitter from '../../mixins/emitter';
-    import { is , findComponentChildren, findComponentParent} from '../../util/tools'
+    import { is , findComponentChildren, findComponentParent,deepCopy, typeOf} from '../../util/tools'
     import Validate from './validate';
     const prefixCls = 'h-form-item';
     const parentPrefixCls = 'h-form';
@@ -246,6 +246,9 @@
                 let model = {};
 
                 model[this.prop] = this.fieldValue;
+                if(typeOf(this.fieldValue)=='array'&&this.fieldValue.length==2 ) {
+                    if(this.fieldValue[0]==''&&this.fieldValue[1]=='') model[this.prop] = [];
+                }
                 validator.validate(model, { firstFields: true }, errors => {
                     this.validateState = !errors ? 'success' : 'error';
                     this.validateMessage = errors ? errors[0].message : '';
@@ -266,7 +269,6 @@
             resetField () {
                 this.validateState = '';
                 this.validateMessage = '';
-
                 let model = this.form.model;
                 let value = this.fieldValue;
                 let path = this.prop;
@@ -308,7 +310,7 @@
                 this.dispatch('Form', 'on-form-item-add', this);
 
                 Object.defineProperty(this, 'initialValue', {
-                    value: this.fieldValue
+                    value: deepCopy(this.fieldValue)
                 });
                 if(this.validRules && this.validRules.length > 0 ) {
                     this.customRules();

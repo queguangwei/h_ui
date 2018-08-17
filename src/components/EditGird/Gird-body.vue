@@ -27,7 +27,7 @@
               :disabled="rowDisabled(row._index)"
               :expanded="rowExpanded(row._index)"
               :showEditInput="showEditInput"
-              :option="option[inx]"
+              :option="selectOption[inx]"
               :treeOption="treeOption[inx]"
               @on-editselect-change="editselectChange"
               @on-editinput-change="editinputChange"
@@ -102,7 +102,7 @@
               :disabled="rowDisabled(row._index)"
               :expanded="rowExpanded(row._index)"
               :showEditInput="showEditInput"
-              :option="option[inx]"
+              :option="selectOption[inx]"
               :treeOption="treeOption[inx]"
             >
               <span v-if="inx==(columns[0].type=='index'?1:0)">
@@ -123,7 +123,7 @@
           :typeName = "typeName"
           :columns = "columns"
           :showEditInput="showEditInput"
-          :option="option[inx]"
+          :option="selectOption[inx]"
           :treeOption="treeOption[inx]"
           :isCheckbox="isCheckbox">
         </Tree-table>
@@ -166,6 +166,7 @@
           treeData:[],
           parent:this.$parent,
           flatState:[],
+          selectOption: this.option
         }
       },
       computed: {
@@ -316,6 +317,12 @@
             this.treeData = this.data;
             this.flatState = this.compileFlatState();
           }
+        },
+        option:{
+          handler (val) {
+            this.selectOption = val
+          },
+          deep: true
         }
       }
     };

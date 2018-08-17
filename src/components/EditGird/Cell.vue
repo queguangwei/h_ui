@@ -41,13 +41,15 @@
           ref="select"
           :placeholder="column.placeholder"
           :not-found-text ="column.notFoundText"
-          :multiple="column.multiple||false" 
+          :multiple="column.multiple || false" 
           :filterable="column.filterable||false"
           :filterMethod="filterMethod()"
-          :remote="column.remote"
+          :remote="column.remote || false"
           :remoteMethod="remoteMethod()"
           :loading ="column.loading"
           :transfer ="column.transfer"
+          :isString="column.multiple||false"
+          :label-in-value="column.multiple||false"
           @on-change = "editselectChange"
           class="canEdit">
           <Option v-for="(item,i) in option" :key="i" :value="item.value" :label="item.label">{{item.label}}</Option>
@@ -166,6 +168,9 @@ export default {
       rule:null,
       baseData:[],
       render:false,
+      currentSelect: [], // 当前选中值
+      selectedLabel: [], // 保存当前select label值
+      isSelectTrans: true //是否将多选value转为label显示，watch normalDate时防止二次执行watch操作
     };
   },
   computed: {
@@ -251,6 +256,7 @@ export default {
             _parent.cloneData[this.index][this.column.key] = this.columnCard;
             break;
           case 'select':
+            if (this.column.multiple) this.isSelectTrans = true
             this.normalDate = this.columnSelect;
             _parent.cloneData[this.index][this.column.key] = this.columnSelect;
             break;
@@ -322,6 +328,7 @@ export default {
       };
     },
     editselectChange(val){
+      this.currentSelect = val
       this.$emit('on-editselect-change',val,this.columnIndex,this.index);
     },
     editinputChange(){
@@ -342,6 +349,50 @@ export default {
           this.$refs[item].visible = false;
         }
       })
+    },
+    strtoArr(val){
+      if (val==''||val==' '||val == null||val == undefined) {
+        return [];
+      }else if(val.length > 0 && val.indexOf(',') == -1){
+        return new Array(val);
+      }else{
+        return val.split(',');
+      }
+    },
+    arrtoStr(val){
+      if (val.length == 0) {
+        return '';
+      }else{
+        return val.join(',');
+      }
+    },
+    initValToLabel () {
+      if (this.column.multiple && this.column.type == 'select' && this.renderType == 'normal' && this.option && this.option.length > 0) {
+        this.selectedLabel = []
+        let selectedArr = this.strtoArr(this.columnSelect)
+        for (let i = 0; i < selectedArr.length; i++) {
+          for (let j = 0; j < this.option.length; j++) {
+            if (selectedArr[i] == this.option[j].value) {
+              this.selectedLabel.push(this.option[j].label)
+            }
+          }
+        }
+        this.isSelectTrans = false
+        this.normalDate = this.selectedLabel.length == 0 && this.normalDate ? this.normalDate : this.arrtoStr(this.selectedLabel)
+      }
+    },
+    selectValToLabel () {
+    // 多选情况下value与label的转换(显示label)      
+      if (this.column.multiple && this.option && this.option.length >0 && this.isSelectTrans && this.column.type == 'select' && this.renderType == 'normal') {
+        // 多选情况下显示label
+        
+        this.selectedLabel = []
+        for (let i = 0; i < this.currentSelect.length; i++) {
+          this.selectedLabel.push(this.currentSelect[i].label)
+        }
+        this.isSelectTrans = false
+        this.normalDate = this.selectedLabel.length == 0 && this.normalDate ? this.normalDate : this.arrtoStr(this.selectedLabel)
+      }
     }
   },
   watch: {
@@ -389,6 +440,18 @@ export default {
     },
     treeOption(val){
       this.baseData = deepCopy(val);
+    },
+    renderType (val) {
+    // 多选情况下value与label的转换(显示label)      
+      this.selectValToLabel()
+    },
+    option: { // option服务端传入，初始化无值
+      handler (val) {
+        if (val && val.length > 0) {
+          this.initValToLabel()
+        }
+      },
+      deep: true
     }
   },
   created () {

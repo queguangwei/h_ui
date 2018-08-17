@@ -17,7 +17,7 @@
 </template>
 <script>
   import TreeNode from './Node.vue';
-  import { findComponentsDownward } from '../../util/tools';
+  import { findComponentsDownward,deepCopy } from '../../util/tools';
   import Emitter from '../../mixins/emitter';
   import Locale from '../../mixins/locale';
 
@@ -73,11 +73,15 @@
         // }
         type: Object,
       },
+      isAlwaysSelect: {
+        type:Boolean,
+        default:false
+      }
     },
     data () {
       return {
         prefixCls: prefixCls,
-        stateTree: this.data,
+        stateTree: deepCopy(this.data),
         flatState: [],
       };
     },
@@ -85,7 +89,7 @@
       data: {
         deep: true,
         handler () {
-            this.stateTree = this.data;
+            this.stateTree = deepCopy(this.data);
             this.flatState = this.compileFlatState();
             this.rebuildTree();
         }
@@ -199,7 +203,9 @@
           const currentSelectedKey = this.flatState.findIndex(obj => obj.node.selected);
           if (currentSelectedKey >= 0 && currentSelectedKey !== nodeKey) this.$set(this.flatState[currentSelectedKey].node, 'selected', false);
         }
-        this.$set(node, 'selected', !node.selected);
+        if(!(this.isAlwaysSelect && node.selected)) {
+          this.$set(node, 'selected', !node.selected);
+        }
         this.$emit('on-select-change', this.getSelectedNodes());
       },
       handleCheck({ checked, nodeKey }) {

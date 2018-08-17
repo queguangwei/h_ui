@@ -8,6 +8,7 @@
   @input="val"
   @blur="blur" 
   @focus="focuser"
+  @keydown="changeValue"
    />
 </template>
 <script>
@@ -33,6 +34,7 @@ export default {
     return{
       currentValue: this.value,
       inputValue: '',
+      curYear:(new Date()).getFullYear(),
     }
   },
   computed:{
@@ -78,6 +80,41 @@ export default {
     },
     focus(){
       this.$refs.inputEl.focus();
+    },
+    changeValue(event){
+      let code = event.keyCode
+      let curValue;
+      if (code == 38){
+        curValue = Number(this.inputValue)+1;
+        switch(this.type){
+          case 'year':
+            if (!this.inputValue) curValue = this.curYear;
+            this.inputValue = curValue<1?this.curYear:curValue;
+            break;
+          case 'months':
+            this.inputValue = curValue>12?1:curValue;
+            break;
+          case 'day':
+            this.inputValue = curValue>31?1:curValue;
+            break;
+        }
+      }
+      if(code == 40){
+        curValue = Number(this.inputValue)-1;
+        switch(this.type){
+          case 'year':
+            if (!this.inputValue) curValue = this.curYear;
+            this.inputValue = curValue;
+            break;
+          case 'months':
+            this.inputValue = curValue<1?12:curValue;
+            break;
+          case 'day':
+            this.inputValue = curValue<1?31:curValue;
+            break;
+        }
+      }
+      this.$emit('input', this.inputValue);
     }
   },
   watch:{

@@ -63,6 +63,7 @@ import TransferTable from './components/TransferTable';
 import FormGird from './components/FormGird';
 import Rate from './components/Rate';
 import Textdiff from './components/Textdiff';
+import TypefieldRange from './components/TypefieldRange';
 
 import locale from './locale';
 
@@ -221,7 +222,9 @@ const h_ui = {
     Rate:Rate,
     hRate:Rate,  
     Textdiff,
-    HTextdiff: Textdiff  
+    hTextdiff: Textdiff,
+    TypefieldRange,
+    hTypefieldRange:TypefieldRange  
 };
 const install = function(Vue, opts = {}) {
     locale.use(opts.locale);
