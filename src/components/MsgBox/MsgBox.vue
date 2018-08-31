@@ -262,7 +262,8 @@ export default {
     on(window, 'resize', this.ScreenRes);
   },
   beforeDestroy () {
-    document.removeEventListener('keydown', this.EscClose);
+    off(document,'keydown',this.EscClose);
+    off(window, 'resize', this.ScreenRes);
     this.removeScrollEffect();
   },
   watch: {

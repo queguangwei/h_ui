@@ -22,7 +22,6 @@
         cloned.ns = vnode.ns;
         cloned.isStatic = vnode.isStatic;
         cloned.key = vnode.key;
-
         return cloned;
       }
 

@@ -27,7 +27,7 @@
           <div :class="[prefixCls + '-arrow']"></div>
           <div :class="[prefixCls + '-inner']" v-if="confirm">
             <div :class="[prefixCls + '-body']">
-              <icon name="feedback"></icon>
+              <icon name="android-alert"></icon>
               <div :class="[prefixCls + '-body-message']"><slot name="title">{{ title }}</slot></div>
             </div>
             <div :class="[prefixCls + '-footer']">

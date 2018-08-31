@@ -34,7 +34,7 @@
         ref="input">
       <!-- 单选时清空按钮 -->
       <Icon name="close" :class="[prefixCls + '-arrow']" v-if="showCloseIcon" @click.native.stop="clearSingleSelect"></Icon>
-      <Icon name="arrowdownb" :class="[prefixCls + '-arrow']" v-if="!remote && isArrow" ref="arrowb"></Icon>
+      <Icon name="unfold" :class="[prefixCls + '-arrow']" v-if="!remote && isArrow" ref="arrowb"></Icon>
     </div>
     <transition :name="transitionName">
       <Drop
@@ -82,6 +82,7 @@
   import clickoutside from '../../directives/clickoutside';
   import TransferDom from '../../directives/transfer-dom';
   import Checkbox from '../Checkbox/Checkbox.vue';
+  import { on, off } from '../../util/dom';
   import { oneOf, findComponentChildren, getScrollBarSize, getStyle,getBarBottom,scrollAnimate} from '../../util/tools';
   import Emitter from '../../mixins/emitter';
   import Locale from '../../mixins/locale';
@@ -400,7 +401,7 @@
         }
       },
       focus(){
-        if (this.disabled) return;
+        if (this.disabled || this.readonly) return;
         this.$nextTick(()=>{
           this.visible = true;
           if (this.filterable) {
@@ -834,9 +835,13 @@
         if (this.remote) {
           if (!this.multiple && this.model !== '') {
             this.selectToChangeQuery = true;
-            if (this.currentLabel === '') this.currentLabel = this.model;
-            this.lastQuery = this.currentLabel;
-            this.query = this.currentLabel;
+            if(this.options.length>0){
+              this.model=this.value;
+            }else{
+              if (this.currentLabel === '') this.currentLabel = this.model;
+              this.lastQuery = this.currentLabel;
+              this.query = this.currentLabel;
+            }
           } else if (this.multiple && this.model.length) {
             if (this.currentLabel.length !== this.model.length) this.currentLabel = this.model;
             this.selectedMultiple = this.model.map((item, index) => {
@@ -880,13 +885,13 @@
       }
       this.modelToQuery();
       // 处理 remote 初始值
-      this.updateLabel();
       this.$nextTick(() => {
           this.broadcastQuery('');
       });
 
       this.updateOptions(true);
-      document.addEventListener('keydown', this.handleKeydown);
+      this.updateLabel();
+      on(document,'keydown', this.handleKeydown);
 
       this.$on('append', () => {
         if (!this.remote) {
@@ -971,7 +976,8 @@
       }
     },
     beforeDestroy () {
-      document.removeEventListener('keydown', this.handleKeydown);
+      off(document,'keydown',this.handleKeydown)
+      // document.removeEventListener('keydown', this.handleKeydown);
       this.broadcast('Drop', 'on-destroy-popper');
     },
     watch: {
@@ -1007,18 +1013,18 @@
         this.$emit('input', backModel);
           this.modelToQuery();
           if (this.multiple) {
-              if (this.slotChangeDuration) {
-                  this.slotChangeDuration = false;
-              } else {
-                  this.updateMultipleSelected();
-              }
+            if (this.slotChangeDuration) {
+                this.slotChangeDuration = false;
+            } else {
+                this.updateMultipleSelected();
+            }
           } else {
-              this.updateSingleSelected();
+            this.updateSingleSelected();
           }
           if (!this.visible && this.filterable) {
-              this.$nextTick(() => {
-                  this.broadcastQuery('');
-              });
+            this.$nextTick(() => {
+                this.broadcastQuery('');
+            });
           }
       },
       visible (val) {

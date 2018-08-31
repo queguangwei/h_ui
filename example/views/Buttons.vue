@@ -1,4 +1,4 @@
-<style type="text/css">
+<style type="text/css" scoped>
   .nide span {
     display: inline-block;
     height: 36px;
@@ -27,11 +27,12 @@
     <button ref="exp" >bbb</button>
     <button @click="fclick">aaa</button>
 
-    <h-button>Default</h-button>
+    <h-button title="123">Default</h-button>
     <h-button ref="btn" type="primary" @click="btnClick" canFocus>Primary</h-button>
     <h-button type="ghost" canFocus>Ghost</h-button>
     <h-button type="dashed" canFocus>Dashed</h-button>
     <h-button type="text" canFocus>Text</h-button>
+    <h-button type="danger" canFocus>Danger</h-button>
     <br><br>
     <h-button type="info">信息按钮</h-button>
     <h-button type="success">成功按钮</h-button>
@@ -55,9 +56,9 @@
     <h-button type="primary">Default</h-button>
     <h-button type="primary" size="small">Small</h-button>
     <br><br>
-    <h-button type="primary" shape="circle" size="large">Large</h-button>
-    <h-button type="primary" shape="circle">Default</h-button>
-    <h-button type="primary" shape="circle" size="small">Small</h-button>
+    <h-button type="primary" shape="circle" size="large" icon="search">Large</h-button>
+    <h-button type="primary" shape="circle" icon="search">Default</h-button>
+    <h-button type="primary" shape="circle" size="small" icon="search">Small</h-button>
     <h1>长按钮</h1>
     <h-button type="success" long>确认提交</h-button>
     <br><br>

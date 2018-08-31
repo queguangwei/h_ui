@@ -5,7 +5,7 @@
       <li>
         <div :class="`${prefixCls}-item`" tabindex="-1" @keydown="handleKeydown">
           <span :class="arrowClasses" @click="handleExpand">
-            <Icon v-if="showArrow" name="play_fill"></Icon>
+            <Icon v-if="showArrow" name="ios-arrow-right"></Icon>
             <Icon v-if="showLoading" name="load-c" class="h-load-loop"></Icon>
           </span>
           <h-checkbox

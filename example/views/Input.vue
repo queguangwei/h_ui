@@ -9,13 +9,15 @@
     <h2>基础用法</h2>
     <p>可以直接设置 style 来改变输入框的宽度</p>
     <h-input v-model="value" placeholder="请输入..." style="width: 300px" @on-keypress="keypress"></h-input>
-    <h-input placeholder="请输入..." style="width: 300px" disabled></h-input>
+    <h-input placeholder="请输入..." icon="unfold" style="width: 300px" disabled></h-input>
     <h-input value="你好呀我不好呀" placeholder="请输入..." style="width: 300px" readonly></h-input>
     <h-input placeholder="请输入..." style="width: 300px" :editable="false"></h-input>
-    <h1>Type</h1>
-    <h-input type="password" style="width: 300px" autofocus></h-input>
-    <h-input type="password" style="width: 300px" disabled></h-input>
-    <h-input type="password" style="width: 300px" readonly></h-input>
+    <h1>Type password密码</h1>
+    <h-input type="password" strengthTip></h-input>
+    
+    <h-input type="password" style="width: 300px" strengthTip tipState="weak"></h-input>
+    <h-input type="password" style="width: 300px" strengthTip tipState="general"></h-input>
+    <h-input type="password" style="width: 300px" strengthTip tipState="complex"></h-input>
     <h2>文本域</h2>
     <p>通过设置属性 type 为 textarea 来使用文本域，用于多行输入。
        通过设置属性 rows 控制文本域默认显示的行数</p>
@@ -31,7 +33,7 @@
     <h-input v-model="value7" type="textarea" :autosize="true" placeholder="请输入..." style="width: 200px" :disabled="true"></h-input>
     <h-input v-model="value8" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..." style="width: 200px"></h-input>
     <h2>输入框尺寸</h2>
-    <h-input v-model="value1" size="large" placeholder="large size" style="width: 300px"></h-input>
+    <h-input v-model="value1" size="large"  placeholder="large size" style="width: 300px"></h-input>
     <h-input v-model="value2" placeholder="default size" style="width: 300px"></h-input>
     <h-input v-model="value3" size="small" placeholder="small size" style="width: 300px"></h-input>
     <h2>带Icon的输入框</h2>

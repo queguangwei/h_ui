@@ -40,6 +40,8 @@
         <Select v-model="columnSelect"  
           ref="select"
           :placeholder="column.placeholder"
+          :placement="column.placement"
+          :dropWidth="column.dropWidth"
           :not-found-text ="column.notFoundText"
           :multiple="column.multiple || false" 
           :filterable="column.filterable||false"
@@ -49,7 +51,7 @@
           :loading ="column.loading"
           :transfer ="column.transfer"
           :isString="column.multiple||false"
-          :label-in-value="column.multiple||false"
+          :label-in-value="column.multiple|| column.singleShowLabel || false"
           @on-change = "editselectChange"
           class="canEdit">
           <Option v-for="(item,i) in option" :key="i" :value="item.value" :label="item.label">{{item.label}}</Option>
@@ -256,7 +258,7 @@ export default {
             _parent.cloneData[this.index][this.column.key] = this.columnCard;
             break;
           case 'select':
-            if (this.column.multiple) this.isSelectTrans = true
+            if (this.column.multiple || this.column.singleShowLabel) this.isSelectTrans = true
             this.normalDate = this.columnSelect;
             _parent.cloneData[this.index][this.column.key] = this.columnSelect;
             break;
@@ -281,11 +283,11 @@ export default {
     },
     dblclickCurrentCell(e){
       e.stopPropagation(); 
-      this.showSlot = false;
       if (this.showEditInput) return;
-      if (!this.column.type ||this.column.type === 'html') {
-        return;
+      if (!this.column.type ||this.column.type === 'html'|| this.column.type === 'text') {
+        return false;
       }else {
+        this.showSlot = false;
         this.renderType = this.column.type;
         this.$nextTick(()=>{
           var inputEl = this.$refs.cell.querySelector('input') || this.$refs.cell.querySelector('textarea');
@@ -328,7 +330,7 @@ export default {
       };
     },
     editselectChange(val){
-      this.currentSelect = val
+      this.currentSelect =this.column.singleShowLabel ? [val] : val
       this.$emit('on-editselect-change',val,this.columnIndex,this.index);
     },
     editinputChange(){
@@ -367,7 +369,8 @@ export default {
       }
     },
     initValToLabel () {
-      if (this.column.multiple && this.column.type == 'select' && this.renderType == 'normal' && this.option && this.option.length > 0) {
+      // 支持单选显示
+      if ((this.column.multiple || this.column.singleShowLabel) && this.column.type == 'select' && this.renderType == 'normal' && this.option && this.option.length > 0) {
         this.selectedLabel = []
         let selectedArr = this.strtoArr(this.columnSelect)
         for (let i = 0; i < selectedArr.length; i++) {
@@ -382,8 +385,9 @@ export default {
       }
     },
     selectValToLabel () {
-    // 多选情况下value与label的转换(显示label)      
-      if (this.column.multiple && this.option && this.option.length >0 && this.isSelectTrans && this.column.type == 'select' && this.renderType == 'normal') {
+    // 多选情况下value与label的转换(显示label)     
+    //  支持单选
+      if ((this.column.multiple || this.column.singleShowLabel) && this.option && this.option.length >0 && this.isSelectTrans && this.column.type == 'select' && this.renderType == 'normal') {
         // 多选情况下显示label
         
         this.selectedLabel = []

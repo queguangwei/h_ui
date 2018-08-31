@@ -16,6 +16,12 @@ $dropdown-item-prefix-cls: "#{$dropdown-prefix-cls}-item";
   &-rel{
     //display: inline-block;
     position: relative;
+    > a{
+
+      > i{
+        vertical-align: middle;
+      }
+    }
   }
 
   &-menu{

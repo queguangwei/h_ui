@@ -32,7 +32,7 @@
     <h-table height="200" :columns="columns1" :data="data2" border :loading="loading" showTitle></h-table>
     <h2>固定列</h2>
     <p>通过给数据 columns 的项设置 fixed 为 left 或 right，可以左右固定需要的列。</p>
-    <h-table border :columns="columns2" :data="data3" :loading="loading" canMove height="250" canDragFixed :minDragWidth="60"></h-table>
+    <h-table border :columns="columns2" showTitle :data="data3" :loading="loading" canMove height="250" canDragFixed :minDragWidth="60"></h-table>
     <h2>固定表头和列</h2>
     <h-table height="300" width="550" border :columns="columns2" :data="data4" :loading="loading" @on-scroll="scroll"></h-table>
     <h2>单选</h2>
@@ -83,6 +83,9 @@
     <h-button type="primary" size="large" @click="exportData(2)"><h-icon name="document"></h-icon> 导出排序和过滤后的数据</h-button>
     <h-button type="primary" size="large" @click="exportData(3)"><h-icon name="document"></h-icon> 导出自定义数据</h-button>
     <h2>测试</h2>
+    <Button @on-click="resetSort">清除排序</Button>
+    <Button @on-click="moveUp">上移</Button>
+    <Button @on-click="moveDown">下移</Button>
     <h-table height="300" :stripe="true" :columns="columns18" :data="data17" border size="small" ref="table" :loading="loading" :highlightRow="true" @on-selection-change="selsetChange">
         <span slot="header">证券日活数据表</span>
         <span slot="footer">恒生电子有限公司提供</span>
@@ -1260,6 +1263,9 @@ export default {
     }
   },
   methods:{
+    resetSort(){
+      this.$refs.table.handleSort('all','normal');
+    },
     changemsg(){
       this.msgbox = !this.msgbox;
     },
@@ -1351,6 +1357,12 @@ export default {
             data: this.data7.filter((data, index) => index < 4)
         });
       }
+    },
+    moveUp(){
+
+    },
+    moveDown(){
+      
     }      
   },
   mounted(){
@@ -1400,10 +1412,20 @@ export default {
         //   sortType:'asc',
         // }
     ]
+  },
+  beforeCreate(){
+    const data1 = (new Date()).valueOf();
+    console.log('开始创建时间'+data1)
+    this.$nextTick(()=>{
+      const data2 = (new Date()).valueOf();
+      console.log('结束创建时间'+data2)
+      console.log('时间差异'+(data2-data1))
+    })
   }
+
 }
 </script>
-<style type="text/css">
+<style type="text/css" scoped>
 .h-table .demo-table-info-row td{
   background-color: #2db7f5 !important;
   color: #fff;

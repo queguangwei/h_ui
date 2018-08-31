@@ -15,7 +15,7 @@
           v-show="filterable && query === ''"
           @click="handleFocus">{{ displayRender }}</div>
         <Icon name="close" :class="[prefixCls + '-arrow']" v-show="showCloseIcon" @click.native.stop="clearSelect"></Icon>
-        <Icon name="arrowdownb" :class="[prefixCls + '-arrow']"></Icon>
+        <Icon name="unfold" :class="[prefixCls + '-arrow']"></Icon>
       </slot>
     </div>
     <transition name="slide-up">

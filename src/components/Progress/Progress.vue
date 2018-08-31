@@ -63,10 +63,10 @@ export default {
       let type = '';
       switch (this.currentStatus) {
         case 'wrong':
-          type = 'close';
+          type = 'delete_fill';
           break;
         case 'success':
-          type = 'right';
+          type = 'success_fill';
           break;
       }
 

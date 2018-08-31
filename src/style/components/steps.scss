@@ -1,9 +1,11 @@
 $steps-prefix-cls: "#{$css-prefix}steps";
-$steps-wait-icon-color: #ccc;
-$steps-wait-title-color: #999;
+$steps-wait-icon-color: #D7DDE4;
+$steps-wait-title-color: #495060;
+$steps-split-color:#DCE1E7;
 $steps-wait-description-color: $steps-wait-title-color;
-$steps-wait-tail-color: $border-color-split;
-$steps-title-color: #666;
+$steps-wait-tail-color: $steps-split-color;
+$steps-title-color: #495060;
+
 
 .#{$steps-prefix-cls} {
   position:relative;
@@ -47,12 +49,18 @@ $steps-title-color: #666;
         }
         .#{$steps-prefix-cls}-title {
             color: $steps-title-color;
+            font-weight: bold;
+            font-family: MicrosoftYaHei-Bold;
+            font-size: 14px; 
+            letter-spacing: 0;
+            text-align: left;
+            line-height: 24px;
         }
         .#{$steps-prefix-cls}-content {
             color: $steps-title-color;
         }
         .#{$steps-prefix-cls}-tail > i {
-            background-color: $border-color-split;
+            background-color: $steps-split-color;
         }
     }
 
@@ -89,12 +97,13 @@ $steps-title-color: #666;
         }
         .#{$steps-prefix-cls}-title {
             color: $error-color;
+            font-weight: bold;
         }
         .#{$steps-prefix-cls}-content {
             color: $error-color;
         }
         .#{$steps-prefix-cls}-tail > i {
-            background-color: $border-color-split;
+            background-color: $steps-split-color;
         }
     }
 
@@ -123,6 +132,7 @@ $steps-title-color: #666;
         &.#{$steps-prefix-cls}-status-process {
             .#{$steps-prefix-cls}-head-inner > .#{$steps-prefix-cls}-icon {
                 color: $primary-color;
+                font-weight: bold;
             }
         }
     }
@@ -143,9 +153,9 @@ $steps-title-color: #666;
   }
   .#{$steps-prefix-cls}-head-inner {
       display: block;
-      width: 26px;
-      height: 26px;
-      line-height: 24px;
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
       margin-right: 8px;
       text-align: center;
       border: 1px solid $steps-wait-icon-color;
@@ -176,8 +186,11 @@ $steps-title-color: #666;
     margin-top: 5px;
       // display: inline;
       .#{$steps-prefix-cls}-content {
+        font-family: 'Microsoft YaHei';
         font-size: 12px;
-        color: #999;
+        color: #7E828A;
+        text-align: left;
+        line-height: 20px;
       }
   }
   .#{$steps-prefix-cls}-custom .#{$steps-prefix-cls}-title{
@@ -189,7 +202,7 @@ $steps-title-color: #666;
       margin-bottom: 4px;
       padding-right: 10px;
       font-size: 14px;
-      font-weight: bold;
+    //   font-weight: bold;
       color: #666;
       // background: #fff;
 
@@ -219,14 +232,14 @@ $steps-title-color: #666;
           width: 100%;
           height: 1px;
           vertical-align: top;
-          background: $border-color-split;
+          background: $steps-split-color;
           border-radius: 1px;
           position: relative;
           &:after {
               content: '';
               width: 0;
               height: 100%;
-              background: $border-color-split;
+              background: $steps-split-color;
               opacity: 0;
               position: absolute;
               top: 0;
@@ -236,9 +249,9 @@ $steps-title-color: #666;
 
   &.#{$steps-prefix-cls}-small {
       .#{$steps-prefix-cls}-head-inner {
-          width: 18px;
-          height: 18px;
-          line-height: 16px;
+          width: 24px;
+          height: 24px;
+          line-height: 22px;
           margin-right: 10px;
           text-align: center;
           border-radius: 50%;

@@ -83,6 +83,7 @@
   import clickoutside from '../../directives/clickoutside';
   import TransferDom from '../../directives/transfer-dom';
   import Checkbox from '../Checkbox/Checkbox.vue';
+  import { on, off } from '../../util/dom';
   import { oneOf, findComponentChildren, getScrollBarSize, getStyle,getBarBottom,scrollAnimate} from '../../util/tools';
   import Emitter from '../../mixins/emitter';
   import Locale from '../../mixins/locale';
@@ -842,7 +843,7 @@
         // return style;
       },
       focus(){
-        if (this.disabled) return;
+        if (this.disabled || this.readonly) return;
         this.$nextTick(()=>{
           this.visible = true;
           if (this.filterable) {
@@ -881,7 +882,8 @@
           this.slotChange();
           this.updateOptions(true, true);
       });
-      document.addEventListener('keydown', this.handleKeydown);
+      on(document, 'keydown', this.handleKeydown);
+      // document.addEventListener('keydown', this.handleKeydown);
       this.$on('on-select-selected', (value,status) => {
         value = this.getFormatValue(value);
         if (this.model === value) {
@@ -941,7 +943,9 @@
       }
     },
     beforeDestroy () {
-      document.removeEventListener('keydown', this.handleKeydown);
+      off(document, 'keydown', this.handleKeydown);
+      // document.removeEventListener('keydown', this.handleKeydown);
+      this.broadcast('Drop', 'on-destroy-popper');
     },
     watch: {
       value:{
@@ -992,7 +996,7 @@
               this.broadcastQuery('');
             }, 300);
           }
-          this.broadcast('Drop', 'on-destroy-popper');
+          // this.broadcast('Drop', 'on-destroy-popper');
         }
       },
       query (val) {

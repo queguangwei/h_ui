@@ -34,7 +34,7 @@
       <!-- 单选时清空按钮 -->
       <Icon name="close" :class="[prefixCls + '-arrow']" v-show="showCloseIcon" @click.native.stop="clearSingleSelect"
       ref="close"></Icon>
-      <Icon name="arrowdownb" :class="[prefixCls + '-arrow']" ref="arrowb" v-if="!remote"></Icon>
+      <Icon name="unfold" :class="[prefixCls + '-arrow']" ref="arrowb" v-if="!remote"></Icon>
     </div>
     <transition :name="transitionName">
       <Drop v-show="dropVisible" 
@@ -601,7 +601,7 @@
         }
       },
       focus(){
-        if (this.disabled) return;
+        if (this.disabled || this.readonly) return;
         this.$nextTick(()=>{
           this.visible = true;
           if (this.filterable) {
@@ -695,7 +695,7 @@
               }
             }
           }
-          this.broadcast('Drop', 'on-destroy-popper');
+          // this.broadcast('Drop', 'on-destroy-popper');
         }
       },
       data : {
@@ -731,6 +731,10 @@
         this.tabIndex = -1;
       }
 
+    },
+    beforeDestroy(){
+      document.removeEventListener('keydown', this.handleKeydown);
+      this.broadcast('Drop', 'on-destroy-popper');
     }
   }
 </script>

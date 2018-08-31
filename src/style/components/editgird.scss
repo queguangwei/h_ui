@@ -44,6 +44,14 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
   }
   table{
     table-layout: fixed;//col need
+    tbody > tr > td > table{
+      //background: #FAFAFA;
+    }
+    tbody .#{$editgird-prefix-cls}-row {
+      // border-top:1px solid #ccc;
+      //background: #FAFAFA;
+
+    }
   }
   &-with-header{
     //border-radius: $border-radius-base $border-radius-base 0 0;
@@ -91,7 +99,7 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
     height: $table-normal-td;
     text-align: left;
     vertical-align: middle;
-    border-bottom: 1px solid $border-color-split;
+    border-bottom: 1px solid #DCE1E7;
   }
 
   th {
@@ -102,7 +110,7 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
     font-size: $font-size-base;
   }
   td{
-    background-color: #fff;
+    background-color: transparent;
     transition: background-color $transition-time $ease-in-out;
   }
 
@@ -126,7 +134,7 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
   }
   &-border{
     th,td{
-        border-right: 1px solid $border-color-split;
+        //border-right: 1px solid $border-color-split;
     }
   }
   &-cell{
@@ -135,6 +143,11 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
     // text-overflow: ellipsis;
     white-space: normal;
     word-break: break-all;
+    font-family: MicrosoftYaHei-Bold;
+    font-size: 14px;
+    color: #2F3542;
+    text-align: left;
+    line-height: 22px;
 
     &-ellipsis {
       word-break: keep-all;
@@ -218,8 +231,13 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
   }
   tr.#{$editgird-prefix-cls}-title-expand{
     td{
-      color: #111;
-      background-color: $table-td-group-bg !important;
+     // color: #111;
+     // background-color: $table-td-group-bg !important;
+      font-family: MicrosoftYaHei-Bold;
+      color: #495060;
+      text-align: left;
+      //line-height: 22px;
+      font-weight: bold;
     }
   }
   &-large {

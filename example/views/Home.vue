@@ -20,8 +20,8 @@
             </h-col>
           </h-row>
         </h-form-item>
-        <h-form-item label="选择器" prop="select" required>
-          <h-select v-model="formItem1.select" filterable>
+        <h-form-item label="选择器" prop="select">
+          <h-select v-model="formItem1.select" filterable disabled>
             <h-option value="beijing">北京市</h-option>
             <h-option value="shanghai">上海市</h-option>
             <h-option value="shenzhen">深圳市</h-option>
@@ -29,11 +29,6 @@
         </h-form-item>
         <h-form-item label="金额框" prop="money" required>
           <h-typefield v-model="formItem1.money">
-           <!--  <h-select v-model="select1" slot="prepend" style="width: 80px">
-              <h-option value="http">http://</h-option>
-              <h-option value="https">https://</h-option>
-            </h-select> -->
-
             <h-select v-model="select2" placeholder="" slot="append" style="width: 45px" :isArrow="false" :clearable="false" :tranfer="true">
             <h-option value="com">.com</h-option>
             <h-option value="org">.org</h-option>
@@ -114,7 +109,7 @@
         </h-form-item>
       </h-form>
     <!-- </h-msg-box> -->
-    <!-- <Button @on-click="changeform1">显示隐藏</Button> -->
+    <Button @on-click="changeform1">显示隐藏</Button>
     <h-select-table v-model="model1" ref="changeDrop">
       <h-table-option border :columns="columns1" :data="data1"></h-table-option>
     </h-select-table>

@@ -1,6 +1,11 @@
 export default {
   i: {
     locale: 'zh-CN',
+    input: {
+        weak: '弱',
+        general: '中',
+        complex: '强'
+    },
     select: {
         placeholder: '请选择',
         searchHolder: '请输入匹配字段',
