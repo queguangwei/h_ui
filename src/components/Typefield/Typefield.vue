@@ -353,6 +353,12 @@ export default {
       let curVal2 =curSuffix?val2+'.'+curSuffix:val2;
       if(this.isround){
         curVal2 = Number(curVal2).toFixed(this.suffixNum);
+      }else{
+        curVal2 = this.fillZero(curVal2,Number(this.suffixNum))
+        if(this.suffixNum>0){
+          var arrNum=curVal2.split(".");
+          curVal2 = arrNum[0]+'.'+arrNum[1].substring(0,this.suffixNum);
+        }
       }
       let arr2 = curVal2.split('.');
       if((arr2.length>0 && arr2[0].length>val2.length)||(arr2.length==0&&curVal2.length>val2.length)){

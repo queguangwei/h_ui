@@ -5,7 +5,7 @@
   </div>
 </template>
 <script>
-var tData= [
+ var tData= [
         {
           id: 1,
           name: '王小明',

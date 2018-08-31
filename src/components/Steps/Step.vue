@@ -2,8 +2,8 @@
   <div :class="wrapClasses" :style="styles">
     <div :class="[prefixCls + '-tail']"><i></i></div>
     <div :class="[prefixCls + '-head']">
-      <div :class="[prefixCls + '-head-inner']">
-        <span v-if="isRemark" @click="handleRemark" :class="remarkClass"></span>
+      <div :class="[prefixCls + '-head-inner']" @click.stop.prevent="handleStepItem">
+        <span v-if="isRemark" @click.stop.prevent="handleRemark" :class="remarkClass"></span>
         <span v-if="!icon && currentStatus != 'finish' && currentStatus != 'error' && (currentStatus == 'process' && processIcon == '' || currentStatus == 'wait' && waitIcon == '')">{{ stepNumber }}</span>
         <span v-else :class="iconClasses"></span>
       </div>
@@ -133,6 +133,9 @@
     methods: {
       handleRemark () {
         this.$emit('on-step-remark')
+      },
+      handleStepItem () {
+        this.$emit('on-current-step', this.stepNumber - 1)
       }
     }
   };

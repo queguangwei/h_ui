@@ -1,7 +1,7 @@
 <template>
   <div :class="itemClasses">
     <div :class="headerClasses" @click="toggle">
-      <Icon name="play_fill"></Icon>
+      <Icon name="ios-arrow-right"></Icon>
       <slot></slot>
     </div>
     <collapse-transition>

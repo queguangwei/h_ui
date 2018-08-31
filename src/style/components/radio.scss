@@ -38,7 +38,7 @@ $radio-group-button-prefix-cls: "#{$radio-group-prefix-cls}-button";
 
 .#{$radio-prefix-cls} {
     display: inline-block;
-    margin-right: 4px;
+    margin-right: 8px;
     white-space: nowrap;
     outline: none;
     position: relative;
@@ -47,7 +47,7 @@ $radio-group-button-prefix-cls: "#{$radio-group-prefix-cls}-button";
     cursor: pointer;
     &:hover {
         .#{$radio-inner-prefix-cls} {
-            border-color: #bcbcbc;
+            border-color: $primary-color;
         }
     }
     &-inner {

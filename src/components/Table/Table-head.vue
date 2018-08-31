@@ -433,6 +433,9 @@ export default {
         this.getLeftWidth();
       }
     }
+  },
+  beforeDestroy(){
+    off(window, 'resize', this.getLeftWidth);
   }
 };
 </script>

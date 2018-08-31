@@ -106,7 +106,7 @@
               :treeOption="treeOption[inx]"
             >
               <span v-if="inx==(columns[0].type=='index'?1:0)">
-                <Icon name = "play_fill" :class="iconClass(row._index)" v-if="row.children && row.children.length!=0" @on-click="toggleExpand(row._index,$event)"></Icon>
+                <Icon name = "ios-arrow-right" :class="iconClass(row._index)" v-if="row.children && row.children.length!=0" @on-click="toggleExpand(row._index,$event)"></Icon>
                 <Checkbox v-if="isCheckbox" :value="row.checked" :indeterminate="row.indeterminate" @on-click="changeSelect(row,$event)"></Checkbox> 
               </span>
             </Cell>
@@ -123,8 +123,8 @@
           :typeName = "typeName"
           :columns = "columns"
           :showEditInput="showEditInput"
-          :option="selectOption[inx]"
-          :treeOption="treeOption[inx]"
+          :option="selectOption[index]"
+          :treeOption="treeOption[index]"
           :isCheckbox="isCheckbox">
         </Tree-table>
         </collapse-transition>

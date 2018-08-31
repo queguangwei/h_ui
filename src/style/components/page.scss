@@ -107,7 +107,7 @@ $page-prefix-cls: "#{$css-prefix}page";
     list-style: none;
     text-align: center;
     cursor: pointer;
-    color: #666;
+    color: #DCE1E7;
     font-family: Arial;
     border: 1px solid $border-color-base;
     border-radius: $btn-border-radius;
@@ -115,9 +115,9 @@ $page-prefix-cls: "#{$css-prefix}page";
   }
   &-prev,
   &-next {
-    background-color: #fff;
+    //background-color: #F7F7F7;
     a {
-      color: #666;
+      color: #495060;
       font-size: 14px;
     }
     &:hover {
@@ -129,6 +129,7 @@ $page-prefix-cls: "#{$css-prefix}page";
   }
   &-disabled {
     cursor: $cursor-disabled;
+    background-color: #F7F7F7;
     a {
       color: #ccc;
     }
@@ -179,6 +180,9 @@ $page-prefix-cls: "#{$css-prefix}page";
     line-height: 24px;
     font-size: 18px;
   }
+  &-simple >&-disabled{
+    background: #fff;
+  }
   &-simple &-simple-pager {
     display: inline-block;
     //float: left;
@@ -206,6 +210,10 @@ $page-prefix-cls: "#{$css-prefix}page";
 }
 
 .#{$page-prefix-cls} {
+  &.mini &-disabled{
+    background-color: #fff;
+  }
+
   &.mini &-total {
     height: $btn-circle-size-small;
     line-height: $btn-circle-size-small;

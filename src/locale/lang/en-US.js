@@ -1,6 +1,11 @@
 export default {
     i: {
         locale: 'en-US',
+        input: {
+            weak: 'weak',
+            general: 'general',
+            complex: 'complex'
+        },
         select: {
             placeholder: 'Select',
             searchHolder: 'Enter Matching Field',

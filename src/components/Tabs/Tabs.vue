@@ -12,7 +12,7 @@
             <div :class="[prefixCls + '-nav-scroll']">
               <div :class="[prefixCls + '-nav']" ref="nav">
                 <div :class="barClasses" :style="barStyle"></div>
-                <div :class="tabCls(item)" v-for="(item, index) in navList" @click="handleChange(index)" :key="index">
+                <div :class="tabCls(item)" v-for="(item, index) in navList" @click="handleChange(index)" :key="index" @dblclick="handleChange(index,true)">
                   <Icon v-if="item.icon !== ''" :name="item.icon">{{item.icon}}</Icon>
                   <Render v-if="item.labelType === 'function'" :render="item.label"></Render>
                   <template v-else>{{ item.label }}</template>
@@ -138,7 +138,11 @@
           return oneOf(value, ['left', 'right']);
         },
         default: 'right'
-      }
+      },
+      isRemoveTab:{
+        type:Boolean,
+        default: true,
+      },
     },
     data () {
       return {
@@ -319,16 +323,22 @@
           }
         ];
       },
-      handleChange (index) {
+      handleChange (index,isDblClick) {
         const nav = this.navList[index];
         if (nav.disabled) return;
         this.activeKey = nav.name;
         this.$emit('input', nav.name);
-        this.$emit('on-click', nav.name);
+        if(isDblClick){
+          this.$emit('on-dblclick', nav.name);          
+        }else{
+          this.$emit('on-click', nav.name);
+        }
       },
-      handleRemove (index) {
+      handleRemove (index,status=false) {
         const tabs = this.getTabs();
         const tab = tabs[index];
+        if(!status) this.$emit('on-before-tab-remove',index,tab.currentName);
+        if(!this.isRemoveTab && !status) return false;
         tab.$destroy();
 
         if (tab.currentName === this.activeKey) {

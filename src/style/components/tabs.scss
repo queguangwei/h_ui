@@ -101,12 +101,6 @@ $tabs-prefix-cls: "#{$css-prefix}tabs";
       clear: both;
     }
 
-    .#{$tabs-prefix-cls}-tab-disabled {
-      pointer-events: none;
-      cursor: default;
-      color: #ccc;
-    }
-
     .#{$tabs-prefix-cls}-tab {
       display: inline-block;
       height: 100%;
@@ -117,6 +111,13 @@ $tabs-prefix-cls: "#{$css-prefix}tabs";
       text-decoration: none;
       position: relative;
       transition: color .3s $ease-in-out;
+
+      font-family: MicrosoftYaHei;
+      font-size: 14px;
+      color: #495060;
+      letter-spacing: 0;
+      text-align: left;
+      line-height: 22px;
 
       &:hover {
           color: $link-hover-color;
@@ -134,6 +135,19 @@ $tabs-prefix-cls: "#{$css-prefix}tabs";
         font-size: 14px;
       }
     }
+    .#{$tabs-prefix-cls}-tab-disabled {
+      pointer-events: none;
+      cursor: default;
+      
+      font-family: MicrosoftYaHei;
+      font-size: 14px;
+      color: #C3CBD6;
+      letter-spacing: 0;
+      text-align: left;
+      line-height: 22px;
+    }
+
+
 
     .#{$tabs-prefix-cls}-tab-active {
       color: $primary-color;

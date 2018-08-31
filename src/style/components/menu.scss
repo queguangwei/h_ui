@@ -52,7 +52,7 @@ $menu-collapse-prefix-cls: "#{$css-prefix}menu-collapse";
     background: #fff;
   }
   &-dark{
-    background: $title-color;
+    background:  #1C232F;
   }
   &-primary{
     background: $primary-color;
@@ -266,10 +266,16 @@ $menu-collapse-prefix-cls: "#{$css-prefix}menu-collapse";
   &-dark.#{$menu-prefix-cls}-vertical &-opened{
     background: $menu-dark-active-bg;
     .#{$menu-prefix-cls}-submenu-title{
-        background: $title-color;
+        // background: $title-color;
+        background:  #1C232F;
+    }
+    .#{$menu-prefix-cls}{
+      // background: $title-color;
+      background:  #0D121E;
     }
     .#{$menu-prefix-cls}-submenu .#{$menu-prefix-cls}-submenu-title {
-       background : $menu-dark-active-bg;
+      //  background : $menu-dark-active-bg;
+      background:  #0D121E;
     }
   }
 
@@ -301,6 +307,7 @@ $menu-collapse-prefix-cls: "#{$css-prefix}menu-collapse";
     z-index: 10;
     width: 240px;
   }
+
   &-collapse.#{$menu-prefix-cls}-dark > &-submenu &{
     background: #1a2229;
   }

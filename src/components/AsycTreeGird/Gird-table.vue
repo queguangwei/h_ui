@@ -790,7 +790,13 @@ export default {
       // autoLoadNodes.forEach(node =>  {
       //   this.$set(node, 'autoLoad', true)
       // })
+    },
+    initResize(){
+      this.$nextTick(() => {
+        this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
+      });
     }
+
   },
   created () {
     if (!this.context) this.currentContext = this.$parent;
@@ -817,11 +823,7 @@ export default {
     });
     //window.addEventListener('resize', this.handleResize, false);
     on(window, 'resize', this.handleResize);
-    on(window, 'resize', ()=>{
-      this.$nextTick(() => {
-        this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
-      });
-    });
+    on(window, 'resize', this.initResize);
     this.$on('on-visible-change', (val) => {
       if (val) {
           this.handleResize();
@@ -831,6 +833,7 @@ export default {
   },
   beforeDestroy () {
       off(window, 'resize', this.handleResize);
+      off(window, 'resize', this.initResize);
   },
   watch: {
       data: {

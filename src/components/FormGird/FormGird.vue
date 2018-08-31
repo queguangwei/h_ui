@@ -5,18 +5,26 @@
       <Button v-if="!isSure" type="ghost" @click="addData">添加</Button>
       <Button v-if="isSure" type="ghost" @click="modifySure">确认</Button>
     </slot>
-    <slot>FormContent</slot>
-    <Table :columns="fColumn" :data="fData" :height="height" :border='border' ref="table" @on-row-click="rowClick"></Table>
+    <slot></slot>
+    <Table  ref="table" 
+      :columns="fColumn" 
+      :data="fData" 
+      :height="height"
+      :stripe="stripe" 
+      :border='border'
+      :showHeader='showHeader'
+      :noDataText="noDataText"
+      :canDrag="canDrag"
+      :loading="loading"
+      highlight-row
+      patibleHeight
+      @on-row-click="rowClick"></Table>
     <slot name="footer">
-      <div :class="footerClass">
-        <Button type="primary" @click="addData">提交</Button>
-        <Button @click="addData">取消</Button>
-      </div>
     </slot>
   </div>
 </template>
 <script>
-import {deepCopy} from '../../util/tools';
+import {deepCopy,typeOf} from '../../util/tools';
 import Table from  '../Table/Table.vue';
 import Button from  '../Button/Button.vue';
 // import FormItem from  '../FormItem.vue';
@@ -31,7 +39,6 @@ export default {
     value:{
       type: Object
     },
-    height:[Number,String],
     data: {
       type: Array,
       default () {
@@ -45,28 +52,57 @@ export default {
       }
     },
     uniqueKey:String,
-    border:Boolean,
     autoClear:{
       type:Boolean,
       default:false,
-    }
+    },
+    height: {
+      type: [Number, String]
+    },
+    stripe: {
+      type: Boolean,
+      default: false
+    },
+    border: {
+      type: Boolean,
+      default: false
+    },
+    showHeader: {
+      type: Boolean,
+      default: true
+    },
+    noDataText: {
+      type: String
+    },
+    canDrag:{
+      type:Boolean,
+      default:true
+    },
+    loading: {
+      type: Boolean,
+      default: false
+    },
   },
   data () {
     return {
-      fColumn:this.columns,
+      fColumn:[{key:'test',title:'测试'}],
       fData:this.data,
       isSure:false,
       curIndex:-1
     };
   },
   computed: {
-    footerClass(){
-      return {};
-    }
   },
   methods: {
     addData(){
       this.fData.push(deepCopy(this.value));
+      if(this.autoClear){
+        let curObj = {};
+        for(let key in this.value){
+          curObj[key] = typeOf(this.value[key]) =='array'?[]:'';
+        }
+        this.$emit('input',curObj);
+      }
     },
     getData(){
       return this.$refs.table.data;
@@ -81,6 +117,7 @@ export default {
       this.curIndex = cur[1];
       this.isSure = true;
       this.$emit('input',curObj);
+      this.$emit('on-row-click',cur)
     },
     changeColumn(){
       let column = deepCopy(this.columns);
@@ -104,14 +141,22 @@ export default {
       this.fColumn = column;
     },
     deleteData(index){
+      let curData = this.fData[index];
       this.fData.splice(index,1);
       this.isSure = false;
       this.curIndex = -1;
+      this.$emit('on-delete',curData)
+    },
+    getAllData(){
+      return JSON.parse(JSON.stringify(this.fData));
     }
   },
   watch: {
     column(){
       this.changeColumn();
+    },
+    data(){
+      this.fData = this.data;
     }
   },
   created () {

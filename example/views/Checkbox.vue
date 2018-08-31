@@ -30,6 +30,7 @@
       <h-checkbox label="西瓜"></h-checkbox>
     </h-checkbox-group>
     {{fruit}}
+    <h-button @on-click="changeFruit"></h-button>
     <h2>不可用</h2>
     <h-checkbox v-model="disabledSingle" disabled>checkbox</h-checkbox>
     {{disabledSingle}}
@@ -90,6 +91,9 @@
 			}
 		},
 		methods:{
+      changeFruit(){
+        this.fruit=['苹果','香蕉'];
+      },
 			handleCheckAll () {
         if (this.indeterminate) {
           this.checkAll = false;

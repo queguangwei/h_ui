@@ -74,13 +74,13 @@ Modal.newInstance = properties => {
                     overflowY: this.height ? 'auto' : ''
                 }
               }, [
-                  h('div', {
-                      class: this.iconTypeCls
-                  }, [
-                      h('i', {
-                          class: this.iconNameCls
-                      })
-                  ]),
+                //   h('div', {
+                //       class: this.iconTypeCls
+                //   }, [
+                //       h('i', {
+                //           class: this.iconNameCls
+                //       })
+                //   ]),
                   h('div', {
                       domProps: {
                           innerHTML: this.body
@@ -115,6 +115,13 @@ Modal.newInstance = properties => {
                       }
                   }, [
                       h('div', {
+                          class: this.iconTypeCls
+                        }, [
+                          h('i', {
+                            class: this.iconNameCls
+                          })
+                      ]),
+                      h('div', {
                           attrs: {
                               class: `${prefixCls}-head-title`
                           },
@@ -135,8 +142,8 @@ Modal.newInstance = properties => {
       computed: {
           iconTypeCls () {
               return [
-                  `${prefixCls}-body-icon`,
-                  `${prefixCls}-body-icon-${this.iconType}`
+                  `${prefixCls}-head-icon`,
+                  `${prefixCls}-head-icon-${this.iconType}`
               ];
           },
           iconNameCls () {

@@ -81,7 +81,7 @@
     </h-tabs>
     <h2>图标</h2>
     <h-tabs>
-      <h-tab-pane label="macOS" icon="clock">
+      <h-tab-pane label="macOS" icon="social-apple">
         <h-button type="primary" @click="modal1 = true">显示对话框</h-button>
         <h-msg-box
           v-model="modal1"
@@ -96,8 +96,8 @@
           <p>对话框内容</p>
         </h-msg-box>
       </h-tab-pane>
-      <h-tab-pane label="Windows" icon="computer">标签二的内容</h-tab-pane>
-      <h-tab-pane label="Linux" icon="editor">标签三的内容</h-tab-Pane>
+      <h-tab-pane label="Windows" icon="social-windows">标签二的内容</h-tab-pane>
+      <h-tab-pane label="Android" icon="social-android">标签三的内容</h-tab-Pane>
     </h-tabs>
     <h2>迷你型</h2>
     <p>设置属性 size 为 small 可以显示为迷你型，只在 type 为 line 时有效。</p>
@@ -116,11 +116,12 @@
     <h2>可关闭 </h2>
     <p>通过设置属性 closable 可以关闭某一项，仅在 type 为 card 时有效。<br>
     需结合 @on-tab-remove 事件手动关闭标签页。</p>
-    <h-tabs type="card" closable @on-tab-remove="handleTabRemove">
+    <h-tabs type="card" ref="closetab" closable @on-tab-remove="handleTabRemove" @on-before-tab-remove="beforeTabRemove" :isRemoveTab="false">
       <h-tab-pane v-if="tab0" label="标签一">标签一的内容</h-tab-pane>
       <h-tab-pane v-if="tab1" label="标签二">标签二的内容</h-tab-pane>
       <h-tab-pane v-if="tab2" label="标签三">标签三的内容</h-tab-Pane>
     </h-tabs>
+    <h-button @on-click="closeTab">关闭tab</h-button>
     <h-tabs type="card" @on-tab-remove="handleTabRemove">
       <h-tab-pane v-if="tab0" label="标签一" closable>标签一的内容</h-tab-pane>
       <h-tab-pane v-if="tab1" label="标签二">标签二的内容</h-tab-pane>
@@ -134,7 +135,7 @@
      <h-button type="ghost" @click="handleTabsAdd" size="small" slot="extra">增加</h-button>
     <h2>不使用动画</h2>
     <p>通过设置属性 animated 为 false 可以禁用动画。</p>
-    <h-tabs :animated="false" panelAbove>
+    <h-tabs :animated="false" panelAbove @on-dblclick="ceshi" @on-click="ceshi1">
       <h-tab-pane label="标签一"><div>标签一的内容</div><h-button type='error'>鸟</h-button></h-tab-pane>
       <h-tab-pane label="标签二">标签二的内容</h-tab-pane>
       <h-tab-pane label="标签三">标签三的内容</h-tab-Pane>
@@ -196,10 +197,24 @@
               }
             ]
           }
-        ],    
+        ],   
+        curIndex:null, 
       }
     },
     methods: {
+      closeTab(){
+        this.$refs.closetab.handleRemove(this.curIndex,true);
+      },
+      beforeTabRemove(val){
+        debugger;
+        this.curIndex = val;
+      },
+      ceshi(val){
+        console.log('双击'+val)
+      },
+      ceshi1(val){
+        console.log('单击'+val)
+      },
       handleTabRemove (name) {
         // alert(name)
         this['tab' + name] = false;

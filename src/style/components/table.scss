@@ -68,7 +68,7 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
   &-title, &-footer{
     height: 42px;
     line-height: 42px;
-    border-bottom: 1px solid $border-color-split;
+    border-bottom: 1px solid $border-color-bottom;
   }
   &-footer{
     border-bottom: none;
@@ -101,7 +101,7 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
     // text-overflow: ellipsis;
     vertical-align: middle;
     //position: relative;
-    border-bottom: 1px solid $border-color-split;
+    border-bottom: 1px solid $border-color-bottom;
   }
 
   th {
@@ -147,7 +147,7 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
   }
   &-border{
     th,td{
-        border-right: 1px solid $border-color-split;
+        border-right: 1px solid $border-color-bottom;
     }
   }
   &-cell{
@@ -209,7 +209,7 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
   {
     tr:nth-child(2n) {
       td{
-          background-color: $table-td-stripe-bg;
+          background-color: $table-td-group-line-bg;
       }
     }
   }
@@ -305,7 +305,7 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
     top: 0;
     right: 0;
     background-color: $table-thead-bg;
-    border-bottom:1px solid $border-color-split;
+    border-bottom:1px solid $border-color-bottom;
     // border-bottom: 1px solid #e6ebf5;
   }
   &-fixed-header{

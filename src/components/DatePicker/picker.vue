@@ -412,7 +412,7 @@
     watch: {
       visible (state) {
         if (state === false){
-          this.$refs.drop.destroy();
+        //   this.$refs.drop.destroy();
           const input = this.$el.querySelector('input');
           if (input) input.blur();
         }
@@ -446,6 +446,7 @@
       if (this.picker) {
         this.picker.$destroy();
       }
+      this.$refs.drop.destroy();
     },
     mounted () {
       const initialValue = this.value;

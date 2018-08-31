@@ -284,6 +284,7 @@ export default {
       headerRealHeight:0,
       selectType:false,
       buttomNum:null,
+      keepAliveFlag: false // 页面是否缓存
     };
   },
   computed: {
@@ -502,6 +503,7 @@ export default {
       
     },
     handleResize () {
+      // keep-alive时，页面改变大小会不断触发resize【非本组件页面】
       this.$nextTick(() => {
         const allWidth = !this.columns.some(cell => !cell.width&&cell.width!==0);    // each column set a width
         if (allWidth) {
@@ -527,8 +529,8 @@ export default {
               if (i === autoWidthIndex) {
                   width = parseInt(getStyle($td[i], 'width')) - 1;
               }
-             // if (column.width) width = column.width||'';
-             // 自适应列在表格宽度较小时显示异常，为自适应列设置最小宽度100（拖拽后除外）
+            // if (column.width) width = column.width||'';
+            // 自适应列在表格宽度较小时显示异常，为自适应列设置最小宽度100（拖拽后除外）
               if (column.width) {
                   width = column.width||'';
               } else {
@@ -550,7 +552,7 @@ export default {
               if (i === autoWidthIndex) {
                 width = parseInt(getStyle($th[i], 'width')) - 1;
               }
-             // 自适应列在表格宽度较小时显示异常，为自适应列设置最小宽度100（拖拽后除外）
+            // 自适应列在表格宽度较小时显示异常，为自适应列设置最小宽度100（拖拽后除外）
               if (column.width) {
                   width = column.width||'';
               } else {
@@ -784,6 +786,13 @@ export default {
         return data;
     },
     handleSort (_index, type) {
+      if(_index=='all'){
+        this.rebuildData = this.makeDataWithFilter();
+        this.cloneColumns.forEach((col,i)=>{
+          this.cloneColumns[i]._sortType = type;
+        })
+        return;
+      }
       let index;
         this.cloneColumns.forEach((col,i) => {
           col._sortType = 'normal'
@@ -1027,9 +1036,24 @@ export default {
         let noHeader = false;
         if ('noHeader' in params) noHeader = params.noHeader;
 
-        const data = Csv(columns, datas, ',', noHeader);
+        // const data = Csv(columns, datas, ',', noHeader);
+        const data = Csv(columns, datas, params, noHeader);
         ExportCsv.download(params.filename, data);
-    }
+    },
+    moveUp(colIndex){
+      const curItem = this.rebuildData[colIndex];
+      this.rebuildData.splice(colIndex,1,)
+      this.rebuildData.splice(colIndex,0,curItem)
+    },
+    moveDown(colIndex){
+      const curItem = this.rebuildData[colIndex];
+      this.rebuildData.splice(colIndex,1,curItem )
+    },
+    initResize(){
+      this.$nextTick(() => {
+        this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
+      });
+    },
   },
   created () {
       if (!this.context) this.currentContext = this.$parent;
@@ -1057,11 +1081,7 @@ export default {
     });
     //window.addEventListener('resize', this.handleResize, false);
     on(window, 'resize', this.handleResize);
-    on(window, 'resize', ()=>{
-      this.$nextTick(() => {
-        this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
-      });
-    });
+    on(window, 'resize', this.initResize);
     this.$on('on-visible-change', (val) => {
         if (val) {
             this.handleResize();
@@ -1069,9 +1089,22 @@ export default {
         }
     });
   },
+  activated() {
+    if (this.keepAliveFlag) {
+      this.handleResize();
+      on(window, 'resize', this.handleResize);
+    }
+    this.keepAliveFlag = true    
+  },
+  deactivated() {
+    if (this.keepAliveFlag) {
+      off(window, 'resize', this.handleResize);
+    }
+  },
   beforeDestroy () {
       //window.removeEventListener('resize', this.handleResize, false);
       off(window, 'resize', this.handleResize);
+      off(window, 'resize', this.initResize);
   },
   watch: {
       data: {
@@ -1087,6 +1120,7 @@ export default {
           setTimeout(() => {
             this.cloneData = deepCopy(this.data);
           }, 0);
+          
         },
         deep: true
       },

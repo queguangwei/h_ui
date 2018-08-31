@@ -1,6 +1,21 @@
 <template>
   <div>
-    <h-form-gird :columns="fcolumn" v-model="formItem1" :data="fdata">
+    <!-- autoClear -->
+    <h-form-gird 
+      ref="formGird"
+      v-model="formItem1" 
+      :columns="fcolumn" 
+      :data="fdata" 
+      height="200" 
+      :autoClear="false" 
+      :stripe="true"
+      :border="true"
+      :showHeader="true"
+      noDataText="123"
+      :canDrag="true"
+      :loading="false"
+      @on-row-click="rowClick"
+      >
       <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus cols="2">
         <h-form-item label="输入框" prop="input" required>
           <h-input v-model="formItem1.input" placeholder="请输入"></h-input>
@@ -59,14 +74,19 @@
           </h-select-table>
         </h-form-item>
         <h-form-item label="下拉树" prop='tree' required>
-          <h-select-tree v-model="formItem1.tree" :first-value="firstValc" style="width:200px" :data="baseData1" placement="top" placeholder="你好"></h-select-tree>
+          <h-select-tree v-model="formItem1.tree" style="width:200px" :data="baseData1" placement="top" placeholder="你好"></h-select-tree>
         </h-form-item>
         <h-form-item label="文本域" prop="textarea" required>
           <h-input v-model="formItem1.textarea" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></h-input>
         </h-form-item>
         </h-form-item>
       </h-form>
+      <div slot="footer">
+        <Button type="primary" >提交</Button>
+        <Button >取消</Button>
+      </div>
     </h-form-gird>
+    <Button @on-click="getAllData"> 获取所有数据</Button>
   </div>
 </template>
 <script>
@@ -74,8 +94,9 @@
     data () {
       return {
         fcolumn:[
-          {key:'input',title:'输入框'},
-          {key:'select',title:'选择器'},
+          {key:'check',title:' ',type:'selection',width:100},
+          {key:'input',title:'输入框',align:'center'},
+          {key:'select',title:'选择器',align:'right'},
           {key:'radio',title:'单选框'},
           {key:'money',title:'金额框'},
           {key:'checkbox',title:'多选框'},
@@ -257,6 +278,9 @@
       }
     },
     methods: {
+      rowClick(e){
+        console.log(e);
+      },
       changeform1(){
         this.changeform = !this.changeform;
       },
@@ -276,6 +300,9 @@
       totest() {
         this.$refs.changeDrop.focus();
       },
+      getAllData(){
+        console.log(this.$refs.formGird.getAllData())
+      }
     }
   }
 </script>

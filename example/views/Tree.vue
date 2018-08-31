@@ -1,9 +1,11 @@
 <template>
   <div>
     <h-row>
-      <h-col span='6'><h2>基本用法</h2><h-tree :data="test"></h-tree></h-col>
+      <h-col span='6'><h2>基本用法</h2><h-tree :data="test" ref="test"></h-tree></h-col>
       <h-button @on-click="ok">赋值</h-button>
       <h-button @on-click="cancle">取消</h-button>
+      <h-button @on-click="select">选择</h-button>
+      <h-button @on-click="select(false)">取消选中</h-button>
       <h-col span='6'><h2>显示勾选框</h2><h-tree :data="data2" show-checkbox @on-check-change="checkChnage"></h-tree></h-col>
       <h-col span='6'><h2>异步加载</h2><h-tree :data="data3" :load-data="loadData" show-checkbox></h-tree> </h-col>
       <h-col span='6'><h2>默认展开、选中、勾选和禁用</h2><h-tree :data="data4" show-checkbox multiple></h-tree> </h-col>
@@ -157,30 +159,37 @@ import {deepCopy} from '../../src/util/tools.js'
         data1: [
           {
             title: 'parent 1',
+            id: '1',
             expand: true,
             children: [
               {
                 title: 'parent 1-1',
+                id: '2',
                 expand: true,
                 disabled:true,
                 children: [
                     {
-                        title: 'leaf 1-1-1'
+                        title: 'leaf 1-1-1',
+                        id: '3',
                     },
                     {
-                        title: 'leaf 1-1-2'
+                        title: 'leaf 1-1-2',
+                        id: '4',
                     }
                 ]
               },
               {
                 title: 'parent 1-2',
+                id: '5',
                 expand: true,
                 children: [
                     {
-                        title: 'leaf 1-2-1'
+                        title: 'leaf 1-2-1',
+                        id: '5',
                     },
                     {
-                        title: 'leaf 1-2-1'
+                        title: 'leaf 1-2-1',
+                        id: '6',
                     }
                 ]
               }
@@ -544,6 +553,9 @@ import {deepCopy} from '../../src/util/tools.js'
       },
       ok(){
         this.test = this.data1;
+      },
+      select(status = true){
+        this.$refs.test.nodeSelect('id','3',status);
       },
       cancle(){
         this.test = [];

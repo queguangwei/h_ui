@@ -779,6 +779,11 @@ export default {
     },
     editAreaBlur(val,i,j){
       this.$emit('on-editarea-blur',val,i,j);
+    },
+    initResize(){
+      this.$nextTick(() => {
+        this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
+      });
     }
   },
   created () {
@@ -798,17 +803,10 @@ export default {
     }
     this.handleResize();
     this.fixedHeader();
-    this.$nextTick(() => {
-      this.ready = true;
-      this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
-    });
+    this.ready = true;
     //window.addEventListener('resize', this.handleResize, false);
     on(window, 'resize', this.handleResize);
-    on(window, 'resize', ()=>{
-      this.$nextTick(() => {
-        this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
-      });
-    });
+    on(window, 'resize', this.initResize);
     this.$on('on-visible-change', (val) => {
       if (val) {
           this.handleResize();
@@ -819,6 +817,7 @@ export default {
   beforeDestroy () {
       //window.removeEventListener('resize', this.handleResize, false);
       off(window, 'resize', this.handleResize);
+      off(window, 'resize', this.initResize);
   },
   watch: {
       data: {

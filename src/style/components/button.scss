@@ -74,6 +74,10 @@ $btn-prefix-cls: "#{$css-prefix}btn";
     @include btn-text;
   }
 
+  &-danger{
+    @include btn-danger;
+  }
+
   &-success {
     @include btn-color($success-color);
   }

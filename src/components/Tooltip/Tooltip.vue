@@ -89,6 +89,9 @@
       if (this.always) {
         this.updatePopper();
       }
+    },
+    beforeDestroy(){
+      // this.destroyPopper();
     }
   };
 </script>
