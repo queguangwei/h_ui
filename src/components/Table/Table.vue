@@ -52,7 +52,6 @@
       </div>
       <div :class="[prefixCls + '-fixed']" :style="fixedTableStyle" v-if="isLeftFixed" ref="leftF">
         <div :class="fixedHeaderClasses" v-if="showHeader">
-          <!-- :canDrag="Boolean(false)" -->
           <table-head
             fixed="left"
             :prefix-cls="prefixCls"
@@ -326,14 +325,6 @@ export default {
         }
       ];
     },
-    fixedHeaderClasses () {
-      return [
-        `${prefixCls}-fixed-header`,
-        {
-          [`${prefixCls}-fixed-header-with-empty`]: !this.rebuildData.length
-        }
-      ];
-    },
     styles () {
       let style = {};
       if (this.height) {
@@ -345,7 +336,6 @@ export default {
     },
     tableStyle () {
       let style = {};
-      // debugger;
       if (this.tableWidth !== 0) {
         let width = '';
         if (this.bodyHeight === 0) {
@@ -368,6 +358,14 @@ export default {
         style.width = `${width}px`;
       }
       return style;
+    },
+    fixedHeaderClasses () {
+      return [
+        `${prefixCls}-fixed-header`,
+        {
+          [`${prefixCls}-fixed-header-with-empty`]: !this.rebuildData.length
+        }
+      ];
     },
     fixedTableStyle () {
       let style = {};
@@ -393,7 +391,8 @@ export default {
         style.marginRight = `${this.scrollBarWidth}px`;
         this.showScroll = true;
       }else{
-        width = width==0?0:width+this.scrollBarWidth;
+        // width = width==0?0:width+this.scrollBarWidth;
+        width = width==0?0:width;
       }
       style.width = `${width}px`;
 
@@ -440,16 +439,16 @@ export default {
       return style;
     },
     leftFixedColumns () {
-        let left = [];
-        let other = [];
-        this.cloneColumns.forEach((col) => {
-            if (col.fixed && col.fixed === 'left') {
-                left.push(col);
-            } else {
-                other.push(col);
-            }
-        });
-        return left.concat(other);
+      let left = [];
+      let other = [];
+      this.cloneColumns.forEach((col) => {
+          if (col.fixed && col.fixed === 'left') {
+              left.push(col);
+          } else {
+              other.push(col);
+          }
+      });
+      return left.concat(other);
     },
     rightFixedColumns () {
         let right = [];
@@ -505,6 +504,7 @@ export default {
     handleResize () {
       // keep-alive时，页面改变大小会不断触发resize【非本组件页面】
       this.$nextTick(() => {
+        if(this.columns.length==0) return;
         const allWidth = !this.columns.some(cell => !cell.width&&cell.width!==0);    // each column set a width
         if (allWidth) {
           this.tableWidth = this.columns.map(cell => cell.width).reduce((a, b) => a + b);
@@ -602,7 +602,7 @@ export default {
           this.objData[_index]._isChecked = true;
           this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
         }
-        if (this.columns[0].type=='selection') {
+        if (this.columns.length>0 && this.columns[0].type=='selection') {
           const selection = this.getSelection();
           const selectionInx = this.getSelection(true);
           this.$emit('on-selection-change', selection,selectionInx);
@@ -1069,9 +1069,9 @@ export default {
     //     this.headerRealHeight=42;
     //   }
     // }
-    if (this.columns[0].type && this.columns[0].type=='selection') {
-      this.selectType=true;
-    }
+    // if (this.columns.length>0 && this.columns[0].type && this.columns[0].type=='selection') {
+    //   this.selectType=true;
+    // }
     this.handleResize();
     this.fixedHeader();
     this.$nextTick(() => {

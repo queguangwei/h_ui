@@ -226,7 +226,7 @@ export default {
           this.inputValue='';
           e.target.value='';
         }else{
-          if (this.notFillin&&this.inputValue) {
+          if (this.notFillin&&this.inputValue&&!this.immeDivided&&!this.divided) {
             this.inputValue = String(parseFloat(this.inputValue));
           }
           if(!this.immeDivided){

@@ -1,6 +1,7 @@
 <template>
   <div :class="wrapClasses" :style="styles" @mouseleave="handleMouseLeave($event)" ref="tableWrap">
     <div :class="classes">
+      <div :class="[prefixCls + '-title']" v-if="showSlotHeader" ref="title"><slot name="header"></slot></div>
       <div :class="[prefixCls + '-header']" v-if="showHeader" ref="header" @mousewheel="handleMouseWheel">
         <gird-head
           ref="thead"
@@ -196,6 +197,7 @@ export default {
       objData: {},     // checkbox or highlight-row
       rebuildData: [],    // for sort or filter
       cloneColumns: this.makeColumns(),
+      showSlotHeader: true,
       bodyHeight: 0,
       bodyRealHeight: 0,
       scrollBarWidth: getScrollBarSize(),
@@ -227,6 +229,7 @@ export default {
         `${prefixCls}-wrapper`,
         {
           [`${prefixCls}-hide`]: !this.ready,
+          [`${prefixCls}-with-header`]: this.showSlotHeader,
         }
       ];
     },
@@ -803,6 +806,7 @@ export default {
     this.rebuildData = this.makeData(deepCopy(this.data), 1, null)
     this.reUpdateData()
     this.objData = this.makeObjData()
+    this.showSlotHeader = this.$slots.header !== undefined;
   },
   mounted () {
     if (this.showHeader) {

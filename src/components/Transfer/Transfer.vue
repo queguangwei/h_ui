@@ -80,7 +80,8 @@
             direcPanel:'right',
           },
           on: {
-            'on-checked-keys-change': this.handleRightCheckedKeysChange
+            'on-checked-keys-change': this.handleRightCheckedKeysChange,
+            'on-right-drag-change': this.handleRightDragChange
           }
         }, clonedVNodes)
       ]);
@@ -311,6 +312,9 @@
       },
       handleRightCheckedKeysChange (keys) {
         this.rightCheckedKeys = keys;
+      },
+      handleRightDragChange (data) {
+        this.$emit('on-right-drag', data)
       }
     },
     watch: {

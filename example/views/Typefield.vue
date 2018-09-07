@@ -8,7 +8,7 @@
       <h-typefield v-model="value11" integerNum="17" suffixNum="2" type="money" placeholder="金额" bigTips @on-blur="s" style="width:300px" algin="left" ref="test"></h-typefield>
       <Button @on-click="testClick(true)">获取焦点</Button>
       <Button @on-click="testClick(false)">失去焦点</Button>
-      {{value12}}
+      {{value12}} 
       <h-typefield v-model="value12" integerNum="17" suffixNum="2" type="money"  @on-blur="s" style="width:300px" algin="center" isround></h-typefield>
       {{value13}}
       <h-typefield v-model="value13" integerNum="7" suffixNum="1" type="money" placeholder="金额" bigTips @on-blur="s" style="width:300px" algin="right"></h-typefield>

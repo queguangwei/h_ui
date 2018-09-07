@@ -48,6 +48,7 @@
         title="Modal Title"
         ok-text="OK"
         :zIndex="10001"
+        :maximize = true
         cancel-text="Cancel">
         <p>Something...</p>
         <p>Something...</p>

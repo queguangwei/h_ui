@@ -82,6 +82,7 @@ export default {
       this.$refs.inputEl.focus();
     },
     changeValue(event){
+      if(this.readonly) return;
       let code = event.keyCode
       let curValue;
       if (code == 38){

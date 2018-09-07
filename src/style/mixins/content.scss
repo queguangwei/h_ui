@@ -34,3 +34,16 @@ $icon-prefix-cls: "#{$css-prefix}icon";
         @include close-base($top, $icon-font-size);
     }
 }
+@mixin content-maximise($top: 0, $icon-font-size: 22px) {
+    font-size: $font-size-small;
+    padding-top: $top;
+    position: absolute;
+    right: 36px;
+    top: 12px;
+    overflow: hidden;
+    cursor: pointer;
+
+    i{
+        font-size: $icon-font-size;
+    }
+}

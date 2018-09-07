@@ -2,7 +2,7 @@
   <div>
     <slot name="header">
       <span></span>
-      <Button v-if="!isSure" type="ghost" @click="addData">添加</Button>
+      <Button v-if="!isSure" type="ghost" @click="validateData">添加</Button>
       <Button v-if="isSure" type="ghost" @click="modifySure">确认</Button>
     </slot>
     <slot></slot>
@@ -19,7 +19,7 @@
       highlight-row
       patibleHeight
       @on-row-click="rowClick"></Table>
-    <slot name="footer">
+     <slot name="footer">
     </slot>
   </div>
 </template>
@@ -86,23 +86,35 @@ export default {
   data () {
     return {
       fColumn:[{key:'test',title:'测试'}],
-      fData:this.data,
+      fData:deepCopy(this.data),
       isSure:false,
-      curIndex:-1
+      curIndex:-1,
+      formfield:null,
     };
   },
   computed: {
   },
   methods: {
+    validateData(){
+      let that = this;
+      this.formfield.validate((valid) => {
+        if (valid) {           
+          that.$hMessage.success('添加成功!');
+          that.addData()
+        } else {
+          that.$hMessage.error('表单验证失败!');
+        }
+      });
+    },
     addData(){
       this.fData.push(deepCopy(this.value));
-      if(this.autoClear){
-        let curObj = {};
-        for(let key in this.value){
-          curObj[key] = typeOf(this.value[key]) =='array'?[]:'';
+        if(this.autoClear){
+          let curObj = {};
+          for(let key in this.value){
+            curObj[key] = typeOf(this.value[key]) =='array'?[]:'';
+          }
+          this.$emit('input',curObj);
         }
-        this.$emit('input',curObj);
-      }
     },
     getData(){
       return this.$refs.table.data;
@@ -163,6 +175,14 @@ export default {
   },
   mounted(){
     this.changeColumn();
+    this.$nextTick(()=>{
+      for(let i=0;i<this.$children.length;i++){
+        if(this.$children[i].$options.name === 'Form'){
+          this.formfield = this.$children[i];
+          break;
+        }
+      }
+    })
   }
 };
 </script>

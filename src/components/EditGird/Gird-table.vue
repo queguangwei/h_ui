@@ -51,6 +51,80 @@
           </tbody>
         </table>
       </div>
+      <div :class="[prefixCls + '-fixed']" :style="fixedTableStyle" v-if="typeName=='editGird' && isLeftFixed" ref="leftF">
+        <div :class="fixedHeaderClasses" v-if="showHeader">
+          <gird-head
+            fixed="left"
+            :prefix-cls="prefixCls"
+            :styleObject="fixedTableStyle"
+            :columns="leftFixedColumns"
+            :obj-data="objData"
+            :columns-width="columnsWidth"
+            :data="rebuildData"
+            ></gird-head>
+        </div>
+        <div :class="[prefixCls + '-fixed-body']" :style="fixedBodyStyle" ref="fixedBody">
+          <gird-body
+            fixed="left"
+            :prefix-cls="prefixCls"
+            :styleObject="fixedTableStyle"
+            :columns="leftFixedColumns"
+            :data="rebuildData"
+            :columns-width="columnsWidth"
+            :rowSelect = "rowSelect"
+            :obj-data="objData"
+            :typeName = "typeName"
+            :showEditInput="showEditInput"
+            :isCheckbox="isCheckbox"
+            :checkStrictly="checkStrictly"
+            :option="options"
+            :treeOption="treeOptions"
+            @on-select-change="selectChange"
+            @on-editselect-change="editselectChange"
+            @on-editinput-change="editinputChange"
+            @on-editinput-blur="editinputBlur"
+            @on-editarea-change="editAreaChange"
+            @on-editarea-blur="editAreaBlur"
+            ></gird-body>
+        </div>
+      </div>
+      <div :class="[prefixCls + '-fixed-right']" :style="fixedRightTableStyle" v-if="typeName=='editGird'&&isRightFixed" ref="rightF">
+        <div :class="fixedHeaderClasses" v-if="showHeader">
+          <gird-head
+            fixed="right"
+            :prefix-cls="prefixCls"
+            :styleObject="fixedRightTableStyle"
+            :columns="rightFixedColumns"
+            :obj-data="objData"
+            :columns-width="columnsWidth"
+            :data="rebuildData"
+            ></gird-head>
+        </div>
+        <div :class="[prefixCls + '-fixed-body']" :style="fixedBodyStyle" ref="fixedRightBody">
+          <gird-body
+            fixed="right"
+            :prefix-cls="prefixCls"
+            :styleObject="fixedRightTableStyle"
+            :columns="rightFixedColumns"
+            :data="rebuildData"
+            :columns-width="columnsWidth"
+            :rowSelect = "rowSelect"
+            :obj-data="objData"
+            :typeName = "typeName"
+            :showEditInput="showEditInput"
+            :isCheckbox="isCheckbox"
+            :checkStrictly="checkStrictly"
+            :option="options"
+            :treeOption="treeOptions"
+            @on-select-change="selectChange"
+            @on-editselect-change="editselectChange"
+            @on-editinput-change="editinputChange"
+            @on-editinput-blur="editinputBlur"
+            @on-editarea-change="editAreaChange"
+            @on-editarea-blur="editAreaBlur"
+            ></gird-body>
+        </div>
+      </div>
     </div>
     <Spin fix size="large" v-if="loading">
       <slot name="loading">
@@ -285,6 +359,88 @@ export default {
       }
       return style;
     },
+    fixedBodyStyle () {
+      let style = {};
+      if (this.bodyHeight !== 0) {
+        let height =this.bodyHeight-this.scrollBarWidth;
+        if (this.tableWidth < this.initWidth+1) {
+          height = height + this.scrollBarWidth-1;
+        }
+        style.height = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`;
+      }
+      return style;
+    },
+    fixedTableStyle () {
+      let style = {};
+      let width = 0;
+      this.leftFixedColumns.forEach((col) => {
+        if (col.fixed && col.fixed === 'left') width += col._width;
+      });
+      style.width = `${width}px`;
+      return style;
+    },
+    fixedRightTableStyle () {
+      let style = {};
+      let width = 0;
+      let height = 0;
+      this.rightFixedColumns.forEach((col) => {
+        if (col.fixed && col.fixed === 'right') width += col._width;
+      });
+      if (this.bodyHeight !== 0) {
+        height = (this.isLeftFixed || this.isRightFixed) ? this.bodyHeight + this.scrollBarWidth : this.bodyHeight;
+        height = this.bodyHeight;
+      }
+      if (height && height < this.bodyRealHeight) {
+        style.marginRight = `${this.scrollBarWidth}px`;
+        this.showScroll = true;
+      }else{
+        // width = width==0?0:width+this.scrollBarWidth;
+        width = width==0?0:width;
+      }
+      style.width = `${width}px`;
+
+      return style;
+    },
+    fixedRightPatchStyle(){
+      let style = {};
+      let width = this.scrollBarWidth;
+      let height = this.headerRealHeight;
+      let top = parseInt(getStyle(this.$refs.title, 'height')) || 0;
+      style.width = `${width}px`;
+      style.height = `${height}px`;
+      style.top = `${top}px`;
+      return style;
+    },
+    leftFixedColumns () {
+        let left = [];
+        let other = [];
+        this.cloneColumns.forEach((col) => {
+            if (col.fixed && col.fixed === 'left') {
+                left.push(col);
+            } else {
+                other.push(col);
+            }
+        });
+        return left.concat(other);
+    },
+    rightFixedColumns () {
+        let right = [];
+        let other = [];
+        this.cloneColumns.forEach((col) => {
+            if (col.fixed && col.fixed === 'right') {
+                right.push(col);
+            } else {
+                other.push(col);
+            }
+        });
+        return right.concat(other);
+    },
+    isLeftFixed () {
+        return this.columns.some(col => col.fixed && col.fixed === 'left');
+    },
+    isRightFixed () {
+        return this.columns.some(col => col.fixed && col.fixed === 'right');
+    }
 
   },
   methods: {
@@ -731,6 +887,8 @@ export default {
     makeColumns () {
       var that = this;
       let columns = deepCopy(this.columns);
+      let left = [];
+      let right = [];
       let center = [];
 
       columns.forEach((column, index) => {
@@ -748,10 +906,16 @@ export default {
         column._filterChecked = [];
 
         if (!column.hiddenCol) {
-          center.push(column);
+          if (column.fixed && column.fixed === 'left') {
+              left.push(column);
+          } else if (column.fixed && column.fixed === 'right') {
+              right.push(column);
+          } else {
+              center.push(column);
+          }
         }
       });
-      return center;
+      return left.concat(center).concat(right);
     },
     getTreeSelection(){
       let selection = []
@@ -784,6 +948,13 @@ export default {
       this.$nextTick(() => {
         this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
       });
+    },
+    getSelectType(){
+      if(this.columns.length>0) return;
+      debugger;
+      if (this.columns[0].type && this.columns[0].type=='selection') {
+        this.selectType=true;
+      }
     }
   },
   created () {
@@ -798,9 +969,7 @@ export default {
         this.headerRealHeight=42;
       }
     }
-    if (this.columns[0].type && this.columns[0].type=='selection') {
-      this.selectType=true;
-    }
+    this.getSelectType();
     this.handleResize();
     this.fixedHeader();
     this.ready = true;
@@ -842,6 +1011,7 @@ export default {
               this.cloneColumns = this.makeColumns();
               this.rebuildData = this.makeDataWithSortAndFilter();
               this.handleResize();
+              this.getSelectType();
           },
           deep: true
       },

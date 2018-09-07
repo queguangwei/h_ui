@@ -10,6 +10,7 @@
           v-on:mousedown="mousedown($event,column,index)" 
           v-on:mouseout="mouseout($event,column,index)" 
           v-on:mousemove="mousemove($event,column,index)"
+          :key="index"
           :class="alignCls(column)" 
           >
           <div :class="cellClasses(column)">
@@ -35,7 +36,7 @@
                 <span :class="[prefixCls + '-filter']">
                   <Icon name="keyboard" @mousedown.native.stop="handleClick" :class="{on: column._isFiltered}"></Icon>
                 </span>
-                <div slot="content" :class="[prefixCls + '-filter-list']" v-if="column._filterMultiple">
+                <div slot="content" :class="[prefixCls + '-filter-list']" v-if="column._filterMultiple" @mousedown="handleClick">
                   <div :class="[prefixCls + '-filter-list-item']">
                     <checkbox-group v-model="column._filterChecked">
                       <checkbox v-for="(item,i) in column.filters" :key="column._columnKey+i" :label="item.value">{{ item.label }}</checkbox>
@@ -46,7 +47,7 @@
                     <h-button type="text" size="small" @click.native="handleReset(index)">{{ t('i.table.resetFilter') }}</h-button>
                   </div>
                 </div>
-                <div slot="content" :class="[prefixCls + '-filter-list']" v-else>
+                <div slot="content" :class="[prefixCls + '-filter-list']" v-else @mousedown="handleClick">
                   <ul :class="[prefixCls + '-filter-list-single']">
                     <li
                       :class="itemAllClasses(column)"

@@ -106,7 +106,8 @@
           `${prefixCls}-title`,
           {
             [`${prefixCls}-title-selected`]: this.data.selected,
-            [`${prefixCls}-title-filterable`]: this.data.filterable
+            [`${prefixCls}-title-filterable`]: this.data.filterable,
+            [`${prefixCls}-title-parent`]: this.showArrow,
           }
         ];
       },

@@ -63,7 +63,7 @@
                 ref="input">
           </div>
           <div class="h-selectTree-dropdown-list" ref="list" :style="listStyle"> 
-            <Tree ref="tree" :data="baseDate" :show-checkbox="showCheckbox" :multiple="multiple" :checkStrictly="checkStrictly" :showIndeterminate="!checkIndeter" @on-select-change="selectChange" @on-check-change="checkChange" @on-toggle-expand="toggleExpand" v-show="remote && !loading || !remote">
+            <Tree ref="tree" :data="baseDate" :show-checkbox="showCheckbox" :multiple="multiple" :checkStrictly="checkStrictly" :showIndeterminate="!checkIndeter" @on-select-change="selectChange" @on-check-change="checkChange" @on-toggle-expand="toggleExpand" v-show="remote && !loading || !remote" isFormSelect>
             
             </Tree>
           </div>
@@ -449,6 +449,7 @@
         this.$emit('on-toggle-expand', val);
       },
       clearSingleSelect () {
+        let _this = this;
         if (this.disabled || this.readonly || !this.editable) return false;
         if (this.showCloseIcon) {
           resetDate(this.baseDate);
@@ -463,19 +464,19 @@
             this.findQuery(this.baseDate,'');
           }
           if (this.remote) {
-            this.lastquery = ''
+            this.lastquery = '';
           }
         }
         function resetDate(data) {
           data.forEach((col,i)=>{
             if (!!col.checked) {
-              col.checked = false;
+              _this.$set(col,'checked',false)
             }
             if(!!col.selected){
-              col.selected = false;
+              _this.$set(col,'selected',false)
             }
             if(!!col.indeterminate){
-              col.indeterminate = false;
+              _this.$set(col,'indeterminate',false)
             }
             if (col.children && col.children.length>0) {
               resetDate(col.children);

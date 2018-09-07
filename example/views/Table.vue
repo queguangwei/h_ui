@@ -56,7 +56,7 @@
     <p>通过给 columns 数据的项，设置 filters，可进行筛选</p>
     <p>必须指定一个筛选函数 filterMethod 才可以进行筛选，filterMethod 传入两个参数 value 和 row，详见 Demo 和 API。</p>
     <p>如果指定 filterMultiple: false，则使用单选，默认为多选。</p>
-    <h-table border :columns="columns6" :data="data5" no-filtered-data-text="筛选后结果为空123" :loading="loading"></h-table>
+    <h-table border :columns="columns6" :data="data5" no-filtered-data-text="筛选后结果为空123" :loading="loading" canMove></h-table>
     <h2>自定义列模板</h2>
     <p>通过给 columns 数据的项，设置一个函数 render，可以自定义渲染当前列，包括渲染自定义组件，它基于 Vue 的 Render 函数。</p>
     <p>render 函数传入两个参数，第一个是 h，第二个是对象，包含 row、column 和 index，分别指当前单元格数据，当前列数据，当前是第几行。</p>

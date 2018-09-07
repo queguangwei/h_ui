@@ -2,25 +2,25 @@
   <div>
     <h2>基础</h2>
     <h3>单选</h3>
-    <h-edit-gird :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" ref="editGird" stripe :show-header="false" :loading="loading"@on-expand="expand" :option="options1" :treeOption="treeOption" @on-editselect-change="selectchange" @on-editinput-change="selectchange" @on-editinput-blur="selectchange" @on-editarea-change="selectchange" @on-editarea-blur="selectchange" showEditInput>
+    <h-edit-gird :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" ref="editGird" stripe :loading="loading" @on-expand="expand" :option="options1" :treeOption="treeOption" @on-editselect-change="selectchange" @on-editinput-change="selectchange" @on-editinput-blur="selectchange" @on-editarea-change="selectchange" @on-editarea-blur="selectchange" showEditInput>
       <p slot='loading'>我是自定义loading</p>
     </h-edit-gird>
     <Button @click="getData">获取数据</Button>
     <Button @click="setLoad">切换loading</Button>
     <p>小</p>
-    <h-edit-gird :columns="columns1" :data="data1" @on-current-change="click1" @on-row-click="click1" ref="editGird" width="800" no-data-text="你好呀" :loading="loading"></h-edit-gird>
+    <!-- <h-edit-gird :columns="columns1" :data="data1" @on-current-change="click1" @on-row-click="click1" ref="editGird" width="800" no-data-text="你好呀" :loading="loading"></h-edit-gird>
     <p>中</p>
     <h-edit-gird :columns="columns1" :data="data1" size="large" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" @on-select-cancel="click1" ref="editGird" stripe :loading="loading"></h-edit-gird>
-    <p>大</p>
+    <p>大</p> -->
 <!--     <Button @click="getDate">获取数据</Button>
     <Button @click = "addDate">新增一行</Button> -->
-    <h3>多选</h3>
+    <!-- <h3>多选</h3>
     <h-edit-gird :columns="columns4" :data="data1" :showEditInput="true" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-select-cancel="select" height="200"></h-edit-gird>
     <h-edit-gird :columns="columns4" :data="data1" @on-select-all="allSelect" @on-selection-change="selsetChange" height="200" :loading="loading"></h-edit-gird>
     <h3>直接显示编辑框</h3>
     <h-edit-gird :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" :showEditInput="true" height="200" :loading="loading"></h-edit-gird>
     <Button @click="setLoad">切换loading</Button>
-    <Button @click="addDate">添加一行</Button>
+    <Button @click="addDate">添加一行</Button> -->
   </div>
 </template>
 
@@ -233,6 +233,7 @@ export default {
       columns1: [
         {
           type: 'expand',
+          fixed: 'left',
           width: 50,
           render: (h, params) => {
             return h(TexpandRow, {
@@ -271,6 +272,7 @@ export default {
         {
           width:100,
           typeWidth:0,
+          fixed:'right',
           render: (h, params) => {
             return h('div', [
               h('h-button', {
@@ -336,6 +338,8 @@ export default {
           key: 'city',
           multiple:false,
           option:[],
+          placement:'top',
+          dropWidth:300,
           rule:{ required: true, message: '请选择城市', trigger: 'blur,change' }
         },
         {
@@ -460,7 +464,7 @@ export default {
   },
   mounted(){
     // this.data1=tData
-    this.treeOption[10]=[{
+    this.treeOption[10]=this.treeOption[9]=[{
               expand: true,
               title: 'parent 1',
               children: [{
@@ -481,7 +485,7 @@ export default {
                 }]
               }]
             }]
-    this.options1[7]=[{value:'Alabama',label:'Alabama'},{value:'beijing',label:'北京'},{value:'Delaware',label:'Delaware'}]
+    this.options1[7] =this.options1[6]=[{value:'Alabama',label:'Alabama'},{value:'beijing',label:'北京'},{value:'Delaware',label:'Delaware'}]
     const list = this.list.map(item => {
         return {
             value: item,

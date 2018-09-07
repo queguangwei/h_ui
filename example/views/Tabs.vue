@@ -122,11 +122,11 @@
       <h-tab-pane v-if="tab2" label="标签三">标签三的内容</h-tab-Pane>
     </h-tabs>
     <h-button @on-click="closeTab">关闭tab</h-button>
-    <h-tabs type="card" @on-tab-remove="handleTabRemove">
+    <!-- <h-tabs type="card" @on-tab-remove="handleTabRemove">
       <h-tab-pane v-if="tab0" label="标签一" closable>标签一的内容</h-tab-pane>
       <h-tab-pane v-if="tab1" label="标签二">标签二的内容</h-tab-pane>
       <h-tab-pane v-if="tab2" label="标签三">标签三的内容</h-tab-Pane>
-    </h-tabs>
+    </h-tabs> -->
     <h2>附加内容 </h2>
     <p>设置 slot extra 可以在页签右边添加附加操作。</p>
     <h-tabs type="card" closable @on-tab-remove="handleTabRemove1" showArrow>
@@ -141,6 +141,17 @@
       <h-tab-pane label="标签三">标签三的内容</h-tab-Pane>
     </h-tabs>
     <p>可以根据业务自定义 UI，需要一点额外的样式覆盖。</p>
+    <h2>关闭确认</h2>
+    <h-tabs ref="closetab" type="card" closable @on-before-tab-remove="beforeTabRemove" :isRemoveTab="false">
+      <h-tab-pane v-if="tabs0" label="标签一" name="0">标签一的内容</h-tab-pane>
+      <h-tab-pane v-if="tabs1" label="标签二" name="1">标签二的内容</h-tab-pane>
+      <h-tab-pane v-if="tabs2" label="标签三" name="2">标签三的内容</h-tab-pane>
+    </h-tabs>
+    <h-tabs type="card" closable @on-tab-remove="handleTabRemove">
+      <h-tab-pane v-if="tab0" label="标签一">标签一的内容</h-tab-pane>
+      <h-tab-pane v-if="tab1" label="标签二">标签二的内容</h-tab-pane>
+      <h-tab-pane v-if="tab2" label="标签三">标签三的内容</h-tab-Pane>
+    </h-tabs>
   </div>
 </template>
 <script>
@@ -165,6 +176,9 @@
         tab0: true,
         tab1: true,
         tab2: true,
+        tabs0: true,
+        tabs1: true,
+        tabs2: true,
         tabs:2,
         val:'name2',
         model6:'',
@@ -205,9 +219,23 @@
       closeTab(){
         this.$refs.closetab.handleRemove(this.curIndex,true);
       },
-      beforeTabRemove(val){
-        debugger;
-        this.curIndex = val;
+      beforeTabRemove(index,name){
+        let that = this;
+        this.curIndex = index;
+        this.$hMsgBox.confirm({
+          content: '<p>是否关闭此页签</p>',
+          onOk: () => {
+            setTimeout(()=>{
+              that.$refs.closetab.handleRemove(that.curIndex,true)
+              this['tabs' + name] = false;
+
+            }, 300);
+            
+          },
+          onCancel: () => {
+            this.$hMessage.info('你点击了取消按钮')
+          }
+        })
       },
       ceshi(val){
         console.log('双击'+val)
@@ -216,7 +244,7 @@
         console.log('单击'+val)
       },
       handleTabRemove (name) {
-        // alert(name)
+        alert(name)
         this['tab' + name] = false;
       },
       handleTabRemove1(name){

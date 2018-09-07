@@ -147,6 +147,10 @@ export default {
     typeName:String,
     option:Array,
     treeOption:Array,
+    fixed: {
+      type: [Boolean, String],
+      default: false
+    },
   },
   data () {
     return {
@@ -190,6 +194,7 @@ export default {
       return [
         `${this.prefixCls}-cell`,
         {
+          [`${this.prefixCls}-hidden`]: !this.fixed && this.column.fixed && (this.column.fixed === 'left' || this.column.fixed === 'right'),
           [`${this.prefixCls}-cell-ellipsis`]: this.column.ellipsis || false,
           [`${this.prefixCls}-cell-error`]: this.validateState === 'error',
           [`${this.prefixCls}-cell-with-expand`]: this.renderType === 'expand',
@@ -284,7 +289,7 @@ export default {
     dblclickCurrentCell(e){
       e.stopPropagation(); 
       if (this.showEditInput) return;
-      if (!this.column.type ||this.column.type === 'html'|| this.column.type === 'text') {
+      if (!this.column.type ||this.column.type === 'html') {
         return false;
       }else {
         this.showSlot = false;
