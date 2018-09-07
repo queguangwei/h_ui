@@ -51,6 +51,9 @@ $confirm-prefix-cls: "#{$css-prefix}modal-confirm";
   &-close {
     @include content-close(1px, 31px);
   }
+  &-maximize {
+    @include content-maximise(2px, 12px);
+  }
 
   &-body {
     padding: 32px 32px 16px 32px;

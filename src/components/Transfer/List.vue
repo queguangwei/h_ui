@@ -16,7 +16,7 @@
                 :placeholder="filterPlaceholder"></Search>
         </div>
         <ul :class="prefixCls + '-content'">
-            <Draggable :move="getdata" @update="datadragEnd" :options="{animation: 200}">
+            <Draggable :move="getdata" @update="datadragEnd" :options="{animation: 200}" v-model="filterData">
                 <li
                     v-for="(item,i) in filterData"
                     :class="itemClasses(item)"
@@ -99,13 +99,18 @@
             checkedAllDisabled () {
                 return this.data.filter(data => !data.disabled).length <= 0;
             },
-            filterData () {
-                if (this.data.length == 0) {
-                   this.showData = true;
-                }else {
-                   this.showData = false;
+            filterData: {
+                set: function (newVal) {
+                    this.showItems = newVal
+                },
+                get: function () {
+                    if (this.data.length == 0) {
+                        this.showData = true;
+                    }else {
+                        this.showData = false;
+                    }
+                    return this.showItems.filter(item => this.filterMethod(item, this.query));
                 }
-                return this.showItems.filter(item => this.filterMethod(item, this.query));
             }
         },
         methods: {
@@ -148,6 +153,9 @@
             getdata: function(evt){
             },
             datadragEnd:function(evt){ 
+                if (this.direcPanel == 'right') {
+                    this.$emit('on-right-drag-change', this.filterData)
+                }
             },
             clearTarget(){
                 this.$parent.changeRight(false);

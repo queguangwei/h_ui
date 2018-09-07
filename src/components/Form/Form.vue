@@ -84,7 +84,10 @@ export default {
         if (field.$children && field.$children.length > 0) {
           for(let fidleChild of field.$children) {
             if (fidleChild.disabled) {
-              ++count;
+              // ++count;
+              if(++count === this.fields.length){
+                callback(valid);
+              }
               return ;
             }
           }

@@ -5,7 +5,7 @@
   </div>
 </template>
 <script>
- var tData= [
+  var tData= [
         {
           id: 1,
           name: '王小明',
@@ -227,7 +227,7 @@
             width: 45,  
           },
           {
-            type: 'text',
+            // type: 'text',
             title: '姓名',
             key: 'name',
             width: 200

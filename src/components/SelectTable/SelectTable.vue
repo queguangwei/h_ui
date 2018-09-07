@@ -31,7 +31,7 @@
         ref="input">
 
       <Icon name="close" :class="[prefixCls + '-arrow']" v-show="showCloseIcon" @click.native.stop="clearSingleSelect"></Icon>
-      <Icon name="arrowdownb" :class="[prefixCls + '-arrow']" v-if="!remote" ref="arrowb"></Icon>
+      <Icon name="unfold" :class="[prefixCls + '-arrow']" v-if="!remote" ref="arrowb"></Icon>
     </div>
     <transition :name="transitionName">
       <Drop 

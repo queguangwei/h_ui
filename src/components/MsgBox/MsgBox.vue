@@ -7,6 +7,11 @@
       <transition :name="transitionNames[0]" @after-leave="animationFinish">
         <!-- <div :class="classes"> -->
           <div :class="[prefixCls + '-content']" v-show="visible" :style="mainStyles" ref="content">
+            <a :class="[prefixCls + '-maximize']" v-if="maximize" @click="switchSize">
+              <slot name="maximize">
+                <Icon name="t-b-unfoldingaround"></Icon>
+              </slot>
+            </a>
             <a :class="[prefixCls + '-close']" v-if="closable" @click="close">
               <slot name="close">
                 <Icon name="close"></Icon>
@@ -121,7 +126,11 @@ export default {
       type:Boolean,
       default:false,
     },
-    height: [String,Number]
+    height: [String,Number],
+    maximize:{
+      type:Boolean,
+      default:false,
+    }
   },
   data () {
     return {
@@ -131,6 +140,9 @@ export default {
       buttonLoading: false,
       visible: this.value,
       screenWidth:null,
+      curWidth:this.width,
+      curHeight:0,
+      isMax:false,
     };
   },
   computed: {
@@ -152,11 +164,12 @@ export default {
     mainStyles () {
       this.screenWidth = document.documentElement.clientWidth;
       let style = {};
-      const width = parseInt(this.width);
+      const width = parseInt(this.curWidth);
       const styleWidth = {
-        width: width <= 100 ? `${width}%` : `${width}px`
+        width: width <= 100 ? `${width}%` : `${width}px`,
+        height:this.curHeight?this.curHeight+'px':'auto'
       };
-      style.top=this.top+'px';
+      style.top=this.curHeight?'0':this.top+'px';
       style.left = (this.screenWidth-width)/2+'px';
       const customStyle = this.styles ? this.styles : {};
       Object.assign(style, styleWidth, customStyle);
@@ -196,9 +209,19 @@ export default {
       this.$emit('on-close');
       this.visible = false;
     },
+    switchSize(){
+      if(!this.isMax){
+        this.curWidth = this.screenWidth;
+        this.curHeight = document.documentElement.clientHeight;
+      }else{
+        this.curWidth = this.width;
+        this.curHeight = 0;
+      }
+      this.isMax = !this.isMax;
+    },
     backOrigin(){      
       const obj = this.$refs.content;
-      const width = parseInt(this.width);
+      const width = parseInt(this.curWidth);
       const styleWidth = {
         width: width <= 100 ? `${width}%` : `${width}px`
       };
@@ -303,6 +326,9 @@ export default {
       if (this.$slots.header === undefined) {
           this.showHead = !!val;
       }
+    },
+    width(val){
+      this.curWidth = val;
     }
   }
 };

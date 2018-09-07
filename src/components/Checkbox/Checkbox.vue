@@ -113,7 +113,7 @@
     methods: {
       change (event) {
           if (this.disabled) {
-              return false;
+            return false;
           }
 
           const checked = event.target.checked;

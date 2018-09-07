@@ -223,7 +223,16 @@ export default {
   methods: {
     editBlur(event,str,isRange){
       let value = event.target.value.trim().replace(/[^0-9]/ig,"");
-      if (!value ||value.length==0) return;
+      if (!value ||value.length==0){
+        if(this.type!='daterange'){
+          this.inputValue = this.year+this.formatSplit+this.months+this.formatSplit+this.day;
+        }else{
+          let item0 = this.year+this.formatSplit+this.months+this.formatSplit+this.day;
+          let item1 = this.year1+this.formatSplit+this.months1+this.formatSplit+this.day1
+          this.inputValue = [item0,item1];
+        }
+        return;
+      };
       switch (str){
         case 'year':
           value = this.verificaYear(value,isRange);

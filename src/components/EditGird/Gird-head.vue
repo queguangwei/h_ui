@@ -36,7 +36,7 @@ import Mixin from './mixin';
 import Locale from '../../mixins/locale';
 
 export default {
-  name: 'TableHead',
+  name: 'GirdHead',
   mixins: [ Mixin, Locale ],
   components: {CheckboxGroup, Checkbox,hButton, renderHeader,Icon},
   props: {
@@ -46,6 +46,10 @@ export default {
     objData: Object,
     data: Array,    // rebuildData for sort or filter
     columnsWidth: Object,
+    fixed: {
+      type: [Boolean, String],
+      default: false
+    },
   },
   data(){
     return{

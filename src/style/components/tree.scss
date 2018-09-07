@@ -12,10 +12,6 @@ $tree-prefix-cls: "#{$css-prefix}tree";
       white-space: nowrap;
       outline: none;
       user-select:none;
-
-      i {
-        font-size: 13px;
-      }
       .#{$tree-prefix-cls}-item:focus {outline: none;} 
     }
   }
@@ -45,10 +41,13 @@ $tree-prefix-cls: "#{$css-prefix}tree";
     &-filterable{
       color: darken($error-color, 10%);
     }
+    &-parent {
+      padding-top: 4px;
+    }
   }
   &-arrow {
     cursor: pointer;
-    width: 12px;
+    width: 16px;
     text-align: center;
     display: inline-block;
     i {

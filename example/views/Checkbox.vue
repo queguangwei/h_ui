@@ -1,9 +1,12 @@
 <template>
 	<div>
 	  <h2>单独使用</h2>
+  <h-msg-box v-model="changeform" width="900">
     <h-checkbox v-model="single1" size="large" true-value="1" false-value="0">checkbox</h-checkbox><br>{{single1}}
     <h-checkbox v-model="single">checkbox</h-checkbox><br>{{single}}
 		<h-checkbox v-model="single" size="small">checkbox</h-checkbox><br>{{single}}
+  </h-msg-box>
+  <Button @on-click="changeform1">显示隐藏</Button>
 		<h2>组合使用</h2>
 		<h-checkbox-group v-model="social">
       <h-checkbox label="twitter">
@@ -87,10 +90,14 @@
         disabled: false,
         indeterminate: true,
         checkAll: false,
-        checkAllGroup: ['香蕉', '西瓜']
+        checkAllGroup: ['香蕉', '西瓜'],
+        changeform:false,
 			}
 		},
 		methods:{
+      changeform1(){
+        this.changeform = !this.changeform;
+      },
       changeFruit(){
         this.fruit=['苹果','香蕉'];
       },

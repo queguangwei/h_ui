@@ -5,7 +5,7 @@
     <h-fast-date v-model="val2" :setDefault='true' format="yyyy-MM-dd" style="width:300px" placement="top-start"></h-fast-date>{{val2}}
     <h-fast-date v-model="val5" format="yyyyMMdd" style="width:300px"></h-fast-date>{{val5}}
     <h2>clearable支持是否显示可清空按钮</h2>
-    <h-fast-date v-model="val3" clearable placeholder="请选择日期"  @on-clear="clear" disabled></h-fast-date>{{val2}}
+    <h-fast-date v-model="val3" clearable placeholder="请选择日期"  @on-clear="clear" readonly></h-fast-date>{{val2}}
      <h2>setDefault支持是否显示默认时间</h2>
     <h-fast-date v-model="val4" :setDefault="true" placement="bottom-start" clearable @on-clear="clear"></h-fast-date>{{val4}}
     <h2>范围选择</h2>

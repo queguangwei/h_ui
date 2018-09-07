@@ -76,12 +76,16 @@
       isAlwaysSelect: {
         type:Boolean,
         default:false
+      },
+      isFormSelect: {
+        type:Boolean,
+        default:false
       }
     },
     data () {
       return {
         prefixCls: prefixCls,
-        stateTree: deepCopy(this.data),
+        stateTree: this.isFormSelect?this.data:deepCopy(this.data),
         flatState: [],
       };
     },
@@ -89,7 +93,7 @@
       data: {
         deep: true,
         handler () {
-            this.stateTree = deepCopy(this.data);
+            this.stateTree = this.isFormSelect?this.data:deepCopy(this.data);
             this.flatState = this.compileFlatState();
             this.rebuildTree();
         }

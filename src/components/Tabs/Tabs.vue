@@ -337,7 +337,7 @@
       handleRemove (index,status=false) {
         const tabs = this.getTabs();
         const tab = tabs[index];
-        if(!status) this.$emit('on-before-tab-remove',index,tab.currentName);
+        if(!this.isRemoveTab && !status) this.$emit('on-before-tab-remove',index,tab.currentName);
         if(!this.isRemoveTab && !status) return false;
         tab.$destroy();
 

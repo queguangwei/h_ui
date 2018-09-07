@@ -43,7 +43,7 @@
       <h2>日期时间选择</h2>
       <p>设置属性 type 为 datetime 或 datetimerange 可以选择时间。<br>
       设置 format 并且忽略秒，可以只设置小时和分钟维度。</p>
-      <h-date-picker v-model="timePicker" type="datetime" placeholder="选择日期和时间" style="width: 200px" :showFormat="true"></h-date-picker>
+      <h-date-picker v-model="timePicker" format="yyyyMMddHHmmss" type="datetime" placeholder="选择日期和时间" style="width: 200px" :showFormat="true"></h-date-picker>
       {{timePicker}}
       <br>
       <h-date-picker type="datetime" format="yyyy-MM-dd HH:mm" placeholder="选择日期和时间（不含秒）" style="width: 200px"></h-date-picker>
@@ -209,7 +209,7 @@
         value1: '2016-01-01',
         value2: ['2016-01-01', '2016-02-15'],
         open: false,
-        timePicker:'',
+        timePicker:'20180913040505 ',
         value3: '',
         model1:'',
         model2:[],
