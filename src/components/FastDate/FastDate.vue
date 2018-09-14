@@ -223,16 +223,7 @@ export default {
   methods: {
     editBlur(event,str,isRange){
       let value = event.target.value.trim().replace(/[^0-9]/ig,"");
-      if (!value ||value.length==0){
-        if(this.type!='daterange'){
-          this.inputValue = this.year+this.formatSplit+this.months+this.formatSplit+this.day;
-        }else{
-          let item0 = this.year+this.formatSplit+this.months+this.formatSplit+this.day;
-          let item1 = this.year1+this.formatSplit+this.months1+this.formatSplit+this.day1
-          this.inputValue = [item0,item1];
-        }
-        return;
-      };
+      if (!value || value.length==0) return;
       switch (str){
         case 'year':
           value = this.verificaYear(value,isRange);
@@ -435,11 +426,8 @@ export default {
       let arr=[];
       let arr1=[];
       if (this.type != 'daterange') {
-        // arr =val.split(this.dateSplit);
         arr =this.getArr(val,this.formatSplit)
       }else{
-        // arr = val[0].split(this.dateSplit);
-        // arr1 = val[1].split(this.dateSplit);
         arr =this.getArr(val[0],this.formatSplit)
         arr1 =this.getArr(val[1],this.formatSplit)
       }
@@ -481,10 +469,16 @@ export default {
       if (this.type!='daterange') {
         if (!this.year&&!this.months&&!this.day) {
           this.inputValue = '';
+        }else if(!(this.year&&this.months&&this.day)){
+          this.inputValue = this.year+this.formatSplit+this.months+this.formatSplit+this.day;
         }
       }else{
         if (!this.year&&!this.months&&!this.day&&!this.year1&&!this.months1&&!this.day1) {
           this.inputValue = ['',''];
+        }else if(!(this.year&&this.months&&this.day&&this.year1&&this.months1&&this.day1)){
+          let item0 = this.year+this.formatSplit+this.months+this.formatSplit+this.day;
+          let item1 = this.year1+this.formatSplit+this.months1+this.formatSplit+this.day1
+          this.inputValue = [item0,item1];
         }
       }
     }
@@ -514,9 +508,9 @@ export default {
       this.isClear();
     },
     inputValue(val){
+      this.setDate(val);
       this.$emit('input',val);
       this.dispatch('FormItem', 'on-form-change',val);
-      this.setDate(val);
     },
     value(val){
       if (typeOf(val)!='array') {

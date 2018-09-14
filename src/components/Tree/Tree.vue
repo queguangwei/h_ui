@@ -1,5 +1,5 @@
 <template>
-  <div :class="prefixCls">
+  <div :class="wrapper">
     <Tree-node
       v-for="(item,i) in stateTree"
       :key="i"
@@ -80,12 +80,17 @@
       isFormSelect: {
         type:Boolean,
         default:false
+      },
+      isBoxRight:{
+        type:Boolean,
+        default:false
       }
     },
     data () {
       return {
         prefixCls: prefixCls,
-        stateTree: this.isFormSelect?this.data:deepCopy(this.data),
+        isDeepcopy:false,
+        stateTree: this.isDeepcopy?this.data:deepCopy(this.data),
         flatState: [],
       };
     },
@@ -93,7 +98,7 @@
       data: {
         deep: true,
         handler () {
-            this.stateTree = this.isFormSelect?this.data:deepCopy(this.data);
+            this.stateTree = this.isDeepcopy?this.data:deepCopy(this.data);
             this.flatState = this.compileFlatState();
             this.rebuildTree();
         }
@@ -112,6 +117,13 @@
       }
     },
     computed: {
+      wrapper(){
+        return[
+          `${prefixCls}`,{
+            [`${prefixCls}-isBoxRight`]: this.isBoxRight,
+          }
+        ]
+      },
       localeEmptyText () {
         if (this.emptyText === undefined) {
           return this.t('i.tree.emptyText');
@@ -181,8 +193,12 @@
       getSelectedNodes () {
         return this.flatState.filter(obj => obj.node.selected).map(obj => obj.node);
       },
-      getCheckedNodes () {
-        return this.flatState.filter(obj => obj.node.checked).map(obj => obj.node);
+      getCheckedNodes (indeterminate = false) {
+        // FOF需求：调用getCheckedNodes方法，indeterminate为true时返回全部选中节点(checked)[包括checked为true及indeterminate为true的节点]，indeterminate为false时仅返回选中节点[checked为true];indeterminate默认为false
+        return this.flatState.filter(obj => {
+          return obj.node.checked || (indeterminate ? obj.node.indeterminate : false)
+        }).map(obj => obj.node)
+        // return this.flatState.filter(obj => obj.node.checked).map(obj => obj.node);
       },
       getAutoLoadNodes () {
         return this.flatState.filter(obj => obj.node.autoLoad).map(obj => obj.node);
@@ -255,6 +271,10 @@
       this.$on('on-check', this.handleCheck);
       this.$on('on-selected', this.handleSelect);
       this.$on('toggle-expand', node => this.$emit('on-toggle-expand', node));
+      if(this.loadData||this.isFormSelect){
+        this.isDeepcopy = true;
+        this.stateTree = this.isDeepcopy?this.data:deepCopy(this.data);
+      }
     }
   };
 </script>

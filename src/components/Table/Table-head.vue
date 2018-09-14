@@ -6,6 +6,11 @@
     </colgroup>
     <thead>
       <tr>
+        <th>123</th>
+        <th>345</th>
+        <th>678</th>
+      </tr>
+      <tr>
         <th v-for="(column, index) in columns"
           v-on:mousedown="mousedown($event,column,index)" 
           v-on:mouseout="mouseout($event,column,index)" 

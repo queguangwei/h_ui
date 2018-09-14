@@ -45,6 +45,7 @@
               :prefix-cls="prefixCls"
               :typeName = "typeName"
               :columns = "columns"
+              :columnsWidth="columnsWidth"
               :showEditInput="showEditInput"
               :isCheckbox="isCheckbox">
             </Tree-table>
@@ -75,6 +76,7 @@
       isCheckbox:Boolean,
       option:Array,
       treeOption:Array,
+      columnsWidth:Object,
     },
     computed: {
       objData () {

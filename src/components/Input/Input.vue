@@ -18,6 +18,7 @@
         :value="currentValue"
         :number="number"
         :autofocus="autofocus"
+        :spellcheck="spellcheck"
         @keyup.enter="handleEnter"
         @keyup="handleKeyup"
         @keypress="handleKeypress"
@@ -41,6 +42,7 @@
       :name="name"
       :value="currentValue"
       :autofocus="autofocus"
+      :spellcheck="spellcheck"
       @keyup.enter="handleEnter"
       @keyup="handleKeyup"
       @keypress="handleKeypress"
@@ -147,6 +149,10 @@
       tipState:{
         type:String,
         default:null,
+      },
+      spellcheck:{
+        type:Boolean,
+        default:false,
       }
     },
     data () {
@@ -156,7 +162,7 @@
         prepend: true,
         append: true,
         slotReady: false,
-        textareaStyles: {}
+        textareaStyles: {},
       };
     },
     computed: {

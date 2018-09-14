@@ -32,7 +32,7 @@
 export default {
   data() {
     return{
-      val1:'2018/01/01',
+      val1:'',
       val2:'2018-01-01',
       val3:'20180101',
       val4:'',

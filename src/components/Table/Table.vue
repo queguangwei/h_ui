@@ -566,7 +566,7 @@ export default {
             }
             this.columnsWidth = columnsWidth;
           }
-
+          this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
         });
         // get table real height,for fixed when set height prop,but height < table's height,show scrollBarWidth
         this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
@@ -1049,11 +1049,6 @@ export default {
       const curItem = this.rebuildData[colIndex];
       this.rebuildData.splice(colIndex,1,curItem )
     },
-    initResize(){
-      this.$nextTick(() => {
-        this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
-      });
-    },
   },
   created () {
       if (!this.context) this.currentContext = this.$parent;
@@ -1081,7 +1076,6 @@ export default {
     });
     //window.addEventListener('resize', this.handleResize, false);
     on(window, 'resize', this.handleResize);
-    on(window, 'resize', this.initResize);
     this.$on('on-visible-change', (val) => {
         if (val) {
             this.handleResize();
@@ -1104,7 +1098,6 @@ export default {
   beforeDestroy () {
       //window.removeEventListener('resize', this.handleResize, false);
       off(window, 'resize', this.handleResize);
-      off(window, 'resize', this.initResize);
   },
   watch: {
       data: {

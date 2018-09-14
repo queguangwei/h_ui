@@ -355,9 +355,12 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
       padding: 8px 0 0;
       &-item{
           padding: 0 12px 8px;
-
-          .h-checkbox-wrapper + .h-checkbox-wrapper{
-              margin: 0;
+          //就是选择某个元素的下一个元素
+          // .h-checkbox-wrapper + .h-checkbox-wrapper{            
+          //     margin: 0;
+          // }
+          .h-checkbox-wrapper{
+            margin: 0;
           }
           label {
               display: block;

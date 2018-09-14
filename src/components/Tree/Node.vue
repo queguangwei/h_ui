@@ -16,7 +16,7 @@
             @click.native.prevent="handleCheck"></h-checkbox>
           <Render v-if="data.render" :render="data.render" :data="data" :node="node"></Render>
           <Render v-else-if="isParentRender" :render="parentRender" :data="data" :node="node"></Render>
-          <span v-else :class="titleClasses" @click="handleSelect">{{data.title}}</span>          
+          <span v-else :class="titleClasses" @click="handleSelect">{{data.title}}</span>        
         </div>
         <Tree-node
           v-if="data.expand && !data.leaf"

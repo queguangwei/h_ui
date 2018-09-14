@@ -52,7 +52,7 @@ $confirm-prefix-cls: "#{$css-prefix}modal-confirm";
     @include content-close(1px, 31px);
   }
   &-maximize {
-    @include content-maximise(2px, 12px);
+    @include content-maximise(-1px, 16px);
   }
 
   &-body {

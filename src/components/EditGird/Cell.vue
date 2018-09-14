@@ -63,18 +63,22 @@
         :type="column.dateType||'date'" 
         :format="column.format||'yyyy-MM-dd'" 
         :placeholder="column.placeholder"
+        :placement="column.placement"
         :editable ="column.editable"
         :showFormat = "true"
+        :transfer="column.transfer"
         class="canEdit"></Date>
       </template>
       <template v-if="renderType === 'time'">
         <Time v-model="columnTime" 
         ref="time"
         :type="column.timeType||'time'" 
+        :placement="column.placement"
         :format="column.format||'yyyy-MM-dd'" 
         :placeholder="column.placeholder"
         :editable ="column.editable"
         :steps="column.steps||[]" 
+        :transfer="column.transfer"
         class="canEdit"></Time>
       </template>
       <template v-if="renderType === 'selectTree'">

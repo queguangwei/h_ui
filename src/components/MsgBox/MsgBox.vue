@@ -9,7 +9,7 @@
           <div :class="[prefixCls + '-content']" v-show="visible" :style="mainStyles" ref="content">
             <a :class="[prefixCls + '-maximize']" v-if="maximize" @click="switchSize">
               <slot name="maximize">
-                <Icon name="t-b-unfoldingaround"></Icon>
+                <Icon :name="maxName"></Icon>
               </slot>
             </a>
             <a :class="[prefixCls + '-close']" v-if="closable" @click="close">
@@ -201,6 +201,9 @@ export default {
         style.overflowY = "auto"
       }
       return style
+    },
+    maxName () {
+      return this.isMax?'max':'min'
     }
   },
   methods: {

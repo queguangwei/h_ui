@@ -223,8 +223,8 @@
         treeOption:[],
         columns1: [
           {
-            type: 'index',
-            width: 45,  
+            type: 'selection',
+            width: 85,  
           },
           {
             // type: 'text',

@@ -352,6 +352,11 @@ const router = new Router({
         name: 'TypefieldRange',
         path: '/typefieldRange',
         component: require('../views/TypefieldRange.vue')
+    },
+    {
+        name: 'Split',
+        path: '/split',
+        component: require('../views/Split.vue')
     }
  ]
 })

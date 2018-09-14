@@ -64,6 +64,7 @@ import FormGird from './components/FormGird';
 import Rate from './components/Rate';
 import Textdiff from './components/Textdiff';
 import TypefieldRange from './components/TypefieldRange';
+import Split from './components/Split';
 
 import locale from './locale';
 
@@ -224,7 +225,9 @@ const h_ui = {
     Textdiff,
     hTextdiff: Textdiff,
     TypefieldRange,
-    hTypefieldRange:TypefieldRange  
+    hTypefieldRange:TypefieldRange,
+    Split:Split,  
+    hSplit:Split,  
 };
 const install = function(Vue, opts = {}) {
     locale.use(opts.locale);

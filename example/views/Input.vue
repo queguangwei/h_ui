@@ -4,7 +4,7 @@
     <h-input algin="left" type="textarea"  placeholder="请输入..." ref="test" :maxlength="20"></h-input>
     <Button @on-click="testClick(true)">获取焦点</Button>
     <Button @on-click="testClick(false)">失去焦点</Button>
-    <h-input algin="center" placeholder="请输入..."></h-input>
+    <h-input algin="center" placeholder="请输入..." @on-change="onChange"></h-input>
     <h-input algin="right" placeholder="请输入..."></h-input>
     <h2>基础用法</h2>
     <p>可以直接设置 style 来改变输入框的宽度</p>
@@ -125,6 +125,9 @@ export default {
     }
   },
   methods:{
+    onChange(e){
+      console.log(e.target.value);
+    },
     testClick(val){
       if (val) {
         this.$refs.test.focus();
