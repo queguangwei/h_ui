@@ -128,31 +128,21 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
     }
   }
 
-  & editgird{
+  & table{
     //width: 100%;
-    editgird-layout: fixed;
+    table-layout: fixed;
   }
   &-border{
     th,td{
-        //border-right: 1px solid $border-color-split;
+        border-right: 1px solid#DCE1E7;
     }
   }
   &-cell{
     width: 100%;
     padding: 5px 15px;
-    // text-overflow: ellipsis;
     white-space: normal;
     word-break: break-all;
-    // font-family: MicrosoftYaHei-Bold;
-    // font-size: 14px;
-    // color: #2F3542;
-    // text-align: left;
-    // line-height: 22px;
-    // i {
-    //   color: #9EA7B4;
-    //   font-size: 18px;
-    //   margin-left: -2px;
-    // }
+
     &-ellipsis {
       word-break: keep-all;
       white-space: nowrap;

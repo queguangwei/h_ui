@@ -32,7 +32,7 @@
           ref="drop"
           :data-transfer="transfer"
           v-transfer-dom>
-          <div>
+          <div @click="handleclick">
             <component
                :is="panel"
                ref="pickerPanel"
@@ -407,6 +407,9 @@
       },
       handleSelectRange(val,status){
         this.$emit('on-select-range',val,status);
+      },
+      handleclick(e){
+        e.stopPropagation();
       }
     },
     watch: {

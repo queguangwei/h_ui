@@ -125,6 +125,7 @@
             ></gird-body>
         </div>
       </div>
+      <div :class="['h-table-fixed-right-patch']" :style="fixedRightPatchStyle" v-if="isRightFixed&&showScroll" ref="rightPatch"></div>
     </div>
     <Spin fix size="large" v-if="loading">
       <slot name="loading">
@@ -326,8 +327,8 @@ export default {
     styles () {
       let style = {};
       if (this.height) {
-        const height = (this.isLeftFixed || this.isRightFixed) ? parseInt(this.height) + this.scrollBarWidth : parseInt(this.height);
-        style.height = `${height+2}px`;
+        const height =  parseInt(this.height) +2;
+        style.height = `${height}px`;
       }
       if (this.width) style.width = `${this.width}px`;
       return style;
@@ -355,7 +356,7 @@ export default {
       if (this.bodyHeight !== 0) {
         // add a height to resolve scroll bug when browser has a scrollBar in fixed type and height prop
         const height = (this.isLeftFixed || this.isRightFixed) ? this.bodyHeight + this.scrollBarWidth : this.bodyHeight;
-        style.height = `${height}px`;
+        style.height = `${this.bodyHeight}px`;
       }
       return style;
     },

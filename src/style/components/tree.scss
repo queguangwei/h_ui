@@ -72,4 +72,9 @@ $tree-prefix-cls: "#{$css-prefix}tree";
   &-empty {
     padding: 5px 0;
   }
+  &-isBoxRight{
+    .h-checkbox-wrapper{
+      float: right;
+    }
+  }
 }

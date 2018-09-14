@@ -129,10 +129,11 @@
     </h-tabs> -->
     <h2>附加内容 </h2>
     <p>设置 slot extra 可以在页签右边添加附加操作。</p>
-    <h-tabs type="card" closable @on-tab-remove="handleTabRemove1" showArrow>
+    <h-tabs ref="remove" type="card" closable @on-tab-remove="handleTabRemove1" showArrow>
       <h-tab-pane v-for="tab in tabs" :key="tab" :label="'标签' + tab">标签{{ tab }}的内容</h-tab-pane>  
     </h-tabs>
-     <h-button type="ghost" @click="handleTabsAdd" size="small" slot="extra">增加</h-button>
+     <h-button type="ghost" @click="handleTabsAdd(true)" size="small" slot="extra">增加</h-button>
+     <h-button type="ghost" @click="handleTabsAdd(false)" size="small" slot="extra">减少</h-button>
     <h2>不使用动画</h2>
     <p>通过设置属性 animated 为 false 可以禁用动画。</p>
     <h-tabs :animated="false" panelAbove @on-dblclick="ceshi" @on-click="ceshi1">
@@ -251,8 +252,13 @@
         // this.tabs--;
         console.log(this.tabs)
       },
-      handleTabsAdd () {
-        this.tabs ++;
+      handleTabsAdd (status) {
+        if(status){
+          this.tabs ++;
+        }else{
+          this.tabs --;
+          this.$refs.remove.handleRemove(this.tabs,true);//this.tabs 表示tab的顺序数
+        }
       },
       selectChange(data){
         console.log(data);

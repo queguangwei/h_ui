@@ -195,11 +195,12 @@
         <li>
           <router-link to="/textdiff">Textdiff</router-link>
         </li>
+        <li>
+          <router-link to="/split">Split</router-link>
+        </li>
       </ul>
     </nav>
-    <keep-alive>
-      <router-view></router-view>
-    </keep-alive>
+    <router-view></router-view>
     
   </div>  
 </template>

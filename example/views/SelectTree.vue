@@ -1,7 +1,7 @@
 <template>
   <div>
-    <!-- <h-row> -->
-      <!-- <h-col span="8">
+    <h-row>
+      <h-col span="8">
        <h-button @click="click('1')">设置1</h-button>
        <h-button @click="click('1-0')">设置2</h-button>
        <h-button @click="click('1-0-0')">设置3</h-button>
@@ -13,27 +13,27 @@
         <h-select-tree v-model="valc" :first-value="firstValc" style="width:200px" :data="baseData1" placement="top" placeholder="你好" ref="test"></h-select-tree>
       </h-col>
       <h-button @click="ceshi">清空</h-button>
-      <h-col span="8"> -->
-     <!--    <h-select-tree v-model="valc" :first-value="firstValc" style="width:200px" :data="baseData1" placement="top" placeholder="你好"></h-select-tree> -->
-      <!-- </h-col> -->
-      <!-- <h-col span="8"> -->
-       <!--  <h-select-tree v-model="valc" :first-value="firstValc" style="width:200px" :data="baseData1" placement="top" placeholder="你好" :editable="false"></h-select-tree> -->
-      <!-- </h-col> -->
-    <!-- </h-row> -->
-    <!-- {{val}}
-    {{valc}} -->
-    <!-- <br><br><br> -->
+      <h-col span="8">
+        <h-select-tree v-model="valc" :first-value="firstValc" style="width:200px" :data="baseData1" placement="top" placeholder="你好"></h-select-tree>
+      </h-col>
+      <h-col span="8">
+        <h-select-tree v-model="valc" :first-value="firstValc" style="width:200px" :data="baseData1" placement="top" placeholder="你好" :editable="false"></h-select-tree>
+      </h-col>
+    </h-row>
+    {{val}}
+    {{valc}}
+    <br><br><br>
     <h2>showCheckbox表示多选默认不显示半选中状态</h2>
     <h-select-tree v-model="val1" style="width:200px" :data="baseData3" showCheckbox checkStrictly @on-check-change="selectChange" isString expanLevel=1  :firstValue="firstVal1"></h-select-tree>
     {{val1}}
     <h-select-tree v-model="val2" style="width:200px" :firstValue="firstVal2" :data="baseData" showCheckbox isString></h-select-tree>
     {{val2}}
-    <!-- <h-select-tree v-model="val4" :data="baseData" showCheckbox disabled></h-select-tree>
+    <h-select-tree v-model="val4" :data="baseData" showCheckbox disabled></h-select-tree>
     <br><br><br>
-    {{val4}} -->
-    <!-- <h-select-tree v-model="val5" style="width:200px" :data="baseData3" :first-value="firstVal5" showCheckbox checkStrictly></h-select-tree>
-    {{val5}} -->
-    <!-- <h2>输入框在上搜索</h2>
+    {{val4}}
+    <h-select-tree v-model="val5" style="width:200px" :data="baseData3" :first-value="firstVal5" showCheckbox checkStrictly></h-select-tree>
+    {{val5}}
+    <h2>输入框在上搜索</h2>
     <h-select-tree v-model="val3" style="width:200px" :data="baseData4" filterable></h-select-tree>
     {{val3}}
     <h-select-tree v-model="val6" style="width:200px" :data="baseData5" showCheckbox checkStrictly filterable></h-select-tree>
@@ -49,7 +49,7 @@
     {{val7}}
     <h-msg-box v-model="showBox">
       <h-select-tree v-model="val" :first-value="firstVal" style="width:200px" :data="baseData2" size="large" @on-select-change="selectChange" @on-toggle-expand="selectChange" format-value="id"></h-select-tree>
-    </h-msg-box> -->
+    </h-msg-box>
 
   </div>
 </template>

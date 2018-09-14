@@ -123,6 +123,7 @@
             :prefix-cls="prefixCls"
             :typeName = "typeName"
             :columns = "columns"
+            :columnsWidth="columnsWidth"
             :showEditInput="showEditInput"
             :option="selectOption[index]"
             :treeOption="treeOption[index]"

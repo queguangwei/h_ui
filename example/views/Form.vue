@@ -268,8 +268,7 @@
         </h-row>
         <h1>动态增减表单项</h1>
         <br>
-        <p>当需要动态维护 FormItem 时，也可以直接给 FormItem 设置属性 rules 来单独为该域做验证。
-动态设置 FormItem 的 prop 属性时，会依据上层的 Form 组件的 model 来获取，
+        <p>当需要动态维护 FormItem 时，也可以直接给 FormItem 设置属性 rules 来单独为该域做验证。动态设置 FormItem 的 prop 属性时，会依据上层的 Form 组件的 model 来获取，
         </p>
         <h-row>
             <h-col span="12">
