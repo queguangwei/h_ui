@@ -357,6 +357,11 @@ const router = new Router({
         name: 'Split',
         path: '/split',
         component: require('../views/Split.vue')
+    },
+    {
+        name: 'Drawer',
+        path: '/drawer',
+        component: require('../views/Drawer.vue')
     }
  ]
 })

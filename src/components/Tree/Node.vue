@@ -25,6 +25,7 @@
           :data="item"
           :multiple="multiple"
           :checkStrictly="checkStrictly"
+          :selectToCheck="selectToCheck"
           :showIndeterminate="showIndeterminate"
           :show-checkbox="showCheckbox">
         </Tree-node>
@@ -66,7 +67,8 @@
       },
       showIndeterminate:{
         type:Boolean
-      }
+      },
+      selectToCheck:Boolean,
       // visible: {
       //   type: Boolean,
       //   default: false
@@ -105,7 +107,7 @@
         return [
           `${prefixCls}-title`,
           {
-            [`${prefixCls}-title-selected`]: this.data.selected,
+            [`${prefixCls}-title-selected`]: this.data.selected||(this.selectToCheck&&this.data.checked),
             [`${prefixCls}-title-filterable`]: this.data.filterable,
             [`${prefixCls}-title-parent`]: this.showArrow,
           }
@@ -197,7 +199,11 @@
       },
       handleSelect () {
         if (this.data.disabled) return;
-        this.dispatch('Tree', 'on-selected', this.data.nodeKey);
+        if(this.selectToCheck && this.showCheckbox){
+          this.handleCheck();
+        }else{
+          this.dispatch('Tree', 'on-selected', this.data.nodeKey);
+        }
       },
       handleKeydown (e) {
         let code  = e.keyCode;

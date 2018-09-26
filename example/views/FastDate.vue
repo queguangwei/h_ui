@@ -9,7 +9,8 @@
      <h2>setDefault支持是否显示默认时间</h2>
     <h-fast-date v-model="val4" :setDefault="true" placement="bottom-start" clearable @on-clear="clear"></h-fast-date>{{val4}}
     <h2>范围选择</h2>
-    <h-fast-date v-model="valrange1" type="daterange" placement="top" clearable @on-clear="clear"></h-fast-date>{{valrange1}}
+    <h-fast-date v-model="valrange1" type="daterange" format="yyyy-MM-dd" placement="top" clearable @on-clear="clear"></h-fast-date>{{valrange1}}
+    <h-fast-date type="daterange" placement="bottom-end" placeholder="选择日期" ></h-fast-date>
     <h2>readonly和disabled</h2>
     <h-fast-date readonly type="daterange" ></h-fast-date>
     <h-fast-date disabled type="daterange"></h-fast-date>
@@ -23,8 +24,8 @@
     <h-fast-date  type="date" placeholder="on-ok" @on-ok="onOk" @on-clear="clear" :confirm="true"></h-fast-date>
     <h2>带确认按钮</h2>
     <h-fast-date  type="date" placement="bottom-end" placeholder="on-change" @on-change="onChange" :confirm="true"></h-fast-date>
-    <h-fast-date type="daterange" placement="bottom-end" placeholder="on-open-change"  @on-open-change="onOpenChange" :confirm="true" clearable></h-fast-date>
-    <h-fast-date  type="daterange" placement="top-end" placeholder="on-ok" @on-ok="onOk" @on-clear="clear" :confirm="true" clearable></h-fast-date>
+    <h-fast-date type="daterange" format="yyyy-MM-dd" placement="bottom-end" placeholder="on-open-change"  @on-open-change="onOpenChange" :confirm="true" clearable></h-fast-date>
+    <h-fast-date  type="daterange" format="yyyy-MM-dd" placement="top-end" placeholder="on-ok" @on-ok="onOk" @on-clear="clear" :confirm="true" clearable></h-fast-date>
   </div>
 </template>
 
@@ -37,7 +38,7 @@ export default {
       val3:'20180101',
       val4:'',
       val5:20180101,
-      valrange1:['20180101','20180102'],
+      valrange1:['2018-01-01','2018-01-02'],
       readonly:false,
       options1: {
         shortcuts: [

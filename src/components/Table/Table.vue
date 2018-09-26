@@ -17,6 +17,7 @@
           :headAlgin="headAlgin"
           :lastColWidth="lastColWidth"
           :minDragWidth="minDragWidth"
+          :multiLevel="multiLevel"
           ></table-head>
       </div>
       <div :class="[prefixCls + '-body']" :style="bodyStyle" ref="body" @scroll="handleBodyScroll"
@@ -111,6 +112,22 @@
             :showTitle="showTitle"></table-body>
         </div>
       </div>
+      <div :class="[prefixCls + '-summation']" :style="summationStyle" v-if="isSummation" ref="summation">
+        <!-- <div :class="[prefixCls + '-fixed-body']" :style="fixedBodyStyle" ref="fixedRightBody"> -->
+        <table-body
+          ref='sumBody'
+          :sum = 'isSummation'
+          :prefix-cls="prefixCls"
+          :styleObject="tableStyle"
+          :columns="cloneColumns"
+          :data="makeSumData()"
+          :obj-data="makeSumObjData()"
+          :columns-width="columnsWidth"
+          :bodyAlgin ="bodyAlgin"
+          :showTitle="showTitle"></table-body>
+        <!-- </div> -->
+      </div>
+      
       <div class="h-table__column-resize-proxy" ref="resizeProxy" v-show="resizeProxyVisible"> </div>
       <div class="h-table__column-move-proxy h-table-cell" ref="moveProxy" v-show="moveProxyVisible"> </div>
 
@@ -257,6 +274,16 @@ export default {
       type:Boolean,
       default:false,
     },
+    multiLevel:{
+      type:Array,
+      default:null
+    },
+    summationData: {
+      type: Array,
+      default () {
+        return [];
+      }
+    }
   },
   data () {
     return {
@@ -283,7 +310,8 @@ export default {
       headerRealHeight:0,
       selectType:false,
       buttomNum:null,
-      keepAliveFlag: false // 页面是否缓存
+      keepAliveFlag: false, // 页面是否缓存
+      sumMarginLeft: 0,
     };
   },
   computed: {
@@ -329,7 +357,11 @@ export default {
       let style = {};
       if (this.height) {
         const height = (this.isLeftFixed || this.isRightFixed) ? parseInt(this.height) + this.scrollBarWidth : parseInt(this.height);
-        style.height = this.patibleHeight?`${this.height}px`:`${height+2}px`;
+        // style.height = this.patibleHeight?`${this.height}px`:`${height+2}px`;
+        style.height = this.patibleHeigh ? this.height : this.height + 2
+        this.$nextTick(() => {
+          if (this.isSummation) style.height += this.$refs.summation.clientHeight
+        })
       }
       if (this.width) style.width = `${this.width}px`;
       return style;
@@ -467,6 +499,15 @@ export default {
     },
     isRightFixed () {
         return this.columns.some(col => col.fixed && col.fixed === 'right');
+    },
+    isSummation () {
+      return this.summationData.length > 0 && !this.isRightFixed && !this.isLeftFixed
+    },
+    summationStyle () {
+      return {
+        marginLeft: `${0 - this.sumMarginLeft}px`
+      }
+      
     }
   },
   methods: {
@@ -521,7 +562,7 @@ export default {
           // if (allWidth) autoWidthIndex = this.cloneColumns.findIndex(cell => !cell.width);//todo 这行可能有问题
           if (allWidth) autoWidthIndex = findInx(this.cloneColumns,cell => !cell.width);
           this.cloneColumns.forEach((cell,i)=>{})
-          if (this.data.length) {
+          if (this.data.length && this.$refs.tbody) {
             const $td = this.$refs.tbody.$el.querySelectorAll('tbody tr')[0].querySelectorAll('td');
             for (let i = 0; i < $td.length; i++) {    // can not use forEach in Firefox
               const column = this.cloneColumns[i];
@@ -545,7 +586,7 @@ export default {
             this.columnsWidth = columnsWidth;
           }else{
             if (!this.$refs.thead) return;
-            const $th = this.$refs.thead.$el.querySelectorAll('thead tr')[0].querySelectorAll('th');
+            const $th = this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0].querySelectorAll('th');
             for (let i = 0; i < $th.length; i++) {    // can not use forEach in Firefox
               const column = this.cloneColumns[i]; 
               let width = parseInt(getStyle($th[i], 'width'));
@@ -758,6 +799,7 @@ export default {
         if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = event.target.scrollTop;
         if (this.isRightFixed) this.$refs.fixedRightBody.scrollTop = event.target.scrollTop;
         this.hideColumnFilter();
+        if (this.isSummation) this.sumMarginLeft = event.target.scrollLeft
         this.buttomNum = getBarBottom(event.target,this.scrollBarWidth);
     },
     handleMouseWheel (event) {
@@ -934,32 +976,55 @@ export default {
       this.cloneColumns.forEach(col => data = this.filterData(data, col));
       return data;
     },
+    makeSumObjData () {
+      let data = {};
+      this.summationData.forEach((row, index) =>{
+        data[index] = deepCopy(row)
+      })
+      return data;
+    },
+    makeSumData () {
+      // 汇总数据只有一条，否则只获取第一条
+      let data = this.summationData && this.summationData.length > 0 ? [deepCopy(this.summationData[0])] : []
+      data.forEach((row, index) => {
+          row._index = index;
+          row._rowKey = rowKey++;
+      });
+      return data;
+    },
     makeObjData () {
       let data = {};
       this.data.forEach((row, index) => {
         const newRow = deepCopy(row);// todo 直接替换
         newRow._isHover = false;
-        if (newRow._disabled) {
+        // ['_checked','_disabled','_expanded','_highlight','_isMatched'].forEach(col=>{
+        //   if(newRow[col]&&newRow[col]!='false'){
+        //     newRow[col]=newRow[col];
+        //   }else{
+        //     newRow[col]=false;
+        //   }
+        // })
+        if (newRow._disabled && newRow._disabled!='false') {
             newRow._isDisabled = newRow._disabled;
         } else {
             newRow._isDisabled = false;
         }
-        if (newRow._checked) {
+        if (newRow._checked && newRow._checked!='false') {
             newRow._isChecked = newRow._checked;
         } else {
             newRow._isChecked = false;
         }
-        if (newRow._expanded) {
+        if (newRow._expanded && newRow._expanded!='false') {
             newRow._isExpanded = newRow._expanded;
         } else {
             newRow._isExpanded = false;
         }
-        if (newRow._highlight) {
+        if (newRow._highlight && newRow._highlight!="false") {
             newRow._isHighlight = newRow._highlight;
         } else {
             newRow._isHighlight = false;
         }
-        if (newRow._isMatched) {
+        if (newRow._isMatched && newRow._isMatched!="fasle") {
             newRow._isMatched = newRow._isMatched;
         } else {
             newRow._isMatched = false;
@@ -979,7 +1044,7 @@ export default {
         column._index = index;
         column._columnKey = columnKey++;
         column._width = column.width ? column.width : '';    // update in handleResize()
-        if(!!column.hiddenCol){
+        if(column.hiddenCol&&column.hiddenCol!="false"){
           that.columns[index].width = 0;
           column.width = 0;
           column._width = 0;
@@ -1001,7 +1066,7 @@ export default {
         if ('sortType' in column) {
             column._sortType = column.sortType;
         }
-        if (!column.hiddenCol) {
+        if (!column.hiddenCol || column.hiddenCol=='false') {
           if (column.fixed && column.fixed === 'left') {
               left.push(column);
           } else if (column.fixed && column.fixed === 'right') {

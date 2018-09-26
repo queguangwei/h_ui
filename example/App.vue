@@ -98,6 +98,9 @@
           <router-link to="/msgBox">MsgBox</router-link>
         </li>
         <li>
+          <router-link to="/drawer">Drawer</router-link>
+        </li>
+        <li>
           <router-link to="/tooltip">Tooltip</router-link>
         </li>
         <li>

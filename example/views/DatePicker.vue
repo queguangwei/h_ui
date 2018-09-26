@@ -92,6 +92,7 @@
         :value="value3"
         confirm
         type="daterange"
+        format="yyyy-MM-dd"
         :options="options5"
         @on-change="handleChange"
         @on-clear="handleClear"
@@ -210,7 +211,7 @@
         value2: ['2016-01-01', '2016-02-15'],
         open: false,
         timePicker:'20180913040505 ',
-        value3: '',
+        value3:  [ "2018-08-16", "2018-08-23" ],
         model1:'',
         model2:[],
         model3:'',

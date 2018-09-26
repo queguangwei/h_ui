@@ -280,7 +280,10 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
       color: darken($error-color, 10%);
     }
   }
-
+  
+  &-summation {
+    border-top: 1px solid #DCE1E7;
+  }
   &-fixed, &-fixed-right{
     position: absolute;
     top: 0;

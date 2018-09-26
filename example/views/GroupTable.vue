@@ -230,7 +230,16 @@ export default {
         {
           title: '姓名',
           key: 'name',
-          width: 200
+          width: 200,
+          render:(h,params)=>{
+            return h('span',[
+              h('Icon', {
+                props: {
+                    name: 'person'
+                }
+              }),
+            ])
+          }
         },
         {
           title: '年龄',
@@ -416,3 +425,6 @@ export default {
   } 
 }
 </script>
+<style>
+/* .h-editgird .h-editgird-cell-with-render .dbClass{display:none;} */
+</style>

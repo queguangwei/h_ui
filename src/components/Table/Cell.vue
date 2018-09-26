@@ -1,7 +1,9 @@
 <template>
   <div :class="classes" ref="cell" :title="titleText">
-    <template v-if="renderType === 'index'">{{naturalIndex + 1}}</template>
-    <template v-if="renderType === 'selection'">
+    <template v-if="(renderType === 'index' && sum && columnIdx == 0 || renderType === 'selection' && sum && columnIdx == 0)">汇总</template>
+    <template v-else-if="(renderType === 'index' && sum && columnIdx != 0 || renderType === 'selection' && sum && columnIdx != 0)"></template>
+    <template v-else-if="renderType === 'index'">{{naturalIndex + 1}}</template>
+    <template v-else-if="renderType === 'selection'">
       <Checkbox size="large" :value="checked" @click.native.stop="handleClick" @on-change="toggleSelect" :disabled="disabled"></Checkbox>
 <!--       <input type="checkbox" v-model="tChecked" @click.native.stop="handleClick" @change="toggleSelect" :disabled="disabled"> -->
     </template>
@@ -47,6 +49,8 @@ export default {
       default: false
     },
     showTitle:Boolean,
+    sum: Boolean,
+    columnIdx: Number
   },
   data () {
     return {
@@ -63,7 +67,7 @@ export default {
         `${this.prefixCls}-cell`,
         {
           [`${this.prefixCls}-hidden`]: !this.fixed && this.column.fixed && (this.column.fixed === 'left' || this.column.fixed === 'right'),
-          [`${this.prefixCls}-cell-ellipsis`]: this.column.ellipsis || false,
+          [`${this.prefixCls}-cell-ellipsis`]: this.column.ellipsis&&this.column.ellipsis!='false',
           [`${this.prefixCls}-cell-with-expand`]: this.renderType === 'expand'
         }
       ];
@@ -111,7 +115,7 @@ export default {
     }
   },
   mounted(){
-    if (this.showTitle && this.column.ellipsis ) {
+    if (this.showTitle && this.column.ellipsis&&this.column.ellipsis!="false") {
       this.titleText = this.row[this.column.key];
     }else{
       this.titleText = null;

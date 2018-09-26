@@ -65,6 +65,7 @@ import Rate from './components/Rate';
 import Textdiff from './components/Textdiff';
 import TypefieldRange from './components/TypefieldRange';
 import Split from './components/Split';
+import Drawer from './components/Drawer';
 
 import locale from './locale';
 
@@ -228,6 +229,8 @@ const h_ui = {
     hTypefieldRange:TypefieldRange,
     Split:Split,  
     hSplit:Split,  
+    Drawer:Drawer,
+    hDrawer:Drawer
 };
 const install = function(Vue, opts = {}) {
     locale.use(opts.locale);

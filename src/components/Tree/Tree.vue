@@ -10,6 +10,7 @@
       :showIndeterminate="showIndeterminate"
       :checkStrictly="checkStrictly"
       :disableHover = "disableHover"
+      :selectToCheck="selectToCheck"
       >
     </Tree-node>
     <div :class="[prefixCls + '-empty']" v-if="!data.length">{{ localeEmptyText }}</div>
@@ -84,6 +85,10 @@
       isBoxRight:{
         type:Boolean,
         default:false
+      },
+      selectToCheck:{
+        type:Boolean,
+        default:false
       }
     },
     data () {
@@ -93,28 +98,6 @@
         stateTree: this.isDeepcopy?this.data:deepCopy(this.data),
         flatState: [],
       };
-    },
-    watch:{
-      data: {
-        deep: true,
-        handler () {
-            this.stateTree = this.isDeepcopy?this.data:deepCopy(this.data);
-            this.flatState = this.compileFlatState();
-            this.rebuildTree();
-        }
-      },
-      currentPageInfo: {
-        handler: function (val) {
-          if (val && val.nodeKey >= 0 && val.page) {           
-            let node = this.flatState[val.nodeKey].node;
-            if (node.hasPage) {
-              this.$set(node, 'currentPage', val.page);
-              if(!node.expand) this.$set(node, 'expand', true);
-            }
-          }
-        },
-        deep: true
-      }
     },
     computed: {
       wrapper(){
@@ -138,6 +121,15 @@
         const flatTree = [];
         function flattenChildren(node, parent) {
             node.nodeKey = keyCounter++;
+            ['expand','disabled','disableCheckbox','selected','checked','loading','leaf','autoLoad','hasPage'].forEach(col=>{
+              if(node[col]&&node[col]=='false'){
+                node[col] =false;
+              }
+              if(node[col]&&node[col]=='true'){
+                node[col] =true;
+              }
+            })
+
             flatTree[node.nodeKey] = { node: node, nodeKey: node.nodeKey };
             if (typeof parent != 'undefined') {
                 flatTree[node.nodeKey].parent = parent.nodeKey;
@@ -275,6 +267,29 @@
         this.isDeepcopy = true;
         this.stateTree = this.isDeepcopy?this.data:deepCopy(this.data);
       }
-    }
+    },
+    watch:{
+      data: {
+        deep: true,
+        handler () {
+            this.stateTree = this.isDeepcopy?this.data:deepCopy(this.data);
+            this.flatState = this.compileFlatState();
+            this.rebuildTree();
+        }
+      },
+      currentPageInfo: {
+        handler: function (val) {
+          if (val && val.nodeKey >= 0 && val.page) {           
+            let node = this.flatState[val.nodeKey].node;
+            if (node.hasPage) {
+              this.$set(node, 'currentPage', val.page);
+              if(!node.expand) this.$set(node, 'expand', true);
+            }
+          }
+        },
+        deep: true
+      }
+    },
+    
   };
 </script>

@@ -381,7 +381,6 @@ export default {
       this.inputValue = date;
       this.$emit('on-change',date);
       if (!this.confirm) this.opened=false;
-      // this.setDate(date);
     },
     handleClear () {
       this.opened = false;
@@ -426,8 +425,10 @@ export default {
       let arr=[];
       let arr1=[];
       if (this.type != 'daterange') {
+        if(!this.formatSplit&&val.length!=8) return;
         arr =this.getArr(val,this.formatSplit)
       }else{
+        if(!this.formatSplit&&(val[0].length!=8||val[1].length!=8)) return;
         arr =this.getArr(val[0],this.formatSplit)
         arr1 =this.getArr(val[1],this.formatSplit)
       }
@@ -515,10 +516,10 @@ export default {
     value(val){
       if (typeOf(val)!='array') {
         this.inputValue = String(val);
-        this.setDate(String(this.value));
+        // this.setDate(String(this.value));
       }else{
         this.inputValue = val;
-        this.setDate(this.value);
+        // this.setDate(this.value);
       }
     },
     placement(val){

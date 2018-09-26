@@ -2,15 +2,15 @@
   <table cellspacing="0" cellpadding="0" border="0" :style="styles" ref="tHead">
   <!-- 签用于对表格中的列进行组合，以便对其进行格式化。 -->
     <colgroup>
-      <col v-for="(column, index) in columns" :width="setCellWidth(column, index, true)">
+      <col v-for="(column, index) in columns" :width="setCellWidth(column, index, true)" :key="index">
     </colgroup>
     <thead>
-      <tr>
-        <th>123</th>
-        <th>345</th>
-        <th>678</th>
+      <tr v-if="multiLevel" v-for="(colItem,inx) in multiData" :key="inx">
+        <th v-for="(multi, index) in colItem" :colspan="multi.cols||1" :key="index" :class="aliCls(multi)">
+          <span>{{multi.title}}</span>
+        </th>
       </tr>
-      <tr>
+      <tr class="cur-th">
         <th v-for="(column, index) in columns"
           v-on:mousedown="mousedown($event,column,index)" 
           v-on:mouseout="mouseout($event,column,index)" 
@@ -79,7 +79,7 @@ import Poptip from '../Poptip/Poptip.vue';
 import hButton from '../Button/Button.vue';
 import renderHeader from './header';
 import { on, off } from '../../util/dom';
-import {getScrollBarSize,hasClass,addClass,removeClass} from '../../util/tools';
+import {getScrollBarSize,hasClass,addClass,removeClass,typeOf} from '../../util/tools';
 import Mixin from './mixin';
 import Locale from '../../mixins/locale';
 
@@ -103,6 +103,7 @@ export default {
     headAlgin:String,
     lastColWidth:[Number,String],
     minDragWidth:[Number,String],
+    multiLevel:Array,
   },
   data(){
     return{
@@ -113,6 +114,7 @@ export default {
       moveState: {},
       moveing:false,
       cloumnsLeft:{},
+      multiData:null,
     }
   },
   computed: {
@@ -136,6 +138,7 @@ export default {
   },
   mounted(){
      this.getLeftWidth();
+     this.changeMultiData(this.multiLevel);
      on(window, 'resize', this.getLeftWidth);
   },
   methods: {
@@ -431,6 +434,25 @@ export default {
     handleClick (event) {
       event.stopPropagation();
     },
+    changeMultiData(val){
+      if(val&&val.length>0){
+        if(typeOf(val[0])==='array'){
+          this.multiData = val;
+        }else{
+          let arr=[];
+          arr.push(val);
+          this.multiData = arr;
+        }
+      }
+    },
+    aliCls(item){
+      return[
+        {
+          [`${item.className}`]: item.className,
+          [`${this.prefixCls}-column-${item.align}`]: item.align,
+        }
+      ]
+    }
   },
   watch:{
     columns:{
@@ -438,6 +460,9 @@ export default {
       handler(){
         this.getLeftWidth();
       }
+    },
+    multiLevel(val){
+      this.changeMultiData(val);
     }
   },
   beforeDestroy(){

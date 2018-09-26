@@ -6,7 +6,7 @@
       <h-button @on-click="cancle">取消</h-button>
       <h-button @on-click="select">选择</h-button>
       <h-button @on-click="select(false)">取消选中</h-button>
-      <h-col span='6'><h2>显示勾选框</h2><h-tree :data="data2" isBoxRight show-checkbox @on-check-change="checkChnage"></h-tree></h-col>
+      <h-col span='6'><h2>显示勾选框</h2><h-tree :data="data2" checkStrictly isBoxRight selectToCheck multiple show-checkbox @on-check-change="checkChnage" @on-toggle-expand="checkChnage"></h-tree></h-col>
       <h-col span='6'><h2>异步加载</h2><h-tree :data="data3" :load-data="loadData" show-checkbox></h-tree> </h-col>
       <h-col span='6'><h2>默认展开、选中、勾选和禁用</h2><h-tree :data="data4" show-checkbox multiple></h-tree> </h-col>
     </h-row>
@@ -199,15 +199,17 @@ import {deepCopy} from '../../src/util/tools.js'
         data2: [
           {
             title: 'parent 1',
-            expand: true,
+            expand: 'true',
             children: [
               {
                 title: 'parent 1-1',
-                expand: true,
-                checked: true,
+                expand: 'true',
+                checked: 'true',
                 children: [
                   {
-                    title: 'leaf 1-1-1'
+                    title: 'leaf 1-1-1',
+                    checked: 'false',
+                    disabled: 'false'
                   },
                   {
                     title: 'leaf 1-1-2'

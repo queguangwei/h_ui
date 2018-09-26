@@ -617,7 +617,7 @@
                   child.selected = false;
               }
           });
-            // this.hideMenu();
+          // this.hideMenu();
           if (!init) {
               if (this.labelInValue) {
                   this.$emit('on-change', {
@@ -764,6 +764,7 @@
         }
       },
       handleBlur () {
+        this.$emit('on-blur');
         if (this.showBottom) return false;
         setTimeout(() => {
           const model = this.model;
@@ -957,6 +958,7 @@
             // }
           } else {
             this.model = value;
+            if(!this.filterable) this.hideMenu();
             if (this.filterable && !this.showBottom) {
               this.findChild((child) => {
                 if (child.value === value) {
@@ -1061,20 +1063,20 @@
       },
       query (val) {
         if (this.remote && this.remoteMethod) {
-            if (!this.selectToChangeQuery) {
-                this.$emit('on-query-change', val);
-                if(this.readonly || this.disabled) return false;
-                this.remoteMethod(val);
-            }
-            this.focusIndex = 0;
-            this.findChild(child => {
-              child.isFocus = false;
-            });
+          if (!this.selectToChangeQuery) {
+              this.$emit('on-query-change', val);
+              if(this.readonly || this.disabled) return false;
+              this.remoteMethod(val);
+          }
+          this.focusIndex = 0;
+          this.findChild(child => {
+            child.isFocus = false;
+          });
         } else {
             if (!this.selectToChangeQuery) {
                 this.$emit('on-query-change', val);
             }
-            this.broadcastQuery(val);
+            if(val.trim()) this.broadcastQuery(val);
 
             let is_hidden = true;
 
