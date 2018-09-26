@@ -1,5 +1,5 @@
 <template>
-  <label :class="wrapClasses">
+  <label :class="wrapClasses" @click="radioClick">
     <span :class="radioClasses">
       <span :class="innerClasses"></span>
       <input
@@ -111,6 +111,9 @@
           this.$emit('on-change', value);
           this.dispatch('FormItem', 'on-form-change', value);
         }
+      },
+      radioClick(){
+        this.$emit('on-click')
       },
       updateValue () {
         this.currentValue = this.value === this.trueValue;

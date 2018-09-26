@@ -9,7 +9,7 @@
       <p>单选时，value只接受字符串和数字类型，多选时，value只接受数组类型</p>
       <Button @on-click="testClick(true)">获取焦点</Button>
       <Button @on-click="testClick(false)">失去焦点</Button>
-      <h-select ref="test" placement="bottom-start" :dropWidth="400"></h-select>
+      <h-select ref="test" placement="bottom-start" :dropWidth="400" @on-blur="blurH"></h-select>
       <h-select v-model="model34"
                 style="width:120px"
                 @on-change="change"
@@ -221,6 +221,7 @@
         <span>单选可搜索:</span>
         <h-select v-model="model10"
                   width="200"
+                  @on-blur="blurH"
                   filterable>
           <h-option v-for="(item, index) in uList"
                     :value="item.id"
@@ -230,6 +231,7 @@
         <h-select v-model="model11"
                   width="200"
                   multiple
+                  @on-blur="blurH"
                   filterable
                   :isString="true"
                   isCheckall>
@@ -243,6 +245,7 @@
         <h-select v-model="model10"
                   width="200"
                   filterable
+                  @on-blur="blurH"
                   :showBottom="true"
                   searchHolder="123"
                   :transfer="true">
@@ -255,6 +258,7 @@
                   width="200"
                   multiple
                   filterable
+                  @on-blur="blurH"
                   :isString="true"
                   :showBottom="true"
                   checkToHead
@@ -272,20 +276,21 @@
       <div>
         <span>远程搜索:</span>
         <h-select width="200"
-                  placement = "top-start"
-                  v-model="model13"
-                  filterable
-                  remote
-                  :remote-method="remoteMethod1"
-                  :loading="loading1">
+          v-model="model13"
+          filterable
+          remote
+          @on-blur="blurH"
+          :remote-method="remoteMethod1"
+          :loading="loading1">
           <h-option v-for="option in options1"
-                    :value="option.value"
-                    :key="option.value">{{option.label}}</h-option>
+            :value="option.value"
+            :key="option.value">{{option.label}}</h-option>
         </h-select>
         {{model13}}
       </div>
       <h-select v-model="mode224"
                 not-found-text="新设置的为空显示的内容"
+                @on-blur="blurH"
                 filterable>
         <h-option v-for="item in cityList224"
                   :value="item.value"
@@ -622,6 +627,9 @@ export default {
         }, 200)
       }
     },
+    blurH(){
+      console.log('失去焦点了')
+    },
     change(e) {
       console.log(e)
     },
@@ -645,7 +653,12 @@ export default {
           )
         }, 200)
       } else {
-        this.options1 = []
+        this.options1 = this.list.map(item => {
+          return {
+            value: item,
+            label: item
+          }
+        })
       }
     }
   },

@@ -1,14 +1,17 @@
 <template>
   <div>
     <h2>基础</h2>
-<!--     <h-msg-box v-model="msgbox">
+     <h-msg-box v-model="msgbox">
       <p slot="header">你好呀</p>
       <h-table :columns="columns1" :data="[]" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag">
         <span slot="loading">我是自定义加载！！！</span>
       </h-table>
-    </h-msg-box> -->
-    <Button @click="changemsg">显示</Button>
-    <h-table :columns="columns1" :data="[]" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="200" canMove @on-move="onMove" :lastColWidth="150">
+    </h-msg-box> 
+    <Button @click="refresh">显示</Button>
+    <Button @click="getData">重新赋值</Button>
+    <h-input v-model="aaa"></h-input>
+     <Button @click="changemsg">显示</Button>
+    <h-table :columns="columns1" :multiLevel="multiLevel1" :data="[]" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="200" canMove @on-move="onMove" :lastColWidth="150">
       <span slot="loading">我是自定义加载！！！</span>
     </h-table>
     <h-button @click="setLoading">切换状态</h-button>/
@@ -22,7 +25,7 @@
     <p>列：通过给列 columns 设置字段 className 可以给某一列指定一个样式。</p>
     <p>单元格：通过给数据 data 设置字段 cellClassName 可以给任意一个单元格指定样式。</p>
     <p>自定义行样式：</p>
-    <h-table :row-class-name="rowClassName" :columns="columns1" :data="data1" :loading="loading" :highlight-row='true' canMove></h-table>
+    <h-table :row-class-name="rowClassName" :multiLevel="multiLevel2" :columns="columns1" :data="data1" :loading="loading" :highlight-row='true' canMove></h-table>
     <p>自定义列样式：</p>
     <h-table :columns="columns9" :data="data1" :loading="loading"></h-table>
     <p>自定义任意单元格样式：</p>
@@ -69,7 +72,7 @@
     <h2>设置大小</h2>
     <p>通过设置属性 size 为 large 或 small 可以调整表格尺寸为大或小，默认不填或填写 default 为中。</p>
     <h-table size="large" :columns="columns1" :data="data1" :loading="loading"></h-table>
-    <h-table size="small" :columns="columns1" :data="data1" :loading="loading"></h-table>
+    <h-table size="small" :columns="columns1" :data="data1" :loading="loading"></h-table> 
     <h2>导出csv </h2>
     <p>通过在column中设置hiddenCol表示该列是否隐藏</p>
     <p>通过调用 exportCsv() 方法，可以将数据导出为 .csv 的表格文件，详见 API。</p>
@@ -77,7 +80,18 @@
     支持IE9~IE11、Edge、Chrome、Safari、Firefox 全系列浏览器。
     IE9、Safari 需要手动修改后缀名为 .csv。
     IE9暂时只支持英文，中文会显示为乱码。</p>
-    <h-table height="300" border :columns="columns8" :data="data7" :loading="loading" canMove></h-table>
+    <h-table height="300" border width="1000" :columns="columns8" :data="data7" :loading="loading" canMove :summationData="summationData"></h-table>
+    <br>
+    <h-table border :columns="columns4" :data="data1" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading" :summationData="summationData1">
+      <span slot="footer">恒生电子有限公司提供</span>
+    </h-table>
+    <br>
+    
+    <h-table border :columns="columns4" :data="data1" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading" :summationData="summationData1" large></h-table>
+    <br>
+    
+    <h-table border :columns="columns4" :data="data1" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading" :summationData="summationData1" small></h-table>
+     <h-table height="300" width="550" border :columns="columns2" :data="data4" :loading="loading" @on-scroll="scroll"></h-table> 
     <br>
     <h-button type="primary" size="large" @click="exportData(1)"><h-icon name="document"></h-icon> 导出原始数据</h-button>
     <h-button type="primary" size="large" @click="exportData(2)"><h-icon name="document"></h-icon> 导出排序和过滤后的数据</h-button>
@@ -86,24 +100,43 @@
     <Button @on-click="resetSort">清除排序</Button>
     <Button @on-click="moveUp">上移</Button>
     <Button @on-click="moveDown">下移</Button>
-    <h-table height="300" :stripe="true" :columns="columns18" :data="data17" border size="small" ref="table" :loading="loading" :highlightRow="true" @on-selection-change="selsetChange">
+     <h-table height="300" :stripe="true" :columns="columns18" :data="data17" border size="small" ref="table" :loading="loading" :highlightRow="true" @on-selection-change="selsetChange">
         <span slot="header">证券日活数据表</span>
         <span slot="footer">恒生电子有限公司提供</span>
-    </h-table>
+    </h-table> 
     <br>
-    <!-- <h-table border :columns="columns6" :data="data5" no-filtered-data-text="找不到数据" :loading="loading"></h-table> -->
+     <h-table border :columns="columns6" :data="data5" no-filtered-data-text="找不到数据" :loading="loading"></h-table> 
   </div>
 </template>
 <script>
 let jsonData =require('../assets/aa.json'); 
 import TexpandRow from './Texpand-row.vue'
 export default {
+  name: 'tableq',
   components:{TexpandRow},
   data () {
     return {
       bigData:jsonData,
       msgbox:false,
       loading:false,
+      multiLevel1:[
+        {title:'123',cols:2},
+        {title:'456'},
+      ],
+      multiLevel2:[
+        [
+          {title:'123',cols:2,align:'center',className:'demo-table-info-column'},
+          {title:'456',align:'right'},
+        ],
+        [
+          {title:'123',cols:2},
+          {title:'456'},
+        ],
+        [
+          {title:'234'},
+          {title:'678',cols:2},
+        ],
+      ],
       columns18: [
          {
              type: "selection",
@@ -682,15 +715,25 @@ export default {
       ],
       columns8: [
         {
+          type: 'index',
+          width: 60,
+          align: 'center'
+        },
+        {
+          type: 'selection',
+          width: 60,
+          align: 'center',
+        },
+        
+        {
           title: "名称",
           key: "name",
           width: 100,
-          fixed: "left",
+          // fixed: "right",
         },
         {
           title: "展示",
           key: "show",
-          width: 150,
           sortable: true,
           // fixed: "left",
           // hiddenCol:true,//通过在column中设置hiddenCol表示该列是否隐藏
@@ -713,70 +756,70 @@ export default {
             }
           }
         },
-        {
-          title: "唤醒",
-          key: "weak",
-          width: 150,
-          sortable: true,
-          // hiddenCol:true,
-        },
-        {
-          title: "登录",
-          key: "signin",
-          width: 150,
-          sortable: true
-        },
-        {
-          title: "点击",
-          key: "click",
-          width: 150,
-          sortable: true
-        },
-        {
-          title: "激活",
-          key: "active",
-          width: 150,
-          sortable: true
-        },
-        {
-          title: "7日留存",
-          key: "day7",
-          width: 150,
-          // sortable: true
-        },
-        {
-          title: "30日留存",
-          key: "day30",
-          width: 150,
-          // sortable: true
-        },
-        {
-          title: "次日留存",
-          key: "tomorrow",
-          width: 150,
-          // sortable: true
-        },
-        {
-          title: "日活跃",
-          key: "day",
-          width: 150,
-          // sortable: true
-        },
-        {
-          title: "周活跃",
-          key: "week",
-          width: 150,
-          // fixed: "right",
-          // sortable: true
-        },
-        {
-          title: "月活跃",
-          key: "month",
-          width: 150,
+        // {
+        //   title: "唤醒",
+        //   key: "weak",
+        //   width: 150,
+        //   sortable: true,
+        //   // hiddenCol:true,
+        // },
+        // {
+        //   title: "登录",
+        //   key: "signin",
+        //   width: 150,
+        //   sortable: true
+        // },
+        // {
+        //   title: "点击",
+        //   key: "click",
+        //   width: 150,
+        //   sortable: true
+        // },
+        // {
+        //   title: "激活",
+        //   key: "active",
+        //   width: 150,
+        //   sortable: true
+        // },
+        // {
+        //   title: "7日留存",
+        //   key: "day7",
+        //   width: 150,
+        //   // sortable: true
+        // },
+        // {
+        //   title: "30日留存",
+        //   key: "day30",
+        //   width: 150,
+        //   // sortable: true
+        // },
+        // {
+        //   title: "次日留存",
+        //   key: "tomorrow",
+        //   width: 150,
+        //   // sortable: true
+        // },
+        // {
+        //   title: "日活跃",
+        //   key: "day",
+        //   width: 150,
+        //   // sortable: true
+        // },
+        // {
+        //   title: "周活跃",
+        //   key: "week",
+        //   width: 150,
+        //   // fixed: "right",
+        //   // sortable: true
+        // },
+        // {
+        //   title: "月活跃",
+        //   key: "month",
+        //   width: 150,
 
-          // fixed: "right",
-          // sortable: true
-        }
+        //   // fixed: "right",
+        //   // sortable: true
+        // }
       ],
       columns9: [
         {
@@ -1263,10 +1306,264 @@ export default {
           movie: '倩女幽魂',
           music: '演员'
         }
-      ]
+      ],
+      aaa: '',
+      summationData: [{
+        name: '12313',
+        fav: 0,
+        show: 730211221,
+        weak: 5627223123,
+        signin: 1563123123,
+        click: 425413,
+        active: 1438123,
+        day7: 27412312,
+        day30: 285123,
+        tomorrow: 1727123,
+        day: 558,
+        week: 4440,
+        month: 5610
+      }],
+      summationData1: [{
+          name: 'qeqweqw',
+          age: 123123123,
+          address: 'qqweqwe'
+        }]
     }
   },
   methods:{
+    getData () {
+      this.data7 = [{
+          name: "推广名称1qweqwe",
+          fav: 0,
+          show: 7302,
+          weak: 5627,
+          signin: 1563,
+          click: 4254,
+          active: 1438,
+          day7: 274,
+          day30: 285,
+          tomorrow: 1727,
+          day: 558,
+          week: 4440,
+          month: 5610
+        },{
+          name: "推广名称1qweqweqwe",
+          fav: 0,
+          show: 7302,
+          weak: 5627,
+          signin: 1563,
+          click: 4254,
+          active: 1438,
+          day7: 274,
+          day30: 285,
+          tomorrow: 1727,
+          day: 558,
+          week: 4440,
+          month: 5610
+        },{
+          name: "推广名称1sqeqwewe",
+          fav: 0,
+          show: 7302,
+          weak: 5627,
+          signin: 1563,
+          click: 4254,
+          active: 1438,
+          day7: 274,
+          day30: 285,
+          tomorrow: 1727,
+          day: 558,
+          week: 4440,
+          month: 5610
+        },{
+          name: "推广名称1sqeqwewe",
+          fav: 0,
+          show: 7302,
+          weak: 5627,
+          signin: 1563,
+          click: 4254,
+          active: 1438,
+          day7: 274,
+          day30: 285,
+          tomorrow: 1727,
+          day: 558,
+          week: 4440,
+          month: 5610
+        },{
+          name: "推广名称1sqeqwewe",
+          fav: 0,
+          show: 7302,
+          weak: 5627,
+          signin: 1563,
+          click: 4254,
+          active: 1438,
+          day7: 274,
+          day30: 285,
+          tomorrow: 1727,
+          day: 558,
+          week: 4440,
+          month: 5610
+        },{
+          name: "推广名称1sqeqwewe",
+          fav: 0,
+          show: 7302,
+          weak: 5627,
+          signin: 1563,
+          click: 4254,
+          active: 1438,
+          day7: 274,
+          day30: 285,
+          tomorrow: 1727,
+          day: 558,
+          week: 4440,
+          month: 5610
+        },{
+          name: "推广名称1sqeqwewe",
+          fav: 0,
+          show: 7302,
+          weak: 5627,
+          signin: 1563,
+          click: 4254,
+          active: 1438,
+          day7: 274,
+          day30: 285,
+          tomorrow: 1727,
+          day: 558,
+          week: 4440,
+          month: 5610
+        },{
+          name: "推广名称1sqeqwewe",
+          fav: 0,
+          show: 7302,
+          weak: 5627,
+          signin: 1563,
+          click: 4254,
+          active: 1438,
+          day7: 274,
+          day30: 285,
+          tomorrow: 1727,
+          day: 558,
+          week: 4440,
+          month: 5610
+        },{
+          name: "推广名称1sqeqwewe",
+          fav: 0,
+          show: 7302,
+          weak: 5627,
+          signin: 1563,
+          click: 4254,
+          active: 1438,
+          day7: 274,
+          day30: 285,
+          tomorrow: 1727,
+          day: 558,
+          week: 4440,
+          month: 5610
+        },{
+          name: "推广名称1sqeqwewe",
+          fav: 0,
+          show: 7302,
+          weak: 5627,
+          signin: 1563,
+          click: 4254,
+          active: 1438,
+          day7: 274,
+          day30: 285,
+          tomorrow: 1727,
+          day: 558,
+          week: 4440,
+          month: 5610
+        },{
+          name: "推广名称1sqeqwewe",
+          fav: 0,
+          show: 7302,
+          weak: 5627,
+          signin: 1563,
+          click: 4254,
+          active: 1438,
+          day7: 274,
+          day30: 285,
+          tomorrow: 1727,
+          day: 558,
+          week: 4440,
+          month: 5610
+        },{
+          name: "推广名称1sqeqwewe",
+          fav: 0,
+          show: 7302,
+          weak: 5627,
+          signin: 1563,
+          click: 4254,
+          active: 1438,
+          day7: 274,
+          day30: 285,
+          tomorrow: 1727,
+          day: 558,
+          week: 4440,
+          month: 5610
+        },{
+          name: "推广名称1sqeqwewe",
+          fav: 0,
+          show: 7302,
+          weak: 5627,
+          signin: 1563,
+          click: 4254,
+          active: 1438,
+          day7: 274,
+          day30: 285,
+          tomorrow: 1727,
+          day: 558,
+          week: 4440,
+          month: 5610
+        },{
+          name: "推广名称1sqeqwewe",
+          fav: 0,
+          show: 7302,
+          weak: 5627,
+          signin: 1563,
+          click: 4254,
+          active: 1438,
+          day7: 274,
+          day30: 285,
+          tomorrow: 1727,
+          day: 558,
+          week: 4440,
+          month: 5610
+        },{
+          name: "推广名称1sqeqwewe",
+          fav: 0,
+          show: 7302,
+          weak: 5627,
+          signin: 1563,
+          click: 4254,
+          active: 1438,
+          day7: 274,
+          day30: 285,
+          tomorrow: 1727,
+          day: 558,
+          week: 4440,
+          month: 5610
+        }]
+    },
+    refresh () {
+      debugger
+      //  this.$route.meta.isKeepAlive = false
+       this.$parent.isKeepAlive = false
+        // this.$store.dispatch('refreshCurPage', 'table')
+          // this.$route.meta.comName = ''
+          this.$parent.page = ''
+        
+        this.$nextTick(() => {
+       this.$parent.isKeepAlive = true
+          
+          // this.$route.meta.isKeepAlive = true
+          // this.$route.meta.isDestroy = false
+          // this.$route.meta.comName = 'table'
+          this.$parent.page = 'tableq'
+          
+          
+          // this.$store.dispatch('addRouteKeepAlive', 'table')
+        })
+    },
     resetSort(){
       this.$refs.table.handleSort('all','normal');
     },
@@ -1429,7 +1726,7 @@ export default {
 
 }
 </script>
-<style type="text/css" scoped>
+<style type="text/css">
 .h-table .demo-table-info-row td{
   background-color: #2db7f5 !important;
   color: #fff;
@@ -1439,6 +1736,10 @@ export default {
   color: #fff;
 }
 .h-table td.demo-table-info-column{
+  background-color: #2db7f5!important;
+  color: #fff;
+}
+.h-table th.demo-table-info-column{
   background-color: #2db7f5!important;
   color: #fff;
 }
@@ -1458,4 +1759,5 @@ export default {
   background-color: #7eb8f1;
   text-align: center;
 }
+
 </style>

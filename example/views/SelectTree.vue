@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h-row>
+    <!-- <h-row>
       <h-col span="8">
        <h-button @click="click('1')">设置1</h-button>
        <h-button @click="click('1-0')">设置2</h-button>
@@ -30,9 +30,9 @@
     {{val2}}
     <h-select-tree v-model="val4" :data="baseData" showCheckbox disabled></h-select-tree>
     <br><br><br>
-    {{val4}}
+    {{val4}} -->
     <h-select-tree v-model="val5" style="width:200px" :data="baseData3" :first-value="firstVal5" showCheckbox checkStrictly></h-select-tree>
-    {{val5}}
+    <!-- {{val5}}
     <h2>输入框在上搜索</h2>
     <h-select-tree v-model="val3" style="width:200px" :data="baseData4" filterable></h-select-tree>
     {{val3}}
@@ -46,10 +46,10 @@
     <h-select-tree v-model="val61" style="width:200px" :data="baseData5" showCheckbox checkStrictly filterable showBottom transfer></h-select-tree>
     {{val6}}
     <h-select-tree v-model="val71" style="width:200px" :data="baseData5" showCheckbox filterable showBottom></h-select-tree>
-    {{val7}}
-    <h-msg-box v-model="showBox">
-      <h-select-tree v-model="val" :first-value="firstVal" style="width:200px" :data="baseData2" size="large" @on-select-change="selectChange" @on-toggle-expand="selectChange" format-value="id"></h-select-tree>
-    </h-msg-box>
+    {{val71}} -->
+    <!-- <h-msg-box v-model="showBox"> -->
+      <h-select-tree v-model="val" format-value="id" :first-value="firstVal" :data="baseData2" size="large" @on-select-change="selectChange" @on-toggle-expand="selectChange"></h-select-tree>
+    <!-- </h-msg-box> -->
 
   </div>
 </template>
@@ -59,7 +59,7 @@
       return {
         showBox:false,
         val:'',
-        firstVal:'',
+        firstVal:null,
         valc: '',
         firstValc: 'parent',
         val1:[],
@@ -139,39 +139,41 @@
 
               children: [{
                 title: 'leaf',
-                disableCheckbox: true
+                disableCheckbox: 'true'
               }, {
                 title: 'leaf1',
+                disableCheckbox: 'false'
               }]
             }, {
               title: 'parent 1-1',
               children: [{
                 title: 'leaf2',
+                disabled:'true',
               }]
             }]
         }],
         baseData4: [
           {
             title: 'parent',
-            id: '1-0',
+            id: 1,
             children: [
               {
                 title: 'child1',
-                id: '1-1',
+                id: 2,
   
                 children: [
                   {
                     title: 'child1-1-1',
-                    id: '1-1-1',
+                    id: 3,
                     children: [
                       {
                         title: 'child1-1-1-1',
-                        id: '1-1-1-1'
+                        id: 4
                       }]
                   },
                   {
                     title: 'child1-1-2',
-                    id: '1-1-2',
+                    id: 5,
                   }
                 ]
               },
@@ -269,30 +271,31 @@
       // this.firstVal = '1';
       this.baseData2= [{
             title: 'parent 1',
-            id:'1',
+            id:2,
             children: [{
               title: 'parent 1-0',
-              id:'1-0',
+              id:1,
 
               children: [{
                 title: 'leaf',
-                id:'1-0-0',
+                id:3,
                 disableCheckbox: true
               }, {
                 title: 'leaf',
-                id:'1-0-1',
+                id:4,
               }]
             }, {
               title: 'parent 1-1',
-              id:'1-1',
+              id:5,
 
               children: [{
                 title: 'leaf',
-                id:'1-1-0',
+                id:6,
               }]
             }]
         }];
       // this.updateTree(this.baseData);
+      this.firstVal = 2
        this.baseData5= [{
             title: 'parent 1',
             children: [{

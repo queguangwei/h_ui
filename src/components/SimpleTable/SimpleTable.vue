@@ -1085,6 +1085,7 @@ export default {
           const oldDataLen = this.rebuildData.length;
           this.objData = this.makeObjData();
           this.rebuildData = this.makeDataWithSortAndFilter();
+          this.updateVisibleData();
           this.handleResize();
           if (!oldDataLen) {
             this.fixedHeader();
@@ -1101,6 +1102,7 @@ export default {
           // todo 这里有性能问题，可能是左右固定计算属性影响的
           this.cloneColumns = this.makeColumns();
           this.rebuildData = this.makeDataWithSortAndFilter();
+          this.updateVisibleData();
           this.handleResize();
         },
         deep: true

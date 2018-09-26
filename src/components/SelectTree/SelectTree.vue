@@ -498,7 +498,6 @@
         }
       },
       findQuery(data,val){
-        // debugger
         var that = this;
         data.forEach((col,i)=>{
           that.$set(col, 'filterable', false);
@@ -553,7 +552,15 @@
         let _this = this;
         function findDown(tdata,curValue){
           tdata.forEach((item)=>{
-            if (typeOf(curValue) == 'string'&&item[_this.formatValue] == curValue) {
+            ['expand','disabled','disableCheckbox','selected','checked'].forEach(col=>{
+              if(item[col]&&item[col]=='false'){
+                item[col] =false;
+              }
+              if(item[col]&&item[col]=='true'){
+                item[col] =true;
+              }
+            });
+            if ((typeOf(curValue) == 'string'||typeOf(curValue) == 'number')&&item[_this.formatValue] == curValue) {
               _this.$set(item,'selected',true);
             }else if(typeOf(curValue) == 'array'&&curValue.indexOf(item[_this.formatValue])!=-1){
               _this.$set(item,'checked',true);
@@ -569,7 +576,7 @@
         findDown(data,value);
         this.$nextTick(()=>{
           let tree = this.$refs.tree;   
-          if (typeOf(value) == 'string') {
+          if (typeOf(value) == 'string'||typeOf(value) == 'number') {
             this.selectChange(tree.getSelectedNodes());
           }else{
             this.checkChange(tree.getCheckedNodes());

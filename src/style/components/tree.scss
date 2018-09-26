@@ -27,7 +27,7 @@ $tree-prefix-cls: "#{$css-prefix}tree";
     padding: 0 4px;
     border-radius: $btn-border-radius-small;
     cursor: pointer;
-    vertical-align: top;
+    vertical-align: center;
     color: $text-color;
     transition: all $transition-time $ease-in-out;
     &:hover {
@@ -41,9 +41,9 @@ $tree-prefix-cls: "#{$css-prefix}tree";
     &-filterable{
       color: darken($error-color, 10%);
     }
-    &-parent {
-      padding-top: 4px;
-    }
+    // &-parent {
+    //   margin-top: 4px;
+    // }
   }
   &-arrow {
     cursor: pointer;
@@ -51,6 +51,7 @@ $tree-prefix-cls: "#{$css-prefix}tree";
     text-align: center;
     display: inline-block;
     i {
+      font-size: 14px;
       display: inline-block;
       transition: all $transition-time $ease-in-out;
     }
@@ -75,6 +76,7 @@ $tree-prefix-cls: "#{$css-prefix}tree";
   &-isBoxRight{
     .h-checkbox-wrapper{
       float: right;
+      margin-top: 2px;
     }
   }
 }
