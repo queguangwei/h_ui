@@ -35,7 +35,10 @@
       },
     },
     created() {
-      // debugger
+      let rowAutoLoad = Boolean(this.row.autoLoad)
+      if (rowAutoLoad && 'loading' in this.row && !this.row.loading && !this.row.leaf && this.$parent.$parent.loadData && (this.row.children && this.row.children.length == 0 || !this.row.children)) {
+        this.$parent.$parent.toggleExpand(this.row._index, this.row, true)
+      }
     }
   };
 </script>

@@ -49,7 +49,7 @@
                   @mouseleave.stop="handleMouseOut(row._index)"
                   @click="clickCurrentRowTr($event,row._index,$event)"
                   @dblclick.native.stop="dblclickCurrentRowTr(row._index)">
-                  <td v-for="column in columns" :class="alignCls(column, row)" :key="column._index">
+                  <td v-for="column in cloneColumns" :class="alignCls(column, row)" :key="column._index">
                     <div :class="classesTd(column)">
                       <template v-if="column.type === 'index'">{{row._index}}</template>
                       <template v-if="column.type === 'selection'">
@@ -621,7 +621,6 @@ export default {
           let autoWidthIndex = -1;
           // if (allWidth) autoWidthIndex = this.cloneColumns.findIndex(cell => !cell.width);//todo 这行可能有问题
           if (allWidth) autoWidthIndex = findInx(this.cloneColumns,cell => !cell.width);
-          this.cloneColumns.forEach((cell,i)=>{})
           if (this.data.length) {
             const $td = this.$refs.tbody.querySelectorAll('tbody tr')[0].querySelectorAll('td');
             for (let i = 0; i < $td.length; i++) {    // can not use forEach in Firefox
@@ -705,7 +704,7 @@ export default {
         this.objData[_index]._isHighlight = false;
         this.objData[_index]._isChecked = false;
       }
-      this.$emit('on-selection-change', this.getSelection());
+      this.$emit('on-selection-change', this.getSelection(),this.getSelection(true));
     },
     handleClick(){
     },
@@ -744,15 +743,15 @@ export default {
           this.objData[_index]._isHighlight = false;
           this.objData[_index]._isChecked = false;
           // this.$emit('on-current-change-cancle',JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
-          this.$emit('on-current-change', null);
+          this.$emit('on-current-change', null,null);
         }else{
           this.objData[_index]._isHighlight = true;
           this.objData[_index]._isChecked = true;
           // this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
-          this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])));
+          this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])),_index);
         }
         if (this.columns[0].type=='selection') {
-          this.$emit('on-selection-change',this.getSelection());
+          this.$emit('on-selection-change',this.getSelection(),this.getSelection(true));
         }
     },
     clickCurrentRowTr (event,_index,) { 
@@ -796,12 +795,12 @@ export default {
       }
       this.$emit('on-row-dblclick', JSON.parse(JSON.stringify(this.cloneData[_index])));
     },
-    getSelection () {
+    getSelection (status=false) {
       let selectionIndexes = [];
       for (let i in this.objData) {
           if (this.objData[i]._isChecked) selectionIndexes.push(parseInt(i));
       }
-      return JSON.parse(JSON.stringify(this.data.filter((data, index) => selectionIndexes.indexOf(index) > -1)));
+      return status?selectionIndexes:JSON.parse(JSON.stringify(this.data.filter((data, index) => selectionIndexes.indexOf(index) > -1)));
     },
     toggleSelect (_index) {
       this.allclick = false;
@@ -819,7 +818,7 @@ export default {
 
       const selection = this.getSelection();
       this.$emit(status ? 'on-select' : 'on-select-cancel', selection, JSON.parse(JSON.stringify(this.data[_index])));
-      this.$emit('on-selection-change', selection);
+      this.$emit('on-selection-change', selection,this.getSelection(true));
     },
     clearAllRow(){
       for (let i in this.objData) {
@@ -864,17 +863,17 @@ export default {
         }
         const selection = this.getSelection();
         this.$emit('on-select-all', selection);
-        this.$emit('on-selection-change', selection);
+        this.$emit('on-selection-change', selection,this.getSelection(true));
       }, 0);
     },
-    SelectRange(){
+    selectRange(){
       for (var i = this.shiftSelect[0]; i <= this.shiftSelect[1]; i++) {
         this.objData[i]._isHighlight=false;
         if(!this.objData[i]._isDisabled){
           this.objData[i]._isChecked = true;
         }
       }
-      this.$emit('on-selection-change', this.getSelection());
+      this.$emit('on-selection-change', this.getSelection(),this.getSelection(true));
     },
     fixedHeader () {
       if (this.height) {
@@ -978,16 +977,15 @@ export default {
       let left = [];
       let right = [];
       let center = [];
-
       columns.forEach((column, index) => {
         column._index = index;
         column._columnKey = columnKey++;
         column._width = column.width ? column.width : '';    // update in handleResize()
-        if(!!column.hiddenCol){
-          that.columns[index].width = 0;
-          column.width = 0;
-          column._width = 0;
-        }
+        // if(!!column.hiddenCol){
+        //   that.columns[index].width = 0;
+        //   column.width = 0;
+        //   column._width = 0;
+        // }
         column._sortType = 'normal';
         column._filterVisible = false;
         column._isFiltered = false;
@@ -1005,7 +1003,7 @@ export default {
         if ('sortType' in column) {
             column._sortType = column.sortType;
         }
-        if (!column.hiddenCol) {
+        if (!column.hiddenCol || column.hiddenCol=='false') {
           if (column.fixed && column.fixed === 'left') {
               left.push(column);
           } else if (column.fixed && column.fixed === 'right') {
@@ -1118,7 +1116,7 @@ export default {
       },
       shiftSelect(val){
         if (val.length==2) {
-          this.SelectRange();
+          this.selectRange();
         }
       },
   }

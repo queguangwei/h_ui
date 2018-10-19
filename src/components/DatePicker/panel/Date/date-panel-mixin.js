@@ -42,7 +42,8 @@ export default {
         pickerType: {
             type: String,
             require: true
-        }
+        },
+        showTowPanel:Boolean
     },
     computed: {
         isTime(){

@@ -9,9 +9,9 @@ $steps-title-color: #495060;
 
 .#{$steps-prefix-cls} {
   position:relative;
-  font-size: 0;
   width: 100%;
   line-height: 1.5;
+  font-size: 0;
 
   &-item{
     display: inline-block;
@@ -51,7 +51,7 @@ $steps-title-color: #495060;
             color: $steps-title-color;
             font-weight: bold;
             font-family: MicrosoftYaHei-Bold;
-            font-size: 14px; 
+            font-size: $font-size-base; 
             letter-spacing: 0;
             text-align: left;
             line-height: 24px;
@@ -153,9 +153,9 @@ $steps-title-color: #495060;
   }
   .#{$steps-prefix-cls}-head-inner {
       display: block;
-      width: 32px;
-      height: 32px;
-      line-height: 32px;
+      width: 26px;
+      height: 26px;
+      line-height: 26px;
       margin-right: 8px;
       text-align: center;
       border: 1px solid $steps-wait-icon-color;
@@ -249,17 +249,16 @@ $steps-title-color: #495060;
 
   &.#{$steps-prefix-cls}-small {
       .#{$steps-prefix-cls}-head-inner {
-          width: 24px;
-          height: 24px;
-          line-height: 22px;
+          width: 18px;
+          height: 18px;
+          line-height: 18px;
           margin-right: 10px;
           text-align: center;
           border-radius: 50%;
-          font-size: 12px;
 
           > .#{$steps-prefix-cls}-icon {
               top: 0;
-              font-size: 14px;
+              font-size: $font-size-base;
               line-height: 18px;
           }
       }
@@ -269,11 +268,11 @@ $steps-title-color: #495060;
           margin-bottom: 4px;
           margin-top: 0;
           color: #666;
-          font-size: 12px;
+          font-size: $font-size-small;
           font-weight: bold;
       }
       .#{$steps-prefix-cls}-content {
-          font-size: 12px;
+          font-size: $font-size-small;
           color: #999;
           padding-left: 30px;
       }

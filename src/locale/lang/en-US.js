@@ -121,6 +121,9 @@ export default {
         typefieldRange:{
             rPlaceholder:'Lowest value',
             lPlaceholder:'Highest value'
+        },
+        log:{
+            clear:'Clear'
         }
     }
 };

@@ -317,6 +317,10 @@
                 }
             },
             handleRangePick (val) {
+                if(this.showTowPanel){
+                    this.$emit('on-pick',val)
+                    return false;
+                }
                 if (this.rangeState.selecting || this.currentView === 'time'){
                     if (this.currentView === 'time'){
                         this.dates = val;

@@ -2,7 +2,7 @@
   <div>
     <Button @on-click="testClick(true)">获取焦点</Button>
     <Button @on-click="testClick(false)">失去焦点</Button>
-    <h-date-picker placement="top-start" v-model="formItem.date" format="yyyy/MM/dd" :showFormat="true" style="width:180px" :disabled="changeable" ref="test"></h-date-picker>
+    <h-date-picker placement="top-start" v-model="formItem.date" showTowPanel format="yyyy/MM/dd" :showFormat="true" style="width:180px" :disabled="changeable" ref="test"></h-date-picker>
     <span>{{formItem.date}}</span>
     <Button @click = "changedis">改变状态</Button>
     <h-row>
@@ -13,7 +13,8 @@
         <h-date-picker v-model="model1"  format="yyyy-MM-dd" type="date" style="width: 200px" @on-clickout="s" :showFormat="true"></h-date-picker>{{model1}}
       </h-col>
       <h-col span="12">
-        <h-date-picker v-model="model2" type="daterange" format="yyyy年MM月dd日" placement="bottom-end" placeholder="选择日期"></h-date-picker> {{model2}}
+        {{model2}}
+        <h-date-picker v-model="model2" type="daterange" @on-change="handleChange1" format="yyyy-MM-dd" placement="bottom-end" placeholder="选择日期" showFormat></h-date-picker>
       </h-col>
     </h-row>
     <h-row>
@@ -213,7 +214,7 @@
         timePicker:'20180913040505 ',
         value3:  [ "2018-08-16", "2018-08-23" ],
         model1:'',
-        model2:[],
+        model2:["2018-08-16", "2018-08-23"],
         model3:'',
         model4:'',
         model5:'',
@@ -239,6 +240,9 @@
       handleChange (date) {
         this.value3 = date;
       },
+      handleChange1 (date) {
+        console.log(date);
+      },
       handleClear () {
         this.open = false;
       },
@@ -262,7 +266,7 @@
     },
     mounted(){
       this.model1='2018-3-6';
-      this.model2=['2018年3月9日','2018年3月19日'];
+      // this.model2=['2018年3月9日','2018年3月19日'];
     } 
   }
 </script>

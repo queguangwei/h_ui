@@ -7,14 +7,15 @@
         <span slot="loading">我是自定义加载！！！</span>
       </h-table>
     </h-msg-box> 
-    <Button @click="refresh">显示</Button>
+    <!-- <Button @click="refresh">显示</Button>
     <Button @click="getData">重新赋值</Button>
-    <h-input v-model="aaa"></h-input>
+    <h-input v-model="aaa"></h-input> -->
      <Button @click="changemsg">显示</Button>
     <h-table :columns="columns1" :multiLevel="multiLevel1" :data="[]" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="200" canMove @on-move="onMove" :lastColWidth="150">
       <span slot="loading">我是自定义加载！！！</span>
     </h-table>
-    <h-button @click="setLoading">切换状态</h-button>/
+    <h-button @click="setLoading">切换状态</h-button>
+    <h-button @click="setMult">切换hiddenCol</h-button>
     <h2>带边线</h2>
     <h-table border :columns="columns1" :data="data0" stripe no-data-text="数据为空" :show-header="false" :loading="loading" canMove>
       <div slot="header">我是表头</div>
@@ -29,15 +30,21 @@
     <p>自定义列样式：</p>
     <h-table :columns="columns9" :data="data1" :loading="loading"></h-table>
     <p>自定义任意单元格样式：</p>
+    <Button @on-click="changeHidden">改变hiddenCol</Button>
     <h-table :columns="columns1" :data="data8" @on-row-click="click1" :loading="loading"></h-table>
     <h2>固定表头</h2>
     <p>通过设置属性 height 给表格指定高度后，会自动固定表头。当纵向内容过多时可以使用</p>
+    <p>设置maxheight 600</p>
+    <h-table maxHeight="600" :columns="columns1" :data="data2" border :loading="loading" showTitle></h-table>
     <h-table height="200" :columns="columns1" :data="data2" border :loading="loading" showTitle></h-table>
     <h2>固定列</h2>
     <p>通过给数据 columns 的项设置 fixed 为 left 或 right，可以左右固定需要的列。</p>
     <h-table border :columns="columns2" showTitle :data="data3" :loading="loading" canMove height="250" canDragFixed :minDragWidth="60"></h-table>
     <h2>固定表头和列</h2>
     <h-table height="300" width="550" border :columns="columns2" :data="data4" :loading="loading" @on-scroll="scroll"></h-table>
+    <p>设置maxheight 800</p>
+    <h-table maxHeight="800" width="550" border :columns="columns2" :data="data4" :loading="loading" @on-scroll="scroll"></h-table>
+    <h-table height="800" width="550" border :columns="columns2" :data="[data4[1]]" :loading="loading" @on-scroll="scroll"></h-table>
     <h2>单选</h2>
     <p>通过设置属性 highlight-row，可以选中某一行。</p>
     <p>给 data 项设置特殊 key _highlight: true 可以默认选中当前项。</p>
@@ -68,7 +75,7 @@
     <p>通过给 columns 数据设置一项，指定 type: 'expand'，即可开启扩展功能。</p>
     <p>给行数据 data 的某项设置 _expanded 为 true，可以默认展开当前行，设置 _disableExpand 可以禁用当前行的展开功能。</p>
     <p>渲染展开区域与自定义列模板方法类似，使用 render 函数。当内容较复杂时，可拆分为组件或使用 JSX。</p>
-    <h-table :columns="columns10" :data="data9" @on-expand="expand" @on-row-click="rowclick" @on-row-dblclick="rowdblclick" :loading="loading" border></h-table>
+    <h-table :columns="columns10" :height="300" :data="data9" @on-expand="expand" @on-row-click="rowclick" @on-row-dblclick="rowdblclick" :loading="loading" border></h-table>
     <h2>设置大小</h2>
     <p>通过设置属性 size 为 large 或 small 可以调整表格尺寸为大或小，默认不填或填写 default 为中。</p>
     <h-table size="large" :columns="columns1" :data="data1" :loading="loading"></h-table>
@@ -81,6 +88,11 @@
     IE9、Safari 需要手动修改后缀名为 .csv。
     IE9暂时只支持英文，中文会显示为乱码。</p>
     <h-table height="300" border width="1000" :columns="columns8" :data="data7" :loading="loading" canMove :summationData="summationData"></h-table>
+    <p>设置maxheight 800</p>
+    <h-table maxHeight="800" border width="1000" :columns="columns8" :data="data7" :loading="loading" canMove :summationData="summationData"></h-table>
+    <br>
+    <h-table height="300" border width="1000" :columns="columns8" :data="[]" :loading="loading" canMove></h-table>
+    <h-table maxheigt="300" border width="1000" :columns="columns8" :data="[]" :loading="loading" canMove></h-table>
     <br>
     <h-table border :columns="columns4" :data="data1" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading" :summationData="summationData1">
       <span slot="footer">恒生电子有限公司提供</span>
@@ -91,7 +103,15 @@
     <br>
     
     <h-table border :columns="columns4" :data="data1" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading" :summationData="summationData1" small></h-table>
+     <h-table height="300" width="550" border :columns="columns2" :data="[]" :loading="loading" @on-scroll="scroll"></h-table>
+     <p>设置maxheight300</p> 
+     <h-table maxHeight="300" width="550" border :columns="columns2" :data="[]" :loading="loading" @on-scroll="scroll"></h-table> 
      <h-table height="300" width="550" border :columns="columns2" :data="data4" :loading="loading" @on-scroll="scroll"></h-table> 
+     <p>设置maxheight300</p> 
+     <h-table maxHeight="300" width="550" border :columns="columns2" :data="data4" :loading="loading" @on-scroll="scroll"></h-table> 
+     <h-table height="800" width="550" border :columns="columns2" :data="data4" :loading="loading" @on-scroll="scroll"></h-table> 
+     <p>设置maxheight800</p> 
+     <h-table maxHeight="800" width="550" border :columns="columns2" :data="data4" :loading="loading" @on-scroll="scroll"></h-table> 
     <br>
     <h-button type="primary" size="large" @click="exportData(1)"><h-icon name="document"></h-icon> 导出原始数据</h-button>
     <h-button type="primary" size="large" @click="exportData(2)"><h-icon name="document"></h-icon> 导出排序和过滤后的数据</h-button>
@@ -104,11 +124,22 @@
         <span slot="header">证券日活数据表</span>
         <span slot="footer">恒生电子有限公司提供</span>
     </h-table> 
+     <p>设置maxheight6200</p> 
+      <h-table maxHeight="6200" :stripe="true" :columns="columns18" :data="data17" border size="small" :loading="loading" :highlightRow="true" @on-selection-change="selsetChange">
+        <span slot="header">证券日活数据表</span>
+        <span slot="footer">恒生电子有限公司提供</span>
+    </h-table> 
     <br>
+    <h-table height="300" :stripe="true" :columns="columns18" :data="[]" border size="small" :loading="loading" :highlightRow="true" @on-selection-change="selsetChange">
+        <span slot="header">证券日活数据表</span>
+        <span slot="footer">恒生电子有限公司提供</span>
+    </h-table>
+      <br>
      <h-table border :columns="columns6" :data="data5" no-filtered-data-text="找不到数据" :loading="loading"></h-table> 
   </div>
 </template>
 <script>
+// import printJS from 'print-js/src/index'
 let jsonData =require('../assets/aa.json'); 
 import TexpandRow from './Texpand-row.vue'
 export default {
@@ -120,8 +151,9 @@ export default {
       msgbox:false,
       loading:false,
       multiLevel1:[
-        {title:'123',cols:2},
-        {title:'456'},
+        {title:'123',cols:2,},
+        {title:'456',hiddenCol:true},
+        // {title:'789'},
       ],
       multiLevel2:[
         [
@@ -862,7 +894,6 @@ export default {
         },
         {
           title: '地址',
-          fixed:'right',
           key: 'address'
         }
       ],
@@ -1331,6 +1362,12 @@ export default {
     }
   },
   methods:{
+    changeHidden(){
+      this.$set(this.columns1[3],'hiddenCol',!this.columns1[3].hiddenCol);
+    },
+    setMult(){
+      this.$set(this.multiLevel1[0],'hiddenCol',true);
+    },
     getData () {
       this.data7 = [{
           name: "推广名称1qweqwe",
@@ -1668,23 +1705,28 @@ export default {
   },
   mounted(){
     this.columns1=[
-        { type: 'selection',
+        { 
+          type: 'selection',
           align: 'center',
+          width:200
         },
         {
           title: '姓名',
           key: 'name',
           align: 'center',
+          width:200
         },
         {
           title: '年龄',
           key: 'age',
+          width:200
         },
-        // {
-        //   title: '地址',
-        //   ellipsis:true,
-        //   key: 'address',
-        // },
+        {
+          title: '地址',
+          ellipsis:true,
+          key: 'address',
+          hiddenCol:true,
+        },
         // {
         //   title: '地址1',
         //   key: 'address1',

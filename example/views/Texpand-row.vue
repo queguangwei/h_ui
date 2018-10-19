@@ -91,19 +91,8 @@ export default {
 </script>
 <style type="text/css">
 .expand-row{
-height: 300px;
+  width: 400px;  
+  height: 300px;
 }
-.expand-row>div{
-  background: yellow;
-  width:100%;
-  padding: 30px 50px; 
-  position: absolute;
-  z-index: 100;
-}
-.expand-row1{
-  margin-bottom: 16px;
-}
-.h-table-fixed-body .expand-row>div{
-  display: none;
-}
+
 </style>

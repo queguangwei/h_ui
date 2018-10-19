@@ -153,6 +153,10 @@
       spellcheck:{
         type:Boolean,
         default:false,
+      },
+      canResize:{
+        type:Boolean,
+        default:true
       }
     },
     data () {
@@ -171,7 +175,7 @@
           `${prefixCls}-wrapper`,
           {
             [`${prefixCls}-wrapper-${this.size}`]: !!this.size,
-            [`${prefixCls}-type`]: this.type,
+            [`${prefixCls}-type`]: this.type!='textarea',
             [`${prefixCls}-group`]: this.prepend || this.append,
             [`${prefixCls}-group-${this.size}`]: (this.prepend || this.append) && !!this.size,
             [`${prefixCls}-group-with-prepend`]: this.prepend,
@@ -196,7 +200,8 @@
         return [
           `${prefixCls}`,
           {
-              [`${prefixCls}-disabled`]: this.disabled
+            [`${prefixCls}-disabled`]: this.disabled,
+            [`${prefixCls}-noresize`]:!this.canResize,  
           }
         ];
       },

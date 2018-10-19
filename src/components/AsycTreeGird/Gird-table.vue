@@ -81,7 +81,8 @@ import Mixin from './mixin';
 import { oneOf, getStyle, deepCopy, deepCopyEx, getScrollBarSize,getBarBottom,findInx} from '../../util/tools';
 import { on, off } from '../../util/dom';
 import Locale from '../../mixins/locale';
-
+// import Csv from '../../util/csv';
+// import ExportCsv from './export-csv';
 const prefixCls = 'h-editgird';
 
 let columnKey = 1;
@@ -440,55 +441,70 @@ export default {
       this.$emit(status ? 'on-select' : 'on-select-cancel', selection, JSON.parse(JSON.stringify(this.rebuildData[_index])));
       this.$emit('on-selection-change', selection);
     },
-    toggleExpand (index, item) {
+    toggleExpand (index, item, isAutoLoad = false) {
+      // isAutoLoad只有在初始化渲染时为true,其余包括点击等均为false
       // 兼容外(item属性已过滤)调用该方法
-        item = this.rebuildData[index]
+      item = this.rebuildData[index]
+      let itemAutoLoad = Boolean(item.autoLoad)
+      // 针对autoLoad自动调用toggleExpand方法
+      // 首次加载时autoLoad为true，expand为false，或者其父节点expand为false,或者为叶子节点时直接返回
+      if (isAutoLoad && itemAutoLoad && (!item.expand || item._parent && !item._parent.expand) && 'loading' in item && !item.loading && !item.leaf && this.loadData) return
       //-- 展开数据
-        let _level = item._level + 1;
-        let _spaceHtml = "";
-        for (var i = 1; i < _level; i++) {
-          _spaceHtml += "<i class='h-tree-space'></i>"
-        }
-        if (!item.children || item.children.length == 0) {
-          if (this.loadData && !item.expand) {
-            this.$set(this.rebuildData[index], 'loading', true);
-            this.loadData(item, children => {
-              this.$set(this.rebuildData[index], 'loading', false);
-              if (children.length) {
-                item._loaded = true;
-                item.expand = true
-                this.$set(this.rebuildData[index], "children", children)
-                this.cursorIndex = index
-                this.expandBuildTree(item, index)
-                this.cursorIndex = 0
-                this.objData = this.makeObjData()
-                const status = this.objData[index]._isExpanded
-                this.$emit('on-expand', deepCopyEx(item, privateKey), status);
-                // this.$nextTick(() => this.handleExpand());
-              }
-            })
-          }
-        }else if (item.children && item.children.length > 0) {
-          if (item.expand) {
-             item.expand = !item.expand;
-            this.close(index, item);
-          } else {
-            item.expand = !item.expand;
-            if (item._loaded) { //已经加载过
-              this.open(index, item);
-            } else {
-              // 为了兼容多选返回数据，初始化将静态数据全部加载，以下不会执行了
+      let _level = item._level + 1;
+      let _spaceHtml = "";
+      for (var i = 1; i < _level; i++) {
+        _spaceHtml += "<i class='h-tree-space'></i>"
+      }
+      if (!item.children || item.children.length == 0) {
+        // 真正加载数据是分autoload 为true或者false 的情况（考虑autoload expand为false时点击的情况）
+        // 为true表示该节点自动加载，因此需要expand为true时才能触发
+        // 为false时表示该节点手动点击展开触发，因此需要expand为false时才能触发
+        if (this.loadData && 'loading' in item && !item.loading && ((!item.expand && !isAutoLoad) || (item.expand && itemAutoLoad && isAutoLoad))) {
+          this.$set(this.rebuildData[index], 'loading', true);
+          this.loadData(item, children => {
+            // autoload有两个autoLoad节点时会出错
+            index = item._index
+            this.$set(this.rebuildData[index], 'loading', false);
+            if (children.length) {
               item._loaded = true;
+              item.expand = true
+              this.$set(this.rebuildData[index], "children", children)
               this.cursorIndex = index
               this.expandBuildTree(item, index)
               this.cursorIndex = 0
+              this.objData = this.makeObjData()
+              const status = this.objData[index]._isExpanded
+              this.$emit('on-expand', deepCopyEx(item, privateKey), status);
+              // this.$nextTick(() => this.handleExpand());
             }
-          }
-          this.objData = this.makeObjData()
-          const status = this.objData[index]._isExpanded
-          this.$emit('on-expand', deepCopyEx(item, privateKey), status);
+          })
+        } else if (this.loadData && 'loading' in item && !item.loading && item.expand && !isAutoLoad &&!itemAutoLoad) {
+          // 非autoload情况，需要手动点击去加载
+          this.$set(this.objData[index], '_isExpanded' ,false)
+          this.$set(this.objData[index], 'expand' ,false)
+          item.expand = false
         }
-        //--
+      }else if (item.children && item.children.length > 0) {
+        if (item.expand) {
+            item.expand = !item.expand;
+          this.close(index, item);
+        } else {
+          item.expand = !item.expand;
+          if (item._loaded) { //已经加载过
+            this.open(index, item);
+          } else {
+            // 为了兼容多选返回数据，初始化将静态数据全部加载，以下不会执行了
+            item._loaded = true;
+            this.cursorIndex = index
+            this.expandBuildTree(item, index)
+            this.cursorIndex = 0
+          }
+        }
+        this.objData = this.makeObjData()
+        const status = this.objData[index]._isExpanded
+        this.$emit('on-expand', deepCopyEx(item, privateKey), status);
+      }
+      //--
     },
     expandBuildTree (item, index) {
       let _level = item._level + 1;
@@ -794,6 +810,34 @@ export default {
       //   this.$set(node, 'autoLoad', true)
       // })
     },
+    //导出数据
+    // exportCsv (params) {
+    //     if (params.filename) {
+    //         if (params.filename.indexOf('.csv') === -1) {
+    //             params.filename += '.csv';
+    //         }
+    //     } else {
+    //         params.filename = 'table.csv';
+    //     }
+
+    //     let columns = [];
+    //     let datas = [];
+    //     if (params.columns && params.data) {
+    //       columns = params.columns;
+    //       datas = params.data;
+    //     } else {
+    //       columns = this.columns;
+    //       // if (!('original' in params)) params.original = true;
+    //       // datas = params.original ? this.data : this.rebuildData;
+    //       datas = this.rebuildData
+    //     }
+
+    //     let noHeader = false;
+    //     if ('noHeader' in params) noHeader = params.noHeader;
+
+    //     const data = Csv(columns, datas, ',', noHeader);
+    //     ExportCsv.download(params.filename, data);
+    // },
     initResize(){
       this.$nextTick(() => {
         this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 

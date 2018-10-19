@@ -1,6 +1,6 @@
 <template>
   <li :class="classes" @click.stop="select" @mouseout.stop="blur" v-show="!hidden">
-    <checkbox v-show="multiple" v-model="selected" @click.native.stop="handleclick" :disabled="disabled" @on-change="checkChange"></checkbox>
+    <checkbox v-show="multiple&&!hideMult" v-model="selected" @click.native.stop="handleclick" :disabled="disabled" @on-change="checkChange"></checkbox>
     <slot>{{ showLabel }}</slot>
   </li>
 </template>
@@ -35,7 +35,8 @@
         isFocus: false,
         hidden: false,
         searchLabel: '',
-        multiple:false
+        multiple:false,
+        hideMult:false,
       };
     },
     computed: {
@@ -45,7 +46,7 @@
           {
             [`${prefixCls}-disabled`]: this.disabled,
             [`${prefixCls}-selected`]: this.selected,
-            [`${prefixCls}-focus`]: this.isFocus
+            [`${prefixCls}-focus`]: this.isFocus,
           }
         ];
       },
@@ -83,11 +84,12 @@
       this.$on('on-query-change', (val) => {
         this.queryChange(val);
       });
-      let el = this.$parent.$parent.$el;
-      if (!hasClass(el,'h-select')) {
-        el = this.$parent.$parent.$parent.$el
+      let obj = this.$parent.$parent;
+      if (!hasClass(obj.$el,'h-select')) {
+        obj = this.$parent.$parent.$parent;
       }
-      this.multiple=hasClass(el,'h-select-multiple')?true:false;
+      this.multiple=obj.multiple;
+      this.hideMult=obj.hideMult;
     },
     destroyed () {
       this.dispatch('Select', 'remove');

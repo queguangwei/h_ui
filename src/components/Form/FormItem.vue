@@ -112,6 +112,22 @@
             },
             cols (val) {
                 this.curCols = val
+            },
+            required (val){
+                if(val){
+                    this.isRequired = true
+                    const reqRule = {required: true, message: '输入不能为空'}
+                    this.reqRules.push(reqRule)
+                }else{
+                    this.isRequired = false
+                    this.validateState = ''
+                    this.reqRules=[];
+                }
+                this.commonRule();
+                
+            },
+            rules (val){
+                this.commonRule();
             }
         },
         computed: {
@@ -293,8 +309,21 @@
                     this.validateDisabled = false;
                     return;
                 }
-
                 this.validate('change');
+            },
+            commonRule(){
+                let rules = this.getRules();
+                
+                if (rules.length) {
+                    rules.every(rule => {
+                        if (rule.required) {
+                            this.isRequired = true;
+                            return false;
+                        }
+                    });
+                    this.$on('on-form-blur', this.onFieldBlur);
+                    this.$on('on-form-change', this.onFieldChange);
+                }
             }
         },
         mounted () {

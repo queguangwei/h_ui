@@ -516,7 +516,7 @@ export function toFix(d){
   // };  
 }
 function vliData(num) {
-  return num>10?num:'0'+num;
+  return num>=10?num:'0'+num;
 }
 export function getYMD(data,str,num){
   data.setDate(data.getDate() + num);

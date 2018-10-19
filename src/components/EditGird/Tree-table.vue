@@ -69,7 +69,13 @@
       columns:Array,
       indent:Number,
       parent:Object,
-      data: Array,
+      // data: Array,
+      data: {
+        type: Array,
+        default: () => {
+          return []
+        }
+      },
       prefixCls: String,
       typeName:String,
       showEditInput:Boolean,

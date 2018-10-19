@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- <h-row>
+    <h-row>
       <h-col span="8">
        <h-button @click="click('1')">设置1</h-button>
        <h-button @click="click('1-0')">设置2</h-button>
@@ -24,15 +24,15 @@
     {{valc}}
     <br><br><br>
     <h2>showCheckbox表示多选默认不显示半选中状态</h2>
-    <h-select-tree v-model="val1" style="width:200px" :data="baseData3" showCheckbox checkStrictly @on-check-change="selectChange" isString expanLevel=1  :firstValue="firstVal1"></h-select-tree>
+    <h-select-tree v-model="val1" style="width:200px" :data="baseData3" showCheckbox checkStrictly @on-check-change="selectChange" isString expanLevel=1 ></h-select-tree>
     {{val1}}
     <h-select-tree v-model="val2" style="width:200px" :firstValue="firstVal2" :data="baseData" showCheckbox isString></h-select-tree>
     {{val2}}
     <h-select-tree v-model="val4" :data="baseData" showCheckbox disabled></h-select-tree>
     <br><br><br>
-    {{val4}} -->
+    {{val4}}
     <h-select-tree v-model="val5" style="width:200px" :data="baseData3" :first-value="firstVal5" showCheckbox checkStrictly></h-select-tree>
-    <!-- {{val5}}
+    {{val5}}
     <h2>输入框在上搜索</h2>
     <h-select-tree v-model="val3" style="width:200px" :data="baseData4" filterable></h-select-tree>
     {{val3}}
@@ -46,10 +46,10 @@
     <h-select-tree v-model="val61" style="width:200px" :data="baseData5" showCheckbox checkStrictly filterable showBottom transfer></h-select-tree>
     {{val6}}
     <h-select-tree v-model="val71" style="width:200px" :data="baseData5" showCheckbox filterable showBottom></h-select-tree>
-    {{val71}} -->
-    <!-- <h-msg-box v-model="showBox"> -->
+    {{val71}}
+    <h-msg-box v-model="showBox">
       <h-select-tree v-model="val" format-value="id" :first-value="firstVal" :data="baseData2" size="large" @on-select-change="selectChange" @on-toggle-expand="selectChange"></h-select-tree>
-    <!-- </h-msg-box> -->
+    </h-msg-box>
 
   </div>
 </template>
@@ -79,7 +79,7 @@
           {
             title: 'parent',
             id: '1-0',
-            expand:true,
+            expand:'true',
             children: [
               {
                 title: 'child1',
@@ -108,6 +108,7 @@
           {
             title: 'parent',
             id: '1-0',
+            expand:'true',
             children: [
               {
                 title: 'child1',
@@ -134,9 +135,9 @@
         baseData2: [],
         baseData3: [{
             title: 'parent 1',
+            checked:'true',
             children: [{
               title: 'parent 1-0',
-
               children: [{
                 title: 'leaf',
                 disableCheckbox: 'true'
@@ -148,7 +149,7 @@
               title: 'parent 1-1',
               children: [{
                 title: 'leaf2',
-                disabled:'true',
+                disabled:'false',
               }]
             }]
         }],

@@ -62,6 +62,7 @@
               tabindex="-1"
               ref="input">
           </span>
+          <span v-if="hideMult&&multiple" :class="hideMultHead" @click="toggleSelect(!isSelectAll)">全选</span>
           <ul v-show="notFoundShow" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul>
           <ul v-show="(!notFound && !remote) || (remote && !loading && !notFound)" :class="[prefixCls + '-dropdown-list']"><slot></slot></ul>
           <ul v-show="loading" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
@@ -83,7 +84,7 @@
   import TransferDom from '../../directives/transfer-dom';
   import Checkbox from '../Checkbox/Checkbox.vue';
   import { on, off } from '../../util/dom';
-  import { oneOf, findComponentChildren, getScrollBarSize, getStyle,getBarBottom,scrollAnimate} from '../../util/tools';
+  import { oneOf, findComponentChildren, getScrollBarSize, getStyle,getBarBottom,scrollAnimate,typeOf} from '../../util/tools';
   import Emitter from '../../mixins/emitter';
   import Locale from '../../mixins/locale';
   const prefixCls = 'h-select';
@@ -223,6 +224,10 @@
       showTitle:{
         type:Boolean,
         default:false,
+      },
+      hideMult:{
+        type:Boolean,
+        default:false,
       }
     },
     data () {
@@ -249,7 +254,9 @@
         tabIndex:0,
         selectHead:false,
         titleTip:'',
-        fPlacement:this.placement
+        fPlacement:this.placement,
+        isSelectAll:false,
+        typeValue:'string',
       };
     },
     computed: {
@@ -264,12 +271,19 @@
               [`${prefixCls}-multiple`]: this.multiple,
               [`${prefixCls}-single`]: !this.multiple,
               [`${prefixCls}-show-clear`]: this.showCloseIcon,
-              [`${prefixCls}-${this.size}`]: !!this.size
+              [`${prefixCls}-${this.size}`]: !!this.size,
+              [`${prefixCls}-hideMult`]:this.hideMult&&this.multiple
           }
         ];
       },
       checkHeadClass(){
         return {[`${prefixCls}-checkHead`]:this.checkToHead&&this.showBottom&&this.filterable}
+      },
+      hideMultHead(){
+        return {
+          [`${prefixCls}-hideMultHead`]:this.hideMult&&this.multiple,
+          [`${prefixCls}-hideMultHead-select`]:this.isSelectAll,
+        }
       },
       dropdownCls () {
         return {
@@ -424,9 +438,10 @@
         this.$emit('on-scroll',num)
       },
       toggleSelect(val){
+        this.isSelectAll = !this.isSelectAll
         if (val) {
           if (this.specialIndex) {
-            this.model=['-1'];
+            this.model=this.typeValue=='string'?['-1']:[-1];
           }else{
             let arr=[];
             this.options.forEach((item)=>{
@@ -497,6 +512,9 @@
               }
           });
           this.options = options;
+          if(this.specialIndex&&this.options.length>0){
+            this.typeValue = typeOf(this.options[0].value);
+          }
           if (init) {
               if (!this.remote) {
                   this.updateSingleSelected(true, slot);
@@ -643,7 +661,6 @@
                 value: value[i]
               });
           }
-
           this.findChild((child) => {
               const index = value.indexOf(child.value);
 
@@ -929,12 +946,13 @@
         } else {
           if (this.multiple) {
             if (this.specialIndex) {
-              if (value=='-1') {
-                this.model=['-1'];
+              let queryNum = this.typeValue=='string'?'-1':-1
+              if (value==queryNum) {
+                this.model=this.typeValue=='string'?['-1']:[-1];
                 return false;
               }
-              if (value!='-1' && this.model.indexOf('-1')>=0) {
-                const index = this.model.indexOf('-1');
+              if (value!=queryNum && this.model.indexOf(queryNum)>=0) {
+                const index = this.model.indexOf(queryNum);
                 this.removeTag(index);
               }
             }

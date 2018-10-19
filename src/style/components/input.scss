@@ -2,6 +2,9 @@ $input-prefix-cls: "#{$css-prefix}input";
 
 .#{$input-prefix-cls} {
   @include input();
+  &-type{
+    height:$form-component-height;
+  }
   &-wrapper{
     display: inline-block;
     width: 100%;
@@ -82,6 +85,9 @@ $input-prefix-cls: "#{$css-prefix}input";
     &-complex{
       background:$success-color !important;
     }
+  }
+  &-noresize{
+    resize:none;
   }
 }
 // Reset height for textarea

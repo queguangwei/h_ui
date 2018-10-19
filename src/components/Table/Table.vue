@@ -17,7 +17,7 @@
           :headAlgin="headAlgin"
           :lastColWidth="lastColWidth"
           :minDragWidth="minDragWidth"
-          :multiLevel="multiLevel"
+          :multiLevel="cloneMultiLevel"
           ></table-head>
       </div>
       <div :class="[prefixCls + '-body']" :style="bodyStyle" ref="body" @scroll="handleBodyScroll"
@@ -43,7 +43,8 @@
         <table cellspacing="0" cellpadding="0" border="0" :style="tipStyle">
           <tbody>
             <tr>
-              <td :style="{ 'height': bodyStyle.height}">
+               <!-- <td :style="{ 'height': bodyStyle.height}">  -->
+               <td :style="{ 'height': tipBodyHeight + 'px'}"> 
                <!--  <span v-html="localeNoDataText" v-if="!data || data.length === 0"></span>
                 <span v-html="localeNoFilteredDataText" v-else></span> -->
               </td>
@@ -283,7 +284,10 @@ export default {
       default () {
         return [];
       }
-    }
+    },
+    maxHeight: {
+      type: [Number, String]
+    },
   },
   data () {
     return {
@@ -312,6 +316,8 @@ export default {
       buttomNum:null,
       keepAliveFlag: false, // 页面是否缓存
       sumMarginLeft: 0,
+      shiftSelect:[],
+      ctrlSelect:[],
     };
   },
   computed: {
@@ -391,6 +397,21 @@ export default {
       }
       return style;
     },
+    tipBodyHeight () {
+      let style = {};
+      let bodyStyleHeight = 0
+      //  获取原先bodyStyle中的height
+      if (this.bodyHeight !== 0) {
+        // add a height to resolve scroll bug when browser has a scrollBar in fixed type and height prop
+        const height = (this.isLeftFixed || this.isRightFixed) ? this.bodyHeight + this.scrollBarWidth : this.bodyHeight;
+        bodyStyleHeight = this.patibleHeight ? this.bodyHeight : height
+      }
+      // 判断是否有横向滚动条
+      if (this.tableWidth !== 0 && this.initWidth != 0) {
+        bodyStyleHeight = this.tableWidth > this.initWidth ? bodyStyleHeight - this.scrollBarWidth : bodyStyleHeight
+      }
+      return bodyStyleHeight
+    },
     fixedHeaderClasses () {
       return [
         `${prefixCls}-fixed-header`,
@@ -442,21 +463,24 @@ export default {
     },
     bodyStyle () {
       let style = {};
-      if (this.bodyHeight !== 0) {
+      if (this.bodyHeight !== 0 || this.maxHeight) {
         // add a height to resolve scroll bug when browser has a scrollBar in fixed type and height prop
         const height = (this.isLeftFixed || this.isRightFixed) ? this.bodyHeight + this.scrollBarWidth : this.bodyHeight;
-        style.height = this.patibleHeight?`${this.bodyHeight}px`:`${height}px`;
+        if (this.height) style.height = this.patibleHeight?`${this.bodyHeight}px`:`${height}px`;
+        if (this.maxHeight) style.maxHeight = this.patibleHeight?`${this.bodyHeight}px`:`${height}px`;
       }
       return style;
     },
     fixedBodyStyle () {
       let style = {};
-      if (this.bodyHeight !== 0) {
+      if (this.bodyHeight !== 0 || this.maxHeight) {
         let height =this.patibleHeight?this.bodyHeight-this.scrollBarWidth:this.bodyHeight;
         if (this.tableWidth < this.initWidth+1) {
           height = height + this.scrollBarWidth-1;
         }
-        style.height = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`;
+        // height不存在时bodyheight为0
+        if (this.height) style.height = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`;
+        if (this.maxHeight) style.maxHeight = this.scrollBarWidth > 0 ? `${height}px` : `${height}px` 
       }
       return style;
     },
@@ -466,8 +490,8 @@ export default {
       style.width = this.initWidth!=0?this.initWidth+'px':'100%';
       let height = (this.isLeftFixed || this.isRightFixed) ? this.bodyHeight + this.scrollBarWidth : this.bodyHeight;
       height = this.patibleHeight?height-2:height;
-      style.height = this.height?Number(height-this.scrollBarWidth)+'px':null;
-      style.lineHeight = this.height?Number(height-this.scrollBarWidth)+'px':null;
+      style.height = this.height || this.maxHeight ? Number(height-this.scrollBarWidth)+'px':null;
+      style.lineHeight = this.height  || this.maxHeight ? Number(height-this.scrollBarWidth)+'px':null;
       return style;
     },
     leftFixedColumns () {
@@ -507,7 +531,16 @@ export default {
       return {
         marginLeft: `${0 - this.sumMarginLeft}px`
       }
-      
+    },
+    cloneMultiLevel () {
+      if (!this.multiLevel || this.multiLevel.length==0) return null;
+      let data = [];
+      this.multiLevel.forEach((cols,i)=>{
+        if(!cols.hiddenCol&&cols.hiddenCol!='false'){
+          data.push(cols);
+    }
+      })
+      return data.length>0?data:null;
     }
   },
   methods: {
@@ -539,16 +572,15 @@ export default {
       }
       this.$emit('on-drag', width, key);
     },
-    handleMouseLeave() {
-      
+    handleMouseLeave() {      
     },
     handleResize () {
       // keep-alive时，页面改变大小会不断触发resize【非本组件页面】
       this.$nextTick(() => {
         if(this.columns.length==0) return;
-        const allWidth = !this.columns.some(cell => !cell.width&&cell.width!==0);    // each column set a width
+        const allWidth = !this.cloneColumns.some(cell => !cell.width&&cell.width!==0);    // each column set a width
         if (allWidth) {
-          this.tableWidth = this.columns.map(cell => cell.width).reduce((a, b) => a + b);
+          this.tableWidth = this.cloneColumns.map(cell => cell.width).reduce((a, b) => a + b);
         } else {
           this.tableWidth = parseInt(getStyle(this.$el, 'width')) - 1;
           if (!this.tableWidth&&this.hasWidth) {
@@ -613,6 +645,37 @@ export default {
         this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
       });
     },
+    getshiftSelect(_index){
+      switch(this.shiftSelect.length){
+        case 0:
+          this.shiftSelect[0]=_index;
+          break;
+        case 1:
+          let min=Math.min(this.shiftSelect[0],_index);
+          let max = Math.max(this.shiftSelect[0],_index);
+          this.$set(this.shiftSelect,0,min);
+          this.$set(this.shiftSelect,1,max);
+          break;
+        case 2:
+          if (_index<this.shiftSelect[0]) this.$set(this.shiftSelect,0,_index);
+          if (_index>this.shiftSelect[1]) this.$set(this.shiftSelect,1,_index);
+          break;
+        default:
+          this.shiftSelect=[];
+      }
+    },
+    getctrlSelect(_index){
+      let itemIndex = this.ctrlSelect.indexOf(_index)
+      if (itemIndex==-1) {
+        this.ctrlSelect.push(_index);
+        this.objData[_index]._isChecked = true;
+      }else{
+        this.ctrlSelect.splice(itemIndex,1);
+        this.objData[_index]._isHighlight = false;
+        this.objData[_index]._isChecked = false;
+      }
+      this.$emit('on-selection-change', this.getSelection(),this.getSelection(true));
+    },
     handleMouseIn (_index) {
         if (this.disabledHover) return;
         if (this.objData[_index]._isHover) return;
@@ -637,22 +700,43 @@ export default {
         if (curStatus && !this.selectOption) {
           this.objData[_index]._isHighlight = false;
           this.objData[_index]._isChecked = false;
-          this.$emit('on-current-change-cancle',JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
+          this.$emit('on-current-change-cancle',JSON.parse(JSON.stringify(this.cloneData[_index])), oldData,_index);
         }else{
           this.objData[_index]._isHighlight = true;
           this.objData[_index]._isChecked = true;
-          this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
+          this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])), oldData,_index);
         }
-        if (this.columns.length>0 && this.columns[0].type=='selection') {
+        if (this.columns.length>0 && (this.columns[0].type=='selection'||this.columns[1].type=='selection')) {
           const selection = this.getSelection();
           const selectionInx = this.getSelection(true);
           this.$emit('on-selection-change', selection,selectionInx);
         }
     },
     clickCurrentRow (_index) {
-      if (!this.rowSelect) {
-        this.highlightCurrentRow (_index);
+      //click row
+      window.getSelection()?window.getSelection().removeAllRanges():document.selection.empty();
+      if (!window.event.shiftKey && !window.event.ctrlKey) {
+        if(!this.rowSelect){
+          this.highlightCurrentRow (_index);
+        }
+        if (this.objData[_index]._isHighlight) {
+          this.shiftSelect = [];
+          this.ctrlSelect = [];
+          this.shiftSelect[0]=_index
+          this.ctrlSelect.push(_index);
+        }else{
+          this.shiftSelect= [];
+          this.ctrlSelect = [];
+        }
+      }else if(window.event.shiftKey){
+        this.getshiftSelect(_index);  
+      }else{
+        this.getctrlSelect(_index);
       }
+
+      // if (!this.rowSelect) {
+      //   this.highlightCurrentRow (_index);
+      // }
       this.$emit('on-row-click', [JSON.parse(JSON.stringify(this.cloneData[_index])),_index]);
     },
     dblclickCurrentRow (_index) {
@@ -669,6 +753,7 @@ export default {
       return status?selectionIndexes:JSON.parse(JSON.stringify(this.data.filter((data, index) => selectionIndexes.indexOf(index) > -1)));
     },
     toggleSelect (_index) {
+      //click checkbox
       let data = {};
       for (let i in this.objData) {
         if (parseInt(i) === _index) {
@@ -680,7 +765,15 @@ export default {
       if (!status) {
         this.objData[_index]._isHighlight = false;
       }
-
+      //shift
+      if (window.event.shiftKey&&_index) {
+        this.getshiftSelect(_index);
+      }else if(!status){
+        this.shiftSelect=[]
+        this.shiftSelect[0] = _index;
+      }else{
+        this.shiftSelect=[]
+      }
       const selection = this.getSelection();
       const selectionInx = this.getSelection(true);
       this.$emit(status ? 'on-select' : 'on-select-cancel', selection, JSON.parse(JSON.stringify(this.data[_index])));
@@ -706,7 +799,7 @@ export default {
     enterSingle(_index,status){
       this.$nextTick(()=>{
         this.objData[_index]._isHighlight=status;
-        this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])), '');
+        this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])), '',_index);
       });
     },
     enterSelect(_index,status){
@@ -775,7 +868,9 @@ export default {
       this.$emit('on-selection-change', selection,selectionInx);
     },
     fixedHeader () {
-        if (this.height) {
+      // height与maxHeight不可同时存在，若同时存在则以height为准
+        if (this.height || this.maxHeight) {
+          let setHeight = parseInt(this.height) || parseInt(this.maxHeight)
             this.$nextTick(() => {
                 const titleHeight = parseInt(getStyle(this.$refs.title, 'height')) || 0;
                 if (titleHeight>0) {
@@ -785,7 +880,8 @@ export default {
                 // const headerHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
                 const headerHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
                 const footerHeight = parseInt(getStyle(this.$refs.footer, 'height')) || 0;
-                this.bodyHeight = this.height - titleHeight - headerHeight - footerHeight;
+                // this.bodyHeight = this.height - titleHeight - headerHeight - footerHeight;
+                this.bodyHeight = setHeight - titleHeight - headerHeight - footerHeight;
             });
         } else {
             this.bodyHeight = 0;
@@ -1045,9 +1141,9 @@ export default {
         column._columnKey = columnKey++;
         column._width = column.width ? column.width : '';    // update in handleResize()
         if(column.hiddenCol&&column.hiddenCol!="false"){
-          that.columns[index].width = 0;
-          column.width = 0;
-          column._width = 0;
+          // that.columns[index].width = 0;
+          // column.width = 0;
+          // column._width = 0;
         }
         column._sortType = 'normal';
         column._filterVisible = false;
@@ -1114,6 +1210,15 @@ export default {
       const curItem = this.rebuildData[colIndex];
       this.rebuildData.splice(colIndex,1,curItem )
     },
+    selectRange(){
+      for (var i = this.shiftSelect[0]; i <= this.shiftSelect[1]; i++) {
+        this.objData[i]._isHighlight=false;
+        if(!this.objData[i]._isDisabled){
+          this.objData[i]._isChecked = true;
+        }
+      }
+      this.$emit('on-selection-change', this.getSelection(),this.getSelection(true));
+    },
   },
   created () {
       if (!this.context) this.currentContext = this.$parent;
@@ -1132,6 +1237,12 @@ export default {
     // if (this.columns.length>0 && this.columns[0].type && this.columns[0].type=='selection') {
     //   this.selectType=true;
     // }
+    this.$on('on-expand',()=>{
+      this.$nextTick(()=>{
+        this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
+    this.handleResize();
+      })
+    })
     this.handleResize();
     this.fixedHeader();
     this.$nextTick(() => {
@@ -1200,7 +1311,12 @@ export default {
       buttomNum(){
         if (this.buttomNum==null) return;
         this.$emit('on-scroll',this.buttomNum);
-      } 
+      },
+      shiftSelect(val){
+        if (val.length==2) {
+          this.selectRange();
+        }
+      }, 
   }
 };
 </script>

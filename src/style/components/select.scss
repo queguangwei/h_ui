@@ -9,7 +9,8 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
     vertical-align: middle;
     color: $text-color;
     font-size: $font-size-base;
-    line-height: normal;
+    // line-height: normal;
+    height: $form-component-height;
     position: relative;
 
     &-selection {
@@ -223,7 +224,27 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
     &-multiple .#{css-prefix}tag{
         margin: 3px 4px 2px 0;
     }
-
+    &-hideMultHead{
+        position: relative;
+        display: block;
+        font-size: $font-size-small;
+        padding: 7px 12px;
+    }
+    &-hideMultHead:hover{
+        cursor: pointer;
+    }
+    &-hideMultHead:after{
+        @include h-icon();
+        font-size: 22px;
+        content: '\E734';
+        color: $no-select-color;
+        position: absolute;
+        top: 8px;
+        right: 8px;
+    }
+    &-hideMultHead-select,&-hideMultHead-select:after{
+        color: $selected-color;
+    }
     // select-arrow
     &-single &-selection {
         .#{$select-prefix-cls}-arrow {
@@ -273,19 +294,25 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
     .#{$select-item-prefix-cls}-selected.#{$select-item-prefix-cls}-focus {
         color: shade($selected-color, 10%);
         background: #fff;
-    }
-    // .#{$checkbox-prefix-cls}-wrapper {
-    //     float: right;
-    // }
-    // &-selected:after{
-    //     @include h-icon();
-    //     float: right;
-    //     font-size: 20px;
-    //     content: "\e734";
-    //     color: $selected-color;
-    // }
+    }   
 }
-
+.#{$select-prefix-cls}-hideMult .#{$select-item-prefix-cls} {
+    &:after{
+        @include h-icon();
+        font-size: 22px;
+        content: '\E734';
+        color: #fff;
+        position: absolute;
+        top: 3px;
+        right: 8px;
+    }
+    &:hover:after{
+        color: $no-select-color;
+    }
+    &-selected:after{
+        color: $selected-color !important;
+    }
+}
 .#{$select-group-prefix-cls} {
     list-style: none;
     margin: 0;

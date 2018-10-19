@@ -332,7 +332,7 @@ export default {
     },
     width(val){
       this.curWidth = val;
-    }
+    },
   }
 };
 </script>

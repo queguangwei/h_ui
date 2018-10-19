@@ -327,7 +327,7 @@ export default {
     styles () {
       let style = {};
       if (this.height) {
-        const height =  parseInt(this.height) +2;
+        const height = parseInt(this.height) +2;
         style.height = `${height}px`;
       }
       if (this.width) style.width = `${this.width}px`;
@@ -342,8 +342,10 @@ export default {
         } else {
           if (this.bodyHeight > this.bodyRealHeight && this.data.length>0) {
             width = this.tableWidth;
+            // width = this.typeName!='groupTable'?this.tableWidth:this.tableWidth- this.scrollBarWidth;
           } else {
             width = this.tableWidth - this.scrollBarWidth;
+            // width =this.typeName!='groupTable'?this.tableWidth - this.scrollBarWidth:this.tableWidth -2*this.scrollBarWidth;
           }
         }
         //const width = this.bodyHeight === 0 ? this.tableWidth : this.tableWidth - this.scrollBarWidth;
@@ -453,6 +455,7 @@ export default {
     },
     handleResize () {
       this.$nextTick(() => {
+        if(this.columns.length==0) return;
         const allWidth = !this.columns.some(cell => !cell.width&&cell.width!==0);    // each column set a width
         if (allWidth) {
           this.tableWidth = this.columns.map(cell => cell.width).reduce((a, b) => a + b);
@@ -465,12 +468,10 @@ export default {
           let autoWidthIndex = -1;
           // if (allWidth) autoWidthIndex = this.cloneColumns.findIndex(cell => !cell.width);//todo 这行可能有问题
           if (allWidth) autoWidthIndex = findInx(this.cloneColumns,cell => !cell.width);
-          this.cloneColumns.forEach((cell,i)=>{})
-          if (this.data.length) {
-            const $td = this.$refs.tbody.$el.querySelectorAll('tbody tr')[0].querySelectorAll('td');
+          if (this.data.length && this.$refs.tbody && this.typeName!='groupTable') {
+            const $td= this.$refs.tbody.$el.querySelectorAll('tbody tr')[0].querySelectorAll('td');
             for (let i = 0; i < $td.length; i++) {    // can not use forEach in Firefox
               const column = this.cloneColumns[i];
-
               let width = parseInt(getStyle($td[i], 'width'));
               if (i === autoWidthIndex) {
                   width = parseInt(getStyle($td[i], 'width')) - 1;
@@ -482,9 +483,7 @@ export default {
               } else {
                   if (width < 100) width = 100
               }
-
               this.cloneColumns[i]._width = width||'';
-
               columnsWidth[column._index] = {
                   width: width
               };
@@ -510,6 +509,9 @@ export default {
               columnsWidth[column._index] = {
                   width: width
               };
+            }
+            if(this.typeName=='groupTable'&&this.height){
+              this.tableWidth = this.tableWidth-this.scrollBarWidth;
             }
             this.columnsWidth = columnsWidth;
           }
@@ -720,7 +722,7 @@ export default {
     fixedHeader () {
         if (this.height) {
             this.$nextTick(() => {
-                const headerHeight = this.headerRealHeight;
+                const headerHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
                 this.bodyHeight = this.height - headerHeight;
             });
         } else {
@@ -799,7 +801,7 @@ export default {
     },
     makeDataWithSortAndFilter () {
       let data = this.makeDataWithSort();
-      if (this.typeName=='treeGird') {
+      if (data && data.length > 0 && this.typeName=='treeGird') {
         let attributes = {
           keyField: 'id',
           parentKeyField: '_parentId',
@@ -891,7 +893,6 @@ export default {
       let left = [];
       let right = [];
       let center = [];
-
       columns.forEach((column, index) => {
         column._index = index;
         column._columnKey = columnKey++;
@@ -952,7 +953,6 @@ export default {
     },
     getSelectType(){
       if(this.columns.length>0) return;
-      debugger;
       if (this.columns[0].type && this.columns[0].type=='selection') {
         this.selectType=true;
       }
@@ -963,6 +963,12 @@ export default {
       this.rebuildData = this.makeDataWithSortAndFilter();
   },
   mounted () {
+    this.$on('on-expand',()=>{
+      this.$nextTick(()=>{
+        this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
+        this.handleResize();
+      })
+    })
     if (this.showHeader) {
       if (!!this.size) {
         this.headerRealHeight = this.size=='small'?35:48;

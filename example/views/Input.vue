@@ -5,7 +5,7 @@
     <Button @on-click="testClick(true)">获取焦点</Button>
     <Button @on-click="testClick(false)">失去焦点</Button>
     <h-input algin="center" placeholder="请输入..." @on-change="onChange"></h-input>
-    <h-input algin="right" placeholder="请输入..."></h-input>
+    <h-input algin="right" placeholder="请输入..." @mousedown.native="onChange"></h-input>
     <h2>基础用法</h2>
     <p>可以直接设置 style 来改变输入框的宽度</p>
     <h-input v-model="value" placeholder="请输入..." style="width: 300px" @on-keypress="keypress"></h-input>
@@ -23,7 +23,7 @@
        通过设置属性 rows 控制文本域默认显示的行数</p>
     <h-row>
       <h-col span="12">
-        <h-input v-model="value5" type="textarea" placeholder="请输入..." :disabled="disabled"></h-input>
+        <h-input v-model="value5" type="textarea" placeholder="请输入..." :disabled="disabled" :canResize="false"></h-input>
       </h-col>
       <h-col span="12">
         <h-input v-model="value6" type="textarea" :rows="4" placeholder="请输入..."  :disabled="disabled"></h-input>

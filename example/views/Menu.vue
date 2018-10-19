@@ -48,7 +48,7 @@
       <br>
       <h-row>
       <h-col span="8">
-          <h-menu  mode="vertical" :theme="theme2"  active-name="2" :open-names="['1','3']" :accordion="false" @on-open-change="openChange" :width="120" @on-select="s">
+          <h-menu  mode="vertical" :theme="theme2"  active-name="2" :open-names="openName" :accordion="false" @on-open-change="openChange" :width="120" @on-select="s">
           <h-submenu name="1">
               <template slot="title">
                   <h-icon name="ios-paper"></h-icon>
@@ -82,6 +82,7 @@
               </h-menu-group>
           </h-submenu>
           </h-menu>
+          <Button @on-click="setOpen">动态设置openName</Button>
       </h-col>
       <h-col span="8">
           <h-menu :theme="theme2" active-name="1-2" :open-names="['1']">
@@ -390,7 +391,8 @@ export default {
       theme3: 'light',
       isCollapse: 'true',
       cdata:cData,
-      csName:''
+      csName:'',
+      openName:[],
     }
   },
   methods: {
@@ -417,6 +419,9 @@ export default {
         // console.log();
         // this.$refs.csMenu.updateActiveName();
       });
+    },
+    setOpen(){
+        this.openName = ['1','3'];
     }
   }
 }

@@ -143,7 +143,7 @@
     </h-tabs>
     <p>可以根据业务自定义 UI，需要一点额外的样式覆盖。</p>
     <h2>关闭确认</h2>
-    <h-tabs ref="closetab" type="card" closable @on-before-tab-remove="beforeTabRemove" :isRemoveTab="false">
+    <h-tabs ref="closetab" type="card" closable @on-before-tab-remove="beforeTabRemove" :isRemoveTab="false" panelAbove>
       <h-tab-pane v-if="tabs0" label="标签一" name="0">标签一的内容</h-tab-pane>
       <h-tab-pane v-if="tabs1" label="标签二" name="1">标签二的内容</h-tab-pane>
       <h-tab-pane v-if="tabs2" label="标签三" name="2">标签三的内容</h-tab-pane>
