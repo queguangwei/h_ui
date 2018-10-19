@@ -15,6 +15,7 @@ Modal.newInstance = properties => {
           visible: false,
           width: 416,
           title: '',
+          zIndex:1000,
           body: '',
           iconType: '',
           iconName: '',
@@ -93,7 +94,8 @@ Modal.newInstance = properties => {
               props: Object.assign({}, _props, {
                   width: this.width,
                   scrollable: this.scrollable,
-                  closable: this.closable
+                  closable: this.closable,
+                  zIndex:this.zIndex
               }),
               domProps: {
                   value: this.visible
@@ -267,6 +269,9 @@ Modal.newInstance = properties => {
       }
       if ('height' in props) {
         modal.$parent.height = props.height;
+      }
+      if ('zIndex' in props) {
+        modal.$parent.zIndex = props.zIndex;
       }
       // notice when component destroy
       modal.$parent.onRemove = props.onRemove;

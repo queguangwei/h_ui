@@ -16,7 +16,8 @@
           city: '北京',
           dating:'2018-03-07',
           timing:'16:00:00.00',
-          tree:'leaf1'
+          tree:'leaf1',
+          expand:true,
           // _highlight: true//默认选择当前项
         },
         {
@@ -222,10 +223,10 @@
         options1:[],
         treeOption:[],
         columns1: [
-          {
-            type: 'selection',
-            width: 85,  
-          },
+          // {
+          //   type: 'selection',
+          //   width: 120,  
+          // },
           {
             // type: 'text',
             title: '姓名',

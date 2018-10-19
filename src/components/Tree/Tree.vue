@@ -95,8 +95,8 @@
       return {
         prefixCls: prefixCls,
         isDeepcopy:false,
-        stateTree: this.isDeepcopy?this.data:deepCopy(this.data),
         flatState: [],
+        stateTree: this.isDeepcopy?this.data:deepCopy(this.data),
       };
     },
     computed: {
@@ -135,7 +135,6 @@
                 flatTree[node.nodeKey].parent = parent.nodeKey;
                 flatTree[parent.nodeKey].children.push(node.nodeKey);
             }
-
             if (node.children) {
                 flatTree[node.nodeKey].children = [];
                 node.children.forEach(child => flattenChildren(child, node));
@@ -193,7 +192,7 @@
         // return this.flatState.filter(obj => obj.node.checked).map(obj => obj.node);
       },
       getAutoLoadNodes () {
-        return this.flatState.filter(obj => obj.node.autoLoad).map(obj => obj.node);
+        return this.flatState.filter(obj => obj.node.autoLoad&&obj.node.autoLoad!='false').map(obj => obj.node);
       },
       getIndeterminateNodes (){
         return this.flatState.filter(obj => obj.node.indeterminate).map(obj => obj.node);
@@ -202,7 +201,7 @@
         for (let key in changes) {
           this.$set(node, key, changes[key]);
         }
-        // 如果当前节点leaf属性为true，则返回当前节点        
+        // 如果当前节点leaf属性为true，则返回当前节点  
         if (node.children && !this.checkStrictly && !node.leaf) {
           node.children.forEach(child => {
               this.updateTreeDown(child, changes);
@@ -267,6 +266,8 @@
         this.isDeepcopy = true;
         this.stateTree = this.isDeepcopy?this.data:deepCopy(this.data);
       }
+      // this.flatState = this.compileFlatState();
+      // this.rebuildTree();
     },
     watch:{
       data: {
@@ -281,9 +282,9 @@
         handler: function (val) {
           if (val && val.nodeKey >= 0 && val.page) {           
             let node = this.flatState[val.nodeKey].node;
-            if (node.hasPage) {
+            if (node.hasPage&&node.hasPage!="false") {
               this.$set(node, 'currentPage', val.page);
-              if(!node.expand) this.$set(node, 'expand', true);
+              if(!node.expand || node.expand=='false') this.$set(node, 'expand', true);
             }
           }
         },

@@ -181,7 +181,10 @@ const router = new Router({
     {
         name: 'table',
         path: '/table',
-        component: require('../views/Table.vue')
+        component: require('../views/Table.vue'),
+        meta: {
+            isKeepAlive: true
+        }
     },
     {
         name: 'page',
@@ -354,14 +357,35 @@ const router = new Router({
         component: require('../views/TypefieldRange.vue')
     },
     {
-        name: 'Split',
-        path: '/split',
-        component: require('../views/Split.vue')
+        name: 'FileImport',
+        path: '/fileimport',
+        component: require('../views/FileImport.vue')
     },
+    {
+        name: 'FileExport',
+        path: '/fileexport',
+        component: require('../views/FileExport.vue')
+    },
+    
+    // {
+    //     name: 'Split',
+    //     path: '/split',
+    //     component: require('../views/Split.vue')
+    // },
     {
         name: 'Drawer',
         path: '/drawer',
         component: require('../views/Drawer.vue')
+    },
+    {
+        name: 'DownLoad',
+        path: '/downLoad',
+        component: require('../views/DownLoad.vue')
+    },
+    {
+        name: 'Log',
+        path: '/log',
+        component: require('../views/Log.vue')
     }
  ]
 })

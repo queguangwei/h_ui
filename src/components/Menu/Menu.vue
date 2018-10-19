@@ -187,6 +187,13 @@ export default {
     openName () {
       this.$emit('on-open-change',this.openName);
     },
+    openNames:{
+      deep:true,
+      handler(){
+        this.openName = this.openNames;
+        this.updateOpened();
+      }
+    },
     activeName (val) {
       this.currentActiveName = val;
     },

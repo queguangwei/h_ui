@@ -5,6 +5,7 @@ $date-picker-cells-width: 196px;
 $date-picker-cells-width-with-weeknumbers: 226px;
 
 .#{$date-picker-prefix-cls} {
+  height: $form-component-height;
   position: relative;
   // display: inline-block;
   line-height: normal;
@@ -34,7 +35,6 @@ $date-picker-cells-width-with-weeknumbers: 226px;
         height: 24px;
         line-height: 24px;
         margin: 2px;
-        color: #495060;
         font-style: normal;
         border-radius: $btn-border-radius-small;
         text-align: center;

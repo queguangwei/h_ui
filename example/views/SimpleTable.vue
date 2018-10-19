@@ -4,14 +4,14 @@
     <Button @click="changemsg">显示</Button>
     <h2>带边线 多选</h2>
     <Button @click="loadData">加载数据</Button>
-    <h-simple-table :columns="columnsBig" :data="bigData" border stripe @on-select="select" @on-select-cancel="select" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="300" @on-select-all='change' @on-scroll="change" @on-selection-change="change" width="1200" :canDrag="false">
+    <!-- <h-simple-table :columns="columnsBig" :data="bigData" border stripe @on-select="select" @on-select-cancel="select" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="300" @on-select-all='change' @on-scroll="change" @on-selection-change="change" width="1200" :canDrag="false">
       <span slot="loading">我是自定义加载！！！</span>
-    </h-simple-table>
-    <h-button @click="setLoading">切换状态</h-button>/
+    </h-simple-table> -->
+    <h-button @click="setLoading">切换状态</h-button>
     <h2>不带边线 单选 on-current-change</h2>
-    <h-simple-table :columns="columnsBig1" :data="bigData" no-data-text="数据为空" :show-header="false" :loading="loading" height="400" :highlight-row="true" @on-current-change="select" on-current-change-cnacle="select">
+    <h-simple-table :columns="columnsBig1" border :data="bigData" no-data-text="数据为空" :loading="loading" height="400" @on-selection-change="select" :highlight-row="true" @on-current-change="select" @on-current-change-cnacle="select">
     </h-simple-table>
-    <h2>自定义样式</h2>
+    <!-- <h2>自定义样式</h2>
     <p>行：通过属性 row-class-name 可以给某一行指定一个样式名称。</p>
     <p>列：通过给列 columns 设置字段 className 可以给某一列指定一个样式。</p>
     <p>单元格：通过给数据 data 设置字段 cellClassName 可以给任意一个单元格指定样式。</p>
@@ -43,7 +43,7 @@
     <h2>设置大小</h2>
     <p>通过设置属性 size 为 large 或 small 可以调整表格尺寸为大或小，默认不填或填写 default 为中。</p>
     <h-simple-table size="large" :columns="columns1" :data="data1" :loading="loading"></h-simple-table>
-    <h-simple-table size="small" :columns="columns1" :data="data1" :loading="loading"></h-simple-table>
+    <h-simple-table size="small" :columns="columns1" :data="data1" :loading="loading"></h-simple-table> -->
   </div>
 </template>
 <script>
@@ -627,6 +627,7 @@ export default {
           title: '姓名',
           key: 'fundId',
           width:200,
+          hiddenCol:true,
           align: 'center',
         },
         {

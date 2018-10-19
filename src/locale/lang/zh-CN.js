@@ -121,6 +121,9 @@ export default {
     typefieldRange:{
         rPlaceholder:'最低值',
         lPlaceholder:'最高值'
+    },
+    log:{
+        clear:'清 屏'
     }
   }
 };

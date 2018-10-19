@@ -29,14 +29,14 @@ export default {
                 width = this.columnsWidth[column._index].width;
             }
             // when browser has scrollBar,set a width to resolve scroll position bug
-            if (this.columns.length === index + 1 && top && this.$parent.bodyHeight !== 0) {
+            if (this.cloneColumns.length === index + 1 && top && this.bodyHeight !== 0) {
                 width += this.scrollBarWidth;
             }
             // when fixed type,reset first right fixed column's width
             if (this.fixed === 'right') {
                 // const firstFixedIndex = this.columns.findIndex((col) => col.fixed === 'right');
                 const firstFixedIndex = findInx(this.columns,(col) => col.fixed === 'right');
-                if (firstFixedIndex === index) width += this.$parent.scrollBarWidth;
+                if (firstFixedIndex === index) width += this.scrollBarWidth;
             }
             if (width === '0') width = '';
             return width;

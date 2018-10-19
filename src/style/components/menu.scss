@@ -11,9 +11,7 @@ $menu-collapse-prefix-cls: "#{$css-prefix}menu-collapse";
   color: $text-color;
   font-size: $font-size-base;
   position: relative;
-  .iconfont{
-    font-size: 14px;
-  }
+
   &-horizontal{
     height: 60px;
     line-height: 60px;
@@ -181,12 +179,9 @@ $menu-collapse-prefix-cls: "#{$css-prefix}menu-collapse";
   }
 
   &-vertical &-submenu-title-icon{
-    // float: right;
-    // position: relative;
-    // top: 4px;
     position: absolute;
     right: 15px;
-    top: 10px
+    top: 12px
   }
   &-submenu-title-icon {
     transition: transform $transition-time $ease-in-out;

@@ -64,6 +64,20 @@ module.exports = {
       commonjs: 'vue',//如果运行在Node.js环境中
       commonjs2: 'vue',//如果运行在Node.js环境中
       amd: 'vue' //如果使用require.js等加载
+    },
+    'js-xlsx':{
+      global: 'js-xlsx', //外部 library 能够作为全局变量使用。用户可以通过在 script 标签中引入来实现。
+      root: 'js-xlsx',//如果库运行在Node.js环境中
+      commonjs: 'js-xlsx',//如果运行在Node.js环境中
+      commonjs2: 'js-xlsx',//如果运行在Node.js环境中
+      amd: 'js-xlsx' //如果使用require.js等加载
+    },
+    'xlsx':{
+      global: 'xlsx', //外部 library 能够作为全局变量使用。用户可以通过在 script 标签中引入来实现。
+      root: 'xlsx',//如果库运行在Node.js环境中
+      commonjs: 'xlsx',//如果运行在Node.js环境中
+      commonjs2: 'xlsx',//如果运行在Node.js环境中
+      amd: 'xlsx' //如果使用require.js等加载
     }
   },
   plugins: [

@@ -1,5 +1,5 @@
 <template>
-  <div :class="classes">
+  <div :class="classes" @click="groupClick">
     <slot></slot>
   </div>
 </template>
@@ -72,6 +72,9 @@
         this.$emit('input', data.value);
         this.$emit('on-change', data.value);
         this.dispatch('FormItem', 'on-form-change', data.value);
+      },
+      groupClick(){
+        this.$emit('on-click');
       }
     },
     watch: {

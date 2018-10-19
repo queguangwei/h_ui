@@ -1,8 +1,9 @@
 <template>
   <div>
     <!-- <h-msg-box v-model="changeform" width="900"> -->
+      <Button @on-click="changeRequired">改变require</Button>
       <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus cols="3" placement="top-start">
-        <h-form-item label="输入框" prop="input" required>
+        <h-form-item label="输入框" prop="input" :required="isrequired">
           <h-input v-model="formItem1.input" placeholder="请输入"></h-input>
         </h-form-item>
         <h-form-item label="日期控件">
@@ -54,13 +55,13 @@
               <h-checkbox label="看电影"></h-checkbox>
           </h-checkbox-group>
         </h-form-item>
-        <h-form-item label="特殊日期" required prop="fatdate" required>
+        <h-form-item label="特殊日期" prop="fatdate" required>
           <h-fast-date v-model="formItem1.fatdate"></h-fast-date>
         </h-form-item>
-        <h-form-item label="特殊日期" required prop="fatdate" required>
+        <h-form-item label="特殊日期" prop="fatdate" required>
           <h-fast-date v-model="formItem1.fatdate"></h-fast-date>
         </h-form-item>
-        <h-form-item label="特殊日期" required prop="fatdate" required>
+        <h-form-item label="特殊日期" prop="fatdate" required>
           <h-fast-date v-model="formItem1.fatdate"></h-fast-date>
         </h-form-item>
         <h-form-item label="下拉单选" prop="select1" required>
@@ -80,7 +81,6 @@
         <h-form-item label="下拉多选" prop="select2" required>
           <h-select v-model="formItem1.select2"
                     width="260"
-                    size="large"
                     :isString="true"
                     showTitle
                     on-change="cy_change_test">
@@ -152,6 +152,7 @@
   export default {
     data () {
       return {
+        isrequired:true,
         phone:0,
         lists:[{data_value:'男'},{data_value:'女'}],
         model1:'',
@@ -341,6 +342,9 @@
       }
     },
     methods: {
+      changeRequired(){
+        this.isrequired=!this.isrequired;
+      },
       changeform1(){
         this.changeform = !this.changeform;
       },

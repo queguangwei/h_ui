@@ -66,6 +66,9 @@ import Textdiff from './components/Textdiff';
 import TypefieldRange from './components/TypefieldRange';
 import Split from './components/Split';
 import Drawer from './components/Drawer';
+import Log from './components/Log';
+// import FileImport from './components/FileImport';
+// import FileExport from './components/FileExport';
 
 import locale from './locale';
 
@@ -230,7 +233,13 @@ const h_ui = {
     Split:Split,  
     hSplit:Split,  
     Drawer:Drawer,
-    hDrawer:Drawer
+    hDrawer:Drawer,
+    Log:Log,
+    hLog:Log
+    // FileImport:FileImport,
+    // hFileImport:FileImport,
+    // FileExport: FileExport,
+    // hFileExport: FileExport
 };
 const install = function(Vue, opts = {}) {
     locale.use(opts.locale);

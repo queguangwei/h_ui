@@ -7,6 +7,9 @@
           <router-link to="/home">安装</router-link>
         </li>
         <li>
+          <router-link to="/download">download</router-link>
+        </li>
+        <li>
           <router-link to="/hello">Hello</router-link>
         </li>
         <li>
@@ -201,8 +204,24 @@
         <li>
           <router-link to="/split">Split</router-link>
         </li>
+        <li>
+          <router-link to="/fileimport">FileImport</router-link>
+        </li>
+        <li>
+          <router-link to="/fileexport">FileExport</router-link>
+        </li>
+        <li>
+          <router-link to="/log">Log</router-link>
+        </li>
       </ul>
     </nav>
+    <!-- <keep-alive>
+       <keep-alive :include="page"> 
+          <router-view v-if="isKeepAlive"></router-view>
+       </keep-alive> 
+       <router-view v-if="!isKeepAlive"></router-view>
+        
+    </keep-alive> -->
     <router-view></router-view>
     
   </div>  
@@ -214,10 +233,22 @@ export default {
   data() {
     return {
       loaded: false,
-      loadClass: 'load'
+      loadClass: 'load',
+      page:'tableq',
+      isKeepAlive: true
     }
   },
   components:{
+  },
+  watch: {
+    // "$route.meta": () => {
+    //   debugger
+    //   if (this.$route.meta.isKeepAlive && this.$route.meta.comName && this.$route.meta.comName!= ''){
+    //     this.page = 'tableq'
+    //   } else {
+    //     this.page = ''
+    //   }
+    // }
   }
   
 }

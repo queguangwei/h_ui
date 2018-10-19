@@ -349,6 +349,7 @@
                 width:800,
                 scrollable:true,
                 okText:'确定1',
+                zIndex:1100
                 // loading:true
             });
             break;
@@ -356,19 +357,22 @@
             this.$hMsgBox.success({
                 width:600,
                 title: title,
-                content: content
+                content: content,
+                zIndex:1200
             });
             break;
           case 'warning':
             this.$hMsgBox.warning({
                 title: title,
-                content: content
+                content: content,
+                zIndex:1300
             });
             break;
           case 'error':
             this.$hMsgBox.error({
                 title: title,
-                content: content
+                content: content,
+                zIndex:1400
             });
             break;
         }

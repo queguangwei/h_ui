@@ -10,6 +10,7 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
     color: $text-color;
     font-size: $font-size-base;
     line-height: normal;
+    height: $form-component-height;
     position: relative;
 
     &-selection {

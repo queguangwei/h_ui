@@ -42,16 +42,8 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
     background-color: $border-color-base;
     z-index: 3;
   }
-  table{
-    table-layout: fixed;//col need
-    tbody > tr > td > table{
-      //background: #FAFAFA;
-    }
-    tbody .#{$editgird-prefix-cls}-row {
-      // border-top:1px solid #ccc;
-      //background: #FAFAFA;
-
-    }
+  & table{
+    table-layout: fixed;
   }
   &-with-header{
     //border-radius: $border-radius-base $border-radius-base 0 0;
@@ -97,6 +89,7 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
   {
     min-width: 0;
     height: $table-normal-td;
+    box-sizing: border-box;
     text-align: left;
     vertical-align: middle;
     border-bottom: 1px solid #DCE1E7;
@@ -160,9 +153,9 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
       div{
         float:left;
       }
-      div:first-child{
-        padding-right:10px;
-      }
+      // div:first-child{
+      //   padding-right:10px;
+      // }
     }
     &-group{
       width: 100%;

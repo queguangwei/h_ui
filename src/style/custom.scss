@@ -31,6 +31,7 @@ $link-color: #298DFF;
 $link-hover-color: lighten($link-color, 20%);
 $link-active-color: darken($link-color, 5%);
 $selected-color: lighten($primary-color, 10%);
+$no-select-color:#e5ebf1;
 $tooltip-color: #fff;
 $subsidiary-color: #c3cbd6;
 $arrow-color: #9EA7B4;
@@ -205,6 +206,7 @@ $badge-width: 22px;
 $badge-offset: 10px;
 
 $form-cols: 12;
+$form-component-height:32px;
 
 $max-height: 210px;
 //rate

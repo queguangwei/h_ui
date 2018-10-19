@@ -223,7 +223,13 @@ export default {
   methods: {
     editBlur(event,str,isRange){
       let value = event.target.value.trim().replace(/[^0-9]/ig,"");
-      if (!value || value.length==0) return;
+      if (!value || value.length==0){
+        if(isRange){
+          if(!this.year1&&!this.months1&&!this.day1) return;
+        }else{
+          if(!this.year&&!this.months&&!this.day) return;
+        }
+      }
       switch (str){
         case 'year':
           value = this.verificaYear(value,isRange);
@@ -323,7 +329,7 @@ export default {
           else{value = isdate(this.year1,this.months1,val)? val:'01';}    
           break;
         default:
-          value = getCurrentday();
+          value = getCurrentDay();
       }
       if (Number(value)==0) {
         value='01';
@@ -333,12 +339,11 @@ export default {
     yearInput(value,isrange){
       let pos = value.length;
       if (pos!=0 &&!this.months&&!this.day) {
-        this.months = getCurrentMonth();
-        this.day = getCurrentDay();
-        this.year = value;
-        this.months1 = getCurrentMonth();
-        this.day1 = getCurrentDay();
-        this.year1 = value;
+          this.year = this.year1 = value;
+          this.months = getCurrentMonth();
+          this.day = getCurrentDay();
+          this.months1 = getCurrentMonth();
+          this.day1 = getCurrentDay();  
       }
     },
     closeClick(){
@@ -489,24 +494,24 @@ export default {
       this.$emit('on-open-change',val);
     },
     year(val){
-      this.isClear();
       this.yearInput(val)
+      this.isClear();
     },
     year1(val){
-      this.isClear();
       this.yearInput(val,true)
+      this.isClear();
     },
     months(){
-      this.isClear();
+      // this.isClear();
     },
     months1(){
-      this.isClear();
+      // this.isClear();
     },
     day(){
-      this.isClear();
+      // this.isClear();
     },
     day1(){
-      this.isClear();
+      // this.isClear();
     },
     inputValue(val){
       this.setDate(val);

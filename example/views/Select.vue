@@ -19,7 +19,7 @@
                 :dropWidth="400"
                 :setDefSelect="true">
         <h-option value="index">
-          <a href=http://www.google.com/>link</A>
+          <a href=http://www.google.com/>link</a>
         </h-option>
         <h-option v-for="item in cityList"
                   :value="item.value"
@@ -30,6 +30,7 @@
       {{model34}}
       <h-select v-model="model44"
                 multiple
+                hideMult
                 style="width:320px"
                 :isString="true"
                 isCheckall
@@ -37,10 +38,10 @@
                 @on-scroll="scroll"
                 :isComputed="isComputed"
                 noMoreText="哈哈哈哈"
-                algin="center"
-                :specialIndex="true">
-        <h-option value="-1"
-                  key="-1">-1 所有</h-option>
+                algin="center">
+                <!-- :specialIndex="true" -->
+        <!-- <h-option value="-1"
+                  key="-1">-1 所有</h-option> -->
         <h-option v-for="item in cityList"
                   multiple
                   :value="item.value"
@@ -326,6 +327,10 @@
 
 <script>
 const data = [
+  {
+    value: 'beijing1',
+    label: '<你好>'
+  },
   {
     value: 'beijing',
     label: '北京市北京市北京市北京市北京市北京市'

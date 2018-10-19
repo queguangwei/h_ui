@@ -399,7 +399,7 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
     overflow:auto;
     table {
       width: 100%;
-
+      min-height: 32px;
       td {
         text-align: center;
       }

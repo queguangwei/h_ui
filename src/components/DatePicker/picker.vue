@@ -47,6 +47,7 @@
                :split-panels="splitPanels"
                :show-week-numbers="showWeekNumbers"
                :picker-type="type"
+               :showTowPanel="this.showTowPanel"
                :range-num="controlRange?selectRange:0"
 
                v-bind="ownPickerProps"
@@ -165,7 +166,7 @@
       selectRange:{//可选择范围 多系统交易
         type:[String,Number],
         default:1
-      }
+      },
     },
     data () {
       const isRange = this.type.indexOf('range')>-1?true:false;

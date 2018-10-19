@@ -246,9 +246,11 @@
                   node.children.forEach(child => flattenChildren(child, node));
               }
           }
-          this.treeData.forEach(rootNode => {
-            flattenChildren(rootNode);
-          });
+          if (this.treeData && this.treeData.length > 0) {
+            this.treeData.forEach(rootNode => {
+              flattenChildren(rootNode);
+            });
+          }
           return flatTree;
         },
         updateCheckUp(_index){

@@ -161,6 +161,7 @@ import {deepCopy} from '../../src/util/tools.js'
             title: 'parent 1',
             id: '1',
             expand: true,
+            hasPage: 'true',
             children: [
               {
                 title: 'parent 1-1',
@@ -218,7 +219,7 @@ import {deepCopy} from '../../src/util/tools.js'
               },
               {
                 title: 'parent 1-2',
-                expand: true,
+                expand: 'false',
                 children: [
                   {
                     title: 'leaf 1-2-1'
@@ -233,19 +234,28 @@ import {deepCopy} from '../../src/util/tools.js'
         ],
         data3: [
           {
-            title: 'parent',
+            title: 'parent-autoload',
             loading: false,
+            autoLoad: 'true',
+            expand: true,
+            children: []
+          },
+          {
+            title: 'parent112-autoload',
+            expand: false,            
+            loading: false,
+            autoLoad: true,
             children: []
           }
         ],
         data11: [
           {
             title: 'parent 1',
-            expand: true,
+            expand: 'true',
             children: [
               {
                 title: 'parent 1-1',
-                expand: true,
+                expand: 'false',
                 children: [
                     {
                         title: 'leaf 1-1-1'
@@ -339,19 +349,20 @@ import {deepCopy} from '../../src/util/tools.js'
           {
             title: 'parent 1',
             expand: true,
-            selected: true,
+            selected: 'true',
             children: [
               {
                 title: 'parent 1-1',
                 expand: true,
+                selected: 'true',
                 children: [
                   {
                     title: 'leaf 1-1-1',
-                    disabled: true
+                    disabled: 'false'
                   },
                   {
                     title: 'leaf 1-1-2',
-                    disableCheckbox:true
+                    disableCheckbox:'false'
                   }
                 ]
               },
@@ -462,7 +473,7 @@ import {deepCopy} from '../../src/util/tools.js'
               title: 'children',
               loading: false,
               children: []
-            },
+      },
             {
               title: 'children',
               loading: false,
