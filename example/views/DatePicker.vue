@@ -2,7 +2,7 @@
   <div>
     <Button @on-click="testClick(true)">获取焦点</Button>
     <Button @on-click="testClick(false)">失去焦点</Button>
-    <h-date-picker placement="top-start" v-model="formItem.date" showTowPanel format="yyyy/MM/dd" :showFormat="true" style="width:180px" :disabled="changeable" ref="test"></h-date-picker>
+    <h-date-picker v-model="model1" placement="top-start" confirm showTwoPanel format="yyyy-MM-dd" :showFormat="true" style="width:180px" :disabled="changeable" ref="test"></h-date-picker>
     <span>{{formItem.date}}</span>
     <Button @click = "changedis">改变状态</Button>
     <h-row>

@@ -10,7 +10,7 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
     color: $text-color;
     font-size: $font-size-base;
     // line-height: normal;
-    height: $form-component-height;
+    // height: $form-component-height;
     position: relative;
 
     &-selection {
@@ -47,6 +47,9 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
             max-width: 45%;
             white-space: nowrap;
             text-overflow: ellipsis;
+            height: $form-component-height - 10px;
+            line-height: $form-component-height - 10px;
+            margin-right: 4px;
 
             &>.#{$css-prefix}icon {
               position: absolute;
@@ -162,6 +165,7 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
 
     // input
     &-input,&-content-input{
+        vertical-align: top;
         display: inline-block;
         height: $input-height-base;
         line-height: $input-height-base;

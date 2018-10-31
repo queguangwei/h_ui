@@ -26,7 +26,7 @@
     <h2>showCheckbox表示多选默认不显示半选中状态</h2>
     <h-select-tree v-model="val1" style="width:200px" :data="baseData3" showCheckbox checkStrictly @on-check-change="selectChange" isString expanLevel=1 ></h-select-tree>
     {{val1}}
-    <h-select-tree v-model="val2" style="width:200px" :firstValue="firstVal2" :data="baseData" showCheckbox isString></h-select-tree>
+    <h-select-tree v-model="val2" style="width:200px" :firstValue="firstVal1" :data="baseData" checkStrictly showCheckbox isString></h-select-tree>
     {{val2}}
     <h-select-tree v-model="val4" :data="baseData" showCheckbox disabled></h-select-tree>
     <br><br><br>
@@ -65,7 +65,7 @@
         val1:[],
         val2:[],
         firstVal2:['child1'],
-        firstVal1:['leaf1','leaf2'],
+        firstVal1:['child1-1-1','child1-1-2'],
         val3:'',
         val31:'',
         val4:[],

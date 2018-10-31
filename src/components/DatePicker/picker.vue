@@ -47,7 +47,7 @@
                :split-panels="splitPanels"
                :show-week-numbers="showWeekNumbers"
                :picker-type="type"
-               :showTowPanel="this.showTowPanel"
+               :showTwoPanel="this.showTwoPanel"
                :range-num="controlRange?selectRange:0"
 
                v-bind="ownPickerProps"
@@ -167,6 +167,10 @@
         type:[String,Number],
         default:1
       },
+      showTwoPanel:{
+        type:Boolean,
+        default:false,
+      }
     },
     data () {
       const isRange = this.type.indexOf('range')>-1?true:false;

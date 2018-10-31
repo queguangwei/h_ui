@@ -1,98 +1,332 @@
 <template>
 <div>
-    <h-simple-table :columns="columnsBig" 
-      :data="bigData" border stripe headAlgin="right" 
-      bodyAlgin="left" height="500" rowSelect 
-      @on-select="select" @on-select-cancel="select"  
-      @on-select-all='change' 
-      @on-selection-change="change"></h-simple-table>
+    <h-table :columns="columns8" :data="data7" @on-sort-change="sortChange"></h-table>
 </div>
 </template>
 <script>
 let jsonData=[];
 let tData =require('../assets/aa.json'); 
 for (let i = 0; i < 2; i++) {
-      jsonData = jsonData.concat(tData);
-    }
+  jsonData = jsonData.concat(tData);
+}
 
-    export default {
-        data () {
-            return {
-                columnsBig: [
-                 {
-                  title:'测试',
-                  key:'ceshi',
-                  algin:'center',
-                 }
-                ],
-                bigData:jsonData,
-            }
+export default {
+  data () {
+    return {
+      columns8: [
+        {
+          type: 'index',
+          width: 60,
+          align: 'center'
         },
-        methods: {
-            select (selection,row){//已选择的项和刚刚选择的项
-             console.log(selection);
-             console.log(row);
-            },
-            change(e){
-              console.log(e);
-            },
+        {
+          type: 'selection',
+          width: 60,
+          align: 'center',
         },
-        mounted (){
-            this.columnsBig=[
-                { 
-                  type: 'selection',
-                  align: 'center',
-                  width:200,
-                },
-                { 
-                  type: 'index',
-                  align: 'center',
-                  key:'index'
-                },
-                {
-                  title: '姓名',
-                  key: 'fundId',
-                  align: 'center',
-                  // width:300,
-                  hiddenCol:true,
-                },
-                {
-                  title: '年龄',
-                  key: 'tradeDate',
-                },
-                {
-                  title: '地址',
-                  key: 'securityCode',
-                },
-                {
-                  title: '地址1',
-                  key: 'securityName',
-                  ellipsis:true,
-                },
-                {
-                  title: '地址2',
-                  key: 'securityId',
-                },
-                {
-                  title: '地址3',
-                  key: 'tradeDir',
-                },
-                {
-                  title: '地址4',
-                  key: 'tradeSubtype',
-                },
-                {
-                  title: '地址5',
-                  key: 'marketNo',
-                },
-                {
-                  title: '地址6',
-                  key: 'tradeQuantity',
-                }
-            ]
+        
+        {
+          title: "名称",
+          key: "name",
+          width: 100,
+          // fixed: "right",
+        },
+        {
+          title: "展示",
+          key: "show",
+          sortable: true,
+          // fixed: "left",
+          // hiddenCol:true,//通过在column中设置hiddenCol表示该列是否隐藏      
+        },
+        // {
+        //   title: "唤醒",
+        //   key: "weak",
+        //   width: 150,
+        //   sortable: true,
+        //   // hiddenCol:true,
+        // },
+        // {
+        //   title: "登录",
+        //   key: "signin",
+        //   width: 150,
+        //   sortable: true
+        // },
+        // {
+        //   title: "点击",
+        //   key: "click",
+        //   width: 150,
+        //   sortable: true
+        // },
+        // {
+        //   title: "激活",
+        //   key: "active",
+        //   width: 150,
+        //   sortable: true
+        // },
+        // {
+        //   title: "7日留存",
+        //   key: "day7",
+        //   width: 150,
+        //   // sortable: true
+        // },
+        // {
+        //   title: "30日留存",
+        //   key: "day30",
+        //   width: 150,
+        //   // sortable: true
+        // },
+        // {
+        //   title: "次日留存",
+        //   key: "tomorrow",
+        //   width: 150,
+        //   // sortable: true
+        // },
+        // {
+        //   title: "日活跃",
+        //   key: "day",
+        //   width: 150,
+        //   // sortable: true
+        // },
+        // {
+        //   title: "周活跃",
+        //   key: "week",
+        //   width: 150,
+        //   // fixed: "right",
+        //   // sortable: true
+        // },
+        // {
+        //   title: "月活跃",
+        //   key: "month",
+        //   width: 150,
+
+        //   // fixed: "right",
+        //   // sortable: true
+        // }
+      ],
+      c: [
+        {
+          name: "推广名称3",
+          fav: 0,
+          show: 7302,
+          weak: 5627,
+          signin: 1563,
+          click: 4254,
+          active: 1438,
+          day7: 274,
+          day30: 285,
+          tomorrow: 1727,
+          day: 558,
+          week: 4440,
+          month: 5610
+        },
+        {
+          name: "推广名称2",
+          fav: 0,
+          show: 4720,
+          weak: 4086,
+          signin: 3792,
+          click: 8690,
+          active: 8470,
+          day7: 8172,
+          day30: 5197,
+          tomorrow: 1684,
+          day: 2593,
+          week: 2507,
+          month: 1537
+        },
+        {
+          name: "推广名称2",
+          fav: 0,
+          show: 7181,
+          weak: 8007,
+          signin: 8477,
+          click: 1879,
+          active: 16,
+          day7: 2249,
+          day30: 3450,
+          tomorrow: 377,
+          day: 1561,
+          week: 3219,
+          month: 1588
+        },
+        {
+          name: "推广名称4",
+          fav: 0,
+          show: 9911,
+          weak: 8976,
+          signin: 8807,
+          click: 8050,
+          active: 7668,
+          day7: 1547,
+          day30: 2357,
+          tomorrow: 7278,
+          day: 5309,
+          week: 1655,
+          month: 9043
+        },
+        {
+          name: "推广名称2",
+          fav: 0,
+          show: 934,
+          weak: 1394,
+          signin: 6463,
+          click: 5278,
+          active: 9256,
+          day7: 209,
+          day30: 3563,
+          tomorrow: 8285,
+          day: 1230,
+          week: 4840,
+          month: 9908
+        },
+        {
+          name: "推广名称6",
+          fav: 0,
+          show: 6856,
+          weak: 1608,
+          signin: 457,
+          click: 4949,
+          active: 2909,
+          day7: 4525,
+          day30: 6171,
+          tomorrow: 1920,
+          day: 1966,
+          week: 904,
+          month: 6851
+        },
+        {
+          name: "推广名称6",
+          fav: 0,
+          show: 5107,
+          weak: 6407,
+          signin: 4166,
+          click: 7970,
+          active: 1002,
+          day7: 8701,
+          day30: 9040,
+          tomorrow: 7632,
+          day: 4061,
+          week: 4359,
+          month: 3676
+        },
+        {
+          name: "推广名称8",
+          fav: 0,
+          show: 862,
+          weak: 6520,
+          signin: 6696,
+          click: 3209,
+          active: 6801,
+          day7: 6364,
+          day30: 6850,
+          tomorrow: 9408,
+          day: 2481,
+          week: 1479,
+          month: 2346
+        },
+        {
+          name: "推广名称6",
+          fav: 0,
+          show: 567,
+          weak: 5859,
+          signin: 128,
+          click: 6593,
+          active: 1971,
+          day7: 7596,
+          day30: 3546,
+          tomorrow: 6641,
+          day: 1611,
+          week: 5534,
+          month: 3190
+        },
+        {
+          name: "推广名称8",
+          fav: 0,
+          show: 3651,
+          weak: 1819,
+          signin: 4595,
+          click: 7499,
+          active: 7405,
+          day7: 8710,
+          day30: 5518,
+          tomorrow: 428,
+          day: 9768,
+          week: 2864,
+          month: 5811
         }
+      ],
     }
+  },
+  methods: {
+      change(column,key,order){
+        let firstSort = 2;
+        let secondKey = column.index;
+        if(order=="asc"){
+          let cusData = this.data7;
+          cusData.sort((a,b)=>{
+
+          })
+          this.data7.sort
+        }else{
+
+        }
+      },
+  },
+  mounted (){
+    this.columnsBig=[
+        { 
+          type: 'selection',
+          align: 'center',
+        },
+        { 
+          type: 'index',
+          align: 'center',
+          key:'index',
+        },
+        {
+          title: '姓名',
+          key: 'fundId',
+          align: 'center',
+        },
+        {
+          title: '年龄',
+          key: 'tradeDate',
+        },
+        {
+          title: '地址',
+          key: 'securityCode',
+        },
+        {
+          title: '地址1',
+          key: 'securityName',
+          ellipsis:true,
+        },
+        {
+          title: '地址2',
+          key: 'securityId',
+        },
+        {
+          title: '地址3',
+          key: 'tradeDir',
+        },
+        {
+          title: '地址4',
+          key: 'tradeSubtype',
+        },
+        {
+          title: '地址5',
+          key: 'marketNo',
+        },
+        {
+          title: '地址6',
+          key: 'tradeQuantity',
+        }
+    ]
+  }
+}
 </script>
+
+
 <!-- <template>
   <div>
     <h-form ref="formItem1" :model="formItem1" :label-width="80" errorFocus cols="2">

@@ -106,6 +106,8 @@ const h_ui = {
     hCheckbox: Checkbox,
     CheckboxGroup: Checkbox.Group,
     hCheckboxGroup: Checkbox.Group,
+    Checkbtn:Checkbox.Btn,
+    hCheckbtn: Checkbox.Btn,
     // Circle,
     hCircle: Circle,
     Row,

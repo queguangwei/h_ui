@@ -43,7 +43,7 @@ export default {
             type: String,
             require: true
         },
-        showTowPanel:Boolean
+        showTwoPanel:Boolean
     },
     computed: {
         isTime(){

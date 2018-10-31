@@ -126,20 +126,26 @@ export default {
     },
     isSelectAll () {
       let isSelectAll = true;
+      let allDisable = true;
       if (!this.data.length) isSelectAll = false;
       for (let i = 0; i < this.data.length; i++) {
         if (!this.objData[this.data[i]._index]._isChecked && !this.objData[this.data[i]._index]._isDisabled) {
           isSelectAll = false;
           break;
         }
+        if(!this.objData[this.data[i]._index]._isDisabled){
+          allDisable = false;
+        }
       }
+      if(isSelectAll&&allDisable) isSelectAll = false;
       return isSelectAll;
     }
   },
   mounted(){
-     this.getLeftWidth();
-     this.changeMultiData(this.multiLevel);
-     on(window, 'resize', this.getLeftWidth);
+    this.getLeftWidth();
+    //  this.changeMultiData(this.multiLevel);
+    this.multiData = this.multiLevel;
+    on(window, 'resize', this.getLeftWidth);
   },
   methods: {
     cellClasses (column) {
@@ -434,17 +440,6 @@ export default {
     handleClick (event) {
       event.stopPropagation();
     },
-    changeMultiData(val){
-      if(val&&val.length>0){
-        if(typeOf(val[0])==='array'){
-          this.multiData = val;
-        }else{
-          let arr=[];
-          arr.push(val);
-          this.multiData = arr;
-        }
-      }
-    },
     aliCls(item){
       return[
         {
@@ -462,7 +457,7 @@ export default {
       }
     },
     multiLevel(val){
-      this.changeMultiData(val);
+      this.multiData = this.multiLevel;
     }
   },
   beforeDestroy(){

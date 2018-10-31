@@ -239,8 +239,6 @@
     }
 
     .#{$checkbox-prefix-cls}-group {
-        height: $form-component-height;
-        font-size: $font-size-base;
         &-item {
             display: inline-block;
         }

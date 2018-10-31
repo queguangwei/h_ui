@@ -152,7 +152,7 @@ export default {
       loading:false,
       multiLevel1:[
         {title:'123',cols:2,},
-        {title:'456',hiddenCol:true},
+        {title:'456',},
         // {title:'789'},
       ],
       multiLevel2:[
@@ -161,7 +161,7 @@ export default {
           {title:'456',align:'right'},
         ],
         [
-          {title:'123',cols:2},
+          {title:'123',cols:2,hiddenCol:true},
           {title:'456'},
         ],
         [
@@ -489,6 +489,11 @@ export default {
         }
       ],
       columns4: [
+        {
+          type: 'index',
+          width: 60,
+          align: 'center',
+        },
         {
           type: 'selection',
           width: 60,
@@ -1267,7 +1272,8 @@ export default {
         {
           name: '王小明',
           age: 18,
-          address: '北京市朝阳区芍药居'
+          address: '北京市朝阳区芍药居',
+          _disabled:true,
         },
         {
           name: '张小刚',
@@ -1276,12 +1282,14 @@ export default {
           cellClassName: {
               age: 'demo-table-info-cell-age',
               address: 'demo-table-info-cell-address'
-          }
+          },
+          _disabled:true,
         },
         {
           name: '李小红',
           age: 30,
-          address: '上海市浦东新区世纪大道'
+          address: '上海市浦东新区世纪大道',
+          _disabled:true,
         },
         {
           name: '周小伟',
@@ -1289,7 +1297,8 @@ export default {
           address: '深圳市南山区深南大道',
           cellClassName: {
               name: 'demo-table-info-cell-name'
-          }
+          },
+          _disabled:true,
         }
       ],
       data9: [
@@ -1654,9 +1663,10 @@ export default {
       }
       return '';
     },
-    radioChange (currentRow,oldRow){
+    radioChange (currentRow,oldRow,index){
       console.log(currentRow);
       console.log(oldRow);
+      console.log(index);
     },
     allSelect (allSelection){
       console.log(allSelection);

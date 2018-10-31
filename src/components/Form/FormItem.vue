@@ -84,7 +84,11 @@
             },
             cols: {
                 type: [String, Number]
-            }
+            },
+            labelWrap: {
+                type: Boolean,
+                default: null
+            },
         },
         data () {
             return {
@@ -141,7 +145,8 @@
                         [`${prefixCls}-validating`]: this.validateState === 'validating',
                         [`${prefixCls}-reqNoLabel`]: !(this.label || this.$slots.label) && this.isRequired,
                         [`${parentPrefixCls}-col-`+ this.form.cols]: parseInt(this.form.cols) <= 12,                     
-                        [`${prefixCls}-col-`+ this.curCols]: (this.curCols && parseInt(this.curCols) <= 12 && parseInt(this.curCols) <= parseInt(this.form.cols) && parseInt(this.form.cols) <= 12) ? true : false
+                        [`${prefixCls}-col-`+ this.curCols]: (this.curCols && parseInt(this.curCols) <= 12 && parseInt(this.curCols) <= parseInt(this.form.cols) && parseInt(this.form.cols) <= 12) ? true : false,
+                        [`${prefixCls}-labelWrap`]: this.labelWrap != null ? this.labelWrap : this.labelWrap == null && this.form.labelWrap != null  ? this.form.labelWrap : false,
                     }
                 ];
             },

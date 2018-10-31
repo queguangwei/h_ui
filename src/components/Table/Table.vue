@@ -147,7 +147,7 @@
 import tableHead from './Table-head.vue';
 import tableBody from './Table-body.vue';
 import Spin from '../Spin/Spin.vue';
-import { oneOf, getStyle, deepCopy, getScrollBarSize,findInx,getBarBottom} from '../../util/tools';
+import { oneOf, getStyle, deepCopy, getScrollBarSize,findInx,getBarBottom,typeOf} from '../../util/tools';
 import { on, off } from '../../util/dom';
 import Csv from '../../util/csv';
 import ExportCsv from './export-csv';
@@ -288,6 +288,10 @@ export default {
     maxHeight: {
       type: [Number, String]
     },
+    notSort: {
+      type:Boolean,
+      default:false,
+    }
   },
   data () {
     return {
@@ -535,10 +539,21 @@ export default {
     cloneMultiLevel () {
       if (!this.multiLevel || this.multiLevel.length==0) return null;
       let data = [];
+          data[0]=[];
       this.multiLevel.forEach((cols,i)=>{
-        if(!cols.hiddenCol&&cols.hiddenCol!='false'){
-          data.push(cols);
-    }
+        if(typeOf(cols)!='array'){
+          if(!cols.hiddenCol&&cols.hiddenCol!='false'){
+            data[0].push(cols);
+          }
+        }else{
+          let data2=[]
+          cols.forEach((item,inx)=>{
+            if(!item.hiddenCol&&item.hiddenCol!='false'){
+              data2.push(item);
+            }
+          })
+          data.push(data2);
+        }
       })
       return data.length>0?data:null;
     }
@@ -643,9 +658,11 @@ export default {
         });
         // get table real height,for fixed when set height prop,but height < table's height,show scrollBarWidth
         this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
+        this.headerRealHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
       });
     },
     getshiftSelect(_index){
+      if(!this.highlightRow) return;
       switch(this.shiftSelect.length){
         case 0:
           this.shiftSelect[0]=_index;
@@ -665,6 +682,7 @@ export default {
       }
     },
     getctrlSelect(_index){
+      if(!this.highlightRow) return;
       let itemIndex = this.ctrlSelect.indexOf(_index)
       if (itemIndex==-1) {
         this.ctrlSelect.push(_index);
@@ -1046,21 +1064,24 @@ export default {
         return data;
     },
     makeDataWithSort () {
-        let data = this.makeData();
-        let sortType = 'normal';
-        let sortIndex = -1;
-        let isCustom = false;
-
-        for (let i = 0; i < this.cloneColumns.length; i++) {
-            if (this.cloneColumns[i]._sortType !== 'normal') {
-                sortType = this.cloneColumns[i]._sortType;
-                sortIndex = i;
-                isCustom = this.cloneColumns[i].sortable === 'custom';
-                break;
-            }
-        }
-        if (sortType !== 'normal' && !isCustom) data =  this.sortData(data, sortType, sortIndex);
+      let data = this.makeData();
+      if(this.notSort){
         return data;
+      }
+      let sortType = 'normal';
+      let sortIndex = -1;
+      let isCustom = false;
+
+      for (let i = 0; i < this.cloneColumns.length; i++) {
+          if (this.cloneColumns[i]._sortType !== 'normal') {
+              sortType = this.cloneColumns[i]._sortType;
+              sortIndex = i;
+              isCustom = this.cloneColumns[i].sortable === 'custom';
+              break;
+          }
+      }
+      if (sortType !== 'normal' && !isCustom) data =  this.sortData(data, sortType, sortIndex);
+      return data;
     },
     makeDataWithFilter () {
       let data = this.makeData();
@@ -1227,20 +1248,10 @@ export default {
       this.rebuildData = this.makeDataWithSortAndFilter();
   },
   mounted () {
-    // if (this.showHeader) {
-    //   if (!!this.size) {
-    //     this.headerRealHeight = this.size=='small'?35:48;
-    //   }else{
-    //     this.headerRealHeight=42;
-    //   }
-    // }
-    // if (this.columns.length>0 && this.columns[0].type && this.columns[0].type=='selection') {
-    //   this.selectType=true;
-    // }
     this.$on('on-expand',()=>{
       this.$nextTick(()=>{
         this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
-    this.handleResize();
+        this.handleResize();
       })
     })
     this.handleResize();
@@ -1248,7 +1259,6 @@ export default {
     this.$nextTick(() => {
       this.ready = true;
       this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
-      this.headerRealHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
     });
     //window.addEventListener('resize', this.handleResize, false);
     on(window, 'resize', this.handleResize);
@@ -1288,6 +1298,7 @@ export default {
           // here will trigger before clickCurrentRow, so use async
           setTimeout(() => {
             this.cloneData = deepCopy(this.data);
+            this.buttomNum = null;
           }, 0);
           
         },
@@ -1308,8 +1319,8 @@ export default {
       hasWidth(){
         this.handleResize();
       },
-      buttomNum(){
-        if (this.buttomNum==null) return;
+      buttomNum(val,oldvalue){
+        if (val==null || oldvalue==null) return;
         this.$emit('on-scroll',this.buttomNum);
       },
       shiftSelect(val){

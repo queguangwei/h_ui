@@ -9,18 +9,19 @@ $typefieldRange-prefix-cls: "#{$css-prefix}typefield-range" ;
     width: calc(50% - 10px);
     float: left;
     .#{$typefield-prefix-cls} input{
-      height: 30px;
-      line-height: 30px;
+      height: $form-component-height - 1px;
+      line-height: $form-component-height - 1px;
       border: none;
+      background: inherit;
     }
     .h-typefield{
-      height: 31px;
+      height: $form-component-height - 1px;
     }
   }
   &-inner.split{
     width: 20px;
-    height: 30px;
-    line-height: 30px;
+    height: $form-component-height - 2px;
+    line-height: $form-component-height - 2px;
     text-align: center;
   }
   &-disabled{
@@ -40,7 +41,7 @@ $typefieldRange-prefix-cls: "#{$css-prefix}typefield-range" ;
     // margin-top:34px;
     font-size: $font-size-small;
     .verify-tip.verify-bottom{
-      margin-top: 33px;
+      margin-top: $form-component-height;
     }
   }
   &-error{

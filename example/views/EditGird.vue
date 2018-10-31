@@ -89,7 +89,6 @@ var columns=[
         //   width: 50,
         // },
         {
-          type: 'text',
           title: '姓名',
           key: 'name',
           width: 200,

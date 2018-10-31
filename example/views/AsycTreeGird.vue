@@ -746,6 +746,7 @@
                 title: '姓名',
                 key: 'name',
                 width: 300,
+                ellipsis:true,
               },
               {
                 type: 'text',
@@ -798,10 +799,11 @@
               {
                 type: 'date',
                 title: '日期',
-                width: 200,
+                width: 100,
                 key: 'dating',
                 dateType:'date',
                 format: 'yyyy-MM-dd',
+                ellipsis:true,
               },
               {
                 type: 'time',
@@ -864,9 +866,9 @@
         console.log(y);
       },
       loaddataMethod (item, callback) {
-        get('/getTreeGridData').then(res => {
-          callback(res.data);
-        })
+        // get('/getTreeGridData').then(res => {
+        //   callback(res.data);
+        // })
       },
       toggleexpand () {
         this.$refs.asyctreegird.toggleExpand(this.current[1], this.current[0])

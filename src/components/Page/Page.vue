@@ -69,6 +69,7 @@
         :page-size-opts="pageSizeOpts"
         :placement="placement"
         :show-elevator="showElevator"
+        :show-custom="showCustom"
         :current="currentPage"
         :all-pages="allPages"
         :is-small="isSmall"
@@ -133,6 +134,10 @@
         default: false
       },
       showSizer: {
+        type: Boolean,
+        default: false
+      },
+      showCustom:{
         type: Boolean,
         default: false
       },

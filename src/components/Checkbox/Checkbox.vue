@@ -121,7 +121,6 @@
 
           let value = checked ? this.trueValue : this.falseValue;
           this.$emit('input', value);
-
           if (this.group) {
               this.parent.change(this.model);
           } else {

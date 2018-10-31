@@ -7,7 +7,12 @@
             <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, true)" :key="index">
           </colgroup>
           <thead>
-            <tr>
+            <tr v-if="multiLevel" v-for="(colItem,inx) in multiData" :key="inx">
+              <th v-for="(multi, index) in colItem" :colspan="multi.cols||1" :key="index" :class="aliCls(multi)">
+                <span>{{multi.title}}</span>
+              </th>
+            </tr>
+            <tr class="cur-th">
               <th v-for="(column, index) in cloneColumns"
                 :key="index"
                 v-on:mousedown="mousedown($event,column,index)" 
@@ -23,6 +28,10 @@
                   <template v-else>
                     <span v-if="!column.renderHeader">{{ column.title || '#' }}</span>
                     <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
+                    <span :class="[prefixCls + '-sort']" v-if="column.sortable">
+                    <Icon name="android-arrow-dropup" :class="{on: column._sortType === 'asc'}" @on-click="handleSort(index, 'asc')" @mousedown.native.stop="handleClick"></Icon>
+                    <Icon name="android-arrow-dropdo" :class="{on: column._sortType === 'desc'}" @on-click="handleSort(index, 'desc')" @mousedown.native.stop="handleClick"></Icon>
+                  </span>
                   </template>
                 </div>
               </th>
@@ -41,7 +50,7 @@
             </colgroup>
             <tbody :class="[prefixCls + '-tbody']">
              <!-- <template v-for="(row, index) in rebuildData"> -->
-              <template v-for="(row, index) in visibleData">
+              <template v-for="(row,index) in visibleData" >
                 <tr
                   :class="rowClasses(row._index)"
                   :key="row._rowKey"
@@ -51,7 +60,7 @@
                   @dblclick.native.stop="dblclickCurrentRowTr(row._index)">
                   <td v-for="column in cloneColumns" :class="alignCls(column, row)" :key="column._index">
                     <div :class="classesTd(column)">
-                      <template v-if="column.type === 'index'">{{row._index}}</template>
+                      <template v-if="column.type === 'index'">{{row._index+1}}</template>
                       <template v-if="column.type === 'selection'">
                         <Checkbox size="large" :value="rowChecked(row._index)" @click.native.stop="handleClickTr($event,row._index,rowChecked(row._index))" @on-change="toggleSelect(row._index)" :disabled="rowDisabled(row._index)"></Checkbox>
                       </template>
@@ -87,6 +96,76 @@
           </tbody>
         </table>
       </div>
+      <div :class="[prefixCls + '-fixed']" :style="fixedTableStyle" v-if="isLeftFixed" ref="leftF">
+        <div :class="fixedHeaderClasses">
+          <table cellspacing="0" cellpadding="0" border="0" :style="headStyles" ref="leftF">
+            <colgroup>
+              <col v-for="(column, index) in leftFixedColumns" :width="setCellWidth(column, index, true)" :key="index">
+            </colgroup>
+            <thead>
+              <tr>
+                <th v-for="(column, index) in leftFixedColumns"
+                  :key="index"
+                  v-on:mousedown="mousedown($event,column,index)" 
+                  v-on:mouseout="mouseout($event,column,index)" 
+                  v-on:mousemove="mousemove($event,column,index)"
+                  :class="alignCls(column,{},'left')" 
+                  >
+                  <div :class="cellClasses(column)">
+                    <template v-if="column.type === 'selection'">
+                      <Checkbox v-if="!column.title" size="large" @mousedown.native.stop="handleClick" :value="isSelectAll" @on-change="selectAll"></Checkbox>
+                      <span v-else>{{column.title}}</span>
+                    </template>
+                    <template v-else>
+                      <span v-if="!column.renderHeader">{{ column.title || '#' }}</span>
+                      <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
+                    </template>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+        <div :class="[prefixCls + '-fixed-body']" class="h-simple-view" :style="fixedBodyStyle" ref="fixedBody">
+           <div :class="[prefixCls + '-phantom']" :style="{height: contentHeight}">
+        </div>
+        <div class="h-simple-content" ref="leftContent">
+          <table cellspacing="0" cellpadding="0" border="0" :style="tableStyle" ref="tbody">
+            <colgroup>
+              <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, false)" :key="index">
+            </colgroup>
+            <tbody :class="[prefixCls + '-tbody']">
+             <!-- <template v-for="(row, index) in rebuildData"> -->
+              <template v-for="(row,index) in visibleData" >
+                <tr
+                  :class="rowClasses(row._index)"
+                  :key="row._rowKey"
+                  @mouseenter.stop="handleMouseIn(row._index)"
+                  @mouseleave.stop="handleMouseOut(row._index)"
+                  @click="clickCurrentRowTr($event,row._index,$event)"
+                  @dblclick.native.stop="dblclickCurrentRowTr(row._index)">
+                  <td v-for="column in cloneColumns" :class="alignCls(column, row,'left')" :key="column._index">
+                    <div :class="classesTd(column)">
+                      <template v-if="column.type === 'index'">{{row._index}}</template>
+                      <template v-if="column.type === 'selection'">
+                        <Checkbox size="large" :value="rowChecked(row._index)" @click.native.stop="handleClickTr($event,row._index,rowChecked(row._index))" @on-change="toggleSelect(row._index)" :disabled="rowDisabled(row._index)"></Checkbox>
+                      </template>
+                      <template v-if="!column.type&&!column.render"><span v-html="row[column.key]"></span></template>
+                      <Cell
+                        v-if="column.render"
+                        :row="row"
+                        :column="column"
+                        :index="row._index"
+                        :render="column.render"></Cell>
+                    </div>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+        </div>
+      </div>
       <div class="h-table__column-resize-proxy" ref="resizeProxy" v-show="resizeProxyVisible"> </div>
     </div>
     <Spin fix size="large" v-if="loading">
@@ -101,10 +180,12 @@
 
 import renderHeader from './header';
 import Spin from '../Spin/Spin.vue';
-import { oneOf, getStyle, deepCopy, getScrollBarSize,findInx,getBarBottom,hasClass,addClass,removeClass} from '../../util/tools';
+import { oneOf, getStyle, deepCopy, getScrollBarSize,findInx,getBarBottom,hasClass,addClass,removeClass,typeOf} from '../../util/tools';
 import { on, off } from '../../util/dom';
 import Locale from '../../mixins/locale';
 import Mixin from './mixin';
+import Csv from '../../util/csv';
+import ExportCsv from '../Table/export-csv.js';
 import Cell from './expand'
 import Checkbox from '../Checkbox/Checkbox.vue';
 
@@ -218,7 +299,15 @@ export default {
     itemHeight: {
       type: Number,
       default:40
-    }
+    },
+    notSort:{
+      type:Boolean,
+      default:false,
+    },
+    multiLevel:{
+      type:Array,
+      default:null
+    },
   },
   data () {
     return {
@@ -242,18 +331,40 @@ export default {
       resizeProxyVisible: false,
       showScroll:false,
       headerRealHeight:0,
-      selectType:false,
       visibleCount:50,
       start:0,
       end:50,
       visibleData:[],
       allclick:false,
-      buttomNum:this.contentHeight,
+      buttomNum:null,
       shiftSelect:[],
       ctrlSelect:[],
+      dragging:false,
+      draggingColumn:false,
     };
   },
   computed: {
+    multiData(){
+      if (!this.multiLevel || this.multiLevel.length==0) return [];
+      let data = [];
+          data[0]=[];
+      this.multiLevel.forEach((cols,i)=>{
+        if(typeOf(cols)!='array'){
+          if(!cols.hiddenCol&&cols.hiddenCol!='false'){
+            data[0].push(cols);
+          }
+        }else{
+          let data2=[]
+          cols.forEach((item,inx)=>{
+            if(!item.hiddenCol&&item.hiddenCol!='false'){
+              data2.push(item);
+            }
+          })
+          data.push(data2);
+        }
+      })
+      return data.length>0?data:[];
+    },
     headStyles () {//深拷贝
       const style = Object.assign({}, this.tableStyle);
       const width = this.bodyHeight === 0 ? parseInt(this.tableStyle.width) : parseInt(this.tableStyle.width) + this.scrollBarWidth;
@@ -331,8 +442,8 @@ export default {
     styles () {
       let style = {};
       if (this.height) {
-        const height = (this.isLeftFixed || this.isRightFixed) ? parseInt(this.height) + this.scrollBarWidth : parseInt(this.height);
-        style.height = `${height+2}px`;
+        let height = Number(this.height)+2
+        style.height = `${height}px`;
       }
       if (this.width) style.width = `${this.width}px`;
       return style;
@@ -392,20 +503,18 @@ export default {
     bodyStyle () {
       let style = {};
       if (this.bodyHeight !== 0) {
-        // add a height to resolve scroll bug when browser has a scrollBar in fixed type and height prop
-        const height = (this.isLeftFixed || this.isRightFixed) ? this.bodyHeight + this.scrollBarWidth : this.bodyHeight;
-        style.height = `${height}px`;
+        style.height = `${this.bodyHeight}px`;
       }
       return style;
     },
     fixedBodyStyle () {
       let style = {};
       if (this.bodyHeight !== 0) {
-        let height = this.bodyHeight;
+        let height = this.bodyHeight-this.scrollBarWidth;
         if (this.tableWidth < this.initWidth+1) {
           height = this.bodyHeight + this.scrollBarWidth-1;
         }
-        style.height = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`;
+        style.height = `${height}px`;
       }
       return style;
     },
@@ -413,7 +522,7 @@ export default {
       let style = {};
       // style.width = this.initWidth!=0?this.initWidth+'px': this.hasWidth ? this.hasWidth+'px' : '100%';
       style.width = this.initWidth!=0?this.initWidth+'px':'100%';
-      const height = (this.isLeftFixed || this.isRightFixed) ? this.bodyHeight + this.scrollBarWidth : this.bodyHeight;
+      const height = this.bodyHeight;
       style.height = this.height?Number(height-this.scrollBarWidth)+'px':null;
       style.lineHeight = this.height?Number(height-this.scrollBarWidth)+'px':null;
       return style;
@@ -445,6 +554,14 @@ export default {
       return [
         `${this.prefixCls}-cell`,
       ];
+    },
+    aliCls(item){
+      return[
+        {
+          [`${item.className}`]: item.className,
+          [`${this.prefixCls}-column-${item.align}`]: item.align,
+        }
+      ]
     },
     rowClsName (index) {
       return this.rowClassName(this.data[index], index);
@@ -489,7 +606,7 @@ export default {
       this.$emit('on-drag', width, key);
     },
     mousedown(event,column,index){
-      if (this.$isServer || !this.canDrag) return;
+      if (this.$isServer || !this.canDrag || !this.draggingColumn) return;
       if (!column) return;
       let _this = this;
         this.dragging = true;      
@@ -552,6 +669,7 @@ export default {
 
             document.body.style.cursor = '';
             _this.dragging = false;
+             _this.draggingColumn = false;
             _this.dragState = {};
 
             table.resizeProxyVisible = false;
@@ -585,8 +703,10 @@ export default {
         const bodyStyle = document.body.style;
         if (rect.width > 12 && rect.right - event.pageX < 8) {
           bodyStyle.cursor = 'col-resize';
+          this.draggingColumn = true;
         } else if (!this.dragging) {
           bodyStyle.cursor = '';
+          this.draggingColumn = false;
         }
       }
     },
@@ -647,7 +767,7 @@ export default {
             this.columnsWidth = columnsWidth;
           }else{
             if (!this.$refs.thead) return;
-            const $th = this.$refs.thead.querySelectorAll('thead tr')[0].querySelectorAll('th');
+            const $th = this.$refs.thead.querySelectorAll('thead .cur-th')[0].querySelectorAll('th');
             for (let i = 0; i < $th.length; i++) {    // can not use forEach in Firefox
               const column = this.cloneColumns[i]; 
               let width = parseInt(getStyle($th[i], 'width'));
@@ -672,6 +792,7 @@ export default {
         });
         // get table real height,for fixed when set height prop,but height < table's height,show scrollBarWidth
         this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
+        this.headerRealHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
       });
     },
     getshiftSelect(_index){
@@ -750,9 +871,9 @@ export default {
           // this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
           this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])),_index);
         }
-        if (this.columns[0].type=='selection') {
+        // if (this.columns[0].type=='selection' || this.columns[1].type=='selection') {
           this.$emit('on-selection-change',this.getSelection(),this.getSelection(true));
-        }
+        // }
     },
     clickCurrentRowTr (event,_index,) { 
       window.getSelection()?window.getSelection().removeAllRanges():document.selection.empty();
@@ -866,6 +987,73 @@ export default {
         this.$emit('on-selection-change', selection,this.getSelection(true));
       }, 0);
     },
+    handleSort (index, type) {
+      if (this.cloneColumns[index]._sortType === type) {
+          type = 'normal';
+      }
+      let _index = this.cloneColumns[index]._index;
+      this.handleSortT(_index, type);
+    },
+    handleSortByHead (index) {
+      const column = this.cloneColumns[index];
+      if (column.sortable) {
+        const type = column._sortType;
+        if (type === 'normal') {
+            this.handleSort(index, 'asc');
+        } else if (type === 'asc') {
+            this.handleSort(index, 'desc');
+        } else {
+            this.handleSort(index, 'normal');
+        }
+      }
+    },
+    sortData (data, type, index) {
+        const key = this.cloneColumns[index].key;
+        data.sort((a, b) => {
+            if (this.cloneColumns[index].sortMethod) {
+                return this.cloneColumns[index].sortMethod(a[key], b[key], type);
+            } else {
+                if (type === 'asc') {
+                    return a[key] > b[key] ? 1 : -1;
+                } else if (type === 'desc') {
+                    return a[key] < b[key] ? 1 : -1;
+                }
+            }
+        });
+        return data;
+    },
+    handleSortT (_index, type) {
+      let index;
+      this.cloneColumns.forEach((col,i) => {
+        col._sortType = 'normal'
+        if (col._index == _index) {
+          index = i;
+        }
+      });//rightFixed index error
+      const key = this.cloneColumns[index].key;
+      if (this.cloneColumns[index].sortable !== 'custom') {    // custom is for remote sort
+          if (type === 'normal') {
+              this.rebuildData = this.makeDataWithFilter();
+          } else {
+              this.rebuildData = this.sortData(this.rebuildData, type, index);
+          }
+      }
+      this.cloneColumns[index]._sortType = type;
+
+      this.$emit('on-sort-change', {
+          column: JSON.parse(JSON.stringify(this.columns[this.cloneColumns[index]._index])),
+          key: key,
+          order: type
+      });
+      this.$nextTick(()=>{
+        this.updateVisibleData();
+      })
+    },
+    makeDataWithFilter () {
+      let data = this.makeData();
+      // this.cloneColumns.forEach(col => data = this.filterData(data, col));
+      return data;
+    },
     selectRange(){
       for (var i = this.shiftSelect[0]; i <= this.shiftSelect[1]; i++) {
         this.objData[i]._isHighlight=false;
@@ -900,20 +1088,22 @@ export default {
       this.buttomNum = getBarBottom(event.target,this.scrollBarWidth);
     },
     updateVisibleData(scrollTop) {
-      scrollTop = scrollTop || 0;
+      scrollTop = scrollTop || this.$refs.body.scrollTop;
       this.start = Math.floor(scrollTop / this.itemHeight);
       this.end = this.start + this.visibleCount;
       this.visibleData = this.rebuildData.slice(this.start, this.end);
       this.$refs.content.style.transform = `translate3d(0, ${ this.start * this.itemHeight }px, 0)`;
+      if(this.$refs.leftContent){
+        this.$refs.leftContent.style.transform = `translate3d(0, ${ this.start * this.itemHeight }px, 0)`;
+      }
     },
     handleMouseWheel (event) {
       const deltaX = event.deltaX;
       const $body = this.$refs.body;
-
       if (deltaX > 0) {
-          $body.scrollLeft = $body.scrollLeft + 10;
+        $body.scrollLeft = $body.scrollLeft + 10;
       } else {
-          $body.scrollLeft = $body.scrollLeft - 10;
+        $body.scrollLeft = $body.scrollLeft - 10;
       }
     },
     getIndex(_index){
@@ -933,8 +1123,29 @@ export default {
         });
         return data;
     },
-    makeDataWithSortAndFilter () {
+    makeDataWithSort () {
       let data = this.makeData();
+      if(this.notSort){
+        return data;
+      }
+      let sortType = 'normal';
+      let sortIndex = -1;
+      let isCustom = false;
+
+      for (let i = 0; i < this.cloneColumns.length; i++) {
+          if (this.cloneColumns[i]._sortType !== 'normal') {
+              sortType = this.cloneColumns[i]._sortType;
+              sortIndex = i;
+              isCustom = this.cloneColumns[i].sortable === 'custom';
+              break;
+          }
+      }
+      if (sortType !== 'normal' && !isCustom) data =  this.sortData(data, sortType, sortIndex);
+      return data;
+    },
+    makeDataWithSortAndFilter () {
+      // let data = this.makeData();
+      let data = this.makeDataWithSort();
       return data;
     },
     makeObjData () {
@@ -1033,8 +1244,30 @@ export default {
       this.$nextTick(() => {
         this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
       });
-    }
-    // shift:16 ctrl:17
+    },
+    exportCsv (params) {
+      if (params.filename) {
+        if (params.filename.indexOf('.csv') === -1) {
+            params.filename += '.csv';
+        }
+      } else {
+        params.filename = 'simpleTable.csv';
+      }
+      let columns = [];
+      let datas = [];
+      if (params.columns && params.data) {
+          columns = params.columns;
+          datas = params.data;
+      } else {
+          columns = this.columns;
+          if (!('original' in params)) params.original = true;
+          datas = params.original ? this.data : this.rebuildData;
+      }
+      let noHeader = false;
+      if ('noHeader' in params) noHeader = params.noHeader;
+      const data = Csv(columns, datas, params, noHeader);
+      ExportCsv.download(params.filename, data);
+    },
   },
   created () {
       if (!this.context) this.currentContext = this.$parent;
@@ -1043,16 +1276,6 @@ export default {
       this.rebuildData = this.makeDataWithSortAndFilter();
   },
   mounted () {
-    if (this.showHeader) {
-      if (!!this.size) {
-        this.headerRealHeight = this.size=='small'?35:48;
-      }else{
-        this.headerRealHeight=42;
-      }
-    }
-    if (this.columns[0].type && this.columns[0].type=='selection') {
-      this.selectType=true;
-    }
     this.handleResize();
     this.fixedHeader();
     this.$nextTick(() => {
@@ -1083,7 +1306,6 @@ export default {
           const oldDataLen = this.rebuildData.length;
           this.objData = this.makeObjData();
           this.rebuildData = this.makeDataWithSortAndFilter();
-          this.updateVisibleData();
           this.handleResize();
           if (!oldDataLen) {
             this.fixedHeader();
@@ -1091,7 +1313,11 @@ export default {
           // here will trigger before clickCurrentRow, so use async
           setTimeout(() => {
             this.cloneData = deepCopy(this.data);
+            this.buttomNum = null;
           }, 0);
+          this.$nextTick(()=>{
+            this.updateVisibleData();
+          })
         },
         deep: true
       },
@@ -1100,8 +1326,11 @@ export default {
           // todo 这里有性能问题，可能是左右固定计算属性影响的
           this.cloneColumns = this.makeColumns();
           this.rebuildData = this.makeDataWithSortAndFilter();
-          this.updateVisibleData();
           this.handleResize();
+          this.buttomNum = null;
+          this.$nextTick(()=>{
+            this.updateVisibleData();
+          });
         },
         deep: true
       },
@@ -1111,7 +1340,8 @@ export default {
       hasWidth(){
         this.handleResize();
       },
-      buttomNum(){
+      buttomNum(val,oldvalue){
+        if(val==null || oldvalue == null) return;
         this.$emit('on-scroll',this.buttomNum);
       },
       shiftSelect(val){
