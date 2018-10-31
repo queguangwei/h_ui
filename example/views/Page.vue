@@ -5,8 +5,10 @@
     <h-button @click="pageChange1">改变当前page</h-button>
     <br>
     <Button @click="setTotal">设置total为0</Button>
+    <p>自定义某页数量</p>
+    <h-page :total="100" :pageSize='5' show-custom  placement="top" @on-page-size-change="numChange"></h-page>
     <p>显示每页数量</p>
-    <h-page :total="100" :pageSize='5'show-sizer @on-page-size-change="numChange" placement="top" :pageSizeOpts="pageSizeOpts"></h-page>
+    <h-page :total="100" :pageSize='5' show-sizer @on-page-size-change="numChange" placement="top" :pageSizeOpts="pageSizeOpts"></h-page>
     <p>快速跳转到某一页</p>
     <h-page :total="100" show-elevator :isBlur="true"></h-page>
     <p>显示总数</p>

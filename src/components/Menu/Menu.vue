@@ -107,8 +107,13 @@ export default {
     shrinkClose: {
       type: Boolean,
       default: false,
-    }
+    },
     // --collapse--
+    // 只在 mode="vertical" 时有效,三级菜单侧面展开
+    vertiSide:{
+      type:Boolean,
+      default:false,
+    }
   },
   data () {
     return {
@@ -126,7 +131,8 @@ export default {
         `${prefixCls}-${theme}`,
         {
           [`${prefixCls}-${this.mode}`]: this.mode,
-          [`${prefixCls}-collapse`]: this.collapse
+          [`${prefixCls}-collapse`]: this.collapse,
+          [`${prefixCls}-verti-side`]: this.vertiSide && !this.collapse,
         }
       ];
     },

@@ -228,6 +228,10 @@
       hideMult:{
         type:Boolean,
         default:false,
+      },
+      focusSelect: {
+        type: Boolean,
+        default: true,
       }
     },
     data () {
@@ -621,11 +625,9 @@
 
         this.broadcast('Drop', 'on-update-popper');
       },
-
       toggleSingleSelected (value, init = false) {
         if (!this.multiple) {
           let label = '';
-
           this.findChild((child) => {
               if (child.value === value) {
                   child.selected = true;
@@ -655,6 +657,7 @@
       },
       toggleMultipleSelected (value, init = false) {
         if (this.multiple) {
+          let curSelect = true;
           let hybridValue = [];
           for (let i = 0; i < value.length; i++) {
               hybridValue.push({
@@ -663,7 +666,6 @@
           }
           this.findChild((child) => {
               const index = value.indexOf(child.value);
-
               if (index >= 0) {
                   child.selected = true;
                   hybridValue[index].label  = (child.label === undefined) ? child.$el.innerText.replace(/\s*\w{4,5} /, '') : child.label;
@@ -671,8 +673,11 @@
               } else {
                   child.selected = false;
               }
+              if(curSelect && child.selected==false){
+                curSelect=false;
+              }
           });
-
+          this.isSelectAll = curSelect;
           if (!init) {
               if (this.labelInValue) {
                   this.$emit('on-change', hybridValue);
@@ -945,22 +950,21 @@
           this.hideMenu();
         } else {
           if (this.multiple) {
-            if (this.specialIndex) {
-              let queryNum = this.typeValue=='string'?'-1':-1
-              if (value==queryNum) {
-                this.model=this.typeValue=='string'?['-1']:[-1];
-                return false;
-              }
-              if (value!=queryNum && this.model.indexOf(queryNum)>=0) {
-                const index = this.model.indexOf(queryNum);
-                this.removeTag(index);
-              }
-            }
-
             const index = this.model.indexOf(value);
             if (index >= 0) {
               this.removeTag(index);
             } else {
+              if (this.specialIndex) {
+                let queryNum = this.typeValue=='string'?'-1':-1
+                if (value==queryNum) {
+                  this.model=this.typeValue=='string'?['-1']:[-1];
+                  return false;
+                }
+                if (value!=queryNum && this.model.indexOf(queryNum)>=0) {
+                  const index = this.model.indexOf(queryNum);
+                  this.removeTag(index);
+                }
+              }
               this.model.push(value);
               this.broadcast('Drop', 'on-update-popper');
             }
@@ -1053,7 +1057,7 @@
             if (this.multiple && !this.showBottom) {
               this.$refs.input.focus();
             } else {
-              this.$refs.input.select();
+              if (this.focusSelect) this.$refs.input.select();
             }
             if (this.remote) {
               this.findChild(child => {
@@ -1080,6 +1084,7 @@
         }
       },
       query (val) {
+
         if (this.remote && this.remoteMethod) {
           if (!this.selectToChangeQuery) {
               this.$emit('on-query-change', val);
@@ -1094,7 +1099,8 @@
             if (!this.selectToChangeQuery) {
                 this.$emit('on-query-change', val);
             }
-            if(val.trim()) this.broadcastQuery(val);
+            // if(val.trim()) this.broadcastQuery(val);
+            this.broadcastQuery(val);
 
             let is_hidden = true;
 

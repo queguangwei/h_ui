@@ -45,6 +45,16 @@ $menu-collapse-prefix-cls: "#{$css-prefix}menu-collapse";
       }
     }
   }
+  &-verti-side{
+    .#{$menu-prefix-cls}{
+      .#{$menu-prefix-cls}{
+        position: absolute;
+        left: 100%;
+        width: 240px;
+        top:0;
+      }
+    }
+  }
 
   &-light{
     background: #fff;
@@ -196,6 +206,16 @@ $menu-collapse-prefix-cls: "#{$css-prefix}menu-collapse";
   &-vertical &-submenu &-item{
     padding-left: 43px;
   }
+  &-verti-side &-submenu &-submenu{
+    position: relative;
+  }
+  &-verti-side &-submenu &-submenu &-submenu-title{
+    padding-left:43px;
+  }
+  &-verti-side &-submenu &-submenu &-submenu-title>&-submenu-title-icon{
+    -webkit-transform: rotate(-90deg);
+  }
+
   // 三级目录
   &-vertical &-submenu &-submenu &-item{
     padding-left: 63px;

@@ -317,7 +317,7 @@
                 }
             },
             handleRangePick (val) {
-                if(this.showTowPanel){
+                if(this.showTwoPanel){
                     this.$emit('on-pick',val)
                     return false;
                 }

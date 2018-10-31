@@ -9,8 +9,12 @@
     </h-simple-table> -->
     <h-button @click="setLoading">切换状态</h-button>
     <h2>不带边线 单选 on-current-change</h2>
-    <h-simple-table :columns="columnsBig1" border :data="bigData" no-data-text="数据为空" :loading="loading" height="400" @on-selection-change="select" :highlight-row="true" @on-current-change="select" @on-current-change-cnacle="select">
+    <!-- :multiLevel="multiLevel1" -->
+    <h-simple-table ref="simTable" :columns="columnsBig1" border :data="bigData" no-data-text="数据为空" :loading="loading" height="400" @on-selection-change="select" :highlight-row="true" @on-current-change="select" @on-current-change-cnacle="select" @on-scroll="scroll" @on-sort-change="change">
     </h-simple-table>
+     <h-button type="primary" size="large" @click="exportData(1)"><h-icon type="ios-download-outline"></h-icon> 导出原始数据</h-button>
+    <h-button type="primary" size="large" @click="exportData(2)"><h-icon type="ios-download-outline"></h-icon> 导出排序和过滤后的数据</h-button>
+    <h-button type="primary" size="large" @click="exportData(3)"><h-icon type="ios-download-outline"></h-icon> 导出自定义数据</h-button>
     <!-- <h2>自定义样式</h2>
     <p>行：通过属性 row-class-name 可以给某一行指定一个样式名称。</p>
     <p>列：通过给列 columns 设置字段 className 可以给某一列指定一个样式。</p>
@@ -51,7 +55,7 @@ import TexpandRow from './Texpand-row.vue'
 let jsonData=[];
 let tData =require('../assets/aa.json'); 
 for (let i = 0; i < 1; i++) {
-      jsonData = jsonData.concat(tData);
+      jsonData =tData.slice(0,500);
     }
 console.log(jsonData.length);
 export default {
@@ -442,6 +446,17 @@ export default {
           address: '深圳市南山区深南大道'
         }
       ],
+      status:false,
+      multiLevel1:[[
+        {title:'123',cols:2,},
+        {title:'456',cols:2,},
+        {title:'789',cols:2,hiddenCol:true},
+        // {title:'789'},
+      ],
+      [{title:'123',cols:2,},
+        {title:'456',cols:2,},
+        {title:'789',cols:2,hiddenCol:true},]
+      ],
     }
   },
   methods:{
@@ -463,7 +478,10 @@ export default {
       console.log(e);
     },
     scroll(num){
-      console.log(num);
+      if(num==0&&!this.status){
+        this.status = true;
+        this.bigData = this.bigData.concat(jsonData);
+      }
     },
     setLoading(){
       this.loading = !this.loading;
@@ -521,6 +539,24 @@ export default {
     remove (index) {
       this.data6.splice(index, 1);
     }, 
+    exportData (type) {
+      if (type === 1) {
+          this.$refs.simTable.exportCsv({
+              filename: '原始数据'
+          });
+      } else if (type === 2) {
+          this.$refs.simTable.exportCsv({
+              filename: '排序和过滤后的数据',
+              original: false
+          });
+      } else if (type === 3) {
+          this.$refs.simTable.exportCsv({
+              filename: '自定义数据',
+              columns: this.columnsBig1.filter((col, index) => index < 4),
+              data: this.bigData.filter((data, index) => index < 200)
+          });
+      }
+    }      
   },
   mounted(){
     this.columns1=[
@@ -623,16 +659,28 @@ export default {
         }
     ]
     this.columnsBig1=[
+        { 
+          type: 'selection',
+          align: 'center',
+          fixed:'left',
+        },
+        // { 
+        //   type: 'index',
+        //   align: 'center',
+        // },
         {
           title: '姓名',
           key: 'fundId',
           width:200,
-          hiddenCol:true,
+          // fixed:'left',
+          // hiddenCol:true,
           align: 'center',
+          sortable:true,
         },
         {
           title: '年龄',
           key: 'tradeDate',
+          sortable:true,
         },
         {
           title: '地址',
@@ -642,10 +690,13 @@ export default {
         {
           title: '地址1',
           key: 'securityName',
+          sortable:true,
         },
         {
           title: '地址2',
           key: 'securityId',
+          sortable:true,
+          sortType:'asc',
         },
         {
           title: '地址3',
@@ -654,23 +705,23 @@ export default {
         {
           title: '地址4',
           key: 'tradeSubtype',
-          sortType:'asc',
         },
         {
           title: '地址5',
           key: 'marketNo',
-          sortType:'asc',
         },
         {
           title: '地址6',
           key: 'tradeQuantity',
-          sortType:'asc',
         }
     ]
   }
 }
 </script>
 <style type="text/css">
+/* th{
+  height: 32px !important;
+} */
 .h-table .demo-table-info-row td{
   background-color: #2db7f5 !important;
   color: #fff;

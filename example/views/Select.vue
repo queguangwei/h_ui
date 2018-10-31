@@ -28,7 +28,7 @@
       <h-button @click="fuzhi">赋值</h-button>
       <h-button @click="qk">清空</h-button>
       {{model34}}
-      <h-select v-model="model44"
+      <!-- <h-select v-model="model44"
                 multiple
                 hideMult
                 style="width:320px"
@@ -39,12 +39,27 @@
                 :isComputed="isComputed"
                 noMoreText="哈哈哈哈"
                 algin="center">
-                <!-- :specialIndex="true" -->
-        <!-- <h-option value="-1"
-                  key="-1">-1 所有</h-option> -->
         <h-option v-for="item in cityList"
                   multiple
                   :value="item.value"
+                  :key="item.value">{{ item.label }}</h-option>
+      </h-select> -->
+      
+       <h-select v-model="model44"
+                multiple
+                style="width:320px"
+                isCheckall
+                @on-change="change"
+                @on-scroll="scroll"
+                :isComputed="isComputed"
+                noMoreText="哈哈哈哈"
+                :specialIndex="true"
+                algin="center">
+        <h-option :value="-1"
+                  key="-1">-1 所有</h-option>
+        <h-option v-for="item in cityList"
+                  multiple
+                  :value="Number(item.value)"
                   :key="item.value">{{ item.label }}</h-option>
       </h-select>
       {{model44}}
@@ -224,6 +239,7 @@
                   width="200"
                   @on-blur="blurH"
                   filterable>
+          <h-option :value="3">{{'<你>'}}</h-option>
           <h-option v-for="(item, index) in uList"
                     :value="item.id"
                     :key="item.id">{{ item.name }}</h-option>
@@ -327,54 +343,54 @@
 
 <script>
 const data = [
-  {
-    value: 'beijing1',
-    label: '<你好>'
-  },
-  {
-    value: 'beijing',
-    label: '北京市北京市北京市北京市北京市北京市'
-  },
-  {
-    value: 'shanghai',
-    label: '上海市上海市上海市上海市上海市上海市上海市'
-  },
-  {
-    value: 'shenzhen',
-    label: '深圳市'
-  },
-  {
-    value: 'hangzhou',
-    label: '杭州市'
-  },
-  {
-    value: 'shenzhen111',
-    label: '南京市111'
-  },
-  {
-    value: 'shenzhen222',
-    label: '重庆市222'
-  },
-  {
-    value: 'shenzhen223',
-    label: '重庆市223'
-  },
-  {
-    value: 'shenzhen224',
-    label: '重庆市224'
-  },
-  {
-    value: 'shenzhen225',
-    label: '重庆市225'
-  },
-  {
-    value: 'shenzhen226',
-    label: '重庆市226'
-  },
-  {
-    value: 'shenzhen227',
-    label: '重庆市227'
-  },
+  // {
+  //   value: 'beijing1',
+  //   label: '<你好>'
+  // },
+  // {
+  //   value: 'beijing',
+  //   label: '北京市北京市北京市北京市北京市北京市'
+  // },
+  // {
+  //   value: 'shanghai',
+  //   label: '上海市上海市上海市上海市上海市上海市上海市'
+  // },
+  // {
+  //   value: 'shenzhen',
+  //   label: '深圳市'
+  // },
+  // {
+  //   value: 'hangzhou',
+  //   label: '杭州市'
+  // },
+  // {
+  //   value: 'shenzhen111',
+  //   label: '南京市111'
+  // },
+  // {
+  //   value: 'shenzhen222',
+  //   label: '重庆市222'
+  // },
+  // {
+  //   value: 'shenzhen223',
+  //   label: '重庆市223'
+  // },
+  // {
+  //   value: 'shenzhen224',
+  //   label: '重庆市224'
+  // },
+  // {
+  //   value: 'shenzhen225',
+  //   label: '重庆市225'
+  // },
+  // {
+  //   value: 'shenzhen226',
+  //   label: '重庆市226'
+  // },
+  // {
+  //   value: 'shenzhen227',
+  //   label: '重庆市227'
+  // },
   {
     value: '1',
     label: '1'
@@ -460,7 +476,7 @@ export default {
       isComputed: false,
       cityList: [],
       model34: '',
-      model44: 'shenzhen,hangzhou',
+      model44: [1,2],
       mode224: '',
       model1: '',
       model2: '',

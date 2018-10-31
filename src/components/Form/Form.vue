@@ -47,7 +47,11 @@ export default {
     errorFocus:{
       type:Boolean,
       default:false,
-    }
+    },
+    labelWrap: {
+      type: Boolean,
+      default: null
+    },
 
   },
   data () {

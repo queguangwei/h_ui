@@ -38,6 +38,10 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    showSlide:{
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -82,6 +86,9 @@ export default {
     mode () {
       return this.parent.mode;
     },
+    vertiSide () {
+      return this.parent.vertiSide;
+    },
     accordion () {
       return this.parent.accordion;
     },
@@ -98,7 +105,7 @@ export default {
       if (this.disabled) return;
       // if (this.mode === 'vertical') return;
       // collapse为true时，可以鼠标经过
-      if (this.mode === 'vertical' && !this.collapse) return;
+      if (this.mode === 'vertical' && !this.collapse&&!this.showSlide) return;
       
       clearTimeout(this.timeout);
       this.parent.updateOpenKeys(this.name);
@@ -110,7 +117,7 @@ export default {
       if (this.disabled) return;
       // if (this.mode === 'vertical') return;
       // collapse为true时，可以鼠标经过
-      if (this.mode === 'vertical' && !this.collapse) return;
+      if (this.mode === 'vertical' && !this.collapse&&!this.showSlide) return;
       this.parent.updateOpenKeys(this.name);
       clearTimeout(this.timeout);
       this.timeout = setTimeout(() => {

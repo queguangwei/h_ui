@@ -159,6 +159,7 @@ $page-prefix-cls: "#{$css-prefix}page";
       line-height: $btn-circle-size;
       input {
         @include input();
+        line-height: 1.5;
         border-radius: $btn-border-radius;
         margin: 0 8px;
         width: 50px;

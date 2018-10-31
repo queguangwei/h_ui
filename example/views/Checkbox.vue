@@ -1,6 +1,21 @@
 <template>
 	<div>
 	  <h2>单独使用</h2>
+    {{btncheck}}
+    <h-checkbox-group v-model="btncheck">
+      <h-checkbtn value="twitter" label="Twitter" disabled>
+        <!-- <span>Twitter</span> -->
+      </h-checkbtn>
+      <h-checkbtn value="facebook" label="facebook" @on-click="click">
+        <span>Facebook</span>
+      </h-checkbtn>
+      <h-checkbtn value="github" label="github" icon="close">
+        <span>Github</span>
+      </h-checkbtn>
+      <h-checkbtn value="snapchat" label="snapchat">
+        <span>Snapchat</span>
+      </h-checkbtn>
+    </h-checkbox-group>
   <h-msg-box v-model="changeform" width="900">
     <h-checkbox v-model="single1" size="large" true-value="1" false-value="0">checkbox</h-checkbox><br>{{single1}}
     <h-checkbox v-model="single">checkbox</h-checkbox><br>{{single}}
@@ -74,7 +89,7 @@
     </h-checkbox-group>
     <br><br><br><br><br><br><br><br><br>
 	</div>
-</template>s
+</template>
 <script>
 	export default{
 		name:'Checkboxw',
@@ -92,6 +107,7 @@
         checkAll: false,
         checkAllGroup: ['香蕉', '西瓜'],
         changeform:false,
+        btncheck:[],
 			}
 		},
 		methods:{
@@ -126,7 +142,14 @@
           this.indeterminate = false;
           this.checkAll = false;
         }
+      },
+      click(e,val){
+        console.log(e);
+        console.log(val);
       }
-		}
+    },
+    mounted(){
+      this.btncheck = ['facebook', 'github']
+    }
 	}
 </script>

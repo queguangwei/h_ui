@@ -81,7 +81,7 @@ export default {
     return {
       example:'<script><\/script>',
       disabled:false,
-      value:'',
+      value:'<你好>',
       value1: '',
       value2: '',
       value3: '',

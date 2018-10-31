@@ -1,7 +1,7 @@
 <template>
   <!-- :tabindex="row._rowKey+column._columnKey" -->
   <div :class="classes" ref="cell" v-clickoutside="handleClose">
-    <div :style="renderSty" @dblclick="dblclickCurrentCell($event, row)" class="dbClass">
+    <div :style="renderSty" @dblclick="dblclickCurrentCell($event, row)" class="dbClass" :class="cellClass">
       <template v-if="showSlot"><slot></slot></template>
       <template v-if="renderType === 'index'">
         <!-- <span v-if="typeName!='treeGird'">{{naturalIndex + 1}}</span> -->
@@ -186,6 +186,11 @@ export default {
           [`${this.prefixCls}-cell-with-render`]: this.render&&this.renderType != 'expand',
         }
       ];
+    },
+    cellClass (){
+      return{
+        [`${this.prefixCls}-cell-ellipsis`]: this.column.ellipsis || false,
+      }
     },
     expandCls () {
       return [

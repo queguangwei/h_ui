@@ -17,15 +17,11 @@ export default {
       type: Boolean,
       default: false
     },
-    showTowPanel:{
-      type:Boolean,
-      default:false,
-    }
   },
   components: { DatePickerPanel, RangeDatePickerPanel },
   computed: {
     panel(){
-        const isRange =  this.type === 'daterange' || this.type === 'datetimerange'||this.showTowPanel;
+        const isRange =  this.type === 'daterange' || this.type === 'datetimerange'||this.showTwoPanel;
         return isRange ? 'RangeDatePickerPanel' : 'DatePickerPanel';
     },
     ownPickerProps(){

@@ -92,7 +92,7 @@
 					  pre='【WARN】';
 					  break;
 					case 'e':
-					  pre='【ERROE】';
+					  pre='【ERROR】';
 					  break;
 					case 'd':
 					  pre='【DEBUGGER】';
