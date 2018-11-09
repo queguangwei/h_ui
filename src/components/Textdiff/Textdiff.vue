@@ -2,19 +2,15 @@
   <div class="h-textdiff h-row">
     <div class='h-textdiff-wrapper h-col-span-12'>
       <div class='h-textdiff-title no-border-right' v-if="isShowTitle">{{leftTitle}}</div>
-      <div class="h-textdiff-content no-border-right">  
-        <pre @scroll.native="scrollLeft" ref="leftArea" class="h-textdiff-leftContent">
-            <div v-for="(item, index) in leftListRebuild" :key="index" @click.stop.prevent="rowClick($event, index)" v-html="item"></div>   
-        </pre>  
+      <div class="h-textdiff-content no-border-right" :style="{height: height + 'px'}">  
+        <pre @scroll.native="scrollLeft" ref="leftArea" class="h-textdiff-leftContent" ><code v-for="(item, index) in leftListRebuild" :key="index" @click.stop.prevent="rowClick($event, index)" v-html="item.value || item" :style="{minWidth: leftMinWidth + 'px', background: item.isDiff && diffBgColor ? diffBgColor : ''}"></code></pre>  
         <textarea v-model='leftTextValue'  ref="left" :autofocus="leftautofocus"></textarea>
       </div> 
     </div>  
     <div class='h-textdiff-wrapper h-col-span-12'>
       <div class='h-textdiff-title' v-if="isShowTitle">{{rightTitle}}</div>
-      <div class="h-textdiff-content">  
-        <pre @scroll.native="scrollRight" ref="rightArea" class="h-textdiff-rightContent">
-            <div v-for="(item, index) in rightListRebuild" :key="index" @click.stop.prevent="rowClick($event, index)" v-html="item"></div> 
-        </pre>  
+      <div class="h-textdiff-content" :style="{height: height + 'px'}">  
+        <pre @scroll.native="scrollRight" ref="rightArea" class="h-textdiff-rightContent" ><code v-for="(item, index) in rightListRebuild" :key="index" @click.stop.prevent="rowClick($event, index)" v-html="item.value || item" :style="{minWidth: rightMinWidth + 'px', background: item.isDiff && diffBgColor ? diffBgColor : ''}"></code></pre>  
         <textarea v-model='rightTextValue' ref="right" right="rightautofocus"></textarea>  
       </div>  
     </div>
@@ -35,7 +31,9 @@
       leftListRebuild: [],
       rightListRebuild: [],
       leftSelectRowContent: '',
-      rightSelectRowContent: ''
+      rightSelectRowContent: '',
+      leftMinWidth: '',
+      rightMinWidth: ''
     }  
   }, 
   props: {
@@ -60,7 +58,9 @@
       // 是否显示currentSelect
       type: Boolean,
       default: true
-    }
+    },
+    diffBgColor: String,
+    height: [String, Number]
   },
   watch:{  
     leftValue (val) { // 外部传入左侧值
@@ -125,10 +125,16 @@
       if (this.$refs.rightArea.scrollHeight - this.$refs.rightArea.scrollTop > 0 ) {
         this.$refs.rightArea.scrollTop = this.$refs.leftArea.scrollTop; 
       }
+      if (this.$refs.rightArea.scrollWidth - this.$refs.rightArea.scrollLeft > 0 ) {
+        this.$refs.rightArea.scrollLeft = this.$refs.leftArea.scrollLeft; 
+      }
     },
     scrollRight() {  
        if (this.$refs.leftArea.scrollHeight - this.$refs.leftArea.scrollTop > 0 ) {
         this.$refs.leftArea.scrollTop = this.$refs.rightArea.scrollTop; 
+      }
+      if (this.$refs.leftArea.scrollWidth - this.$refs.leftArea.scrollLeft > 0 ) {
+        this.$refs.leftArea.scrollLeft = this.$refs.rightArea.scrollLeft; 
       }
     }, 
     rowClick(e, index) {
@@ -175,8 +181,12 @@
       this.leftTextValue = op.left
       this.rightTextValue = op.right
       if (!op.left || !op.right) {  
-        if (op.left != '') this.leftListRebuild = op.left.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\'/g, "&apos;").replace(/\"/g, "&quot;").split('\n')
-        if (op.right != '') this.rightListRebuild = op.right.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\'/g, "&apos;").replace(/\"/g, "&quot;").split('\n')
+        this.leftListRebuild = (op.left != '') ? op.left.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\'/g, "&apos;").replace(/\"/g, "&quot;").split('\n') : []
+        this.rightListRebuild = (op.right != '') ? op.right.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\'/g, "&apos;").replace(/\"/g, "&quot;").split('\n') : []
+        this.$nextTick(() => {
+          this.leftMinWidth = this.$refs.leftArea.scrollWidth ? this.$refs.leftArea.scrollWidth : this.$refs.leftArea.clientWidth
+          this.rightMinWidth = this.$refs.rightArea.scrollWidth ? this.$refs.rightArea.scrollWidth : this.$refs.rightArea.clientWidth
+        })
         return 
       }
       let leftListInit =  op.left.split('\n') //左侧初始化数据数组
@@ -194,6 +204,7 @@
         minList = leftListInit.length < rightListInit.length ? leftListInit : rightListInit
         // 对行数较多文本进行循环
         for (let i = 0; i < maxList.length; i++) {
+          let isDiff = false // 是否不同的标识，有不同的行需要加背景色
           if (i <= minList.length - 1) {
             // 左右行对比
             let maxLength = maxList[i].length > minList[i].length ? maxList[i].length : minList[i].length
@@ -225,6 +236,7 @@
                 }
               } else {
                 // 左右比较不相等时，更新diff_end、maxdiffText、mindiffText
+                isDiff = true
                 maxdiffText += maxList[i][j] || maxList[i][j] === '' ? maxList[i][j] : ''
                 mindiffText += minList[i][j] || minList[i][j] === '' ? minList[i][j] : ''
                 diff_end += 1
@@ -237,14 +249,27 @@
               
             }
             // 将每行最终结果保存至maxListValue
-            maxListValue.push(max_new_value)
+            // maxListValue.push(max_new_value)
+            maxListValue.push({
+              value: max_new_value,
+              isDiff: isDiff
+            })
             max_new_value = ''
-            minListValue.push(min_new_value)
+            // minListValue.push(min_new_value)
+            minListValue.push({
+              value: min_new_value,
+              isDiff: isDiff
+            })
             min_new_value = ''
           } else {
             // 多余的行蓝色显示
+            isDiff = true
             max_new_value += "<span style='" + valueMoreStyle + "'>" + maxList[i].replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\'/g, "&apos;").replace(/\"/g, "&quot;")   + "</span>"
-            maxListValue.push(max_new_value)
+            // maxListValue.push(max_new_value)
+            maxListValue.push({
+              value: max_new_value,
+              isDiff: isDiff
+            })
             max_new_value = ''
           }
         }
@@ -252,6 +277,10 @@
       // leftListInit
       this.leftListRebuild = leftListInit.length == maxList.length ? maxListValue : minListValue 
       this.rightListRebuild = rightListInit.length == minList.length ? minListValue : maxListValue
+      this.$nextTick(() => {
+        this.leftMinWidth = this.$refs.leftArea.scrollWidth
+        this.rightMinWidth = this.$refs.rightArea.scrollWidth
+      })
     }  
   }
 }

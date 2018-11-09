@@ -16,7 +16,7 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
     border-right: 0;
   }
   width: inherit;
-  height: 100%;
+  // height: 100%;
   max-width: 100%;
   overflow: hidden;
   color: $text-color;

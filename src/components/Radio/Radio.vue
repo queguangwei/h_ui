@@ -54,6 +54,13 @@
       };
     },
     computed: {
+      showBtnIcon () {
+        if (this.parent.type == 'button' && !!this.parent.btnIcon && this.parent.btnIconOnlyChecked) {
+          return this.currentValue
+        } else {
+          return !!this.parent.btnIcon && this.parent.type == 'button'
+        }
+      },
       wrapClasses () {
         return [
           `${prefixCls}-wrapper`,
@@ -70,7 +77,8 @@
           `${prefixCls}`,
           {
             [`${prefixCls}-checked`]: this.currentValue,
-            [`${prefixCls}-disabled`]: this.disabled
+            [`${prefixCls}-disabled`]: this.disabled,
+            [`${prefixCls}-btnIcon`]: this.showBtnIcon
           }
         ];
       },

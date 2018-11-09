@@ -738,6 +738,8 @@ export default {
       let buttomNum = getBarBottom(event.target,this.scrollBarWidth);
       this.$emit('on-scroll',buttomNum)
       if (this.showHeader) this.$refs.header.scrollLeft = event.target.scrollLeft;
+      if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = event.target.scrollTop;
+      if (this.isRightFixed) this.$refs.fixedRightBody.scrollTop = event.target.scrollTop;
       const verifyTips = this.$refs.tbody.$el.querySelectorAll('.verify-tip')
       if (verifyTips && verifyTips.length>0) {
         for (let i = 0; i < verifyTips.length; i++) {

@@ -12,21 +12,22 @@
       :format="format"
       :options="options"
       :placement="fPlacement"
+      autoPlacement
       @on-change="handleChange"
       @on-clear="handleClear"
       @on-ok="handleOk">
-      <div :class="innerClass">
+      <div :class="innerClass" ref="inner">
         <div :class="classSingle" @click="handleSingleClick" @keydown="changeFocus($event,false)" ref="single">
           <span>
-            <DateInput ref="year" v-model="year" type="year" :readonly="readonly" :disabled="disabled"  @focus="rangeSelect" @blur="editBlur($event,'year',false)" :style="yearStyle" :class="yearClass" :placeholder="yearPlaceholder"></DateInput>
+            <DateInput ref="year" v-model="year" @on-change-focus="change(1)" type="year" :readonly="readonly" :disabled="disabled"  @focus="rangeSelect" @blur="editBlur($event,'year',false)" :style="yearStyle" :class="yearClass" :placeholder="yearPlaceholder"></DateInput>
           </span>
           <span v-show="year||months||day">{{dateSplit}}</span>
           <span v-show="year||months||day">
-            <DateInput v-model="months" type="months" @focus="rangeSelect" :readonly="readonly" :disabled="disabled" @blur="editBlur($event,'months',false)"></DateInput>
+            <DateInput v-model="months" @on-change-focus="change(2)" type="months" @focus="rangeSelect" :readonly="readonly" :disabled="disabled" @blur="editBlur($event,'months',false)"></DateInput>
           </span>
           <span v-show="year||months||day">{{dateSplit}}</span>
           <span v-show="year||months||day">
-            <DateInput v-model="day" type="day" @focus="rangeSelect" :readonly="readonly" :disabled="disabled" @blur="editBlur($event,'day',false)"></DateInput>
+            <DateInput v-model="day" @on-change-focus="change(3)" type="day" @focus="rangeSelect" :readonly="readonly" :disabled="disabled" @blur="editBlur($event,'day',false)"></DateInput>
           </span>
           <span :class="[prefixCls + '-activity left-icon']"><Icon @on-click="arrowClick" name="activity"></Icon></span>
           <span class="left-icon" v-show="clearable" ><Icon @on-click="closeClick" name="close" size="14"></Icon></span>
@@ -34,11 +35,11 @@
         <div v-show="showRange" :class="[prefixCls+'-inner-split']">--</div>
         <div v-show="showRange" :class="classRange" @click="handleRangeClick" @keydown="changeFocus($event,true)" ref="range">
           <span>
-            <DateInput  ref="year1" type="year" v-model="year1" @focus="rangeSelect" :readonly="readonly" :disabled="disabled" @blur="editBlur($event,'year',true)" :style="yearStyle1" :class="yearClass" :placeholder="yearPlaceholder"></DateInput>
+            <DateInput  ref="year1" type="year" @on-change-focus="change(4)" v-model="year1" @focus="rangeSelect" :readonly="readonly" :disabled="disabled" @blur="editBlur($event,'year',true)" :style="yearStyle1" :class="yearClass" :placeholder="yearPlaceholder"></DateInput>
           </span>
           <span v-show="year1||months1||day1">{{dateSplit}}</span>
           <span v-show="year1||months1||day1">
-            <DateInput v-model="months1" type="months" @focus="rangeSelect" :readonly="readonly" :disabled="disabled" @blur="editBlur($event,'months',true)"></DateInput>
+            <DateInput v-model="months1" type="months" @on-change-focus="change(5)" @focus="rangeSelect" :readonly="readonly" :disabled="disabled" @blur="editBlur($event,'months',true)"></DateInput>
           </span>
           <span v-show="year1||months1||day1">{{dateSplit}}</span>
           <span v-show="year1||months1||day1">
@@ -382,6 +383,11 @@ export default {
         inputList[nextInx].focus();
       }
     },  
+    change(inx){
+      let inputList = this.$refs.inner.querySelectorAll('input');
+      if(inx==3&&inputList.length<4) return;
+      inputList[inx].focus();
+    },
     handleChange (date) {
       this.inputValue = date;
       this.$emit('on-change',date);

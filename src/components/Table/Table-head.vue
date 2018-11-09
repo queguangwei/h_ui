@@ -7,7 +7,7 @@
     <thead>
       <tr v-if="multiLevel" v-for="(colItem,inx) in multiData" :key="inx">
         <th v-for="(multi, index) in colItem" :colspan="multi.cols||1" :key="index" :class="aliCls(multi)">
-          <span>{{multi.title}}</span>
+          <div :class="[prefixCls+'-cell']"><span>{{multi.title}}</span></div>
         </th>
       </tr>
       <tr class="cur-th">
@@ -30,8 +30,6 @@
               <span :class="[prefixCls + '-sort']" v-if="column.sortable">
                 <Icon name="android-arrow-dropup" :class="{on: column._sortType === 'asc'}" @on-click="handleSort(index, 'asc')" @mousedown.native.stop="handleClick"></Icon>
                 <Icon name="android-arrow-dropdo" :class="{on: column._sortType === 'desc'}" @on-click="handleSort(index, 'desc')" @mousedown.native.stop="handleClick"></Icon>
-                  <!-- <i class="ivu-icon ivu-icon-arrow-up-b" :class="{on: column._sortType === 'asc'}" @click="handleSort(index, 'asc')"></i> -->
-                 <!--  <i class="ivu-icon ivu-icon-arrow-down-b" :class="{on: column._sortType === 'desc'}" @click="handleSort(index, 'desc')"></i> -->
               </span>
               <Poptip
                 v-if="isPopperShow(column)"

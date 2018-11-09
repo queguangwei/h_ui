@@ -1,5 +1,5 @@
 <template>
-  <div :class="[prefixCls]" v-clickoutside="handleClose">
+  <div :class="[prefixCls]" v-clickoutside="handleClose" ref='wrapper'>
     <div ref="reference" :class="[prefixCls + '-rel']">
       <slot>
         <h-input
@@ -69,7 +69,8 @@
   import Drop from '../../components/Select/Dropdown.vue';
   import clickoutside from '../../directives/clickoutside';
   import TransferDom from '../../directives/transfer-dom';
-  import { oneOf } from '../../util/tools';
+  import { oneOf,indexOf} from '../../util/tools';
+  import { on, off } from '../../util/dom';
   import {DEFAULT_FORMATS, TYPE_VALUE_RESOLVER_MAP } from './util';
   import Emitter from '../../mixins/emitter';
   import Locale from '../../mixins/locale';
@@ -168,6 +169,10 @@
         default:1
       },
       showTwoPanel:{
+        type:Boolean,
+        default:false,
+      },
+      autoPlacement:{
         type:Boolean,
         default:false,
       }
@@ -400,7 +405,6 @@
           } else {
               this.internalValue = Array.isArray(dates) ? dates : [dates];
           }
-
           if (!this.isConfirm) this.onSelectionModeChange(this.type); // reset the selectionMode
           if (!this.isConfirm) this.visible = visible;
           this.emitChange();
@@ -415,6 +419,27 @@
       },
       handleclick(e){
         e.stopPropagation();
+      },
+      setPlacement(){
+        //   debugger;
+        if(this.autoPlacement){
+            let obj = this.$refs.wrapper;
+            let allWidth= document.body.clientWidth;
+            let allHeight= document.body.clientHeight;
+            let curbottom =allHeight-obj.offsetTop-obj.clientHeight;
+            let curright = allWidth-obj.offsetLeft;
+            let bottomNum = this.confirm?300:250;
+            let rightNum = this.type.indexOf('range')>-1?436:220;
+            let isShortcuts =  this.options&&this.options.shortcuts&&this.options.shortcuts.length>0;
+            rightNum =isShortcuts?rightNum+95:rightNum;
+            if(curbottom<bottomNum&&curright<rightNum){
+                this.fPlacement = 'top-end';
+            }else if(curbottom<bottomNum){
+                this.fPlacement = 'top-start';
+            }else if(curright<rightNum){
+                this.fPlacement = 'bottom-end';
+            }
+        }
       }
     },
     watch: {
@@ -448,7 +473,7 @@
       },
       placement(val){
           this.fPlacement = val;
-      }
+      },
     },
     beforeDestroy () {
       if (this.picker) {
@@ -467,6 +492,7 @@
           }
       }
       if (this.open !== null) this.visible = this.open;
+      this.setPlacement();
     }
   };
 </script>
