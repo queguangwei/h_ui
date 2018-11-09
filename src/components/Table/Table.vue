@@ -318,6 +318,7 @@ export default {
       headerRealHeight:0,
       selectType:false,
       buttomNum:null,
+      topNum: null,
       keepAliveFlag: false, // 页面是否缓存
       sumMarginLeft: 0,
       shiftSelect:[],
@@ -732,7 +733,7 @@ export default {
     },
     clickCurrentRow (_index) {
       //click row
-      window.getSelection()?window.getSelection().removeAllRanges():document.selection.empty();
+      // window.getSelection()?window.getSelection().removeAllRanges():document.selection.empty();
       if (!window.event.shiftKey && !window.event.ctrlKey) {
         if(!this.rowSelect){
           this.highlightCurrentRow (_index);
@@ -747,6 +748,7 @@ export default {
           this.ctrlSelect = [];
         }
       }else if(window.event.shiftKey){
+        window.getSelection()?window.getSelection().removeAllRanges():document.selection.empty();
         this.getshiftSelect(_index);  
       }else{
         this.getctrlSelect(_index);
@@ -915,6 +917,7 @@ export default {
         this.hideColumnFilter();
         if (this.isSummation) this.sumMarginLeft = event.target.scrollLeft
         this.buttomNum = getBarBottom(event.target,this.scrollBarWidth);
+        this.topNum = event.target.scrollTop
     },
     handleMouseWheel (event) {
         const deltaX = event.deltaX;
@@ -1321,7 +1324,7 @@ export default {
       },
       buttomNum(val,oldvalue){
         if (val==null || oldvalue==null) return;
-        this.$emit('on-scroll',this.buttomNum);
+        this.$emit('on-scroll',this.buttomNum,this.topNum);
       },
       shiftSelect(val){
         if (val.length==2) {

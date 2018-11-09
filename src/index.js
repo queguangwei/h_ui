@@ -50,6 +50,7 @@ import Typefield from './components/Typefield';
 import Upload from './components/Upload';
 import Row from './components/Grid';
 import Select from './components/Select';
+import SimpleSelect from './components/SimpleSelect';
 import EditGird from './components/EditGird';
 import GroupTable from './components/GroupTable';
 import TreeGird from './components/TreeGird';
@@ -69,7 +70,6 @@ import Drawer from './components/Drawer';
 import Log from './components/Log';
 // import FileImport from './components/FileImport';
 // import FileExport from './components/FileExport';
-
 import locale from './locale';
 
 
@@ -166,6 +166,10 @@ const h_ui = {
     hSelect: Select,
     Option: Select.Option,
     hOption: Select.Option,
+    SimpleSelect:SimpleSelect,
+    hSimpleSelect:SimpleSelect,
+    hSelectBlock:SimpleSelect.Block,
+    hSelectBlock:SimpleSelect.Block,
     OptionGroup: Select.OptionGroup,
     hOptionGroup: Select.OptionGroup,
     SelectTree,

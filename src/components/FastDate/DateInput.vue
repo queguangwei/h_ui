@@ -52,16 +52,20 @@ export default {
         value = this.currentValue;
       }
       if (this.type == 'year') {
-        if (pos>4) {
-          value = value.substr(-1);
-          event.target.value = value    
+        if (pos==4) {
+          this.$emit('on-change-focus');
+          // value = value.substr(-1);
+          // event.target.value = value    
         }
       }
-      if (this.type == 'months') {
-        if (pos>2 || Number(value)>12 || value =='00') { 
-          value = value.substr(-1);
-          event.target.value = value
+      if (this.type == 'months' || this.type == 'day') {
+        if(pos==2){
+          this.$emit('on-change-focus');
         }
+        // if (pos>2 || Number(value)>12 || value =='00') { 
+        //   value = value.substr(-1);
+        //   event.target.value = value
+        // }
       }
       if (this.type == 'day') {
         if (pos>2 ||Number(value)>31||value =='00') {
@@ -75,7 +79,7 @@ export default {
     blur(event){
       this.$emit('blur', event);
     },
-    focuser(){
+    focuser(event){
       this.$emit('focus', event);
     },
     focus(){

@@ -26,6 +26,7 @@
       }
 
       const vNodes = this.$slots.default === undefined ? [] : this.$slots.default;
+      const opNodes = this.$slots.operation === undefined ? [] : this.$slots.operation;
       const clonedVNodes = this.$slots.default === undefined ? [] : vNodes.map(vnode => cloneVNode(vnode));
 
       return h('div', {
@@ -60,7 +61,7 @@
             leftActive: this.leftValidKeysCount > 0,
             rightActive: this.rightValidKeysCount > 0
           }
-        }),
+        },[opNodes]),
 
         h(List, {
           ref: 'right',

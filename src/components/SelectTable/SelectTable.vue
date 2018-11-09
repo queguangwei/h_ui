@@ -54,7 +54,6 @@
               :disabled="disabled"
               :readonly = "!editable||readonly"
               :class="[prefixCls + '-input']"
-              class="h-input h-input-left"
               :placeholder="localeSearchHolder"
               @blur="handleBlur"
               @keydown="resetInputState"
@@ -63,8 +62,11 @@
               ref="input">
             <!-- <input type="text" placeholder="请输入..." class="h-input h-input-left">  -->
           </span>
-          <div v-show="(!notFound && !remote) || (remote && !loading && !notFound)" :class="[prefixCls + '-dropdown-list']" :style="listStyle" ref='list' @scroll="handleSelectScroll"><slot></slot>
+          <div v-if="!isBlock" v-show="(!notFound && !remote) || (remote && !loading && !notFound)" :class="[prefixCls + '-dropdown-list']" :style="listStyle" ref='list' @scroll="handleSelectScroll"><slot></slot>
             <ul v-show="isComputed" :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>
+          </div>
+          <div v-if="isBlock" v-show="(!notFound && !remote) || (remote && !loading && !notFound)" :class="[prefixCls + '-dropdown-list']" :style="listStyle">
+            <slot></slot>
           </div>
           <ul v-show="loading" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
         </div>
@@ -254,6 +256,8 @@
         tabIndex:0,
         selectHead:false,
         fPlacement:this.placement,
+        isBlock:false,
+        allClick:false,
       };
     },
     computed: {
@@ -328,7 +332,6 @@
       },
       inputStyle () {
           let style = {};
-
           if (this.multiple) {
               if (this.showPlaceholder) {
                   style.width = '100%';
@@ -420,15 +423,45 @@
         let num = getBarBottom(event.target,this.scrollBarWidth);
         this.$emit('on-scroll',num)
       },
-      toggleSelect(val){
-        if (val) {
-          let arr=[];
-          this.options.forEach((item)=>{
-            arr.push(item.value);
-          })
-          this.model = arr;
+      toggleSelect(val){        
+        if(this.isBlock){
+          this.allClick = true;
+          let hybridValue=[];
+          let curValue = [];
+          this.findChild((child) => {
+            this.options.forEach((col,i)=>{
+              this.$set(child.cloneData[i],'selected',val);
+              if(val){
+                hybridValue.push({
+                  value:col.value,
+                  label:col.label
+                })
+                curValue.push(col.value);                   
+              }            
+            });
+          });
+          this.model = curValue;
+          this.selectedMultiple = hybridValue.slice(0,50);
+          setTimeout(()=>{
+            this.selectedMultiple = hybridValue;
+          },500)
+          if (this.labelInValue) {
+            this.$emit('on-change', hybridValue);
+            this.dispatch('FormItem', 'on-form-change', hybridValue);
+          } else {
+            this.$emit('on-change', curValue);
+            this.dispatch('FormItem', 'on-form-change',curValue);
+          }
         }else{
-          this.model=[];
+          if (val) {
+            let arr=[];
+            this.options.forEach((item)=>{
+              arr.push(item.value);
+            })
+            this.model = arr;
+          }else{
+            this.model=[];
+          }
         }
       },
       offsetArrow(){
@@ -454,7 +487,6 @@
       findChild (cb) {
           const find = function (child) {
               const name = child.$options.componentName;
-
               if (name) {
                   cb(child);
               } else if (child.$children.length) {
@@ -479,16 +511,28 @@
         let options = [];
         let index = 1;
         this.findChild((child) => {
-          let data =  child.rebuildData;
-          data.forEach((col,i)=>{
-            options.push({
-              value: _this.getFormatValue(col),
-              label: _this.getFormatValue(col),
-              index: i
-            });
-          })
-          if (init) {
-              this.optionInstances.push(child);
+          let data=[];
+          if(_this.isBlock){
+            data = child.data;
+            data.forEach((col,i)=>{
+              options.push({
+                value:col.value,
+                label:col.label||col.value,
+                index:i
+              })
+            })
+          }else{
+            data =  child.rebuildData;
+            data.forEach((col,i)=>{
+              options.push({
+                value: _this.getFormatValue(col),
+                label: _this.getFormatValue(col),
+                index: i
+              });
+            })
+            if (init) {
+                this.optionInstances.push(child);
+            }
           }
         });
         this.options = options;
@@ -504,10 +548,8 @@
           const type = typeof this.model;
           if (type === 'string' || type === 'number') {
               let findModel = false;
-
               for (let i = 0; i < this.options.length; i++) {
-                  if (this.model === this.options[i].value) {
-                      
+                  if (this.model === this.options[i].value) {                  
                       this.selectedSingle = this.options[i].label;
                       findModel = true;
                       break;
@@ -524,9 +566,13 @@
       clearSingleSelect () {
         if(this.readonly || this.disabled) return;
         if (this.showCloseIcon) {
-          this.findChild((child) => {
-              child.$refs.table.clearAllRow();
-          });
+          if(this.isBlock){
+            this.toggleSingleSelected('')
+          }else{
+            this.findChild((child) => {
+                child.$refs.table.clearAllRow();
+            });
+          }
           this.model = '';
 
           if (this.filterable) {
@@ -600,20 +646,33 @@
       },
 
       toggleSingleSelected (value, init = false) {
+        let _this=this;
         if (!this.multiple) {
           let label = value;
-          this.findChild((child) => {
-            this.options.forEach(col=>{
-               let index = value.indexOf(col.value);
-               if (index >= 0) {
-                 child.$refs.table.clearSelect(col.index,true);
-                 child.$refs.table.clearSingle(col.index,true);
-               } else {
-                child.$refs.table.clearSelect(col.index,false);
-                child.$refs.table.clearSingle(col.index,false);
-               }
+          if(this.isBlock){
+            this.findChild((child)=>{
+              this.options.forEach((col,i)=>{
+                if(value==col.value){
+                  this.$set(child.cloneData[i],'selected',true);
+                }else{
+                  this.$set(child.cloneData[i],'selected',false);
+                }
+              })
+            })
+          }else{
+            this.findChild((child) => {
+              this.options.forEach(col=>{
+                let index = value.indexOf(col.value);
+                if (index >= 0) {
+                  child.$refs.table.clearSelect(col.index,true);
+                  child.$refs.table.clearSingle(col.index,true);
+                } else {
+                  child.$refs.table.clearSelect(col.index,false);
+                  child.$refs.table.clearSingle(col.index,false);
+                }
+              });
             });
-          });
+          }
           if (!init) {
             if (this.labelInValue) {
                 this.$emit('on-change', {
@@ -642,15 +701,27 @@
           }
 
           this.findChild((child) => {
-            _this.options.forEach(col=>{
-               let index = value.indexOf(col.value);
-               if (index >= 0) {
-                 child.$refs.table.clearSelect(col.index,true);
-                 hybridValue[index].label = col.label;
-               } else {
-                child.$refs.table.clearSelect(col.index,false);
-               }
-            })
+            if(this.isBlock){
+              this.options.forEach((col,i)=>{
+                let index = value.indexOf(col.value);
+                if(index>-1){
+                  this.$set(child.cloneData[i],'selected',true);
+                  hybridValue[index].label = col.label;
+                }else{
+                  this.$set(child.cloneData[i],'selected',false);
+                }
+              })
+            }else{
+              _this.options.forEach(col=>{
+                let index = value.indexOf(col.value);
+                if (index >= 0) {
+                  child.$refs.table.clearSelect(col.index,true);
+                  hybridValue[index].label = col.label;
+                } else {
+                  child.$refs.table.clearSelect(col.index,false);
+                }
+              })
+            }
           });
           if (!init) {
             if (this.labelInValue) {
@@ -778,7 +849,11 @@
         }
       },
       broadcastQuery (val) {
-        this.broadcast('TabelOption', 'on-query-change', val);
+        if(this.isBlock){
+          this.broadcast('Block', 'on-query-change', val);
+        }else{
+          this.broadcast('TabelOption', 'on-query-change', val);
+        }
       },
       // 处理 remote 初始值
       updateLabel () {
@@ -834,9 +909,13 @@
       },
       searchStyle(){
         if (this.filterable && this.showBottom) {
-          let width =this.dropWidth>0?this.dropWidth:parseInt(getStyle(this.$el, 'width'));
-          width = width-getScrollBarSize()+'px';
-          this.$refs.search.style.width = width;
+          if(this.isBlock){
+            this.$refs.search.style.width ='100%';
+          }else{
+            let width =this.dropWidth>0?this.dropWidth:parseInt(getStyle(this.$el, 'width'));
+            width = width-getScrollBarSize()+'px';
+            this.$refs.search.style.width = width;
+          }
         }
         // let style = {}
         // style.width="600psx";
@@ -861,8 +940,34 @@
           this.$refs.reference.blur();
         }
       },
+      selectBlockSingle(value){
+        if (this.model === value) {
+          this.hideMenu();
+        }else{
+          this.model = value;
+          if (this.filterable) {
+            this.findChild((child) => {
+              if (child.value === value) {
+                if (this.query !== '') this.selectToChangeQuery = true;
+                this.lastQuery = this.query = child.label === undefined ? child.searchLabel : child.label;
+              }
+            });
+          }
+        }
+      },
+      selectBlockMultiple(value){
+        const index = this.model.indexOf(value);
+        if (index >= 0) {
+          this.removeTag(index);
+        } else {
+          this.model.push(value);
+          this.broadcast('Drop', 'on-update-popper');
+        }
+      }
     },
     mounted () {
+      console.log(this.block)
+      this.isBlock = this.block?true:false;
       this.modelToQuery();
       // 处理 remote 初始值
       this.updateLabel();
@@ -885,7 +990,7 @@
       on(document, 'keydown', this.handleKeydown);
       // document.addEventListener('keydown', this.handleKeydown);
       this.$on('on-select-selected', (value,status) => {
-        value = this.getFormatValue(value);
+        value = this.isBlock?value:this.getFormatValue(value);
         if (this.model === value) {
           this.hideMenu();
         } else {
@@ -966,16 +1071,17 @@
       model () {
         let backModel = this.arrtoStr(this.model);
         this.$emit('input', backModel);
-          this.modelToQuery();
-          if (this.multiple) {
-            if (this.slotChangeDuration) {
-              this.slotChangeDuration = false;
-            } else {
-              this.updateMultipleSelected();
-            }
+        this.modelToQuery();
+        if (this.multiple) {
+          if (this.slotChangeDuration || this.allClick) {
+            this.allClick = false;
+            this.slotChangeDuration = false;
           } else {
-            this.updateSingleSelected();
+            this.updateMultipleSelected();
           }
+        } else {
+          this.updateSingleSelected();
+        }
       },
       visible (val) {
         if (val) {
@@ -1014,15 +1120,16 @@
                 this.$emit('on-query-change', val);
             }
             this.broadcastQuery(val);
-
-            if (this.filterable&&val) {
-              this.$nextTick(()=>{
-                this.findChild(child => {
-                  if (this.focusIndex>0)child.$refs.table.changeHover(this.focusIndex-1,false);
-                  this.focusIndex = 1;
-                  child.$refs.table.changeHover(this.focusIndex-1,true);
+            if(!this.isBlock){
+              if (this.filterable&&val) {
+                this.$nextTick(()=>{
+                  this.findChild(child => {
+                    if (this.focusIndex>0)child.$refs.table.changeHover(this.focusIndex-1,false);
+                    this.focusIndex = 1;
+                    child.$refs.table.changeHover(this.focusIndex-1,true);
+                  });
                 });
-              });
+              }
             }
         }
         this.selectToChangeQuery = false;

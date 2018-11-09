@@ -19,6 +19,8 @@
         <Icon name="enter"></Icon>
       </h-button>
     </template>
+    <slot>
+    </slot>
   </div>
 </template>
 <script>

@@ -42,9 +42,9 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
     background-color: $border-color-base;
     z-index: 3;
   }
-  & table{
-    table-layout: fixed;
-  }
+  // & table{
+  //   table-layout: fixed;
+  // }
   &-with-header{
     //border-radius: $border-radius-base $border-radius-base 0 0;
   }

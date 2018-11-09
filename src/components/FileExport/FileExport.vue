@@ -219,29 +219,31 @@
             Sheets: {}, 
             Props: {} 
           }
-          
           this.rebuildData.forEach((val, index) => {
-            let data = XLSX.utils.json_to_sheet(val)
+            let data = {}
+            // XLSX.utils.json_to_sheet(data) 接收一个对象数组并返回一个基于对象关键字自动生成的“标题”的工作表，默认的列顺序由使用Object.keys的字段的第一次出现确定
             if (this.sheetTitleNames && this.sheetTitleNames[index]) {
+              // 将一个由对象组成的数组转成sheet；
+              data = XLSX.utils.json_to_sheet(val)
               // const range = val[0].length - 1
               data["A1"] = { t: "s", v: this.sheetTitleNames[index]} //设置表格标题
-              
+              data["!merges"] = [{//合并第一行数据[B1,C1,D1,E1]
+                s: {//s为开始
+                  c: 0,//开始列
+                  r: 0,//开始取值范围
+                  alignment: {horizontal: "center" ,vertical: "center"}
+                },
+                e: {//e结束
+                  // c: range,//结束列
+                  c: val && val[0] && val[0].length - 1 > 0 ? val[0].length - 1 : 0,
+                  r: 0//结束范围
+                }
+              }]
             } else {
-              // 取第一个单元格数据
-              data["A1"] = { t: "s", v: ''}
+              // 无标题时，不生成标题
+              // 将一个二维数组转成sheet              
+              data = XLSX.utils.aoa_to_sheet(val)
             }
-            data["!merges"] = [{//合并第一行数据[B1,C1,D1,E1]
-              s: {//s为开始
-                c: 0,//开始列
-                r: 0,//开始取值范围
-                alignment: {horizontal: "center" ,vertical: "center"}
-              },
-              e: {//e结束
-                // c: range,//结束列
-                c: val && val[0] && val[0].length - 1 > 0 ? val[0].length - 1 : 0,
-                r: 0//结束范围
-              }
-            }]
             let sheetName = this.sheetNames && this.sheetNames[index] ? this.sheetNames[index] : 'Sheet' + index
             wb.SheetNames[index] = sheetName
             wb.Sheets[sheetName] = data

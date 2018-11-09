@@ -30,6 +30,14 @@
       vertical: {
         type: Boolean,
         default: false
+      },
+      btnIcon: {
+        type: Boolean,
+        default: false
+      },
+      btnIconOnlyChecked: {
+        type: Boolean,
+        default: false
       }
     },
     data () {

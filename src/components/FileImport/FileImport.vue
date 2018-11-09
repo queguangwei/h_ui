@@ -21,7 +21,7 @@
   </div>
 </template>
 <script>
-  import JSXLSX from 'js-xlsx'
+  import XLSX from 'xlsx'
   const prefixCls = 'h-upload' //套用upload 样式
   import { oneOf } from '../../util/tools.js';
   export default {
@@ -29,7 +29,7 @@
       return {
         prefixCls: prefixCls,
         dragOver: false,
-        fileName: ''
+        fileName: '',
       }
     },
     props: {
@@ -42,7 +42,7 @@
       },
       accept: {
         type: String,
-        default: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel'
+        default: 'text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel'
       },
       showFileName: {
         type: Boolean,
@@ -104,20 +104,11 @@
         this.fileName = file[0].name
         fileReader.onload = (ev) => {
           try {
-            const data = ev.target.result;
-            const workbook = JSXLSX.read(data, {
+            const data = ev.target.result
+            const workbook = XLSX.read(data, {
               type: 'binary'
             })
-            let fromTo = '';
-            // for (let sheet in workbook.Sheets) {
-            //   // const sheetArray = XLSX.utils.sheet_to_json(workbook.Sheets[sheet]);
-            //   if (workbook.Sheets.hasOwnProperty(sheet)) {
-            //     fromTo = workbook.Sheets[sheet]['!ref'];
-            //     tableData = tableData.concat(XLSX.utils.sheet_to_json(workbook.Sheets[sheet]));
-            //     // break; // 如果只取第一张表，就取消注释这行
-            //   }
-              
-            // }
+            let fromTo = ''
             let excelSize = this.excelSize
             let excelIdx = this.excelIdx
             if (this.excelSize == 'all') {
@@ -130,20 +121,25 @@
             Object.entries(workbook.Sheets).forEach(([sheet, value], index) => {
               if (workbook.Sheets.hasOwnProperty(sheet) && (index >= excelIdx && index < excelIdx + excelSize)) {
                 fromTo = workbook.Sheets[sheet]['!ref']
-                sheetData[sheet] = JSXLSX.utils.sheet_to_json(workbook.Sheets[sheet])
-                tableData.push(JSXLSX.utils.sheet_to_json(workbook.Sheets[sheet]))
+                sheetData[sheet] = XLSX.utils.sheet_to_json(workbook.Sheets[sheet], {defval:""})
+                tableData.push(XLSX.utils.sheet_to_json(workbook.Sheets[sheet], {defval:""}))
               }
             })
             if (tableData.length > 0) {
               for (let tableDataItem of tableData) {
                 if (tableDataItem && tableDataItem.length > 0) {
-                  tableColumnsTitle.push(Object.keys(tableDataItem[0]))
+                  tableColumnsTitle.push(Object.keys(tableDataItem[0]).filter(item => item.indexOf('__EMPTY') < 0))
                 } else {
                   tableColumnsTitle.push([])
                 }
               }
             }
-            // that.$emit('on-choose-file', tableData, tableColumnsTitle)
+            /* 
+             * sheetData格式
+             * {sheetname: dataObj}
+             * tableColumnsTitle格式
+             * [[sheet1ColumnTitle], [sheet2ColumnTitle]]
+             */
             that.$emit('on-choose-file', sheetData, tableColumnsTitle)
           } catch (e) {
             this.$hMessage.warning('文件类型不正确')

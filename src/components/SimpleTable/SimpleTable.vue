@@ -1,5 +1,5 @@
 <template>
-  <div :class="wrapClasses" :style="styles" @mouseleave="handleMouseLeave($event)" ref="tableWrap">
+  <div :class="wrapClasses" :style="styles" ref="tableWrap">
     <div :class="classes">
       <div :class="[prefixCls + '-header']" v-if="showHeader" ref="header" @mousewheel="handleMouseWheel">
         <table cellspacing="0" cellpadding="0" border="0" :style="headStyles" ref="thead">
@@ -9,7 +9,9 @@
           <thead>
             <tr v-if="multiLevel" v-for="(colItem,inx) in multiData" :key="inx">
               <th v-for="(multi, index) in colItem" :colspan="multi.cols||1" :key="index" :class="aliCls(multi)">
-                <span>{{multi.title}}</span>
+                <div :class="[prefixCls+'-cell']">
+                  <span>{{multi.title}}</span>
+                </div>
               </th>
             </tr>
             <tr class="cur-th">
@@ -20,20 +22,13 @@
                 v-on:mousemove="mousemove($event,column,index)"
                 :class="alignCls(column)" 
                 >
-                <div :class="cellClasses(column)">
-                  <template v-if="column.type === 'selection'">
-                    <Checkbox v-if="!column.title" size="large" @mousedown.native.stop="handleClick" :value="isSelectAll" @on-change="selectAll"></Checkbox>
-                    <span v-else>{{column.title}}</span>
-                  </template>
-                  <template v-else>
-                    <span v-if="!column.renderHeader">{{ column.title || '#' }}</span>
-                    <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
-                    <span :class="[prefixCls + '-sort']" v-if="column.sortable">
-                    <Icon name="android-arrow-dropup" :class="{on: column._sortType === 'asc'}" @on-click="handleSort(index, 'asc')" @mousedown.native.stop="handleClick"></Icon>
-                    <Icon name="android-arrow-dropdo" :class="{on: column._sortType === 'desc'}" @on-click="handleSort(index, 'desc')" @mousedown.native.stop="handleClick"></Icon>
-                  </span>
-                  </template>
-                </div>
+                <table-cell
+                  :column="column"
+                  :index = "index"
+                  :checked = "isSelectAll"
+                  :prefixCls="prefixCls"
+                >
+                </table-cell>
               </th>
             </tr>
           </thead>
@@ -49,31 +44,28 @@
               <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, false)" :key="index">
             </colgroup>
             <tbody :class="[prefixCls + '-tbody']">
-             <!-- <template v-for="(row, index) in rebuildData"> -->
               <template v-for="(row,index) in visibleData" >
-                <tr
-                  :class="rowClasses(row._index)"
+                <table-tr
+                  :row="row"
                   :key="row._rowKey"
-                  @mouseenter.stop="handleMouseIn(row._index)"
-                  @mouseleave.stop="handleMouseOut(row._index)"
-                  @click="clickCurrentRowTr($event,row._index,$event)"
-                  @dblclick.native.stop="dblclickCurrentRowTr(row._index)">
+                  :prefix-cls="prefixCls"
+                  @mouseenter.native.stop="handleMouseIn(row._index)"
+                  @mouseleave.native.stop="handleMouseOut(row._index)"
+                  @click.native="clickCurrentRowTr($event,row._index)"
+                  @dblclick.native.stop="dblclickCurrentRowTr(row._index)"
+                >
                   <td v-for="column in cloneColumns" :class="alignCls(column, row)" :key="column._index">
-                    <div :class="classesTd(column)">
-                      <template v-if="column.type === 'index'">{{row._index+1}}</template>
-                      <template v-if="column.type === 'selection'">
-                        <Checkbox size="large" :value="rowChecked(row._index)" @click.native.stop="handleClickTr($event,row._index,rowChecked(row._index))" @on-change="toggleSelect(row._index)" :disabled="rowDisabled(row._index)"></Checkbox>
-                      </template>
-                      <template v-if="!column.type&&!column.render"><span v-html="row[column.key]"></span></template>
-                      <Cell
-                        v-if="column.render"
-                        :row="row"
-                        :column="column"
-                        :index="row._index"
-                        :render="column.render"></Cell>
-                    </div>
-                  </td>
-                </tr>
+                    <Cell
+                      :prefix-cls="prefixCls"
+                      :row="row"
+                      :key="column._columnKey"
+                      :column="column"
+                      :index="row._index"
+                      :checked="rowChecked(row._index)"
+                      :disabled="rowDisabled(row._index)"
+                    ></Cell>
+                  </td>                  
+                </table-tr>
               </template>
             </tbody>
           </table>
@@ -111,16 +103,13 @@
                   v-on:mousemove="mousemove($event,column,index)"
                   :class="alignCls(column,{},'left')" 
                   >
-                  <div :class="cellClasses(column)">
-                    <template v-if="column.type === 'selection'">
-                      <Checkbox v-if="!column.title" size="large" @mousedown.native.stop="handleClick" :value="isSelectAll" @on-change="selectAll"></Checkbox>
-                      <span v-else>{{column.title}}</span>
-                    </template>
-                    <template v-else>
-                      <span v-if="!column.renderHeader">{{ column.title || '#' }}</span>
-                      <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
-                    </template>
-                  </div>
+                  <table-cell
+                    :column="column"
+                    :index = "index"
+                    :checked = "isSelectAll"
+                    :prefixCls="prefixCls"
+                  >
+                  </table-cell>
                 </th>
               </tr>
             </thead>
@@ -135,14 +124,35 @@
               <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, false)" :key="index">
             </colgroup>
             <tbody :class="[prefixCls + '-tbody']">
-             <!-- <template v-for="(row, index) in rebuildData"> -->
               <template v-for="(row,index) in visibleData" >
-                <tr
+                <table-tr
+                  :row="row"
+                  :key="row._rowKey"
+                  :prefix-cls="prefixCls"
+                  @mouseenter.native.stop="handleMouseIn(row._index)"
+                  @mouseleave.native.stop="handleMouseOut(row._index)"
+                  @click.native="clickCurrentRowTr($event,row._index)"
+                  @dblclick.native.stop="dblclickCurrentRowTr(row._index)"
+                >
+                  <td v-for="column in cloneColumns" :class="alignCls(column, row,'left')" :key="column._index">
+                    <Cell
+                      fixed="left"
+                      :prefix-cls="prefixCls"
+                      :row="row"
+                      :key="column._columnKey"
+                      :column="column"
+                      :index="row._index"
+                      :checked="rowChecked(row._index)"
+                      :disabled="rowDisabled(row._index)"
+                    ></Cell>
+                  </td>                  
+                </table-tr>
+                <!-- <tr
                   :class="rowClasses(row._index)"
                   :key="row._rowKey"
-                  @mouseenter.stop="handleMouseIn(row._index)"
-                  @mouseleave.stop="handleMouseOut(row._index)"
-                  @click="clickCurrentRowTr($event,row._index,$event)"
+                  @mouseenter="handleMouseIn(row._index)"
+                  @mouseleave.native.stop="handleMouseOut(row._index)"
+                  @click.native.stop="clickCurrentRowTr($event,row._index)"
                   @dblclick.native.stop="dblclickCurrentRowTr(row._index)">
                   <td v-for="column in cloneColumns" :class="alignCls(column, row,'left')" :key="column._index">
                     <div :class="classesTd(column)">
@@ -159,7 +169,7 @@
                         :render="column.render"></Cell>
                     </div>
                   </td>
-                </tr>
+                </tr> -->
               </template>
             </tbody>
           </table>
@@ -186,7 +196,9 @@ import Locale from '../../mixins/locale';
 import Mixin from './mixin';
 import Csv from '../../util/csv';
 import ExportCsv from '../Table/export-csv.js';
-import Cell from './expand'
+import TableTr from './Table-tr.vue'
+import TableCell from './Table-cell.vue'
+import Cell from './Cell.vue'
 import Checkbox from '../Checkbox/Checkbox.vue';
 
 const prefixCls = 'h-table';
@@ -197,7 +209,7 @@ let columnKey = 1;
 export default {
   name: 'Table',
   mixins: [ Locale,Mixin],
-  components: {Cell,Checkbox,renderHeader},
+  components: {Cell,Checkbox,renderHeader,TableTr,Cell,TableCell},
   props: {
     data: {
       type: Array,
@@ -575,6 +587,7 @@ export default {
       ];
     },
     rowChecked (_index) {
+      // return true;
       return this.objData[_index]._isChecked;
     },
     rowDisabled(_index){
@@ -720,9 +733,6 @@ export default {
         obj=obj.parentElement
       }
       return obj;      
-    },
-    handleMouseLeave() {
-      
     },
     handleResize () {
       this.$nextTick(() => {
@@ -875,8 +885,7 @@ export default {
           this.$emit('on-selection-change',this.getSelection(),this.getSelection(true));
         // }
     },
-    clickCurrentRowTr (event,_index,) { 
-      window.getSelection()?window.getSelection().removeAllRanges():document.selection.empty();
+    clickCurrentRowTr (event,_index) {       
       if (!event.shiftKey && !event.ctrlKey) {
         if(this.rowSelect){
           // this.objData[_index]._isChecked=!this.objData[_index]._isChecked;
@@ -894,6 +903,7 @@ export default {
           this.ctrlSelect = [];
         }
       }else if(event.shiftKey){
+        window.getSelection()?window.getSelection().removeAllRanges():document.selection.empty();
         this.getshiftSelect(_index);  
       }else{
         this.getctrlSelect(_index);
@@ -1084,18 +1094,28 @@ export default {
       if (this.showHeader) this.$refs.header.scrollLeft = event.target.scrollLeft;
       if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = event.target.scrollTop;
       if (this.isRightFixed) this.$refs.fixedRightBody.scrollTop = event.target.scrollTop;
-      this.updateVisibleData(event.target.scrollTop);
       this.buttomNum = getBarBottom(event.target,this.scrollBarWidth);
+      this.$refs.content.style.transform = `translate3d(0, ${event.target.scrollTop}px, 0)`;
+      if(this.$refs.leftContent){
+        this.$refs.leftContent.style.transform = `translate3d(0, ${event.target.scrollTop}px, 0)`;
+      }
+      setTimeout(()=>{this.updateVisibleData(event.target.scrollTop)},0);
     },
     updateVisibleData(scrollTop) {
       scrollTop = scrollTop || this.$refs.body.scrollTop;
       this.start = Math.floor(scrollTop / this.itemHeight);
+      // this.start = this.start>this.visibleCount?Number(this.start-this.visibleCount):0;
       this.end = this.start + this.visibleCount;
       this.visibleData = this.rebuildData.slice(this.start, this.end);
-      this.$refs.content.style.transform = `translate3d(0, ${ this.start * this.itemHeight }px, 0)`;
-      if(this.$refs.leftContent){
-        this.$refs.leftContent.style.transform = `translate3d(0, ${ this.start * this.itemHeight }px, 0)`;
-      }
+      // this.$refs.content.style.marginTop = `${ this.start * this.itemHeight }px`;
+      // this.$refs.content.style.transform = `translate3d(0, ${ this.start * this.itemHeight }px, 0)`;
+      // if(this.$refs.leftContent){
+        // this.$refs.leftContent.style.marginTop = `${ this.start * this.itemHeight }px`;
+        // this.$refs.leftContent.style.transform = `translate3d(0, ${ this.start * this.itemHeight }px, 0)`;
+      // }
+      // setTimeout(()=>{
+      //   this.visibleData=this.rebuildData.slice(this.start, this.end+this.visibleCount);
+      // },500)
     },
     handleMouseWheel (event) {
       const deltaX = event.deltaX;
@@ -1281,8 +1301,7 @@ export default {
     this.$nextTick(() => {
       this.ready = true;
       this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0;
-      this.visibleCount = Math.ceil(this.$el.clientHeight / this.itemHeight); 
-      // this.end = this.visibleCount; 
+      this.visibleCount = Math.ceil(this.height / this.itemHeight); 
       this.updateVisibleData();
     });
     //window.addEventListener('resize', this.handleResize, false);
@@ -1306,18 +1325,16 @@ export default {
           const oldDataLen = this.rebuildData.length;
           this.objData = this.makeObjData();
           this.rebuildData = this.makeDataWithSortAndFilter();
-          this.handleResize();
           if (!oldDataLen) {
             this.fixedHeader();
           }
+          this.updateVisibleData();
+          this.handleResize();
           // here will trigger before clickCurrentRow, so use async
           setTimeout(() => {
             this.cloneData = deepCopy(this.data);
             this.buttomNum = null;
           }, 0);
-          this.$nextTick(()=>{
-            this.updateVisibleData();
-          })
         },
         deep: true
       },
