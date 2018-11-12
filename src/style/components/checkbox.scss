@@ -3,7 +3,8 @@ $checkbtn-prefix-cls: "#{$css-prefix}checkbtn";
 @include checkboxFn();
 .#{$checkbtn-prefix-cls}{
     &-wrapper{
-        display: inline-block;
+        // display: inline-block;
+        display: block;
         position: relative;
         height: $form-component-height;
         line-height: $form-component-height;

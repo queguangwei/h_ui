@@ -39,6 +39,9 @@
           <router-link to="/select">4Select</router-link>
         </li>
         <li>
+          <router-link to="/simpleSelect">SimpleSelect</router-link>
+        </li>
+        <li>
           <router-link to="/typefield">Typefield</router-link>
         </li>
         <li>

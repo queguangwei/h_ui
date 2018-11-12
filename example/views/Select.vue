@@ -5,7 +5,6 @@
       <p>选择器支持单选、多选、搜索，以及键盘快捷操作。</p>
       <h1>基础用法</h1>
       <p>使用v-model双向绑定数据,默认为单选</p>
-      <br>
       <p>单选时，value只接受字符串和数字类型，多选时，value只接受数组类型</p>
       <Button @on-click="testClick(true)">获取焦点</Button>
       <Button @on-click="testClick(false)">失去焦点</Button>
@@ -76,12 +75,11 @@
                     :key="item.id">{{ item.name }}</h-option>
         </h-select>
       </div>
+      {{model1}}
       <h1>
         设置select尺寸
       </h1>
-      <br>
       <p>设置size属性为large或small，将输入框设置为大和小尺寸，不设置为默认中尺寸</p>
-      <br>
       <div>
         <span>小:</span>
         <h-select v-model="model2"
@@ -110,7 +108,6 @@
       <h1>
         disabled:禁用(可直接配置disabled，或配置disabled属性为true)
       </h1>
-      <br>
       <div>
         <span>select禁用：</span>
         <h-select v-model="model5"
@@ -150,11 +147,9 @@
                     :key="item.id">{{ item.name }}</h-option>
         </h-select>
       </div>
-      <br>
       <h1>
         clearable:选择后可清空输入框选项(可直接配置clearable，或配置clearable属性为true)注意：仅适用于单选模式
       </h1>
-      <br>
       <div>
         <h1>黄沙</h1>
         <span>可清空</span>
@@ -166,11 +161,9 @@
                     :key="item.id">{{ item.name }}</h-option>
         </h-select>
       </div>
-      <br>
       <h1>
         option-group:选项分组
       </h1>
-      <br>
       <div>
         <span>分组:</span>
         <h-select v-model="model7"
@@ -191,11 +184,9 @@
         </h-select>
         {{model7}}
       </div>
-      <br>
       <h1>
         自定义select下拉选项格式(一般会在option中国绑定label显示)
       </h1>
-      <br>
       <div>
         <span>自定义:</span>
         <h-select v-model="model8"
@@ -209,11 +200,9 @@
           </h-option>
         </h-select>
       </div>
-      <br>
       <h1>
         multiple:多选（可直接配置 multiple，或配置 multiple属性为true），多选模式下。model接收数组类型的数据，返回数组类型的数据
       </h1>
-      <br>
       <div>
         <span>多选123:</span>
         <h-select v-model="model9"
@@ -228,11 +217,9 @@
         </h-select>
         {{model9}}
       </div>
-      <br>
       <h1>
         filterable:可搜索（可直接配置 filterable，或配置 filterable属性为true），多选模式下可以使用键盘delete键删除最后一个选项
       </h1>
-      <br>
       <div>
         <span>单选可搜索:</span>
         <h-select v-model="model10"
@@ -289,7 +276,6 @@
       <h1>
         remote:远程可搜索，需同时设置 filterable、remote、remote-method、loading 四个 props，其中 loading 用于控制是否正在搜索中，remote-method 是远程搜索的方法。设置初始显示值，需设置 label 属性。
       </h1>
-      <br>
       <div>
         <span>远程搜索:</span>
         <h-select width="200"
@@ -469,6 +455,14 @@ const data = [
     label: '19'
   }
 ]
+let bigData=[]
+for(let i=0;i<1000;i++){
+  let obj={}
+  obj.value=i;
+  obj.label='lable'+i;
+  bigData.push(obj);
+}
+
 export default {
   data() {
     return {
@@ -612,7 +606,8 @@ export default {
             label: '扁担儿'
           }
         ]
-      }
+      },
+      bigData:bigData,
     }
   },
   methods: {

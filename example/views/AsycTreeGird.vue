@@ -753,14 +753,15 @@
                 title: '年龄',
                 width: 200,
                 key: 'age',
-                hiddenCol:true,
+                // hiddenCol:true,
               },
               {
                 type: 'textArea',
                 rows: 2,
-                width: 200,
+                width: 100,
                 title: '地址',
                 key: 'address',
+                ellipsis:true,
                 rule: {
                    required: true, 
                    message: '输入不能为空'

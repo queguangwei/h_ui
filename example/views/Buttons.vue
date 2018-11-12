@@ -64,8 +64,8 @@
     <br><br>
     <h-button type="error" long>确认删除</h-button>
     <h1>不可用状态</h1>
-    <h-button>Default</h-button>
-    <h-button disabled>Default(Disabled)</h-button>
+    <h-button @click="setDisabled">Default</h-button>
+    <h-button :disabled="isDisabled">Default(Disabled)</h-button>
     <br><br>
     <h-button type="primary">Primary</h-button>
     <h-button type="primary" disabled>Primary(Disabled)</h-button>
@@ -186,9 +186,13 @@ export default {
   name: 'buttons',
   data() {
     return {
+        isDisabled:false,
     }
   },
   methods:{
+    setDisabled(){
+        this.isDisabled = !this.isDisabled
+    },
     btnClick(){
       console.log('按钮被点击了！');
     },
