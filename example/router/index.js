@@ -159,6 +159,11 @@ const router = new Router({
         component: require('../views/Select.vue')
     },
     {
+        name: 'simpleSelect',
+        path: '/simpleSelect',
+        component: require('../views/SimpleSelect.vue')
+    },
+    {
         name: 'menu',
         path: '/menu',
         component: require('../views/Menu.vue')

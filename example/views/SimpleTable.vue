@@ -10,8 +10,10 @@
     <h-button @click="setLoading">切换状态</h-button>
     <h2>不带边线 单选 on-current-change</h2>
     <!-- :multiLevel="multiLevel1" -->
-    <h-simple-table ref="simTable" :columns="columnsBig1" border :data="bigData" no-data-text="数据为空" :loading="loading" height="400" @on-selection-change="select" :highlight-row="true" @on-current-change="select" @on-current-change-cnacle="select" @on-scroll="scroll" @on-sort-change="change">
-    </h-simple-table>
+    <!-- <h-msg-box v-model="showmsg" :width="1000"> -->
+      <h-simple-table ref="simTable" :columns="columnsBig1" border :data="bigData" no-data-text="数据为空" :loading="loading" height="2000" @on-selection-change="select" :highlight-row="true" @on-current-change="select" @on-current-change-cnacle="select" @on-scroll="scroll" @on-sort-change="change">
+      </h-simple-table>
+    <!-- </h-msg-box> -->
      <h-button type="primary" size="large" @click="exportData(1)"><h-icon type="ios-download-outline"></h-icon> 导出原始数据</h-button>
     <h-button type="primary" size="large" @click="exportData(2)"><h-icon type="ios-download-outline"></h-icon> 导出排序和过滤后的数据</h-button>
     <h-button type="primary" size="large" @click="exportData(3)"><h-icon type="ios-download-outline"></h-icon> 导出自定义数据</h-button>
@@ -63,6 +65,7 @@ export default {
   components:{TexpandRow},
   data () {
     return {
+      showmsg:false,
       checked:false,
       msgbox:false,
       loading:false,
@@ -448,9 +451,9 @@ export default {
       ],
       status:false,
       multiLevel1:[[
-        {title:'123',cols:2,},
-        {title:'456',cols:2,},
-        {title:'789',cols:2,hiddenCol:true},
+        {title:'123',cols:2, align:'center'},
+        {title:'456',cols:2, className:"ceshi"},
+        {title:'789',cols:2,hiddenCol:false, align:'right'},
         // {title:'789'},
       ],
       [{title:'123',cols:2,},
@@ -461,7 +464,10 @@ export default {
   },
   methods:{
     loadData(){
-      this.bigData = jsonData;
+      this.showmsg = true;
+      this.$nextTick(()=>{
+        this.bigData = jsonData;
+      })
     },
     changemsg(){
       this.msgbox = !this.msgbox;
@@ -478,6 +484,7 @@ export default {
       console.log(e);
     },
     scroll(num){
+      console.log(num);
       if(num==0&&!this.status){
         this.status = true;
         this.bigData = this.bigData.concat(jsonData);
@@ -547,7 +554,8 @@ export default {
       } else if (type === 2) {
           this.$refs.simTable.exportCsv({
               filename: '排序和过滤后的数据',
-              original: false
+              original: false,
+              noHeader:true,
           });
       } else if (type === 3) {
           this.$refs.simTable.exportCsv({
@@ -660,27 +668,31 @@ export default {
     ]
     this.columnsBig1=[
         { 
+          type: 'index',
+          align: 'center',
+        },
+        { 
           type: 'selection',
           align: 'center',
           fixed:'left',
         },
-        // { 
-        //   type: 'index',
-        //   align: 'center',
-        // },
         {
           title: '姓名',
           key: 'fundId',
           width:200,
-          // fixed:'left',
+          fixed:'left',
+          renderHeader:(h, params)=>{
+            return h('span','123')
+          }
           // hiddenCol:true,
-          align: 'center',
-          sortable:true,
+          // align: 'center',
+          // sortable:true,
         },
         {
           title: '年龄',
           key: 'tradeDate',
-          sortable:true,
+          // sortable:true,
+          fixed:'left',
         },
         {
           title: '地址',
@@ -696,7 +708,6 @@ export default {
           title: '地址2',
           key: 'securityId',
           sortable:true,
-          sortType:'asc',
         },
         {
           title: '地址3',
@@ -749,5 +760,8 @@ export default {
 .h-table-title, .h-table-footer{
   background-color: #7eb8f1;
   text-align: center;
+}
+.ceshi{
+  background: red !important;
 }
 </style>

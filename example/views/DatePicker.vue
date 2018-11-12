@@ -17,17 +17,17 @@
         <h-date-picker v-model="model2" type="daterange" @on-change="handleChange1" format="yyyy-MM-dd" placement="bottom-end" placeholder="选择日期" showFormat></h-date-picker>
       </h-col>
     </h-row>
-    <h-row>
+    <!-- <h-row> -->
       <h2>显示快捷方式</h2>
       <p>设置属性 format 可以改变日期的显示格式<br>
       注意，format 只是改变显示的格式，并非改变 value 值。</p>
-      <h-col span="12">
-        <h-date-picker type="date" :options="options1" placeholder="选择日期" style="width: 200px"></h-date-picker>
-      </h-col>
-      <h-col span="12">
-        <h-date-picker  type="daterange" :options="options2" placeholder="选择日期" placement="bottom-start" style="width: 200px"></h-date-picker>
-      </h-col>
-    </h-row>
+      <!-- <h-col span="12"> -->
+      <h-date-picker type="date" :options="options1" placeholder="选择日期" style="width: 200px"></h-date-picker>
+      <!-- </h-col> -->
+      <!-- <h-col span="12"> -->
+      <h-date-picker autoPlacement type="daterange" placeholder="选择日期" style="width: 200px"></h-date-picker>
+      <!-- </h-col> -->
+    <!-- </h-row> -->
     <h-row>
       <h2>日期格式</h2>
       <p>设置属性 options 对象中的 shortcuts 可以设置快捷选项<br>

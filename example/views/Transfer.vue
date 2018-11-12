@@ -21,11 +21,13 @@
       :target-keys="targetKeys1"
       :render-format="render1"
       @on-change="handleChange1">
+      1245
       <span slot="footer"> 124</span>
+      <span slot="operation"><h-button>我是自定义操作</h-button></span>
     </h-transfer>
     <h2>搜索</h2>
     <p>通过设置属性 filterable 可以进行搜索，可以自定义搜索函数</p>
-    <!-- <h-transfer -->
+    <h-transfer
       :data="data2"
       :target-keys="targetKeys2"
       filterable

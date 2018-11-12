@@ -1,9 +1,9 @@
 <template>
   <div>
     <h2>format支持2种格式yyyy/MM/dd或者yyyy-MM-dd或者yyMMdd</h2>
-    <h-fast-date v-model="val1" format="yyyy/MM/dd" style="width:300px"></h-fast-date>{{val1}}
-    <h-fast-date v-model="val2" :setDefault='true' format="yyyy-MM-dd" style="width:300px" placement="top-start"></h-fast-date>{{val2}}
-    <h-fast-date v-model="val5" format="yyyyMMdd" style="width:300px"></h-fast-date>{{val5}}
+    <h-fast-date v-model="val1" format="yyyy/MM/dd" style="width:100px"></h-fast-date>{{val1}}
+    <h-fast-date v-model="val2" :setDefault='true' format="yyyy-MM-dd" style="width:100px"></h-fast-date>{{val2}}
+    <h-fast-date v-model="val5" placement="top-start" format="yyyyMMdd" style="width:300px"></h-fast-date>{{val5}}
     <h2>clearable支持是否显示可清空按钮</h2>
     <h-fast-date v-model="val3" clearable placeholder="请选择日期"  @on-clear="clear" readonly></h-fast-date>{{val2}}
      <h2>setDefault支持是否显示默认时间</h2>

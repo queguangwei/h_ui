@@ -251,7 +251,7 @@
       </h-radio-group>
       <h-row>
           <h-col span='12'>
-              <h-menu theme="dark"  vertiSide shrinkClose active-name="1-2" :open-names="['1']" :collapse="isCollapse ==='true'" @on-open-change="openChange" @on-select="s">
+              <h-menu theme="dark" vertiSide shrinkClose active-name="1-2" :open-names="['1']" :collapse="isCollapse ==='true'" @on-open-change="openChange" @on-select="s">
                   <h-submenu name="1">
                       <template slot="title">
                           <h-icon name="computer"></h-icon>

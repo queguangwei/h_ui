@@ -626,6 +626,7 @@ export default {
 
           },
           renderHeader:(h, params)=>{
+            console.log('renderHeader')
             return h('span','123')
           }
         },

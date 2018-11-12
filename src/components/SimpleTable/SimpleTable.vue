@@ -34,10 +34,10 @@
           </thead>
         </table>
       </div>
-      <div :class="[prefixCls + '-body'] " class="h-simple-view" :style="bodyStyle" ref="body" @scroll="handleBodyScroll"
+      <div ref="body" :class="[prefixCls + '-body'] " class="h-simple-view" :style="bodyStyle" @scroll="handleBodyScroll"
         v-show="!((!!localeNoDataText && (!data || data.length === 0)) || (!!localeNoFilteredDataText && (!rebuildData || rebuildData.length === 0)))">
-        <div :class="[prefixCls + '-phantom']" :style="{height: contentHeight}">
-        </div>
+        <!-- <div :class="[prefixCls + '-phantom']" :style="{height: contentHeight}">
+        </div> -->
         <div class="h-simple-content"  ref="content">
           <table cellspacing="0" cellpadding="0" border="0" :style="tableStyle" ref="tbody">
             <colgroup>
@@ -349,10 +349,12 @@ export default {
       visibleData:[],
       allclick:false,
       buttomNum:null,
+      topNum:null,
       shiftSelect:[],
       ctrlSelect:[],
       dragging:false,
       draggingColumn:false,
+      loading1:false,
     };
   },
   computed: {
@@ -1095,18 +1097,19 @@ export default {
       if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = event.target.scrollTop;
       if (this.isRightFixed) this.$refs.fixedRightBody.scrollTop = event.target.scrollTop;
       this.buttomNum = getBarBottom(event.target,this.scrollBarWidth);
-      this.$refs.content.style.transform = `translate3d(0, ${event.target.scrollTop}px, 0)`;
-      if(this.$refs.leftContent){
-        this.$refs.leftContent.style.transform = `translate3d(0, ${event.target.scrollTop}px, 0)`;
-      }
-      setTimeout(()=>{this.updateVisibleData(event.target.scrollTop)},0);
+      this.topNum = event.target.scrollTop
+      // this.$refs.content.style.transform = `translate3d(0, ${event.target.scrollTop}px, 0)`;
+      // if(this.$refs.leftContent){
+      //   this.$refs.leftContent.style.transform = `translate3d(0, ${event.target.scrollTop}px, 0)`;
+      // }
+      // setTimeout(()=>{this.updateVisibleData(event.target.scrollTop)},0);
     },
-    updateVisibleData(scrollTop) {
-      scrollTop = scrollTop || this.$refs.body.scrollTop;
-      this.start = Math.floor(scrollTop / this.itemHeight);
+    // updateVisibleData(scrollTop) {
+      // scrollTop = scrollTop || this.$refs.body.scrollTop;
+      // this.start = Math.floor(scrollTop / this.itemHeight);
       // this.start = this.start>this.visibleCount?Number(this.start-this.visibleCount):0;
-      this.end = this.start + this.visibleCount;
-      this.visibleData = this.rebuildData.slice(this.start, this.end);
+      // this.end = this.start + this.visibleCount;
+      // this.visibleData = this.rebuildData.slice(this.start, this.end);
       // this.$refs.content.style.marginTop = `${ this.start * this.itemHeight }px`;
       // this.$refs.content.style.transform = `translate3d(0, ${ this.start * this.itemHeight }px, 0)`;
       // if(this.$refs.leftContent){
@@ -1116,6 +1119,17 @@ export default {
       // setTimeout(()=>{
       //   this.visibleData=this.rebuildData.slice(this.start, this.end+this.visibleCount);
       // },500)
+    // },
+    updateVisibleData(index){
+      if(index&&index>0){
+        this.$nextTick(()=>{
+          this.$refs.body.scrollTop = this.$refs.body.scrollHeight/4;
+          this.loading1 = false;
+        })
+      }
+      index = index || 0;
+      this.end = index + 2*this.visibleCount;
+      this.visibleData = this.rebuildData.slice(index, this.end);
     },
     handleMouseWheel (event) {
       const deltaX = event.deltaX;
@@ -1334,6 +1348,7 @@ export default {
           setTimeout(() => {
             this.cloneData = deepCopy(this.data);
             this.buttomNum = null;
+            this.topNum = null;
           }, 0);
         },
         deep: true
@@ -1345,6 +1360,7 @@ export default {
           this.rebuildData = this.makeDataWithSortAndFilter();
           this.handleResize();
           this.buttomNum = null;
+          this.topNum = null;
           this.$nextTick(()=>{
             this.updateVisibleData();
           });
@@ -1359,7 +1375,25 @@ export default {
       },
       buttomNum(val,oldvalue){
         if(val==null || oldvalue == null) return;
+        if(val == 0){
+          let curIndex = this.visibleData[0]._index||0
+          let index = curIndex+2*this.visibleCount;
+          if(index<this.rebuildData.length&&!this.loading1){
+            this.loading1 = true;
+            this.updateVisibleData(curIndex+this.visibleCount);
+          }
+        }
         this.$emit('on-scroll',this.buttomNum);
+      },
+      topNum(val,oldvalue){
+        if(val == 0){
+          let curIndex = this.visibleData[0]._index||0
+          let index = curIndex-this.visibleCount;
+          if(index>=0&&!this.loading1){
+            this.loading1 = true;
+            this.updateVisibleData(index);
+          }
+        }
       },
       shiftSelect(val){
         if (val.length==2) {
