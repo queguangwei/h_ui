@@ -130,7 +130,7 @@
         let j = this.start
         while(i<this.visibleCount){
           if(!this.cloneData[j]){
-            i = this.visibleData;
+            i = this.visibleCount;
             j = this.cloneData.length;
           }else{
             if(!this.cloneData[j].hidden){

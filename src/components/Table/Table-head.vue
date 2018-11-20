@@ -58,6 +58,7 @@
                     <li
                       :class="itemClasses(column, item)"
                       v-for="item in column.filters"
+                      :key = "item.value"
                       @click="handleSelect(index, item.value)">{{ item.label }}</li>
                   </ul>
                 </div>

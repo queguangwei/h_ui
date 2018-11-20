@@ -9,20 +9,20 @@
       <Button @on-click="testClick(true)">获取焦点</Button>
       <Button @on-click="testClick(false)">失去焦点</Button>
       <h-select ref="test" placement="bottom-start" :dropWidth="400" @on-blur="blurH"></h-select>
+       <!-- placement="top-start" -->
       <h-select v-model="model34"
                 style="width:120px"
                 @on-change="change"
                 @on-scroll="scroll"
                 algin="right"
-                placement="top-start"
-                :dropWidth="400"
                 :setDefSelect="true">
         <h-option value="index">
           <a href=http://www.google.com/>link</a>
         </h-option>
-        <h-option v-for="item in cityList"
+        <h-option v-for="(item,index) in cityList"
                   :value="item.value"
-                  :key="item.value">{{ item.label }}</h-option>
+                  :key="index">{{ item.label }}</h-option>
+        <Button slot="footer">124</Button>
       </h-select>
       <h-button @click="fuzhi">赋值</h-button>
       <h-button @click="qk">清空</h-button>

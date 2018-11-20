@@ -62,6 +62,7 @@
   import clickoutside from '../../directives/clickoutside';
   import TransferDom from '../../directives/transfer-dom';
   import { oneOf } from '../../util/tools';
+  import { on, off } from '../../util/dom';
   import Emitter from '../../mixins/emitter';
   import Locale from '../../mixins/locale';
 
@@ -347,6 +348,14 @@
         this.visible=false;
         this.$refs.input.blur();
       },
+      handleKeydown(e){
+        const keyCode = e.keyCode;
+        // Esc slide-up
+        if (keyCode === 27) {
+          e.preventDefault();
+          this.visible=false;
+        }
+      }
     },
     created () {
       this.validDataStr = JSON.stringify(this.getValidData(this.data));
@@ -379,6 +388,10 @@
     },
     mounted () {
       this.updateSelected(true);
+      on(document,'keydown',this.handleKeydown)
+    },
+    beforeDestroy () {
+      off(document,'keydown', this.handleKeydown);
     },
     watch: {
       visible (val) {

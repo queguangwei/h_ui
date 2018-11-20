@@ -36,8 +36,8 @@
       </div>
       <div ref="body" :class="[prefixCls + '-body'] " class="h-simple-view" :style="bodyStyle" @scroll="handleBodyScroll"
         v-show="!((!!localeNoDataText && (!data || data.length === 0)) || (!!localeNoFilteredDataText && (!rebuildData || rebuildData.length === 0)))">
-        <!-- <div :class="[prefixCls + '-phantom']" :style="{height: contentHeight}">
-        </div> -->
+        <div :class="[prefixCls + '-phantom']" :style="{height: contentHeight}">
+        </div>
         <div class="h-simple-content"  ref="content">
           <table cellspacing="0" cellpadding="0" border="0" :style="tableStyle" ref="tbody">
             <colgroup>
@@ -72,7 +72,7 @@
         </div>
       </div>
       <div :class="[prefixCls + '-tip'] "
-        v-show="((!!localeNoDataText && (!data || data.length === 0)) || (!!localeNoFilteredDataText && (!rebuildData || rebuildData.length === 0)))" @scroll="handleBodyScroll" :style="bodyStyle">
+        v-if="((!!localeNoDataText && (!data || data.length === 0)) || (!!localeNoFilteredDataText && (!rebuildData || rebuildData.length === 0)))" @scroll="handleBodyScroll" :style="bodyStyle">
         <div :class="[prefixCls+'-tiptext']" :style="textStyle" >
           <span v-html="localeNoDataText" v-if="!data || data.length === 0"></span>
           <span v-html="localeNoFilteredDataText" v-else></span>
@@ -80,10 +80,6 @@
         <table cellspacing="0" cellpadding="0" border="0" :style="tableStyle">
           <tbody>
             <tr>
-              <td :style="{ 'height': bodyStyle.height}">
-               <!--  <span v-html="localeNoDataText" v-if="!data || data.length === 0"></span>
-                <span v-html="localeNoFilteredDataText" v-else></span> -->
-              </td>
             </tr>
           </tbody>
         </table>
@@ -116,64 +112,41 @@
           </table>
         </div>
         <div :class="[prefixCls + '-fixed-body']" class="h-simple-view" :style="fixedBodyStyle" ref="fixedBody">
-           <div :class="[prefixCls + '-phantom']" :style="{height: contentHeight}">
-        </div>
-        <div class="h-simple-content" ref="leftContent">
-          <table cellspacing="0" cellpadding="0" border="0" :style="tableStyle" ref="tbody">
-            <colgroup>
-              <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, false)" :key="index">
-            </colgroup>
-            <tbody :class="[prefixCls + '-tbody']">
-              <template v-for="(row,index) in visibleData" >
-                <table-tr
-                  :row="row"
-                  :key="row._rowKey"
-                  :prefix-cls="prefixCls"
-                  @mouseenter.native.stop="handleMouseIn(row._index)"
-                  @mouseleave.native.stop="handleMouseOut(row._index)"
-                  @click.native="clickCurrentRowTr($event,row._index)"
-                  @dblclick.native.stop="dblclickCurrentRowTr(row._index)"
-                >
-                  <td v-for="column in cloneColumns" :class="alignCls(column, row,'left')" :key="column._index">
-                    <Cell
-                      fixed="left"
-                      :prefix-cls="prefixCls"
-                      :row="row"
-                      :key="column._columnKey"
-                      :column="column"
-                      :index="row._index"
-                      :checked="rowChecked(row._index)"
-                      :disabled="rowDisabled(row._index)"
-                    ></Cell>
-                  </td>                  
-                </table-tr>
-                <!-- <tr
-                  :class="rowClasses(row._index)"
-                  :key="row._rowKey"
-                  @mouseenter="handleMouseIn(row._index)"
-                  @mouseleave.native.stop="handleMouseOut(row._index)"
-                  @click.native.stop="clickCurrentRowTr($event,row._index)"
-                  @dblclick.native.stop="dblclickCurrentRowTr(row._index)">
-                  <td v-for="column in cloneColumns" :class="alignCls(column, row,'left')" :key="column._index">
-                    <div :class="classesTd(column)">
-                      <template v-if="column.type === 'index'">{{row._index}}</template>
-                      <template v-if="column.type === 'selection'">
-                        <Checkbox size="large" :value="rowChecked(row._index)" @click.native.stop="handleClickTr($event,row._index,rowChecked(row._index))" @on-change="toggleSelect(row._index)" :disabled="rowDisabled(row._index)"></Checkbox>
-                      </template>
-                      <template v-if="!column.type&&!column.render"><span v-html="row[column.key]"></span></template>
+          <div :class="[prefixCls + '-phantom']" :style="{height: contentHeight}">
+          </div>
+          <div class="h-simple-content" ref="leftContent">
+            <table cellspacing="0" cellpadding="0" border="0" :style="tableStyle" ref="tbody">
+              <colgroup>
+                <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, false)" :key="index">
+              </colgroup>
+              <tbody :class="[prefixCls + '-tbody']">
+                <template v-for="(row,index) in visibleData" >
+                  <table-tr
+                    :row="row"
+                    :key="row._rowKey"
+                    :prefix-cls="prefixCls"
+                    @mouseenter.native.stop="handleMouseIn(row._index)"
+                    @mouseleave.native.stop="handleMouseOut(row._index)"
+                    @click.native="clickCurrentRowTr($event,row._index)"
+                    @dblclick.native.stop="dblclickCurrentRowTr(row._index)"
+                  >
+                    <td v-for="column in cloneColumns" :class="alignCls(column, row,'left')" :key="column._index">
                       <Cell
-                        v-if="column.render"
+                        fixed="left"
+                        :prefix-cls="prefixCls"
                         :row="row"
+                        :key="column._columnKey"
                         :column="column"
                         :index="row._index"
-                        :render="column.render"></Cell>
-                    </div>
-                  </td>
-                </tr> -->
-              </template>
-            </tbody>
-          </table>
-        </div>
+                        :checked="rowChecked(row._index)"
+                        :disabled="rowDisabled(row._index)"
+                      ></Cell>
+                    </td>                  
+                  </table-tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
       <div class="h-table__column-resize-proxy" ref="resizeProxy" v-show="resizeProxyVisible"> </div>
@@ -292,13 +265,13 @@ export default {
       validator (value) {
         return oneOf(value, ['left', 'center', 'right']);
       },
-      default:'left'
+      default:null
     },
     bodyAlgin:{
       validator (value) {
         return oneOf(value, ['left', 'center', 'right']);
       },
-      default:'left'
+      default:null
     },
     selectOption:{
       type:Boolean,
@@ -354,7 +327,6 @@ export default {
       ctrlSelect:[],
       dragging:false,
       draggingColumn:false,
-      loading1:false,
     };
   },
   computed: {
@@ -378,12 +350,6 @@ export default {
         }
       })
       return data.length>0?data:[];
-    },
-    headStyles () {//深拷贝
-      const style = Object.assign({}, this.tableStyle);
-      const width = this.bodyHeight === 0 ? parseInt(this.tableStyle.width) : parseInt(this.tableStyle.width) + this.scrollBarWidth;
-      style.width = `${width}px`;
-      return style;
     },
     isSelectAll () {
       let isSelectAll = true;
@@ -469,7 +435,7 @@ export default {
         if (this.bodyHeight === 0) {
           width = this.tableWidth;
         } else {
-          if (this.bodyHeight > this.bodyRealHeight) {
+          if (this.rebuildData.length==0) {
             width = this.tableWidth;
           } else {
             width = this.tableWidth - this.scrollBarWidth;
@@ -477,6 +443,12 @@ export default {
         }
         style.width = `${width}px`;
       }
+      return style;
+    },
+    headStyles () {//深拷贝
+      const style = Object.assign({}, this.tableStyle);
+      const width = this.rebuildData.length==0?parseInt(this.tableStyle.width):parseInt(this.tableStyle.width)+this.scrollBarWidth;
+      style.width = `${width}px`;
       return style;
     },
     fixedTableStyle () {
@@ -614,11 +586,13 @@ export default {
       if (this.bodyHeight !== 0) {
         totalWidth = totalWidth + this.scrollBarWidth;
       }
-      this.tableWidth=totalWidth+1;
+      this.tableWidth=totalWidth;
       if (this.cloneColumns[lastInx].fixed!='right' && this.tableWidth<this.initWidth) {
         this.tableWidth = this.initWidth-1;
       }
-      this.$emit('on-drag', width, key);
+      this.$nextTick(()=>{
+        this.$emit('on-drag', width, key);
+      })
     },
     mousedown(event,column,index){
       if (this.$isServer || !this.canDrag || !this.draggingColumn) return;
@@ -633,8 +607,8 @@ export default {
         const columnRect = columnEl.getBoundingClientRect();
         const minLeft = columnRect.left - tableLeft + 30;
         let lastWidth =this.findObj(event,"TR").lastChild.offsetWidth;
-        let tableWidth = this.$el.parentElement.offsetWidth-1;
-        let headWidth = this.$el.offsetWidth;
+        let tableWidth = this.$el.offsetWidth;
+        let headWidth = this.tableWidth;
         addClass(columnEl, 'noclick');
 
         this.dragState = {
@@ -669,9 +643,9 @@ export default {
             if (dragWidth>=0) {
               lastWidth = (lastWidth-dragWidth)>=80?(lastWidth-dragWidth):80;
             }else{
-              if (headWidth+1>=tableWidth) {//此时有滚动条
-                if (headWidth+1+dragWidth<=tableWidth) {
-                  lastWidth =lastWidth+tableWidth-headWidth-dragWidth;
+              if (headWidth>=tableWidth) {//此时有滚动条
+                if (headWidth+dragWidth<=tableWidth) {
+                  lastWidth =lastWidth+tableWidth-headWidth-dragWidth-1;
                 }
               }else{
                 lastWidth = lastWidth-dragWidth;
@@ -738,6 +712,7 @@ export default {
     },
     handleResize () {
       this.$nextTick(() => {
+        if(this.columns.length==0) return;
         const allWidth = !this.columns.some(cell => !cell.width&&cell.width!==0);    // each column set a width
         if (allWidth) {
           this.tableWidth = this.columns.map(cell => cell.width).reduce((a, b) => a + b);
@@ -769,16 +744,13 @@ export default {
                   if (width < 100) width = 100;
               }
               this.cloneColumns[i]._width = width||'';
-              // this.cloneColumns[i].leftWidth = $td[i].getBoundingClientRect().left||'';
-              this.tableWidth = this.cloneColumns.map(cell => cell.width).reduce((a, b) => a + b);
-
+              this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b);
               columnsWidth[column._index] = {
                   width: width
               };
             }
             this.columnsWidth = columnsWidth;
           }else{
-            if (!this.$refs.thead) return;
             const $th = this.$refs.thead.querySelectorAll('thead .cur-th')[0].querySelectorAll('th');
             for (let i = 0; i < $th.length; i++) {    // can not use forEach in Firefox
               const column = this.cloneColumns[i]; 
@@ -798,6 +770,8 @@ export default {
                   width: width
               };
             }
+            // this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b);
+            console.log('this.tableWidth'+this.tableWidth)
             this.columnsWidth = columnsWidth;
           }
 
@@ -837,7 +811,9 @@ export default {
         this.objData[_index]._isHighlight = false;
         this.objData[_index]._isChecked = false;
       }
-      this.$emit('on-selection-change', this.getSelection(),this.getSelection(true));
+      this.$nextTick(()=>{
+        this.$emit('on-selection-change', this.getSelection(),this.getSelection(true));
+      })
     },
     handleClick(){
     },
@@ -876,16 +852,20 @@ export default {
           this.objData[_index]._isHighlight = false;
           this.objData[_index]._isChecked = false;
           // this.$emit('on-current-change-cancle',JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
-          this.$emit('on-current-change', null,null);
+          this.$nextTick(()=>{
+            this.$emit('on-current-change', null,null);
+          })
         }else{
           this.objData[_index]._isHighlight = true;
           this.objData[_index]._isChecked = true;
           // this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
-          this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])),_index);
+          this.$nextTick(()=>{
+            this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])),_index);
+          })
         }
-        // if (this.columns[0].type=='selection' || this.columns[1].type=='selection') {
+        this.$nextTick(()=>{
           this.$emit('on-selection-change',this.getSelection(),this.getSelection(true));
-        // }
+        })
     },
     clickCurrentRowTr (event,_index) {       
       if (!event.shiftKey && !event.ctrlKey) {
@@ -920,13 +900,17 @@ export default {
       if (!this.rowSelect) {
         this.highlightCurrentRow (_index);
       }
-      this.$emit('on-row-click', [JSON.parse(JSON.stringify(this.cloneData[_index])),_index]);
+      this.$nextTick(()=>{
+        this.$emit('on-row-click', [JSON.parse(JSON.stringify(this.cloneData[_index])),_index]);
+      })
     },
     dblclickCurrentRow (_index) {
       if (!this.rowSelect) {
         this.highlightCurrentRow (_index);
       }
-      this.$emit('on-row-dblclick', JSON.parse(JSON.stringify(this.cloneData[_index])));
+      this.$nextTick(()=>{
+        this.$emit('on-row-dblclick', JSON.parse(JSON.stringify(this.cloneData[_index])));
+      })
     },
     getSelection (status=false) {
       let selectionIndexes = [];
@@ -948,10 +932,11 @@ export default {
       if (!status) {
         this.objData[_index]._isHighlight = false;
       }
-
-      const selection = this.getSelection();
-      this.$emit(status ? 'on-select' : 'on-select-cancel', selection, JSON.parse(JSON.stringify(this.data[_index])));
-      this.$emit('on-selection-change', selection,this.getSelection(true));
+      this.$nextTick(()=>{
+        const selection = this.getSelection();
+        this.$emit(status ? 'on-select' : 'on-select-cancel', selection, JSON.parse(JSON.stringify(this.data[_index])));
+        this.$emit('on-selection-change', selection,this.getSelection(true));
+      })
     },
     clearAllRow(){
       for (let i in this.objData) {
@@ -994,9 +979,11 @@ export default {
            this.objData[data._index]._isChecked = status;
           }
         }
-        const selection = this.getSelection();
-        this.$emit('on-select-all', selection);
-        this.$emit('on-selection-change', selection,this.getSelection(true));
+        this.$nextTick(()=>{
+          const selection = this.getSelection();
+          this.$emit('on-select-all', selection);
+          this.$emit('on-selection-change', selection,this.getSelection(true));          
+        })
       }, 0);
     },
     handleSort (index, type) {
@@ -1052,12 +1039,12 @@ export default {
       }
       this.cloneColumns[index]._sortType = type;
 
-      this.$emit('on-sort-change', {
+      this.$nextTick(()=>{
+        this.$emit('on-sort-change', {
           column: JSON.parse(JSON.stringify(this.columns[this.cloneColumns[index]._index])),
           key: key,
           order: type
-      });
-      this.$nextTick(()=>{
+        });
         this.updateVisibleData();
       })
     },
@@ -1073,7 +1060,9 @@ export default {
           this.objData[i]._isChecked = true;
         }
       }
-      this.$emit('on-selection-change', this.getSelection(),this.getSelection(true));
+      this.$nextTick(()=>{
+        this.$emit('on-selection-change', this.getSelection(),this.getSelection(true));
+      })
     },
     fixedHeader () {
       if (this.height) {
@@ -1093,43 +1082,23 @@ export default {
       }
     },
     handleBodyScroll (event) {
-      if (this.showHeader) this.$refs.header.scrollLeft = event.target.scrollLeft;
-      if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = event.target.scrollTop;
-      if (this.isRightFixed) this.$refs.fixedRightBody.scrollTop = event.target.scrollTop;
+      let scrolltop = event.target.scrollTop;
+      this.$refs.header.scrollLeft = event.target.scrollLeft;
+      if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = scrolltop;
+      // if (this.isRightFixed) this.$refs.fixedRightBody.scrollTop = event.target.scrollTop;
       this.buttomNum = getBarBottom(event.target,this.scrollBarWidth);
-      this.topNum = event.target.scrollTop
-      // this.$refs.content.style.transform = `translate3d(0, ${event.target.scrollTop}px, 0)`;
-      // if(this.$refs.leftContent){
-      //   this.$refs.leftContent.style.transform = `translate3d(0, ${event.target.scrollTop}px, 0)`;
-      // }
-      // setTimeout(()=>{this.updateVisibleData(event.target.scrollTop)},0);
-    },
-    // updateVisibleData(scrollTop) {
-      // scrollTop = scrollTop || this.$refs.body.scrollTop;
-      // this.start = Math.floor(scrollTop / this.itemHeight);
-      // this.start = this.start>this.visibleCount?Number(this.start-this.visibleCount):0;
-      // this.end = this.start + this.visibleCount;
-      // this.visibleData = this.rebuildData.slice(this.start, this.end);
-      // this.$refs.content.style.marginTop = `${ this.start * this.itemHeight }px`;
-      // this.$refs.content.style.transform = `translate3d(0, ${ this.start * this.itemHeight }px, 0)`;
-      // if(this.$refs.leftContent){
-        // this.$refs.leftContent.style.marginTop = `${ this.start * this.itemHeight }px`;
-        // this.$refs.leftContent.style.transform = `translate3d(0, ${ this.start * this.itemHeight }px, 0)`;
-      // }
-      // setTimeout(()=>{
-      //   this.visibleData=this.rebuildData.slice(this.start, this.end+this.visibleCount);
-      // },500)
-    // },
-    updateVisibleData(index){
-      if(index&&index>0){
-        this.$nextTick(()=>{
-          this.$refs.body.scrollTop = this.$refs.body.scrollHeight/4;
-          this.loading1 = false;
-        })
+      let curtop = Math.floor(scrolltop / this.itemHeight)*this.itemHeight;
+      this.$refs.content.style.transform = `translate3d(0, ${curtop}px, 0)`;
+      if(this.$refs.leftContent){
+        this.$refs.leftContent.style.transform = `translate3d(0, ${curtop}px, 0)`;
       }
-      index = index || 0;
-      this.end = index + 2*this.visibleCount;
-      this.visibleData = this.rebuildData.slice(index, this.end);
+      setTimeout(()=>{this.updateVisibleData(scrolltop)},0);
+    },
+    updateVisibleData(scrollTop) {
+      scrollTop = scrollTop || this.$refs.body.scrollTop;
+      this.start = Math.floor(scrollTop / this.itemHeight);
+      this.end = this.start + this.visibleCount;
+      this.visibleData = this.rebuildData.slice(this.start, this.end);
     },
     handleMouseWheel (event) {
       const deltaX = event.deltaX;
@@ -1374,26 +1343,26 @@ export default {
         this.handleResize();
       },
       buttomNum(val,oldvalue){
+        // if(val == 0){
+        //   let curIndex = this.visibleData[0]._index||0
+        //   let index = curIndex+2*this.visibleCount;
+        //   if(index<this.rebuildData.length){
+        //     this.updateVisibleData(curIndex+this.visibleCount);
+        //   }
+        // }
         if(val==null || oldvalue == null) return;
-        if(val == 0){
-          let curIndex = this.visibleData[0]._index||0
-          let index = curIndex+2*this.visibleCount;
-          if(index<this.rebuildData.length&&!this.loading1){
-            this.loading1 = true;
-            this.updateVisibleData(curIndex+this.visibleCount);
-          }
-        }
-        this.$emit('on-scroll',this.buttomNum);
+        this.$nextTick(()=>{
+          this.$emit('on-scroll',this.buttomNum);
+        })
       },
       topNum(val,oldvalue){
-        if(val == 0){
-          let curIndex = this.visibleData[0]._index||0
-          let index = curIndex-this.visibleCount;
-          if(index>=0&&!this.loading1){
-            this.loading1 = true;
-            this.updateVisibleData(index);
-          }
-        }
+        // if(val == 0){
+        //   let curIndex = this.visibleData[0]._index||0
+        //   let index = curIndex-this.visibleCount;
+        //   if(index>=0){
+        //     this.updateVisibleData(index);
+        //   }
+        // }
       },
       shiftSelect(val){
         if (val.length==2) {

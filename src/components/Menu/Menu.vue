@@ -113,7 +113,12 @@ export default {
     vertiSide:{
       type:Boolean,
       default:false,
-    }
+    },
+    // submenu外部嵌套组件层级
+    nestIndex: {
+      type: [String, Number],
+      default: 0,
+    },
   },
   data () {
     return {

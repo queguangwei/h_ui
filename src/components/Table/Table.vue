@@ -641,7 +641,7 @@ export default {
               if (i === autoWidthIndex) {
                 width = parseInt(getStyle($th[i], 'width')) - 1;
               }
-            // 自适应列在表格宽度较小时显示异常，为自适应列设置最小宽度100（拖拽后除外）
+              // 自适应列在表格宽度较小时显示异常，为自适应列设置最小宽度100（拖拽后除外）
               if (column.width) {
                   width = column.width||'';
               } else {
@@ -731,10 +731,10 @@ export default {
           this.$emit('on-selection-change', selection,selectionInx);
         }
     },
-    clickCurrentRow (_index) {
+    clickCurrentRow (event,_index) {
       //click row
       // window.getSelection()?window.getSelection().removeAllRanges():document.selection.empty();
-      if (!window.event.shiftKey && !window.event.ctrlKey) {
+      if (!event.shiftKey && !event.ctrlKey) {
         if(!this.rowSelect){
           this.highlightCurrentRow (_index);
         }
@@ -747,7 +747,7 @@ export default {
           this.shiftSelect= [];
           this.ctrlSelect = [];
         }
-      }else if(window.event.shiftKey){
+      }else if(event.shiftKey){
         window.getSelection()?window.getSelection().removeAllRanges():document.selection.empty();
         this.getshiftSelect(_index);  
       }else{
@@ -772,8 +772,7 @@ export default {
       }
       return status?selectionIndexes:JSON.parse(JSON.stringify(this.data.filter((data, index) => selectionIndexes.indexOf(index) > -1)));
     },
-    toggleSelect (_index) {
-      //click checkbox
+    toggleSelect (_index,event) {
       let data = {};
       for (let i in this.objData) {
         if (parseInt(i) === _index) {
@@ -786,7 +785,7 @@ export default {
         this.objData[_index]._isHighlight = false;
       }
       //shift
-      if (window.event.shiftKey&&_index) {
+      if (event.shiftKey&&_index) {
         this.getshiftSelect(_index);
       }else if(!status){
         this.shiftSelect=[]

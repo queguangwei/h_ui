@@ -11,7 +11,7 @@
           :prefix-cls="prefixCls"
           @mouseenter.native.stop="handleMouseIn(row._index)"
           @mouseleave.native.stop="handleMouseOut(row._index)"
-          @click.native="clickCurrentRow(row._index)"
+          @click.native="clickCurrentRow($event,row._index)"
           @dblclick.native.stop="dblclickCurrentRow(row._index)">
           <td v-for="(column, columnIdx) in columns" :class="alignCls(column, row)">
             <Cell
@@ -103,13 +103,13 @@
           if (this.sum) return           
           this.$parent.handleMouseOut(_index);
         },
-        clickCurrentRow (_index) {
+        clickCurrentRow (event,_index) {
           if (this.sum) return           
           if(this.rowSelect){
             // this.objData[_index]._isChecked=!this.objData[_index]._isChecked;
-            this.$parent.toggleSelect(_index);
+            this.$parent.toggleSelect(_index,event);
           }else{
-            this.$parent.clickCurrentRow(_index);
+            this.$parent.clickCurrentRow(event,_index);
           }
         },
         dblclickCurrentRow (_index) {

@@ -90,6 +90,7 @@ export default {
       return this.parent.vertiSide;
     },
     accordion () {
+      // this.parent == menu
       return this.parent.accordion;
     },
     dropStyle () {
@@ -129,12 +130,23 @@ export default {
       // collapse为true时，触发鼠标经过，因此忽略点击
       if (this.mode === 'horizontal' || this.collapse ) return;
       const opened = this.opened;
-
-      if (this.accordion && this.$parent.$options.name !== 'Submenu') {
-        this.parent.$children.forEach(item => {
+      // 考虑嵌套一层的情况(分开判断)
+      if (this.accordion) {
+        if (Number(this.parent.nestIndex) == 0 && this.$parent.$options.name !== 'Submenu') {
+          this.parent.$children.forEach(item => {
             if (item.$options.name === 'Submenu') item.opened = false;
-        });
+          });
+        } else if (Number(this.parent.nestIndex) == 1 && this.$parent.$parent.$options.name !== 'Submenu') {
+          this.parent.$children.forEach(item => {
+            if (item.$children && item.$children[0].$options.name === 'Submenu') item.$children[0].opened = false;
+          });
+        }
       }
+      // if (this.accordion && this.$parent.$options.name !== 'Submenu') {
+      //   this.parent.$children.forEach(item => {
+      //       if (item.$options.name === 'Submenu') item.opened = false;
+      //   });
+      // } 
       this.opened = !opened;
       this.parent.updateOpenKeys(this.name);
     }

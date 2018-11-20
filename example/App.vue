@@ -1,5 +1,8 @@
 <template>
   <div id="app" class="wrapper">
+    <!-- <svg class="icon" aria-hidden="true">
+        <use xlink:href="#icon-person-stalker"></use>
+    </svg> -->
     <nav>
       <ul>
         <span>基础组件</span>
@@ -218,14 +221,14 @@
         </li>
       </ul>
     </nav>
-    <!-- <keep-alive>
+    <keep-alive>
        <keep-alive :include="page"> 
           <router-view v-if="isKeepAlive"></router-view>
        </keep-alive> 
        <router-view v-if="!isKeepAlive"></router-view>
         
-    </keep-alive> -->
-    <router-view></router-view>
+    </keep-alive>
+    <!-- <router-view></router-view> -->
     
   </div>  
 </template>

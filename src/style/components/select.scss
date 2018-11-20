@@ -3,7 +3,8 @@ $select-item-prefix-cls:  "#{$css-prefix}select-item";
 $select-group-prefix-cls:  "#{$css-prefix}select-group";
 
 .#{$select-prefix-cls} {
-    display: inline-block;
+    // display: inline-block;
+    display: block;
     width: 100%;
     box-sizing: border-box;
     vertical-align: middle;
@@ -384,14 +385,14 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
         }
     }
 }
-.#{$select-prefix-cls}-multiple{
-    .#{$select-prefix-cls}{
-        &-checkall{
-            border-top: 1px solid #e1e1e1;
-            text-align: right;
-            padding: 8px;
-            clear: both;
-        }
+// .#{$select-prefix-cls}-multiple{
+.#{$select-prefix-cls}{
+    &-checkall{
+        border-top: 1px solid #e1e1e1;
+        text-align: right;
+        padding: 8px;
+        clear: both;
     }
 }
-
+// }
+// 

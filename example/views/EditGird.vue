@@ -296,6 +296,7 @@ export default {
           width: 100,
           key: 'age',
           hiddenCol:false,
+          prelabel:'&',
           rule: { required: true, message: '年龄不能为空'},
         },
         {
@@ -304,6 +305,7 @@ export default {
           width: 200,
           title: '地址',
           key: 'address',
+          rearlabel:'%',
           rule: { required: true, message: '地址不能为空'},
         },
         {
