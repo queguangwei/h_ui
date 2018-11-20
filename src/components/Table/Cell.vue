@@ -82,8 +82,8 @@ export default {
     },
   },
   methods: {
-      toggleSelect () {
-        this.$parent.$parent.$parent.toggleSelect(this.index);
+      toggleSelect (status,event) {
+        this.$parent.$parent.$parent.toggleSelect(this.index,event);
       },
       toggleExpand () {
         this.$parent.$parent.$parent.toggleExpand(this.index);

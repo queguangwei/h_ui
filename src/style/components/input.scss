@@ -6,7 +6,8 @@ $input-prefix-cls: "#{$css-prefix}input";
     height:$form-component-height;
   }
   &-wrapper{
-    display: inline-block;
+    // display: inline-block;
+    display: block;
     width: 100%;
     position: relative;
     // vertical-align: top;

@@ -440,7 +440,18 @@
                 this.fPlacement = 'bottom-end';
             }
         }
-      }
+      },
+      handleKeydown (e) {
+        if (this.visible) {
+            const keyCode = e.keyCode;
+            // Esc slide-up
+            if (keyCode === 27) {
+                e.preventDefault();
+                this.visible=false;
+            }
+            
+        }
+      },
     },
     watch: {
       visible (state) {
@@ -480,6 +491,7 @@
         this.picker.$destroy();
       }
       this.$refs.drop.destroy();
+      off(document,'keydown', this.handleKeydown);
     },
     mounted () {
       const initialValue = this.value;
@@ -493,6 +505,7 @@
       }
       if (this.open !== null) this.visible = this.open;
       this.setPlacement();
+      on(document,'keydown', this.handleKeydown);
     }
   };
 </script>

@@ -68,9 +68,13 @@
           <ul v-show="loading" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
           <ul v-show="isComputed" :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>
         </div>
-        <div v-if="isCheckall&&multiple&&!notFoundShow" :class="checkAll">
-          <Button size="small" @click="toggleSelect(false)">全不选</Button>
-          <Button type ="primary" size="small" @click="toggleSelect(true)">全选</Button>
+        <div v-if="showFooter" :class="checkAll">
+          <slot name="footer">
+            <template  v-if="isCheckall&&multiple&&!notFoundShow">
+              <Button size="small" @click="toggleSelect(false)">全不选</Button>
+              <Button type ="primary" size="small" @click="toggleSelect(true)">全选</Button>
+            </template>
+          </slot>
         </div>
       </Drop>
     </transition>
@@ -232,7 +236,12 @@
       focusSelect: {
         type: Boolean,
         default: true,
-      }
+      },
+      // o45证券代码--远程搜索时，点击输入框后不显示下拉列表，值改变时才显示，搜索值清空后隐藏
+      remoteFocusNotShowList: {
+        type: Boolean,
+        default: false,
+      },
     },
     data () {
       return {
@@ -328,7 +337,6 @@
       },
       inputStyle () {
           let style = {};
-
           if (this.multiple) {
               if (this.showPlaceholder) {
                   style.width = '100%';
@@ -399,6 +407,9 @@
         return state;
 
       },
+      showFooter () {
+        return this.$slots.footer || this.isCheckall;
+      }
     },
     methods: {
       handleclick(e){
@@ -467,11 +478,19 @@
         }
       },
       toggleMenu () {
-          if (this.disabled || this.readonly||!this.editable) {
-              return false;
-          }
+        if (this.disabled || this.readonly||!this.editable) {
+            return false;
+        }
+        // this.visible = !this.visible;
+        // o45证券代码--点击时,若输入框值==当前选中value,则需要隐藏下拉列表
+        if (this.model == this.query && this.model == this.value && typeof this.value == 'string' && this.remoteFocusNotShowList && !this.multiple) {
+          this.visible = false;
+          // focusSelect为false时，表明输入框获取焦点后直接进行搜索
+          if (!this.focusSelect) this.selectToChangeQuery = false
+        } else {
           this.visible = !this.visible;
-          this.isInputFocus = true
+        }
+        this.isInputFocus = true
       },
       hideMenu () {
           this.visible = false;
@@ -1086,6 +1105,12 @@
       query (val) {
 
         if (this.remote && this.remoteMethod) {
+          // o45证券代码--点击时不显示下拉选项（手动隐藏），因此需要值改变后（手动显示）
+          if (this.remoteFocusNotShowList && !this.multiple) { // 单选时适用，多选时query会清空，不适用
+            if ( val != '' && !this.visible && val != this.value) {
+                this.visible = true
+            } 
+          } 
           if (!this.selectToChangeQuery) {
               this.$emit('on-query-change', val);
               if(this.readonly || this.disabled) return false;

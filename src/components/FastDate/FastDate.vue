@@ -493,6 +493,14 @@ export default {
           this.inputValue = [item0,item1];
         }
       }
+    },
+    handleKeydown(e){
+      const keyCode = e.keyCode;
+      // Esc slide-up
+      if (keyCode === 27) {
+          e.preventDefault();
+          this.opened=false;
+      }
     }
   },
   watch:{
@@ -551,6 +559,10 @@ export default {
         this.inputValue = [getYMD(new Date(),this.formatSplit,0),getYMD(new Date(),this.formatSplit,0)];
       }
     }
+    on(document,'keydown',this.handleKeydown)
   },
+  beforeDestroy () {
+    off(document,'keydown', this.handleKeydown);
+  }
 };
 </script>

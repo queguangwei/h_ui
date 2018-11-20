@@ -1,13 +1,13 @@
 <template>
   <div>
-<!-- <h-row> -->
-  <!-- <h-col span="4"> -->
-    <h-simple-select v-model="value" filterable style="width:200px"  showBottom @on-change="testtest" label-in-value checkToHead multiple>
+<h-row>
+  <h-col span="4">
+    <h-simple-select v-model="value" filterable  showBottom @on-change="testtest" label-in-value checkToHead multiple>
         <h-select-block :data="bigData"></h-select-block>
     </h-simple-select>
     <span>{{value}}</span>
-    <!-- </h-col> -->
-    <!-- </h-row> -->
+    </h-col>
+    </h-row>
   </div>
 </template>
 <script>
@@ -15,7 +15,7 @@ let bigData = [];
 for(let i=0;i<2000;i++){
   let obj={};
   obj.value="value"+i;
-  obj.label="浙江省杭州市萧山区城厢街道"+i;
+  obj.label="浙江省杭州市萧山区城厢街道浙江省杭州市萧山区城厢街道"+i;
   bigData.push(obj);
 }
     export default {
@@ -34,7 +34,6 @@ for(let i=0;i<2000;i++){
         }
     }
 </script>
-
 
 
 <!-- <template>

@@ -98,7 +98,7 @@
           <h-select-tree v-model="formItem1.tree" :first-value="firstValc" style="width:200px" :data="baseData1" placement="top" placeholder="你好"></h-select-tree>
         </h-form-item>
         <h-form-item label="文本域" prop="textarea" required>
-          <h-input v-model="formItem1.textarea" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></h-input>
+          <h-input v-model="formItem1.textarea" type="textarea" :canResize="false" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></h-input>
         </h-form-item>
         <h-form-item label="文本域" prop="cascader" required>
           <h-cascader v-model="formItem1.cascader" :data="data2" trigger="hover" style="width:200px"></h-cascader>

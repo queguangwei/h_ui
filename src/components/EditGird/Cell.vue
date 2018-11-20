@@ -11,8 +11,10 @@
         <Checkbox :value="checked" @click.native.stop="handleClick" @on-change="toggleSelect" :disabled="disabled"></Checkbox>
       </template>
       <template v-if="renderType === 'normal'">
+        {{preLabel}}
         <span v-html="normalDate">    
         </span>
+        {{rearLabel}}
       </template>
       <template v-if="renderType === 'text'">
         <Input v-model="columnText" :placeholder="column.placeholder" :icon="column.icon" class="canEdit" @on-change="editinputChange" @on-blur="editinputBlur"></Input>
@@ -180,7 +182,9 @@ export default {
       render:false,
       currentSelect: [], // 当前选中值
       selectedLabel: [], // 保存当前select label值
-      isSelectTrans: true //是否将多选value转为label显示，watch normalDate时防止二次执行watch操作
+      isSelectTrans: true, //是否将多选value转为label显示，watch normalDate时防止二次执行watch操作
+      rearLabel:null,
+      preLabel:null,
     };
   },
   computed: {
@@ -484,6 +488,8 @@ export default {
   },
   mounted(){
     this.rule = this.column.rule;
+    this.rearLabel = this.column.rearlabel||null;
+    this.preLabel = this.column.prelabel||null;
     this.$on('close-visible',()=>{
      this.setvisible();
     })

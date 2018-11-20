@@ -3,9 +3,9 @@
     <h-row>
       <h-col span="8">
        <h-button @click="click('1')">设置1</h-button>
-       <h-button @click="click('1-0')">设置2</h-button>
-       <h-button @click="click('1-0-0')">设置3</h-button>
-       <h-button @click="click('1-0-1')">设置4</h-button>
+       <h-button @click="click('2')">设置2</h-button>
+       <h-button @click="click('3')">设置3</h-button>
+       <h-button @click="click('4')">设置4</h-button>
       </h-col>
       <Button @on-click="testClick(true)">获取焦点</Button>
       <Button @on-click="testClick(false)">失去焦点</Button>s
@@ -116,7 +116,8 @@
                 children: [
                   {
                     title: 'child1-1-1',
-                    id: '1-1-1'
+                    id: '1-1-1',
+                    disabled:true,
                   },
                   {
                     title: 'child1-1-2',
@@ -245,7 +246,11 @@
       },
       click(num){
         this.showBox=true;
-        this.firstVal = num;
+        if(num=='4'){
+          this.firstVal = '9';
+        }else{
+          this.firstVal = num;
+        }
       },
       selectChange(data){
         console.log(data);

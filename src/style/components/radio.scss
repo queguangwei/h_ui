@@ -4,7 +4,8 @@ $radio-inner-prefix-cls: "#{$radio-prefix-cls}-inner";
 $radio-group-button-prefix-cls: "#{$radio-group-prefix-cls}-button";
 
 .#{$radio-group-prefix-cls} {
-    display: inline-block;
+    // display: inline-block;
+    display: block;
     font-size: $font-size-base;
     vertical-align: middle;
     height: $form-component-height;
