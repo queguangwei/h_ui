@@ -3,8 +3,7 @@ $fastdate-prefix-cls: "#{$css-prefix}fast-date";
 .#{$fastdate-prefix-cls} {
   &-wrapper{
     width:100%;
-    // display: inline-block;
-    display: block;
+    display: inline-block;
     vertical-align: middle;
     height: $form-component-height;
   }

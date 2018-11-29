@@ -12,7 +12,7 @@
       :loading="true"
       :scrollable="false"
       @on-visible-change="vChange"
-      :escClose="false"
+      :escClose="true"
       top="0"
       isOriginal
       class-name="vertical-center-modal"

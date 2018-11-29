@@ -42,7 +42,6 @@ export default function csv(columns, datas, options, noHeader = false) {
             if (!noHeader) appendLine(content, columnOrder, options);
         }
     }
-
     if (Array.isArray(datas)) {
         datas.forEach(row => {
             if (!Array.isArray(row)) {
@@ -61,7 +60,7 @@ export default function csv(columns, datas, options, noHeader = false) {
                     if (typeof exportVal == 'string' && exportVal.substr(0, 1) == '0' || typeof exportVal == 'number') {
                         exportVal =  '="' + exportVal + '"'
                     }
-                    return exportVal
+                    return exportVal.replace(/,/g,'，')
                 })
             }
             appendLine(content, row, options);

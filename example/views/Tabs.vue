@@ -80,7 +80,9 @@
       </h-tab-Pane>
     </h-tabs>
     <h2>图标</h2>
-    <h-tabs>
+    <Button @click="setShow">设置显示隐藏</Button>
+  <div v-show="isShow">  
+    <h-tabs ref="tab">
       <h-tab-pane label="macOS" icon="social-apple">
         <h-button type="primary" @click="modal1 = true">显示对话框</h-button>
         <h-msg-box
@@ -99,6 +101,7 @@
       <h-tab-pane label="Windows" icon="social-windows">标签二的内容</h-tab-pane>
       <h-tab-pane label="Android" icon="social-android">标签三的内容</h-tab-Pane>
     </h-tabs>
+  </div>
     <h2>迷你型</h2>
     <p>设置属性 size 为 small 可以显示为迷你型，只在 type 为 line 时有效。</p>
     <h-tabs size="small" type="line">
@@ -214,9 +217,14 @@
           }
         ],   
         curIndex:null, 
+        isShow: false,
       }
     },
     methods: {
+      setShow () {
+        this.isShow = !this.isShow;
+        this.$refs.tab.updateBar();
+      },
       closeTab(){
         this.$refs.closetab.handleRemove(this.curIndex,true);
       },

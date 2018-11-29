@@ -1,8 +1,7 @@
 $selecttree-prefix-cls:  "#{$css-prefix}selectTree";
 
 .#{$selecttree-prefix-cls} {
-  // display: inline-block;
-  display: block;
+  display: inline-block;
   width: 100%;
   box-sizing: border-box;
   vertical-align: middle;

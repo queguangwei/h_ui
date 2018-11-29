@@ -178,7 +178,7 @@
           input: '1',
           select: '',
           radio: '',
-          money: '',
+          money: '1244',
           moneyrange:[],
           checkbox: [],
           fatdate: '',
@@ -364,6 +364,9 @@
       totest() {
         this.$refs.changeDrop.focus();
       },
+    },
+    mounted () {
+      this.formItem1.input = '222';
     }
   }
 </script>

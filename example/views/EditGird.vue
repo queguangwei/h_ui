@@ -2,7 +2,8 @@
   <div>
     <h2>基础</h2>
     <h3>单选</h3>
-    <h-edit-gird border height="200" :columns="columns1" :data="data1" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" ref="editGird" stripe :loading="loading" @on-expand="expand" :option="options1" :treeOption="treeOption" @on-editselect-change="selectchange" @on-editinput-change="selectchange" @on-editinput-blur="selectchange" @on-editarea-change="selectchange" @on-editarea-blur="selectchange">
+    <Button @click="addDate"></Button>
+    <h-edit-gird border height="200" :columns="columns1" :data="data2" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" ref="editGird" stripe :loading="loading" @on-expand="expand" :option="options1" :treeOption="treeOption" @on-editselect-change="selectchange" @on-editinput-change="selectchange" @on-editinput-blur="selectchange" @on-editarea-change="selectchange" @on-editarea-blur="selectchange">
       <p slot='loading'>我是自定义loading</p>
     </h-edit-gird>
     <Button @click="getData">获取数据</Button>
@@ -390,6 +391,7 @@ export default {
         },
       ],
       data1: [],
+      data2: [],
       options1:[],
       list: ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New hampshire', 'New jersey', 'New mexico', 'New york', 'North carolina', 'North dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode island', 'South carolina', 'South dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West virginia', 'Wisconsin', 'Wyoming'],
       treeOption:[],
@@ -431,7 +433,7 @@ export default {
       //   timing:'',
       //   tree:''
       // });
-      let cloneData = this.data1;
+      let cloneData = this.data2;
       cloneData.push({
         name: '1234',
         age: null,
@@ -443,7 +445,7 @@ export default {
         timing:'',
         tree:''
       })
-      this.data1 = cloneData
+      this.data2 = cloneData
     },
     remoteMethod1 (query) {
       if (query !== '') {

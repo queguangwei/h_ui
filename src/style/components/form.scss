@@ -131,3 +131,11 @@ $form-item-prefix-cls: "#{$form-prefix-cls}-item";
         // todo
     }
 }
+@media all and (-ms-high-contrast:none) { 
+.#{$form-item-prefix-cls} .h-input {
+    padding: 0 12px;
+}
+} 
+.#{$form-item-prefix-cls} .h-input {
+    padding: 0 12px\0;
+}

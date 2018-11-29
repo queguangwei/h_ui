@@ -157,14 +157,21 @@ export default {
       this.broadcast('Submenu', 'on-update-active-name', false);
       this.broadcast('MenuItem', 'on-update-active-name', this.currentActiveName);
     },
-    updateOpenKeys (name) {
-      const index = this.openName.indexOf(name);
+    updateOpenKeys (name, submenuList = []) {
+      // 侧边展开时，鼠标滑过保留二级菜单
+      let openNameList = this.openName
+      const index = openNameList.indexOf(name);
         if (index > -1) {
-          this.openName.splice(index, 1);
+          openNameList.splice(index, 1);
+          if (submenuList.length > 0) this.openName = openNameList.concat(submenuList)
         } else {
-          this.openName.push(name);
+          // this.openName.push(name);
           if (this.accordion) {
-            this.openName.splice(0, this.openName.length);
+            // 考虑嵌套一层及三级侧边展开的情况--理财5.0 三级侧边展开时需要保存当前二级展开情况
+            this.openName = [].concat(submenuList).concat([name])
+            // this.openName.splice(0, this.openName.length);
+            // this.openName.push(name);
+          } else {
             this.openName.push(name);
           }
         }
@@ -213,10 +220,12 @@ export default {
     },
     // --collapse--
     collapse(value) {
-      this.openedMenu = [];
-      this.openName = [];
-      if(value && this.shrinkClose){
-        this.broadcast("Submenu", 'on-collapse-close');
+      if (value) {
+        this.openedMenu = [];
+        this.openName = [];
+        if(value && this.shrinkClose){
+          this.broadcast("Submenu", 'on-collapse-close');
+        }
       }
     }
     // --collapse--

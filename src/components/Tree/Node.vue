@@ -115,7 +115,8 @@
       },
       showArrow () {
         // 添加leaf子节点属性--fof系统（数据库存在loading字段，无论loading为true或false,均会被渲染成父节点）
-        return (this.data.children && this.data.children.length) && (!this.data.leaf||this.data.leaf=='false') || ('loading' in this.data && (!this.data.loading||this.data.loading=='false')) && (!this.data.leaf||this.data=='false');
+        //fof系统： children.length == 0 && leaf == false时，显示arrow标识 
+        return (this.data.children && this.data.children.length >= 0) && (!this.data.leaf||this.data.leaf=='false') || ('loading' in this.data && (!this.data.loading||this.data.loading=='false')) && (!this.data.leaf||this.data=='false');
       },
       showLoading () {
         // 添加leaf子节点属性--fof系统（数据库存在loading字段，无论loading为true或false,均会被渲染成父节点）
@@ -183,7 +184,7 @@
             return;
           }
         }
-        if (item.children && item.children.length) {
+        if (item.children && item.children.length >= 0) {
           // 问题：autoLoad为true时，expand设置无效，原因：autoLoad会触发两次expand
           // 解决：需动态管理autoLoad，在有子数据时，关闭autoLoad,expand维持原有值，autoLoad为false时，触发expand切换，兼容点击按钮进行loadData方式
           let status = Boolean(this.data.expand&&this.data.expand!='false');

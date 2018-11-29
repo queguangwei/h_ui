@@ -593,7 +593,7 @@ export default {
     handleResize () {
       // keep-alive时，页面改变大小会不断触发resize【非本组件页面】
       this.$nextTick(() => {
-        if(this.columns.length==0) return;
+        if(this.cloneColumns.length==0) return;
         const allWidth = !this.cloneColumns.some(cell => !cell.width&&cell.width!==0);    // each column set a width
         if (allWidth) {
           this.tableWidth = this.cloneColumns.map(cell => cell.width).reduce((a, b) => a + b);

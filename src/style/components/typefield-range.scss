@@ -1,21 +1,28 @@
 $typefieldRange-prefix-cls: "#{$css-prefix}typefield-range" ;
 .#{$typefieldRange-prefix-cls}{
+  display: inline-block;
   position: relative;
   border:1px solid #d7dde4;
   border-radius:4px;
   height: $form-component-height;
+  line-height: $form-component-height;
+  width: 100%;
+  vertical-align: middle;
 
   &-inner{
     width: calc(50% - 10px);
     float: left;
     .#{$typefield-prefix-cls} input{
-      height: $form-component-height - 1px;
-      line-height: $form-component-height - 1px;
+      height: $form-component-height - 2px;
+      line-height: $form-component-height - 2px;
       border: none;
       background: inherit;
     }
     .h-typefield{
       height: $form-component-height - 1px;
+      line-height: $form-component-height - 1px;
+      vertical-align: top;
+
     }
   }
   &-inner.split{

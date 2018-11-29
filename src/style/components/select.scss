@@ -3,8 +3,7 @@ $select-item-prefix-cls:  "#{$css-prefix}select-item";
 $select-group-prefix-cls:  "#{$css-prefix}select-group";
 
 .#{$select-prefix-cls} {
-    // display: inline-block;
-    display: block;
+    display: inline-block;
     width: 100%;
     box-sizing: border-box;
     vertical-align: middle;

@@ -12,8 +12,8 @@ export default {
                     [`${cellClassName}`]: cellClassName,    // cell className
                     [`${column.className}`]: column.className,    // column className
                     [`${this.prefixCls}-column-${column.align}`]: column.align,
-                    [`${this.prefixCls}-head-column-${this.headAlgin}`]: this.headAlgin && row=={},
-                    [`${this.prefixCls}-body-column-${this.bodyAlgin}`]: this.bodyAlgin && row!={},
+                    [`${this.prefixCls}-head-column-${this.headAlgin}`]: this.headAlgin,
+                    [`${this.prefixCls}-body-column-${this.bodyAlgin}`]: this.bodyAlgin,
                     [`${this.prefixCls}-hidden`]: (this.fixed === 'left' && column.fixed !== 'left') || (this.fixed === 'right' && column.fixed !== 'right') || (!this.fixed && column.fixed && (column.fixed === 'left' || column.fixed === 'right'))
                 }
             ];

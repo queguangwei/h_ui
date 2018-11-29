@@ -55,10 +55,14 @@
     },
     computed: {
       showBtnIcon () {
-        if (this.parent.type == 'button' && !!this.parent.btnIcon && this.parent.btnIconOnlyChecked) {
-          return this.currentValue
+        if (this.parent) {
+          if (this.parent.type == 'button' && !!this.parent.btnIcon && this.parent.btnIconOnlyChecked) {
+            return this.currentValue
+          } else {
+            return !!this.parent.btnIcon && this.parent.type == 'button'
+          }
         } else {
-          return !!this.parent.btnIcon && this.parent.type == 'button'
+          return false 
         }
       },
       wrapClasses () {

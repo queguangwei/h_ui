@@ -6,7 +6,7 @@
   <h-simple-select v-model="value" ref="test" placement="bottom-start" filterable :clearable="false" label-in-value @on-change="change" showBottom>
     <h-select-block :data="bigData" @on-scroll="select"></h-select-block>
   </h-simple-select>
-  <h-simple-select v-model="value" transfer placement="bottom-start" filterable placeholder="123" isArrow=false>
+  <h-simple-select v-model="value2" transfer placement="bottom-start" filterable placeholder="123" isArrow=false>
     <h-select-block :data="bigData" style="width:200px;"></h-select-block>
   </h-simple-select>
   <h-simple-select v-model="value1" multiple ref="test" placement="top-start" filterable checkToHead showBottom @on-change="change">
@@ -29,9 +29,9 @@ export default {
   data () {
     return {
       matchCol:['name','age'],
-      bigData:bigData,
+      bigData:[],
       value:'value0',
-      value1:['value0'],
+      value1:[],
       value2:'',
     }
   },
@@ -80,6 +80,10 @@ export default {
 
   },
   mounted(){
+    this.bigData = bigData;
+    setTimeout(() => {
+      this.value1 = ['value0'];
+    }, 1000);
   },
   watch:{
     data1(val){

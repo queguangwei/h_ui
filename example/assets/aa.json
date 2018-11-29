@@ -1,7 +1,7 @@
 [
         {
-		"fundId": 400002000002,
-		"tradeDate": 20180226,
+		"fundId": "400，002，000，002",
+		"tradeDate": "2018,0226",
 		"securityCode": "600000",
 		"securityName": "浦发银行",
 		"securityId": 84108,
@@ -32,7 +32,7 @@
 		"serialid": 696898,
 		"listState": 1
 	}, {
-		"fundId": 400002000002,
+		"fundId": "400,002,000,002",
 		"tradeDate": 20180214,
 		"securityCode": "600000",
 		"securityName": "浦发银行",
@@ -64,7 +64,7 @@
 		"serialid": 696925,
 		"listState": 1
 	}, {
-		"fundId": 400002000002,
+		"fundId": "400,002,000,002",
 		"tradeDate": 20180208,
 		"securityCode": "121002",
 		"securityName": "121002",
