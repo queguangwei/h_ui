@@ -491,7 +491,7 @@
                             <h-row>
                                 <h-col span="11">
                                      <h-form-item prop="date"> 
-                                        <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" disabled></h-date-picker>
+                                        <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" readonly></h-date-picker>
                                      </h-form-item> 
                                 </h-col>
                                 <h-col span="2" style="text-align: center">-</h-col>
@@ -993,6 +993,9 @@ ty: [
             handleRemove (index) {
                 this.formDynamic.items.splice(index, 1);
             }
+        },
+        mounted () {
+            this.formValidate.date = '20190812'
         }
     }
 function validFunc(rule, val, callback) {

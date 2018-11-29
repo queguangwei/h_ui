@@ -370,13 +370,12 @@ const router = new Router({
         name: 'FileExport',
         path: '/fileexport',
         component: require('../views/FileExport.vue')
+    },   
+    {
+        name: 'Split',
+        path: '/split',
+        component: require('../views/Split.vue')
     },
-    
-    // {
-    //     name: 'Split',
-    //     path: '/split',
-    //     component: require('../views/Split.vue')
-    // },
     {
         name: 'Drawer',
         path: '/drawer',
@@ -391,6 +390,11 @@ const router = new Router({
         name: 'Log',
         path: '/log',
         component: require('../views/Log.vue')
+    },
+    {
+        name: 'tag',
+        path: '/tag',
+        component: require('../views/tag.vue')
     }
  ]
 })

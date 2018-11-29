@@ -219,6 +219,9 @@
         <li>
           <router-link to="/log">Log</router-link>
         </li>
+        <li>
+          <router-link to="/tag">tag</router-link>
+        </li>
       </ul>
     </nav>
     <keep-alive>

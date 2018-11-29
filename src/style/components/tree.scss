@@ -47,7 +47,7 @@ $tree-prefix-cls: "#{$css-prefix}tree";
   }
   &-arrow {
     cursor: pointer;
-    width: 16px;
+    min-width: 16px;
     text-align: center;
     display: inline-block;
     i {

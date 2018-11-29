@@ -44,7 +44,7 @@
               <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, false)" :key="index">
             </colgroup>
             <tbody :class="[prefixCls + '-tbody']">
-              <template v-for="(row,index) in visibleData" >
+              <template v-for="row in visibleData">
                 <table-tr
                   :row="row"
                   :key="row._rowKey"
@@ -55,15 +55,21 @@
                   @dblclick.native.stop="dblclickCurrentRowTr(row._index)"
                 >
                   <td v-for="column in cloneColumns" :class="alignCls(column, row)" :key="column._index">
-                    <Cell
-                      :prefix-cls="prefixCls"
-                      :row="row"
-                      :key="column._columnKey"
-                      :column="column"
-                      :index="row._index"
-                      :checked="rowChecked(row._index)"
-                      :disabled="rowDisabled(row._index)"
-                    ></Cell>
+                    <div :class="classesTd(column)">
+                      <template v-if="column.type === 'index'">{{row._index}}</template>
+                      <template v-if="column.type === 'selection'">
+                        <Checkbox size="large" :value="rowChecked(row._index)" @click.native.stop="handleClickTr($event,row._index,rowChecked(row._index))" @on-change="toggleSelect(row._index)" :disabled="rowDisabled(row._index)"></Checkbox>
+                      </template>
+                      <template v-if="!column.type&&!column.render"><span v-html="row[column.key]"></span></template>
+                      <template v-if="column.render">
+                        <Cell
+                          :row="row"
+                          :key="column._columnKey"
+                          :column="column"
+                          :index="row._index"
+                        ></Cell>
+                      </template>
+                    </div>
                   </td>                  
                 </table-tr>
               </template>
@@ -111,7 +117,7 @@
             </thead>
           </table>
         </div>
-        <div :class="[prefixCls + '-fixed-body']" class="h-simple-view" :style="fixedBodyStyle" ref="fixedBody">
+        <div :class="[prefixCls + '-fixed-body']" class="h-simple-view" :style="fixedBodyStyle" ref="fixedBody" @mousewheel="handleFixedMousewheel" @DOMMouseScroll="handleFixedMousewheel">
           <div :class="[prefixCls + '-phantom']" :style="{height: contentHeight}">
           </div>
           <div class="h-simple-content" ref="leftContent">
@@ -120,7 +126,7 @@
                 <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, false)" :key="index">
               </colgroup>
               <tbody :class="[prefixCls + '-tbody']">
-                <template v-for="(row,index) in visibleData" >
+                <template v-for="row in visibleData" >
                   <table-tr
                     :row="row"
                     :key="row._rowKey"
@@ -131,7 +137,22 @@
                     @dblclick.native.stop="dblclickCurrentRowTr(row._index)"
                   >
                     <td v-for="column in cloneColumns" :class="alignCls(column, row,'left')" :key="column._index">
-                      <Cell
+                      <div :class="classesTd(column)">
+                        <template v-if="column.type === 'index'">{{row._index}}</template>
+                        <template v-if="column.type === 'selection'">
+                          <Checkbox size="large" :value="rowChecked(row._index)" @click.native.stop="handleClickTr($event,row._index,rowChecked(row._index))" @on-change="toggleSelect(row._index)" :disabled="rowDisabled(row._index)"></Checkbox>
+                        </template>
+                        <template v-if="!column.type&&!column.render"><span v-html="row[column.key]"></span></template>
+                        <template v-if="column.render">
+                          <Cell
+                            :row="row"
+                            :key="column._columnKey"
+                            :column="column"
+                            :index="row._index"
+                          ></Cell>
+                        </template>
+                      </div>
+                      <!-- <Cell
                         fixed="left"
                         :prefix-cls="prefixCls"
                         :row="row"
@@ -140,7 +161,7 @@
                         :index="row._index"
                         :checked="rowChecked(row._index)"
                         :disabled="rowDisabled(row._index)"
-                      ></Cell>
+                      ></Cell> -->
                     </td>                  
                   </table-tr>
                 </template>
@@ -163,7 +184,7 @@
 
 import renderHeader from './header';
 import Spin from '../Spin/Spin.vue';
-import { oneOf, getStyle, deepCopy, getScrollBarSize,findInx,getBarBottom,hasClass,addClass,removeClass,typeOf} from '../../util/tools';
+import { oneOf, getStyle, deepCopy, getScrollBarSize,findInx,getBarBottom,hasClass,addClass,removeClass,typeOf,getScrollBarSizeHeight} from '../../util/tools';
 import { on, off } from '../../util/dom';
 import Locale from '../../mixins/locale';
 import Mixin from './mixin';
@@ -258,9 +279,6 @@ export default {
       type: Boolean,
       default: false
     },
-    hasWidth:{
-      type:[String,Number],
-    },
     headAlgin:{
       validator (value) {
         return oneOf(value, ['left', 'center', 'right']);
@@ -293,6 +311,10 @@ export default {
       type:Array,
       default:null
     },
+    notAdaptive:{
+      type:Boolean,
+      default:false,
+    }
   },
   data () {
     return {
@@ -311,6 +333,7 @@ export default {
       bodyHeight: 0,
       bodyRealHeight: 0,
       scrollBarWidth: getScrollBarSize(),
+      scrollBarHeight: getScrollBarSizeHeight(),//横向高度
       currentContext: this.context,
       cloneData: deepCopy(this.data),    // when Cell has a button to delete row data, clickCurrentRow will throw an error, so clone a data
       resizeProxyVisible: false,
@@ -353,7 +376,7 @@ export default {
     },
     isSelectAll () {
       let isSelectAll = true;
-      if (!this.visibleData.length) isSelectAll = false;
+      if (!this.visibleData.length || !this.objData[0]) return false;
       for (let i = 0; i < this.visibleData.length; i++) {
         if (!this.objData[this.visibleData[i]._index]._isChecked && !this.objData[this.visibleData[i]._index]._isDisabled) {
           isSelectAll = false;
@@ -435,7 +458,7 @@ export default {
         if (this.bodyHeight === 0) {
           width = this.tableWidth;
         } else {
-          if (this.rebuildData.length==0) {
+          if (this.data.length==0) {
             width = this.tableWidth;
           } else {
             width = this.tableWidth - this.scrollBarWidth;
@@ -447,7 +470,7 @@ export default {
     },
     headStyles () {//深拷贝
       const style = Object.assign({}, this.tableStyle);
-      const width = this.rebuildData.length==0?parseInt(this.tableStyle.width):parseInt(this.tableStyle.width)+this.scrollBarWidth;
+      const width = this.data.length==0?parseInt(this.tableStyle.width):parseInt(this.tableStyle.width)+this.scrollBarWidth;
       style.width = `${width}px`;
       return style;
     },
@@ -496,9 +519,9 @@ export default {
     fixedBodyStyle () {
       let style = {};
       if (this.bodyHeight !== 0) {
-        let height = this.bodyHeight-this.scrollBarWidth;
+        let height = this.bodyHeight- this.scrollBarHeight;
         if (this.tableWidth < this.initWidth+1) {
-          height = this.bodyHeight + this.scrollBarWidth-1;
+          height = this.bodyHeight-1;
         }
         style.height = `${height}px`;
       }
@@ -506,11 +529,10 @@ export default {
     },
     textStyle(){
       let style = {};
-      // style.width = this.initWidth!=0?this.initWidth+'px': this.hasWidth ? this.hasWidth+'px' : '100%';
       style.width = this.initWidth!=0?this.initWidth+'px':'100%';
       const height = this.bodyHeight;
-      style.height = this.height?Number(height-this.scrollBarWidth)+'px':null;
-      style.lineHeight = this.height?Number(height-this.scrollBarWidth)+'px':null;
+      style.height = this.height?Number(height-this.scrollBarHeight)+'px':null;
+      style.lineHeight = this.height?Number(height-this.scrollBarHeight)+'px':null;
       return style;
     },
     leftFixedColumns () {
@@ -526,10 +548,10 @@ export default {
         return left.concat(other);
     },
     isLeftFixed () {
-        return this.columns.some(col => col.fixed && col.fixed === 'left');
+      return this.columns.some(col => col.fixed && col.fixed === 'left');
     },
     isRightFixed () {
-        return this.columns.some(col => col.fixed && col.fixed === 'right');
+      return this.columns.some(col => col.fixed && col.fixed === 'right');
     },
     contentHeight() {
       return this.rebuildData.length * this.itemHeight + 'px';
@@ -556,16 +578,23 @@ export default {
       return [
         `${this.prefixCls}-cell`,
         {
-          [`${this.prefixCls}-cell-ellipsis`]: column.ellipsis || false,
+          [`${this.prefixCls}-cell-ellipsis`]: column.ellipsis && column.ellipsis!='false',
         }
       ];
     },
     rowChecked (_index) {
-      // return true;
-      return this.objData[_index]._isChecked;
+      if(!this.objData[_index]){
+        return false;
+      }else{
+        return this.objData[_index]._isChecked;
+      }
     },
     rowDisabled(_index){
-      return this.objData[_index]._isDisabled;
+      if(!this.objData[_index]){
+        return false;
+      }else{
+        return this.objData[_index]._isDisabled;
+      }
     },
     changeWidth(width,key,lastWidth){
       var that = this;
@@ -576,18 +605,20 @@ export default {
           that.$set(col,"width",width);
           that.$set(col,"_width",width);
         }
-        if (i == lastInx && this.cloneColumns[lastInx].fixed!='right') {
+        // && !that.notAdaptive
+        if (i == lastInx && !that.notAdaptive) {
           that.$set(col,"width",lastWidth);
           that.$set(col,"_width",lastWidth);
         }
         var colWidth = col.width||col._width
         totalWidth = totalWidth+ colWidth;
       });
-      if (this.bodyHeight !== 0) {
+      if (this.rebuildData.length !=0 && !that.notAdaptive) {
         totalWidth = totalWidth + this.scrollBarWidth;
       }
       this.tableWidth=totalWidth;
-      if (this.cloneColumns[lastInx].fixed!='right' && this.tableWidth<this.initWidth) {
+      // && !that.notAdaptive
+      if (this.tableWidth<this.initWidth && !that.notAdaptive) {
         this.tableWidth = this.initWidth-1;
       }
       this.$nextTick(()=>{
@@ -712,15 +743,12 @@ export default {
     },
     handleResize () {
       this.$nextTick(() => {
-        if(this.columns.length==0) return;
+        if(this.cloneColumns.length==0) return;
         const allWidth = !this.columns.some(cell => !cell.width&&cell.width!==0);    // each column set a width
         if (allWidth) {
           this.tableWidth = this.columns.map(cell => cell.width).reduce((a, b) => a + b);
         } else {
           this.tableWidth = parseInt(getStyle(this.$el, 'width')) - 1;
-          if (!this.tableWidth&&this.hasWidth) {
-            this.tableWidth = this.hasWidth-1;
-          }
         }
         this.columnsWidth = {};
         this.$nextTick(() => {
@@ -771,7 +799,6 @@ export default {
               };
             }
             // this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b);
-            console.log('this.tableWidth'+this.tableWidth)
             this.columnsWidth = columnsWidth;
           }
 
@@ -867,7 +894,7 @@ export default {
           this.$emit('on-selection-change',this.getSelection(),this.getSelection(true));
         })
     },
-    clickCurrentRowTr (event,_index) {       
+    clickCurrentRowTr (event,_index) { 
       if (!event.shiftKey && !event.ctrlKey) {
         if(this.rowSelect){
           // this.objData[_index]._isChecked=!this.objData[_index]._isChecked;
@@ -1086,13 +1113,48 @@ export default {
       this.$refs.header.scrollLeft = event.target.scrollLeft;
       if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = scrolltop;
       // if (this.isRightFixed) this.$refs.fixedRightBody.scrollTop = event.target.scrollTop;
-      this.buttomNum = getBarBottom(event.target,this.scrollBarWidth);
+      this.buttomNum = getBarBottom(event.target,this.scrollBarHeight);
       let curtop = Math.floor(scrolltop / this.itemHeight)*this.itemHeight;
       this.$refs.content.style.transform = `translate3d(0, ${curtop}px, 0)`;
       if(this.$refs.leftContent){
         this.$refs.leftContent.style.transform = `translate3d(0, ${curtop}px, 0)`;
       }
       setTimeout(()=>{this.updateVisibleData(scrolltop)},0);
+    },
+    handleFixedMousewheel(event) {
+      let deltaY = event.deltaY;
+      if(!deltaY && event.detail){
+          deltaY = event.detail * this.itemHeight;
+      }
+      if(!deltaY && event.wheelDeltaY){
+          deltaY = -event.wheelDeltaY;
+      }
+      if(!deltaY && event.wheelDelta){
+          deltaY = -event.wheelDelta;
+      }
+      if(!deltaY) return;
+      const body = this.$refs.body;
+      const currentScrollTop = body.scrollTop;
+      if (deltaY < 0 && currentScrollTop !== 0) {
+          event.preventDefault();
+      }
+      if (deltaY > 0 && body.scrollHeight - body.clientHeight > currentScrollTop) {
+          event.preventDefault();
+      }
+      //body.scrollTop += deltaY;
+      let step = 0;
+      let timeId = setInterval(()=>{
+          step += this.itemHeight;
+          if(deltaY>0){
+              body.scrollTop += this.itemHeight;
+          }
+          else{
+              body.scrollTop -= this.itemHeight;
+          }
+          if(step >= Math.abs(deltaY)){
+              clearInterval(timeId);
+          }
+      }, 1);
     },
     updateVisibleData(scrollTop) {
       scrollTop = scrollTop || this.$refs.body.scrollTop;
@@ -1229,17 +1291,17 @@ export default {
       });
       return left.concat(center).concat(right);
     },
-    rowClasses (_index) {
-      return [
-        `${this.prefixCls}-row`,
-        this.rowClsName(_index),
-        {
-          [`${this.prefixCls}-row-checked`]: this.objData[_index] && this.objData[_index]._isChecked,
-          [`${this.prefixCls}-row-highlight`]: this.objData[_index] && this.objData[_index]._isHighlight,
-          [`${this.prefixCls}-row-hover`]: this.objData[_index] && this.objData[_index]._isHover
-        }
-      ];
-    },
+    // rowClasses (_index) {
+    //   return [
+    //     `${this.prefixCls}-row`,
+    //     this.rowClsName(_index),
+    //     {
+    //       [`${this.prefixCls}-row-checked`]: this.objData[_index] && this.objData[_index]._isChecked,
+    //       [`${this.prefixCls}-row-highlight`]: this.objData[_index] && this.objData[_index]._isHighlight,
+    //       [`${this.prefixCls}-row-hover`]: this.objData[_index] && this.objData[_index]._isHover
+    //     }
+    //   ];
+    // },
     rowClsName (_index) {
       return this.rowClassName(this.objData[_index], _index);
     },
@@ -1305,20 +1367,19 @@ export default {
   watch: {
       data: {
         handler () {
-          const oldDataLen = this.rebuildData.length;
-          this.objData = this.makeObjData();
+          // const oldDataLen = this.rebuildData.length;
           this.rebuildData = this.makeDataWithSortAndFilter();
-          if (!oldDataLen) {
-            this.fixedHeader();
-          }
+          // this.rebuildData = this.data;
+          // if (!oldDataLen) {
+          //   this.fixedHeader();
+          // }
           this.updateVisibleData();
           this.handleResize();
           // here will trigger before clickCurrentRow, so use async
-          setTimeout(() => {
+          this.$nextTick(()=>{
+            this.objData = this.makeObjData();
             this.cloneData = deepCopy(this.data);
-            this.buttomNum = null;
-            this.topNum = null;
-          }, 0);
+          })
         },
         deep: true
       },
@@ -1338,9 +1399,6 @@ export default {
       },
       height () {
           this.fixedHeader();
-      },
-      hasWidth(){
-        this.handleResize();
       },
       buttomNum(val,oldvalue){
         // if(val == 0){

@@ -3,7 +3,7 @@
     <h2>基础</h2>
      <h-msg-box v-model="msgbox">
       <p slot="header">你好呀</p>
-      <h-table :columns="columns1" :data="[]" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag">
+      <h-table :columns="columns1" :data="[]" headAlgin="center" border :highlight-row="true" @on-current-change="click1" :loading="loading" bodyAlgin="left" @on-drag="onDrag">
         <span slot="loading">我是自定义加载！！！</span>
       </h-table>
     </h-msg-box> 
@@ -11,7 +11,8 @@
     <Button @click="getData">重新赋值</Button>
     <h-input v-model="aaa"></h-input> -->
      <Button @click="changemsg">显示</Button>
-    <h-table :columns="columns1" :multiLevel="multiLevel1" :data="[]" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="200" canMove @on-move="onMove" :lastColWidth="150">
+     <!-- :multiLevel="multiLevel1" -->
+    <h-table :columns="columns1" :data="[]" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="200" canMove @on-move="onMove" :lastColWidth="150">
       <span slot="loading">我是自定义加载！！！</span>
     </h-table>
     <h-button @click="setLoading">切换状态</h-button>
@@ -314,8 +315,8 @@ export default {
         {
             "name": "推广名称1",
             "fav": 0,
-            "show": 7302,
-            "weak": 5627,
+            "show": "730,124,2",
+            "weak": "730,124,2",
             "signin": 1563,
             "click": 4254,
             "active": 1438,
@@ -1719,7 +1720,8 @@ export default {
         { 
           type: 'selection',
           align: 'center',
-          width:200
+          width:200,
+          fixed:'left'
         },
         {
           title: '姓名',
@@ -1736,35 +1738,36 @@ export default {
           title: '地址',
           ellipsis:true,
           key: 'address',
-          hiddenCol:true,
+          width:200
+          // hiddenCol:true,
         },
-        // {
-        //   title: '地址1',
-        //   key: 'address1',
-        // },
-        // {
-        //   title: '地址2',
-        //   key: 'address2',
-        // },
-        // {
-        //   title: '地址3',
-        //   key: 'address3',
-        // },
-        // {
-        //   title: '地址4',
-        //   key: 'address4',
-        //   sortType:'asc',
-        // },
-        // {
-        //   title: '地址5',
-        //   key: 'marketNo',
-        //   sortType:'asc',
-        // },
-        // {
-        //   title: '地址6',
-        //   key: 'tradeQuantity',
-        //   sortType:'asc',
-        // }
+        {
+          title: '地址1',
+          key: 'address1',
+        },
+        {
+          title: '地址2',
+          key: 'address2',
+        },
+        {
+          title: '地址3',
+          key: 'address3',
+        },
+        {
+          title: '地址4',
+          key: 'address4',
+          sortType:'asc',
+        },
+        {
+          title: '地址5',
+          key: 'marketNo',
+          sortType:'asc',
+        },
+        {
+          title: '地址6',
+          key: 'tradeQuantity',
+          sortType:'asc',
+        }
     ]
   },
   beforeCreate(){

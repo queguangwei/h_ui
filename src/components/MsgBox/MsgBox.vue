@@ -259,6 +259,7 @@ export default {
     EscClose (e) {
       if (this.visible && this.escClose) {
         if (e.keyCode === 27) {
+          this.$emit('on-cancel');
           this.close();
         }
       }

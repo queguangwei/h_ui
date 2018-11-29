@@ -119,7 +119,23 @@ export default {
       // if (this.mode === 'vertical') return;
       // collapse为true时，可以鼠标经过
       if (this.mode === 'vertical' && !this.collapse&&!this.showSlide) return;
-      this.parent.updateOpenKeys(this.name);
+       // 考虑嵌套一层及三级侧边展开的情况--理财5.0 三级侧边展开时需要保存当前二级展开情况
+      let submenuList = []
+      if (this.parent.vertiSide && this.showSlide) {
+        function findSubmenu (context, componentName) {
+          let parent = context.$parent;
+          let name = parent.$options.name;
+          // 需找到二级菜单
+          while (parent && (!name || [componentName].indexOf(name) < 0 || parent.showSlide)) {
+            parent = parent.$parent;
+            if (parent) name = parent.$options.name;
+          }
+          return parent;
+        }
+        let submenuItem = findSubmenu(this, 'Submenu')
+        submenuList.push(submenuItem.name)
+      }
+      this.parent.updateOpenKeys(this.name, submenuList);
       clearTimeout(this.timeout);
       this.timeout = setTimeout(() => {
           this.opened = false;
@@ -137,10 +153,18 @@ export default {
             if (item.$options.name === 'Submenu') item.opened = false;
           });
         } else if (Number(this.parent.nestIndex) == 1 && this.$parent.$parent.$options.name !== 'Submenu') {
-          this.parent.$children.forEach(item => {
-            if (item.$children && item.$children[0].$options.name === 'Submenu') item.$children[0].opened = false;
-          });
-        }
+          if (this.parent.$children && this.parent.$children.length == 1) {
+            // 垂直嵌套一层-menu下一个嵌套层级，同时该嵌套层级中多个submenu及其子元素-参考业务基础框架sidebar--sidebarItem
+            this.parent.$children[0].$children.forEach(item => {
+              if (item && item.$options.name === 'Submenu') item.opened = false;
+            })
+          } else {
+            // 平级嵌套，menu下多个嵌套一层组件的submenu
+            this.parent.$children.forEach(item => {
+              if (item.$children && item.$children[0].$options.name === 'Submenu') item.$children[0].opened = false;
+            });
+          }
+        } 
       }
       // if (this.accordion && this.$parent.$options.name !== 'Submenu') {
       //   this.parent.$children.forEach(item => {

@@ -148,7 +148,7 @@
       var str=this.$el.innerText
       this.searchLabel = str.replace('false','').replace('true','').trim();
       // this.searchLabel =str.slice(Number(str.indexOf('</label>')+9));
-      this.dispatch('Select', 'append');
+      this.dispatch('SimpleSelect', 'append');
       this.$on('on-select-close', () => {
         this.isFocus = false;
       });
@@ -170,6 +170,7 @@
           this.$nextTick(()=>{
             this.cloneData = deepCopy(this.data);
           })
+           this.$parent.$parent.updateOptions();
         }
       },
       cloneData:{

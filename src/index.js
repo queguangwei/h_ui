@@ -70,6 +70,7 @@ import Drawer from './components/Drawer';
 import Log from './components/Log';
 // import FileImport from './components/FileImport';
 // import FileExport from './components/FileExport';
+import Tag from './components/Tag';
 import locale from './locale';
 
 
@@ -241,7 +242,9 @@ const h_ui = {
     Drawer:Drawer,
     hDrawer:Drawer,
     Log:Log,
-    hLog:Log
+    hLog:Log,
+    Tag:Tag,
+    hTag:Tag
     // FileImport:FileImport,
     // hFileImport:FileImport,
     // FileExport: FileExport,
@@ -256,7 +259,7 @@ const install = function(Vue, opts = {}) {
     });
     // Object.keys(Directives).forEach(key => {
     //   Vue.directive(key, Directives[key])
-    // })s
+    // })
     Vue.prototype.$hLoading = LoadingBar;
     Vue.prototype.$hMessage = Message;
     Vue.prototype.$hMsgBox = MsgBox;

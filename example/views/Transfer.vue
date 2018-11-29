@@ -58,7 +58,7 @@
   export default {
     data () {
       return {
-        data0:this.getMockData(),
+        data0:[],
         targetKeys0:[],
         data1: this.getMockData(),
         targetKeys1: this.getTargetKeys(),
@@ -124,6 +124,10 @@
       
     },
     mounted () {
+      let that = this;
+      setTimeout(()=>{
+        that.data0 = this.getMockData();
+      },2000)
       // this.updateTree(this.baseData);
     }
   }

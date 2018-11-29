@@ -6,7 +6,7 @@ $tag-close-prefix-cls: h-icon-ios-close-empty;
     height: 22px;
     line-height: 22px;
     margin: 4px 0px 2px 4px;
-    padding: 0 2px;
+    padding: 0 8px;
     border: 1px solid $border-color-split;
     border-radius: $btn-border-radius-small;
     // background: $background-color-base;
@@ -19,6 +19,15 @@ $tag-close-prefix-cls: h-icon-ios-close-empty;
     //transition: all @transition-time @ease-in-out;
     > i {
         font-size: 12px;
+        margin-left: 4px;
+    }
+    &:not(.#{$tag-prefix-cls}-border):not(.#{$tag-prefix-cls}-dot):not(.#{$tag-prefix-cls}-checked){
+        background: transparent;
+        border: 0;
+        color: $text-color;
+        .#{$tag-close-prefix-cls} {
+            color: $text-color !important;
+        }
     }
     &-dot{
         height: 32px;
@@ -34,7 +43,7 @@ $tag-close-prefix-cls: h-icon-ios-close-empty;
             height: 12px;
             margin-right: 8px;
             border-radius: 50%;
-            background: $border-color-split;
+            background: $border-color-base;
             position: relative;
             top: 1px;
         }
@@ -168,6 +177,47 @@ $tag-close-prefix-cls: h-icon-ios-close-empty;
         .#{$tag-close-prefix-cls}:hover {
             color: #fff;
         }
+    }
+
+    &-primary,
+    &-success,
+    &-warning,
+    &-error {
+        border: 0;
+        &,
+        a,
+        a:hover,
+        .#{$tag-close-prefix-cls},
+        .#{$tag-close-prefix-cls}:hover {
+            color: #fff;
+        }
+        //.@{tag-close-prefix-cls}{
+        //    top: 2px;
+        //}
+    }
+
+    &-primary,
+    &-primary.#{$tag-prefix-cls}-dot &-dot-inner
+    {
+        background: $link-color;
+    }
+
+    &-success,
+    &-success.#{$tag-prefix-cls}-dot &-dot-inner
+    {
+        background: $success-color;
+    }
+
+    &-warning,
+    &-warning.#{$tag-prefix-cls}-dot &-dot-inner
+    {
+        background: $warning-color;
+    }
+
+    &-error,
+    &-error.#{$tag-prefix-cls}-dot &-dot-inner
+    {
+        background: $error-color;
     }
 
 }

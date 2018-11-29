@@ -17,9 +17,7 @@ export default {
                     [`${this.prefixCls}-hidden`]: (fixed === 'left' && column.fixed !== 'left') || (fixed === 'right' && column.fixed !== 'right') || (!fixed && column.fixed && (column.fixed === 'left' || column.fixed === 'right'))
                 }
             ];
-        },
-        isPopperShow (column) {
-            return column.filters && ((!this.fixed && !column.fixed) || (this.fixed === 'left' && column.fixed === 'left') || (this.fixed === 'right' && column.fixed === 'right'));
+        
         },
         setCellWidth (column, index, top) {
             let width = '';
@@ -29,8 +27,10 @@ export default {
                 width = this.columnsWidth[column._index].width;
             }
             // when browser has scrollBar,set a width to resolve scroll position bug
-            if (this.cloneColumns.length === index + 1 && top && this.bodyHeight !== 0&&this.rebuildData.length>0) {
-                width += this.scrollBarWidth;
+            if (this.cloneColumns.length === index + 1 && top && this.bodyHeight !== 0&& width!='') {
+                if(this.tableWidth+1>=this.initWidth-this.scrollBarWidth){
+                    width += this.scrollBarWidth;
+                }
             }    
             if (width === '0') width = '';
             return width;

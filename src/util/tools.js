@@ -271,6 +271,46 @@ export function getScrollBarSize (fresh) {
   }
   return cached;
 }
+let cachedHeight;
+export function getScrollBarSizeHeight (fresh) {
+  if (isServer) return 0;
+  if (fresh || cachedHeight === undefined) {
+    const inner = document.createElement('div');
+    inner.style.width = '100%';
+    inner.style.height = '100%';
+
+    const outer = document.createElement('div');
+    const outerStyle = outer.style;
+
+    outerStyle.position = 'absolute';
+    outerStyle.top = 0;
+    outerStyle.left = 0;
+    outerStyle.pointerEvents = 'none';
+    outerStyle.visibility = 'hidden';
+    outerStyle.width = '200px';
+    outerStyle.height = '150px';
+    outerStyle.overflow = 'hidden';
+
+    outer.appendChild(inner);
+
+    document.body.appendChild(outer);
+    //clientWidth是对象看到的宽度（不含边线,即border）
+    // scrollWidth是对象实际内容的宽度（不含边线和padding）。
+    // offsetWidth是指对象自身的宽度，整型，单位像素（含边线，如滚动条等）。
+    const heightContained = inner.offsetHeight;
+    outer.style.overflow = 'scroll';
+    let heigtcroll = inner.offsetHeight;
+
+    if (heightContained === heigtcroll) {
+        heigtcroll = outer.clientHeight;
+    }
+
+    document.body.removeChild(outer);
+
+    cachedHeight = heightContained - heigtcroll;
+  }
+  return cachedHeight;
+}
 function typeOf(obj) {
   const toString = Object.prototype.toString;
   const map = {
