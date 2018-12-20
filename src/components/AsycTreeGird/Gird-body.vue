@@ -14,7 +14,7 @@
           @click.native="clickCurrentRow(index)"
           v-show="show(row)" :class="{'child-tr':row._parent}">
           <td v-for="(column,inx) in columns" :class="alignCls(column, row)" >
-             <Cell
+            <Cell
               :prefix-cls="prefixCls"
               :row="row"
               :parent="parent"

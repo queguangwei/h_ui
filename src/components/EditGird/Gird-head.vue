@@ -5,7 +5,12 @@
       <col v-for="(column, index) in columns" :width="setCellWidth(column, index, true)" :key="index">
     </colgroup>
     <thead>
-      <tr>
+      <tr v-if="multiLevel" v-for="(colItem,inx) in multiData" :key="inx">
+        <th v-for="(multi, index) in colItem" :colspan="multi.cols||1" :rowspan="multi.rows||1" :key="index" :class="aliCls(multi)">
+          <div :class="[prefixCls+'-cell']"><span>{{multi.title}}</span></div>
+        </th>
+      </tr>
+      <tr class="cur-th">
         <th v-for="(column, index) in columns"
           :class="alignCls(column)" 
           :key="index"
@@ -57,12 +62,14 @@ export default {
       type: [Boolean, String],
       default: false
     },
+    multiLevel:Array,
   },
   data(){
     return{
       draggingColumn: null,
       dragging: false,
-      dragState: {}
+      dragState: {},
+      multiData:null,
     }
   },
   computed: {
@@ -85,6 +92,7 @@ export default {
     }
   },
   mounted(){
+    this.multiData = this.multiLevel;
   },
   methods: {
     cellClasses (column) {
@@ -97,6 +105,19 @@ export default {
       this.$parent.selectAll(status);
     },
     handleSortByHead (index) {
+    },
+    aliCls(item){
+      return[
+        { 
+          [`${item.className}`]: item.className,
+          [`${this.prefixCls}-column-${item.align}`]: item.align,
+        }
+      ]
+    }
+  },
+  watch:{
+    multiLevel(val){
+      this.multiData = this.multiLevel;
     }
   }
 };

@@ -23,6 +23,7 @@
 <script>
   import XLSX from 'xlsx'
   const prefixCls = 'h-upload' //套用upload 样式
+  import encoding from 'encoding'
   import { oneOf } from '../../util/tools.js';
   export default {
     data () {
@@ -121,8 +122,21 @@
             Object.entries(workbook.Sheets).forEach(([sheet, value], index) => {
               if (workbook.Sheets.hasOwnProperty(sheet) && (index >= excelIdx && index < excelIdx + excelSize)) {
                 fromTo = workbook.Sheets[sheet]['!ref']
-                sheetData[sheet] = XLSX.utils.sheet_to_json(workbook.Sheets[sheet], {defval:""})
-                tableData.push(XLSX.utils.sheet_to_json(workbook.Sheets[sheet], {defval:""}))
+                let dataItem = XLSX.utils.sheet_to_json(workbook.Sheets[sheet], {defval:""})
+                const decoder = new TextDecoder()
+                if (that.fileName.indexOf('dbf') > 0){
+                  dataItem.forEach(cell => {
+                    for (let key in cell) {
+                      if (typeof cell[key] == 'string') {
+                        cell[key] = decoder.decode(encoding.convert(cell[key], 'utf-8', 'GB2312'))
+                      }
+                    }
+                  })
+                }
+                // sheetData[sheet] = XLSX.utils.sheet_to_json(workbook.Sheets[sheet], {defval:""})
+                // tableData.push(XLSX.utils.sheet_to_json(workbook.Sheets[sheet], {defval:""}))
+                sheetData[sheet] = dataItem
+                tableData.push(dataItem)
               }
             })
             if (tableData.length > 0) {

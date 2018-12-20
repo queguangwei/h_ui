@@ -31,16 +31,17 @@
     </div>
 
     <upload-list
-      v-if = "showUploadList"
-      v-show = "!showUploadedList"
+      v-if = "showUploadList && !showUploadedList"
       :files = "fileList"
       @on-file-remove = "handleRemove"
+      @on-file-click = "handleListClick"
       @on-file-preview = "handlePreview"
-      ref="postFileList"></upload-list>
+      ref="postFileList">
+        <slot name="uploadlist"></slot> 
+    </upload-list>
 
     <!-- 已上传列表 -->
-    <div v-if = "selfConfig && showUploadList"
-         v-show = "showUploadedList"
+    <div v-if = "selfConfig && showUploadList && showUploadedList"
          :class="[prefixCls + '-uploaded-wrap']">
       <div :class="[prefixCls + '-uploaded-title']">
         <span>
@@ -59,8 +60,12 @@
         <upload-list  
           :files = "uploadedFileList"
           showUploaded = "showLi"
+          @on-file-click = "handleListClick"
           @on-file-remove = "handleUploadedRemove"
-          @on-file-preview = "handlePreview"></upload-list>
+          @on-file-preview = "handlePreview">
+           <slot name="uploadlist"></slot> 
+        </span>          
+      </upload-list>
         <!-- 其中showUploadList,用于控制是否显示列表，showUploaded用于控制是否显示已上传列表，当显示已上传列表时，isShow失效 -->
       </div>
     </div>
@@ -177,6 +182,13 @@ export default {
         return [];
       }
     },
+    // 自定义上传成功函数
+    onSelfSuccess: {
+      type: Function,
+      default () {
+        return {};
+      }
+    },
     selfConfig: {
       type: Boolean,
       default: false
@@ -198,7 +210,8 @@ export default {
       showUploadedList: false, // 是否显示已上传列表
       selfConfPostList: [], //手动上传时，保存真正的文件列表
       fileNoneStatus: '',// 全部上传时的待上传文件selfConfPostList清空时的状态 success/error/clear（成功/失败/清除后清空）
-      isFirstChoose: true //是否第一次选择文件
+      isFirstChoose: true, //是否第一次选择文件
+      uploadAllAutoList: [] //uploadAll时，自动上传的list
     };
   },
   computed: {
@@ -307,15 +320,19 @@ export default {
       this.uploadFiles(e.dataTransfer.files);
     },
     uploadFiles (files) {
+      this.uploadAllList = []
       let postFiles = Array.prototype.slice.call(files);
       if (!this.multiple) postFiles = postFiles.slice(0, 1);
 
       if (postFiles.length === 0) return;
-      // 全部上传
+      // 全部上传(非自定义)
       postFiles.forEach(file => {
         this.upload(file);
           
       });
+      if (this.uploadAll && !this.selfConfig) {
+        this.startPost(this.uploadAllAutoList)
+      }
     },
     upload (file) {
       if (!this.beforeUpload) {
@@ -366,6 +383,8 @@ export default {
           return 
         }
         return 
+      } else if (this.uploadAll) {
+        this.uploadAllAutoList.push(file)
       } else {
         this.startPost(file)
       }
@@ -459,6 +478,8 @@ export default {
         file.forEach(item => {
           this.handleSuccessFile(res, item)
         })
+        // 自定义上传成功函数
+        this.onSelfSuccess(res, file)
         this.fileNoneStatus = 'success'
         this.isFirstChoose = true
         this.selfConfPostList = []
@@ -511,6 +532,9 @@ export default {
       if (file.status === 'finished') {
         this.onPreview(file);
       }
+    },
+    handleListClick (file) {
+      this.$emit('on-file-click', file)
     },
     clearFiles() {
       this.fileList = []

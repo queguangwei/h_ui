@@ -104,7 +104,8 @@ export default {
             next5: 'Next 5 Pages',
             page: '/page',
             goto: 'Goto',
-            p: ''
+            p: '',
+            pageLabel: "Per page"
         },
         rate: {
             star: 'Star',

@@ -1,7 +1,7 @@
 <template>
-  <collapse-transition>
+  <!-- <collapse-transition> -->
     <!-- <ul :class="classes" v-show="visible"> -->
-    <ul :class="classes">
+    <!-- <ul :class="classes"> -->
       <li>
         <div :class="`${prefixCls}-item`" tabindex="-1" @keydown="handleKeydown">
           <span :class="arrowClasses" @click="handleExpand">
@@ -18,20 +18,22 @@
           <Render v-else-if="isParentRender" :render="parentRender" :data="data" :node="node"></Render>
           <span v-else :class="titleClasses" @click="handleSelect">{{data.title}}</span>        
         </div>
-        <Tree-node
-          v-if="data.expand && data.expand!='false' && (!data.leaf||data.leaf=='false')"
-          v-for="(item,i) in data.children"
-          :key="i"
-          :data="item"
-          :multiple="multiple"
-          :checkStrictly="checkStrictly"
-          :selectToCheck="selectToCheck"
-          :showIndeterminate="showIndeterminate"
-          :show-checkbox="showCheckbox">
-        </Tree-node>
+        <ul :class="classes" ref="children"  v-if="childrenShow">
+          <Tree-node
+            v-if="data.expand && data.expand!='false' && (!data.leaf||data.leaf=='false')"
+            v-for="(item,i) in data.children"
+            :key="i"
+            :data="item"
+            :multiple="multiple"
+            :checkStrictly="checkStrictly"
+            :selectToCheck="selectToCheck"
+            :showIndeterminate="showIndeterminate"
+            :show-checkbox="showCheckbox">
+          </Tree-node>
+        </ul>
       </li>
-    </ul>
-  </collapse-transition>
+    <!-- </ul> -->
+  <!-- </collapse-transition> -->
 </template>
 <script>
   import Checkbox from '../Checkbox/Checkbox.vue';
@@ -77,7 +79,9 @@
     data () {
       return {
         prefixCls: prefixCls,
-        indeterminate: false
+        indeterminate: false,
+        childrenShow:this.data.expand && this.data.expand!='false' && (!this.data.leaf||this.data.leaf=='false'),
+        iconShow:this.data.expand && this.data.expand!='false'
       };
     },
     computed: {
@@ -98,7 +102,7 @@
           `${prefixCls}-arrow`,
           {
             [`${prefixCls}-arrow-disabled`]: this.data.disabled,
-            [`${prefixCls}-arrow-open`]: this.data.expand && this.data.expand!='false',
+            [`${prefixCls}-arrow-open`]: this.iconShow,
             // [`${prefixCls}-arrow-hidden`]: !(this.data.children && this.data.children.length)
           }
         ];
@@ -185,20 +189,39 @@
           }
         }
         if (item.children && item.children.length >= 0) {
-          // 问题：autoLoad为true时，expand设置无效，原因：autoLoad会触发两次expand
-          // 解决：需动态管理autoLoad，在有子数据时，关闭autoLoad,expand维持原有值，autoLoad为false时，触发expand切换，兼容点击按钮进行loadData方式
-          let status = Boolean(this.data.expand&&this.data.expand!='false');
-          if (this.data.autoLoad && this.data.autoLoad!='false') {
+          if(!this.childrenShow){
+            this.childrenShow = true;
+            this.$set(this.data, 'expand', true)
+            this.dispatchTree()
+          }else{
+            let status = true;
+            if(this.$refs.children.style.display=='none'){
+              status = false;
+            }
+            this.$refs.children.style.display=status?'none':'block';
+            this.dispatchTree()
+          }
+          // let status = Boolean(this.data.expand&&this.data.expand!='false');
+          // if (this.data.autoLoad && this.data.autoLoad!='false') {
+            // this.$set(this.data, 'autoLoad', !this.data.autoLoad);
+            // this.$set(this.data, 'autoLoad', false);
+            // this.$set(this.data, 'expand', status);
+          // } else {
+            // this.$set(this.data, 'expand', !status);
+            // this.dispatch('Tree', 'toggle-expand', this.data);
+          // }
+        }
+        this.iconShow=!this.iconShow;
+      },
+      dispatchTree(){
+        if (this.data.autoLoad && this.data.autoLoad!='false') {
             // this.$set(this.data, 'autoLoad', !this.data.autoLoad);
             this.$set(this.data, 'autoLoad', false);
-            this.$set(this.data, 'expand', status);
+            // this.$set(this.data, 'expand', status);
           } else {
-            this.$set(this.data, 'expand', !status);
+            // this.$set(this.data, 'expand', !status);
             this.dispatch('Tree', 'toggle-expand', this.data);
           }
-          // this.$set(this.data, 'expand', !this.data.expand);
-          // this.dispatch('Tree', 'toggle-expand', this.data);
-        }
       },
       handleSelect () {
         if (this.data.disabled) return;

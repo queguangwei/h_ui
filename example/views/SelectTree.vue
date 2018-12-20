@@ -24,9 +24,9 @@
     {{valc}}
     <br><br><br>
     <h2>showCheckbox表示多选默认不显示半选中状态</h2>
-    <h-select-tree v-model="val1" style="width:200px" :data="baseData3" showCheckbox checkStrictly @on-check-change="selectChange" isString expanLevel=1 ></h-select-tree>
+    <h-select-tree v-model="val1" style="width:200px" :data="baseData3" showCheckbox checkStrictly @on-check-change="selectChange" isString expanLevel=0 ></h-select-tree>
     {{val1}}
-    <h-select-tree v-model="val2" style="width:200px" :firstValue="firstVal1" :data="baseData" checkStrictly showCheckbox isString></h-select-tree>
+    <h-select-tree v-model="val2" style="width:200px" :firstValue="firstVal1" :data="baseData" onlyChild showCheckbox isString></h-select-tree>
     {{val2}}
     <h-select-tree v-model="val4" :data="baseData" showCheckbox disabled></h-select-tree>
     <br><br><br>
@@ -134,26 +134,7 @@
           }
         ],
         baseData2: [],
-        baseData3: [{
-            title: 'parent 1',
-            checked:'true',
-            children: [{
-              title: 'parent 1-0',
-              children: [{
-                title: 'leaf',
-                disableCheckbox: 'true'
-              }, {
-                title: 'leaf1',
-                disableCheckbox: 'false'
-              }]
-            }, {
-              title: 'parent 1-1',
-              children: [{
-                title: 'leaf2',
-                disabled:'false',
-              }]
-            }]
-        }],
+        baseData3: [ { "title": "子系统", "id": "0006", "parent_id": "bizroot", "kind_code": "", "order_no": 0, "type": "5", "children": [ { "title": "O4.5", "id": "3327", "parent_id": "0006", "kind_code": "", "order_no": 0, "type": "5", "children": [ { "title": "基础", "id": "3331", "parent_id": "3327", "kind_code": "", "order_no": 0, "type": "5", "children": [], "expand": "false" }, { "title": "报表", "id": "3332", "parent_id": "3327", "kind_code": "", "order_no": 0, "type": "5", "children": [], "expand": "false" }, { "title": "风控", "id": "3333", "parent_id": "3327", "kind_code": "", "order_no": 0, "type": "5", "children": [], "expand": "false" }, { "title": "衍生品", "id": "3334", "parent_id": "3327", "kind_code": "", "order_no": 0, "type": "5", "children": [], "expand": "false" }, { "title": "权益", "id": "3335", "parent_id": "3327", "kind_code": "", "order_no": 0, "type": "5", "children": [], "expand": "false" }, { "title": "固收", "id": "3336", "parent_id": "3327", "kind_code": "", "order_no": 0, "type": "5", "children": [], "expand": "false" }, { "title": "用户中心", "id": "34", "parent_id": "3327", "kind_code": "", "order_no": 0, "type": "5", "children": [], "expand": "false" } ], "expand": "false" }, { "title": "用户权限系统", "id": "BIZFRAME", "parent_id": "0006", "kind_code": "", "order_no": 0, "type": "5", "children": [], "expand": "false" } ], "expand": "false" } ],
         baseData4: [
           {
             title: 'parent',

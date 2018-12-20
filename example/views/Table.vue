@@ -12,7 +12,7 @@
     <h-input v-model="aaa"></h-input> -->
      <Button @click="changemsg">显示</Button>
      <!-- :multiLevel="multiLevel1" -->
-    <h-table :columns="columns1" :data="[]" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="200" canMove @on-move="onMove" :lastColWidth="150">
+    <h-table :columns="columns1" :multiLevel="multiLevel2" :data="[]" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="200" canMove @on-move="onMove" :lastColWidth="150">
       <span slot="loading">我是自定义加载！！！</span>
     </h-table>
     <h-button @click="setLoading">切换状态</h-button>
@@ -125,8 +125,8 @@
         <span slot="header">证券日活数据表</span>
         <span slot="footer">恒生电子有限公司提供</span>
     </h-table> 
-     <p>设置maxheight6200</p> 
-      <h-table maxHeight="6200" :stripe="true" :columns="columns18" :data="data17" border size="small" :loading="loading" :highlightRow="true" @on-selection-change="selsetChange">
+    <p>设置maxheight6200</p> 
+    <h-table maxHeight="6200" :stripe="true" :columns="columns18" :data="data17" border size="small" :loading="loading" :highlightRow="true" @on-selection-change="selsetChange">
         <span slot="header">证券日活数据表</span>
         <span slot="footer">恒生电子有限公司提供</span>
     </h-table> 
@@ -158,8 +158,9 @@ export default {
       ],
       multiLevel2:[
         [
-          {title:'123',cols:2,align:'center',className:'demo-table-info-column'},
-          {title:'456',align:'right'},
+          {title:'123',rows:2,align:'center',className:'demo-table-info-column'},
+          {title:'456',cols:2,align:'center'},
+          {title:'789',align:'right'},
         ],
         [
           {title:'123',cols:2,hiddenCol:true},
@@ -1593,7 +1594,6 @@ export default {
         }]
     },
     refresh () {
-      debugger
       //  this.$route.meta.isKeepAlive = false
        this.$parent.isKeepAlive = false
         // this.$store.dispatch('refreshCurPage', 'table')
@@ -1693,7 +1693,7 @@ export default {
     exportData (type) {
       if (type === 1) {
         this.$refs.table.exportCsv({
-            filename: '原始数据'
+            filename: '原始数据',
         });
       } else if (type === 2) {
         this.$refs.table.exportCsv({
@@ -1721,7 +1721,7 @@ export default {
           type: 'selection',
           align: 'center',
           width:200,
-          fixed:'left'
+          // fixed:'left'
         },
         {
           title: '姓名',

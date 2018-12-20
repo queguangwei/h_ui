@@ -1,26 +1,24 @@
 <template>
-  <transition name="fade" v-if="fade">
-    <div :class="classes" @click.stop="check" :style="wraperStyles">
-      <span :class="dotClasses" v-if="showDot" :style="bgColorStyle"></span>
-      <span :class="textClasses" :style="textColorStyle"><slot></slot></span>
-      <Icon v-if="closable" :class="iconClass" :color="lineColor" name="close" @click.native.stop="close"></Icon>
-    </div>
+  <transition :name="tranName">
+    <Tooltip :content="content" :disabled="!showTitle" :placement="placement">
+      <div :class="classes" @click.stop="check" :style="wraperStyles">
+        <span :class="dotClasses" v-if="showDot" :style="bgColorStyle"></span>
+        <span :class="textClasses" :style="textColorStyle"><slot></slot></span>
+        <Icon v-if="closable" :class="iconClass" :color="lineColor" name="close" @click.native.stop="close"></Icon>
+      </div>
+    </Tooltip>
   </transition>
-  <div v-else :class="classes" @click.stop="check" :style="wraperStyles">
-    <span :class="dotClasses" v-if="showDot" :style="bgColorStyle"></span>
-    <span :class="textClasses" :style="textColorStyle"><slot></slot></span>
-    <Icon v-if="closable" :class="iconClass" :color="lineColor" type="ios-close" @click.native.stop="close"></Icon>
-  </div>
 </template>
 <script>
   import Icon from '../Icon'
   import { oneOf } from '../../util/tools'
+  import Tooltip from '../Tooltip'
   const prefixCls = 'h-tag';
   const initColorList = ['default', 'primary', 'success', 'warning', 'error', 'blue', 'green', 'red', 'yellow', 'pink', 'magenta', 'volcano', 'orange', 'gold', 'lime', 'cyan', 'geekblue', 'purple']
   const colorList = ['pink', 'magenta', 'volcano', 'orange', 'gold', 'lime', 'cyan', 'geekblue', 'purple']
   export default {
     name: 'Tag',
-    components: { Icon },
+    components: { Icon,Tooltip },
     props: {
       closable: {
           type: Boolean,
@@ -49,6 +47,16 @@
       fade: {
           type: Boolean,
           default: true
+      },
+      showTitle:{
+        type: Boolean,
+        default: false,
+      },
+      title:String,
+      placement:String,
+      width:{
+        type:[String,Number],
+        default:null
       }
     },
     data () {
@@ -57,6 +65,14 @@
       }
     },
     computed: {
+      tranName() {
+        return this.fade?'fade':'';
+      },
+      content() {
+        if(this.showTitle){
+          return this.title || this.$slots.default[0].text;
+        } 
+      },
       classes () {
         return [
           `${prefixCls}`,
@@ -109,14 +125,27 @@
         return this.color !== undefined ? (oneOf(this.color, initColorList) ? '' : this.color) : ''
       },
       textColorStyle () {
-        return oneOf(this.color, initColorList) ? {} : ((this.type !== 'dot' && this.type !== 'border') ? (this.isChecked ? {color: this.lineColor} : {}) : {color: this.lineColor})
+        let style={};
+        if(this.color||initColorList){
+        }else if(this.type !== 'dot' && this.type !== 'border'){
+          if(this.this.isChecked){
+            style.color = this.lineColor
+          }
+        }else{
+          style.color = this.lineColor
+        }
+        if(this.width!=null){
+          style.width = this.width+'px';
+        }
+        return style;
+        // return oneOf(this.color, initColorList) ? {} : ((this.type !== 'dot' && this.type !== 'border') ? (this.isChecked ? {color: this.lineColor} : {}) : {color: this.lineColor})
       },
       bgColorStyle () {
         return oneOf(this.color, initColorList) ? {} : {background: this.dotColor}
       },
       defaultTypeColor () {
         return (this.type !== 'dot' && this.type !== 'border') ? (this.color !== undefined ? (oneOf(this.color, initColorList) ? '' : this.color) : '') : ''
-      }
+      },
     },
     methods: {
       close (event) {

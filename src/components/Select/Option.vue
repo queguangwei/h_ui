@@ -1,6 +1,6 @@
 <template>
-  <li :class="classes" @click.stop="select" @mouseout.stop="blur" v-show="!hidden">
-    <checkbox v-show="multiple&&!hideMult" v-model="selected" @click.native.stop="handleclick" :disabled="disabled" @on-change="checkChange"></checkbox>
+  <li :class="classes" @click.stop="select" @mouseout.stop="blur" v-show="!hidden" @keyup.native.stop="select">
+    <checkbox v-show="multiple&&!hideMult" v-model="selected" @click.native.stop="handleclick" :disabled="disabled" @on-change="checkChange" ></checkbox>
     <slot>{{showLabel}}</slot>
   </li>
 </template>
@@ -59,6 +59,7 @@
         if (this.disabled) {
           return false;
         }
+        this.$emit('on-keyup', this.value)
         this.dispatch('Select', 'on-select-selected', this.value);
       },
       checkChange(val){

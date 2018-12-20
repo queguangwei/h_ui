@@ -2,6 +2,7 @@
   <div>
     <h2>基础用法 </h2>
     <h-page :total="val" @on-change="pageChange" class-name="wrap" :current="curPage" fastArrival></h-page>
+    <Button @on-click="changeVal">改变value</Button>
     <h-button @click="pageChange1">改变当前page</h-button>
     <br>
     <Button @click="setTotal">设置total为0</Button>
@@ -567,6 +568,9 @@
     computed:{
     },
   	methods:{
+      changeVal(){
+        this.val = 200;
+      },
       pageChange1(){
         this.curPage++;
       },

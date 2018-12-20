@@ -42,9 +42,9 @@
         </div>
         <table cellspacing="0" cellpadding="0" border="0" :style="tipStyle">
           <tbody>
-            <tr>
+            <tr :style="{ 'height': tipBodyHeight + 'px'}">
                <!-- <td :style="{ 'height': bodyStyle.height}">  -->
-               <td :style="{ 'height': tipBodyHeight + 'px'}"> 
+               <td> 
                <!--  <span v-html="localeNoDataText" v-if="!data || data.length === 0"></span>
                 <span v-html="localeNoFilteredDataText" v-else></span> -->
               </td>
@@ -70,7 +70,7 @@
             @on-change-width="changeWidth"
             ></table-head>
         </div>
-        <div :class="[prefixCls + '-fixed-body']" :style="fixedBodyStyle" ref="fixedBody">
+        <div :class="[prefixCls + '-fixed-body']" :style="fixedBodyStyle" ref="fixedBody" @mousewheel="handleFixedMousewheel" @DOMMouseScroll="handleFixedMousewheel">
           <table-body
             fixed="left"
             :prefix-cls="prefixCls"
@@ -99,7 +99,7 @@
             :headAlgin="headAlgin"
             ></table-head>
         </div>
-        <div :class="[prefixCls + '-fixed-body']" :style="fixedBodyStyle" ref="fixedRightBody">
+        <div :class="[prefixCls + '-fixed-body']" :style="fixedBodyStyle" ref="fixedRightBody" @mousewheel="handleFixedMousewheel" @DOMMouseScroll="handleFixedMousewheel">
           <table-body
             fixed="right"
             :prefix-cls="prefixCls"
@@ -918,6 +918,41 @@ export default {
         this.buttomNum = getBarBottom(event.target,this.scrollBarWidth);
         this.topNum = event.target.scrollTop
     },
+    handleFixedMousewheel(event) {
+      let deltaY = event.deltaY;
+      if(!deltaY && event.detail){
+        deltaY = event.detail * 40;
+      }
+      if(!deltaY && event.wheelDeltaY){
+        deltaY = -event.wheelDeltaY;
+      }
+      if(!deltaY && event.wheelDelta){
+        deltaY = -event.wheelDelta;
+      }
+      if(!deltaY) return;
+      const body = this.$refs.body;
+      const currentScrollTop = body.scrollTop;
+      if (deltaY < 0 && currentScrollTop !== 0) {
+        event.preventDefault();
+      }
+      if (deltaY > 0 && body.scrollHeight - body.clientHeight > currentScrollTop) {
+        event.preventDefault();
+      }
+      //body.scrollTop += deltaY;
+      let step = 0;
+      let timeId = setInterval(()=>{
+        step += 10;
+        if(deltaY>0){
+            body.scrollTop += 5;
+        }
+        else{
+            body.scrollTop -= 5;
+        }
+        if(step >= Math.abs(deltaY)){
+            clearInterval(timeId);
+        }
+      }, 1);
+    },
     handleMouseWheel (event) {
         const deltaX = event.deltaX;
         const $body = this.$refs.body;
@@ -1197,7 +1232,7 @@ export default {
       });
       return left.concat(center).concat(right);
     },
-    exportCsv (params) {
+    exportCsv (params={}) {
         if (params.filename) {
             if (params.filename.indexOf('.csv') === -1) {
                 params.filename += '.csv';
@@ -1205,7 +1240,6 @@ export default {
         } else {
             params.filename = 'table.csv';
         }
-
         let columns = [];
         let datas = [];
         if (params.columns && params.data) {

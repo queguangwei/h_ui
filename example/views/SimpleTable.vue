@@ -4,8 +4,10 @@
     <Button @click="loadData">加载数据</Button>
     <Button @click="loadData1">原生加载数据</Button>
     <h-button @click="setLoading">切换状态</h-button>
+    <h-button @click="exportData('csv')">下载数据csv</h-button>
+    <h-button @click="exportData('xls')">下载数据xls</h-button>
     <h2>不带边线 单选 on-current-change</h2>
-     <h-simple-table :columns="columnsBig1" border :data="bigData" no-data-text="数据为空" :loading="loading" height="800" @on-selection-change="select" :itemHeight="30" :highlight-row="true" @on-current-change="select" @on-current-change-cnacle="select" notSort>
+     <h-simple-table ref="table" :columns="columnsBig1" splitIndex :multiLevel="multiLevel2" border :data="bigData" no-data-text="数据为空" :loading="loading" height="800" @on-selection-change="select" :itemHeight="30" :highlight-row="true" @on-current-change="select" @on-current-change-cnacle="select" notSort>
     </h-simple-table> 
     <table border='1' collapse>
       <thead>
@@ -45,6 +47,13 @@ export default {
       bigData:[],
       bigData1:[],
       columnsBig1: [
+        {
+          type: "index",
+          width: 60,
+          align: "center",
+          key:'index',
+          // fixed: "left",
+        },
         {
           type: "selection",
           width: 60,
@@ -164,6 +173,21 @@ export default {
           ellipsis: true,
         },
       ],
+      multiLevel2:[
+        [
+          {title:'123',cols:2,align:'center',className:'demo-table-info-column'},
+          {title:'456',rows:2,align:'center'},
+          {title:'789',align:'right'},
+        ],
+        [
+          {title:'123',cols:2,hiddenCol:true},
+          {title:'456'},
+        ],
+        [
+          {title:'234'},
+          {title:'678',cols:2},
+        ],
+      ],
       
     }
   },
@@ -261,6 +285,11 @@ export default {
     remove (index) {
       this.data6.splice(index, 1);
     }, 
+    exportData(format){
+      this.$refs.table.exportCsv({
+        format: format,
+      });
+    }
   },
   mounted(){
     this.columns1=[

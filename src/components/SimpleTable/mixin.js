@@ -14,6 +14,7 @@ export default {
                     [`${this.prefixCls}-column-${column.align}`]: column.align,
                     [`${this.prefixCls}-head-column-${this.headAlgin}`]: this.headAlgin,
                     [`${this.prefixCls}-body-column-${this.bodyAlgin}`]: this.bodyAlgin,
+                    [`${this.prefixCls}-split-index`]: this.splitIndex && column.type=='index',
                     [`${this.prefixCls}-hidden`]: (fixed === 'left' && column.fixed !== 'left') || (fixed === 'right' && column.fixed !== 'right') || (!fixed && column.fixed && (column.fixed === 'left' || column.fixed === 'right'))
                 }
             ];

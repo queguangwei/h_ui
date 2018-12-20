@@ -1,5 +1,23 @@
 <template>
   <ul :class="simpleWrapClasses" :style="styles" v-if="simple">
+    <span :class="[prefixCls + '-total']" v-if="showTotal">
+      <slot>{{ t('i.page.total') }} {{ total }} <template v-if="total <= 1">{{ t('i.page.item') }}</template><template v-else>{{ t('i.page.items') }}</template></slot>
+    </span>
+    <Options
+        :showSizerLabel='showSizerLabel'
+        :show-sizer="showSizer"
+        :page-size="currentPageSize"
+        :page-size-opts="pageSizeOpts"
+        :placement="placement"
+        :show-elevator="showElevator"
+        :show-custom="showCustom"
+        :current="currentPage"
+        :all-pages="allPages"
+        :is-small="isSmall"
+        :is-blur = "isBlur"
+        @on-size="onSize"
+        @on-page="onPage">
+    </Options>
     <li
       :title="t('i.page.prev')"
       :class="prevClasses"
@@ -13,15 +31,23 @@
         @keydown="keyDown"
         @keyup="keyUp"
         @change="keyUp"
-        @blur = "simpleBlur">
+        @blur = "simpleBlur"
+        :style = "{width: inputWidth + 'px'}" ref='simpleInput'>
       <span>/</span>
-      {{ allPages }}
+      <span :class="[prefixCls + '-allpage']" ref='allPage'>{{ allPages }}</span>
     </div>
     <li
       :title="t('i.page.next')"
       :class="nextClasses"
       @click="next">
       <a><icon name="enter"></icon></a>
+    </li>
+    <li
+      v-if="fastArrival"
+      :title="t('i.page.last')"
+      :class="nextClasses"
+      @click="toLast">
+      <a><icon name="arrow-r"></icon></a>
     </li>
   </ul>
   <ul :class="wrapClasses" :style="styles" v-else>
@@ -64,6 +90,7 @@
         <a><icon name="arrow-r"></icon></a>
       </li>
       <Options
+        :showSizerLabel="showSizerLabel"
         :show-sizer="showSizer"
         :page-size="currentPageSize"
         :page-size-opts="pageSizeOpts"
@@ -154,6 +181,10 @@
       fastArrival:{
         type: Boolean,
         default: false
+      },
+      showSizerLabel: {
+        type: Boolean,
+        default: false
       }
     },
     data () {
@@ -162,6 +193,7 @@
         currentPage: this.current,
         currentPageSize: this.pageSize,
         maxPage:null,
+        inputWidth: null
       };
     },
     watch: {
@@ -183,6 +215,13 @@
       },
       pageSize (val) {
         this.currentPageSize = val;
+      },
+      allPages (val) {
+        if(!this.simple) return;
+        this.$nextTick(() => {
+          let inputStyle = getComputedStyle(this.$refs.simpleInput)
+          this.inputWidth =  this.$refs.allPage.clientWidth + parseInt(inputStyle.paddingRight) + parseInt(inputStyle.paddingLeft)
+        })
       }
     },
     computed: {
@@ -347,6 +386,10 @@
     mounted(){
       let pageAll = Math.ceil(this.total / this.currentPageSize);
       this.maxPage = pageAll === 0? 1 : pageAll;
+      if (this.simple && this.allPages) {
+        let inputStyle = getComputedStyle(this.$refs.simpleInput)
+        this.inputWidth = this.$refs.allPage.clientWidth + parseInt(inputStyle.paddingRight) + parseInt(inputStyle.paddingLeft)
+      }
     }
   }
 </script>

@@ -2,8 +2,8 @@
   <div>
     <h2>基础</h2>
     <h3>单选</h3>
-    <Button @click="addDate"></Button>
-    <h-edit-gird border height="200" :columns="columns1" :data="data2" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" ref="editGird" stripe :loading="loading" @on-expand="expand" :option="options1" :treeOption="treeOption" @on-editselect-change="selectchange" @on-editinput-change="selectchange" @on-editinput-blur="selectchange" @on-editarea-change="selectchange" @on-editarea-blur="selectchange">
+    <Button @click="addDate">增加数据</Button><Button @click="getChangeData">获取改变后的数据</Button>
+    <h-edit-gird ref="table" border height="200" :columns="columns1" :data="data2" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" stripe :loading="loading" @on-expand="expand" :option="options1" :treeOption="treeOption" @on-editselect-change="selectchange" @on-editinput-change="selectchange" @on-editinput-blur="selectchange" @on-editarea-change="selectchange" @on-editarea-blur="selectchange">
       <p slot='loading'>我是自定义loading</p>
     </h-edit-gird>
     <Button @click="getData">获取数据</Button>
@@ -297,7 +297,11 @@ export default {
           width: 100,
           key: 'age',
           hiddenCol:false,
-          prelabel:'&',
+          prelabel:(index)=>{
+            if(index==2){
+            return "123";
+            }
+          },
           rule: { required: true, message: '年龄不能为空'},
         },
         {
@@ -306,7 +310,13 @@ export default {
           width: 200,
           title: '地址',
           key: 'address',
-          rearlabel:'%',
+          rearlabel:(index)=>{
+            if(index%2==0){
+              return '#';
+            }else{
+              return '%'
+            }
+          },
           rule: { required: true, message: '地址不能为空'},
         },
         {
@@ -314,8 +324,8 @@ export default {
           title: '金额',
           width: 100,
           integerNum: 14,
-          suffixNum: 3,
-          // suffixNum: 2,
+          // suffixNum: '0',
+          suffixNum: 0,
           bigTips: true,
           key: 'money',
           rule: { required: true, message: '金额不能为空'},
@@ -467,6 +477,9 @@ export default {
       console.log(val);
       console.log(i);
       console.log(j);
+    },
+    getChangeData(){
+      console.log(this.$refs.table.getChangeData())
     } 
   },
   mounted(){

@@ -157,7 +157,15 @@
       canResize:{
         type:Boolean,
         default:true
-      }
+      },
+      filterRE:{
+        type:[Object,RegExp],
+        default:null
+      },
+      lengthByByte: {
+        type:Boolean,
+        default: false
+      }, // 是否按照字节计算长度
     },
     data () {
       return {
@@ -249,6 +257,26 @@
       handleInput (event) {
         let value = event.target.value;
         if (this.number) value = Number.isNaN(Number(value)) ? value : Number(value);
+        if (this.filterRE) {
+          value = value.replace(this.filterRE,'');
+          event.target.value = value
+        }
+        if (this.lengthByByte) {
+          let bytesCount = 0
+          for (var i = 0; i < value.length; i++) {
+            var c = value.charAt(i);
+            if (/^[\u0000-\u00ff]$/.test(c)) {//匹配双字节
+              bytesCount += 1;
+            } else {
+              bytesCount += 2;
+            }
+            if (bytesCount > this.maxlength) {
+              value = value.substr(0, i)
+              event.target.value = value.substr(0, i)
+              break
+            }
+          }
+        }
         this.$emit('input', value);
         this.setCurrentValue(value);
         this.$emit('on-change', event);

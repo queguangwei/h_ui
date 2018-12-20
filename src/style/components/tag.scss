@@ -7,7 +7,7 @@ $tag-close-prefix-cls: h-icon-ios-close-empty;
     line-height: 22px;
     margin: 4px 0px 2px 4px;
     padding: 0 8px;
-    border: 1px solid $border-color-split;
+    border: 1px solid $border-color-base;
     border-radius: $btn-border-radius-small;
     // background: $background-color-base;
     background: #F5F5F5;
@@ -32,20 +32,19 @@ $tag-close-prefix-cls: h-icon-ios-close-empty;
     &-dot{
         height: 32px;
         line-height: 32px;
-        border: 1px solid $border-color-split !important;
+        border: 1px solid $border-color-base !important;
         color: $text-color !important;
         background: #fff !important;
         padding: 0 12px;
 
         &-inner{
-            display: inline-block;
             width: 12px;
             height: 12px;
             margin-right: 8px;
             border-radius: 50%;
             background: $border-color-base;
             position: relative;
-            top: 1px;
+            top: 9px;
         }
         .#{$tag-close-prefix-cls} {
             color: #666 !important;
@@ -56,7 +55,7 @@ $tag-close-prefix-cls: h-icon-ios-close-empty;
     &-border{
         height: 24px;
         line-height: 24px;
-        border: 1px solid $border-color-split !important;
+        border: 1px solid $border-color-base !important;
         color: $text-color !important;
         background: #fff !important;
         position: relative;
@@ -70,7 +69,7 @@ $tag-close-prefix-cls: h-icon-ios-close-empty;
             content: "";
             display: none;
             width: 1px;
-            background: $border-color-split;
+            background: $border-color-base;
             position: absolute;
             top: 0;
             bottom: 0;
@@ -218,6 +217,13 @@ $tag-close-prefix-cls: h-icon-ios-close-empty;
     &-error.#{$tag-prefix-cls}-dot &-dot-inner
     {
         background: $error-color;
+    }
+    span {
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space: nowrap;
+        display: block;
+        float: left;
     }
 
 }

@@ -176,7 +176,11 @@
       cloneData:{
         deep:true,
         handler:function(val){
-          if(val.length==0) this.showEmpty = true;
+          if(val.length==0) {
+            this.showEmpty = true;
+          } else {
+            this.showEmpty = false;
+          }
           this.$nextTick(()=>{
             this.updateVisibleData();
           })

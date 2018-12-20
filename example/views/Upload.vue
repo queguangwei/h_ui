@@ -42,15 +42,15 @@
       如需多选上传，请配置multiple属性
     </p>
     <div>
-     <h-upload
-            action="//jsonplaceholder.typicode.com/posts/"
-            selfConfig>
-            <h-button type="ghost" icon="ios-cloud-upload-outline" slot="chooseFile">选择要上传文件的文件</h-button>
-            <h-button type="ghost" icon="ios-cloud-upload-outline" slot="postFile">开始上传</h-button>
-            <h-button type="ghost" icon="ios-cloud-upload-outline" slot="cancleFile">取消</h-button>
-            <h-button type="ghost" icon="ios-cloud-upload-outline" slot="showList" ref="showList">已上传列表
-            </h-button>
-      </h-upload>
+    <h-upload
+      action="//jsonplaceholder.typicode.com/posts/"
+      selfConfig>
+      <h-button type="ghost" icon="ios-cloud-upload-outline" slot="chooseFile">选择要上传文件的文件</h-button>
+      <h-button type="ghost" icon="ios-cloud-upload-outline" slot="postFile">开始上传</h-button>
+      <h-button type="ghost" icon="ios-cloud-upload-outline" slot="cancleFile">取消</h-button>
+      <h-button type="ghost" icon="ios-cloud-upload-outline" slot="showList" ref="showList">已上传列表
+      </h-button>
+    </h-upload>
     </div>
   </div>
 </template>

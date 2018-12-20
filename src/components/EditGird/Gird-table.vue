@@ -10,6 +10,7 @@
           :obj-data="objData"
           :columns-width="columnsWidth"
           :data="rebuildData"
+          :multiLevel="cloneMultiLevel"
           ></gird-head>
       </div>
       <div :class="[prefixCls + '-body']" :style="bodyStyle" ref="body" @scroll="handleBodyScroll" @click="handlerClick"
@@ -141,7 +142,7 @@ import GirdBody from './Gird-body.vue';
 import Spin from '../Spin/Spin.vue';
 import Mixin from './mixin';
 import Emitter from '../../mixins/emitter'
-import { oneOf, getStyle, deepCopy, getScrollBarSize,getBarBottom,findInx} from '../../util/tools';
+import { oneOf, getStyle, deepCopy, getScrollBarSize,getBarBottom,findInx,typeOf,cmp} from '../../util/tools';
 import { on, off } from '../../util/dom';
 import Locale from '../../mixins/locale';
 
@@ -243,7 +244,11 @@ export default {
       default () {
         return [];
       }
-    }
+    },
+    multiLevel:{
+      type:Array,
+      default:null
+    },
   },
   data () {
     return {
@@ -271,6 +276,27 @@ export default {
     };
   },
   computed: {
+    cloneMultiLevel () {
+      if (!this.multiLevel || this.multiLevel.length==0) return null;
+      let data = [];
+          data[0]=[];
+      this.multiLevel.forEach((cols,i)=>{
+        if(typeOf(cols)!='array'){
+          if(!cols.hiddenCol&&cols.hiddenCol!='false'){
+            data[0].push(cols);
+          }
+        }else{
+          let data2=[]
+          cols.forEach((item,inx)=>{
+            if(!item.hiddenCol&&item.hiddenCol!='false'){
+              data2.push(item);
+            }
+          })
+          data.push(data2);
+        }
+      })
+      return data.length>0?data:null;
+    },
     loadingText(){
       return this.t('i.table.loadingText');
     },
@@ -491,7 +517,7 @@ export default {
             this.columnsWidth = columnsWidth;
           }else{
             if (!this.$refs.thead) return;
-            const $th = this.$refs.thead.$el.querySelectorAll('thead tr')[0].querySelectorAll('th');
+            const $th = this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0].querySelectorAll('th');
             for (let i = 0; i < $th.length; i++) {    // can not use forEach in Firefox
               const column = this.cloneColumns[i]; 
               let width = parseInt(getStyle($th[i], 'width'));
@@ -958,6 +984,15 @@ export default {
       if (this.columns[0].type && this.columns[0].type=='selection') {
         this.selectType=true;
       }
+    },
+    getChangeData(){//获取修改后的数据
+      let changeData=[];
+      this.cloneData.forEach((col,i)=>{
+        if(!cmp(col,this.data[i])){
+          changeData.push(col)
+        }
+      });
+      return changeData;
     }
   },
   created () {

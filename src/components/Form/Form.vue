@@ -74,9 +74,9 @@ export default {
     }
   },
   methods: {
-    resetFields() {
+    resetFields(isResetReadonlyOrDisabled = false) {
       this.fields.forEach(field => {
-        field.resetField();
+        field.resetField(isResetReadonlyOrDisabled);
       });
       this.validMsgList = []
     },
@@ -151,7 +151,19 @@ export default {
         col.modeChanged = this.changeObj[col.prop];
       });
       
-    }
+    },
+    firstNodeFocused(){
+      this.$nextTick(()=>{
+        let index = 0;
+        for(var i=0;i<this.fields.length;i++){
+          if(!this.fields[i].$children[0].disabled&&!this.fields[i].$children[0].readonly){
+            index = i;
+            break;
+          }
+        }
+        this.fields[i].$children[0].focus();
+      })
+    },
   },
   watch: {
     rules() {

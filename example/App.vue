@@ -1,8 +1,5 @@
 <template>
   <div id="app" class="wrapper">
-    <!-- <svg class="icon" aria-hidden="true">
-        <use xlink:href="#icon-person-stalker"></use>
-    </svg> -->
     <nav>
       <ul>
         <span>基础组件</span>
@@ -162,6 +159,9 @@
           <router-link to="/tree">Tree</router-link>
         </li>
         <li>
+          <router-link to="/simpleTree">SimpleTree</router-link>
+        </li>
+        <li>
           <router-link to="/loadingbar">Loadingbar</router-link>
         </li>
         <li>
@@ -201,6 +201,9 @@
         </li>
         <li>
           <router-link to="/asyctreeGird">AsycTreeGird</router-link>
+        </li>
+        <li>
+          <router-link to="/simpleTreeGird">SimpleTreeGird</router-link>
         </li>
         <br>
         <span>特殊</span>

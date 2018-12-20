@@ -395,6 +395,11 @@ const router = new Router({
         name: 'tag',
         path: '/tag',
         component: require('../views/tag.vue')
+    },
+    {
+        name: 'SimpleTreeGird',
+        path: '/simpleTreeGird',
+        component: require('../views/SimpleTreeGird.vue')
     }
  ]
 })

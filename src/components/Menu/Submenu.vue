@@ -142,7 +142,7 @@ export default {
       }, 150);
     },
     handleClick () {
-      if (this.disabled) return;
+      if (this.disabled||this.showSlide) return;
       // collapse为true时，触发鼠标经过，因此忽略点击
       if (this.mode === 'horizontal' || this.collapse ) return;
       const opened = this.opened;

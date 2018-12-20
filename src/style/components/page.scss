@@ -151,6 +151,10 @@ $page-prefix-cls: "#{$css-prefix}page";
       //float: left;
       margin-right: 10px;
     }
+    &-sizer-label {
+      display: inline-block;
+      margin-right: 5px; 
+    }
     &-elevator {
       display: inline-block;
       vertical-align: middle;
@@ -189,7 +193,7 @@ $page-prefix-cls: "#{$css-prefix}page";
     //float: left;
     margin-right: 8px;
     input {
-      width: 32px;
+      min-width: 32px;
       height: 24px;
       margin: 0 8px;
       padding: 5px 8px;
@@ -206,6 +210,10 @@ $page-prefix-cls: "#{$css-prefix}page";
     }
     span {
       padding: 0 8px 0 2px;
+    }
+    span.#{$page-prefix-cls}-allpage {
+      display: inline-block;
+      padding-right: 0;
     }
   }
 }

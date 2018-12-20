@@ -686,7 +686,10 @@
         if (val) {
           this.broadcast('Drop', 'on-update-popper');
           // remote下，query设值时会自动触发监听搜索，若query无值且model存在时，下拉搜索用lastDataCopy
-          if (this.remote && this.query == '') this.baseDate = this.lastquery != '' ?  this.lastDataCopy : []
+          if (this.remote && this.query == '') this.baseDate = this.lastquery != '' ?  this.lastDataCopy : [];
+          setTimeout(() => {
+            this.dispatch('Msgbox', 'on-esc-real-close', false);
+          }, 0);
         } else {
           if (this.filterable) {
             if (this.showBottom) {
@@ -703,6 +706,9 @@
               }
             }
           }
+          setTimeout(() => {
+            this.dispatch('Msgbox', 'on-esc-real-close', true);
+          }, 0);
           // this.broadcast('Drop', 'on-destroy-popper');
         }
       },

@@ -1,12 +1,12 @@
 <template>
   <div>
-    <!-- <h-msg-box v-model="changeform" width="900"> -->
-      <Button @on-click="changeRequired">改变require</Button>
-      <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus cols="3" placement="top-start">
-        <h-form-item label="输入框" prop="input" :required="isrequired">
+    <h-msg-box v-model="changeform" width="900" escClose>
+      <Button @on-click="changeRequired">改变require</Button><Button @click="getFocus2">获取焦点2</Button>
+      <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus cols="3">
+        <!-- <h-form-item label="输入框" prop="input" :required="isrequired">
           <h-input v-model="formItem1.input" placeholder="请输入"></h-input>
-        </h-form-item>
-        <h-form-item label="日期控件">
+        </h-form-item> -->
+        <!-- <h-form-item label="日期控件">
           <h-row>
             <h-col span="11">
               <h-form-item prop="date" required>
@@ -20,9 +20,9 @@
               </h-form-item>
             </h-col>
           </h-row>
-        </h-form-item>
+        </h-form-item> -->
         <h-form-item label="选择器" prop="select">
-          <h-select v-model="formItem1.select" filterable disabled>
+          <h-select v-model="formItem1.select" >
             <h-option value="beijing">北京市</h-option>
             <h-option value="shanghai">上海市</h-option>
             <h-option value="shenzhen">深圳市</h-option>
@@ -108,7 +108,7 @@
             <h-button type="ghost" style="margin-left: 8px" @click="handleReset('formItem1')">取消</h-button>
         </h-form-item>
       </h-form>
-    <!-- </h-msg-box> -->
+    </h-msg-box>
     <Button @on-click="changeform1">显示隐藏</Button>
     <h-select-table v-model="model1" ref="changeDrop">
       <h-table-option border :columns="columns1" :data="data1"></h-table-option>
@@ -146,6 +146,8 @@
             <h-button type="primary" @click="handleSubmit('formValid')">提交</h-button>
         </h-form-item>
     </h-form>
+    <Button @click="getFocus">获取焦点</Button>
+    <Button @click="getFocus2">获取焦点2</Button>
   </div>
 </template>
 <script>
@@ -351,11 +353,11 @@
       handleSubmit (name) {
         let _this=this
         this.$refs[name].validate((valid) => {
-            if (valid) {
-              _this.$hMessage.success('提交成功!');
-            } else {
-              _this.$hMessage.error('表单验证失败!');
-            }
+          if (valid) {
+            _this.$hMessage.success('提交成功!');
+          } else {
+            _this.$hMessage.error('表单验证失败!');
+          }
         })
       },
       handleReset (name) {
@@ -364,6 +366,12 @@
       totest() {
         this.$refs.changeDrop.focus();
       },
+      getFocus(){
+        this.$refs.formValid.firstNodeFocused();
+      },
+      getFocus2(){
+        this.$refs.formItem1.firstNodeFocused();
+      }
     },
     mounted () {
       this.formItem1.input = '222';

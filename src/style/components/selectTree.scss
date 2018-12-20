@@ -68,10 +68,14 @@ $selecttree-prefix-cls:  "#{$css-prefix}selectTree";
           }
       }
       .h-selectTree-dropdown-list {
-          max-height:$max-height;
-          overflow:auto;
-          position: relative;
-          padding: 0px 5px 0 5px;
+        max-height:$max-height;
+        overflow:auto;
+        position: relative;
+        padding: 0px 5px 0 5px;
+        .h-tree{
+          padding-top: 5px;
+          padding-bottom: 5px;
+        }
       }
   }
   &-arrow {

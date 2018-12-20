@@ -2,9 +2,7 @@ $drawer-prefix-cls: "#{$css-prefix}drawer";
 
 .#{$drawer-prefix-cls} {
     width: auto;
-    height: 100%;
     position: fixed;
-    top: 0;
     &-inner{
         position: absolute;
     }
@@ -75,7 +73,7 @@ $drawer-prefix-cls: "#{$css-prefix}drawer";
 
     &-body {
         width: 100%;
-        height: calc('100% - 51px');
+        height: calc(100% - 51px);
         padding: 16px;
         font-size: 12px;
         line-height: 1.5;
@@ -91,4 +89,15 @@ $drawer-prefix-cls: "#{$css-prefix}drawer";
     &-no-mask{
         pointer-events: none;
     }
+}
+.#{$drawer-prefix-cls}-right,.#{$drawer-prefix-cls}-left{
+    height: 100%;
+    top: 0;
+}
+.#{$drawer-prefix-cls}-up,.#{$drawer-prefix-cls}-down{
+    width: 100%;
+    left: 0;
+}
+.#{$drawer-prefix-cls}-down{
+    bottom: 0;
 }

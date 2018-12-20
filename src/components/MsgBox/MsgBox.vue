@@ -143,6 +143,7 @@ export default {
       curWidth:this.width,
       curHeight:0,
       isMax:false,
+      realClose: true, // esc时是否真正需要关闭弹出窗口
     };
   },
   computed: {
@@ -257,7 +258,7 @@ export default {
       this.$emit('on-ok');
     },
     EscClose (e) {
-      if (this.visible && this.escClose) {
+      if (this.visible && this.escClose && this.realClose) {
         if (e.keyCode === 27) {
           this.$emit('on-cancel');
           this.close();
@@ -285,6 +286,9 @@ export default {
 
     // ESC close
     // document.addEventListener('keydown', this.EscClose);
+    this.$on('on-esc-real-close', (status) => {
+      this.realClose = status
+    })
     on(document,'keydown', this.EscClose)
     on(window, 'resize', this.ScreenRes);
   },

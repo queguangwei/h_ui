@@ -44,6 +44,10 @@
                 type: [Number, String],
                 default: 256
             },
+            height: {
+                type: [Number, String],
+                default: 256
+            },
             closable: {
                 type: Boolean,
                 default: true
@@ -68,7 +72,7 @@
             },
             placement: {
                 validator (value) {
-                    return oneOf(value, ['left', 'right']);
+                    return oneOf(value, ['left', 'right','down','up']);
                 },
                 default: 'right'
             },
@@ -112,11 +116,19 @@
             },
             mainStyles () {
                 let style = {};
-                const width = parseInt(this.width);
-                const styleWidth = {
-                    width: width <= 100 ? `${width}%` : `${width}px`
-                };
-                Object.assign(style, styleWidth);
+                if(this.placement=='left'||this.placement=='right'){
+                    const width = parseInt(this.width);
+                    const styleWidth = {
+                        width: width <= 100 ? `${width}%` : `${width}px`
+                    };
+                    Object.assign(style, styleWidth);
+                }else{
+                    const height = parseInt(this.height);
+                    const styleHeight = {
+                        height: height <= 100 ? `${height}%` : `${height}px`
+                    };
+                    Object.assign(style, styleHeight);
+                }
                 return style;
             },
             contentClasses () {
