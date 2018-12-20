@@ -583,8 +583,14 @@ export function getCurrentDay(){
   let date = new Date()
   return vliData(date.getDate());
 }
-
-export function getBarBottom(obj,barWidth) {
+// barWidth横向高度
+// barHeight纵向宽度
+export function getBarBottomS(obj,objBodyHeight, objContentHeight, barWidth, isScrollX) {
+  let top = obj.scrollTop;
+  let sheight = isScrollX ? objBodyHeight - barWidth : objBodyHeight;
+  return objContentHeight - top - sheight;
+}
+export function getBarBottom(obj, barWidth) {
   let width = obj.getBoundingClientRect().width;
   let conentWidth = obj.scrollWidth;
   let height = obj.getBoundingClientRect().height;
@@ -593,7 +599,6 @@ export function getBarBottom(obj,barWidth) {
   let conentHeight = obj.scrollHeight;
   return conentHeight-top-sheight;
 }
-
 export function formatnumber(fnumber,fdivide,fpoint,fround){
   var fnum = fnumber + '';
   var revalue="";
@@ -661,4 +666,38 @@ export function scrollAnimate(obj,curTop,newTop){
       clearInterval(timer);
     }
   },ins);
+}
+
+export function cmp( x, y ) { 
+  if ( x === y ) { 
+    return true; 
+  }  
+  if ( ! ( x instanceof Object ) || ! ( y instanceof Object ) ) { 
+    return false; 
+  }   
+  if ( x.constructor !== y.constructor ) { 
+    return false; 
+  }  
+  for ( var p in x ) { 
+    if ( x.hasOwnProperty( p ) ) { 
+      if ( ! y.hasOwnProperty( p ) ) { 
+        return false;
+      }    
+      if ( x[ p ] === y[ p ] ) { 
+        continue; 
+      }   
+      if ( typeof( x[ p ] ) !== "object" ) { 
+        return false; 
+      }   
+      if ( ! Object.equals( x[ p ], y[ p ] ) ) { 
+        return false; 
+      } 
+    } 
+  }    
+  for ( p in y ) { 
+    if (y.hasOwnProperty( p ) && ! x.hasOwnProperty( p )) { 
+      return false; 
+    } 
+  } 
+  return true; 
 }

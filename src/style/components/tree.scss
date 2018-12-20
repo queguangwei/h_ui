@@ -12,7 +12,6 @@ $tree-prefix-cls: "#{$css-prefix}tree";
       white-space: nowrap;
       outline: none;
       user-select:none;
-      .#{$tree-prefix-cls}-item:focus {outline: none;} 
     }
   }
   li {
@@ -80,3 +79,4 @@ $tree-prefix-cls: "#{$css-prefix}tree";
     }
   }
 }
+.#{$tree-prefix-cls}-item:focus {outline: none;} 

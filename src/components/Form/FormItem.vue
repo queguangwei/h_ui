@@ -287,7 +287,7 @@
                 });
                 this.validateDisabled = false;
             },
-            resetField () {
+            resetField (isResetReadonlyOrDisabled = false) {
                 this.validateState = '';
                 this.validateMessage = '';
                 let model = this.form.model;
@@ -296,7 +296,7 @@
                 if (path.indexOf(':') !== -1) {
                     path = path.replace(/:/, '.');
                 }
-                if(this.$children && this.$children.length > 0){
+                if(isResetReadonlyOrDisabled && this.$children && this.$children.length > 0){
                     if(this.$children[0].readonly ||this.$children[0].disabled)return;
                 }
                 let prop = getPropByPath(model, path);

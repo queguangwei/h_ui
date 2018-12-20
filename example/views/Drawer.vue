@@ -3,6 +3,8 @@
         <Button @click="visible = true">show1</Button>
         <Button @click="visible2 = true">show2</Button>
         <Button @click="visible3 = true">show3</Button>
+        <Button @click="visible4 = true">show4</Button>
+        <Button @click="visible5 = true">show5</Button>
         {{visible}}
         <h-drawer v-model="visible2" title="抽屉标题" :scrollable="true" width="270" placement="right" :mask-closable="false">
             <p slot="header">header</p>
@@ -124,8 +126,128 @@
             <p>一些内容</p>
             <p>一些内容22</p>
         </h-drawer>
+        <h-drawer v-model="visible4" placement="down" :mask="true">
+            <p slot="header">header</p>
+            <p slot="close"><Button @on-click="visible4=false">删除</Button></p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容22</p>
+        </h-drawer>
+        <h-drawer v-model="visible5" placement="up" :height="110" :mask="true">
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容</p>
+            <p>一些内容22</p>
+        </h-drawer>
         <div style="width: 500px;height:500px;position: relative;">
-             <h-drawer v-model="visible" class-name="h-ui-123" :transfer="false" inner width="70"  title="抽屉标题1" :styles="styles" :mask-style="maskStyles" @on-close="handleClose" @on-visible-change="change">
+            <h-drawer v-model="visible" class-name="h-ui-123" :transfer="false" inner width="70"  title="抽屉标题1" :styles="styles" :mask-style="maskStyles" @on-close="handleClose" @on-visible-change="change">
             <p>一些内容</p>
             <p>一些内容</p>
             <p>一些内容</p>
@@ -192,6 +314,8 @@
                 visible: false,
                 visible2: false,
                 visible3: false,
+                visible4: false,
+                visible5: false,
                 styles: {
                     height: 'calc(100% - 55px)',
                     paddingBottom: '53px',

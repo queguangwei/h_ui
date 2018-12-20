@@ -402,6 +402,9 @@
           if (this.transfer) {
               this.$refs.drop.update();
           }
+          setTimeout(() => {
+            this.dispatch('Msgbox', 'on-esc-real-close', false);
+          }, 0);
         } else {
           if (this.filterable) {
               this.query = '';
@@ -410,6 +413,9 @@
           if (this.transfer) {
               this.$refs.drop.destroy();
           }
+          setTimeout(() => {
+            this.dispatch('Msgbox', 'on-esc-real-close', true);
+          }, 0);
         }
         this.$emit('on-visible-change', val);
       },

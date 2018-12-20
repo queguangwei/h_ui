@@ -13,8 +13,8 @@
           :key="index"
           :class="alignCls(column)" 
           >
-          <div :class="cellClasses(column)">
-            <Checkbox :value="isSelectAll" v-if="headSelection&&!index" @on-change="selectAll" class="asyc-check"></Checkbox>
+          <div>
+            <!-- <Checkbox v-if="headSelection&&!index" @on-change="selectAll" class="asyc-check"></Checkbox> -->
             <template>
               <span v-if="!column.renderHeader" @click="handleSortByHead(index)">{{ column.title || '#' }}</span>
               <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
@@ -44,8 +44,8 @@ export default {
     prefixCls: String,
     styleObject: Object,
     columns: Array,
-    objData: Object,
-    data: Array,    // rebuildData for sort or filter
+    // objData: Object,
+    dataLength: [Number,String],
     columnsWidth: Object,
     headSelection: Boolean,
     canDrag:Boolean,
@@ -65,36 +65,20 @@ export default {
       return style;
     },
     isSelectAll () {
-      let isSelectAll = true;
-      if (!this.data.length) isSelectAll = false;
-      for (let i = 0; i < this.data.length; i++) {
-        if (!this.objData[this.data[i]._index]._isChecked && !this.objData[this.data[i]._index]._isDisabled) {
-          isSelectAll = false;
-          break;
-        }
-      }
-      return isSelectAll;
-    },
-    isSelectAll () {
-      let isSelectAll = true;
-      if (!this.data.length) isSelectAll = false;
-      for (let i = 0; i < this.data.length; i++) {
-        if (!this.objData[this.data[i]._index]._isChecked && !this.objData[this.data[i]._index]._isDisabled) {
-          isSelectAll = false;
-          break;
-        }
-      }
-      return isSelectAll;
+      // let isSelectAll = true;
+      // if (!this.data.length) isSelectAll = false;
+      // for (let i = 0; i < this.data.length; i++) {
+        // if (!this.objData[this.data[i]._index]._isChecked && !this.objData[this.data[i]._index]._isDisabled) {
+        //   isSelectAll = false;
+        //   break;
+        // }
+      // }
+      // return isSelectAll;
     }
   },
   mounted(){
   },
   methods: {
-    cellClasses (column) {
-      return [
-        `${this.prefixCls}-cell`,
-      ];
-    },
     selectAll (status) {
       this.$parent.selectAll(status);
     },

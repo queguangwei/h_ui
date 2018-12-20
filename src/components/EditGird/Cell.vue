@@ -30,7 +30,7 @@
           v-model="columnMoney" 
           :placeholder="column.placeholder"
           :integerNum="column.integerNum || '10'" 
-          :suffixNum="column.suffixNum ||'3' " 
+          :suffixNum="column.suffixNum" 
           :bigTips="column.bigTips || false" 
           :isround="column.isround || false" 
           class="canEdit"></Typefield>
@@ -487,9 +487,14 @@ export default {
     this.render = this.column.render?true:false;
   },
   mounted(){
+    let index = this.index;
     this.rule = this.column.rule;
-    this.rearLabel = this.column.rearlabel||null;
-    this.preLabel = this.column.prelabel||null;
+    if(this.column.rearlabel){
+      this.rearLabel = this.column.rearlabel(this.index)||null;
+    }
+    if(this.column.prelabel){
+      this.preLabel = this.column.prelabel(this.index)||null;
+    }
     this.$on('close-visible',()=>{
      this.setvisible();
     })

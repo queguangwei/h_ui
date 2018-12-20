@@ -1,5 +1,5 @@
 <template>
-  <div :class="wrapper">
+  <ul :class="wrapper">
     <Tree-node
       v-for="(item,i) in stateTree"
       :key="i"
@@ -14,7 +14,7 @@
       >
     </Tree-node>
     <div :class="[prefixCls + '-empty']" v-if="!data.length">{{ localeEmptyText }}</div>
-  </div>
+  </ul>
 </template>
 <script>
   import TreeNode from './Node.vue';

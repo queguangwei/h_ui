@@ -2,7 +2,7 @@
   <div>
     <h2>基础</h2>
     <h3>单选分组组件</h3>
-    <h-group-table :columns="columns1" :height="300" :data="data1" size="large" :highlight-row="true" @on-current-change="click1" ref="groupTable" width="800" :loading="loading">
+    <h-group-table :multiLevel="multiLevel2" :columns="columns1" :height="300" :data="data1" size="large" :highlight-row="true" @on-current-change="click1" ref="groupTable" width="800" :loading="loading">
       <P slot="loading">我是自定义de</P>
     </h-group-table>
     <Button @click="setLoad">切换loading</Button>
@@ -383,7 +383,22 @@ export default {
           checkStrictly: false,
         }
       ],
-      data1: tData
+      data1: tData,
+      multiLevel2:[
+        [
+          {title:'123',cols:2,align:'center',className:'demo-table-info-column'},
+          {title:'456',rows:2,align:'center'},
+          {title:'789',align:'right'},
+        ],
+        [
+          {title:'123',cols:2,hiddenCol:true},
+          {title:'456'},
+        ],
+        [
+          {title:'234'},
+          {title:'678',cols:2},
+        ],
+      ],
     }
   },
   methods: {
@@ -423,5 +438,8 @@ export default {
 }
 </script>
 <style>
+.demo-table-info-column{
+  color: red;
+}
 /* .h-editgird .h-editgird-cell-with-render .dbClass{display:none;} */
 </style>

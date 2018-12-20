@@ -18,6 +18,7 @@
     </h-row>
     <h-row>
       <h-col span="8">
+        测试leaf
         <h-tree :data="baseData" show-checkbox @on-check-change="handleChange" @on-toggle-expand="showExpand"></h-tree>
       </h-col>
       <h-col span="8">
@@ -43,6 +44,17 @@
 </template>
 <script>
 import {deepCopy} from '../../src/util/tools.js'
+let bigObj = [];
+let curdata=[]
+for(var i=0;i<10;i++){
+  var obj = {
+    title: 'children',
+    loading: false,
+    children: []
+  };
+  curdata.push(obj)
+}
+bigObj = curdata;
   export default {
     data () {
       return {
@@ -51,20 +63,20 @@ import {deepCopy} from '../../src/util/tools.js'
           {
             title: 'parent',
             id: '1-0',
-            expand: true,
             children: [
               {
                 title: 'child1',
                 id: '1-1',
-                expand: true,
                 children: [
                   {
                     title: 'child1-1-1',
-                    id: '1-1-1'
+                    id: '1-1-1',
+                    leaf:true
                   },
                   {
                     title: 'child1-1-2',
-                    id: '1-1-2'
+                    id: '1-1-2',
+                    leaf:true
                   }
                 ]
               },
@@ -468,18 +480,15 @@ import {deepCopy} from '../../src/util/tools.js'
     methods: {
       loadData (item, callback) {
         setTimeout(() => {
-          const data = [
-            {
-              title: 'children',
-              loading: false,
-              children: []
-      },
-            {
-              title: 'children',
-              loading: false,
-              children: []
-            }
-          ];
+          const data = [{
+            title: 'children',
+            loading: false,
+            children: [],
+            leaf:true,
+          },{title: 'children2',
+            loading: false,
+            children: []
+          }]
           callback(data);
         }, 1000);
       },

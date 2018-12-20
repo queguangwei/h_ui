@@ -97,7 +97,8 @@ export default {
             next5: '向後 5 頁',
             page: '條/頁',
             goto: '跳至',
-            p: '頁'
+            p: '頁',
+            pageLabel: "每頁顯示" 
         },
         rate: {
             star: '星',

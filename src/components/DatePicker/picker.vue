@@ -456,9 +456,16 @@
     watch: {
       visible (state) {
         if (state === false){
-        //   this.$refs.drop.destroy();
+          //   this.$refs.drop.destroy();
           const input = this.$el.querySelector('input');
           if (input) input.blur();
+          setTimeout(() => {
+            this.dispatch('Msgbox', 'on-esc-real-close', true);
+          }, 0); 
+        }else{
+          setTimeout(() => {
+            this.dispatch('Msgbox', 'on-esc-real-close', false);
+          }, 0);  
         }
         this.$refs.drop.update();
         this.$emit('on-open-change', state);

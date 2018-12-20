@@ -3,9 +3,11 @@
   <h1>SimpleSelect组件</h1>
   <p>选择器支持单选、多选、搜索，以及键盘快捷操作。</p>
   <h1>selectBlock测试用例</h1>
-  <h-simple-select v-model="value" ref="test" placement="bottom-start" filterable :clearable="false" label-in-value @on-change="change" showBottom>
+  {{value}}
+  <h-simple-select v-model="value" ref="test" placement="bottom-start" :clearable="false" @on-change="change" showBottom>
     <h-select-block :data="bigData" @on-scroll="select"></h-select-block>
   </h-simple-select>
+  <Button @on-click="changeValue">changeValue</Button>
   <h-simple-select v-model="value2" transfer placement="bottom-start" filterable placeholder="123" isArrow=false>
     <h-select-block :data="bigData" style="width:200px;"></h-select-block>
   </h-simple-select>
@@ -36,6 +38,9 @@ export default {
     }
   },
   methods: {
+    changeValue(){
+      this.value = 'value1'
+    },
     testClick(val){
       if (val) {
         this.$refs.test.focus();
@@ -82,6 +87,7 @@ export default {
   mounted(){
     this.bigData = bigData;
     setTimeout(() => {
+      this.value = "value0";
       this.value1 = ['value0'];
     }, 1000);
   },

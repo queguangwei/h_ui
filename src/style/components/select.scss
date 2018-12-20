@@ -50,7 +50,8 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
             height: $form-component-height - 10px;
             line-height: $form-component-height - 10px;
             margin-right: 4px;
-
+            background: #F5F5F5 !important;
+            border: 1px solid $border-color-split !important;  
             &>.#{$css-prefix}icon {
               position: absolute;
               right: 0;
@@ -191,6 +192,8 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
       }
       .#{$select-prefix-cls}-content-input{
           width: calc(100% - 36px);
+          height: 20px;
+          line-height: 20px;
       }
     }
 

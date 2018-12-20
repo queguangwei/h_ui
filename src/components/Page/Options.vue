@@ -1,5 +1,6 @@
 <template>
   <div v-if="showSizer || showElevator||showCustom" :class="optsClasses">
+    <div v-if="showSizer && showSizerLabel" :class="sizerLabelClasses">{{ t('i.page.pageLabel') }}</div>
     <div v-if="showSizer" :class="sizerClasses">
       <h-select v-model="currentPageSize" :size="size" :placement="placement" @on-change="changeSize" :clearable="false">
         <h-option v-for="item in pageSizeOpts" :key="item" :value="item" style="text-align:center;">{{ item }} {{ t('i.page.page') }}</h-option>
@@ -44,6 +45,7 @@
             placement: String,
             isBlur:Boolean,
             showCustom:Boolean,
+            showSizerLabel: Boolean
         },
         data () {
             return {
@@ -68,6 +70,11 @@
             sizerClasses () {
                 return [
                     `${prefixCls}-options-sizer`
+                ];
+            },
+            sizerLabelClasses () {
+                 return [
+                    `${prefixCls}-options-sizer-label`
                 ];
             },
             ElevatorClasses () {

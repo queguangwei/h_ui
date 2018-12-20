@@ -6,7 +6,7 @@
     </colgroup>
     <thead>
       <tr v-if="multiLevel" v-for="(colItem,inx) in multiData" :key="inx">
-        <th v-for="(multi, index) in colItem" :colspan="multi.cols||1" :key="index" :class="aliCls(multi)">
+        <th v-for="(multi, index) in colItem" :colspan="multi.cols||1" :rowspan="multi.rows||1" :key="index" :class="aliCls(multi)">
           <div :class="[prefixCls+'-cell']"><span>{{multi.title}}</span></div>
         </th>
       </tr>

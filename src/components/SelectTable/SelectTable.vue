@@ -1094,6 +1094,9 @@
               })
             }
           })
+          setTimeout(() => {
+            this.dispatch('Msgbox', 'on-esc-real-close', false);
+          }, 0);
           this.broadcast('Drop', 'on-update-popper');
         } else {
           if (this.filterable) {
@@ -1102,6 +1105,9 @@
               this.broadcastQuery('');
             }, 300);
           }
+          setTimeout(() => {
+            this.dispatch('Msgbox', 'on-esc-real-close', true);
+          }, 0);
           // this.broadcast('Drop', 'on-destroy-popper');
         }
       },

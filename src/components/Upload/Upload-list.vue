@@ -10,6 +10,7 @@
       <span @click="handlePreview(file)">
         <Icon :name="format(file)"></Icon> {{ file.name }}
       </span>
+      <slot></slot>
       <Icon
         name="close"
         :class="[prefixCls + '-list-remove']"

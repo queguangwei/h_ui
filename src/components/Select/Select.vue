@@ -33,7 +33,7 @@
         tabindex="-1"
         ref="input">
       <!-- 单选时清空按钮 -->
-      <Icon name="close" :class="[prefixCls + '-arrow']" v-if="showCloseIcon" @click.native.stop="clearSingleSelect"></Icon>
+      <Icon name="close" :class="[prefixCls + '-arrow']" v-if="showCloseIcon" @click.native.stop="handleIconClose" ref="close"></Icon>
       <Icon name="unfold" :class="[prefixCls + '-arrow']" v-if="!remote && isArrow" ref="arrowb"></Icon>
     </div>
     <transition :name="transitionName">
@@ -126,6 +126,10 @@
       clearable: {
         type: Boolean,
         default: true
+      },
+      multClearable: {
+        type: Boolean,
+        default: false,
       },
       placeholder: {
         type: String
@@ -242,12 +246,22 @@
         type: Boolean,
         default: false,
       },
+      // 滚动时先固定滚动条，只有滚动至当屏最上方或者最下方时进行滚动条滚动，否则滚动条不动，只改变focusIndex值
+      scrollFix: {
+        type: Boolean,
+        default: false,
+      },
+      isBackClear: {
+        type: Boolean,
+        default: false,
+      },
     },
     data () {
       return {
         prefixCls: prefixCls,
         visible: false,
         options: [],
+        disabledOpts: [],
         optionInstances: [],
         selectedSingle: '',
         selectedMultiple: [],
@@ -333,7 +347,7 @@
           return status;
       },
       showCloseIcon () {
-          return !this.multiple && this.clearable && !this.showPlaceholder;
+          return (!this.multiple && this.clearable||this.multiple&&this.multClearable) && !this.showPlaceholder;
       },
       inputStyle () {
           let style = {};
@@ -473,8 +487,10 @@
         let el = this.$refs.reference;
         if (el.scrollHeight>el.clientHeight) {
           if (this.$refs.arrowb) this.$refs.arrowb.$el.style.right="22px";
+          if (this.$refs.close) this.$refs.close.$el.style.right="22px";
         }else{
           if (this.$refs.arrowb) this.$refs.arrowb.$el.style.right="8px";
+          if (this.$refs.close) this.$refs.close.$el.style.right="8px";
         }
       },
       toggleMenu () {
@@ -522,6 +538,7 @@
       },
       updateOptions (init, slot = false) {
           let options = [];
+          let disabledOpts = [];
           let index = 1;
           this.findChild((child) => {
               options.push({
@@ -529,12 +546,16 @@
                 // label: (child.label === undefined) ? child.$el.innerHTML.slice(Number(child.$el.innerHTML.indexOf('</label>')+8)) : child.label
                 label: (child.label === undefined) ? child.$el.innerText.replace(/\s*\w{4,5} /, '') : child.label
               });
+              if(child.disabled){
+                disabledOpts.push(child.value);
+              }
               child.index = index++;
               if (init) {
                   this.optionInstances.push(child);
               }
           });
           this.options = options;
+          this.disabledOpts = disabledOpts;
           if(this.specialIndex&&this.options.length>0){
             this.typeValue = typeOf(this.options[0].value);
           }
@@ -567,8 +588,24 @@
 
           this.toggleSingleSelected(this.model, init);
       },
+      handleIconClose(){
+        if (this.readobly ||this.disabled|| !this.editable) return false;
+        if(this.multiple){
+          this.clearMultipleSelect();
+        }else{
+          this.clearSingleSelect();
+        }
+      },
+      clearMultipleSelect () {
+        let disArr=[];
+        this.model.forEach((col)=>{
+          if(this.disabledOpts.indexOf(col)!=-1){
+            disArr.push(col);
+          }
+        })
+        this.model=disArr;
+      },
       clearSingleSelect () {
-        if (this.readobly || !this.editable) return false;
         if (this.showCloseIcon) {
             this.findChild((child) => {
                 child.selected = false;
@@ -585,13 +622,10 @@
       updateMultipleSelected (init = false, slot = false) {
         if (this.multiple && Array.isArray(this.model)) {
             let selected = this.remote && this.model.length > 0 ? this.selectedMultiple : [];
-
             for (let i = 0; i < this.model.length; i++) {
                 const model = this.model[i];
-
                 for (let j = 0; j < this.options.length; j++) {
                     const option = this.options[j];
-
                     if (model === option.value) {
                         selected.push({
                             value: option.value,
@@ -632,16 +666,17 @@
           return false;
         }
         if (this.remote) {
-            const tag = this.model[index];
-            this.selectedMultiple = this.selectedMultiple.filter(item => item.value !== tag);
+          const tag = this.model[index];
+          this.selectedMultiple = this.selectedMultiple.filter(item => item.value !== tag);
         }
-
-        this.model.splice(index, 1);
-
+        if(this.disabledOpts.indexOf(this.model[index])==-1){
+          this.model.splice(index, 1);
+        }else{
+          return;
+        }
         if (this.filterable && this.visible && !this.showBottom) {
-            this.$refs.input.focus();
+          this.$refs.input.focus();
         }
-
         this.broadcast('Drop', 'on-update-popper');
       },
       toggleSingleSelected (value, init = false) {
@@ -723,36 +758,39 @@
       },
       handleKeydown (e) {
         if (this.visible) {
-            const keyCode = e.keyCode;
-            // Esc slide-up
-            if (keyCode === 27) {
-                e.preventDefault();
-                this.hideMenu();
-            }
-            // next
-            if (keyCode === 40) {
-                e.preventDefault();
-                this.navigateOptions('next');
-            }
-            // prev
-            if (keyCode === 38) {
-                e.preventDefault();
-                this.navigateOptions('prev');
-            }
-            // enter
-            if (keyCode === 13) {
-                e.preventDefault();
+          const keyCode = e.keyCode;
+          // Esc slide-up
+          if (keyCode === 27) {
+              e.preventDefault();
+              this.hideMenu();
+          }
+          // next
+          if (keyCode === 40) {
+              e.preventDefault();
+              this.navigateOptions('next');
+          }
+          // prev
+          if (keyCode === 38) {
+              e.preventDefault();
+              this.navigateOptions('prev');
+          }
+          // enter
+          if (keyCode === 13) {
+              e.preventDefault();
 
-                this.findChild((child) => {
-                    if (child.isFocus) {
-                        child.select();
-                    }
-                });
-            }
+              this.findChild((child) => {
+                  if (child.isFocus) {
+                      child.select();
+                  }
+              });
+          }
+        }
+        if (this.visible || this.isInputFocus) {
+          this.handleBack(e);
         }
       },
       navigateOptions (direction) {
-        let curTop = this.$refs.content.scrollTop;
+        let curTop = this.$refs.content.scrollTop ? this.$refs.content.scrollTop : 0;
           if (direction === 'next') {
               const next = this.focusIndex + 1;
               this.focusIndex = (this.focusIndex === this.options.length) ? 1 : next;
@@ -785,7 +823,27 @@
               }
           });
           let top = 32*(this.focusIndex-1);
-          scrollAnimate(this.$refs.content,curTop,top);
+          let contentHeight = 0 
+          let selectItemHeight = 1
+          if (this.scrollFix) {
+            // 距离底部5px
+            selectItemHeight = ((!this.notFound && !this.remote) || (this.remote && !this.loading && !this.notFound)) && this.$refs.content.getElementsByClassName('h-select-item').length > 0 ?  this.$refs.content.getElementsByClassName('h-select-item')[0].clientHeight : 30
+            contentHeight = this.showBottom ? (this.$refs.content.clientHeight - 10 - selectItemHeight) : (this.$refs.content.clientHeight - 10)
+            if (direction == 'next') {
+              let conNum = Math.floor(contentHeight / selectItemHeight)
+              let topNum = Math.floor(curTop / selectItemHeight)
+              top = this.focusIndex == 1 ? 0 : this.focusIndex <  conNum + topNum ? curTop : (this.focusIndex - conNum) * selectItemHeight
+            } else if (direction === 'prev') {
+              let maxnum = Math.floor((contentHeight + curTop) / selectItemHeight)
+              let minnum = Math.floor(curTop/ selectItemHeight)
+              top = this.focusIndex > minnum && this.focusIndex < maxnum ? curTop : (this.focusIndex -1) * selectItemHeight 
+              
+            }
+
+          }
+          if (curTop != top) {
+            scrollAnimate(this.$refs.content,curTop,top);
+          }
           this.resetScrollTop();
 
           if ((child_status.disabled || child_status.hidden) && find_deep) {
@@ -794,8 +852,8 @@
       },
       resetScrollTop () {
         const index = this.focusIndex - 1;
-        let bottomOverflowDistance = this.optionInstances[index].$el.getBoundingClientRect().bottom - this.$refs.dropdown.$el.getBoundingClientRect().bottom;
-        let topOverflowDistance = this.optionInstances[index].$el.getBoundingClientRect().top - this.$refs.dropdown.$el.getBoundingClientRect().top;
+        let bottomOverflowDistance = this.optionInstances[index] ? this.optionInstances[index].$el.getBoundingClientRect().bottom - this.$refs.dropdown.$el.getBoundingClientRect().bottom : 0;
+        let topOverflowDistance = this.optionInstances[index] ? this.optionInstances[index].$el.getBoundingClientRect().top - this.$refs.dropdown.$el.getBoundingClientRect().top : 0;
 
         if (bottomOverflowDistance > 0) {
             this.$refs.dropdown.$el.scrollTop += bottomOverflowDistance;
@@ -807,6 +865,7 @@
       handleBlur () {
         this.$emit('on-blur');
         if (this.showBottom) return false;
+        this.isInputFocus = false
         setTimeout(() => {
           const model = this.model;
 
@@ -919,7 +978,16 @@
           return val;
         }
       },
-
+      handleBack(e){
+        if(!this.isBackClear) return;
+        if (e.keyCode == 8) {
+          if(this.multiple){
+            this.clearMultipleSelect();
+          }else{
+            this.clearSingleSelect();
+          }
+        }
+      }
     },
     mounted () {
       if (!this.multiple && this.setDefSelect && this.value == ''){
@@ -1020,7 +1088,6 @@
     },
     beforeDestroy () {
       off(document,'keydown',this.handleKeydown)
-      // document.removeEventListener('keydown', this.handleKeydown);
       this.broadcast('Drop', 'on-destroy-popper');
     },
     watch: {
@@ -1036,8 +1103,8 @@
         }
       },
       label (val) {
-          this.currentLabel = val;
-          this.updateLabel();
+        this.currentLabel = val;
+        this.updateLabel();
       },
       selectedMultiple (val){
         this.$nextTick(()=>{
@@ -1049,6 +1116,8 @@
             labelarr.push(item.label);
           })
           this.titleTip = labelarr.join(',');
+        }else{
+          this.titleTip = '';
         }
       },
       model () {
@@ -1090,6 +1159,9 @@
             }
           }
           this.broadcast('Drop', 'on-update-popper');
+          setTimeout(() => {
+            this.dispatch('Msgbox', 'on-esc-real-close', false);
+          }, 0); 
         } else {
           if (this.filterable) {
             this.$refs.input.blur();
@@ -1099,6 +1171,9 @@
               this.broadcastQuery('');
             }, 300);
           }
+          setTimeout(() => {
+            this.dispatch('Msgbox', 'on-esc-real-close', true);    
+          }, 0);      
           // this.broadcast('Drop', 'on-destroy-popper');
         }
       },
@@ -1110,6 +1185,9 @@
             if ( val != '' && !this.visible && val != this.value) {
                 this.visible = true
             } 
+            if (this.visible && !this.isInputFocus) { //点击其他页面触发失去焦点事件
+              this.visible = false
+            }
           } 
           if (!this.selectToChangeQuery) {
               this.$emit('on-query-change', val);

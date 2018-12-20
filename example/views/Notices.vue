@@ -6,7 +6,7 @@
     <h-button @click="open(true)">打开提醒（仅标题）</h-button>
   	<h1>提醒类型</h1>
   	<h2>带描述信息</h2>
-    <h-button @click="info(false)">消息</h-button>
+    <h-button @click="info(false)" name="key1">消息</h-button>
     <h-button @click="success(false)">成功</h-button>
     <h-button @click="warning(false)">警告</h-button>
     <h-button @click="error(false)">错误</h-button>
@@ -33,13 +33,14 @@
         this.$hNotice.open({
           title: '这是通知标题',
           desc: nodesc ? '' : '这里是通知描述这里,是通知描述这里是通知描述这里,是通知描述这里,是通知描述这里是通知描述这里是通知描述',
+          key:'key1',
+          duration: 5,
         });
       },
       info (nodesc) {
         this.$hNotice.info({
           title: '这是通知标题',
           desc: nodesc ? '' : '这里是通知描述这里,是通知描述这里是通知描述这里,是通知描述这里,是通知描述这里是通知描述这里是通知描述',
-          duration: 0
         });
       },
       success (nodesc) {
@@ -69,6 +70,14 @@
       },
       close(){
         this.$hNotice.close('key1')
+        this.$nextTick(()=>{
+          this.$hNotice.open({
+            title: '这是通知标题',
+            desc: '这条通知不会自动关闭，需要点击关闭按钮才可以关闭。',
+            duration: 5,
+            name:'key1'
+          });
+        })
       },
       destroy(){
         this.$hNotice.destroy()

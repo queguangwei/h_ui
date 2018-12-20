@@ -45,6 +45,7 @@
       </h-select> -->
       
        <h-select v-model="model44"
+                isBackClear
                 multiple
                 style="width:320px"
                 isCheckall
@@ -53,13 +54,16 @@
                 :isComputed="isComputed"
                 noMoreText="哈哈哈哈"
                 :specialIndex="true"
+                showTitle
+                multClearable
                 algin="center">
         <h-option :value="-1"
                   key="-1">-1 所有</h-option>
         <h-option v-for="item in cityList"
                   multiple
                   :value="Number(item.value)"
-                  :key="item.value">{{ item.label }}</h-option>
+                  :key="item.value"
+                  :disabled="item.value==2">{{ item.label }}</h-option>
       </h-select>
       {{model44}}
       <br>

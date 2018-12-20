@@ -104,7 +104,8 @@ export default {
         next5: '向后 5 页',
         page: '条/页',
         goto: '跳至',
-        p: '页'
+        p: '页',
+        pageLabel: '每页显示'
     },
     rate: {
         star: '星',

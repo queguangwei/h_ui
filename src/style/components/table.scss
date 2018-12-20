@@ -21,7 +21,7 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
   overflow: hidden;
   color: $text-color;
   font-size: $font-size-small;
-  background-color: #fff;
+  background-color:$table-tbody-bg;
 
   box-sizing: border-box;
   //position: relative;
@@ -112,7 +112,7 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
     font-size: $font-size-base;
   }
   td{
-    background-color: #fff;
+    background-color: $table-tbody-bg;
     transition: background-color $transition-time $ease-in-out;
   }
 
@@ -181,17 +181,13 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
         transform: rotate(90deg);
       }
     }
-    input[type="checkbox"]{
-      border: 1px solid $border-color-base;
-      border-radius: 2px;
-      background-color: #fff;
-      width: 16px;
-      height: 16px;
-      &:after{
-          width: 5px;
-          height: 9px;
-      }
-    }
+  }
+  &-split-index{
+    background:$table-tbody-bg !important;
+    user-select: none;
+  }
+  &-split-index:before{
+    content: attr(data-index);
   }
   &-hidden{
     visibility: hidden;

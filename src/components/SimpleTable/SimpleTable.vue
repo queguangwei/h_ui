@@ -8,7 +8,7 @@
           </colgroup>
           <thead>
             <tr v-if="multiLevel" v-for="(colItem,inx) in multiData" :key="inx">
-              <th v-for="(multi, index) in colItem" :colspan="multi.cols||1" :key="index" :class="aliCls(multi)">
+              <th v-for="(multi, index) in colItem" :colspan="multi.cols||1" :rowspan="multi.rows||1" :key="index" :class="aliCls(multi)">
                 <div :class="[prefixCls+'-cell']">
                   <span>{{multi.title}}</span>
                 </div>
@@ -36,7 +36,7 @@
       </div>
       <div ref="body" :class="[prefixCls + '-body'] " class="h-simple-view" :style="bodyStyle" @scroll="handleBodyScroll"
         v-show="!((!!localeNoDataText && (!data || data.length === 0)) || (!!localeNoFilteredDataText && (!rebuildData || rebuildData.length === 0)))">
-        <div :class="[prefixCls + '-phantom']" :style="{height: contentHeight}">
+        <div :class="[prefixCls + '-phantom']" :style="{height: contentHeight + 'px'}">
         </div>
         <div class="h-simple-content"  ref="content">
           <table cellspacing="0" cellpadding="0" border="0" :style="tableStyle" ref="tbody">
@@ -54,9 +54,10 @@
                   @click.native="clickCurrentRowTr($event,row._index)"
                   @dblclick.native.stop="dblclickCurrentRowTr(row._index)"
                 >
-                  <td v-for="column in cloneColumns" :class="alignCls(column, row)" :key="column._index">
+                  <td v-for="column in cloneColumns" :class="alignCls(column, row)" :data-index="row._index+1" :key="column._index">
                     <div :class="classesTd(column)">
-                      <template v-if="column.type === 'index'">{{row._index}}</template>
+                      <!-- &&!this.splitIndex -->
+                      <template v-if="column.type === 'index'&&!splitIndex">{{row._index + 1}}</template>
                       <template v-if="column.type === 'selection'">
                         <Checkbox size="large" :value="rowChecked(row._index)" @click.native.stop="handleClickTr($event,row._index,rowChecked(row._index))" @on-change="toggleSelect(row._index)" :disabled="rowDisabled(row._index)"></Checkbox>
                       </template>
@@ -118,7 +119,7 @@
           </table>
         </div>
         <div :class="[prefixCls + '-fixed-body']" class="h-simple-view" :style="fixedBodyStyle" ref="fixedBody" @mousewheel="handleFixedMousewheel" @DOMMouseScroll="handleFixedMousewheel">
-          <div :class="[prefixCls + '-phantom']" :style="{height: contentHeight}">
+          <div :class="[prefixCls + '-phantom']" :style="{height: contentHeight + 'px'}">
           </div>
           <div class="h-simple-content" ref="leftContent">
             <table cellspacing="0" cellpadding="0" border="0" :style="tableStyle" ref="tbody">
@@ -138,7 +139,7 @@
                   >
                     <td v-for="column in cloneColumns" :class="alignCls(column, row,'left')" :key="column._index">
                       <div :class="classesTd(column)">
-                        <template v-if="column.type === 'index'">{{row._index}}</template>
+                        <template v-if="column.type === 'index'&&!splitIndex">{{row._index+1}}</template>
                         <template v-if="column.type === 'selection'">
                           <Checkbox size="large" :value="rowChecked(row._index)" @click.native.stop="handleClickTr($event,row._index,rowChecked(row._index))" @on-change="toggleSelect(row._index)" :disabled="rowDisabled(row._index)"></Checkbox>
                         </template>
@@ -184,7 +185,7 @@
 
 import renderHeader from './header';
 import Spin from '../Spin/Spin.vue';
-import { oneOf, getStyle, deepCopy, getScrollBarSize,findInx,getBarBottom,hasClass,addClass,removeClass,typeOf,getScrollBarSizeHeight} from '../../util/tools';
+import { oneOf, getStyle, deepCopy, getScrollBarSize,findInx,getBarBottomS,hasClass,addClass,removeClass,typeOf,getScrollBarSizeHeight, scrollAnimate} from '../../util/tools';
 import { on, off } from '../../util/dom';
 import Locale from '../../mixins/locale';
 import Mixin from './mixin';
@@ -301,7 +302,7 @@ export default {
     },
     itemHeight: {
       type: Number,
-      default:40
+      default: 30
     },
     notSort:{
       type:Boolean,
@@ -312,6 +313,19 @@ export default {
       default:null
     },
     notAdaptive:{
+      type:Boolean,
+      default:false,
+    },
+    defaultFocusIndex: Number,
+    scrollTopSet: {
+      type: Number,
+      default: 0
+    },
+    toScrollTop: {
+      type:Boolean,
+      default:false,
+    },
+    splitIndex:{
       type:Boolean,
       default:false,
     }
@@ -350,6 +364,11 @@ export default {
       ctrlSelect:[],
       dragging:false,
       draggingColumn:false,
+      isScrollX: false, //是否有横向滚动
+      focusIndex: -1,
+      curPageFirstIndex: 0, 
+      isFocusSelect: true,
+      privateToScrollTop: false
     };
   },
   computed: {
@@ -554,7 +573,7 @@ export default {
       return this.columns.some(col => col.fixed && col.fixed === 'right');
     },
     contentHeight() {
-      return this.rebuildData.length * this.itemHeight + 'px';
+      return this.rebuildData.length * this.itemHeight;
     }
   },
   methods: {
@@ -708,8 +727,8 @@ export default {
         document.addEventListener('mouseup', handleMouseUp);
     },
     mousemove(event,column,index){
-      if (!this.canDrag) return;
-      if (!column ) return;
+      if (!this.canDrag ||!column) return;
+      if (this.splitIndex && column.type=='index') return;
       if (column.children && column.children.length > 0) return;
       let target = this.findObj(event,"TH");
       if(this.canDrag){
@@ -743,6 +762,9 @@ export default {
     },
     handleResize () {
       this.$nextTick(() => {
+        let width = this.$refs.body.getBoundingClientRect().width;
+        let conentWidth = this.$refs.body.scrollWidth;
+        this.isScrollX = conentWidth + this.scrollBarWidth > width ? true :false
         if(this.cloneColumns.length==0) return;
         const allWidth = !this.columns.some(cell => !cell.width&&cell.width!==0);    // each column set a width
         if (allWidth) {
@@ -925,7 +947,8 @@ export default {
     },
     clickCurrentRow (_index) {
       if (!this.rowSelect) {
-        this.highlightCurrentRow (_index);
+        this.focusIndex = _index        
+        this.highlightCurrentRow(_index);
       }
       this.$nextTick(()=>{
         this.$emit('on-row-click', [JSON.parse(JSON.stringify(this.cloneData[_index])),_index]);
@@ -933,7 +956,8 @@ export default {
     },
     dblclickCurrentRow (_index) {
       if (!this.rowSelect) {
-        this.highlightCurrentRow (_index);
+        this.focusIndex = _index        
+        this.highlightCurrentRow(_index);
       }
       this.$nextTick(()=>{
         this.$emit('on-row-dblclick', JSON.parse(JSON.stringify(this.cloneData[_index])));
@@ -1109,12 +1133,15 @@ export default {
       }
     },
     handleBodyScroll (event) {
+      this.privateToScrollTop = false
       let scrolltop = event.target.scrollTop;
+      this.curPageFirstIndex = Math.floor(scrolltop / this.itemHeight)
       this.$refs.header.scrollLeft = event.target.scrollLeft;
       if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = scrolltop;
-      // if (this.isRightFixed) this.$refs.fixedRightBody.scrollTop = event.target.scrollTop;
-      this.buttomNum = getBarBottom(event.target,this.scrollBarHeight);
+      this.buttomNum = getBarBottomS(event.target, this.bodyHeight, this.contentHeight,this.scrollBarHeight, this.isScrollX);
       let curtop = Math.floor(scrolltop / this.itemHeight)*this.itemHeight;
+
+      this.updateVisibleData(scrolltop)
       this.$refs.content.style.transform = `translate3d(0, ${curtop}px, 0)`;
       if(this.$refs.leftContent){
         this.$refs.leftContent.style.transform = `translate3d(0, ${curtop}px, 0)`;
@@ -1161,6 +1188,12 @@ export default {
       this.start = Math.floor(scrollTop / this.itemHeight);
       this.end = this.start + this.visibleCount;
       this.visibleData = this.rebuildData.slice(this.start, this.end);
+
+      // let curtop =  this.start*this.itemHeight;
+      // this.$refs.content.style.transform = `translate3d(0, ${curtop}px, 0)`;
+      // if(this.$refs.leftContent){
+      //   this.$refs.leftContent.style.transform = `translate3d(0, ${curtop}px, 0)`;
+      // }
     },
     handleMouseWheel (event) {
       const deltaX = event.deltaX;
@@ -1310,13 +1343,13 @@ export default {
         this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
       });
     },
-    exportCsv (params) {
+    exportCsv (params={}) {
       if (params.filename) {
         if (params.filename.indexOf('.csv') === -1) {
-            params.filename += '.csv';
+            params.filename += params.format?'.'+params.format:'.csv';
         }
       } else {
-        params.filename = 'simpleTable.csv';
+        params.filename = params.format?'simpleTable.'+params.format:'simpleTable.csv';
       }
       let columns = [];
       let datas = [];
@@ -1331,8 +1364,79 @@ export default {
       let noHeader = false;
       if ('noHeader' in params) noHeader = params.noHeader;
       const data = Csv(columns, datas, params, noHeader);
-      ExportCsv.download(params.filename, data);
+      ExportCsv.download(params.filename, data,params.format);
     },
+    handleKeydown (e) {
+      const keyCode = e.keyCode;
+      // next
+      if (keyCode === 40) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.navigateOptions('next');
+      }
+      // prev
+      if (keyCode === 38) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.navigateOptions('prev');
+      }
+    },
+    navigateOptions (direction) {
+      if (this.isFocusSelect) {
+        if (this.objData[this.focusIndex].hasOwnProperty('_isChecked')) this.objData[this.focusIndex]._isChecked = false
+        if (this.objData[this.focusIndex].hasOwnProperty('_isHighlight')) this.objData[this.focusIndex]._isHighlight = false;
+        this.isFocusSelect = false
+      } 
+      let curTop = this.$refs.body.scrollTop ? this.$refs.body.scrollTop : 0;
+      let contentHeight = this.$refs.body.clientHeight
+      // curPageFirstIndex当前屏第一条数据
+      let top = this.itemHeight * this.focusIndex;
+      let curPageCount = this.isScrollX ? this.visibleCount - 1 : this.visibleCount      
+      // 焦点在当前屏，则进行+1或者-1
+      if (this.focusIndex >= this.curPageFirstIndex && this.focusIndex <= this.curPageFirstIndex + curPageCount) {
+        if (direction === 'next') {
+          if (this.focusIndex == this.data.length - 1) return
+          this.focusIndex = this.focusIndex + 1;
+        } else if (direction === 'prev') {
+          if (this.focusIndex == 0) return
+          this.focusIndex = this.focusIndex - 1;
+        }
+        // +1或者-1后判断是否在当前屏，判断是否需要滚动
+        if (this.focusIndex > this.curPageFirstIndex && this.focusIndex < this.curPageFirstIndex + curPageCount) {
+          top = this.focusIndex == 0 ? 0 : curTop
+        }  else {
+          if (direction === 'next') {
+            // 向下滚动
+            top = this.itemHeight * (this.focusIndex - curPageCount + 1);
+            // 当前屏第一条索引更新
+            this.curPageFirstIndex = this.focusIndex - curPageCount + 1
+          } else if (direction === 'prev') {
+            this.curPageFirstIndex = this.focusIndex        
+            top = this.itemHeight * this.focusIndex
+          }
+        }
+      } else {
+        // 滚动后切到本屏第一条
+        this.focusIndex = this.curPageFirstIndex
+        top = curTop
+      }
+      if (curTop != top) {
+        this.updateVisibleData(top)
+        this.$refs.body.scrollTop = top
+        this.$refs.content.style.transform = `translate3d(0, ${top}px, 0)`;
+        if (this.$refs.leftContent) {
+          this.$refs.leftContent.style.transform = `translate3d(0, ${top}px, 0)`;
+        }
+      }
+    },
+    handleKeyup (e) {
+      this.isFocusSelect = true
+      if (e.keyCode === 40 || e.keyCode === 38) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.highlightCurrentRow(this.focusIndex)
+      }
+    }
   },
   created () {
       if (!this.context) this.currentContext = this.$parent;
@@ -1343,11 +1447,14 @@ export default {
   mounted () {
     this.handleResize();
     this.fixedHeader();
+    on(document,'keydown', this.handleKeydown);
+    on(document,'keyup', this.handleKeyup);
     this.$nextTick(() => {
       this.ready = true;
       this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0;
-      this.visibleCount = Math.ceil(this.height / this.itemHeight); 
+      this.visibleCount = Math.ceil(this.height / this.itemHeight) - (this.showHeader ? 1 : 0); 
       this.updateVisibleData();
+      // this.focusIndex = this.defaultFocusIndex
     });
     //window.addEventListener('resize', this.handleResize, false);
     on(window, 'resize', this.handleResize);
@@ -1363,12 +1470,33 @@ export default {
       //window.removeEventListener('resize', this.handleResize, false);
       off(window, 'resize', this.handleResize);
       off(window, 'resize', this.initResize);
+      off(document,'keydown',this.handleKeydown)
   },
   watch: {
+      // focusIndex (val) {
+      //   if (val >= 0) {
+      //     this.$nextTick(() => {
+      //       this.highlightCurrentRow(val)
+      //     })
+      //   }
+      // },
+      toScrollTop () {
+        this.privateToScrollTop = this.toScrollTop
+        
+      },
+      privateToScrollTop (val) {
+        if (val) {
+          this.$refs.body.scrollTop = this.scrollTopSet
+          this.$nextTick(() => {
+            this.clickCurrentRow(0)
+          })
+        }
+      },
       data: {
         handler () {
           // const oldDataLen = this.rebuildData.length;
           this.rebuildData = this.makeDataWithSortAndFilter();
+          this.objData = this.makeObjData();
           // this.rebuildData = this.data;
           // if (!oldDataLen) {
           //   this.fixedHeader();
@@ -1377,7 +1505,6 @@ export default {
           this.handleResize();
           // here will trigger before clickCurrentRow, so use async
           this.$nextTick(()=>{
-            this.objData = this.makeObjData();
             this.cloneData = deepCopy(this.data);
           })
         },
@@ -1427,6 +1554,19 @@ export default {
           this.selectRange();
         }
       },
+      defaultFocusIndex (val) {
+        if (val !== null) {
+          this.focusIndex = val
+          if (val >= 0) {
+            this.$nextTick(() => {
+              this.highlightCurrentRow(val)
+            })
+          }
+        } else {
+          this.focusIndex = -1
+          this.curPageFirstIndex = 0
+        }
+      }
   }
 };
 </script>

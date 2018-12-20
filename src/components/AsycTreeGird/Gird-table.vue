@@ -11,6 +11,8 @@
           :obj-data="objData"
           :columns-width="columnsWidth"
           :data="rebuildData"
+          :headSelection ="headSelection"
+          :canDrag="canDrag"
           ></gird-head>
       </div>
       <div :class="[prefixCls + '-body']" :style="bodyStyle" ref="body" @scroll="handleBodyScroll"
@@ -37,20 +39,7 @@
           @on-editarea-blur="editAreaBlur"
           ></gird-body>
       </div>
-      <!-- <div :class="[prefixCls + '-tip']"
-        v-show="((!!localeNoDataText && (!data || data.length === 0)) || (!rebuildData || rebuildData.length === 0))">
-        <table cellspacing="0" cellpadding="0" border="0">
-          <tbody>
-            <tr>
-              <td :style="{ 'height': bodyStyle.height }">
-                <span v-html="localeNoDataText" v-if="!data || data.length === 0"></span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div> -->
-     <div :class="[prefixCls + '-tip']"
+      <div :class="[prefixCls + '-tip']"
         v-show="((!!localeNoDataText && (!data || data.length === 0)) || (!rebuildData || rebuildData.length === 0))" @scroll="handleBodyScroll" :style="bodyStyle">
         <div class="h-table-tiptext" :style="textStyle" >
           <span v-html="localeNoDataText" v-if="!data || data.length === 0"></span>
@@ -64,6 +53,7 @@
           </tbody>
         </table>
       </div>
+      <div class="h-table__column-resize-proxy" ref="resizeProxy" v-show="resizeProxyVisible"> </div>
     </div>
     <Spin fix size="large" v-if="loading">
       <slot name="loading">
@@ -166,6 +156,10 @@ export default {
       type:Boolean,
       default:false
     },
+    headSelection:{
+      type:Boolean,
+      default:false
+    },
     loading: {
       type: Boolean,
       default: false
@@ -185,6 +179,14 @@ export default {
     loadData: {
       type: Function
     },
+    canDrag: {
+      type:Boolean,
+      default:false,
+    },
+    notAdaptive: {
+      type:Boolean,
+      default:false,
+    }
   },
   data () {
     return {
@@ -201,6 +203,7 @@ export default {
       showSlotHeader: true,
       bodyHeight: 0,
       bodyRealHeight: 0,
+      resizeProxyVisible: false,
       scrollBarWidth: getScrollBarSize(),
       currentContext: this.context,
       cloneData: deepCopy(this.data),    // when Cell has a button to delete row data, clickCurrentRow will throw an error, so clone a data
@@ -306,6 +309,35 @@ export default {
     },
   },
   methods: {
+    changeWidth(width,key,lastWidth){
+      var that = this;
+      var lastInx = this.cloneColumns.length-1;
+      var totalWidth=0;
+      this.cloneColumns.forEach((col,i)=>{
+        if (col.key==key) {
+          that.$set(col,"width",width);
+          that.$set(col,"_width",width);
+        }
+        // && !that.notAdaptive
+        if (i == lastInx && !that.notAdaptive) {
+          that.$set(col,"width",lastWidth);
+          that.$set(col,"_width",lastWidth);
+        }
+        var colWidth = col.width||col._width
+        totalWidth = totalWidth+ colWidth;
+      });
+      if (this.bodyHeight !=0 && !that.notAdaptive) {
+        totalWidth = totalWidth + this.scrollBarWidth;
+      }
+      this.tableWidth=totalWidth;
+      // && !that.notAdaptive
+      if (this.tableWidth<this.initWidth && !that.notAdaptive) {
+        this.tableWidth = this.initWidth-1;
+      }
+      this.$nextTick(()=>{
+        this.$emit('on-drag', width, key);
+      })
+    },
     rowClsName (index) {
       return this.rowClassName(this.data[index], index);
     },
@@ -430,13 +462,11 @@ export default {
       let data = {};
       for (let j in _this.objData) {
           if (parseInt(j) === _index) {
-              data = _this.objData[j];
+            data = _this.objData[j];
           }
       }
       const status = !data._isChecked;
-
       _this.objData[_index]._isChecked = status;
-
       const selection = this.getSelection();
       this.$emit(status ? 'on-select' : 'on-select-cancel', selection, JSON.parse(JSON.stringify(this.rebuildData[_index])));
       this.$emit('on-selection-change', selection);
@@ -559,18 +589,15 @@ export default {
       }
     },
     selectAll (status) {
-        for(const data of this.rebuildData){
-          if(this.objData[data._index]._isDisabled){
-            continue;
-          }else{
-            this.objData[data._index]._isChecked = status;
-          }
+      this.rebuildData.forEach((node,index)=>{
+        node.checked = status;
+        this.objData[index]._isChecked = status;
+        if(node._indeterminate){
+          node._indeterminate = false;
         }
-        const selection = this.getSelection();
-        if (status) {
-            this.$emit('on-select-all', selection);
-        }
-        this.$emit('on-selection-change', selection);
+      })
+      this.$emit('on-select-all', status);
+      // this.$emit('on-selection-change', selection);
     },
     fixedHeader () {
         if (this.height) {

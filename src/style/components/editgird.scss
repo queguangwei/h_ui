@@ -319,8 +319,23 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
       }
     }
   }
+  &-can-hover {
+    .not-child:hover td{
+      background-color: $table-td-hover-bg;
+    }
+  }
+  &-can-stripe {
+    .not-child:nth-child(2n) td{
+      background-color: $table-td-stripe-bg;
+    }
+  }
 }
 .dbClass{
   min-height:18px;
 }
-
+.asyc-check{
+  .h-checkbox-inner{
+    width: 15px;
+    height: 15px;
+  }
+}
