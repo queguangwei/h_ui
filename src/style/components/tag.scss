@@ -3,14 +3,14 @@ $tag-close-prefix-cls: h-icon-ios-close-empty;
 
 .#{$tag-prefix-cls} {
     display: inline-block;
-    height: 22px;
-    line-height: 22px;
-    margin: 4px 0px 2px 4px;
-    padding: 0 8px;
+    height: $tag-height;
+    line-height: $tag-line-height;
+    margin: $tag-margin;
+    padding: $tag-padding;
     border: 1px solid $border-color-base;
     border-radius: $btn-border-radius-small;
     // background: $background-color-base;
-    background: #F5F5F5;
+    background: $tag-background;
     font-size: $tag-font-size;
     vertical-align: middle;
     opacity: 1;

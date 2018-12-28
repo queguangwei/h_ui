@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h-msg-box v-model="changeform" width="900" escClose>
+    <!-- <h-msg-box v-model="changeform" width="900" escClose> -->
       <Button @on-click="changeRequired">改变require</Button><Button @click="getFocus2">获取焦点2</Button>
       <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus cols="3">
         <!-- <h-form-item label="输入框" prop="input" :required="isrequired">
@@ -22,7 +22,7 @@
           </h-row>
         </h-form-item> -->
         <h-form-item label="选择器" prop="select">
-          <h-select v-model="formItem1.select" >
+          <h-select v-model="formItem1.select" filterable >
             <h-option value="beijing">北京市</h-option>
             <h-option value="shanghai">上海市</h-option>
             <h-option value="shenzhen">深圳市</h-option>
@@ -66,7 +66,6 @@
         </h-form-item>
         <h-form-item label="下拉单选" prop="select1" required>
           <h-select v-model="formItem1.select1"
-            width="260"
             multiple
             size="large"
             :isString="true"
@@ -80,7 +79,6 @@
         </h-form-item>
         <h-form-item label="下拉多选" prop="select2" required>
           <h-select v-model="formItem1.select2"
-                    width="260"
                     :isString="true"
                     showTitle
                     on-change="cy_change_test">
@@ -108,7 +106,7 @@
             <h-button type="ghost" style="margin-left: 8px" @click="handleReset('formItem1')">取消</h-button>
         </h-form-item>
       </h-form>
-    </h-msg-box>
+    <!-- </h-msg-box> -->
     <Button @on-click="changeform1">显示隐藏</Button>
     <h-select-table v-model="model1" ref="changeDrop">
       <h-table-option border :columns="columns1" :data="data1"></h-table-option>

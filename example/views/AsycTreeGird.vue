@@ -74,7 +74,7 @@
       tree:'leaf1',
       _parentId: 1,
       autoLoad: true,
-      expand: false,
+      expand: 'true',
       children: [{
         id: 41,
         name: '周小伟44422',
@@ -121,6 +121,7 @@
       _parentId: 1,
       loading: false,                
       autoLoad: true,
+      checked: 'true',
     },
     {
       id: 4,
@@ -135,7 +136,8 @@
       tree:'leaf1',
       _parentId: 1,
       autoLoad: true,
-      expand: true,
+      expand: 'true',
+      checked: 'false',
       children: [{
         id: 41,
         name: '周小伟44422',
@@ -274,7 +276,8 @@
           dating:'2018-01-09T16:00:00.000Z',
           timing:'16:00:00.00',
           // tree:'leaf1',
-          expand: true,
+          expand: 'true',
+          checked: 'false',
           children: [
             {
               id: 11,
@@ -388,6 +391,7 @@
           timing:'16:00:00.00',
           tree:'leaf1',
           leaf: true,
+          checked: 'false',
           children: [
             {
               id: 21,
@@ -443,6 +447,7 @@
           dating:'2018-01-09T16:00:00.000Z',
           timing:'16:00:00.00',
           tree:'leaf1',
+          expand: true,
           // _highlight: true//默认选择当前项
           children: [
             {
@@ -513,6 +518,8 @@
           dating:'2018-01-09T16:00:00.000Z',
           timing:'16:00:00.00',
           // tree:'leaf1',
+          expand:'true',
+          checked:true,
           children: [
             {
               id: 11,
@@ -624,6 +631,7 @@
           timing:'16:00:00.00',
           tree:'leaf1',
           leaf: true,
+          checked:true,
           children: [
             {
               id: 21,
@@ -677,6 +685,8 @@
           dating:'2018-01-09T16:00:00.000Z',
           timing:'16:00:00.00',
           tree:'leaf1',
+          checked:'false',
+          expand: 'false',
           // _highlight: true//默认选择当前项
           children: [
             {

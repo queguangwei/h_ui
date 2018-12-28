@@ -162,6 +162,18 @@
         type:[Object,RegExp],
         default:null
       },
+      specialFilter:{
+        type:Boolean,
+        default:false,
+      },
+      specialLength:{
+        type:[Number,String],
+        default:12,
+      },
+      specialDecimal :{
+        type:[Number,String],
+        default:2,
+      },
       lengthByByte: {
         type:Boolean,
         default: false
@@ -249,6 +261,11 @@
         this.$emit('on-focus', event);
       },
       handleBlur (event) {
+        let value = event.target.value;
+        if(this.specialFilter&&value.charAt(value.length-1)=='.'){
+          value = value.replace('.','');
+          event.target.value = value;
+        }
         this.$emit('on-blur', event);
         if (!findComponentsUpward(this, ['HDatePicker', 'DatePicker','HTimePicker','TimePicker', 'HCascader','Cascader', 'HSearch','Search'])) {
           this.dispatch('FormItem', 'on-form-blur', this.currentValue);
@@ -260,6 +277,22 @@
         if (this.filterRE) {
           value = value.replace(this.filterRE,'');
           event.target.value = value
+        }
+        if(this.specialFilter){      
+          if(!isNaN(value)&&Number(value)>=0){
+            if(value.replace('.','').length>this.specialLength){
+              value = this.currentValue;
+            }
+            if(value.split('.')[1]&&(value.split('.')[1].length>this.specialDecimal)){
+              value = this.currentValue;
+            }
+            value = value.replace('+','');
+            // event.target.value = value;
+          }else{
+            value = this.currentValue;
+          }
+          // value = curvalue;
+          event.target.value = value;
         }
         if (this.lengthByByte) {
           let bytesCount = 0

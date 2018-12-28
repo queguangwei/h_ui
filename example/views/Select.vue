@@ -8,16 +8,20 @@
       <p>单选时，value只接受字符串和数字类型，多选时，value只接受数组类型</p>
       <Button @on-click="testClick(true)">获取焦点</Button>
       <Button @on-click="testClick(false)">失去焦点</Button>
-      <h-select ref="test" placement="bottom-start" :dropWidth="400" @on-blur="blurH"></h-select>
+      <!-- <h-select ref="test" placement="bottom-start" :dropWidth="400" @on-blur="blurH"></h-select> -->
        <!-- placement="top-start" -->
+      <Button @on-click="setNull">赋不存在值</Button>{{model34}}
       <h-select v-model="model34"
-                style="width:120px"
+                zeroToNull
+                style="width:80px"
                 @on-change="change"
                 @on-scroll="scroll"
                 algin="right"
-                :setDefSelect="true">
+                setDefSelect
+                widthAdaption
+                >
         <h-option value="index">
-          <a href=http://www.google.com/>link</a>
+          <a href=http://www.google.com/>link121412</a>
         </h-option>
         <h-option v-for="(item,index) in cityList"
                   :value="item.value"
@@ -26,7 +30,6 @@
       </h-select>
       <h-button @click="fuzhi">赋值</h-button>
       <h-button @click="qk">清空</h-button>
-      {{model34}}
       <!-- <h-select v-model="model44"
                 multiple
                 hideMult
@@ -43,7 +46,7 @@
                   :value="item.value"
                   :key="item.value">{{ item.label }}</h-option>
       </h-select> -->
-      
+      {{model44}}
        <h-select v-model="model44"
                 isBackClear
                 multiple
@@ -212,7 +215,6 @@
         <h-select v-model="model9"
                   width="260"
                   multiple
-                  size="large"
                   :isString="true"
                   showTitle>
           <h-option v-for="(item, index) in uList"
@@ -615,6 +617,10 @@ export default {
     }
   },
   methods: {
+    setNull(){
+      this.model34 = "0"
+      // this.model44 = ['124124']
+    },
     cy_change_test(val) {
       console.log(val)
     },

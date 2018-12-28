@@ -3,6 +3,7 @@
     <span :class="radioClasses">
       <span :class="innerClasses"></span>
       <input
+        ref="input"
         type="radio"
         :class="inputClasses"
         :disabled="disabled"
@@ -129,6 +130,12 @@
       },
       updateValue () {
         this.currentValue = this.value === this.trueValue;
+      },
+      focus () {
+        this.$refs.input.focus();
+      },
+      blur () {
+        this.$refs.input.blur();
       }
     },
     watch: {

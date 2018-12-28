@@ -9,7 +9,7 @@
       <h-checkbtn value="facebook" label="facebook" @on-click="click">
         <span>Facebook</span>
       </h-checkbtn>
-      <h-checkbtn value="github" label="github" icon="close">
+      <h-checkbtn value="github" label="github">
         <span>Github</span>
       </h-checkbtn>
       <h-checkbtn value="snapchat" label="snapchat">
@@ -149,7 +149,7 @@
       }
     },
     mounted(){
-      this.btncheck = ['facebook', 'github']
+      this.btncheck = ['facebook']
     }
 	}
 </script>

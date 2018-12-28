@@ -3,7 +3,7 @@
     <h2>基础</h2>
      <h-msg-box v-model="msgbox">
       <p slot="header">你好呀</p>
-      <h-table :columns="columns1" :data="[]" headAlgin="center" border :highlight-row="true" @on-current-change="click1" :loading="loading" bodyAlgin="left" @on-drag="onDrag">
+      <h-table :columns="columns1" :data="data1" headAlgin="center" border :highlight-row="true" @on-current-change="click1" :loading="loading" bodyAlgin="left" @on-drag="onDrag">
         <span slot="loading">我是自定义加载！！！</span>
       </h-table>
     </h-msg-box> 
@@ -12,7 +12,8 @@
     <h-input v-model="aaa"></h-input> -->
      <Button @click="changemsg">显示</Button>
      <!-- :multiLevel="multiLevel1" -->
-    <h-table :columns="columns1" :multiLevel="multiLevel2" :data="[]" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="200" canMove @on-move="onMove" :lastColWidth="150">
+     <!-- :multiLevel="multiLevel2"  -->
+    <h-table :columns="columns1" :data="data2" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="300" canMove @on-move="onMove" :lastColWidth="150">
       <span slot="loading">我是自定义加载！！！</span>
     </h-table>
     <h-button @click="setLoading">切换状态</h-button>
@@ -174,9 +175,27 @@ export default {
       columns18: [
          {
              type: "selection",
-             width: 60,
+             width: 120,
              align: "center",
              fixed: "left",
+             filters: [
+               {
+                   label: '大于4000',
+                   value: 1
+               },
+               {
+                   label: '小于4000',
+                   value: 2
+               }
+             ],
+             filterMultiple: false,
+             filterMethod (value, row) {
+                 if (value === 1) {
+                    return row.show > 4000;
+                 } else if (value === 2) {
+                    return row.show < 4000;
+                 }
+             }
          },
          {
              title: "名称",
@@ -294,11 +313,11 @@ export default {
              sortable: true,
              filters: [
                {
-                   label: '大于4000',
+                   label: '大于40001',
                    value: 1
                },
                {
-                   label: '小于4000',
+                   label: '小于40001',
                    value: 2
                }
              ],
@@ -628,7 +647,6 @@ export default {
 
           },
           renderHeader:(h, params)=>{
-            console.log('renderHeader')
             return h('span','123')
           }
         },
@@ -1717,12 +1735,12 @@ export default {
   },
   mounted(){
     this.columns1=[
-        { 
-          type: 'selection',
-          align: 'center',
-          width:200,
-          // fixed:'left'
-        },
+        // { 
+        //   type: 'selection',
+        //   align: 'center',
+        //   width:200,
+        //   // fixed:'left'
+        // },
         {
           title: '姓名',
           key: 'name',
@@ -1770,16 +1788,6 @@ export default {
         }
     ]
   },
-  beforeCreate(){
-    const data1 = (new Date()).valueOf();
-    console.log('开始创建时间'+data1)
-    this.$nextTick(()=>{
-      const data2 = (new Date()).valueOf();
-      console.log('结束创建时间'+data2)
-      console.log('时间差异'+(data2-data1))
-    })
-  }
-
 }
 </script>
 <style type="text/css">

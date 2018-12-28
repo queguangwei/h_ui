@@ -1,7 +1,7 @@
 <template>
   <!-- :tabindex="row._rowKey+column._columnKey" -->
   <div :class="classes" ref="cell" v-clickoutside="handleClose">
-    <div :style="renderSty" @dblclick="dblclickCurrentCell($event)" class="dbClass">
+    <div v-if="!hiddenOther" :style="renderSty" @dblclick="dblclickCurrentCell($event)" class="dbClass">
       <template v-if="showSlot"><slot></slot></template>
       <template v-if="renderType === 'index'">
         <span v-if="typeName!='treeGird'">{{naturalIndex + 1}}</span>
@@ -103,7 +103,7 @@
         </div>
       </template>
     </div>
-    <Cell
+    <Cell 
       v-if="render&&renderType != 'expand'"
       :row="row"
       :column="column"
@@ -180,6 +180,7 @@ export default {
       rule:null,
       baseData:[],
       render:false,
+      hiddenOther:false,
       currentSelect: [], // 当前选中值
       selectedLabel: [], // 保存当前select label值
       isSelectTrans: true, //是否将多选value转为label显示，watch normalDate时防止二次执行watch操作
@@ -485,6 +486,7 @@ export default {
       this.baseData = deepCopy(this.treeOption);
     }
     this.render = this.column.render?true:false;
+    this.hiddenOther = this.column.hiddenOther?true:false;
   },
   mounted(){
     let index = this.index;

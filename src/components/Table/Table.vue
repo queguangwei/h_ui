@@ -734,7 +734,7 @@ export default {
     clickCurrentRow (event,_index) {
       //click row
       // window.getSelection()?window.getSelection().removeAllRanges():document.selection.empty();
-      if (!event.shiftKey && !event.ctrlKey) {
+      if (!event.shiftKey && !event.ctrlKey || (this.highlightRow&&!this.selectType)) {
         if(!this.rowSelect){
           this.highlightCurrentRow (_index);
         }
@@ -1193,8 +1193,11 @@ export default {
       let left = [];
       let right = [];
       let center = [];
-
+      let curType = false;
       columns.forEach((column, index) => {
+        if(column.type=='selection'){
+          curType = true;
+        }
         column._index = index;
         column._columnKey = columnKey++;
         column._width = column.width ? column.width : '';    // update in handleResize()
@@ -1230,6 +1233,9 @@ export default {
           }
         }
       });
+      this.$nextTick(()=>{
+        this.selectType = curType;
+      })
       return left.concat(center).concat(right);
     },
     exportCsv (params={}) {

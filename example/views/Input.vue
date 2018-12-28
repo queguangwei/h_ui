@@ -1,7 +1,8 @@
 <template>
   <div id="h-input1" class="wrapper">
     <!-- <h-input algin="left"  placeholder="请输入..." ref="test"></h-input> -->
-    <h-input algin="left" type="textarea" :filterRE="/a/g"  placeholder="请输入..." ref="test" :maxlength="20"></h-input>
+    <!-- /^[0-9]+$/ -->
+    <h-input algin="left" specialFilter  placeholder="请输入..." ref="test" :maxlength="20"></h-input>
     <Button @on-click="testClick(true)">获取焦点</Button>
     <Button @on-click="testClick(false)">失去焦点</Button>
     <h-input algin="center" placeholder="请输入..." @on-change="onChange"></h-input>
@@ -81,7 +82,7 @@ export default {
     return {
       example:'<script><\/script>',
       disabled:false,
-      value:'<你好>',
+      value:'0.301',
       value1: '',
       value2: '',
       value3: '',

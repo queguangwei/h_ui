@@ -349,6 +349,7 @@
                     </h-input>
                 </h-form-item>
                 <h-form-item prop="test1" :validRules="test1Rule">
+                    <h1>小测试</h1>
                     <h-input type="text" v-model="formValid.test1" placeholder="仅Func[值为test]验证">
                         <h-icon name="people" slot="prepend"></h-icon>
                     </h-input>
@@ -921,7 +922,7 @@
             }],
                 formValidate: {
                     name: '',
-tree:'',
+                   tree:'',
                     mail: '',
                     city: '',
                     gender: '',
