@@ -137,7 +137,7 @@
                     @click.native="clickCurrentRowTr($event,row._index)"
                     @dblclick.native.stop="dblclickCurrentRowTr(row._index)"
                   >
-                    <td v-for="column in cloneColumns" :class="alignCls(column, row,'left')" :key="column._index">
+                    <td v-for="column in cloneColumns" :class="alignCls(column, row,'left')" :data-index="row._index+1" :key="column._index">
                       <div :class="classesTd(column)">
                         <template v-if="column.type === 'index'&&!splitIndex">{{row._index+1}}</template>
                         <template v-if="column.type === 'selection'">
@@ -302,7 +302,7 @@ export default {
     },
     itemHeight: {
       type: Number,
-      default: 30
+      default: 40
     },
     notSort:{
       type:Boolean,
@@ -329,7 +329,7 @@ export default {
       type:Boolean,
       default:false,
     }
-  },
+    },
   data () {
     return {
       ready: false,
@@ -368,7 +368,9 @@ export default {
       focusIndex: -1,
       curPageFirstIndex: 0, 
       isFocusSelect: true,
-      privateToScrollTop: false
+      isCurrent: true,
+      privateToScrollTop: false,
+      selectType:false,
     };
   },
   computed: {
@@ -577,6 +579,9 @@ export default {
     }
   },
   methods: {
+    toggleIsCurrent (val) {
+      this.isCurrent = val
+    },
     cellClasses (column) {
       return [
         `${this.prefixCls}-cell`,
@@ -887,11 +892,11 @@ export default {
     },
     highlightCurrentRow (_index) {
         if (!this.highlightRow) return;
-        const curStatus = this.objData[_index]._isHighlight;
+        const curStatus = this.objData[_index].hasOwnProperty('_isHighlight') ? this.objData[_index]._isHighlight : false;
         let oldIndex = -1;
         for (let i in this.objData) {
           this.objData[i]._isChecked = false;//单选时取消多选项，估值6.0专用
-            if (this.objData[i]._isHighlight) {
+            if (this.objData[i]._isHighlight && this.objData[_index].hasOwnProperty('_isHighlight')) {
               oldIndex = parseInt(i);
               this.objData[i]._isHighlight = false;//单选是上一项取消选中
             }
@@ -905,8 +910,8 @@ export default {
             this.$emit('on-current-change', null,null);
           })
         }else{
-          this.objData[_index]._isHighlight = true;
-          this.objData[_index]._isChecked = true;
+          if (this.objData[_index].hasOwnProperty('_isHighlight')) this.objData[_index]._isHighlight = true;
+           if (this.objData[_index].hasOwnProperty('_isChecked')) this.objData[_index]._isChecked = true;
           // this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
           this.$nextTick(()=>{
             this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])),_index);
@@ -917,7 +922,7 @@ export default {
         })
     },
     clickCurrentRowTr (event,_index) { 
-      if (!event.shiftKey && !event.ctrlKey) {
+      if (!event.shiftKey && !event.ctrlKey || (this.highlightRow&&!this.selectType)) {
         if(this.rowSelect){
           // this.objData[_index]._isChecked=!this.objData[_index]._isChecked;
           this.toggleSelect(_index);
@@ -1286,15 +1291,14 @@ export default {
       let left = [];
       let right = [];
       let center = [];
+      let curType = false;
       columns.forEach((column, index) => {
+        if(column.type == 'selection'){
+          curType = true;
+        }
         column._index = index;
         column._columnKey = columnKey++;
         column._width = column.width ? column.width : '';    // update in handleResize()
-        // if(!!column.hiddenCol){
-        //   that.columns[index].width = 0;
-        //   column.width = 0;
-        //   column._width = 0;
-        // }
         column._sortType = 'normal';
         column._filterVisible = false;
         column._isFiltered = false;
@@ -1322,6 +1326,9 @@ export default {
           }
         }
       });
+      this.$nextTick(()=>{
+        this.selectType = curType;
+      })
       return left.concat(center).concat(right);
     },
     // rowClasses (_index) {
@@ -1367,18 +1374,28 @@ export default {
       ExportCsv.download(params.filename, data,params.format);
     },
     handleKeydown (e) {
-      const keyCode = e.keyCode;
-      // next
-      if (keyCode === 40) {
-        e.preventDefault();
-        e.stopPropagation();
-        this.navigateOptions('next');
-      }
-      // prev
-      if (keyCode === 38) {
-        e.preventDefault();
-        e.stopPropagation();
-        this.navigateOptions('prev');
+      if (this.isCurrent) {
+        const keyCode = e.keyCode;
+        // next
+        if (keyCode === 40) {
+          e.preventDefault();
+          e.stopPropagation();
+          this.navigateOptions('next');
+        }
+        // prev
+        if (keyCode === 38) {
+          e.preventDefault();
+          e.stopPropagation();
+          this.navigateOptions('prev');
+        }
+        // end
+        if (keyCode == 35) {
+
+        }
+        // home
+        if (keyCode == 36) {
+
+        }
       }
     },
     navigateOptions (direction) {
@@ -1430,11 +1447,13 @@ export default {
       }
     },
     handleKeyup (e) {
-      this.isFocusSelect = true
-      if (e.keyCode === 40 || e.keyCode === 38) {
-        e.preventDefault();
-        e.stopPropagation();
-        this.highlightCurrentRow(this.focusIndex)
+      if (this.isCurrent) {
+        this.isFocusSelect = true
+        if (e.keyCode === 40 || e.keyCode === 38) {
+          e.preventDefault();
+          e.stopPropagation();
+          this.highlightCurrentRow(this.focusIndex)
+        }
       }
     }
   },
@@ -1471,6 +1490,8 @@ export default {
       off(window, 'resize', this.handleResize);
       off(window, 'resize', this.initResize);
       off(document,'keydown',this.handleKeydown)
+      off(document,'keyup', this.handleKeyup);
+      
   },
   watch: {
       // focusIndex (val) {

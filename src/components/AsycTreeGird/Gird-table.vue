@@ -655,18 +655,25 @@ export default {
         let that = this
         function flattTreeChildren (item, index, _level, parent) {
           let _spaceHtml = "";
+          ['checked','expand','leaf','loading','autoLoad'].forEach((col)=>{
+            if(item[col]&&item[col]!="false"){
+              item[col] = true;
+            }else{
+              item[col] = false;
+            }
+          })
           for (var i = 1; i < _level; i++) {
               _spaceHtml += "<i class='h-tree-space'></i>"
           }
           that.$set(item, '_parent', parent)
           that.$set(item, '_level', _level)
           that.$set(item, '_spaceHtml', _spaceHtml)
-          
-          if ((typeof item.expand) == "undefined") {
-            that.$set(item, 'expand', false)
-          }
+
           if ((typeof item.show) == "undefined") {
             that.$set(item, '_isShow', parent ? parent.expand : false)
+          }
+          if ((typeof item.expand) == "undefined") {
+            that.$set(item, 'expand', false)
           }
           if ((typeof item.checked) == "undefined" || !that.isCheckbox) {
             that.$set(item, 'checked', false)
@@ -700,28 +707,28 @@ export default {
         this.$set(row, '_index', index)
         const newRow = deepCopyEx(row, 'children');// todo 直接替换
         newRow._isHover = false;
-        if (newRow._disabled) {
-            newRow._isDisabled = newRow._disabled;
+        if (newRow._disabled&&newRow._disabled!='fasle') {
+            newRow._isDisabled = true;
         } else {
             newRow._isDisabled = false;
         }
-        if (newRow.checked) {
-            newRow._isChecked = newRow.checked;
+        if (newRow.checked&&newRow.checked!='fasle') {
+            newRow._isChecked = true;
         } else {
             newRow._isChecked = false;
         }
-        if (newRow.expand) {
-            newRow._isExpanded = newRow.expand;
+        if (newRow.expand&&newRow.expand!="false") {
+            newRow._isExpanded = true;
         } else {
             newRow._isExpanded = false;
         }
-        if (newRow._highlight) {
-            newRow._isHighlight = newRow._highlight;
+        if (newRow._highlight&&newRow._highlight!="false") {
+            newRow._isHighlight = true;
         } else {
             newRow._isHighlight = false;
         }
-        if (newRow._indeterminate) {
-            newRow._indeterminate = newRow._indeterminate;
+        if (newRow._indeterminate&&newRow._indeterminate!="false") {
+            newRow._indeterminate = true;
         } else {
             newRow._indeterminate = false;
         }

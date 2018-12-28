@@ -7,7 +7,8 @@
     <h-button @click="exportData('csv')">下载数据csv</h-button>
     <h-button @click="exportData('xls')">下载数据xls</h-button>
     <h2>不带边线 单选 on-current-change</h2>
-     <h-simple-table ref="table" :columns="columnsBig1" splitIndex :multiLevel="multiLevel2" border :data="bigData" no-data-text="数据为空" :loading="loading" height="800" @on-selection-change="select" :itemHeight="30" :highlight-row="true" @on-current-change="select" @on-current-change-cnacle="select" notSort>
+    <!-- :multiLevel="multiLevel2" -->
+     <h-simple-table ref="table" :columns="columnsBig1" splitIndex border :data="bigData" no-data-text="数据为空" :loading="loading" height="800" @on-selection-change="select" :itemHeight="30" :highlight-row="true" @on-current-change="select" @on-current-change-cnacle="select" notSort>
     </h-simple-table> 
     <table border='1' collapse>
       <thead>
@@ -52,14 +53,14 @@ export default {
           width: 60,
           align: "center",
           key:'index',
-          // fixed: "left",
+          fixed: "left",
         },
-        {
-          type: "selection",
-          width: 60,
-          align: "center",
-          // fixed: "left",
-        },
+        // {
+        //   type: "selection",
+        //   width: 60,
+        //   align: "center",
+        //   fixed: "left",
+        // },
         {
           title: "基金代码",
           key: "security_code",

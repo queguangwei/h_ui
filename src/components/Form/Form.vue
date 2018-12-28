@@ -162,6 +162,9 @@ export default {
           }
         }
         this.fields[i].$children[0].focus();
+        this.$nextTick(()=>{
+          if(this.fields[i].$children[0].visible) this.fields[i].$children[0].visible=false;
+        })
       })
     },
   },

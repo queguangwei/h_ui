@@ -2,7 +2,8 @@
   <div>
     <h2>基础</h2>
     <h3>单选分组组件</h3>
-    <h-group-table :multiLevel="multiLevel2" :columns="columns1" :height="300" :data="data1" size="large" :highlight-row="true" @on-current-change="click1" ref="groupTable" width="800" :loading="loading">
+    <!-- :multiLevel="multiLevel2" -->
+    <h-group-table :columns="columns1" :height="300" :data="data1" size="large" :highlight-row="true" @on-current-change="click1" ref="groupTable" width="800" :loading="loading">
       <P slot="loading">我是自定义de</P>
     </h-group-table>
     <Button @click="setLoad">切换loading</Button>
@@ -231,11 +232,12 @@ export default {
           title: '姓名',
           key: 'name',
           width: 200,
+          hiddenOther:true,
           render:(h,params)=>{
             return h('span',[
               h('Icon', {
                 props: {
-                    name: 'person'
+                  name: 'person'
                 }
               }),
             ])
@@ -405,8 +407,10 @@ export default {
     setLoad(){
       this.loading = !this.loading;
     },
-    click1(s){
+    click1(s,j,i){
       console.log(s);
+      console.log(j);
+      console.log(i);      
     },
     allSelect (allSelection){
       console.log(allSelection);

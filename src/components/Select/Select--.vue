@@ -5,7 +5,6 @@
       :class="selectionCls"
       ref="reference"
       :tabindex="tabIndex"
-      :style="selectInputStyles"
       @click="toggleMenu"
       @keyup="keyup"
       @keydown="keydown">
@@ -45,8 +44,6 @@
         :placement="fPlacement"
         :data-transfer="transfer"
         ref="dropdown"
-        :widthAdaption="widthAdaption"
-        :maxDropWidth="maxDropWidth"
         v-transfer-dom>
         <div :class="content" @scroll="handleSelectScroll" ref="content" @click="handleclick">
           <span v-if="filterable && showBottom" :class="checkHeadClass">
@@ -258,23 +255,6 @@
         type: Boolean,
         default: false,
       },
-      autoPlacement: {
-        type: Boolean,
-        default: false
-      },
-      zeroToNull:{
-        type: Boolean,
-        default: false
-      },
-      // 宽度自适应
-      widthAdaption: {
-        type: Boolean,
-        default: false,
-      },
-      maxDropWidth: {
-        type:[String,Number],
-        default: 500
-		  },
     },
     data () {
       return {
@@ -426,11 +406,6 @@
         if (!this.loading && this.remote && this.query === '' && !options.length) status = false;
         return this.visible && status;
       },
-      selectInputStyles () {
-        return {
-            width: `${this.width}px`,
-        };
-      },
       multiplestyle () {
         return {
             width: `${this.width}px`,
@@ -471,6 +446,7 @@
       focus(){
         if (this.disabled || this.readonly) return;
         this.$nextTick(()=>{
+          // this.visible =status =='notShow'?false:true;
           this.visible = true;
           if (this.filterable) {
             this.$refs.input.focus();
@@ -595,22 +571,18 @@
           const type = typeof this.model;
           if (type === 'string' || type === 'number') {
               let findModel = false;
-
               for (let i = 0; i < this.options.length; i++) {
                   if (this.model === this.options[i].value) {
-
                       this.selectedSingle = this.options[i].label;
                       findModel = true;
                       break;
                   }
               }
-
-              if (slot && !findModel) {
-                  this.model = '';
-                  this.query = '';
+              if (!findModel) {
+                this.model = '';
+                this.query = '';
               }
           }
-
           this.toggleSingleSelected(this.model, init);
       },
       handleIconClose(){
@@ -648,41 +620,39 @@
         if (this.multiple && Array.isArray(this.model)) {
             let selected = this.remote && this.model.length > 0 ? this.selectedMultiple : [];
             for (let i = 0; i < this.model.length; i++) {
-                const model = this.model[i];
-                for (let j = 0; j < this.options.length; j++) {
-                    const option = this.options[j];
-                    if (model === option.value) {
-                        selected.push({
-                            value: option.value,
-                            label: option.label
-                        });
-                    }
+              const model = this.model[i];
+              for (let j = 0; j < this.options.length; j++) {
+                const option = this.options[j];
+                if (model === option.value) {
+                  selected.push({
+                    value: option.value,
+                    label: option.label
+                  });
                 }
+              }
             }
-
             const selectedArray = [];
             const selectedObject = {};
             selected.forEach(item => {
-                if (!selectedObject[item.value]) {
-                    selectedArray.push(item);
-                    selectedObject[item.value] = 1;
-                }
+              if (!selectedObject[item.value]) {
+                selectedArray.push(item);
+                selectedObject[item.value] = 1;
+              }
             });
             this.selectedMultiple = this.remote ? selectedArray : selected;
-
+            
             if (slot) {
                 let selectedModel = [];
-
                 for (let i = 0; i < selected.length; i++) {
-                    selectedModel.push(selected[i].value);
+                  selectedModel.push(selected[i].value);
                 }
-
                 if (this.model.length === selectedModel.length) {
-                    this.slotChangeDuration = true;
+                  this.slotChangeDuration = true;
                 }
-
                 this.model = selectedModel;
-            }
+            }else{
+
+            }        
         }
         this.toggleMultipleSelected(this.model, init);
       },
@@ -1122,11 +1092,7 @@
           if (this.multiple && this.isString) {
             this.model = this.strtoArr(val);
           }else{
-            if(this.zeroToNull&&!this.multiple&&val=='0'){
-              this.model = ''
-            }else{
-              this.model = val;
-            }
+            this.model = val;
           }
           if (val === '') this.query = '';
         }
@@ -1151,9 +1117,6 @@
       },
       model () {
         let backModel = this.arrtoStr(this.model);
-        if(this.zeroToNull&&!this.multiple&&backModel==''){
-          backModel = '0';
-        }
         this.$emit('input', backModel);
           this.modelToQuery();
           if (this.multiple) {
@@ -1210,6 +1173,7 @@
         }
       },
       query (val) {
+
         if (this.remote && this.remoteMethod) {
           // o45证券代码--点击时不显示下拉选项（手动隐藏），因此需要值改变后（手动显示）
           if (this.remoteFocusNotShowList && !this.multiple) { // 单选时适用，多选时query会清空，不适用

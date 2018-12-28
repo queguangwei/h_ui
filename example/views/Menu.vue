@@ -295,13 +295,13 @@
               </h-menu>
           </h-col>
           <h-col span='12'>
-              <h-menu theme="light" active-name="1-2" :collapse="isCollapse ==='true'" ref="side_menu">
+              <h-menu theme="light" :active-name="csName" :collapse="isCollapse ==='true'" ref="side_menu">
                   <h-submenu name="1">
                       <template slot="title">
                           <h-icon name="computer"></h-icon>
                           <span slot="title">内容管理</span>
                       </template>
-                      <h-menu-item name="1-1">文章管理</h-menu-item>
+                      <h-menu-item name="name1">文章管理</h-menu-item>
                       <h-menu-item name="1-2">评论管理</h-menu-item>
                       <h-submenu name="1-3">
                           <template slot="title">

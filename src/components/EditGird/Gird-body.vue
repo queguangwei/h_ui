@@ -65,6 +65,7 @@
           @click.native="clickCurrentRow(row._index)">
           <td v-for="column in columns" :class="alignCls(column, row)">
             <Cell
+              @click.native="cellCkick(column.key)"
               :prefix-cls="prefixCls"
               :row="row"
               :key="column._columnKey"
@@ -225,6 +226,9 @@
             // this.objData[_index]._isChecked=!this.objData[_index]._isChecked;
             this.$parent.toggleSelect(_index);
           }
+        },
+        cellCkick (key){
+          this.$parent.curKey = key;
         },
         toggleExpand (index,e) {
           e.stopPropagation(); 

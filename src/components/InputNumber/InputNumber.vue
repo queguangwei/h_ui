@@ -16,6 +16,7 @@
     </div>
     <div :class="inputWrapClasses">
       <input
+        ref = "input"
         :class="inputClasses"
         :disabled="disabled"
         autocomplete="off"
@@ -231,8 +232,15 @@
       },
       focus () {
         this.focused = true;
+        if(this.$refs.input){
+          this.$refs.input.focus();
+        }
       },
       blur (event) {
+        if(event == undefined){
+          this.focused = false;
+          return;
+        }
         let val = Number(event.target.value.trim());
         this.focused = false;
         const {min, max} = this;

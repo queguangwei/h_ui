@@ -3,14 +3,14 @@
     <h1>基础用法及是否可关闭</h1>
     <h-tag>标签一</h-tag>
     <h-tag>标签二</h-tag>
-    <h-tag v-if="show" closable @on-close="handleClose">标签三</h-tag>
+    <h-tag v-if="show" closable @on-close="handleClose" @click.native="click">标签三</h-tag>
     <h1>标签是否可选择及可设置颜色</h1>
-    <h-tag checkable color="primary" showTitle>标签一</h-tag>
-    <h-tag checkable color="success" showTitle title="123">标签二</h-tag>
+    <h-tag checkable color="primary" showTitle @click.native="click">标签一</h-tag>
+    <h-tag checkable color="success" showTitle title="123" @click.native="click">标签二</h-tag>
     <h-tag checkable color="error"  showTitle placement="top">标签三</h-tag>
     <h-tag checkable color="warning">标签四</h-tag>
     <h1>标签border、dot</h1>
-    <h-tag type="border" closable color="primary" @on-close="handleClose">标签一</h-tag>
+    <h-tag type="border" closable color="primary" @on-close="handleClose" @click.native="click">标签一</h-tag>
     <h-tag type="border" closable color="success" @on-close="handleClose">标签二</h-tag>
     <h-tag type="border" closable color="error" @on-close="handleClose">标签三</h-tag>
     <h-tag type="border" closable color="warning" @on-close="handleClose" :width="400">标签四overflow: hidden;text-overflow:ellipsis;
@@ -22,7 +22,7 @@ white-space: nowrap;overflow: hidden;
 text-overflow:ellipsis;
 white-space: nowrap;</h-tag>
     <br><br>
-    <h-tag type="dot" closable color="primary" @on-close="handleClose">标签一</h-tag>
+    <h-tag type="dot" closable color="primary" @on-close="handleClose" @click.native="click">标签一</h-tag>
     <h-tag type="dot" closable color="success" @on-close="handleClose">标签二</h-tag>
     <h-tag type="dot" closable color="error" @on-close="handleClose">标签三</h-tag>
     <h-tag type="dot" closable color="warning" @on-close="handleClose">标签四</h-tag>
@@ -42,6 +42,9 @@ white-space: nowrap;</h-tag>
             }
         },
         methods: {
+            click(){
+                console.log('click')
+            },
             handleClose () {
                 // this.show = false;
                 console.log('close')

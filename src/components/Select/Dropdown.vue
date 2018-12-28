@@ -1,35 +1,55 @@
 <template>
-  <div class="h-select-dropdown" :style="styles" @click="handleClick"><slot></slot></div>
+  <div class="h-select-dropdown" :style="styles" @click="handleClick" ref="selectdrop"><slot></slot></div>
 </template>
 <script>
 import Vue from 'vue';
 const isServer = Vue.prototype.$isServer;
-import { getStyle } from '../../util/tools';
+import { getStyle, getScrollBarSize } from '../../util/tools';
 const Popper = isServer ? function() {} : require('../../util/popper.js');
 export default {
 	name: 'Drop',
 	props: {
+		widthAdaption: {
+			type: Boolean,
+			default: true,
+		},
+		maxDropWidth: {
+			type:[String,Number],
+		},
 		placement: {
 			type: String,
 			default: 'bottom-start'
 		},
 		className: {
-            type: String
-        },
-        dropWidth:{
-        	type:[String,Number]
-        }
+			type: String
+		},
+		dropWidth:{
+			type:[String,Number]
+		}
 	},
 	data () {
 		return {
 			popper: null,
-			width: ''
+			width: '',
+			parentWidth: null, 	// 保存当前父节点的宽度，当进行下拉内容自适应时需要与最大宽度进行对比,取较大者设为最大宽度
+			scrollBarWidth: getScrollBarSize()
 		};
 	},
 	computed: {
 		styles () {
 			let style = {};
-			if (this.width) style.width = `${this.width}px`;
+			if (this.widthAdaption) {
+				if (this.dropWidth || this.maxDropWidth) {
+					if (this.dropWidth) style.minWidth = `${this.dropWidth}px`
+					if (this.maxDropWidth) {
+						let maxWidth = Math.max(parseInt(this.maxDropWidth),parseInt(this.parentWidth))
+						style.maxWidth = `${maxWidth}px`
+					}
+					if (this.width) style.width = `${this.width}px`;
+				} 
+			} else {
+				if (this.width) style.width = `${this.width}px`;
+			}
 			return style;
 		}
 	},
@@ -42,12 +62,25 @@ export default {
 			if (this.popper) {
 				this.$nextTick(() => {
 						this.popper.update();
+						// 有滚动条时，下拉宽度为内容宽度
+						if (this.widthAdaption) {
+							let content = this.$refs.selectdrop.children[0]
+							// 横向或者纵向滚动条导致的像素偏移的问题
+							// 是否有纵向滚动条
+							let isScrollY = parseInt(this.$refs.selectdrop.clientWidth) > parseInt(content.clientWidth) ? true : false
+							// 是否有横向滚动条
+							let isScrollX = parseInt(this.$refs.selectdrop.clientHeight) > parseInt(content.clientHeight) ? true : false
+							if (isScrollX) {
+								this.width = isScrollY ? parseInt(content.scrollWidth) + this.scrollBarWidth : content.scrollWidth
+							}
+						}
 				});
 			} else {
 				this.$nextTick(() => {
+					let curPlacement = this.widthAdaption ? this.placement.indexOf('top') >= 0 ? 'top-start' : 'bottom-start' : this.placement
 					this.popper = new Popper(this.$parent.$refs.reference, this.$el, {
 						gpuAcceleration: false,
-						placement: this.placement,
+						placement: curPlacement,
 						boundariesPadding: 0,
 						forceAbsolute: true,
 						boundariesElement: 'body'
@@ -55,13 +88,28 @@ export default {
 					this.popper.onCreate(popper => {
 						this.resetTransformOrigin(popper);
 					});
+					// 有滚动条时，下拉宽度为内容宽度
+					if (this.widthAdaption) {
+						let content = this.$refs.selectdrop.children[0]
+						// 横向或者纵向滚动条导致的像素偏移的问题
+						// 是否有纵向滚动条
+						let isScrollY = parseInt(this.$refs.selectdrop.clientWidth) > parseInt(content.clientWidth) ? true : false
+						// 是否有横向滚动条
+						let isScrollX = parseInt(this.$refs.selectdrop.clientHeight) > parseInt(content.clientHeight) ? true : false
+						if (isScrollX) {
+							this.width = isScrollY ? parseInt(content.scrollWidth) + this.scrollBarWidth : content.scrollWidth
+						}
+					}
 				});
 			}
 			if (this.$parent.$options.name === 'Select'|| this.$parent.$options.name === 'SelectTree' || this.$parent.$options.name === 'SelectTable') {
 				if (!this.dropWidth) {
-					this.width = parseInt(getStyle(this.$parent.$el, 'width'));
+					let width = parseInt(getStyle(this.$parent.$el, 'width'));
+					this.width = width
+					this.parentWidth = width
 				}else{
 					this.width = this.dropWidth;
+					this.parentWidth = this.dropWidth;
 				}
 			}
 		},

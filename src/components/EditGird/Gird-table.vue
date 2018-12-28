@@ -273,6 +273,7 @@ export default {
       options:this.option,
       treeOptions:this.treeOption,
       canVisible:true,
+      curKey:null,
     };
   },
   computed: {
@@ -588,7 +589,8 @@ export default {
         // this.objData[k].item[m]._isHighlight = true;
         const oldData = oldIndexJ<0?null:this.getGroupData(oldIndexI,oldIndexJ);
         const currentData = this.getGroupData(k,m)
-        this.$emit('on-current-change', JSON.parse(JSON.stringify(currentData)),oldData);
+        this.$emit('on-current-change', JSON.parse(JSON.stringify(currentData)),oldData,{k:Number(k),m:m,key:this.curKey
+        });
       }else{
         if (!this.highlightRow || this.objData[_index]._isHighlight) return;
         let oldIndex = -1;

@@ -266,6 +266,7 @@
       focus(){
         if (this.disabled) return false;
         this.$nextTick(()=>{
+        //   this.visible =status =='notShow'?false:true;
           this.visible = true;
           this.$refs.pickerPanel.onToggleVisibility(true);
           this.isFocus = true
