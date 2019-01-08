@@ -3,6 +3,9 @@
     <template v-if="(renderType === 'index' && sum && columnIdx == 0 || renderType === 'selection' && sum && columnIdx == 0)">汇总</template>
     <template v-else-if="(renderType === 'index' && sum && columnIdx != 0 || renderType === 'selection' && sum && columnIdx != 0)"></template>
     <template v-else-if="renderType === 'index'">{{naturalIndex + 1}}</template>
+    <template v-else-if="renderType === 'radio'">
+      <Radio :value="highlight"></Radio>
+    </template>
     <template v-else-if="renderType === 'selection'">
       <Checkbox size="large" :value="checked" @click.native.stop="handleClick" @on-change="toggleSelect" :disabled="disabled"></Checkbox>
 <!--       <input type="checkbox" v-model="tChecked" @click.native.stop="handleClick" @change="toggleSelect" :disabled="disabled"> -->
@@ -30,6 +33,7 @@
 import Cell from './expand';
 import Icon from '../Icon/Icon.vue';
 import Checkbox from '../Checkbox/Checkbox.vue';
+import Radio from '../Radio/Radio.vue';
 import {addClass,removeClass} from '../../util/tools.js'
 
 export default {
@@ -42,6 +46,7 @@ export default {
     naturalIndex: Number,    // index of rebuildData
     index: Number,           // _index of data
     checked: Boolean,
+    highlight: Boolean,
     disabled: Boolean,
     expanded: Boolean,
     fixed: {
@@ -104,6 +109,8 @@ export default {
         this.renderType = 'index';
     } else if (this.column.type === 'selection') {
         this.renderType = 'selection';
+    } else if (this.column.type === 'radio') {
+        this.renderType = 'radio';
     } else if (this.column.type === 'expand') {
         this.renderType = 'expand';
     } else if (this.column.render) {

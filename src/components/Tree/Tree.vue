@@ -261,7 +261,8 @@
     mounted () {
       this.$on('on-check', this.handleCheck);
       this.$on('on-selected', this.handleSelect);
-      this.$on('toggle-expand', node => this.$emit('on-toggle-expand', node));
+      this.$on('toggle-expand', (node,status) => this.$emit('on-toggle-expand', node,status));
+      this.$on('mouse-over', (node) => this.$emit('on-mouseover', node));
       if(this.loadData||this.isFormSelect){
         this.isDeepcopy = true;
         this.stateTree = this.isDeepcopy?this.data:deepCopy(this.data);

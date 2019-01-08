@@ -7,7 +7,8 @@
       :readonly="!editable||readonly" 
       :placeholder="localePlaceholder" 
       :value="inputValue" 
-      @blur="blur" 
+      :maxlength="maxlength"
+      @blur="blurValue" 
       @input="valChange"
       @change="valChange"
       @focus="focusValue($event)" 
@@ -142,6 +143,14 @@ export default {
     setNull:{
       type: Boolean,//设置空值为0
       default: false,
+    },
+    maxlength:{
+      type:[String,Number],
+      default:null,
+    },
+    cardFormat:{
+      type: Boolean,
+      default: true,
     }
   },
   computed: {
@@ -191,7 +200,7 @@ export default {
   },
   methods:{
     //keyup,focus,blur
-    blur (e) {
+    blurValue (e) {
       this.havefocused = false;
       if (this.type=='money') {
         this.tipShow=false;
@@ -212,9 +221,22 @@ export default {
         }
       }
       this.$refs.input.blur();
-      this.$emit('input', val);
+      this.$emit('input', this.cardFormatValue(val));
       this.$emit('on-blur')
       this.dispatch('FormItem', 'on-form-blur', val)
+    },
+    cardFormatValue(val){
+      if(!this.cardFormat&&this.type=='cardNo'){
+        val = val.replace(/\s+/g,"");
+      }
+      return val;
+    },
+    blur () {
+      this.havefocused = false;
+      this.$refs.input.blur();
+      this.$emit('on-blur')
+      this.$emit('input', this.cardFormatValue(this.inputValue));
+      this.dispatch('FormItem', 'on-form-blur', this.inputValue)
     },
     focusValue (e) {
       if (this.readonly||this.disabled) return false;

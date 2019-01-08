@@ -43,18 +43,25 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
 
         .#{$css-prefix}tag {
             position: relative;
-            padding-right: 12px;
-            max-width: 45%;
             white-space: nowrap;
+            max-width: 45%;
             text-overflow: ellipsis;
-            height: $form-component-height - 10px;
-            line-height: $form-component-height - 10px;
-            margin-right: 4px;
+            height: $form-component-height - 12px;
+            line-height: $form-component-height - 12px;
+            margin: 0;
+            padding: 0;
+            padding-right: 12px;
+            padding-left: 2px;
+            margin-left:8px;
             background: #F5F5F5 !important;
             border: 1px solid $border-color-split !important;  
             &>.#{$css-prefix}icon {
               position: absolute;
               right: 0;
+            }
+            span{
+                display: inline-block;
+                width: 100%;
             }
         }
     }
@@ -269,7 +276,6 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
             }
         }
     }
-
     &-dropdown-content{
         max-height:$max-height;
         padding: 5px 0;
@@ -396,5 +402,15 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
         clear: both;
     }
 }
-// }
-// 
+
+.#{$input-prefix-cls}-group,.#{$typefield-prefix-cls}-group{
+    &-append,
+    &-prepend{
+        .#{$select-prefix-cls}-selection{
+            border-color:transparent;
+            &:hover{
+                border-color:transparent;
+            }
+        }
+    }
+}

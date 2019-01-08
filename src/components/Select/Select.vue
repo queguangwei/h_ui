@@ -620,6 +620,7 @@
         }else{
           this.clearSingleSelect();
         }
+        this.isInputFocus = true
       },
       clearMultipleSelect () {
         let disArr=[];
@@ -703,6 +704,7 @@
           this.$refs.input.focus();
         }
         this.broadcast('Drop', 'on-update-popper');
+        this.isInputFocus = true;
       },
       toggleSingleSelected (value, init = false) {
         if (!this.multiple) {

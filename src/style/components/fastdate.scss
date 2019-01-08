@@ -65,6 +65,9 @@ $fastdate-prefix-cls: "#{$css-prefix}fast-date";
     border-radius: 4px;
     min-width:160px;
     border:1px solid $border-color-base;
+    &:hover{
+      @include hover();
+    }
   }
   &-activity{
     font-size:16px;

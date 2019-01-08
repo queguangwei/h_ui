@@ -130,7 +130,8 @@ export default {
     maximize:{
       type:Boolean,
       default:false,
-    }
+    },
+    left:[String,Number],
   },
   data () {
     return {
@@ -171,7 +172,7 @@ export default {
         height:this.curHeight?this.curHeight+'px':'auto'
       };
       style.top=this.curHeight?'0':this.top+'px';
-      style.left = (this.screenWidth-width)/2+'px';
+      style.left = this.left==undefined?(this.screenWidth-width)/2+'px':this.left+'px';
       const customStyle = this.styles ? this.styles : {};
       Object.assign(style, styleWidth, customStyle);
       return style;
@@ -231,7 +232,7 @@ export default {
       };
       if(Number(this.top)<=0) this.$refs.wrap.style.display="flex";
       obj.style.top=this.top+'px';
-      obj.style.left = (this.screenWidth-width)/2+'px';
+      obj.style.left = this.left==undefined?(this.screenWidth-width)/2+'px':this.left+'px';
     },
     mask () {
       if (this.maskClosable) {
@@ -317,6 +318,7 @@ export default {
           }
       }
       this.broadcast('Table', 'on-visible-change', val);
+      this.broadcast('EditGird', 'on-visible-change', val);
     },
     loading (val) {
       if (!val) {

@@ -12,7 +12,7 @@
       :format="format"
       :options="options"
       :placement="fPlacement"
-      autoPlacement
+      :autoPlacement = "autoPlacement"
       @on-change="handleChange"
       @on-clear="handleClear"
       @on-ok="handleOk">
@@ -134,6 +134,10 @@ export default {
     dateSplit:{
       type:String,
       default:'-',
+    },
+    autoPlacement:{
+      type:Boolean,
+      default:false,
     }
   },
   data(){
@@ -150,6 +154,7 @@ export default {
       day1:'',
       yearPlaceholder:'',
       fPlacement:this.placement,
+      isFocus:false,
     }
   },
   computed: {
@@ -226,9 +231,13 @@ export default {
       let value = event.target.value.trim().replace(/[^0-9]/ig,"");
       if (!value || value.length==0){
         if(isRange){
-          if(!this.year1&&!this.months1&&!this.day1) return;
+          if(!this.year1&&!this.months1&&!this.day1) {
+            return;
+          }
         }else{
-          if(!this.year&&!this.months&&!this.day) return;
+          if(!this.year&&!this.months&&!this.day) {
+            return
+          };
         }
       }
       switch (str){
@@ -355,6 +364,7 @@ export default {
       }else{
         this.inputValue=[];
       }
+      this.isFocus = true;
     },
     changeFocus(event,isrange){
       let code = event.keyCode
@@ -395,6 +405,7 @@ export default {
     },
     handleClear () {
       this.opened = false;
+      this.isFocus = true;
       this.$emit('on-clear')
     },
     handleOk () {
@@ -413,15 +424,21 @@ export default {
     },
     handleClose(){
       this.opened = false;
+      if(this.isFocus){
+        this.dispatch('FormItem', 'on-form-blur',this.inputValue);
+        this.isFocus = false;
+      }
     },
     arrowClick(){
       if(this.readonly || this.disabled)return;
       this.opened = !this.opened;
+      this.isFocus = true;
     },
     rangeSelect(event){
       let obj =  event.target;
       let pos = obj.value.trim().length;
       obj.setSelectionRange(0, pos);
+      this.isFocus = true;
     },
     setDate(val){
       if (!val||val.length == 0){

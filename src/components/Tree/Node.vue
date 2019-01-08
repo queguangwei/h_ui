@@ -16,7 +16,7 @@
             @click.native.prevent="handleCheck"></h-checkbox>
           <Render v-if="data.render" :render="data.render" :data="data" :node="node"></Render>
           <Render v-else-if="isParentRender" :render="parentRender" :data="data" :node="node"></Render>
-          <span v-else :class="titleClasses" @click="handleSelect">{{data.title}}</span>        
+          <span v-else :class="titleClasses" @click="handleSelect" @mouseover="handeMouseover">{{data.title}}</span>        
         </div>
         <ul :class="classes" ref="children"  v-if="childrenShow">
           <Tree-node
@@ -220,7 +220,7 @@
             // this.$set(this.data, 'expand', status);
           } else {
             // this.$set(this.data, 'expand', !status);
-            this.dispatch('Tree', 'toggle-expand', this.data);
+            this.dispatch('Tree', 'toggle-expand', this.data,!this.iconShow);
           }
       },
       handleSelect () {
@@ -234,13 +234,28 @@
       handleKeydown (e) {
         let code  = e.keyCode;
         if (code == 37) {//left
-          this.$set(this.data, 'expand', false);
-          this.dispatch('Tree', 'toggle-expand', this.data);
+          // this.$set(this.data, 'expand', false);
+          if(this.$refs.children){
+            this.$refs.children.style.display ='none';
+          }
+          this.iconShow=!this.iconShow;
+          this.dispatch('Tree', 'toggle-expand', this.data,this.iconShow);
         }
         if (code == 39) {//right
-          this.$set(this.data, 'expand', true);
-          this.dispatch('Tree', 'toggle-expand', this.data);
+          if(!this.childrenShow){
+            this.childrenShow = true;
+            this.$set(this.data, 'expand', true)
+            this.dispatchTree()
+          }else{
+            this.$refs.children.style.display = 'block';
+          }
+          this.iconShow=!this.iconShow;
+          // this.$set(this.data, 'expand', true);
+          this.dispatch('Tree', 'toggle-expand', this.data,this.iconShow);
         }
+      },
+      handeMouseover (e){
+        this.dispatch('Tree', 'mouse-over', this.data);
       },
       handleCheck () {
         if (this.data.disabled) return;

@@ -102,75 +102,75 @@ export default {
           //   return h('div', '基金类别' + params.index)
           // }
         },
-        {
-          title: "投资类别",
-          width: 100,
-          key: "asset_ex2",
-          ellipsis: true,
-          // render: (h, params) => {
-          //   return h('div', '投资类别' + params.index)
-          // }
-        },
-        {
-          title: "ETF类别",
-          width: 100,
-          key: "etf_type",
-          ellipsis: true,
-          // render: (h, params) => {
-          //   return h('div', 'ETF类别' + params.index)
-          // }
-        },
-        {
-          title: "货币基金收益类别",
-          width: 100,
-          key: "moneyfund_bonustype",
-          ellipsis: true,
-          // render: (h, params) => {
-          //   return h('div', '货币基金收益类别' + params.index)
-          // }
-        },
-        {
-          width: 100,
-          title: "交易币种",
-          key: "trade_currency",
-          ellipsis: true,
-        },
-        {
-          title: "面值",
-          width: 100,
-          key: "parvalue",
-          ellipsis: true
-        },
-        {
-          title: "分级产品级别",
-          width: 100,
-          key: "ratingfund_level",
-          ellipsis: true,
-        },
-        {
-          width: 100,
-          title: "母基金代码",
-          key: "fund_parent",
-          ellipsis: true
-        },
-        {
-          title: "是否保本",
-          key: "isbreakeven",
-          width: 100,
-          ellipsis: true,
-        },
+        // {
+        //   title: "投资类别",
+        //   width: 100,
+        //   key: "asset_ex2",
+        //   ellipsis: true,
+        //   // render: (h, params) => {
+        //   //   return h('div', '投资类别' + params.index)
+        //   // }
+        // },
+        // {
+        //   title: "ETF类别",
+        //   width: 100,
+        //   key: "etf_type",
+        //   ellipsis: true,
+        //   // render: (h, params) => {
+        //   //   return h('div', 'ETF类别' + params.index)
+        //   // }
+        // },
+        // {
+        //   title: "货币基金收益类别",
+        //   width: 100,
+        //   key: "moneyfund_bonustype",
+        //   ellipsis: true,
+        //   // render: (h, params) => {
+        //   //   return h('div', '货币基金收益类别' + params.index)
+        //   // }
+        // },
+        // {
+        //   width: 100,
+        //   title: "交易币种",
+        //   key: "trade_currency",
+        //   ellipsis: true,
+        // },
+        // {
+        //   title: "面值",
+        //   width: 100,
+        //   key: "parvalue",
+        //   ellipsis: true
+        // },
+        // {
+        //   title: "分级产品级别",
+        //   width: 100,
+        //   key: "ratingfund_level",
+        //   ellipsis: true,
+        // },
+        // {
+        //   width: 100,
+        //   title: "母基金代码",
+        //   key: "fund_parent",
+        //   ellipsis: true
+        // },
+        // {
+        //   title: "是否保本",
+        //   key: "isbreakeven",
+        //   width: 100,
+        //   ellipsis: true,
+        // },
         
-        {
-          title: "修改人",
-          key: "user_operate",
-          width: 100,
-          ellipsis: true,
-        },
+        // {
+        //   title: "修改人",
+        //   key: "user_operate",
+        //   width: 100,
+        //   ellipsis: true,
+        // },
         {
           title: "修改时间",
           key: "dtime_operate",
           align: "center",
-          width: 100,
+          // width: 100,
           ellipsis: true,
         },
       ],

@@ -34,7 +34,7 @@ function genConfig (opts) {
       {
         test: /\.scss$/,
         use: ExtractTextPlugin.extract({
-          fallback: "style-loader",
+          fallback: "style-loader",//不生效使用style-loader，开发模式下使用style-loader,生产使用cssloader
           use: "css-loader!sass-loader"
         })
       }
@@ -48,6 +48,13 @@ function genConfig (opts) {
       }),
       new ExtractTextPlugin('h_ui.min.css')
     ])
+    //消除没用的css：npm i purifycss-webpack purify-css glop -D开发
+    //let PurifycssWebpack = require('purifycss-webpack')必须用在htmlPlugin后面
+    //let Glop = require('glop')
+    //new PurifycssWepack({
+      //path:glop.sync(path.resolve('src/*.html'))
+    //})
+
   }else{
     config.module.loaders = config.module.loaders.concat([
       {

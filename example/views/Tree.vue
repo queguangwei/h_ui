@@ -6,7 +6,7 @@
       <h-button @on-click="cancle">取消</h-button>
       <h-button @on-click="select">选择</h-button>
       <h-button @on-click="select(false)">取消选中</h-button>
-      <h-col span='6'><h2>显示勾选框</h2><h-tree :data="data2" checkStrictly isBoxRight selectToCheck multiple show-checkbox @on-check-change="checkChnage" @on-toggle-expand="checkChnage"></h-tree></h-col>
+      <h-col span='6'><h2>显示勾选框</h2><h-tree :data="data2" checkStrictly isBoxRight selectToCheck multiple show-checkbox @on-check-change="checkChnage" @on-toggle-expand="checkChnage" @on-mouseover="checkChnage"></h-tree></h-col>
       <h-col span='6'><h2>异步加载</h2><h-tree :data="data3" :load-data="loadData" show-checkbox></h-tree> </h-col>
       <h-col span='6'><h2>默认展开、选中、勾选和禁用</h2><h-tree :data="data4" show-checkbox multiple></h-tree> </h-col>
     </h-row>
@@ -570,8 +570,9 @@ bigObj = curdata;
       showExpand (payload) {
         console.log(payload)
       },
-      checkChnage(data){
+      checkChnage(data,status){
         console.log(data);
+        console.log(status);
       },
       ok(){
         this.test = this.data1;

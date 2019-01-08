@@ -1,6 +1,7 @@
 <template>
   <div>
-    <!-- <h-msg-box v-model="changeform" width="900" escClose> -->
+    <!-- <h-msg-box v-model="changeform" width="900" escClose left="10"> -->
+      <p slot="header">124412</p>
       <Button @on-click="changeRequired">改变require</Button><Button @click="getFocus2">获取焦点2</Button>
       <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus cols="3">
         <!-- <h-form-item label="输入框" prop="input" :required="isrequired">
@@ -21,8 +22,11 @@
             </h-col>
           </h-row>
         </h-form-item> -->
+        <!-- <h-form-item label="特殊日期" prop="fatdate" required>
+          <h-fast-date v-model="formItem1.fatdate"></h-fast-date>
+        </h-form-item> -->
         <h-form-item label="选择器" prop="select">
-          <h-select v-model="formItem1.select" filterable >
+          <h-select v-model="formItem1.select" filterable transfer>
             <h-option value="beijing">北京市</h-option>
             <h-option value="shanghai">上海市</h-option>
             <h-option value="shenzhen">深圳市</h-option>
@@ -55,11 +59,8 @@
               <h-checkbox label="看电影"></h-checkbox>
           </h-checkbox-group>
         </h-form-item>
-        <h-form-item label="特殊日期" prop="fatdate" required>
-          <h-fast-date v-model="formItem1.fatdate"></h-fast-date>
-        </h-form-item>
-        <h-form-item label="特殊日期" prop="fatdate" required>
-          <h-fast-date v-model="formItem1.fatdate"></h-fast-date>
+        <h-form-item label="特殊日期" prop="fatdate" required >
+          <h-fast-date v-model="formItem1.fatdate" clearable></h-fast-date>
         </h-form-item>
         <h-form-item label="特殊日期" prop="fatdate" required>
           <h-fast-date v-model="formItem1.fatdate"></h-fast-date>

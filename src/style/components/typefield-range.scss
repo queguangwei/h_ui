@@ -8,7 +8,9 @@ $typefieldRange-prefix-cls: "#{$css-prefix}typefield-range" ;
   line-height: $form-component-height;
   width: 100%;
   vertical-align: middle;
-
+  &:hover{
+    @include hover();
+  }
   &-inner{
     width: calc(50% - 10px);
     float: left;

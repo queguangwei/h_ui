@@ -43,7 +43,6 @@
             return {
               opennames: [],
               arr:Array.from({length:100},(item)=>2),
-
             }
         },
         methods:{
