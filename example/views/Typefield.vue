@@ -57,7 +57,8 @@
     <br>
     <h1>卡号</h1>
     <h2>基本用法</h2>
-    <h-typefield type="cardNo" placeholder="卡号" bigTips></h-typefield>
+    {{cardNo}}
+    <h-typefield v-model="cardNo" type="cardNo" maxlength="11" :cardFormat="false" placeholder="卡号" bigTips></h-typefield>
     <br>
     <h1>事件</h1>
     <h-typefield placeholder="焦点事件" @on-blur="bChange" @on-focus="fChange" @on-keyup="kChange"></h-typefield>
@@ -86,6 +87,7 @@ export default {
       value11: '',
       value12: '',
       value13: '',
+      cardNo:'',
     }
   },
   methods: {

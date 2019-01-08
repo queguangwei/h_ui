@@ -17,13 +17,14 @@
         {{rearLabel}}
       </template>
       <template v-if="renderType === 'text'">
-        <Input v-model="columnText" :placeholder="column.placeholder" :icon="column.icon" class="canEdit" @on-change="editinputChange" @on-blur="editinputBlur"></Input>
+        <h-input v-model="columnText" :placeholder="column.placeholder" :icon="column.icon" class="canEdit" @on-change="editinputChange" @on-blur="editinputBlur"></h-input>
       </template>
       <template v-if="renderType === 'textArea'">
-        <Input v-model="columnArea" type="textarea" :placeholder="column.placeholder" :rows="column.rows" class="canEdit" @on-change="editAreaChange" @on-blur="editAreaBlur"></Input>
+        <textarea v-model="columnArea" :placeholder="column.placeholder" rows="column.rows" :class="areaClass" @input="editAreaChange" @blur="editAreaBlur"></textarea>
+        <!-- <h-input v-model="columnArea" type="textarea" :placeholder="column.placeholder" :rows="column.rows" class="canEdit" @on-change="editAreaChange" @on-blur="editAreaBlur"></h-input> -->
       </template>
       <template v-if="renderType === 'number'"> 
-        <Input v-model="columnNumber" class="canEdit"></Input>
+        <h-input v-model="columnNumber" class="canEdit"></h-input>
       </template>
       <template v-if="renderType === 'money'">
         <Typefield 
@@ -33,6 +34,7 @@
           :suffixNum="column.suffixNum" 
           :bigTips="column.bigTips || false" 
           :isround="column.isround || false" 
+          @on-blur="typefieldBlur"
           class="canEdit"></Typefield>
       </template>
       <template v-if="renderType === 'card'">
@@ -122,7 +124,7 @@ import AsyncValidator from 'async-validator';
 import Cell from './expand';
 import Icon from '../Icon/Icon.vue';
 import Checkbox from '../Checkbox/Checkbox.vue';
-import Input from '../Input/Input.vue'
+import hInput from '../Input'
 import InputNumber from '../InputNumber/InputNumber.vue'
 import Typefield from '../Typefield/Typefield.vue'
 import Select from '../Select'
@@ -137,7 +139,7 @@ const OptionGroup = Select.OptionGroup;
 export default {
   name: 'GirdCell',
   directives: { clickoutside },
-  components: { Icon, Checkbox, Cell, Input, InputNumber, Typefield, Select, Option, OptionGroup, SelectTree, Date,Time},
+  components: { Icon, Checkbox, Cell, hInput, InputNumber, Typefield, Select, Option, OptionGroup, SelectTree, Date,Time},
   props: {
     prefixCls: String,
     row: Object,
@@ -219,6 +221,15 @@ export default {
         }
       ];
     },
+    areaClass () {
+       return [
+          `canEdit h-input`,
+          {
+            [`h-input-disabled`]: this.column.disabled,
+            [`h-input-noresize`]:!this.column.canResize,  
+          }
+        ];
+    }
   },
   methods: {
     handleClose(){
@@ -402,8 +413,7 @@ export default {
     // 多选情况下value与label的转换(显示label)     
     //  支持单选
       if ((this.column.multiple || this.column.singleShowLabel) && this.option && this.option.length >0 && this.isSelectTrans && this.column.type == 'select' && this.renderType == 'normal') {
-        // 多选情况下显示label
-        
+        // 多选情况下显示label        
         this.selectedLabel = []
         for (let i = 0; i < this.currentSelect.length; i++) {
           this.selectedLabel.push(this.currentSelect[i].label)
@@ -411,8 +421,11 @@ export default {
         this.isSelectTrans = false
         this.normalDate = this.selectedLabel.length == 0 && this.normalDate ? this.normalDate : this.arrtoStr(this.selectedLabel)
       }
+    },
+    typefieldBlur () {
+      this.$emit('on-typefield-blur',this.columnMoney,this.columnIndex,this.index)
     }
-  },
+  }, 
   watch: {
     columnTree(val){
       this.$emit('on-selecttree-change',val)
@@ -430,7 +443,8 @@ export default {
     columnCard(){
       this.save('card')
     },
-    columnMoney(){
+    columnMoney(val){
+      this.$emit('on-typefield-change',val,this.columnIndex,this.index)
       this.save('money');
     },
     columnNumber(){

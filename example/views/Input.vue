@@ -5,7 +5,7 @@
     <h-input algin="left" specialFilter  placeholder="请输入..." ref="test" :maxlength="20"></h-input>
     <Button @on-click="testClick(true)">获取焦点</Button>
     <Button @on-click="testClick(false)">失去焦点</Button>
-    <h-input algin="center" placeholder="请输入..." @on-change="onChange"></h-input>
+    <h-input algin="center" :filterRE=/[^\d]/g placeholder="请输入..." @on-change="onChange"></h-input>
     <h-input algin="right" placeholder="请输入..." @mousedown.native="onChange"></h-input>
     <h2>基础用法</h2>
     <p>可以直接设置 style 来改变输入框的宽度</p>
@@ -24,6 +24,7 @@
        通过设置属性 rows 控制文本域默认显示的行数</p>
     <h-row>
       <h-col span="12">
+        {{value5}}
         <h-input v-model="value5" type="textarea" placeholder="请输入..." :disabled="disabled" :canResize="false"></h-input>
       </h-col>
       <h-col span="12">
@@ -87,7 +88,7 @@ export default {
       value2: '',
       value3: '',
       value4: '',
-      value5: '',
+      value5: '111111111111111112414',
       value6: '',
       value7: '11111111\r\n111111\r\n1111111111111111111111111111111\r\n111111111111111111111111111111111111111111111111111111111111111111\r\n1111111111111111111111111111111111111111111111111111',
       value8: '',

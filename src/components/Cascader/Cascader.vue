@@ -1,5 +1,5 @@
 <template>
-  <div :class="classes" v-clickoutside="handleClose">
+  <div :class="classes" v-clickoutside="clickOutside">
     <div :class="[prefixCls + '-rel']" @click="toggleOpen" ref="reference">
       <slot>
         <h-input
@@ -44,7 +44,7 @@
                 }]"
                 v-for="(item, index) in querySelections"
                 :key="index"
-                @click="handleSelectItem(index)" v-html="item.display"></li>
+                @click.stop="handleSelectItem(index)" v-html="item.display"></li>
             </ul>
           </div>
           <ul v-show="filterable && query !== '' && !querySelections.length" :class="[prefixCls + '-not-found-tip']"
@@ -161,6 +161,7 @@
         validDataStr: '',
         isLoadedChildren: false,    // #950
         fPlacement:this.placement,
+        isFocus:false,
       };
     },
     computed: {
@@ -262,9 +263,20 @@
         this.emitValue(this.currentValue, oldVal);
         //this.$broadcast('on-clear');
         this.broadcast('Caspanel', 'on-clear');
+        this.isFocus = true;
       },
-      handleClose () {
+      clickOutside(){
+        this.handleClose(true);
+      },
+      handleClose (status) {
         this.visible = false;
+        if(this.isFocus&&status){
+          this.dispatch('FormItem', 'on-form-blur',{
+            value: this.currentValue,
+            selected: JSON.parse(JSON.stringify(this.selected))
+          });
+          this.isFocus=false;
+        }
       },
       toggleOpen () {
         if (this.disabled) return false;
@@ -273,6 +285,7 @@
         } else {
             this.onFocus();
         }
+        this.isFocus = true;
       },
       onFocus () {
         this.visible = true;

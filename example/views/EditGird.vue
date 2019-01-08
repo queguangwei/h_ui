@@ -3,9 +3,12 @@
     <h2>基础</h2>
     <h3>单选</h3>
     <Button @click="addDate">增加数据</Button><Button @click="getChangeData">获取改变后的数据</Button>
-    <h-edit-gird ref="table" border height="200" :columns="columns1" :data="data2" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" stripe :loading="loading" @on-expand="expand" :option="options1" :treeOption="treeOption" @on-editselect-change="selectchange" @on-editinput-change="selectchange" @on-editinput-blur="selectchange" @on-editarea-change="selectchange" @on-editarea-blur="selectchange">
-      <p slot='loading'>我是自定义loading</p>
-    </h-edit-gird>
+    <!-- <Button @click="changeMsg">显示</Button> -->
+    <!-- <h-msg-box v-model = "showMsgBox" width="1000"> -->
+      <h-edit-gird ref="table" border height="200" :columns="columns1" :data="data2" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" stripe :loading="loading" @on-expand="expand" :option="options1" :treeOption="treeOption" @on-editselect-change="selectchange" @on-editinput-change="selectchange" @on-editinput-blur="selectchange" @on-editarea-change="selectchange" @on-editarea-blur="selectchange" @on-money-blur="selectchange" @on-money-change="selectchange">
+        <p slot='loading'>我是自定义loading</p>
+      </h-edit-gird>
+    <!-- </h-msg-box> -->
     <Button @click="getData">获取数据</Button>
     <Button @click="setLoad">切换loading</Button>
     <p>小</p>
@@ -15,13 +18,13 @@
     <p>大</p>
 <!--     <Button @click="getDate">获取数据</Button>
     <Button @click = "addDate">新增一行</Button> -->
-    <!-- <h3>多选</h3>
+    <h3>多选</h3>
     <h-edit-gird :columns="columns4" :data="data1" :showEditInput="true" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-select-cancel="select" height="200"></h-edit-gird>
     <h-edit-gird :columns="columns4" :data="data1" @on-select-all="allSelect" @on-selection-change="selsetChange" height="200" :loading="loading"></h-edit-gird>
     <h3>直接显示编辑框</h3>
     <h-edit-gird :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" :showEditInput="true" height="200" :loading="loading"></h-edit-gird>
     <Button @click="setLoad">切换loading</Button>
-    <Button @click="addDate">添加一行</Button> -->
+    <Button @click="addDate">添加一行</Button>
   </div>
 </template>
 
@@ -230,19 +233,20 @@ export default {
   data() {
     return {
       loading:false,
+      showMsgBox:false,
       columns1: [
-        {
-          type: 'expand',
-          fixed: 'left',
-          width: 50,
-          render: (h, params) => {
-            return h(TexpandRow, {
-              props: {
-                  row: params.row
-              }
-            })
-          }
-        },
+        // {
+        //   type: 'expand',
+        //   fixed: 'left',
+        //   width: 50,
+        //   render: (h, params) => {
+        //     return h(TexpandRow, {
+        //       props: {
+        //           row: params.row
+        //       }
+        //     })
+        //   }
+        // },
         {
           type: 'text',
           title: '姓名',
@@ -294,7 +298,6 @@ export default {
         {
           type: 'number',
           title: '年龄',
-          width: 100,
           key: 'age',
           hiddenCol:false,
           prelabel:(index)=>{
@@ -307,7 +310,7 @@ export default {
         {
           // type: 'textArea',
           // rows: 2,
-          width: 200,
+          // width: 200,
           title: '地址',
           key: 'address',
           rearlabel:(index)=>{
@@ -322,7 +325,7 @@ export default {
         {
           type: 'money',
           title: '金额',
-          width: 100,
+          // width: 100,
           integerNum: 14,
           // suffixNum: '0',
           suffixNum: 0,
@@ -333,14 +336,14 @@ export default {
         {
           type: 'card',
           title: '卡号',
-          width: 200,
+          // width: 200,
           key: 'cardId',
           rule: { required: true, message: '卡号不能为空'},
         },
         {
           type: 'select',
           title: '地区',
-          width: 200,
+          // width: 200,
           transfer:true,
           filterable: true,
           remote:true,
@@ -350,13 +353,13 @@ export default {
           multiple:false,
           option:[],
           placement:'top',
-          dropWidth:300,
+          // dropWidth:300,
           rule:{ required: true, message: '请选择城市', trigger: 'blur,change' }
         },
         {
           type: 'date',
           title: '日期',
-          width: 200,
+          // width: 200,
           key: 'dating',
           dateType:'date',
           placement:'top',
@@ -367,7 +370,7 @@ export default {
         {
           type: 'time',
           title: '时间',
-          width: 200,
+          // width: 200,
           transfer:true,
           placement:'top',
           key: 'timing',
@@ -376,16 +379,16 @@ export default {
           steps: [2,2,2],
           rule:{ required: true, message: '请选择时间', trigger: 'blur,change' }
         },
-        {
-          type: 'selectTree',
-          title: '下拉树',
-          width: 200,
-          key: 'tree',
-          fixed:'right',
-          showCheckbox: false,
-          checkStrictly: false,
-          rule:{ required: true, message: '请选择子节点', trigger: 'blur,change' }
-        }
+        // {
+        //   type: 'selectTree',
+        //   title: '下拉树',
+        //   // width: 200,
+        //   key: 'tree',
+        //   fixed:'right',
+        //   showCheckbox: false,
+        //   checkStrictly: false,
+        //   rule:{ required: true, message: '请选择子节点', trigger: 'blur,change' }
+        // }
       ],
       columns4: [
       {
@@ -408,6 +411,9 @@ export default {
       }
   },
   methods: {
+    changeMsg(){
+      this.showMsgBox = !this.showMsgBox;
+    },
     expand(e,status){
       console.log(e);
     },

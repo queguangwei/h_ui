@@ -52,6 +52,10 @@ export default {
       type: Boolean,
       default: null
     },
+    onlyBlurRequire:{
+      type: Boolean,
+      default: false
+    }
 
   },
   data () {
@@ -162,6 +166,7 @@ export default {
           }
         }
         this.fields[i].$children[0].focus();
+        if(this.fields[i].$children[0].opened) this.fields[i].$children[0].opened = false;
         this.$nextTick(()=>{
           if(this.fields[i].$children[0].visible) this.fields[i].$children[0].visible=false;
         })

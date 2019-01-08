@@ -22,7 +22,7 @@
       <p>对话框内容</p>
     </h-msg-box>
     <h-button @click="modal2 = true">自定义页头和页脚</h-button>
-    <h-msg-box v-model="modal2" width="360" scrollable isBeyond isOriginal>
+    <h-msg-box v-model="modal2" width="360" left="10" scrollable isBeyond isOriginal>
       <p slot="header" style="color:#f60;text-align:center">
         <h-icon name="prompt"></h-icon>
         <span>删除确认</span>
@@ -37,7 +37,7 @@
       </div>
     </h-msg-box>
     <h-button @click="modal3 = true">不带标题栏</h-button>
-    <h-msg-box v-model="modal3" @on-close="onClose">
+    <h-msg-box v-model="modal3" @on-close="onClose" left="10">
         <p>对话框内容</p>
         <p>对话框内容</p>
         <p>对话框内容</p>

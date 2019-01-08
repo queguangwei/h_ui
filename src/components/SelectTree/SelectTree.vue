@@ -466,6 +466,7 @@
           if (this.remote) {
             this.lastquery = '';
           }
+          this.isFocus = true
         }
         function resetDate(data) {
           data.forEach((col,i)=>{

@@ -35,6 +35,8 @@
               @on-editinput-blur="editinputBlur"
               @on-editarea-change="editAreaChange"
               @on-editarea-blur="editAreaBlur"
+              @on-typefield-blur = "typefieldBlur"
+              @on-typefield-change = "typefieldChange"
             ></Cell>
           </td>
         </table-tr>
@@ -315,7 +317,13 @@
         },
         editAreaBlur(val,i,j){
           this.$emit('on-editarea-blur',val,i,j);
-        }
+        },
+        typefieldBlur(val,i,j){
+          this.$parent.typefieldBlur(val,i,j)
+        },
+        typefieldChange(val,i,j){
+          this.$parent.typefieldChange(val,i,j)
+        },
       },
       mounted(){
         if (this.typeName == 'treeGird') {

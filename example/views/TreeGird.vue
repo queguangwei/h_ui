@@ -231,7 +231,11 @@
             // type: 'text',
             title: '姓名',
             key: 'name',
-            width: 200
+            width: 200,
+            hiddenOther:true,
+            render:(h, params)=>{
+              return h('span',params.row.name)
+            }
           },
           {
             type: 'number',

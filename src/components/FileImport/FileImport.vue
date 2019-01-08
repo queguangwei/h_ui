@@ -154,6 +154,8 @@
              * tableColumnsTitle格式
              * [[sheet1ColumnTitle], [sheet2ColumnTitle]]
              */
+            //  加载完毕
+            // that.$emit('on-change', false)
             that.$emit('on-choose-file', sheetData, tableColumnsTitle)
           } catch (e) {
             this.$hMessage.warning('文件类型不正确')
@@ -170,6 +172,8 @@
         this.readExcel(e.dataTransfer.files)
       },
       handleChange (e) {
+        // 已选择数据，开始加载
+        this.$emit('on-change', true)
         const files = e.target.files
         if (!files) return
         this.readExcel(files)

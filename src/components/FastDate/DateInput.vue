@@ -9,6 +9,7 @@
   @blur="blur" 
   @focus="focuser"
   @keydown="changeValue"
+  @mousewheel="handleMouseWheel"
    />
 </template>
 <script>
@@ -35,6 +36,7 @@ export default {
       currentValue: this.value,
       inputValue: '',
       curYear:(new Date()).getFullYear(),
+      isFocus:false,
     }
   },
   computed:{
@@ -54,18 +56,12 @@ export default {
       if (this.type == 'year') {
         if (pos==4) {
           this.$emit('on-change-focus');
-          // value = value.substr(-1);
-          // event.target.value = value    
         }
       }
       if (this.type == 'months' || this.type == 'day') {
         if(pos==2){
           this.$emit('on-change-focus');
         }
-        // if (pos>2 || Number(value)>12 || value =='00') { 
-        //   value = value.substr(-1);
-        //   event.target.value = value
-        // }
       }
       if (this.type == 'day') {
         if (pos>2 ||Number(value)>31||value =='00') {
@@ -77,9 +73,11 @@ export default {
       this.$emit('input', this.inputValue);
     },
     blur(event){
+      this.isFocus = false;
       this.$emit('blur', event);
     },
     focuser(event){
+      this.isFocus = true;
       this.$emit('focus', event);
     },
     focus(){
@@ -88,38 +86,56 @@ export default {
     changeValue(event){
       if(this.readonly) return;
       let code = event.keyCode
-      let curValue;
+      // let curValue;
       if (code == 38){
-        curValue = Number(this.inputValue)+1;
-        switch(this.type){
-          case 'year':
-            if (!this.inputValue) curValue = this.curYear;
-            this.inputValue = curValue<1?this.curYear:curValue;
-            break;
-          case 'months':
-            this.inputValue = curValue>12?1:curValue;
-            break;
-          case 'day':
-            this.inputValue = curValue>31?1:curValue;
-            break;
-        }
+        this.decValue();
       }
       if(code == 40){
-        curValue = Number(this.inputValue)-1;
-        switch(this.type){
-          case 'year':
-            if (!this.inputValue) curValue = this.curYear;
-            this.inputValue = curValue;
-            break;
-          case 'months':
-            this.inputValue = curValue<1?12:curValue;
-            break;
-          case 'day':
-            this.inputValue = curValue<1?31:curValue;
-            break;
-        }
+        this.addValue();
       }
       this.$emit('input', this.inputValue);
+    },
+    decValue(){
+      let curValue = Number(this.inputValue)+1;
+      switch(this.type){
+        case 'year':
+          if (!this.inputValue) curValue = this.curYear;
+          this.inputValue = curValue<1?this.curYear:curValue;
+          break;
+        case 'months':
+          this.inputValue = curValue>12?1:curValue;
+          break;
+        case 'day':
+          this.inputValue = curValue>31?1:curValue;
+          break;
+      }
+    },
+    addValue(){
+      let curValue = Number(this.inputValue)-1;
+      switch(this.type){
+        case 'year':
+          if (!this.inputValue) curValue = this.curYear;
+          this.inputValue = curValue;
+          break;
+        case 'months':
+          this.inputValue = curValue<1?12:curValue;
+          break;
+        case 'day':
+          this.inputValue = curValue<1?31:curValue;
+          break;
+      }
+    },
+    handleMouseWheel(event){
+      event.preventDefault();
+      if(!this.isFocus) return;
+      let value = event.target.value;
+      const deltaX = event.wheelDelta;
+      if(deltaX>0){
+        this.decValue();
+      }else{
+        this.addValue();
+      }
+       this.$emit('input', this.inputValue);
     }
   },
   watch:{

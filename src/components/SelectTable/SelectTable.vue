@@ -579,6 +579,7 @@
               this.query = '';
           }
           this.hideMenu();
+          this.isInputFocus = true
         }
       },
       updateMultipleSelected (init = false, slot = false) {

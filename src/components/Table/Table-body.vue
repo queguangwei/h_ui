@@ -23,6 +23,7 @@
               :natural-index="index"
               :index="row._index"
               :checked="rowChecked(row._index)"
+              :highlight="rowHighlight(row._index)"
               :disabled="rowDisabled(row._index)"
               :expanded="rowExpanded(row._index)"
               :showTitle = "showTitle"
@@ -86,6 +87,9 @@
         rowChecked (_index) {
           if (this.sum) return           
           return this.objData[_index] && this.objData[_index]._isChecked;
+        }, 
+        rowHighlight (_index){
+          return this.objData[_index] && this.objData[_index]._isHighlight;
         },
         rowDisabled(_index){
           if (this.sum) return           

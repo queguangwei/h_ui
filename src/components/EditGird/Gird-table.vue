@@ -72,7 +72,7 @@
             :columns="leftFixedColumns"
             :data="rebuildData"
             :columns-width="columnsWidth"
-            :rowSelect = "rowSelect"
+            :rowSelect = "rowSelect && selectType"
             :obj-data="objData"
             :typeName = "typeName"
             :showEditInput="showEditInput"
@@ -109,7 +109,7 @@
             :columns="rightFixedColumns"
             :data="rebuildData"
             :columns-width="columnsWidth"
-            :rowSelect = "rowSelect"
+            :rowSelect = "rowSelect && selectType"
             :obj-data="objData"
             :typeName = "typeName"
             :showEditInput="showEditInput"
@@ -542,7 +542,7 @@ export default {
             }
             this.columnsWidth = columnsWidth;
           }
-
+          this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
         });
         // get table real height,for fixed when set height prop,but height < table's height,show scrollBarWidth
         this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'));
@@ -976,13 +976,19 @@ export default {
     editAreaBlur(val,i,j){
       this.$emit('on-editarea-blur',val,i,j);
     },
+    typefieldBlur(val,i,j){
+      this.$emit('on-money-blur',val,i,j);
+    },
+    typefieldChange(val,i,j){
+      this.$emit('on-money-change',val,i,j);
+    },
     initResize(){
       this.$nextTick(() => {
         this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
       });
     },
-    getSelectType(){
-      if(this.columns.length>0) return;
+    getSelectType(){;
+      if(this.columns.length==0) return;
       if (this.columns[0].type && this.columns[0].type=='selection') {
         this.selectType=true;
       }

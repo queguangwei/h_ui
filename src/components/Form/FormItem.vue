@@ -104,6 +104,7 @@
                 mustShowError: false,
                 mustShowErrorList: [],
                 modeChanged:false,
+                onlyBlurRequire:false,
             };
         },
         watch: {
@@ -316,6 +317,7 @@
                     this.validateDisabled = false;
                     return;
                 }
+                if(this.onlyBlurRequire) return;
                 this.validate('change');
             },
             commonRule(){
@@ -342,6 +344,7 @@
                     }
                 })
             }
+            this.onlyBlurRequire = this.form.onlyBlurRequire?true:false;
             if (this.prop) {
                 this.dispatch('Form', 'on-form-item-add', this);
 

@@ -13,7 +13,7 @@
      <Button @click="changemsg">显示</Button>
      <!-- :multiLevel="multiLevel1" -->
      <!-- :multiLevel="multiLevel2"  -->
-    <h-table :columns="columns1" :data="data2" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="300" canMove @on-move="onMove" :lastColWidth="150">
+    <h-table :columns="columns1" :data="data1" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="300" canMove @on-move="onMove" :lastColWidth="150">
       <span slot="loading">我是自定义加载！！！</span>
     </h-table>
     <h-button @click="setLoading">切换状态</h-button>
@@ -1735,12 +1735,12 @@ export default {
   },
   mounted(){
     this.columns1=[
-        // { 
-        //   type: 'selection',
-        //   align: 'center',
-        //   width:200,
-        //   // fixed:'left'
-        // },
+        { 
+          type: 'radio',
+          align: 'center',
+          width:200,
+          // fixed:'left'
+        },
         {
           title: '姓名',
           key: 'name',
@@ -1750,32 +1750,31 @@ export default {
         {
           title: '年龄',
           key: 'age',
-          width:200
         },
         {
           title: '地址',
           ellipsis:true,
           key: 'address',
-          width:200
+
           // hiddenCol:true,
         },
         {
           title: '地址1',
           key: 'address1',
         },
-        {
-          title: '地址2',
-          key: 'address2',
-        },
-        {
-          title: '地址3',
-          key: 'address3',
-        },
-        {
-          title: '地址4',
-          key: 'address4',
-          sortType:'asc',
-        },
+        // {
+        //   title: '地址2',
+        //   key: 'address2',
+        // },
+        // {
+        //   title: '地址3',
+        //   key: 'address3',
+        // },
+        // {
+        //   title: '地址4',
+        //   key: 'address4',
+        //   sortType:'asc',
+        // },
         {
           title: '地址5',
           key: 'marketNo',
