@@ -1,57 +1,75 @@
 <template>
 <div>
-  <h-menu active-name="1-2" :open-names="opennames">
-      <Submenu name="1">
-          <template slot="title">
-              <h-icon name="ios-paper"></h-icon>
-              内容管理
-          </template>
-          <h-menu-item name="1-1">文章管理</h-menu-item>
-          <h-menu-item name="1-2">评论管理</h-menu-item>
-          <h-menu-item name="1-3">举报管理</h-menu-item>
-      </Submenu>
-      <Submenu name="2">
-          <template slot="title">
-              <h-icon name="ios-people"></h-icon>
-              用户管理
-          </template>
-          <h-menu-item name="2-1">新增用户</h-menu-item>
-          <h-menu-item name="2-2">活跃用户</h-menu-item>
-      </Submenu>
-      <Submenu name="3">
-          <template slot="title">
-              <h-icon name="stats-bars"></h-icon>
-              统计分析
-          </template>
-          <h-menu-group title="使用">
-              <h-menu-item name="3-1">新增和启动</h-menu-item>
-              <h-menu-item name="3-2">活跃分析</h-menu-item>
-              <h-menu-item name="3-3">时段分析</h-menu-item>
-          </h-menu-group>
-          <h-menu-group title="留存">
-              <h-menu-item name="3-4">用户留存</h-menu-item>
-              <h-menu-item name="3-5">流失用户</h-menu-item>
-          </h-menu-group>
-      </Submenu>
-  </h-menu>
-  <Button @click="changeName">切换状态</Button>
+  <h-table :columns="columns1" :data="data1" notSetWidth border></h-table>
+  <table border='1' collapse width="100%">
+    <!-- <thead>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>4</th>
+      <th>4</th>
+      <th>4</th>
+    </thead> -->
+    <tbody>
+      <tr>  
+        <td>1111</td>
+        <td>111111111</td>
+        <td>111111111</td>
+        <td>111111111111111111111111111111111111111111111111111111111111</td>
+        <td>111111111111111111111111111111111111111111111111111</td>
+        <td>111111111111111111111111111111111111111111111111</td>
+        <td>1111111111111111111111111111111111111111111111111111</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 </template>
 <script>
     export default {
         data () {
             return {
-              opennames: [],
-              arr:Array.from({length:100},(item)=>2),
+                columns1: [
+                    {
+                        title: '姓名',
+                        key: 'name',
+                        // fixed:'left',
+                        width:200,
+                        align:'right'
+                    },
+                    {
+                        title: '年龄',
+                        key: 'age',
+                        width:50
+                    },
+                    {
+                        title: '地址',
+                        key: 'address'
+                    }
+                ],
+                data1: [
+                    {
+                        name: '王小明',
+                        age: 18,
+                        address: '北京市朝阳区芍药居北京市朝阳区芍药居北京市朝阳区芍药居北京市朝阳区北京市朝阳区芍药居北京市朝阳区芍药居北京市朝阳区芍药居北京市朝阳区北京市朝阳区芍药居北京市朝阳区芍药居北京市朝阳区芍药居北京市朝阳区北京市朝阳区芍药居北京市朝阳区芍药居北京市朝阳区芍药居北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '张小刚',
+                        age: 25,
+                        address: '北京市海淀区西二旗北京市朝阳区芍药居北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '李小红',
+                        age: 30,
+                        address: '上海市浦东新区世纪大道北京市朝阳区芍药居北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '周小伟',
+                        age: 26,
+                        address: '深圳市南山区深南大道北京市朝阳区芍药居北京市朝阳区芍药居'
+                    }
+                ]
             }
-        },
-        methods:{
-          changeName(){
-           this.opennames =  ['1']
-          }
-        },
-        mounted(){
-          console.log(this.arr)
         }
     }
 </script>

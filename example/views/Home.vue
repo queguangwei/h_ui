@@ -1,13 +1,13 @@
 <template>
   <div>
-    <!-- <h-msg-box v-model="changeform" width="900" escClose left="10"> -->
+    <h-msg-box v-model="changeform" width="900" escClose left="10" closeDrop>
       <p slot="header">124412</p>
       <Button @on-click="changeRequired">改变require</Button><Button @click="getFocus2">获取焦点2</Button>
       <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus cols="3">
         <!-- <h-form-item label="输入框" prop="input" :required="isrequired">
           <h-input v-model="formItem1.input" placeholder="请输入"></h-input>
         </h-form-item> -->
-        <!-- <h-form-item label="日期控件">
+        <h-form-item label="日期控件">
           <h-row>
             <h-col span="11">
               <h-form-item prop="date" required>
@@ -21,7 +21,7 @@
               </h-form-item>
             </h-col>
           </h-row>
-        </h-form-item> -->
+        </h-form-item>
         <!-- <h-form-item label="特殊日期" prop="fatdate" required>
           <h-fast-date v-model="formItem1.fatdate"></h-fast-date>
         </h-form-item> -->
@@ -107,7 +107,7 @@
             <h-button type="ghost" style="margin-left: 8px" @click="handleReset('formItem1')">取消</h-button>
         </h-form-item>
       </h-form>
-    <!-- </h-msg-box> -->
+    </h-msg-box>
     <Button @on-click="changeform1">显示隐藏</Button>
     <h-select-table v-model="model1" ref="changeDrop">
       <h-table-option border :columns="columns1" :data="data1"></h-table-option>

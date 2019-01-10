@@ -11,7 +11,7 @@ export default {
 	props: {
 		widthAdaption: {
 			type: Boolean,
-			default: true,
+			default: false,
 		},
 		maxDropWidth: {
 			type:[String,Number],
@@ -77,7 +77,8 @@ export default {
 				});
 			} else {
 				this.$nextTick(() => {
-					let curPlacement = this.widthAdaption ? this.placement.indexOf('top') >= 0 ? 'top-start' : 'bottom-start' : this.placement
+					let curPlacement = this.widthAdaption ? this.placement.indexOf('top') >= 0 ? 'top-start' : 'bottom-start' : this.placement			
+					// let curPlacement = this.placement.indexOf('top') >= 0 ? 'top-start' : this.placement
 					this.popper = new Popper(this.$parent.$refs.reference, this.$el, {
 						gpuAcceleration: false,
 						placement: curPlacement,

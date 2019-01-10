@@ -3,6 +3,7 @@ export default {
 		const obj = binding.value;
 		if (!obj[0]) return;
 		el.onmousedown=function(ev){
+			if(obj[2]) ev.target.click();
 			let pel= el.parentNode;
 	    let width = parseInt(pel.clientWidth);
 	    let height = parseInt(pel.clientHeight);

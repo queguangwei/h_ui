@@ -9,6 +9,7 @@
       <Drop
         v-show="currentVisible"
         :placement="placement"
+        :widthAdaption="false"
         ref="drop"
         @mouseenter.native="handleMouseenter"
         @mouseleave.native="handleMouseleave"

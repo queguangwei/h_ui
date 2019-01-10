@@ -17,7 +17,7 @@
                 <Icon name="close"></Icon>
               </slot>
             </a>
-            <div :class="[prefixCls + '-header']" v-if="showHead" v-drag="[this.canDrag,this.isBeyond]"><slot name="header"><div :class="[prefixCls + '-header-inner']">{{ title }}</div></slot></div>
+            <div :class="[prefixCls + '-header']" v-if="showHead" v-drag="[this.canDrag,this.isBeyond,this.closeDrop]"><slot name="header"><div :class="[prefixCls + '-header-inner']">{{ title }}</div></slot></div>
             <div :class="[prefixCls + '-body']"  :style="contentStyle"><slot></slot></div>
             <div :class="[prefixCls + '-footer']" v-if="!footerHide">
               <slot name="footer">
@@ -132,6 +132,10 @@ export default {
       default:false,
     },
     left:[String,Number],
+    closeDrop:{
+      type:Boolean,
+      default:false,
+    }
   },
   data () {
     return {
@@ -213,6 +217,9 @@ export default {
       this.$emit('input', false);
       this.$emit('on-close');
       this.visible = false;
+    },
+    headClick () {
+
     },
     switchSize(){
       if(!this.isMax){

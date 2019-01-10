@@ -18,6 +18,7 @@
           :lastColWidth="lastColWidth"
           :minDragWidth="minDragWidth"
           :multiLevel="cloneMultiLevel"
+          :notSetWidth="notSetWidth"
           ></table-head>
       </div>
       <div :class="[prefixCls + '-body']" :style="bodyStyle" ref="body" @scroll="handleBodyScroll"
@@ -32,6 +33,7 @@
           :rowSelect = "rowSelect"
           :bodyAlgin ="bodyAlgin"
           :obj-data="objData"
+          :notSetWidth="notSetWidth"
           :showTitle="showTitle"></table-body>
       </div>
       <div :class="[prefixCls + '-tip'] "
@@ -81,6 +83,7 @@
             :rowSelect = "rowSelect"
             :bodyAlgin ="bodyAlgin"
             :obj-data="objData"
+            :notSetWidth="notSetWidth"
             :showTitle="showTitle"></table-body>
         </div>
       </div>
@@ -97,6 +100,7 @@
             :canDrag="Boolean(false)"
             :canMove="Boolean(false)"
             :headAlgin="headAlgin"
+            :notSetWidth="notSetWidth"
             ></table-head>
         </div>
         <div :class="[prefixCls + '-fixed-body']" :style="fixedBodyStyle" ref="fixedRightBody" @mousewheel="handleFixedMousewheel" @DOMMouseScroll="handleFixedMousewheel">
@@ -110,6 +114,7 @@
             :rowSelect = "rowSelect"
             :bodyAlgin ="bodyAlgin"
             :obj-data="objData"
+            :notSetWidth="notSetWidth"
             :showTitle="showTitle"></table-body>
         </div>
       </div>
@@ -124,6 +129,7 @@
           :data="makeSumData()"
           :obj-data="makeSumObjData()"
           :columns-width="columnsWidth"
+          :notSetWidth="notSetWidth"
           :bodyAlgin ="bodyAlgin"
           :showTitle="showTitle"></table-body>
         <!-- </div> -->
@@ -291,6 +297,10 @@ export default {
     notSort: {
       type:Boolean,
       default:false,
+    },
+    notSetWidth:{
+      type:Boolean,
+      default:false,
     }
   },
   data () {
@@ -360,7 +370,8 @@ export default {
           [`${prefixCls}-${this.size}`]: !!this.size,
           [`${prefixCls}-border`]: this.border,
           [`${prefixCls}-stripe`]: this.stripe,
-          [`${prefixCls}-with-fixed-top`]: !!this.height
+          [`${prefixCls}-with-fixed-top`]: !!this.height,
+          [`${prefixCls}-not-width`]: !!this.notSetWidth
         }
       ];
     },
@@ -592,6 +603,29 @@ export default {
     },
     handleResize () {
       // keep-alive时，页面改变大小会不断触发resize【非本组件页面】
+      if(this.notSetWidth&&this.data.length &&this.$refs.tbody){
+        setTimeout(()=>{
+          let columnsWidth = {};
+          const $td = this.$refs.tbody.$el.querySelectorAll('tbody tr')[0].querySelectorAll('td');
+          for (let i = 0; i < $td.length; i++) {    // can not use forEach in Firefox
+            const column = this.cloneColumns[i];
+            let width = parseInt(getStyle($td[i], 'width'));
+            if (column.width) {
+                width = column.width||width;
+            } 
+            this.cloneColumns[i]._width =width||'';
+            this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)||this.tableWidth;
+            columnsWidth[column._index] = {
+                width: width
+            };
+          }
+          this.columnsWidth = columnsWidth;
+          this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0;
+          this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
+          this.headerRealHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
+        },0)
+        return;
+      }
       this.$nextTick(() => {
         if(this.cloneColumns.length==0) return;
         const allWidth = !this.cloneColumns.some(cell => !cell.width&&cell.width!==0);    // each column set a width
@@ -661,6 +695,7 @@ export default {
         this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
         this.headerRealHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
       });
+      
     },
     getshiftSelect(_index){
       if(!this.highlightRow) return;

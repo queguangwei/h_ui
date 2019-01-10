@@ -1737,8 +1737,8 @@ export default {
     this.columns1=[
         { 
           type: 'radio',
-          align: 'center',
-          width:200,
+          width:60,
+          align:'center',
           // fixed:'left'
         },
         {

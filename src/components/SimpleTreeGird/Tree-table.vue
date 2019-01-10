@@ -15,6 +15,12 @@
               <Checkbox v-if="isCheckbox" :value="checkValue(row.id)"  @on-click="changeSelect(row.id,row,$event)" @click.native.stop="handleclick"></Checkbox> 
             </span>
             <span v-if="column.type=='index'">{{Number(index)+1}}</span>
+            <Cell
+              v-if="column.render"
+              :row="row"
+              :column="column"
+              :index="index"
+              :render="column.render"></Cell>
             <span v-else>{{row[column.key]}}</span>
           </td>
         </tr>
@@ -39,7 +45,7 @@
   </table>
 </template>
 <script>
-  import Cell from './Cell.vue'
+  import Cell from './expand';
   import Mixin from './mixin';
   import {addClass,removeClass} from '../../util/tools';
   export default {
