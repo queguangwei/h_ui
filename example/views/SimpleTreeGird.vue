@@ -74,6 +74,9 @@ export default {
           width: 200,
           key: 'age',
           align: 'center',
+          // render:(h,params)=>{
+          //   return h('span','123')
+          // }
         },
         {
           width: 100,

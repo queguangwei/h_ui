@@ -150,6 +150,11 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
         border-right: 1px solid $border-color-bottom;
     }
   }
+  &-not-width{
+    .#{$table-prefix-cls}-cell{
+      white-space:nowrap;
+    }
+  }
   &-cell{
     padding-left: 15px;
     padding-right: 15px;

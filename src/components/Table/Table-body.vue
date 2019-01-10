@@ -1,9 +1,9 @@
 <template>
-  <table cellspacing="0" cellpadding="0" border="0" :style="styleObject" ref="tBody">
+  <table cellspacing="0" cellpadding="0" border="0" :style="styleObject" ref="tBody" >
     <colgroup>
       <col v-for="(column, index) in columns" :width="setCellWidth(column, index, false)" :key="index">
     </colgroup>
-    <tbody :class="[prefixCls + '-tbody']">
+    <tbody :class="[prefixCls + '-tbody']" >
       <template v-for="(row, index) in data">
         <table-tr
           :row="row"
@@ -66,8 +66,7 @@
         },
         bodyAlgin:String,
         showTitle:Boolean,
-        sum: Boolean
-
+        sum: Boolean,
       },
       computed: {
         expandRender () {

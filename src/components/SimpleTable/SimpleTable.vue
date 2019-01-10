@@ -892,7 +892,7 @@ export default {
     },
     highlightCurrentRow (_index) {
         if (!this.highlightRow) return;
-        const curStatus = this.objData[_index].hasOwnProperty('_isHighlight') ? this.objData[_index]._isHighlight : false;
+        const curStatus = this.objData[_index] && this.objData[_index].hasOwnProperty('_isHighlight') ? this.objData[_index]._isHighlight : false;
         let oldIndex = -1;
         for (let i in this.objData) {
           this.objData[i]._isChecked = false;//单选时取消多选项，估值6.0专用
@@ -910,11 +910,15 @@ export default {
             this.$emit('on-current-change', null,null);
           })
         }else{
-          if (this.objData[_index].hasOwnProperty('_isHighlight')) this.objData[_index]._isHighlight = true;
-           if (this.objData[_index].hasOwnProperty('_isChecked')) this.objData[_index]._isChecked = true;
+          if (this.objData[_index] && this.objData[_index].hasOwnProperty('_isHighlight')) this.objData[_index]._isHighlight = true;
+          if (this.objData[_index] && this.objData[_index].hasOwnProperty('_isChecked')) this.objData[_index]._isChecked = true;
           // this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
           this.$nextTick(()=>{
-            this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])),_index);
+            if(this.cloneData[_index]) {
+              this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])),_index);
+            } else {
+              this.$emit('on-current-change', null, null);
+            }
           })
         }
         this.$nextTick(()=>{
@@ -956,7 +960,11 @@ export default {
         this.highlightCurrentRow(_index);
       }
       this.$nextTick(()=>{
-        this.$emit('on-row-click', [JSON.parse(JSON.stringify(this.cloneData[_index])),_index]);
+        if (this.cloneData[_index]){
+          this.$emit('on-row-click', [JSON.parse(JSON.stringify(this.cloneData[_index])),_index]);
+        } else {
+          this.$emit('on-current-change', null, null);
+        }
       })
     },
     dblclickCurrentRow (_index) {
@@ -1399,7 +1407,7 @@ export default {
       }
     },
     navigateOptions (direction) {
-      if (this.isFocusSelect) {
+      if (this.isFocusSelect && this.objData[this.focusIndex]) {
         if (this.objData[this.focusIndex].hasOwnProperty('_isChecked')) this.objData[this.focusIndex]._isChecked = false
         if (this.objData[this.focusIndex].hasOwnProperty('_isHighlight')) this.objData[this.focusIndex]._isHighlight = false;
         this.isFocusSelect = false

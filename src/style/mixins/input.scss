@@ -121,7 +121,7 @@
 }
 
 @mixin input-group($inputClass) {
-    display: table;
+    display: inline-table;
     width: 100%;
     border-collapse: separate;
     position: relative;
