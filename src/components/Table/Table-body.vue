@@ -9,6 +9,7 @@
           :row="row"
           :key="row._rowKey"
           :prefix-cls="prefixCls"
+          :clickToSelect="clickToSelect"
           @mouseenter.native.stop="handleMouseIn(row._index)"
           @mouseleave.native.stop="handleMouseOut(row._index)"
           @click.native="clickCurrentRow($event,row._index)"
@@ -67,6 +68,7 @@
         bodyAlgin:String,
         showTitle:Boolean,
         sum: Boolean,
+        clickToSelect:Boolean,
       },
       computed: {
         expandRender () {
@@ -82,6 +84,7 @@
           return render;
         }
       },
+
       methods: {
         rowChecked (_index) {
           if (this.sum) return           

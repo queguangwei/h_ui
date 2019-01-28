@@ -13,7 +13,7 @@
      <Button @click="changemsg">显示</Button>
      <!-- :multiLevel="multiLevel1" -->
      <!-- :multiLevel="multiLevel2"  -->
-    <h-table :columns="columns1" :data="data1" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="300" canMove @on-move="onMove" :lastColWidth="150">
+    <h-table :columns="columns1" :data="[]" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="300" canMove @on-move="onMove" :lastColWidth="150">
       <span slot="loading">我是自定义加载！！！</span>
     </h-table>
     <h-button @click="setLoading">切换状态</h-button>
@@ -177,25 +177,50 @@ export default {
              type: "selection",
              width: 120,
              align: "center",
-             fixed: "left",
-             filters: [
-               {
-                   label: '大于4000',
-                   value: 1
-               },
-               {
-                   label: '小于4000',
-                   value: 2
-               }
-             ],
-             filterMultiple: false,
-             filterMethod (value, row) {
-                 if (value === 1) {
-                    return row.show > 4000;
-                 } else if (value === 2) {
-                    return row.show < 4000;
-                 }
-             }
+             renderHeader: (h, params) => {
+                        return h('div', [
+                            h('checkbox', {
+                                on: {
+                                    'on-change': (value) => {
+
+                                        // this.$refs.table.selectAll(true)
+                                    }
+                                }
+                            }),
+                            h('h-icon',{
+                                props:{
+                                    name:'android-arrow-dropdo'
+                                },
+                                style:{
+                                    position:'absolute',
+                                    marginLeft:'5px'
+                                },on: {
+                                    'on-click': (value) => {
+                                        // console.log("click")
+                                    }
+                                }
+                            })
+                        ])
+                    },
+            //  fixed: "left",
+            //  filters: [
+            //    {
+            //        label: '大于4000',
+            //        value: 1
+            //    },
+            //    {
+            //        label: '小于4000',
+            //        value: 2
+            //    }
+            //  ],
+            //  filterMultiple: false,
+            //  filterMethod (value, row) {
+            //      if (value === 1) {
+            //         return row.show > 4000;
+            //      } else if (value === 2) {
+            //         return row.show < 4000;
+            //      }
+            //  }
          },
          {
              title: "名称",

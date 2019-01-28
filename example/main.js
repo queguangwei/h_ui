@@ -10,7 +10,6 @@ import Venus from '../src/index.js'
 // import Upload from '../dist/lib/Upload.js'
 // import Button from '../dist/lib/Button.js'
 // import hello_npm from 'venus_hello_npm'
-
 Vue.use(Venus)
 // Vue.component('h-upload',Upload)
 // Vue.component('h-button',Button)

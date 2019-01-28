@@ -8,7 +8,7 @@ let defaultDuration = 1.5;
 let top;
 let messageInstance;
 let name = 1;
-
+let successTop,infoTop,errorTop,warningTop;
 
 const iconTypes = {
   'info': 'prompt_fill',
@@ -18,14 +18,25 @@ const iconTypes = {
   'loading': 'load-c'
 };
 
-function getMessageInstance () {
+function getMessageInstance (type) {
+  switch(type){
+    case 'info':top=infoTop||top 
+      break;
+    case 'success':top=successTop||top
+      break;
+    case 'error':top=errorTop||top
+      break;
+    case 'warning':top=warningTop||top
+      break;
+    default:top = top;
+  }
+  console.log(top)
   messageInstance = messageInstance || Notification.newInstance({
     prefixCls: prefixCls,
     styles: {
-        top: `${top}px`
+      top: `${top}px`
     }
   });
-
   return messageInstance;
 }
 
@@ -35,12 +46,14 @@ function notice (content = '', duration = defaultDuration, type, onClose = funct
   // if loading
   const loadCls = type === 'loading' ? ' h-load-loop' : '';
 
-  let instance = getMessageInstance();
+  let instance = getMessageInstance(type);
 
   instance.notice({
     name: `${prefixKey}${name}`,
     duration: duration,
-    styles: {},
+    styles: {
+      top: `${top}px`
+    },
     transitionName: 'move-up',
     content: `
       <div class="${prefixCls}-custom-content ${prefixCls}-${type}">
@@ -115,6 +128,18 @@ export default {
     }
     if (options.duration || options.duration === 0) {
       defaultDuration = options.duration;
+    }
+    if (options.infoTop || options.infoTop === 0) {
+      infoTop = options.infoTop;
+    }
+    if (options.errorTop || options.errorTop === 0) {
+      errorTop = options.errorTop;
+    }
+    if (options.warningTop || options.warningTop === 0) {
+      warningTop = options.warningTop;
+    }
+    if (options.successTop || options.successTop === 0) {
+      successTop = options.successTop;
     }
   },
   destroy () {

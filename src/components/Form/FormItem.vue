@@ -124,7 +124,8 @@
             required (val){
                 if(val){
                     this.isRequired = true
-                    const reqRule = {required: true, message: '输入不能为空', trigger: this.requiredTrigger}
+                    const reqRule = {required: true, message: '输入不能为空'}
+                    // const reqRule = {required: true, message: '输入不能为空', trigger: this.requiredTrigger}
                     this.reqRules.push(reqRule)
                 }else{
                     this.isRequired = false
@@ -359,7 +360,8 @@
                 }
                 if(this.required) {
                     this.isRequired = true
-                    const reqRule = {required: true, message: '输入不能为空', trigger: this.requiredTrigger}
+                     const reqRule = {required: true, message: '输入不能为空'}
+                    // const reqRule = {required: true, message: '输入不能为空', trigger: this.requiredTrigger}
                     this.reqRules.push(reqRule)
                 }
                 let rules = this.getRules();

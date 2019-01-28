@@ -1,18 +1,22 @@
 <template>
+  <!-- <div :class="['h-input-group-prepend']" v-if="prepend"><slot name="prepend"></slot></div> -->
   <div :class="wrapClasses">
     <div :class="handlerClasses">
-      <a
-        @click="up"
-        @mouse.down="preventDefault"
-        :class="upClasses">
-        <span :class="innerUpClasses" @click="preventDefault"></span>
-      </a>
-      <a
-        @click="down"
-        @mouse.down="preventDefault"
-        :class="downClasses">
-        <span :class="innerDownClasses" @click="preventDefault"></span>
-      </a>
+      <div :class="arrowClasser">
+        <a
+          @click="up"
+          @mouse.down="preventDefault"
+          :class="upClasses">
+          <span :class="innerUpClasses" @click="preventDefault"></span>
+        </a>
+        <a
+          @click="down"
+          @mouse.down="preventDefault"
+          :class="downClasses">
+          <span :class="innerDownClasses" @click="preventDefault"></span>
+        </a>
+      </div>
+      <div :class="[prefixCls + '-append']" v-if="append"><slot name="append"></slot></div>
     </div>
     <div :class="inputWrapClasses">
       <input
@@ -110,10 +114,13 @@
     },
     data () {
       return {
+        prefixCls:prefixCls,
         focused: false,
         upDisabled: false,
         downDisabled: false,
-        currentValue: this.value
+        currentValue: this.value,
+        prepend: true,
+        append: true,
       };
     },
     computed: {
@@ -125,12 +132,18 @@
             [`${prefixCls}-disabled`]: this.disabled,
             [`${prefixCls}-readonly`]: this.readonly,
             [`${prefixCls}-editable`]: !this.editable,
-            [`${prefixCls}-focused`]: this.focused
+            [`${prefixCls}-focused`]: this.focused,
+            [`${prefixCls}-group`]: this.prepend || this.append,
+            [`${prefixCls}-group-with-prepend`]: this.prepend,
+            [`${prefixCls}-group-with-append`]: this.append,
           }
         ];
       },
       handlerClasses () {
         return `${prefixCls}-handler-wrap`;
+      },
+      arrowClasser () {
+        return `${prefixCls}-arrow-wrap`;
       },
       upClasses () {
         return [
@@ -301,6 +314,8 @@
     mounted () {
       this.changeVal(this.currentValue);
       if(this.value<this.min)  this.setValue (this.min);
+      this.prepend = this.$slots.prepend !== undefined;
+      this.append = this.$slots.append !== undefined;
     },
     watch: {
       value (val) {

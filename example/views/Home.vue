@@ -1,12 +1,7 @@
 <template>
   <div>
-    <h-msg-box v-model="changeform" width="900" escClose left="10" closeDrop>
-      <p slot="header">124412</p>
-      <Button @on-click="changeRequired">改变require</Button><Button @click="getFocus2">获取焦点2</Button>
-      <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus cols="3">
-        <!-- <h-form-item label="输入框" prop="input" :required="isrequired">
-          <h-input v-model="formItem1.input" placeholder="请输入"></h-input>
-        </h-form-item> -->
+    <!-- <h-msg-box v-model="changeform" width="900" escClose left="10" closeDrop> -->
+      <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus cols="2">
         <h-form-item label="日期控件">
           <h-row>
             <h-col span="11">
@@ -22,10 +17,7 @@
             </h-col>
           </h-row>
         </h-form-item>
-        <!-- <h-form-item label="特殊日期" prop="fatdate" required>
-          <h-fast-date v-model="formItem1.fatdate"></h-fast-date>
-        </h-form-item> -->
-        <h-form-item label="选择器" prop="select">
+        <h-form-item label="选择器" prop="select" required>
           <h-select v-model="formItem1.select" filterable transfer>
             <h-option value="beijing">北京市</h-option>
             <h-option value="shanghai">上海市</h-option>
@@ -65,7 +57,7 @@
         <h-form-item label="特殊日期" prop="fatdate" required>
           <h-fast-date v-model="formItem1.fatdate"></h-fast-date>
         </h-form-item>
-        <h-form-item label="下拉单选" prop="select1" required>
+        <h-form-item label="下拉多选" prop="select1" required>
           <h-select v-model="formItem1.select1"
             multiple
             size="large"
@@ -74,11 +66,11 @@
             >
             <h-option v-for="item in cy.options1"
               :value="item.value"
-              :key="item.value">{{ item.label }}
+              :key="item.value">{{ item.label }} {{item.value}}
             </h-option>
           </h-select>
         </h-form-item>
-        <h-form-item label="下拉多选" prop="select2" required>
+        <h-form-item label="下拉单选" prop="select2" required>
           <h-select v-model="formItem1.select2"
                     :isString="true"
                     showTitle
@@ -107,7 +99,7 @@
             <h-button type="ghost" style="margin-left: 8px" @click="handleReset('formItem1')">取消</h-button>
         </h-form-item>
       </h-form>
-    </h-msg-box>
+    <!-- </h-msg-box> -->
     <Button @on-click="changeform1">显示隐藏</Button>
     <h-select-table v-model="model1" ref="changeDrop">
       <h-table-option border :columns="columns1" :data="data1"></h-table-option>
@@ -153,16 +145,69 @@
   export default {
     data () {
       return {
+        columns123:[
+          {
+            type:'selection',
+            title:'我是序号',
+            fixed:'left'
+          },
+          {
+              title: '姓名',
+              key: 'name',
+              fixed:'right',
+          },
+          {
+              title: '年龄',
+              key: 'age',
+              width:200
+          },
+          {
+              title: '地址',
+              key: 'address',
+              width:200
+          },
+          {
+              title: '姓名',
+              key: 'name',
+              width:200
+          },
+          {
+              title: '年龄',
+              key: 'age'
+          }
+        ],
         isrequired:true,
         phone:0,
+        data123: [
+                    {
+                        name: '王小明',
+                        age: 18,
+                        address: '北京市朝阳区芍药居',
+                    },
+                    {
+                        name: '张小刚',
+                        age: 25,
+                        address: '北京市海淀区西二旗'
+                    },
+                    {
+                        name: '李小红',
+                        age: 30,
+                        address: '上海市浦东新区世纪大道'
+                    },
+                    {
+                        name: '周小伟',
+                        age: 26,
+                        address: '深圳市南山区深南大道'
+                    }
+                ],
         lists:[{data_value:'男'},{data_value:'女'}],
         model1:'',
         changeform:false,
         formItem1: {
           input: '1',
-          select: [],
-          select1: '',
-          select2: [],
+          select: '',
+          select1: [],
+          select2: '',
           radio: '',
           money: '',
           moneyrange:[],
@@ -188,8 +233,8 @@
           slider: '',
           tree:'',
           textarea: '',
-          select1: '',
-          select2: [],
+          select1: ['1','2'],
+          select2: '',
         },
         data2: [{
           value: 'beijing',
@@ -343,6 +388,11 @@
       }
     },
     methods: {
+      changeClick(data,lastdata,inx){
+        console.log(data)
+        console.log(lastdata)
+        console.log(inx)
+      },
       changeRequired(){
         this.isrequired=!this.isrequired;
       },

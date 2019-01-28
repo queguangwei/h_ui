@@ -401,6 +401,13 @@ export default {
       });
     },
     clickCurrentRow (row) {
+      let inx = this.indexAndId[row.id];
+      for(var i=0;i<this.checkedObj.length;i++){
+        if(this.checkedObj[i]._isHighlight){
+          this.checkedObj[i]._isHighlight = false
+        }
+      }
+      this.$set(this.checkedObj[inx],'_isHighlight',true)
       this.$nextTick(()=>{
         this.$emit('on-row-click', row);
         if(this.highlightRow){

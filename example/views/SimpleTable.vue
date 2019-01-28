@@ -8,6 +8,7 @@
     <h-button @click="exportData('xls')">下载数据xls</h-button>
     <h2>不带边线 单选 on-current-change</h2>
     <!-- :multiLevel="multiLevel2" -->
+    <!-- notAdaptive -->
      <h-simple-table ref="table" :columns="columnsBig1" splitIndex border :data="bigData" no-data-text="数据为空" :loading="loading" height="800" @on-selection-change="select" :itemHeight="30" :highlight-row="true" @on-current-change="select" @on-current-change-cnacle="select" notSort>
     </h-simple-table> 
     <table border='1' collapse>
@@ -68,9 +69,9 @@ export default {
           ellipsis: true,
           width: 100,
           // fixed: "left",
-          // render: (h, params) => {
-          //   return h('div', '基金代码'+ params.index)
-          // }
+          render: (h, params) => {
+            return h('div', '基金代码'+ params.index)
+          }
         },
         {
           title: "基金名称",
@@ -196,14 +197,14 @@ export default {
     loadData(){
       let old = new Date().getTime()
       console.log(old)
-      this.bigData = jsonData;
+      this.bigData = jsonData.slice(0,10);
       // this.bigData = jsonData.slice(0, 100);
       this.$nextTick(() => {
         let newDate = new Date().getTime() - old
         console.log(newDate)
       })
     },
-     loadData1(){
+    loadData1(){
       let old = new Date().getTime()
       console.log(old)
       // this.bigData = jsonData;
@@ -400,6 +401,9 @@ export default {
 }
 </script>
 <style type="text/css">
+.h-ui-security_code{
+  color: #ff6600;
+}
 .h-table td {
   transition: none;
 }

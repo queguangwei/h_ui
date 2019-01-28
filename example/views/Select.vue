@@ -59,6 +59,7 @@
                 :specialIndex="true"
                 showTitle
                 multClearable
+                ref  = "iconclick"
                 algin="center">
         <h-option :value="-1"
                   key="-1">-1 所有link121412111111111111111111</h-option>
@@ -69,6 +70,7 @@
                   :disabled="item.value==2">{{ item.label }}</h-option>
       </h-select>
       {{model44}}
+      <h-button @click="iconClick">清空icon</h-button>
       <br>
       <div>
         <h-select v-model="model1"
@@ -623,6 +625,9 @@ export default {
     },
     cy_change_test(val) {
       console.log(val)
+    },
+    iconClick(){
+      this.$refs.iconclick.handleIconClose();
     },
     testClick(val) {
       if (val) {

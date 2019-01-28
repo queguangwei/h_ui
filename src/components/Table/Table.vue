@@ -1,6 +1,6 @@
 <template>
   <div :class="wrapClasses" :style="styles" @mouseleave="handleMouseLeave($event)" ref="tableWrap">
-    <div :class="classes">
+    <div :class="classes" ref="tableInner">
       <div :class="[prefixCls + '-title']" v-if="showSlotHeader" ref="title"><slot name="header"></slot></div>
       <div :class="[prefixCls + '-header']" v-if="showHeader" ref="header" @mousewheel="handleMouseWheel">
         <table-head
@@ -34,6 +34,7 @@
           :bodyAlgin ="bodyAlgin"
           :obj-data="objData"
           :notSetWidth="notSetWidth"
+          :clickToSelect ="clickToSelect"
           :showTitle="showTitle"></table-body>
       </div>
       <div :class="[prefixCls + '-tip'] "
@@ -84,6 +85,7 @@
             :bodyAlgin ="bodyAlgin"
             :obj-data="objData"
             :notSetWidth="notSetWidth"
+            :clickToSelect ="clickToSelect"
             :showTitle="showTitle"></table-body>
         </div>
       </div>
@@ -115,6 +117,7 @@
             :bodyAlgin ="bodyAlgin"
             :obj-data="objData"
             :notSetWidth="notSetWidth"
+            :clickToSelect ="clickToSelect"
             :showTitle="showTitle"></table-body>
         </div>
       </div>
@@ -131,6 +134,7 @@
           :columns-width="columnsWidth"
           :notSetWidth="notSetWidth"
           :bodyAlgin ="bodyAlgin"
+          :clickToSelect ="clickToSelect"
           :showTitle="showTitle"></table-body>
         <!-- </div> -->
       </div>
@@ -301,6 +305,18 @@ export default {
     notSetWidth:{
       type:Boolean,
       default:false,
+    },
+    autoHeadWidth:{//根据表头自适应表格宽度
+      type:Boolean,
+      default:false,
+    },
+    clickToSelect:{
+      type:Boolean,
+      default:false,
+    },
+    ctrSelection:{//仅开启highlight-row时支持ctrl多选
+      type:Boolean,
+      default:false,
     }
   },
   data () {
@@ -359,7 +375,7 @@ export default {
         {
           [`${prefixCls}-hide`]: !this.ready,
           [`${prefixCls}-with-header`]: this.showSlotHeader,
-          [`${prefixCls}-with-footer`]: this.showSlotFooter
+          [`${prefixCls}-with-footer`]: this.showSlotFooter,
         }
       ];
     },
@@ -603,27 +619,47 @@ export default {
     },
     handleResize () {
       // keep-alive时，页面改变大小会不断触发resize【非本组件页面】
-      if(this.notSetWidth&&this.data.length &&this.$refs.tbody){
+      if(this.notSetWidth){
+        if(!this.autoHeadWidth){
+          this.columnsWidth ={}
+          this.tableWidth = 0;
+        }
         setTimeout(()=>{
           let columnsWidth = {};
-          const $td = this.$refs.tbody.$el.querySelectorAll('tbody tr')[0].querySelectorAll('td');
+          let tableWidth = '';
+          let $td =null
+          if(this.autoHeadWidth||this.data.length==0 || !this.$refs.tbody){
+            $td = this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0].querySelectorAll('th');
+          }else{
+            $td = this.$refs.tbody.$el.querySelectorAll('tbody tr')[0].querySelectorAll('td');
+          }
           for (let i = 0; i < $td.length; i++) {    // can not use forEach in Firefox
             const column = this.cloneColumns[i];
             let width = parseInt(getStyle($td[i], 'width'));
             if (column.width) {
                 width = column.width||width;
-            } 
+            } else {
+                if (width < 100) width = 100;
+            }
             this.cloneColumns[i]._width =width||'';
-            this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)||this.tableWidth;
+            tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)||this.tableWidth;
             columnsWidth[column._index] = {
                 width: width
             };
           }
+          this.initWidth =parseInt(getStyle(this.$refs.tableInner, 'width')) || 0;
+          if(tableWidth<this.initWidth){
+            columnsWidth[$td.length-1]={
+              width: columnsWidth[$td.length-1].width+this.initWidth - tableWidth
+            }
+            this.tableWidth = this.initWidth;
+          }else{
+            this.tableWidth = tableWidth;
+          }
           this.columnsWidth = columnsWidth;
-          this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0;
           this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
           this.headerRealHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
-        },0)
+        },0)  
         return;
       }
       this.$nextTick(() => {
@@ -767,9 +803,18 @@ export default {
         }
     },
     clickCurrentRow (event,_index) {
+      if(this.clickToSelect){
+        const curStatus = this.objData[_index]._isHighlight;
+        for (let i in this.objData) {
+          if (this.objData[i]._isHighlight) {
+            this.objData[i]._isHighlight = false;
+          }
+        }
+        this.objData[_index]._isHighlight = !curStatus;
+      }
       //click row
       // window.getSelection()?window.getSelection().removeAllRanges():document.selection.empty();
-      if (!event.shiftKey && !event.ctrlKey || (this.highlightRow&&!this.selectType)) {
+      if (!event.shiftKey && !event.ctrlKey || (this.highlightRow&&!this.selectType&&!this.ctrSelection)) {
         if(!this.rowSelect){
           this.highlightCurrentRow (_index);
         }
@@ -816,7 +861,7 @@ export default {
       }
       const status = !data._isChecked;
       this.objData[_index]._isChecked = status;
-      if (!status) {
+      if (!status && !this.clickCurrentRow) {
         this.objData[_index]._isHighlight = false;
       }
       //shift
@@ -1366,27 +1411,30 @@ export default {
       data: {
         handler () {
           const oldDataLen = this.rebuildData.length;
-          this.objData = this.makeObjData();
           this.rebuildData = this.makeDataWithSortAndFilter();
+          this.objData = this.makeObjData();
           this.handleResize();
           if (!oldDataLen) {
             this.fixedHeader();
           }
           // here will trigger before clickCurrentRow, so use async
-          setTimeout(() => {
+          this.$nextTick(()=>{
             this.cloneData = deepCopy(this.data);
             this.buttomNum = null;
-          }, 0);
+          });
           
         },
         deep: true
       },
       columns: {
-        handler () {
+        handler (val,oldvalue) {
           // todo 这里有性能问题，可能是左右固定计算属性影响的
           this.cloneColumns = this.makeColumns();
           this.rebuildData = this.makeDataWithSortAndFilter();
           this.handleResize();
+          if(!oldvalue ||oldvalue.length==0){
+            this.fixedHeader();
+          }
         },
         deep: true
       },

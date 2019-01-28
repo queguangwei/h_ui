@@ -21,7 +21,7 @@ $input-number-prefix-cls: "#{$css-prefix}input-number";
   overflow: hidden;
   
   &-handler-wrap {
-    width: 22px;
+    min-width: 22px;
     height: 100%;
     border-left: 1px solid $border-color-base;
     border-radius: $radius-wrap;
@@ -32,6 +32,28 @@ $input-number-prefix-cls: "#{$css-prefix}input-number";
     opacity: 1;
     transition: opacity $transition-time $ease-in-out;
   }
+  &-arrow-wrap {
+      width: 22px;
+      float: left;
+  }
+  &-prepend, &-append {
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+  &-append {
+    float: left;
+    padding: 9px $input-padding-horizontal;
+    font-size: inherit;
+    font-weight: normal;
+    line-height: 1;
+    color: $input-color;
+    text-align: center;
+    background-color: #eee;
+  }
+  &-append > input{
+      
+  }
+  
 
   // &:hover &-handler-wrap {
   //   opacity: 1;

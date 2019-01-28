@@ -230,6 +230,7 @@ export default {
         this.curHeight = 0;
       }
       this.isMax = !this.isMax;
+      this.$emit('on-maximize', this.isMax);
     },
     backOrigin(){      
       const obj = this.$refs.content;

@@ -1,6 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
-const utils = require('./utils')
+const utils = require('./utils');
 const entry = require('./lib');
 process.env.NODE_ENV = 'production';
 

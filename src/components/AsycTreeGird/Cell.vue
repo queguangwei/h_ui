@@ -1,7 +1,7 @@
 <template>
   <!-- :tabindex="row._rowKey+column._columnKey" -->
   <div :class="classes" ref="cell" v-clickoutside="handleClose">
-    <div :style="renderSty" @dblclick="dblclickCurrentCell($event, row)" class="dbClass" :class="cellClass">
+    <div v-if="!hiddenOther" :style="renderSty" @dblclick="dblclickCurrentCell($event, row)" class="dbClass" :class="cellClass">
       <template v-if="showSlot"><slot></slot></template>
       <template v-if="renderType === 'index'">
         <!-- <span v-if="typeName!='treeGird'">{{naturalIndex + 1}}</span> -->
@@ -163,6 +163,7 @@ export default {
       rule:null,
       baseData:[],
       render:false,
+      hiddenOther:false,
     };
   },
   computed: {
@@ -464,6 +465,7 @@ export default {
       this.baseData = deepCopy(this.treeOption);
     }
     this.render = this.column.render?true:false;
+    this.hiddenOther = this.column.hiddenOther?true:false;
   },
   mounted(){
     this.rule = this.column.rule;

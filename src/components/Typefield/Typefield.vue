@@ -79,7 +79,7 @@ export default {
       checked:false,
       tipShow:false,
       bigNum:null,
-      currentValue: this.value,
+      currentValue: String(this.value),
       prepend: true,
       append: true,
     }
@@ -188,7 +188,7 @@ export default {
   },
   watch: {
     value (val) {
-      this.initValue(val);
+      this.initValue(String(val));
     },
     inputValue(val){
     }
@@ -196,7 +196,7 @@ export default {
   mounted () {
     this.prepend = this.$slots.prepend !== undefined;
     this.append = this.$slots.append !== undefined;
-    this.initValue(this.value);
+    this.initValue(String(this.value));
   },
   methods:{
     //keyup,focus,blur
@@ -649,6 +649,8 @@ export default {
         var arrNum=value.split(".");
         var integerNumber = arrNum[0].substring(0,integerNum);
         value = Number(integerNumber)+'.'+arrNum[1].substring(0,suffixNum);
+      }else{
+        value = Number(value)+'';
       }
       return value
     },

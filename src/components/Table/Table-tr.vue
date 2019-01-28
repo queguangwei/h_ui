@@ -5,7 +5,8 @@
   export default {
     props: {
       row: Object,
-      prefixCls: String
+      prefixCls: String,
+      clickToSelect:Boolean,
     },
     computed: {
       objData () {
@@ -18,7 +19,7 @@
           `${this.prefixCls}-row`,
           this.rowClsName(_index),
           {
-            [`${this.prefixCls}-row-checked`]: this.objData[_index] && this.objData[_index]._isChecked,
+            [`${this.prefixCls}-row-checked`]: this.objData[_index] && this.objData[_index]._isChecked&&!this.clickToSelect,
             [`${this.prefixCls}-row-highlight`]: this.objData[_index] && this.objData[_index]._isHighlight,
             [`${this.prefixCls}-row-hover`]: this.objData[_index] && this.objData[_index]._isHover,
             [`${this.prefixCls}-row-filterable`]: this.objData[_index] && this.objData[_index]._isMatched
