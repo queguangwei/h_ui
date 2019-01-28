@@ -1,7 +1,7 @@
 <template>
   <!-- :tabindex="row._rowKey+column._columnKey" -->
   <div :class="classes" ref="cell" v-clickoutside="handleClose">
-    <div v-if="!hiddenOther" :style="renderSty" @dblclick="dblclickCurrentCell($event)" class="dbClass">
+    <div v-if="!hiddenOther" :style="renderSty" @dblclick="dblclickCurrentCell($event)" class="dbClass" :class="innerClass">
       <template v-if="showSlot"><slot></slot></template>
       <template v-if="renderType === 'index'">
         <span v-if="typeName!='treeGird'">{{naturalIndex + 1}}</span>
@@ -206,12 +206,17 @@ export default {
         `${this.prefixCls}-cell`,
         {
           [`${this.prefixCls}-hidden`]: !this.fixed && this.column.fixed && (this.column.fixed === 'left' || this.column.fixed === 'right'),
-          [`${this.prefixCls}-cell-ellipsis`]: this.column.ellipsis || false,
+          // [`${this.prefixCls}-cell-ellipsis`]: this.column.ellipsis || false,
           [`${this.prefixCls}-cell-error`]: this.validateState === 'error',
           [`${this.prefixCls}-cell-with-expand`]: this.renderType === 'expand',
           [`${this.prefixCls}-cell-with-render`]: this.render&&this.renderType != 'expand',
         }
       ];
+    },
+    innerClass(){
+      return {
+        [`${this.prefixCls}-cell-ellipsis`]: this.column.ellipsis || false,
+      }
     },
     expandCls () {
       return [

@@ -33,7 +33,7 @@ export default {
     time () {
       this.$hMessage.info({
         content: '我将在10秒后消失',
-        duration: 100
+        duration: 10
       });
     },
     closable () {
@@ -58,16 +58,20 @@ export default {
     },
     globalConfig(){
       this.$hMessage.config({
-        top: 200,
+        top: 30,
+        infoTop:50,
+        successTop:100,
+        warningTop:150,
+        errorTop:200,
         duration: 5
       })
     }
   },
   mounted () {
-    this.$hMessage.config({
-        top: 200,
-        duration: 3
-    });
+    // this.$hMessage.config({
+    //     top: 200,
+    //     duration: 3
+    // });
   }
 }
 </script>

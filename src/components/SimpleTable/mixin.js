@@ -28,11 +28,13 @@ export default {
                 width = this.columnsWidth[column._index].width;
             }
             // when browser has scrollBar,set a width to resolve scroll position bug
-            if (this.cloneColumns.length === index + 1 && top && this.bodyHeight !== 0&& width!='') {
-                if(this.tableWidth+1>=this.initWidth-this.scrollBarWidth){
+            if (this.cloneColumns.length === index + 1&& this.bodyHeight !== 0&& width!='') {
+                if(this.tableWidth+1>=this.initWidth-this.scrollBarWidth&&top){
+                    width += this.scrollBarWidth;
+                }else if(this.contentHeight<this.height){
                     width += this.scrollBarWidth;
                 }
-            }    
+            }
             if (width === '0') width = '';
             return width;
         }

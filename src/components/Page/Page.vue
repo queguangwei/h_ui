@@ -4,6 +4,7 @@
       <slot>{{ t('i.page.total') }} {{ total }} <template v-if="total <= 1">{{ t('i.page.item') }}</template><template v-else>{{ t('i.page.items') }}</template></slot>
     </span>
     <Options
+        ref = 'option'
         :showSizerLabel='showSizerLabel'
         :show-sizer="showSizer"
         :page-size="currentPageSize"
@@ -90,6 +91,7 @@
         <a><icon name="arrow-r"></icon></a>
       </li>
       <Options
+        ref = 'option'
         :showSizerLabel="showSizerLabel"
         :show-sizer="showSizer"
         :page-size="currentPageSize"
@@ -193,7 +195,7 @@
         currentPage: this.current,
         currentPageSize: this.pageSize,
         maxPage:null,
-        inputWidth: null
+        inputWidth: null,
       };
     },
     watch: {
@@ -287,6 +289,9 @@
       }
     },
     methods: {
+      clearElevator(){
+        this.$refs.option.currentNo = ''
+      },
       changePage (page) {
         if (this.currentPage != page) {
           this.currentPage = page;

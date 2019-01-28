@@ -227,13 +227,13 @@
         </li>
       </ul>
     </nav>
-    <keep-alive>
-       <keep-alive :include="page"> 
-          <router-view v-if="isKeepAlive"></router-view>
-       </keep-alive> 
-       <router-view v-if="!isKeepAlive"></router-view>
+    <!-- <keep-alive>
+       <keep-alive :include="page">  -->
+          <router-view></router-view>
+       <!-- </keep-alive> 
+       <router-view v-if="!isKeepAlive"></router-view> -->
         
-    </keep-alive>
+    <!-- </keep-alive> -->
     <!-- <router-view></router-view> -->
     
   </div>  

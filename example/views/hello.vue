@@ -1,35 +1,19 @@
 <template>
 <div>
-  <h-table :columns="columns1" :data="data1" notSetWidth border></h-table>
-  <table border='1' collapse width="100%">
-    <!-- <thead>
-      <th>1</th>
-      <th>2</th>
-      <th>3</th>
-      <th>4</th>
-      <th>4</th>
-      <th>4</th>
-      <th>4</th>
-    </thead> -->
-    <tbody>
-      <tr>  
-        <td>1111</td>
-        <td>111111111</td>
-        <td>111111111</td>
-        <td>111111111111111111111111111111111111111111111111111111111111</td>
-        <td>111111111111111111111111111111111111111111111111111</td>
-        <td>111111111111111111111111111111111111111111111111</td>
-        <td>1111111111111111111111111111111111111111111111111111</td>
-      </tr>
-    </tbody>
-  </table>
+  <h-button @click="setData">赋值</h-button>
+  <h-table :columns="columns1" :data="data2" notSetWidth autoHeadWidth border highlightRow height= 150 @on-scroll="scroll"></h-table>
+  <h-table :columns="columns1" :data="data2" border ctrSelection clickToSelect></h-table>
 </div>
 </template>
-<script>
+<script> 
     export default {
         data () {
             return {
                 columns1: [
+                    {
+                        type: 'selection',
+                        // fixed:'left',
+                    },
                     {
                         title: '姓名',
                         key: 'name',
@@ -38,30 +22,51 @@
                         align:'right'
                     },
                     {
-                        title: '年龄',
+                        title: '年龄11111111111111',
                         key: 'age',
-                        width:50
+                        // width:600
                     },
                     {
                         title: '地址',
                         key: 'address'
-                    }
+                    },
+                    // {
+                    //     title: '地址1',
+                    //     key: 'address'
+                    // },
+                    // {
+                    //     title: '地址2',
+                    //     key: 'address'
+                    // },
+                    // {
+                    //     title: '地址3',
+                    //     key: 'address'
+                    // },
+                    // {
+                    //     title: '地址4',
+                    //     key: 'address'
+                    // },
+                    // {
+                    //     title: '地址5',
+                    //     key: 'address'
+                    // },
                 ],
+                data2:[],
                 data1: [
                     {
                         name: '王小明',
                         age: 18,
-                        address: '北京市朝阳区芍药居北京市朝阳区芍药居北京市朝阳区芍药居北京市朝阳区北京市朝阳区芍药居北京市朝阳区芍药居北京市朝阳区芍药居北京市朝阳区北京市朝阳区芍药居北京市朝阳区芍药居北京市朝阳区芍药居北京市朝阳区北京市朝阳区芍药居北京市朝阳区芍药居北京市朝阳区芍药居北京市朝阳区芍药居'
+                        address: '北京市朝阳区芍药居北京市'
                     },
                     {
                         name: '张小刚',
                         age: 25,
-                        address: '北京市海淀区西二旗北京市朝阳区芍药居北京市朝阳区芍药居'
+                        address: '北京市海淀区西二旗北京市朝阳区'
                     },
                     {
                         name: '李小红',
                         age: 30,
-                        address: '上海市浦东新区世纪大道北京市朝阳区芍药居北京市朝阳区芍药居'
+                        address: '上海上海市浦东新区世纪大道北京市朝阳区芍药居北京市朝阳区芍药居上海市浦东新区世纪大道北京市朝阳区芍药居北京市朝阳区芍药居上海市浦东新区世纪大道北京市朝阳区芍药居北京市朝阳区芍药居上海市浦东新区世纪大道北京市朝阳区芍药居北京市朝阳区芍药居市浦东新区世纪大道北京市朝阳区芍药居北京市朝阳区芍药居'
                     },
                     {
                         name: '周小伟',
@@ -70,8 +75,20 @@
                     }
                 ]
             }
+        },
+        methods:{
+          setData(){
+            this.data2 = this.data1;
+          },
+          scroll(num){
+            console.log(num)
+            if(num==0){
+              this.data2=this.data2.concat(this.data1);
+            }
+          }
         }
     }
+
 </script>
 
 <!-- <template>

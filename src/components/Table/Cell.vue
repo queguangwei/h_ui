@@ -8,7 +8,7 @@
     </template>
     <template v-else-if="renderType === 'selection'">
       <Checkbox size="large" :value="checked" @click.native.stop="handleClick" @on-change="toggleSelect" :disabled="disabled"></Checkbox>
-<!--       <input type="checkbox" v-model="tChecked" @click.native.stop="handleClick" @change="toggleSelect" :disabled="disabled"> -->
+      <!--<input type="checkbox" v-model="tChecked" @click.native.stop="handleClick" @change="toggleSelect" :disabled="disabled"> -->
     </template>
     <template v-if="renderType === 'normal'" >
       <span v-html="row[column.key]"></span>

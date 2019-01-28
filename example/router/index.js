@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+// import { resolve } from 'dns';
 // import Home from '../views/Home.vue'
 // import Hello from '../views/hello.vue'
 // import Switchs from '../views/Switchs.vue'
@@ -60,133 +61,139 @@ import Router from 'vue-router'
 // import Rate from '../views/Rate.vue'
 // import Textdiff from '../views/Textdiff.vue'
 // import TypefieldRange from '../views/TypefieldRange.vue'
+// const hyh = resolve=>{
+//     import(xxx.js).then(module=>{//import 实现异步加载
+//         resolve(module)
+//     });
+// }
 Vue.use(Router)
-
+// 使用require.ensure，会有一个缓存的效果，每次进行资源请求，判断出客户端缓存的资源是否是最新的,如果是的话,
+//服务器就会返回HTTP/304 Not Modified响应头，不是的话会进行
 const router = new Router({
   routes: [
     { path: '/', redirect: '/home' },
-    { name: 'home', path: '/home', component: require('../views/Home.vue') },
-    { name: 'switchs', path: '/switchs', component: require('../views/Switchs.vue') },
-    { name: 'typefield', path: '/typefield', component: require('../views/Typefield.vue') },
+    { name: 'home', path: '/home', component: resolve=>{ require(['../views/Home.vue'],resolve)} },
+    { name: 'switchs', path: '/switchs', component:resolve=>{ require(['../views/Switchs.vue'],resolve)}},
+    { name: 'typefield', path: '/typefield', component: resolve=>{ require(['../views/Typefield.vue'],resolve)} },
     {
         name: 'Input',
         path: '/Input',
-        component: require('../views/Input.vue')
+        component:resolve=>{  require(['../views/Input.vue'],resolve)}
     },
     {
         name: 'inputNum',
         path: '/inputNum',
-        component: require('../views/InputNumber.vue')
+        component:resolve=>{  require(['../views/InputNumber.vue'],resolve)}
     },
     {
         name: 'checkbox',
         path: '/checkbox',
-        component: require('../views/Checkbox.vue')
+        component:resolve=>{  require(['../views/Checkbox.vue'],resolve)}
     },
     {
         name: 'radio',
         path: '/radio',
-        component: require('../views/Radio.vue')
+        component:resolve=>{ require(['../views/Radio.vue'],resolve)}
     },
     {
         name: 'icon',
         path: '/icon',
-        component: require('../views/Icon.vue')
+        component:resolve=>{ require(['../views/Icon.vue'],resolve)}
     },
     {
         name: 'buttons',
         path: '/buttons',
-        component: require('../views/Buttons.vue')
+        component:resolve=>{ require(['../views/Buttons.vue'],resolve)}
     },
     {
         name: 'messages',
         path: '/messages',
-        component: require('../views/Messages.vue')
+        component:resolve=>{ require(['../views/Messages.vue'],resolve)}
     },
     {
         name: 'notices',
         path: '/notices',
-        component: require('../views/Notices.vue')
+        component:resolve=>{ require(['../views/Notices.vue'],resolve)}
     },
     {
         name: 'alert',
         path: '/alerts',
-        component: require('../views/Alerts.vue')
+        component:resolve=>{ require(['../views/Alerts.vue'],resolve)}
     },
     {
         name: 'msgBox',
         path: '/msgBox',
-        component: require('../views/MsgBox.vue')
+        component:resolve=>{ require(['../views/MsgBox.vue'],resolve)}
     },
     {
         name: 'tooltip',
         path: '/tooltip',
-        component: require('../views/Tooltip.vue')
+        component:resolve=>{ require(['../views/Tooltip.vue'],resolve)}
     },
     {
         name: 'poptip',
         path: '/poptip',
-        component: require('../views/Poptip.vue')
+        component:resolve=>{ require(['../views/Poptip.vue'],resolve)}
     },
     {
         name: 'progress',
         path: '/progress',
-        component: require('../views/Progress.vue')
+        component:resolve=>{ require(['../views/Progress.vue'],resolve)}
     },
     {
         name: 'slider',
         path: '/slider',
-        component: require('../views/Slider.vue')
+        component:resolve=>{ require(['../views/Slider.vue'],resolve)}
     },
     {
         name: 'badge',
         path: '/badge',
-        component: require('../views/Badge.vue')
+        component:resolve=>{ require(['../views/Badge.vue'],resolve)}
     },
     {
         name: 'carousel',
         path: '/carousel',
-        component: require('../views/Carousel.vue')
+        component:resolve=>{ require(['../views/Carousel.vue'],resolve)}
     },
     {
         name: 'grid',
         path: '/grid',
-        component: require('../views/Grid.vue')
+        component:resolve=>{ require(['../views/Grid.vue'],resolve)}
     },
     {
         name: 'select',
         path: '/select',
-        component: require('../views/Select.vue')
+        component:resolve=>{ require(['../views/Select.vue'],resolve)}
     },
     {
         name: 'simpleSelect',
         path: '/simpleSelect',
-        component: require('../views/SimpleSelect.vue')
+        component:resolve=>{ require(['../views/SimpleSelect.vue'],resolve)}
     },
     {
         name: 'menu',
         path: '/menu',
-        component: require('../views/Menu.vue')
+        component:resolve=>{ require(['../views/Menu.vue'],resolve)}
     },
     {
         name: 'breadcrumb',
         path: '/breadcrumb',
-        component: require('../views/Breadcrumb.vue')
+        component:resolve=>{ require(['../views/Breadcrumb.vue'],resolve)}
     },
     {
         name: 'layout',
         path: '/layout',
-        component: require('../views/Layout.vue')
+        component:resolve=>{ require(['../views/Layout.vue'],resolve)}
     },
     {
         name: 'upload',
         path: '/upload',
-        component: require('../views/Upload.vue')
+        component:resolve=>{ require(['../views/Upload.vue'],resolve)}
     },
     {
         name: 'table',
         path: '/table',
-        component: require('../views/Table.vue'),
+        component:resolve=>{ require(['../views/Table.vue'],resolve)},
         meta: {
             isKeepAlive: true
         }
@@ -194,212 +201,212 @@ const router = new Router({
     {
         name: 'page',
         path: '/page',
-        component: require('../views/Page.vue')
+        component:resolve=>{ require(['../views/Page.vue'],resolve)}
     },
     {
         name: 'DatePicker',
         path: '/datePicker',
-        component: require('../views/DatePicker.vue')
+        component:resolve=>{ require(['../views/DatePicker.vue'],resolve)}
     }, 
     {
         name: 'TimePicker',
         path: '/timePicker',
-        component: require('../views/TimePicker.vue')
+        component:resolve=>{ require(['../views/TimePicker.vue'],resolve)}
     },       
     {
         name: 'Tree',
         path: '/tree',
-        component: require('../views/Tree.vue')
+        component:resolve=>{ require(['../views/Tree.vue'],resolve)}
     },       
     {
         name: 'Tabs',
         path: '/tabs',
-        component: require('../views/Tabs.vue')
+        component:resolve=>{ require(['../views/Tabs.vue'],resolve)}
     },       
     {
         name: 'Dropdown',
         path: '/dropdown',
-        component: require('../views/Dropdown.vue')
+        component:resolve=>{ require(['../views/Dropdown.vue'],resolve)}
     },
     {
         name: 'Timeline',
         path: '/timeline',
-        component: require('../views/Timeline.vue')
+        component:resolve=>{ require(['../views/Timeline.vue'],resolve)}
     },
     {
         name: 'Collapse',
         path: '/collapse',
-        component: require('../views/Collapse.vue')
+        component:resolve=>{ require(['../views/Collapse.vue'],resolve)}
     },
     {
         name: 'Cascader',
         path: '/cascader',
-        component: require('../views/Cascader.vue')
+        component:resolve=>{ require(['../views/Cascader.vue'],resolve)}
     },
     {
         name: 'Transfer',
         path: '/transfer',
-        component: require('../views/Transfer.vue')
+        component:resolve=>{ require(['../views/Transfer.vue'],resolve)}
     },
     {
         name: 'Loadingbar',
         path: '/loadingbar',
-        component: require('../views/Loadingbar.vue')
+        component:resolve=>{ require(['../views/Loadingbar.vue'],resolve)}
     },
     {
         name: 'Spin',
         path: '/spin',
-        component: require('../views/Spin.vue')
+        component:resolve=>{ require(['../views/Spin.vue'],resolve)}
     },
     {
         name: 'Backtop',
         path: '/backtop',
-        component: require('../views/Backtop.vue')
+        component:resolve=>{ require(['../views/Backtop.vue'],resolve)}
     },
     {
         name: 'Form',
         path: '/form',
-        component: require('../views/Form.vue')
+        component:resolve=>{ require(['../views/Form.vue'],resolve)}
     },
     {
         name: 'SelectTree',
         path: '/selectTree',
-        component: require('../views/SelectTree.vue')
+        component:resolve=>{ require(['../views/SelectTree.vue'],resolve)}
     },
     {
         name: 'Steps',
         path: '/steps',
-        component: require('../views/Steps.vue')
+        component:resolve=>{ require(['../views/Steps.vue'],resolve)}
     },
     {
         name: 'Circle',
         path: '/circle',
-        component: require('../views/Circle.vue')
+        component:resolve=>{ require(['../views/Circle.vue'],resolve)}
     },
     {
         name: 'Affix',
         path: '/affix',
-        component: require('../views/Affix.vue')
+        component:resolve=>{ require(['../views/Affix.vue'],resolve)}
     },
     {
         name: 'Card',
         path: '/card',
-        component: require('../views/Card.vue')
+        component:resolve=>{ require(['../views/Card.vue'],resolve)}
     },
     {
         name: 'EditGird',
         path: '/editgird',
-        component: require('../views/EditGird.vue')
+        component:resolve=>{ require(['../views/EditGird.vue'],resolve)}
     },
     {
         name: 'GroupTable',
         path: '/groupTable',
-        component: require('../views/GroupTable.vue')
+        component:resolve=>{ require(['../views/GroupTable.vue'],resolve)}
     },
     {
         name: 'TreeGird',
         path: '/treeGird',
-        component: require('../views/TreeGird.vue')
+        component:resolve=>{ require(['../views/TreeGird.vue'],resolve)}
     },
     {
         name: 'AsycTreeGird',
         path: '/asyctreeGird',
-        component: require('../views/AsycTreeGird.vue')
+        component:resolve=>{ require(['../views/AsycTreeGird.vue'],resolve)}
     },
     {
         name: 'SelectTable',
         path: '/selectTable',
-        component: require('../views/SelectTable.vue')
+        component:resolve=>{ require(['../views/SelectTable.vue'],resolve)}
     },
     {
         name: 'FastDate',
         path: '/fastDate',
-        component: require('../views/FastDate.vue')
+        component:resolve=>{ require(['../views/FastDate.vue'],resolve)}
     },
     {
         name: 'SplicePanel',
         path: '/splicePanel',
-        component: require('../views/SplicePanel.vue')
+        component:resolve=>{ require(['../views/SplicePanel.vue'],resolve)}
     },
     {
         name: 'Panel',
         path: '/panel',
-        component: require('../views/Panel.vue')
+        component:resolve=>{ require(['../views/Panel.vue'],resolve)}
     },
     {
         name: 'Hello',
         path: '/hello',
-        component: require('../views/Hello.vue')
+        component:resolve=>{ require(['../views/Hello.vue'],resolve)}
     },
     {
         name: 'SimpleTable',
         path: '/simpleTable',
-        component: require('../views/SimpleTable.vue')
+        component:resolve=>{ require(['../views/SimpleTable.vue'],resolve)}
     },
     {
         name: 'TransferTable',
         path: '/transferTable',
-        component: require('../views/TransferTable.vue')
+        component:resolve=>{ require(['../views/TransferTable.vue'],resolve)}
     },
     {
         name:'FormGird',
         path:'/formGird',
-        component: require('../views/FormGird.vue')
+        component:resolve=>{ require(['../views/FormGird.vue'],resolve)}
     },
     {
         name:'Rate',
         path:'/rate',
-        component: require('../views/Rate.vue')
+        component:resolve=>{ require(['../views/Rate.vue'],resolve)}
     },
     {
         name: 'Textdiff',
         path: '/textdiff',
-        component: require('../views/Textdiff.vue')
+        component:resolve=>{ require(['../views/Textdiff.vue'],resolve)}
     },
     {
         name: 'TypefieldRange',
         path: '/typefieldRange',
-        component: require('../views/TypefieldRange.vue')
+        component:resolve=>{ require(['../views/TypefieldRange.vue'],resolve)}
     },
     {
         name: 'FileImport',
         path: '/fileimport',
-        component: require('../views/FileImport.vue')
+        component:resolve=>{ require(['../views/FileImport.vue'],resolve)}
     },
     {
         name: 'FileExport',
         path: '/fileexport',
-        component: require('../views/FileExport.vue')
+        component:resolve=>{ require(['../views/FileExport.vue'],resolve)}
     },   
     {
         name: 'Split',
         path: '/split',
-        component: require('../views/Split.vue')
+        component:resolve=>{ require(['../views/Split.vue'],resolve)}
     },
     {
         name: 'Drawer',
         path: '/drawer',
-        component: require('../views/Drawer.vue')
+        component:resolve=>{ require(['../views/Drawer.vue'],resolve)}
     },
     {
         name: 'DownLoad',
         path: '/downLoad',
-        component: require('../views/DownLoad.vue')
+        component:resolve=>{ require(['../views/DownLoad.vue'],resolve)}
     },
     {
         name: 'Log',
         path: '/log',
-        component: require('../views/Log.vue')
+        component:resolve=>{ require(['../views/Log.vue'],resolve)}
     },
     {
         name: 'tag',
         path: '/tag',
-        component: require('../views/tag.vue')
+        component:resolve=>{ require(['../views/tag.vue'],resolve)}
     },
     {
         name: 'SimpleTreeGird',
         path: '/simpleTreeGird',
-        component: require('../views/SimpleTreeGird.vue')
+        component:resolve=>{ require(['../views/SimpleTreeGird.vue'],resolve)}
     }
  ]
 })

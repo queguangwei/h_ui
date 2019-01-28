@@ -12,12 +12,12 @@ function resolve (dir) {
 // publicPath：指定资源文件引用的目录 
 module.exports = {
   entry: {
-    app: './example/main.js'
+    app: './example/main.js',
   },
   output: {
     path: config.build.assetsRoot,
     publicPath: process.env.NODE_ENV === 'production' ? config.build.assetsPublicPath : config.dev.assetsPublicPath,
-    filename: '[name].js'
+    filename: '[name].js',
   },
   node: {
     fs: 'empty'

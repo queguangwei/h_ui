@@ -223,15 +223,18 @@
         options1:[],
         treeOption:[],
         columns1: [
-          // {
-          //   type: 'selection',
-          //   width: 120,  
-          // },
+          {
+            type: 'selection',
+            width: 120,  
+            align: 'center'
+          },
           {
             // type: 'text',
             title: '姓名',
             key: 'name',
             width: 200,
+            align: 'center',
+            headAlign: 'right',
             hiddenOther:true,
             render:(h, params)=>{
               return h('span',params.row.name)
@@ -247,8 +250,9 @@
           {
             type: 'textArea',
             rows: 2,
-            width: 200,
+            width: 80,
             title: '地址',
+            ellipsis:true,
             key: 'address',
           },
           {

@@ -9,9 +9,10 @@
     <p>自定义某页数量</p>
     <h-page :total="100" :pageSize='5' show-custom  placement="top" @on-page-size-change="numChange"></h-page>
     <p>显示每页数量</p>
-    <h-page :total="100" :pageSize='40' show-sizer @on-page-size-change="numChange" placement="top" :pageSizeOpts="pageSizeOpts"></h-page>
+    <h-page :total="100" :pageSize='20' show-sizer @on-page-size-change="numChange" placement="top" :pageSizeOpts="pageSizeOpts"></h-page>
     <p>快速跳转到某一页</p>
-    <h-page :total="100" show-elevator :isBlur="true"></h-page>
+    <Button @click="clear">清空跳转业</Button>
+    <h-page ref="page" :total="100" show-elevator :isBlur="true"></h-page>
     <p>显示总数</p>
     <h-page :total="100" show-total></h-page>
     <p>迷你型</p>
@@ -568,6 +569,9 @@
     computed:{
     },
   	methods:{
+      clear(){
+        this.$refs.page.clearElevator()
+      },
       changeVal(){
         this.val = 200;
       },

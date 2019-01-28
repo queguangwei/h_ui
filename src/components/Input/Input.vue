@@ -19,6 +19,7 @@
         :number="number"
         :autofocus="autofocus"
         :spellcheck="spellcheck"
+        :autocomplete="autocomplete"
         @keyup.enter="handleEnter"
         @keyup="handleKeyup"
         @keypress="handleKeypress"
@@ -43,6 +44,7 @@
       :value="currentValue"
       :autofocus="autofocus"
       :spellcheck="spellcheck"
+      :autocomplete="autocomplete"
       @keyup.enter="handleEnter"
       @keyup="handleKeyup"
       @keypress="handleKeypress"
@@ -178,6 +180,10 @@
         type:Boolean,
         default: false
       }, // 是否按照字节计算长度
+      autocomplete: {
+        type: String,
+        default: 'off'
+      }
     },
     data () {
       return {

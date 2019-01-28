@@ -212,11 +212,11 @@ bigObj = curdata;
         data2: [
           {
             title: 'parent 1',
-            expand: 'true',
+            expand: false,
             children: [
               {
                 title: 'parent 1-1',
-                expand: 'true',
+                expand: false,
                 checked: 'true',
                 children: [
                   {
@@ -231,7 +231,7 @@ bigObj = curdata;
               },
               {
                 title: 'parent 1-2',
-                expand: 'false',
+                expand: true,
                 children: [
                   {
                     title: 'leaf 1-2-1'

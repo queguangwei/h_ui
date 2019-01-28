@@ -286,7 +286,7 @@ $selecttree-prefix-cls:  "#{$css-prefix}selectTree";
           color:$changed-color;
         }
         .h-tag{
-          color:$changed-color;
+          color:$changed-color !important;
         }
     }
 }

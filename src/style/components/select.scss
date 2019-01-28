@@ -48,7 +48,7 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
             text-overflow: ellipsis;
             height: $form-component-height - 12px;
             line-height: $form-component-height - 12px;
-            margin: 0;
+            // margin: 0;
             padding: 0;
             padding-right: 12px;
             padding-left: 2px;
@@ -363,7 +363,7 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
             color:$changed-color;
         }
         .h-tag{
-            color:$changed-color;
+            color:$changed-color !important;
         }
         .h-select-input{
             color:$changed-color;

@@ -7,6 +7,7 @@
       <template v-for="(row,index) in data">
         <tr :key="row.id"
           class="not-child"
+          :class="rowClasses(row.id)"
           @click="clickCurrentRow(row)">
           <td v-for="(column,inx) in columns" :class="alignCls(column, row)" :key="column.index">
             <span v-if="inx==(columns[0].type=='index'?1:0)" :style="indentCls" >
@@ -82,6 +83,12 @@
       }
     },
     methods: {
+      rowClasses(id){
+        let index = this.indexAndId[id];
+        return{
+          [`${this.prefixCls}-row-highlight`]: this.checkedObj[index]&&this.checkedObj[index]._isHighlight,
+        }
+      },
       checkValue(id){
         let index = this.indexAndId[id];
         return this.checkedObj[index]&&this.checkedObj[index].checked;
@@ -94,21 +101,21 @@
             }
           ]
       },
-      rowClasses (_index) {
-        let _isChecked,_isHighlight,_isHover;
-        _isChecked = this.objData[_index] && this.objData[_index]._isChecked;
-        _isHighlight =this.objData[_index] && this.objData[_index]._isHighlight;
-        _isHover = this.objData[_index] && this.objData[_index]._isHover;
-        return [
-          `${this.prefixCls}-row`,
-          // this.rowClsName(_index),
-          {
-            [`${this.prefixCls}-row-checked`]: _isChecked,
-            [`${this.prefixCls}-row-highlight`]:_isHighlight,
-            [`${this.prefixCls}-row-hover`]:_isHover
-          }
-        ];
-      },
+      // rowClasses (_index) {
+      //   let _isChecked,_isHighlight,_isHover;
+      //   _isChecked = this.objData[_index] && this.objData[_index]._isChecked;
+      //   _isHighlight =this.objData[_index] && this.objData[_index]._isHighlight;
+      //   _isHover = this.objData[_index] && this.objData[_index]._isHover;
+      //   return [
+      //     `${this.prefixCls}-row`,
+      //     // this.rowClsName(_index),
+      //     {
+      //       [`${this.prefixCls}-row-checked`]: _isChecked,
+      //       [`${this.prefixCls}-row-highlight`]:_isHighlight,
+      //       [`${this.prefixCls}-row-hover`]:_isHover
+      //     }
+      //   ];
+      // },
       rowClsName (_index) {
         // return this.$parent.$parent.rowClassName(this.objData[_index], _index);
       },

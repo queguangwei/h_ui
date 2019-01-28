@@ -120,7 +120,19 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
         text-align: right;
     }
   }
-
+  th.#{$editgird-prefix-cls}-head-column,
+  td.#{$editgird-prefix-cls}-body-column
+  {
+    &-left{
+        text-align: left;
+    }
+    &-center{
+        text-align: center;
+    }
+    &-right{
+        text-align: right;
+    }
+  }
   & table{
     //width: 100%;
     table-layout: fixed;
@@ -322,7 +334,10 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
   &-can-hover {
     .not-child:hover td{
       background-color: $table-td-hover-bg;
-    }
+    }   
+  }
+  &-row-highlight:hover td{
+    background-color: $table-td-highlight-bg !important;
   }
   &-can-stripe {
     .not-child:nth-child(2n) td{

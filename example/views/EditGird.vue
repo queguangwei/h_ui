@@ -22,7 +22,8 @@
     <h-edit-gird :columns="columns4" :data="data1" :showEditInput="true" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-select-cancel="select" height="200"></h-edit-gird>
     <h-edit-gird :columns="columns4" :data="data1" @on-select-all="allSelect" @on-selection-change="selsetChange" height="200" :loading="loading"></h-edit-gird>
     <h3>直接显示编辑框</h3>
-    <h-edit-gird :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" :showEditInput="true" height="200" :loading="loading"></h-edit-gird>
+    <Button @click="getChangeData">获取改变后的数据</Button>
+    <h-edit-gird :columns="columns1" ref="table1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" :showEditInput="true" height="200" :loading="loading"></h-edit-gird>
     <Button @click="setLoad">切换loading</Button>
     <Button @click="addDate">添加一行</Button>
   </div>
@@ -98,6 +99,7 @@ var columns=[
           width: 200,
           rule: { required: true, message: '姓名不能为空'},
           typeWidth:150,
+          hiddenOther:true,
           render: (h, params) => {
             return h('div', [
               h('h-button', {
@@ -151,6 +153,7 @@ var columns=[
           rows: 4,
           title: '地址',
           key: 'address',
+          ellipsis:true,
           rule: { required: true, message: '地址不能为空'},
         },
         {
@@ -252,7 +255,8 @@ export default {
           title: '姓名',
           key: 'name',
           width: 200,
-          typeWidth:100,
+          // typeWidth:100,
+          hiddenOther:true,
           rule: { required: true, message: '姓名不能为空'},
           render: (h, params) => {
             return h('div', [
@@ -313,6 +317,7 @@ export default {
           // width: 200,
           title: '地址',
           key: 'address',
+          ellipsis:true,
           rearlabel:(index)=>{
             if(index%2==0){
               return '#';
@@ -486,6 +491,7 @@ export default {
     },
     getChangeData(){
       console.log(this.$refs.table.getChangeData())
+      console.log(this.$refs.table1.getChangeData())
     } 
   },
   mounted(){

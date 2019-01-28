@@ -21,7 +21,8 @@
           <div :class="cellClasses(column)">
             <template v-if="column.type === 'expand'"></template>
             <template v-else-if="column.type === 'selection'">
-              <Checkbox v-if="!column.title" size="large" @mousedown.native.stop="handleClick" :value="isSelectAll" @on-change="selectAll"></Checkbox>
+              <render-header v-if="column.renderHeader" :render="column.renderHeader" :column="column" :index="index"></render-header>
+              <Checkbox v-else-if="!column.title" size="large" @mousedown.native.stop="handleClick" :value="isSelectAll" @on-change="selectAll"></Checkbox>
               <span v-else>{{column.title}}</span>
             </template>
             <template v-else>
