@@ -2,7 +2,8 @@
   <div>
     <h-button @on-click="loadData">加载数据</h-button>
     <!-- isCheckbox checkStrictly -->
-    <h-simple-tree-gird :columns="columns1" isCheckbox checkStrictly no-data-text="123" :data="treedata" canDrag :height="400" @on-select-change="selectChange" @on-expand="expand" @on-drag="expand" @on-row-click="selectChange" @on-scroll="selectChange">
+    <!-- selectRoot -->
+    <h-simple-tree-gird :columns="columns1" selectRoot isCheckbox no-data-text="123" :data="treedata" canDrag :height="400" @on-select-change="selectChange" @on-expand="expand" @on-drag="expand" @on-row-click="selectChange" @on-scroll="selectChange">
       <span slot="loading">1244</span>
     </h-simple-tree-gird>
   </div>
@@ -12,7 +13,6 @@ let bigData = [];
 for(var i=0;i<50;i++){
   let obj =  {
     id: i,
-    expand:i==0?true:false,
     name: '王小明'+i,
     age: 18,
     address: '北京市朝阳区芍药居',

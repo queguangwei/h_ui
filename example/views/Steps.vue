@@ -1,7 +1,15 @@
 <template>
   <div>
-
-     <h2>基础用法</h2>
+    <h-date-picker type="datetime" v-model="datatime"></h-date-picker>
+    <h-time-picker></h-time-picker>
+    <h-steps :current="0">
+        <h-step title="已完成" content="这里是该步骤的描述信息"></h-step>
+        <h-step status="wait" title="已完成" content="这里是该步骤的描述信息"></h-step>
+        <h-step status="process" title="进行中" content="这里是该步骤的描述信息"></h-step>
+        <h-step status="finish" title="待进行" content="这里是该步骤的描述信息"></h-step>
+        <h-step status="error" title="待进行" content="这里是该步骤的描述信息"></h-step>
+    </h-steps>
+    <h2>基础用法</h2>
     <h-steps :current="1">
         <h-step title="已完成" content="这里是该步骤的描述信息"></h-step>
         <h-step title="进行中" content="这里是该步骤的描述信息"></h-step>
@@ -58,7 +66,8 @@
   export default {
     data () {
               return {
-                  current: 0
+                  current: 0,
+                  datatime:'',
               }
           },
     methods: {

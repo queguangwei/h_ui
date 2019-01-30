@@ -170,9 +170,11 @@
       },
       'data.expand':function (){
         this.childrenShow = this.data.expand && this.data.expand!='false' && (!this.data.leaf||this.data.leaf=='false')
+        this.iconShow=this.data.expand && this.data.expand!='false'
       },
       'data.leaf':function (){
         this.childrenShow = this.data.expand && this.data.expand!='false' && (!this.data.leaf||this.data.leaf=='false')
+        this.iconShow=this.data.expand && this.data.expand!='false'
       }
     },
     methods: {

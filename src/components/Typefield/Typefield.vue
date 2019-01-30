@@ -93,7 +93,8 @@ export default {
       default:'money'
     },
     value: {
-      required: false
+      required: false,
+      default:''
     },
     disabled: {
       type:Boolean,

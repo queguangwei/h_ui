@@ -61,7 +61,6 @@
           <h-select v-model="formItem1.select1"
             multiple
             size="large"
-            :isString="true"
             showTitle
             >
             <h-option v-for="item in cy.options1"
@@ -72,7 +71,6 @@
         </h-form-item>
         <h-form-item label="下拉单选" prop="select2" required>
           <h-select v-model="formItem1.select2"
-                    :isString="true"
                     showTitle
                     on-change="cy_change_test">
             <h-option v-for="item in cy.options1"
@@ -94,10 +92,21 @@
         <h-form-item label="文本域" prop="cascader" required>
           <h-cascader v-model="formItem1.cascader" :data="data2" trigger="hover" style="width:200px"></h-cascader>
         </h-form-item>
+        <h-form-item label="简单选择框" prop="simpleSelect" required>
+          <h-simple-select v-model="formItem1.simpleSelect" multiple ref="test" placement="top-start" filterable>
+            <h-select-block :data="bigData" ></h-select-block>
+          </h-simple-select>
+        </h-form-item>
+        <h-form-item label="简单选择框单选" prop="simpleSelect1" required>
+          <h-simple-select v-model="formItem1.simpleSelect1" ref="test" placement="top-start" filterable>
+            <h-select-block :data="bigData" ></h-select-block>
+          </h-simple-select>
+        </h-form-item>
         <h-form-item>
             <h-button type="primary" @click="handleSubmit('formItem1')">提交</h-button>
             <h-button type="ghost" style="margin-left: 8px" @click="handleReset('formItem1')">取消</h-button>
         </h-form-item>
+
       </h-form>
     <!-- </h-msg-box> -->
     <Button @on-click="changeform1">显示隐藏</Button>
@@ -142,6 +151,13 @@
   </div>
 </template>
 <script>
+let bigData = [];
+for(let i=0;i<60;i++){
+  let obj={};
+  obj.value="value"+i;
+  obj.label="label"+i;
+  bigData.push(obj);
+}
   export default {
     data () {
       return {
@@ -218,7 +234,9 @@
           slider: '',
           tree:'',
           textarea: '',
-          cascader:[]
+          cascader:[],
+          simpleSelect:[],
+          simpleSelect1:'',
         },
         formItem2:{
           input: '1',
@@ -235,7 +253,10 @@
           textarea: '',
           select1: ['1','2'],
           select2: '',
+          simpleSelect:["value1"],
+          simpleSelect1:"value1",
         },
+        bigData:[],
         data2: [{
           value: 'beijing',
           label: '北京',
@@ -424,6 +445,7 @@
     },
     mounted () {
       this.formItem1.input = '222';
+      this.bigData = bigData;
     }
   }
 </script>

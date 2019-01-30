@@ -1,6 +1,8 @@
 <template>
   <div>
-
+    <h-file-import @on-choose-file="getFile" @on-change="handleChange">
+      <h-button type="ghost" icon="activity">导入</h-button>
+    </h-file-import>
    <h-file-import @on-choose-file="getFile">
       <h-button type="ghost" icon="activity">导入文件</h-button>
     </h-file-import>
@@ -45,6 +47,9 @@
         } else {
           this.$hMessage.info('导入表格无数据')
         }
+      },
+      handleChange (){
+        // this.$set(this.importConfig, 'loading', status)
       }
     }
   }

@@ -2,7 +2,7 @@
     <form :class="classes"><slot></slot></form>
 </template>
 <script>
-import { oneOf,hasClass} from  '../../util/tools';
+import { oneOf,hasClass,cmp} from  '../../util/tools';
 
 const prefixCls = 'h-form';
 
@@ -146,7 +146,10 @@ export default {
       if (!this.compareModel || this.compareModel == {}) return;
       for (let item in obj) {
         let status = true;
-        if (obj[item] == this.compareModel[item] || this.compareModel[item] == undefined) {
+        // if (obj[item] == this.compareModel[item] || this.compareModel[item] == undefined) {
+        //   status = false;
+        // }
+        if (cmp(obj[item],this.compareModel[item]) || this.compareModel[item] == undefined) {
           status = false;
         }
         this.changeObj[item]=status;
