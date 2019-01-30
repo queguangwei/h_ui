@@ -10,7 +10,7 @@
     },
     computed: {
       objData () {
-          return this.$parent.objData;
+        return this.$parent.objData;
       }
     },
     methods: {

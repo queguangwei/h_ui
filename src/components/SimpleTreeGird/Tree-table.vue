@@ -37,7 +37,8 @@
               :checkStrictly="checkStrictly"
               :checkedObj="checkedObj"
               :indexAndId="indexAndId"
-              :isCheckbox="isCheckbox">
+              :isCheckbox="isCheckbox"
+              :selectRoot="selectRoot">
             </Tree-table>
           </td>
         </tr>
@@ -71,6 +72,7 @@
       columnsWidth:Object,
       checkedObj:Array,
       indexAndId:Object,
+      selectRoot:Boolean
     },
     computed: {
       objData () {
@@ -101,21 +103,6 @@
             }
           ]
       },
-      // rowClasses (_index) {
-      //   let _isChecked,_isHighlight,_isHover;
-      //   _isChecked = this.objData[_index] && this.objData[_index]._isChecked;
-      //   _isHighlight =this.objData[_index] && this.objData[_index]._isHighlight;
-      //   _isHover = this.objData[_index] && this.objData[_index]._isHover;
-      //   return [
-      //     `${this.prefixCls}-row`,
-      //     // this.rowClsName(_index),
-      //     {
-      //       [`${this.prefixCls}-row-checked`]: _isChecked,
-      //       [`${this.prefixCls}-row-highlight`]:_isHighlight,
-      //       [`${this.prefixCls}-row-hover`]:_isHover
-      //     }
-      //   ];
-      // },
       rowClsName (_index) {
         // return this.$parent.$parent.rowClassName(this.objData[_index], _index);
       },
@@ -124,6 +111,23 @@
         this._parent.clickCurrentRow(row);
         if(this.rowSelect){         
         }
+        if(this.selectRoot){
+          let status = this.checkedObj[this.indexAndId[row.id]]._isHighlight;
+          if(this.indent>0){
+            this.data.forEach(col=>{
+              this._parent.changeCheckedObj(this.indexAndId[col.id],status,'_isHighlight')
+            })
+          }
+          if(row._parentId!=undefined){
+            this.selectRootUp(row._parentId,status);
+          }
+          if(row.children&&row.children.length>0){
+            this.updateTreeDown(row.children,status,'_isHighlight');
+          }
+        }
+      },
+      selectRootUp(id,status){
+        this._parent.changeCheckedObj(this.indexAndId[id],status,'_isHighlight')   
       },
       toggleExpand (index,row,event) {
         let curStatus;
@@ -192,13 +196,13 @@
           this.$parent.updateTreeUp(this.checkedObj[this.indexAndId[id]]._parentId);
         }    
       },
-      updateTreeDown(data,status){
+      updateTreeDown(data,status,single){
         data.forEach((col,inx)=>{
           this.setStatus(col,inx);//状态初始化
           if(col.children&&col.children.length>0){
             this.updateTreeDown(col.children,status);
           }
-          this._parent.changeCheckedObj(this.indexAndId[col.id],status)
+          this._parent.changeCheckedObj(this.indexAndId[col.id],status,single)
         })
       },
       setStatus(col,inx){

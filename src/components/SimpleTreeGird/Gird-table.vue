@@ -27,6 +27,7 @@
           :checkStrictly="checkStrictly" 
           :checkedObj="checkedObj"
           :indexAndId="indexAndId"
+          :selectRoot="selectRoot"
           :isCheckbox="isCheckbox">
         </Tree-table>
       </div>
@@ -149,18 +150,6 @@ export default {
       type: Boolean,
       default: false
     },
-    option:{
-      type: Array,
-      default () {
-        return [];
-      }
-    },
-    treeOption:{
-      type: Array,
-      default () {
-        return [];
-      }
-    },
     loadData: {
       type: Function
     },
@@ -168,14 +157,19 @@ export default {
       type:Boolean,
       default:false,
     },
-    notAdaptive: {
-      type:Boolean,
-      default:false,
-    },
-    highlightRow: {
+    selectRoot:{
       type:Boolean,
       default:false,
     }
+    // notAdaptive: {
+    //   type:Boolean,
+    //   default:false,
+    // },
+    // highlightRow: {
+    //   type:Boolean,
+    //   default:false,
+    // },
+    
   },
   data () {
     return {
@@ -296,11 +290,12 @@ export default {
     },
   },
   methods: {
-    changeCheckedObj(index,status){
+    changeCheckedObj(index,status,single){
+      let item = single?'_isHighlight':'checked';
       if(status==null){
-        this.$set(this.checkedObj[index],'checked',!this.checkedObj[index].checked);
+        this.$set(this.checkedObj[index],item,!this.checkedObj[index][item]);
       }else{
-        this.$set(this.checkedObj[index],'checked',status);
+        this.$set(this.checkedObj[index],item,status);
       }
     },
     changeWidth(width,key,lastWidth){
@@ -393,8 +388,6 @@ export default {
             }
             this.columnsWidth = columnsWidth;
           }
-          
-
         });
         // get table real height,for fixed when set height prop,but height < table's height,show scrollBarWidth
         this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'));
@@ -402,16 +395,31 @@ export default {
     },
     clickCurrentRow (row) {
       let inx = this.indexAndId[row.id];
+      let status = this.checkedObj[inx]._isHighlight?false:true
       for(var i=0;i<this.checkedObj.length;i++){
         if(this.checkedObj[i]._isHighlight){
-          this.checkedObj[i]._isHighlight = false
+          this.checkedObj[i]._isHighlight = false;
         }
       }
-      this.$set(this.checkedObj[inx],'_isHighlight',true)
+      this.$set(this.checkedObj[inx],'_isHighlight',status)
       this.$nextTick(()=>{
         this.$emit('on-row-click', row);
         if(this.highlightRow){
-          this.$emit('on-current-change', row);
+          this.$emit('on-current-change', status?row:null);
+        }
+        if(this.selectRoot){
+          if(row._parentId){
+            let item = null
+            for(var i=0;i<this.data.length;i++){
+              if(this.data[i].id == row._parentId){
+                item = this.data[i]
+                break;
+              }
+            }
+            this.$emit('on-select-root',status?item:null)
+          }else{
+            this.$emit('on-select-root',status?row:null)
+          }
         }
       })
     },
@@ -445,15 +453,7 @@ export default {
       return arr;
     },
     selectAll (status) {
-      // this.rebuildData.forEach((node,index)=>{
-      //   node.checked = status;
-      //   this.objData[index]._isChecked = status;
-      //   if(node._indeterminate){
-      //     node._indeterminate = false;
-      //   }
-      // })
       this.$emit('on-select-all', status);
-      // this.$emit('on-selection-change', selection);
     },
     fixedHeader () {
       if (this.height) {
