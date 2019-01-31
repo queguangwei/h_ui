@@ -30,7 +30,6 @@ function getMessageInstance (type) {
       break;
     default:top = top;
   }
-  console.log(top)
   messageInstance = messageInstance || Notification.newInstance({
     prefixCls: prefixCls,
     styles: {

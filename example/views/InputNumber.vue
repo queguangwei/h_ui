@@ -2,7 +2,7 @@
   <div>
     <h1>基础用法</h1>
     {{value1}}
-    <h-input-number :max="100" :min="1" v-model="value1" style="width:200px" :precision="2">
+    <h-input-number :max="100" :min="1" v-model="value1" :precision="2">
       <span slot="append">px</span>
     </h-input-number>
     <h-input-number :max="10" :min="3" :step="1.2" v-model="value2"></h-input-number><br>

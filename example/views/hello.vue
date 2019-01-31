@@ -1,7 +1,7 @@
 <template>
 <div>
   <h-button @click="setData">赋值</h-button>
-  <h-table :columns="columns1" :data="data2" notSetWidth autoHeadWidth border highlightRow height= 150 @on-scroll="scroll"></h-table>
+  <h-table :columns="columns1" :data="data2" rowSelect border></h-table>
   <h-table :columns="columns1" :data="data2" border ctrSelection clickToSelect></h-table>
 </div>
 </template>

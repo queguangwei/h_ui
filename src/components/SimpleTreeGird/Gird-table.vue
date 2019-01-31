@@ -408,7 +408,7 @@ export default {
           this.$emit('on-current-change', status?row:null);
         }
         if(this.selectRoot){
-          if(row._parentId){
+          if(row._parentId!=undefined){
             let item = null
             for(var i=0;i<this.data.length;i++){
               if(this.data[i].id == row._parentId){

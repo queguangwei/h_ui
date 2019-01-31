@@ -519,6 +519,7 @@
         }
       },
       toggleMenu () {
+        
         if (this.disabled || this.readonly||!this.editable) {
             return false;
         }
@@ -891,8 +892,8 @@
       },
       handleBlur () {
         this.$emit('on-blur');
-        if (this.showBottom) return false;
-        this.isInputFocus = false
+        if (this.showBottom) return false;          
+        // this.isInputFocus = false
         setTimeout(() => {
           const model = this.model;
 
