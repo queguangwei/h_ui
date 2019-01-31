@@ -10,7 +10,7 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
     color: $text-color;
     font-size: $font-size-base;
     // line-height: normal;
-    // height: $form-component-height;
+    height: $input-height-base;
     position: relative;
 
     &-selection {
@@ -152,11 +152,10 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
     }
 
     &-multiple &-selection{
-        overflow-y: auto;
-        overflow-x: hidden;
+        overflow: auto;
         height: $input-height-base;
         padding-right:30px;
-
+        padding-left: 2px;
         .#{$select-prefix-cls}-placeholder{
             display: block;
             height: $input-height-base - 2px;

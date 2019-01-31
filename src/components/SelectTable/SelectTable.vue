@@ -968,7 +968,6 @@
       }
     },
     mounted () {
-      console.log(this.block)
       this.isBlock = this.block?true:false;
       this.modelToQuery();
       // 处理 remote 初始值

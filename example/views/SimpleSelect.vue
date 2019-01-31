@@ -4,23 +4,24 @@
   <p>选择器支持单选、多选、搜索，以及键盘快捷操作。</p>
   <h1>selectBlock测试用例</h1>
   {{value}}
-  <h-simple-select v-model="value" ref="test" placement="bottom-start" :clearable="false" @on-change="change" showBottom>
+  <h-simple-select v-model="value" ref="test" placement="bottom-start" :clearable="false" @on-change="change">
     <h-select-block :data="bigData" @on-scroll="select"></h-select-block>
   </h-simple-select>
   <Button @on-click="changeValue">changeValue</Button>
   <h-simple-select v-model="value2" transfer placement="bottom-start" filterable placeholder="123" isArrow=false>
-    <h-select-block :data="bigData" style="width:200px;"></h-select-block>
+    <h-select-block :data="bigData" @on-scroll="select" style="width:200px;"></h-select-block>
   </h-simple-select>
   <h-simple-select v-model="value1" multiple ref="test" placement="top-start" filterable checkToHead showBottom @on-change="change">
-    <h-select-block :data="bigData" ></h-select-block>
+    <h-select-block :data="bigData" @on-scroll="select"></h-select-block>
   </h-simple-select>
   {{value1}}
+  <br><br><br><br><br><br><br><br><br><br><br><br>
 
 </div>
 </template>
 <script>
 let bigData = [];
-for(let i=0;i<6000;i++){
+for(let i=0;i<60;i++){
   let obj={};
   obj.value="value"+i;
   obj.label="label"+i;
@@ -57,7 +58,7 @@ export default {
     },
     select(e,b){
       console.log(e);
-      console.log(b);
+      // console.log(b);
     },
     allSelect(e){
       console.log(e);

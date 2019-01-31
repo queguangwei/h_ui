@@ -3,7 +3,7 @@
     <h-button @on-click="loadData">加载数据</h-button>
     <!-- isCheckbox checkStrictly -->
     <!-- selectRoot -->
-    <h-simple-tree-gird :columns="columns1" selectRoot isCheckbox no-data-text="123" :data="treedata" canDrag :height="400" @on-select-change="selectChange" @on-expand="expand" @on-drag="expand" @on-row-click="selectChange" @on-scroll="selectChange">
+    <h-simple-tree-gird :columns="columns1" selectRoot isCheckbox no-data-text="123" :data="treedata" canDrag :height="400" @on-select-root="selectChange" @on-expand="expand" @on-drag="expand" @on-row-click="selectChange" @on-scroll="selectChange">
       <span slot="loading">1244</span>
     </h-simple-tree-gird>
   </div>
