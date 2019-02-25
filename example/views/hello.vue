@@ -1,7 +1,220 @@
 <template>
 <div>
+  <h-select-tree
+      v-model="val1"
+      style="width:200px"
+      :data="baseData1"
+      :expanLevel="expandLevel"
+      :showCheckbox="true">
+  </h-select-tree>   
+  <h-date-picker type="daterange"></h-date-picker>
+  <h-dropdown @on-click="getItem" trigger="click" placement="bottom-start" adaptParentWidth style="width:100%">
+    <h-input v-model="value1"></h-input>
+    <h-dropdown-menu slot="list">
+        <h-dropdown-item>驴打滚</h-dropdown-item>
+        <h-dropdown-item>炸酱面</h-dropdown-item>
+        <h-dropdown-item disabled>豆汁儿</h-dropdown-item>
+        <h-dropdown-item>冰糖葫芦</h-dropdown-item>
+        <h-dropdown-item divided>北京烤鸭</h-dropdown-item>
+    </h-dropdown-menu>
+  </h-dropdown>
+</div>
+</template>
+<script>
+export default{
+  data(){
+    return {
+      val1:'',
+      value1:'',
+      expandLevel:1,
+      baseData1:
+          [{
+              title: 'parent',
+              id: '1-0',
+              children: [
+                  {
+                      title: 'child1',
+                      id: '1-1',
+                      children: [
+                          {
+                            title: 'child1-1-1',
+                            id: '1-1-1'
+                          },
+                          {
+                            title: 'child1-1-2',
+                            id: '1-1-2'
+                          },
+                      ],
+                  },
+                  {
+                    title: 'child2',
+                    id: '1-2',
+                    children: [],
+                  },
+              ],
+          },
+      ],
+    }
+  },
+  methods:{
+    getItem(val){
+      this.value1 = val;
+    }
+  },
+}
+</script>
+<!--<template>
+<div>
+    <h-tree :data="baseData" :render="renderContent" notDeepCopy></h-tree>         
+</div>
+</template>
+<script> 
+    export default {
+        data () {
+            return {
+                baseData: [
+                    {
+                        title: 'parent 1',
+                        expand: true,
+                        children: [
+                            {
+                                title: 'child 1-1',
+                                expand: true,
+                                children: [
+                                    {
+                                        title: 'leaf 1-1-1',
+                                        expand: true
+                                    },
+                                    {
+                                        title: 'leaf 1-1-2',
+                                        expand: true
+                                    }
+                                ]
+                            },
+                            {
+                                title: 'child 1-2',
+                                expand: true,
+                                children: [
+                                    {
+                                        title: 'leaf 1-2-1',
+                                        expand: true
+                                    },
+                                    {
+                                        title: 'leaf 1-2-1',
+                                        expand: true
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+          }
+        },  
+        methods: {
+            renderContent (h, { root, node, data }) {
+                return h('span', {
+                  style: {
+                      display: 'inline-block',
+                      width: 'calc(100% - 20px)'
+                  }
+                }, [
+                  h('span',{
+                    style:{
+                      display:'inline-block',
+                      cursor: 'pointer'
+                    },
+                    on:{
+                      click:(event)=>{ 
+                        this.titleClick(event,data) 
+                      },
+                    }
+                  },data.title),
+                  h('input',{
+                    style:{
+                      display:'none'
+                    },
+                    'class':{
+                      treeTitle:true,
+                    },
+                    attrs:{
+                      value:data.title,
+                    },
+                    on:{
+                      blur:(event)=>{
+                        this.titleBlur(event,data)
+                      }
+                    }
+                  }),                 
+                  h('h-button', {
+                      style: {
+                          float:'right'
+                      },
+                      props: Object.assign({}, this.buttonProps, {
+                          icon: 'android-remove',
+                          size:'small'
+                      }),
+                      on: {
+                          click: () => { this.remove(root, node, data) }
+                      }
+                  }),
+                  h('h-button', {
+                      props: Object.assign({}, this.buttonProps, {
+                          icon: 'add',
+                          size:'small'
+                      }),
+                      style: {
+                          marginRight: '8px',
+                          float:'right'
+                      },
+                      on: {
+                          click: () => { this.append(data) }
+                      }
+                  }),
+                ]);
+            },
+            titleClick(event,data){
+              let obj = event.target;
+              obj.style.display="none";
+              obj.nextElementSibling.style.display="inline-block"
+              obj.nextElementSibling.focus()
+            },
+            titleBlur(event,data){
+               let obj = event.target;
+              let title = event.target.value
+              this.$set(data, 'title', title);
+              obj.style.display="none";
+              obj.previousElementSibling.style.display="inline-block"
+            },
+            append (data) {
+                const children = data.children || [];
+                children.push({
+                    title: '添加名称',
+                    expand: true
+                });
+                this.$set(data, 'children', children);
+            },
+            remove (root, node, data) {
+                const parentKey = root.find(el => el === node).parent;
+                const parent = root.find(el => el.nodeKey === parentKey).node;
+                const index = parent.children.indexOf(data);
+                parent.children.splice(index, 1);
+            }
+          }
+      }
+</script>
+<style>
+ .treeTitle{
+   border: 1px solid #D7DDE4;
+   border-radius: 4px;
+   color: #495060;
+   padding:2px 8px;
+ }
+</style>
+-->
+<!--<template>
+<div>
   <h-button @click="setData">赋值</h-button>
-  <h-table :columns="columns1" :data="data2" rowSelect border></h-table>
+  <h-table :columns="columns1" :data="data2" notSetWidth></h-table>
   <h-table :columns="columns1" :data="data2" border ctrSelection clickToSelect></h-table>
 </div>
 </template>
@@ -20,6 +233,46 @@
                         // fixed:'left',
                         width:200,
                         align:'right'
+                    },
+                    {
+                        title: '年龄11111111111111',
+                        key: 'age',
+                        // width:600
+                    },
+                    {
+                        title: '年龄11111111111111',
+                        key: 'age',
+                        // width:600
+                    },
+                    {
+                        title: '年龄11111111111111',
+                        key: 'age',
+                        // width:600
+                    },
+                    {
+                        title: '年龄11111111111111',
+                        key: 'age',
+                        // width:600
+                    },
+                    {
+                        title: '年龄11111111111111',
+                        key: 'age',
+                        // width:600
+                    },
+                    {
+                        title: '年龄11111111111111',
+                        key: 'age',
+                        // width:600
+                    },
+                    {
+                        title: '年龄11111111111111',
+                        key: 'age',
+                        // width:600
+                    },
+                    {
+                        title: '年龄11111111111111',
+                        key: 'age',
+                        // width:600
                     },
                     {
                         title: '年龄11111111111111',
@@ -90,7 +343,7 @@
     }
 
 </script>
-
+-->
 <!-- <template>
   <div>
     <h-form ref="formItem1" :model="formItem1" :label-width="80" errorFocus cols="2">

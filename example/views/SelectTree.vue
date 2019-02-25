@@ -24,7 +24,7 @@
     {{valc}}
     <br><br><br>
     <h2>showCheckbox表示多选默认不显示半选中状态</h2>
-    <h-select-tree v-model="val1" style="width:200px" :data="baseData3" showCheckbox checkStrictly @on-check-change="selectChange" isString expanLevel=0 ></h-select-tree>
+    <h-select-tree :data="baseData3"></h-select-tree>
     {{val1}}
     <h-select-tree v-model="val2" style="width:200px" :firstValue="firstVal1" :data="baseData" onlyChild showCheckbox isString></h-select-tree>
     {{val2}}
@@ -134,10 +134,10 @@
           }
         ],
         baseData2: [],
-        baseData3: [ { "title": "子系统", "id": "0006", "parent_id": "bizroot", "kind_code": "", "order_no": 0, "type": "5", "children": [ { "title": "O4.5", "id": "3327", "parent_id": "0006", "kind_code": "", "order_no": 0, "type": "5", "children": [ { "title": "基础", "id": "3331", "parent_id": "3327", "kind_code": "", "order_no": 0, "type": "5", "children": [], "expand": "false" }, { "title": "报表", "id": "3332", "parent_id": "3327", "kind_code": "", "order_no": 0, "type": "5", "children": [], "expand": "false" }, { "title": "风控", "id": "3333", "parent_id": "3327", "kind_code": "", "order_no": 0, "type": "5", "children": [], "expand": "false" }, { "title": "衍生品", "id": "3334", "parent_id": "3327", "kind_code": "", "order_no": 0, "type": "5", "children": [], "expand": "false" }, { "title": "权益", "id": "3335", "parent_id": "3327", "kind_code": "", "order_no": 0, "type": "5", "children": [], "expand": "false" }, { "title": "固收", "id": "3336", "parent_id": "3327", "kind_code": "", "order_no": 0, "type": "5", "children": [], "expand": "false" }, { "title": "用户中心", "id": "34", "parent_id": "3327", "kind_code": "", "order_no": 0, "type": "5", "children": [], "expand": "false" } ], "expand": "false" }, { "title": "用户权限系统", "id": "BIZFRAME", "parent_id": "0006", "kind_code": "", "order_no": 0, "type": "5", "children": [], "expand": "false" } ], "expand": "false" } ],
+        baseData3: [{"title":"存款账户","id":"DA0016","expand":true,"children":[{"title":"托管","id":"5001-2"}],"disabled":"true"}],
         baseData4: [
           {
-            title: 'parent',
+            title: 'parent你好',
             id: 1,
             children: [
               {

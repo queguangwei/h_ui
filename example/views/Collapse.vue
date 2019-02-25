@@ -1,6 +1,6 @@
 <template>
 	<div>
-	  <h2>基本用法</h2手风琴>
+	  <h2>基本用法 手风琴</h2>
 		<h-collapse v-model="value1" @on-change="change">
       <h-panel name="1">
        <!--  史蒂夫·乔布斯

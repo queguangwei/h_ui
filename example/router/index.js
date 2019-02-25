@@ -407,6 +407,11 @@ const router = new Router({
         name: 'SimpleTreeGird',
         path: '/simpleTreeGird',
         component:resolve=>{ require(['../views/SimpleTreeGird.vue'],resolve)}
+    },
+    {
+        name: 'Calendar',
+        path: '/calendar',
+        component:resolve=>{ require(['../views/Calendar.vue'],resolve)}
     }
  ]
 })

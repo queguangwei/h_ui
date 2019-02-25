@@ -66,35 +66,34 @@
       this.updateCurrent(true);
     },
     updated () {
-      this.updateChildProps()
+      // this.updateChildProps()
     },
     methods: {
       updateChildProps (isInit) {
         const total = this.$children.length;
         this.$children.forEach((child, index) => {
-            child.stepNumber = index + 1;
+          child.stepNumber = index + 1;
 
-            if (this.direction === 'horizontal') {
-                child.total = total;
-            }
+          if (this.direction === 'horizontal') {
+              child.total = total;
+          }
+          // 如果已存在status,且在初始化时,则略过
+          // todo 如果当前是error,在current改变时需要处理
+          if (!(isInit && child.currentStatus)) {
+              if (index == this.current) {
+                  if (this.status != 'error') {
+                      child.currentStatus = 'process';
+                  }
+              } else if (index < this.current) {
+                  child.currentStatus = 'finish';
+              } else {
+                  child.currentStatus = 'wait';
+              }
+          }
 
-            // 如果已存在status,且在初始化时,则略过
-            // todo 如果当前是error,在current改变时需要处理
-            if (!(isInit && child.currentStatus)) {
-                if (index == this.current) {
-                    if (this.status != 'error') {
-                        child.currentStatus = 'process';
-                    }
-                } else if (index < this.current) {
-                    child.currentStatus = 'finish';
-                } else {
-                    child.currentStatus = 'wait';
-                }
-            }
-
-            if (child.currentStatus != 'error' && index != 0) {
-                this.$children[index - 1].nextError = false;
-            }
+          if (child.currentStatus != 'error' && index != 0) {
+              this.$children[index - 1].nextError = false;
+          }
         });
       },
       setNextError () {

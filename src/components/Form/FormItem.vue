@@ -91,6 +91,10 @@
             },
             requiredTrigger: {
                 type: String,
+            },
+            onlyBlurRequire:{
+                type: Boolean,
+                default: false
             }
         },
         data () {
@@ -106,8 +110,7 @@
                 curCols: this.cols,
                 mustShowError: false,
                 mustShowErrorList: [],
-                modeChanged:false,
-                onlyBlurRequire:false,
+                modeChanged:false
             };
         },
         watch: {
@@ -194,6 +197,9 @@
             },
             isShowError () {
                 return this.mustShowError ? this.mustShowError : this.validateState === 'error' && this.showMessage && this.form.showMessage
+            },
+            isOnlyBlurRequire(){
+                return  this.onlyBlurRequire?true:false||this.form.onlyBlurRequire?true:false;
             }
         },
         methods: {
@@ -321,7 +327,7 @@
                     this.validateDisabled = false;
                     return;
                 }
-                if(this.onlyBlurRequire) return;
+                if(this.isOnlyBlurRequire) return;
                 this.validate('change');
             },
             commonRule(){
@@ -348,7 +354,7 @@
                     }
                 })
             }
-            this.onlyBlurRequire = this.form.onlyBlurRequire?true:false;
+           // this.onlyBlurRequire = this.onlyBlurRequire?true:false||this.form.onlyBlurRequire?true:false;
             if (this.prop) {
                 this.dispatch('Form', 'on-form-item-add', this);
 

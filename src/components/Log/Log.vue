@@ -5,7 +5,7 @@
 		</div>
 		<div :class="footerClass" v-if="isClear">
 			<slot name="footer">
-				<Button @on-click="handlerClear">{{btnText}}</Button>
+				<h-button @on-click="handlerClear">{{btnText}}</h-button>
 			</slot>
 		</div>
 	</div>
@@ -13,11 +13,11 @@
 <script>
   import { oneOf,deepCopy } from '../../util/tools';
   import Locale from '../../mixins/locale';
-  import Button from '../Button/Button.vue';
+  import hButton from '../Button/Button.vue';
   const prefixCls = 'h-log'
 	export default{
 		name:'Log',
-		components:{Button},
+		components:{hButton},
 		mixins: [Locale],
 		data(){
 			return{

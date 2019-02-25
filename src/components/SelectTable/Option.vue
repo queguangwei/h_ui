@@ -1,5 +1,5 @@
 <template>
-  <Table
+  <h-table
     ref="table"
     :data="rebuildData"
     :columns="tabColumns"
@@ -23,11 +23,11 @@
     @on-sort-change = "sortChange"
     @on-row-click = "rowClick"
     >
-  </Table>
+  </h-table>
 </template>
 <script>
   import Emitter from '../../mixins/emitter';
-  import Table from '../Table'
+  import hTable from '../Table'
   import Checkbox from '../Checkbox/Checkbox.vue';
   import {hasClass,getStyle,typeOf,scrollAnimate,getScrollBarSize} from '../../util/tools';
   const prefixCls = 'h-select-Table';
@@ -36,7 +36,7 @@
     name: 'TabelOption',
     componentName: 'tabel-option',
     mixins: [ Emitter],
-    components:{Checkbox,Table},
+    components:{Checkbox,hTable},
     props: {
       value: {
         type: [String, Number],

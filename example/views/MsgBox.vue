@@ -385,7 +385,7 @@
           title: '确认对话框标题',
           content: '<p>一些对话框内容</p><p>一些对话框内容</p>',
           onOk: () => {
-            console.log('点击了确定');
+            this.$hMessage.info('点击了确认')
           },
           onCancel: () => {
             console.log('点击了取消');

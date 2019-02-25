@@ -118,7 +118,7 @@
             </thead>
           </table>
         </div>
-        <div :class="[prefixCls + '-fixed-body']" class="h-simple-view" :style="fixedBodyStyle" ref="fixedBody" @mousewheel="handleFixedMousewheel" @DOMMouseScroll="handleFixedMousewheel">
+        <div :class="fixedBodyClass" class="h-simple-view" :style="fixedBodyStyle" ref="fixedBody" @mousewheel="handleFixedMousewheel" @DOMMouseScroll="handleFixedMousewheel">
           <div :class="[prefixCls + '-phantom']" :style="{height: contentHeight + 'px'}">
           </div>
           <div class="h-simple-content" ref="leftContent">
@@ -462,6 +462,14 @@ export default {
           [`${prefixCls}-fixed-header-with-empty`]: !this.rebuildData.length
         }
       ];
+    },
+    fixedBodyClass () {
+      return [
+        `${prefixCls}-fixed-body`,
+        {
+          [`${prefixCls}-fixed-body-shadow`]:this.data.length!=0
+        }
+      ]
     },
     styles () {
       let style = {};
@@ -1479,7 +1487,7 @@ export default {
     this.$nextTick(() => {
       this.ready = true;
       this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0;
-      this.visibleCount = Math.ceil(this.height / this.itemHeight) - (this.showHeader ? 1 : 0); 
+      this.visibleCount = Math.ceil(this.height / this.itemHeight) - (this.showHeader ? 0 : -1); 
       this.updateVisibleData();
       // this.focusIndex = this.defaultFocusIndex
     });
@@ -1502,16 +1510,8 @@ export default {
       
   },
   watch: {
-      // focusIndex (val) {
-      //   if (val >= 0) {
-      //     this.$nextTick(() => {
-      //       this.highlightCurrentRow(val)
-      //     })
-      //   }
-      // },
       toScrollTop () {
         this.privateToScrollTop = this.toScrollTop
-        
       },
       privateToScrollTop (val) {
         if (val) {
@@ -1555,28 +1555,18 @@ export default {
       },
       height () {
           this.fixedHeader();
+          this.$nextTick(()=>{
+            this.visibleCount = Math.ceil(this.height / this.itemHeight) - (this.showHeader ? 0 : -1);
+            this.updateVisibleData();
+          });
       },
       buttomNum(val,oldvalue){
-        // if(val == 0){
-        //   let curIndex = this.visibleData[0]._index||0
-        //   let index = curIndex+2*this.visibleCount;
-        //   if(index<this.rebuildData.length){
-        //     this.updateVisibleData(curIndex+this.visibleCount);
-        //   }
-        // }
         if(val==null || oldvalue == null) return;
         this.$nextTick(()=>{
           this.$emit('on-scroll',this.buttomNum);
         })
       },
       topNum(val,oldvalue){
-        // if(val == 0){
-        //   let curIndex = this.visibleData[0]._index||0
-        //   let index = curIndex-this.visibleCount;
-        //   if(index>=0){
-        //     this.updateVisibleData(index);
-        //   }
-        // }
       },
       shiftSelect(val){
         if (val.length==2) {

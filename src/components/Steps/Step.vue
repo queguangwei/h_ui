@@ -122,9 +122,6 @@
         };
       }
     },
-    updated () {
-      this.currentStatus = this.status;
-    },
     watch: {
       status (val) {
         this.currentStatus = val;

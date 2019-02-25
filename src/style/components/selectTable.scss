@@ -84,7 +84,7 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
     &-single &-selection{
         height: $input-height-base;
         position: relative;
-
+        overflow: hidden;
         .#{$selectTable-prefix-cls}-placeholder{
             color: $input-placeholder-color;
         }
