@@ -15,14 +15,14 @@
 <script>
 import {oneOf} from '../../util/tools'
 import Icon from '../Icon/Icon.vue'
-import Button from '../Button/Button.vue'
+import hButton from '../Button/Button.vue'
 import CollapseTransition from '../Notice/collapse-transition';
   const prefixCls = 'h-field-panel';
 
   export default {
     name: 'FieldPanel',
     // mixins: [ Locale ],
-    components: {Icon,Button,CollapseTransition},
+    components: {Icon,hButton,CollapseTransition},
     data () {
       return {
         prefixCls: prefixCls,

@@ -88,24 +88,24 @@ export default {
         {
           title: '金额',
           width: 200,
-          key: 'money',
+          key: 'money', 
         },
-        {
-          title: '卡号',
-          width: 200,
-          key: 'cardId',
-        },
-        {
-          title: '地区',
-          width: 200,
-          key: 'city',
-          multiple:false,
-        },
-        {
-          title: '下拉树',
-          width: 200,
-          key: 'tree',
-        }
+        // {
+        //   title: '卡号',
+        //   width: 200,
+        //   key: 'cardId',
+        // },
+        // {
+        //   title: '地区',
+        //   width: 200,
+        //   key: 'city',
+        //   multiple:false,
+        // },
+        // {
+        //   title: '下拉树',
+        //   width: 200,
+        //   key: 'tree',
+        // }
       ],
     }
   },

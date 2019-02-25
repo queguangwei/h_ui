@@ -69,6 +69,7 @@ import Split from './components/Split';
 import Drawer from './components/Drawer';
 import Log from './components/Log';
 import SimpleTreeGird from './components/SimpleTreeGird';
+import Calendar from './components/Calendar';
 // import FileImport from './components/FileImport';
 // import FileExport from './components/FileExport';
 import Tag from './components/Tag';
@@ -247,7 +248,9 @@ const h_ui = {
     Tag:Tag,
     hTag:Tag,
     SimpleTreeGird:SimpleTreeGird,
-    hSimpleTreeGird:SimpleTreeGird
+    hSimpleTreeGird:SimpleTreeGird,
+    Calendar:Calendar,
+    hCalendar:Calendar
     // FileImport:FileImport,
     // hFileImport:FileImport,
     // FileExport: FileExport,

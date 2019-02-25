@@ -8,24 +8,9 @@
     <h-button @click="exportData('xls')">下载数据xls</h-button>
     <h2>不带边线 单选 on-current-change</h2>
     <!-- :multiLevel="multiLevel2" -->
-    <!-- notAdaptive -->
-     <h-simple-table ref="table" :columns="columnsBig1" splitIndex border :data="bigData" no-data-text="数据为空" :loading="loading" height="800" @on-selection-change="select" :itemHeight="30" :highlight-row="true" @on-current-change="select" @on-current-change-cnacle="select" notSort>
+    <!-- notAdaptive splitIndex -->
+     <h-simple-table ref="table" :columns="columnsBig1" notAdaptive border :data="bigData" no-data-text="数据为空" :loading="loading" :height="tableHeight" @on-selection-change="select" :itemHeight="30" :highlight-row="true" @on-current-change="select" @on-current-change-cnacle="select" notSort>
     </h-simple-table> 
-    <table border='1' collapse>
-      <thead>
-        <th v-for="item in columnsBig1" :key="item.key">{{item.title}}</th>
-      </thead>
-      <tbody>
-        <tr v-for="(tritem, index) in bigData1" :key="index">  
-          <td v-for="(tditem, tdidx) in Object.keys(tritem)" :key="tdidx"><div>
-            <span>{{tritem[tditem]}}</span>
-            <input type="checkbox">
-            <!-- <Checkbox size="large"></Checkbox> -->
-          </div></td>
-        </tr>
-      </tbody>
-
-    </table>
   </div>
 </template>
 <script>
@@ -48,6 +33,7 @@ export default {
       loading:false,
       bigData:[],
       bigData1:[],
+      tableHeight:0,
       columnsBig1: [
         {
           type: "index",
@@ -171,7 +157,7 @@ export default {
           title: "修改时间",
           key: "dtime_operate",
           align: "center",
-          // width: 100,
+          width: 100,
           ellipsis: true,
         },
       ],
@@ -195,14 +181,16 @@ export default {
   },
   methods:{
     loadData(){
+      this.tableHeight=500;
       let old = new Date().getTime()
       console.log(old)
-      this.bigData = jsonData.slice(0,10);
       // this.bigData = jsonData.slice(0, 100);
       this.$nextTick(() => {
         let newDate = new Date().getTime() - old
         console.log(newDate)
+        this.bigData = jsonData.slice(0,60);
       })
+      
     },
     loadData1(){
       let old = new Date().getTime()

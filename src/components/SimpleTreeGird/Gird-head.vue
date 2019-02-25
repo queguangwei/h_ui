@@ -60,7 +60,7 @@ export default {
   computed: {
     styles () {//深拷贝
       const style = Object.assign({}, this.styleObject);
-      const width = this.$parent.bodyHeight === 0 ? parseInt(this.styleObject.width) : parseInt(this.styleObject.width) + this.$parent.scrollBarWidth;
+      const width = this.$parent.tableWidth+1>=this.$parent.initWidth-this.$parent.scrollBarWidth ?parseInt(this.styleObject.width) + this.$parent.scrollBarWidth:parseInt(this.styleObject.width);
       style.width = `${width}px`;
       return style;
     },
@@ -97,6 +97,9 @@ export default {
         const columnRect = columnEl.getBoundingClientRect();
         const minLeft = columnRect.left - tableLeft + 30;
         let lastWidth =this.findObj(event,"TR").lastChild.offsetWidth;
+        if(this.$parent.tableWidth<this.$parent.initWidth-this.$parent.scrollBarWidth){
+          lastWidth = lastWidth+this.$parent.initWidth-this.$parent.tableWidth-this.$parent.scrollBarWidth;
+        }
         let tableWidth = this.$el.parentElement.offsetWidth;
         let headWidth = this.$el.offsetWidth;
         addClass(columnEl, 'noclick');
@@ -140,7 +143,7 @@ export default {
                 lastWidth = lastWidth-dragWidth;
               }
             }
-            if (table.bodyHeight !== 0) {
+            if (this.$parent.bodyHeight!=0&&!this.$parent.notAdaptive) {
               lastWidth = lastWidth - getScrollBarSize();
             }
             table.changeWidth(columnWidth, column.key,lastWidth)

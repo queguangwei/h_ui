@@ -1,6 +1,7 @@
 <template>
   <div>
     <!-- <h-msg-box v-model="changeform" width="900" escClose left="10" closeDrop> -->
+    <Button @on-click="changeSelect"></Button>
       <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus cols="2">
         <h-form-item label="日期控件">
           <h-row>
@@ -254,7 +255,7 @@ for(let i=0;i<60;i++){
           select1: ['1','2'],
           select2: '',
           simpleSelect:["value1"],
-          simpleSelect1:"value1",
+          // simpleSelect1:"",
         },
         bigData:[],
         data2: [{
@@ -409,6 +410,26 @@ for(let i=0;i<60;i++){
       }
     },
     methods: {
+      changeSelect(){
+        this.formItem2 = {
+          input: '1',
+          select: '',
+          radio: '',
+          money: '1244',
+          moneyrange:[],
+          checkbox: [],
+          fatdate: '',
+          date: '',
+          time: '',
+          slider: '',
+          tree:'',
+          textarea: '',
+          select1: ['1','2'],
+          select2: '',
+          simpleSelect:["value1"],
+          simpleSelect1:"value1",
+        }
+      },
       changeClick(data,lastdata,inx){
         console.log(data)
         console.log(lastdata)

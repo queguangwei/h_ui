@@ -174,35 +174,35 @@ export default {
       ],
       columns18: [
          {
-             type: "selection",
-             width: 120,
-             align: "center",
-             renderHeader: (h, params) => {
-                        return h('div', [
-                            h('checkbox', {
-                                on: {
-                                    'on-change': (value) => {
+            type: "selection",
+            width: 120,
+            align: "center",
+            renderHeader: (h, params) => {
+              return h('div', [
+                  h('checkbox', {
+                      on: {
+                          'on-change': (value) => {
 
-                                        // this.$refs.table.selectAll(true)
-                                    }
-                                }
-                            }),
-                            h('h-icon',{
-                                props:{
-                                    name:'android-arrow-dropdo'
-                                },
-                                style:{
-                                    position:'absolute',
-                                    marginLeft:'5px'
-                                },on: {
-                                    'on-click': (value) => {
-                                        // console.log("click")
-                                    }
-                                }
-                            })
-                        ])
-                    },
-            //  fixed: "left",
+                              // this.$refs.table.selectAll(true)
+                          }
+                      }
+                  }),
+                  h('h-icon',{
+                      props:{
+                          name:'android-arrow-dropdo'
+                      },
+                      style:{
+                          position:'absolute',
+                          marginLeft:'5px'
+                      },on: {
+                          'on-click': (value) => {
+                              // console.log("click")
+                          }
+                      }
+                  })
+              ])
+            },
+             fixed: "left",
             //  filters: [
             //    {
             //        label: '大于4000',
@@ -1780,7 +1780,6 @@ export default {
           title: '地址',
           ellipsis:true,
           key: 'address',
-
           // hiddenCol:true,
         },
         {

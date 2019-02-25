@@ -626,10 +626,18 @@ export default {
       return groupData;
     },
     dblclickCurrentRow (_index) {
-      if ((!this.rowSelect || !this.selectType)&&this.highlightRow) {
-        this.highlightCurrentRow (_index);
+      if (this.typeName=="groupTable" && String(_index).indexOf('.')!=-1) {
+        let arr = String(_index).split('.');
+        let i = arr[0];
+        let j = Number(arr[1])-1;
+        let currentData = this.getGroupData(i,j);
+        this.$emit('on-row-dblclick', JSON.parse(JSON.stringify(currentData)),Number(i),j);
+      }else{
+        if ((!this.rowSelect || !this.selectType)&&this.highlightRow) {
+          this.highlightCurrentRow (_index);
+        }
+        this.$emit('on-row-dblclick', JSON.parse(JSON.stringify(this.cloneData[_index])));
       }
-      this.$emit('on-row-dblclick', JSON.parse(JSON.stringify(this.cloneData[_index])));
     },
     getSelection (str) {
       let selectionIndexes = [];

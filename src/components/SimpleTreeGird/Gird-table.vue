@@ -36,13 +36,7 @@
         <div class="h-table-tiptext" :style="textStyle" >
           <span v-html="localeNoDataText" v-if="!data || data.length === 0"></span>
         </div>
-        <table cellspacing="0" cellpadding="0" border="0" :style="tipStyle">
-          <tbody>
-            <tr>
-              <td :style="{ 'height': bodyStyle.height }">
-              </td>
-            </tr>
-          </tbody>
+        <table cellspacing="0" cellpadding="0" border="0" :style="tableStyle" style="height:1px">
         </table>
       </div>
       <div class="h-table__column-resize-proxy" ref="resizeProxy" v-show="resizeProxyVisible"> </div>
@@ -160,11 +154,11 @@ export default {
     selectRoot:{
       type:Boolean,
       default:false,
-    }
-    // notAdaptive: {
-    //   type:Boolean,
-    //   default:false,
-    // },
+    },
+    notAdaptive: {
+      type:Boolean,
+      default:false,
+    },
     // highlightRow: {
     //   type:Boolean,
     //   default:false,
@@ -240,8 +234,8 @@ export default {
     styles () {
       let style = {};
       if (this.height) {
-        const height = (this.isLeftFixed || this.isRightFixed) ? parseInt(this.height) + this.scrollBarWidth : parseInt(this.height);
-        style.height = `${height+2}px`;
+        const height = Number(this.height)+2;
+        style.height = `${height}px`;
       }
       if (this.width) style.width = `${this.width}px`;
       return style;
@@ -249,24 +243,7 @@ export default {
     tableStyle () {
       let style = {};
       if (this.tableWidth !== 0) {
-        let width = '';
-        if (this.bodyHeight === 0) {
-          width = this.tableWidth;
-        } else {
-          if (this.bodyHeight > this.bodyRealHeight && this.data.length>0) {
-            width = this.tableWidth;
-          } else {
-            width = this.tableWidth - this.scrollBarWidth;
-          }
-        }
-        style.width = `${width}px`;
-      }
-      return style;
-    },
-    tipStyle () {
-      let style = {};
-      if (this.tableWidth !== 0) {
-        let width = this.tableWidth;
+        let width = this.tableWidth - this.scrollBarWidth;
         style.width = `${width}px`;
       }
       return style;
@@ -315,9 +292,6 @@ export default {
         var colWidth = col.width||col._width
         totalWidth = totalWidth+ colWidth;
       });
-      if (this.bodyHeight !=0 && !that.notAdaptive) {
-        totalWidth = totalWidth + this.scrollBarWidth;
-      }
       this.tableWidth=totalWidth;
       // && !that.notAdaptive
       if (this.tableWidth<this.initWidth && !that.notAdaptive) {
