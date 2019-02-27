@@ -271,8 +271,8 @@
         this.isDeepcopy = true;
         this.stateTree = this.isDeepcopy?this.data:deepCopy(this.data);
       }
-      // this.flatState = this.compileFlatState();
-      // this.rebuildTree();
+      this.flatState = this.compileFlatState();
+      this.rebuildTree();
     },
     watch:{
       data: {

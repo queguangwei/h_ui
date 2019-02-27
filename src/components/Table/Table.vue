@@ -848,7 +848,7 @@ export default {
     },
     dblclickCurrentRow (_index) {
       if (!this.rowSelect) {
-        this.highlightCurrentRow (_index);
+        // this.highlightCurrentRow (_index);
       }
       this.$emit('on-row-dblclick', JSON.parse(JSON.stringify(this.cloneData[_index])));
     },

@@ -1,5 +1,57 @@
 <template>
 <div>
+
+    <h-tree :data="baseData" show-checkbox ref="tree1" notDeepCopy></h-tree>
+     <h-button type="primary" @click="getCheckedNodes('tree1')" style="margin-top: 18px">获取被勾选的节点</h-button>
+     {{ids}}
+</div>
+</template>
+<script>
+    export default {
+        data () {
+            return {
+              baseData: [{
+                    expand: true,
+                     checked: true,
+                    title: 'parent 1',
+                    children: [{
+                        title: 'parent 1-0',
+                        expand: true,
+                        children: [{
+                            expand: true,
+                            checked: true,
+                            title: 'leaf'
+                        }, {
+                            title: 'leaf',
+                            checked: true
+                        }]
+                    }, {
+                        title: 'parent 1-1',
+                        expand: true,
+                        checked: true,
+                        children: [{
+                            title: '<span style="color: red">leaf</span>',
+                            checked: true
+                        }, {
+                            title: 'leaf2',
+                            checked: true
+                        }]
+                    }]
+                }],
+                ids:[]
+            }
+        },
+         methods: {
+                getCheckedNodes (name) {
+                    console.log(this.baseData)
+
+                  // this.ids=this.$refs[name].getCheckedNodes();
+                }
+                }
+    }
+</script>
+<!--<template>
+<div>
   <h-select-tree
       v-model="val1"
       style="width:200px"
@@ -62,7 +114,7 @@ export default{
     }
   },
 }
-</script>
+</script>-->
 <!--<template>
 <div>
     <h-tree :data="baseData" :render="renderContent" notDeepCopy></h-tree>         
@@ -214,7 +266,7 @@ export default{
 <!--<template>
 <div>
   <h-button @click="setData">赋值</h-button>
-  <h-table :columns="columns1" :data="data2" notSetWidth></h-table>
+  <h-table :columns="columns1" :data="data1" notSetWidth></h-table>
   <h-table :columns="columns1" :data="data2" border ctrSelection clickToSelect></h-table>
 </div>
 </template>

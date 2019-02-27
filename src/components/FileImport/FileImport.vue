@@ -72,6 +72,10 @@
             return value
           }
         }
+      },
+      onlyDrag: {
+        type: Boolean,
+        default: false
       }
     },
     computed: {
@@ -102,6 +106,10 @@
         let tableData = []
         let sheetData = {}
         let that = this
+        if (this.accept != '' && this.accept.indexOf(file[0].type) < 0) {
+          this.$hMessage.warning('文件类型不正确')
+          return 
+        } 
         this.fileName = file[0].name
         fileReader.onload = (ev) => {
           try {
@@ -165,6 +173,7 @@
         fileReader.readAsBinaryString(file[0])
       },
       handleClick () {
+        if (this.onlyDrag && this.type == 'drag') return
         this.$refs.input.click()
       },
       onDrop (e) {

@@ -1,5 +1,5 @@
 <template>
-  <div :class="[`${prefixCls}-wrapper`]" ref="calendarWrap" @scroll="handleBodyScroll">
+  <div :class="[`${prefixCls}-wrapper`]" ref="calendarWrap">
     <slot name="header">
       <div :class="[`${prefixCls}-top-change`]">
         <div :class="[`${prefixCls}-top-icon h-prev-year`]" @click="handleToPrevYear">
@@ -21,7 +21,13 @@
             </div>
           </div>
           <div :class="[`${prefixCls}-month-content ${prefixCls}-month-day`]">
-            <div :class="[{[`${prefixCls}-month-content-item`]: true, [`${prefixCls}-month-restDay`]: item.workFlag == 0, [`${prefixCls}-month-item-empty`]: item == ''}]" v-for="(item,index) in monthInfo.list" :key="index" @click.left="handleDateSelect($event, monthInfo.month, item, index)" @click.right.stop.prevent="handleDateSet($event, monthInfo.month, item, index)">
+            <div v-for="(item,index) in monthInfo.list" :key="index" 
+              :class="dayClass(item)"
+              @click.left="handleDateSelect($event, monthInfo.month, item, index)" 
+              @click.right.stop.prevent="handleDateSet($event, monthInfo.month, item, index)"
+              @dblclick="dblClick(monthInfo.month, item)"
+              @mouseover="mouseOver(monthInfo.month, item)"
+              @mouseout="mouseOut(monthInfo.month, item)">
               {{transDate(item.date)}}
             </div>
           </div>
@@ -69,6 +75,9 @@
         default: () => {
           return []
         }
+      },
+      disableDate:{
+        type:Function
       }
     },
     directives: {
@@ -86,13 +95,15 @@
         handler (val) {
           // this.curDateData = val
           if (val && val.length > 0) {
-            debugger
           }
         },
         deep: true
       },
       curYear (val) {
         this.setDateDetail()
+      },
+      currentYear (val) {
+        this.curYear = val
       }
     },
     computed: {
@@ -102,17 +113,29 @@
       }
     },
     methods: {
+      dayClass (item) {
+        return {
+          [`${prefixCls}-month-content-item`]: true,
+          [`${prefixCls}-month-restDay`]: item.workFlag == 0,
+          [`${prefixCls}-month-item-empty`]: item == '',
+          [`${prefixCls}-month-item-disable`]: item.disabled
+        }
+      },
       // 设置当前日历
-      setDateDetail () {
-        console.log('curYear')
+      setDateDetail () { 
         if (this.dateData && this.dateData.length == 0 || (this.dateData.length != 12 && this.dateData.length !== this.yearDay)) {
           // 生成日期信息
           let dateDataArr = []
           for (let i = 1; i <= this.yearDay; i++) {
             let day = new Date(this.curYear,0, i)
+            let isDisabled = false
+            if(this.disableDate){
+              isDisabled = this.disableDate(day)
+            }
             dateDataArr.push({
               date: day,
-              workFlag: (day.getDay() == 6 || day.getDay() == 0) ? 0 : 1
+              workFlag: (day.getDay() == 6 || day.getDay() == 0) ? 0 : 1,
+              disabled: isDisabled
             })
           }
           // 初始化日期信息
@@ -166,6 +189,7 @@
           *      {
           *        date: Date,
           *        workFlag: 0休息日，1工作日
+          *        disabled: 禁用日期
           *      }
           *    ]
           } */
@@ -202,7 +226,8 @@
         }
       },
       handleDateSelect (e, month, day, index) {
-        if (day == '') return
+        if (day == ''||day.disabled) return
+        this.$emit('on-click', month+1, this.transDate(day.date))
         e.target.classList.toggle('h-calendar-month-day-active')
         let isHas = false
         this.dateSelected.some((item, index) => {
@@ -224,12 +249,24 @@
         // }
       },
       handleDateSet ($event, mdonth, day, index) {
-        if (day == '') return
+        if (day == '' || day.disabled) return
         this.styles = {
           display: 'block',
           top: `${$event.clientY}px`,
           left: `${$event.clientX}px`,
         }
+      },
+      dblClick (month, day) {
+        if (day == ''||day.disabled) return
+        this.$emit('on-dblclick', month+1, this.transDate(day.date))
+      },
+      mouseOver (month, day) {
+        if (day == ''||day.disabled) return
+        this.$emit('on-mouseover', month+1, this.transDate(day.date))
+      },
+      mouseOut (month, day) {
+        if (day == ''||day.disabled) return
+        this.$emit('on-mouseout', month+1, this.transDate(day.date))
       },
       handleHide (e) {
         this.styles = {}
@@ -257,20 +294,13 @@
       transDate (date) {
         return date && date != '' ? date.getDate() : ''
       },
-      handleBodyScroll (event) {
-      }
-     },
-    created () {
-      // 若为12,则默认为初始化过后的日期信息列表[复制]
-      this.curYear = new Date().getFullYear()
-      this.setDateDetail()
-      // 保存初始值
     },
     mounted() {
+       // 若为12,则默认为初始化过后的日期信息列表[复制]
+      this.curYear = this.currentYear;
+      this.setDateDetail()
+      // 保存初始值
       // let that = this
-      document.addEventListener('scroll', (e) => {
-        this.styles = {}
-      })
     },
   }
 </script>
