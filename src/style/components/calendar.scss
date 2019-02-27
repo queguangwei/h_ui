@@ -60,6 +60,10 @@ $calendar-prefix-cls: "#{$css-prefix}calendar";
   &-month-content.#{$calendar-prefix-cls}-month-day &-month-content-item.#{$calendar-prefix-cls}-month-item-empty {
     background: none;
   }
+  &-month-content-item.#{$calendar-prefix-cls}-month-item-disable{
+    background: $input-disabled-bg !important;
+    color: $btn-disable-color;
+  }
   &-month-content.#{$calendar-prefix-cls}-month-day &-month-content-item.#{$calendar-prefix-cls}-month-restDay{
     color: red;
     background: none;
