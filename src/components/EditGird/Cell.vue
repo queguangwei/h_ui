@@ -250,7 +250,11 @@ export default {
       this.parent.toggleSelect(this.index);
     },
     toggleExpand (e) {
-      this.parent.toggleExpand(this.index,e);
+      if(this.typeName=='groupTable'){
+        this.parent.toggleExpandChild(this.index,e);
+      }else{
+        this.parent.toggleExpand(this.index,e);
+      }
     },
     handleClick () {
         // 放置 Checkbox 冒泡

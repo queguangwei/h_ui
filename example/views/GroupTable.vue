@@ -229,20 +229,31 @@ export default {
       loading:false,
       columns1: [
         {
-          title: '姓名',
-          key: 'name',
-          width: 200,
-          hiddenOther:true,
-          render:(h,params)=>{
-            return h('span',[
-              h('Icon', {
-                props: {
-                  name: 'person'
-                }
-              }),
-            ])
+          type: 'expand',
+          width: 50,
+          render: (h, params) => {
+            return h(TexpandRow, {
+              props: {
+                  row: params.row
+              }
+            })
           }
         },
+        // {
+        //   title: '姓名',
+        //   key: 'name',
+        //   width: 200,
+        //   hiddenOther:true,
+        //   render:(h,params)=>{
+        //     return h('span',[
+        //       h('Icon', {
+        //         props: {
+        //           name: 'person'
+        //         }
+        //       }),
+        //     ])
+        //   }
+        // },
         {
           title: '年龄',
           width: 200,

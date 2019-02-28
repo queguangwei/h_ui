@@ -59,7 +59,10 @@ export default {
         }
       }
       if (this.type == 'months' || this.type == 'day') {
-        if(pos==2){
+        if (pos>2 ||Number(value)>12||value =='00') {
+          value = value.substr(-1)
+          event.target.value = value
+        }else if (pos==2) {
           this.$emit('on-change-focus');
         }
       }

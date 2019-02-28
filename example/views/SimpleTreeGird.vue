@@ -10,7 +10,7 @@
 </template>
 <script>
 let bigData = [];
-for(var i=0;i<50;i++){
+for(var i=0;i<5;i++){
   let obj =  {
     id: i,
     name: '王小明'+i,
@@ -90,22 +90,22 @@ export default {
           width: 200,
           key: 'money', 
         },
-        // {
-        //   title: '卡号',
-        //   width: 200,
-        //   key: 'cardId',
-        // },
-        // {
-        //   title: '地区',
-        //   width: 200,
-        //   key: 'city',
-        //   multiple:false,
-        // },
-        // {
-        //   title: '下拉树',
-        //   width: 200,
-        //   key: 'tree',
-        // }
+        {
+          title: '卡号',
+          width: 200,
+          key: 'cardId',
+        },
+        {
+          title: '地区',
+          width: 200,
+          key: 'city',
+          multiple:false,
+        },
+        {
+          title: '下拉树',
+          width: 200,
+          key: 'tree',
+        }
       ],
     }
   },

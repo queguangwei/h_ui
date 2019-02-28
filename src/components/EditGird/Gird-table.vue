@@ -677,7 +677,7 @@ export default {
           _this.objData[k]._isChecked = !_this.objData[k].item.some(col=>!col._isChecked);
 
           const selection = _this.getGroupSelection();
-          _this.$emit(status ? 'on-select' : 'on-select-cancel', selection, JSON.parse(JSON.stringify(_this .getGroupData(k,m))));
+          _this.$emit(status ? 'on-select' : 'on-select-cancel', selection, JSON.parse(JSON.stringify(_this.getGroupData(k,m))));
           _this.$emit('on-selection-change', selection);
 
         }else{        
@@ -727,6 +727,17 @@ export default {
       }
       this.$emit('on-expand', JSON.parse(JSON.stringify(this.cloneData[_index])), status);
       // this.$emit('on-expand',status);
+    },
+    toggleExpandChild (_index){
+      if (String(_index).indexOf('.') != -1) {
+        let k = String(_index).split('.')[0];
+        let m = Number(String(_index).split('.')[1])-1;
+        let data = this.objData[k].item[m];
+        const status = !data._isExpanded;
+        this.$set(this.objData[k].item[m],'_isExpanded',status)
+        this.$emit('on-expand-child', JSON.parse(JSON.stringify(this.getGroupData(k,m))), status);
+
+      }
     },
     selectAll (status) {
         // this.rebuildData.forEach((data) => {
@@ -883,6 +894,11 @@ export default {
               obj._isHighlight = obj._highlight;
             } else {
               obj._isHighlight = false;
+            }
+            if (obj._expand) {
+              obj._isExpanded = obj._expand;
+            } else {
+              obj._isExpanded = false;
             }
           });
           data[index] = newRow;

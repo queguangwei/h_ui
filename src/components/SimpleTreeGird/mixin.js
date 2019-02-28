@@ -29,11 +29,12 @@ export default {
                 width = this.columnsWidth[column._index].width;
             }
             if (this.columns.length === index + 1 && this.$parent.bodyHeight !== 0&& width!='') {
-                if(this.$parent.tableWidth+1>=this.$parent.initWidth-this.$parent.scrollBarWidth&&top){
-                    width += this.$parent.scrollBarWidth;
-                }else if(this.$parent.contentHeight<this.$parent.height){
-                    width += this.$parent.scrollBarWidth;
+                if(this.$parent.tableWidth+1>=this.$parent.initWidth-this.$parent.scrollBarWidth&&!top&&this.$parent.bodyRealHeight>this.$parent.height){
+                    width = width-this.$parent.scrollBarWidth;
                 }
+                // else if(this.$parent.bodyRealHeight>this.$parent.height){
+                //     width += this.$parent.scrollBarWidth;
+                // }
                 // width += this.$parent.scrollBarWidth;
             }
             if (width === '0') width = '';
