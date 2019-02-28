@@ -7,6 +7,7 @@
         type="radio"
         :class="inputClasses"
         :disabled="disabled"
+        :readonly = "readonly"
         :checked="currentValue"
         @change="change">
     </span><slot>{{ label }}</slot>
@@ -45,7 +46,11 @@
         validator (value) {
             return oneOf(value, ['small', 'large', 'default']);
         }
-      }
+      },
+      readonly: {
+        type: Boolean,
+        default: false
+      },
     },
     data () {
       return {

@@ -59,7 +59,7 @@ import GirdHead from './Gird-head.vue';
 import TreeTable from './Tree-table.vue';
 import Spin from '../Spin/Spin.vue';
 import Mixin from './mixin';
-import { oneOf, getStyle, deepCopy, deepCopyEx, getScrollBarSize,getBarBottom,findInx} from '../../util/tools';
+import { oneOf, getStyle, deepCopy, deepCopyEx, getScrollBarSize,getBarBottom,findInx,IEVersion} from '../../util/tools';
 import { on, off } from '../../util/dom';
 import Locale from '../../mixins/locale';
 // import Csv from '../../util/csv';
@@ -347,7 +347,6 @@ export default {
               } else {
                   if (width < 100) width = 100
               }
-
               this.cloneColumns[i]._width = width||'';
 
               columnsWidth[column._index] = {
@@ -363,6 +362,9 @@ export default {
               let width = parseInt(getStyle($th[i], 'width'));
               if (i === autoWidthIndex) {
                 width = parseInt(getStyle($th[i], 'width')) - 1;
+              }
+              if(IEVersion()!=-1){               
+                width = width+31;
               }
              // 自适应列在表格宽度较小时显示异常，为自适应列设置最小宽度100（拖拽后除外）
               if (column.width) {
