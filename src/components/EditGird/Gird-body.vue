@@ -77,7 +77,7 @@
               :typeName="typeName"
               :checked="rowChecked(row._index)"
               :disabled="rowDisabled(row._index)"
-              :expanded="rowExpanded(row._index)"
+              :expanded="rowExpandedChild(row._index)"
               :showEditInput="showEditInput"
             ></Cell>
           </td>
