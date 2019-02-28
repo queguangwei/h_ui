@@ -42,7 +42,6 @@
         </table-tr>
         <tr v-if="rowExpanded(row._index)">
           <td :colspan="columns.length" :class="prefixCls + '-expanded-cell'">
-
             <Expand :key="row._rowKey" :row="row" :render="expandRender" :index="row._index"></Expand>
           </td>
         </tr>
@@ -83,7 +82,7 @@
             ></Cell>
           </td>
         </table-tr>
-        <tr v-if="rowExpanded(row._index)">
+        <tr v-if="rowExpandedChild(row._index)">
           <td :colspan="columns.length" :class="prefixCls + '-expanded-cell'">
             <Expand :key="row._rowKey" :row="row" :render="expandRender" :index="row._index" :fixed="fixed"></Expand>
           </td>
@@ -222,6 +221,11 @@
         },
         rowExpanded(_index){
           return this.objData[_index] && this.objData[_index]._isExpanded;
+        },
+        rowExpandedChild(_index){
+          let k = String(_index).split('.')[0];
+          let m = Number(String(_index).split('.')[1])-1;
+           return this.objData[k].item[m] && this.objData[k].item[m]._isExpanded;
         },
         handleMouseIn (_index) {
           this.$parent.handleMouseIn(_index);

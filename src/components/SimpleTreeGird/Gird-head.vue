@@ -1,5 +1,5 @@
 <template>
-  <table cellspacing="0" cellpadding="0" border="0" :style="styles">
+  <table cellspacing="0" cellpadding="0" border="0" :style="styleObject">
   <!-- 签用于对表格中的列进行组合，以便对其进行格式化。 -->
     <colgroup>
       <col v-for="(column, index) in columns" :width="setCellWidth(column, index, true)" :key="index">
@@ -58,12 +58,6 @@ export default {
     }
   },
   computed: {
-    styles () {//深拷贝
-      const style = Object.assign({}, this.styleObject);
-      const width = this.$parent.tableWidth+1>=this.$parent.initWidth-this.$parent.scrollBarWidth ?parseInt(this.styleObject.width) + this.$parent.scrollBarWidth:parseInt(this.styleObject.width);
-      style.width = `${width}px`;
-      return style;
-    },
     isSelectAll () {
       // let isSelectAll = true;
       // if (!this.data.length) isSelectAll = false;

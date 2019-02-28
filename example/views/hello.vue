@@ -1,54 +1,57 @@
 <template>
-<div>
-
-    <h-tree :data="baseData" show-checkbox ref="tree1" notDeepCopy></h-tree>
-     <h-button type="primary" @click="getCheckedNodes('tree1')" style="margin-top: 18px">获取被勾选的节点</h-button>
-     {{ids}}
-</div>
+    <div>
+        <h-checkbox-group v-model="formGroup">
+            <div v-for="item in list" :key="item.key">
+                <h-checkbox label="twitter">
+                    <h-icon name="social-twitter"></h-icon>
+                    <span>Twitter</span>
+                </h-checkbox>
+                <h-select v-model="selectName" transfer isString multiple :width="160">
+                    <h-option v-for="it in list" :key="it.key" :value="it.key">{{it.text}}</h-option>
+                </h-select>
+            </div>
+        </h-checkbox-group>
+        <h-button @click="click">sdsds</h-button>
+        <h-form :model="formData" :label-width="100" ref="formMsgbox" :rules="ruleValidate"
+        :showMessage='false' :errorFocus='true' class="h-modal-content">
+            <h-form-item prop="aaa" class="formItem" label="AAA">
+                <h-input v-model="formData.aaa"></h-input>
+            </h-form-item>
+            <h-form-item prop="bbb" class="formItem" label="bbb">
+                <h-input v-model="formData.bbb"></h-input>
+            </h-form-item>
+        </h-form>
+    </div>
 </template>
 <script>
-    export default {
-        data () {
-            return {
-              baseData: [{
-                    expand: true,
-                     checked: true,
-                    title: 'parent 1',
-                    children: [{
-                        title: 'parent 1-0',
-                        expand: true,
-                        children: [{
-                            expand: true,
-                            checked: true,
-                            title: 'leaf'
-                        }, {
-                            title: 'leaf',
-                            checked: true
-                        }]
-                    }, {
-                        title: 'parent 1-1',
-                        expand: true,
-                        checked: true,
-                        children: [{
-                            title: '<span style="color: red">leaf</span>',
-                            checked: true
-                        }, {
-                            title: 'leaf2',
-                            checked: true
-                        }]
-                    }]
+export default {
+    data(){
+        return{
+            formGroup:[],
+            selectName:"",
+            list:[{key:1,text:"xxx"},{key:2,text:"yyy"}],
+            formData:{
+                aaa:"",
+                bbb:"",
+            },
+            ruleValidate:{
+                aaa:[{
+                    required: true,
+                    message: "请输入aaa"
                 }],
-                ids:[]
+                bbb:[{
+                    required: true,
+                    message: "请输入bbb"
+                }]
             }
+        }
+    },
+    methods:{
+        click(){
+            this.ruleValidate.aaa[0].required = false
         },
-         methods: {
-                getCheckedNodes (name) {
-                    console.log(this.baseData)
-
-                  // this.ids=this.$refs[name].getCheckedNodes();
-                }
-                }
-    }
+    },
+}
 </script>
 <!--<template>
 <div>

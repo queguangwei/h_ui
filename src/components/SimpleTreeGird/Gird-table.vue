@@ -18,7 +18,7 @@
         v-show="!(!!localeNoDataText && (!data || data.length === 0))">
         <Tree-table
           ref="tbody"
-          :styleObject ="tableStyle"
+          :styleObject ="tableBodyStyle"
           :indent ="Number(0)"
           :data="data"
           :prefix-cls="prefixCls"
@@ -28,7 +28,12 @@
           :checkedObj="checkedObj"
           :indexAndId="indexAndId"
           :selectRoot="selectRoot"
-          :isCheckbox="isCheckbox">
+          :isCheckbox="isCheckbox"
+          :bodyRealHeight="bodyRealHeight"
+          :tableWidth="tableWidth"
+          :initWidth="initWidth"
+          :scrollBarWidth="scrollBarWidth"
+          :height="height">
         </Tree-table>
       </div>
       <div :class="[prefixCls + '-tip']"
@@ -243,7 +248,18 @@ export default {
     tableStyle () {
       let style = {};
       if (this.tableWidth !== 0) {
-        let width = this.tableWidth - this.scrollBarWidth;
+        let width = this.tableWidth;
+        style.width = `${width}px`;
+      }
+      return style;
+    },
+    tableBodyStyle () {
+      let style = {};
+      if (this.tableWidth !== 0) {
+        let width = this.tableWidth;
+        if(this.tableWidth+1>=this.initWidth-this.scrollBarWidth && this.bodyRealHeight>this.height){
+          width = parseInt(this.tableWidth) - this.scrollBarWidth
+        }
         style.width = `${width}px`;
       }
       return style;
@@ -404,6 +420,7 @@ export default {
     },
     toggleExpand (row,status) {
       this.$nextTick(()=>{
+        this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'));
         this.$emit('on-expand', row,status);
       })
     },
