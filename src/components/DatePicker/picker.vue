@@ -371,6 +371,8 @@
                       val = parser(val, format);
                   } else if (type === 'timerange') {
                       val = parser(val, format);
+                  } else if (Array.isArray(val)) { /* FIX: TS:201902280227: yyyyMMdd类型的范围类型的日期处理出错 */
+                    val = parser(val, format);
                   } else {
                       val = val.map(date => new Date(date)); // try to parse
                       val = val.map(date => isNaN(date.getTime()) ? null : date); // check if parse passed
