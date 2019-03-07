@@ -73,7 +73,7 @@
             @on-change-width="changeWidth"
             ></table-head>
         </div>
-        <div :class="[prefixCls + '-fixed-body']" :style="fixedBodyStyle" ref="fixedBody" @mousewheel="handleFixedMousewheel" @DOMMouseScroll="handleFixedMousewheel">
+        <div :class="fixedBodyClass" :style="fixedBodyStyle" ref="fixedBody" @mousewheel="handleFixedMousewheel" @DOMMouseScroll="handleFixedMousewheel">
           <table-body
             fixed="left"
             :prefix-cls="prefixCls"
@@ -105,7 +105,7 @@
             :notSetWidth="notSetWidth"
             ></table-head>
         </div>
-        <div :class="[prefixCls + '-fixed-body']" :style="fixedBodyStyle" ref="fixedRightBody" @mousewheel="handleFixedMousewheel" @DOMMouseScroll="handleFixedMousewheel">
+        <div :class="fixedBodyClass" :style="fixedBodyStyle" ref="fixedRightBody" @mousewheel="handleFixedMousewheel" @DOMMouseScroll="handleFixedMousewheel">
           <table-body
             fixed="right"
             :prefix-cls="prefixCls"
@@ -122,7 +122,6 @@
         </div>
       </div>
       <div :class="[prefixCls + '-summation']" :style="summationStyle" v-if="isSummation" ref="summation">
-        <!-- <div :class="[prefixCls + '-fixed-body']" :style="fixedBodyStyle" ref="fixedRightBody"> -->
         <table-body
           ref='sumBody'
           :sum = 'isSummation'
@@ -451,6 +450,14 @@ export default {
           [`${prefixCls}-fixed-header-with-empty`]: !this.rebuildData.length
         }
       ];
+    },
+    fixedBodyClass () {
+      return [
+        `${prefixCls}-fixed-body`,
+        {
+          [`${prefixCls}-fixed-body-shadow`]:this.data.length!=0
+        }
+      ]
     },
     fixedTableStyle () {
       let style = {};
@@ -841,7 +848,7 @@ export default {
     },
     dblclickCurrentRow (_index) {
       if (!this.rowSelect) {
-        this.highlightCurrentRow (_index);
+        // this.highlightCurrentRow (_index);
       }
       this.$emit('on-row-dblclick', JSON.parse(JSON.stringify(this.cloneData[_index])));
     },

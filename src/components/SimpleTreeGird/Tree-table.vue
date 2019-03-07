@@ -38,7 +38,12 @@
               :checkedObj="checkedObj"
               :indexAndId="indexAndId"
               :isCheckbox="isCheckbox"
-              :selectRoot="selectRoot">
+              :selectRoot="selectRoot"
+              :bodyRealHeight="bodyRealHeight"
+              :tableWidth="tableWidth"
+              :initWidth="initWidth"
+              :scrollBarWidth="scrollBarWidth"
+              :height="height">
             </Tree-table>
           </td>
         </tr>
@@ -72,7 +77,12 @@
       columnsWidth:Object,
       checkedObj:Array,
       indexAndId:Object,
-      selectRoot:Boolean
+      selectRoot:Boolean,
+      bodyRealHeight:[Number,String],
+      height:[Number,String],
+      tableWidth:[Number,String],
+      initWidth:[Number,String],
+      scrollBarWidth:[Number,String]
     },
     computed: {
       objData () {

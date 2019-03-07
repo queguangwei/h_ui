@@ -41,7 +41,7 @@
         <Typefield v-model="columnCard" type="cardNo" class="canEdit"></Typefield>
       </template>
       <template v-if="renderType === 'select'">
-        <Select v-model="columnSelect"  
+        <h-select v-model="columnSelect"  
           ref="select"
           :placeholder="column.placeholder"
           :placement="column.placement"
@@ -58,8 +58,8 @@
           :label-in-value="column.multiple|| column.singleShowLabel || false"
           @on-change = "editselectChange"
           class="canEdit">
-          <Option v-for="(item,i) in option" :key="i" :value="item.value" :label="item.label">{{item.label}}</Option>
-        </Select>
+          <h-option v-for="(item,i) in option" :key="i" :value="item.value" :label="item.label">{{item.label}}</h-option>
+        </h-select>
       </template>
       <template v-if="renderType === 'date'">
         <Date v-model="columnDate" 
@@ -74,7 +74,7 @@
         class="canEdit"></Date>
       </template>
       <template v-if="renderType === 'time'">
-        <Time v-model="columnTime" 
+        <h-time v-model="columnTime" 
         ref="time"
         :type="column.timeType||'time'" 
         :placement="column.placement"
@@ -83,7 +83,7 @@
         :editable ="column.editable"
         :steps="column.steps||[]" 
         :transfer="column.transfer"
-        class="canEdit"></Time>
+        class="canEdit"></h-time>
       </template>
       <template v-if="renderType === 'selectTree'">
         <SelectTree v-model="columnTree"
@@ -127,19 +127,19 @@ import Checkbox from '../Checkbox/Checkbox.vue';
 import hInput from '../Input'
 import InputNumber from '../InputNumber/InputNumber.vue'
 import Typefield from '../Typefield/Typefield.vue'
-import Select from '../Select'
+import hSelect from '../Select'
 import SelectTree from '../SelectTree/SelectTree.vue'
 import Date from '../DatePicker'
-import Time from '../TimePicker'
+import hTime from '../TimePicker'
 import clickoutside from '../../directives/clickoutside';
 import {addClass,removeClass,findComponentsUpward,deepCopy,getYMD,getHMS,typeOf} from '../../util/tools.js'
-const Option = Select.Option;
-const OptionGroup = Select.OptionGroup;
+const hOption = hSelect.Option;
+const hOptionGroup = hSelect.OptionGroup;
 
 export default {
   name: 'GirdCell',
   directives: { clickoutside },
-  components: { Icon, Checkbox, Cell, hInput, InputNumber, Typefield, Select, Option, OptionGroup, SelectTree, Date,Time},
+  components: { Icon, Checkbox, Cell, hInput, InputNumber, Typefield, hSelect, hOption,hOptionGroup, SelectTree, Date,hTime},
   props: {
     prefixCls: String,
     row: Object,
@@ -250,7 +250,11 @@ export default {
       this.parent.toggleSelect(this.index);
     },
     toggleExpand (e) {
-      this.parent.toggleExpand(this.index,e);
+      if(this.typeName=='groupTable'){
+        this.parent.toggleExpandChild(this.index,e);
+      }else{
+        this.parent.toggleExpand(this.index,e);
+      }
     },
     handleClick () {
         // 放置 Checkbox 冒泡
@@ -312,7 +316,9 @@ export default {
       })
     },
     dblclickCurrentCell(e){
-      e.stopPropagation(); 
+      if(this.typeName!='groupTable'){
+        e.stopPropagation(); 
+      }
       if (this.showEditInput) return;
       if (!this.column.type ||this.column.type === 'html') {
         return false;

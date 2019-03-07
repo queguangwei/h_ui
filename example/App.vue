@@ -69,6 +69,9 @@
           <router-link to="/timePicker">timePicker</router-link>
         </li>
         <li>
+          <router-link to="/calendar">calendar</router-link>
+        </li>
+        <li>
           <router-link to="/upload">Upload</router-link>
         </li>
         <li>
@@ -248,6 +251,11 @@ export default {
       loadClass: 'load',
       page:'tableq',
       isKeepAlive: true
+    }
+  },
+  methods:{
+    jump(){
+      this.$router.push('/simpleTreeGird')
     }
   },
   components:{

@@ -182,7 +182,7 @@
         const item = this.data;
         if (item.disabled) return;
         // async loading
-        if (item.children.length === 0) {
+        if (item.children&&item.children.length === 0) {
           const tree = findComponentsUpward(this, 'Tree');
           if (tree && tree.loadData) {
             this.$set(this.data, 'loading', true);

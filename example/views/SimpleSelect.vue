@@ -3,18 +3,18 @@
   <h1>SimpleSelect组件</h1>
   <p>选择器支持单选、多选、搜索，以及键盘快捷操作。</p>
   <h1>selectBlock测试用例</h1>
-  {{value}}
-  <h-simple-select v-model="value" ref="test" placement="bottom-start" :clearable="false" @on-change="change">
-    <h-select-block :data="bigData" @on-scroll="select"></h-select-block>
-  </h-simple-select>
-  <Button @on-click="changeValue">changeValue</Button>
-  <h-simple-select v-model="value2" transfer placement="bottom-start" filterable placeholder="123" isArrow=false>
+   <h-simple-select v-model="value2" transfer placement="bottom-start" filterable placeholder="123" isArrow=false>
     <h-select-block :data="bigData" @on-scroll="select" style="width:200px;"></h-select-block>
   </h-simple-select>
   <h-simple-select v-model="value1" multiple ref="test" placement="top-start" filterable checkToHead showBottom @on-change="change">
     <h-select-block :data="bigData" @on-scroll="select"></h-select-block>
   </h-simple-select>
   {{value1}}
+  {{value}}
+  <Button @on-click="changeValue">changeValue</Button>
+  <h-simple-select v-model="value" ref="test" placement="bottom-start" @on-change="change" filterable>
+    <h-select-block :data="bigData" @on-scroll="select"></h-select-block>
+  </h-simple-select>
   <br><br><br><br><br><br><br><br><br><br><br><br>
 
 </div>
@@ -33,7 +33,7 @@ export default {
     return {
       matchCol:['name','age'],
       bigData:[],
-      value:'value0',
+      value:'',
       value1:[],
       value2:'',
     }

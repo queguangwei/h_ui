@@ -10,7 +10,7 @@
 </template>
 <script>
 let bigData = [];
-for(var i=0;i<50;i++){
+for(var i=0;i<5;i++){
   let obj =  {
     id: i,
     name: '王小明'+i,
@@ -88,7 +88,7 @@ export default {
         {
           title: '金额',
           width: 200,
-          key: 'money',
+          key: 'money', 
         },
         {
           title: '卡号',
@@ -103,7 +103,7 @@ export default {
         },
         {
           title: '下拉树',
-          width: 200,
+          // width: 200,
           key: 'tree',
         }
       ],

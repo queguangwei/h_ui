@@ -9,6 +9,8 @@ let top;
 let messageInstance;
 let name = 1;
 let successTop,infoTop,errorTop,warningTop;
+let infoDuration, successDuration, errorDuration, warningDuration;
+let defaultTop;
 
 const iconTypes = {
   'info': 'prompt_fill',
@@ -20,25 +22,44 @@ const iconTypes = {
 
 function getMessageInstance (type) {
   switch(type){
-    case 'info':top=infoTop||top 
+    case 'info':defaultTop=infoTop||top
       break;
-    case 'success':top=successTop||top
+    case 'success':defaultTop=successTop||top
       break;
-    case 'error':top=errorTop||top
+    case 'error':defaultTop=errorTop||top
       break;
-    case 'warning':top=warningTop||top
+    case 'warning':defaultTop=warningTop||top
       break;
-    default:top = top;
+    default:defaultTop = top;
   }
   messageInstance = messageInstance || Notification.newInstance({
-    prefixCls: prefixCls,
-    styles: {
-      top: `${top}px`
-    }
-  });
+      prefixCls: prefixCls,
+      styles: {
+        top: `${defaultTop}px`
+      }
+    });
   return messageInstance;
 }
-
+function getMessageDuration(type) {
+  let msgDuration;
+  switch (type) {
+    case 'info':
+      msgDuration = infoDuration >=0 ? infoDuration:defaultDuration;
+      break;
+    case 'success':
+      msgDuration = successDuration >=0 ? successDuration:defaultDuration;
+      break;
+    case 'error':
+      msgDuration = errorDuration >=0 ? errorDuration:defaultDuration;
+      break;
+    case 'warning':
+    msgDuration = warningDuration >=0 ? warningDuration:defaultDuration;
+      break;
+    default:
+      msgDuration = defaultDuration;
+  }
+  return msgDuration;
+}
 function notice (content = '', duration = defaultDuration, type, onClose = function () {}, closable = false) {
   const iconType = iconTypes[type];
 
@@ -46,12 +67,12 @@ function notice (content = '', duration = defaultDuration, type, onClose = funct
   const loadCls = type === 'loading' ? ' h-load-loop' : '';
 
   let instance = getMessageInstance(type);
-
+  let noticeDuration=getMessageDuration(type);
   instance.notice({
     name: `${prefixKey}${name}`,
-    duration: duration,
+    duration: noticeDuration,
     styles: {
-      top: `${top}px`
+      top: `${defaultTop}px`
     },
     transitionName: 'move-up',
     content: `
@@ -70,7 +91,7 @@ function notice (content = '', duration = defaultDuration, type, onClose = funct
     let target = name++;
 
     return function () {
-        instance.remove(`${prefixKey}${target}`);
+      instance.remove(`${prefixKey}${target}`);
     };
   })();
 }
@@ -79,45 +100,45 @@ export default {
   info (options) {
     const type = typeof options;
     if (type === 'string') {
-        options = {
-            content: options
-        };
+      options = {
+        content: options
+      };
     }
     return notice(options.content, options.duration, 'info', options.onClose, options.closable);
   },
   success (options) {
     const type = typeof options;
     if (type === 'string') {
-        options = {
-            content: options
-        };
+      options = {
+        content: options
+      };
     }
     return notice(options.content, options.duration, 'success', options.onClose, options.closable);
   },
   warning (options) {
     const type = typeof options;
     if (type === 'string') {
-        options = {
-            content: options
-        };
+      options = {
+        content: options
+      };
     }
     return notice(options.content, options.duration, 'warning', options.onClose, options.closable);
   },
   error (options) {
     const type = typeof options;
     if (type === 'string') {
-        options = {
-            content: options
-        };
+      options = {
+        content: options
+      };
     }
     return notice(options.content, options.duration, 'error', options.onClose, options.closable);
   },
   loading (options) {
     const type = typeof options;
     if (type === 'string') {
-        options = {
-            content: options
-        };
+      options = {
+        content: options
+      };
     }
     return notice(options.content, options.duration, 'loading', options.onClose, options.closable);
   },
@@ -140,6 +161,10 @@ export default {
     if (options.successTop || options.successTop === 0) {
       successTop = options.successTop;
     }
+    infoDuration=options.infoDuration||options.infoDuration>=0?options.infoDuration:defaultDuration;
+    successDuration=options.successDuration||options.successDuration>=0?options.successDuration:defaultDuration; 
+    errorDuration=options.errorDuration||options.errorDuration>=0?options.errorDuration:defaultDuration; 
+    warningDuration=options.warningDuration||options.warningDuration>=0?options.warningDuration:defaultDuration;   
   },
   destroy () {
     let instance = getMessageInstance();
