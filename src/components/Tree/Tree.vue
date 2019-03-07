@@ -13,7 +13,7 @@
       :selectToCheck="selectToCheck"
       >
     </Tree-node>
-    <div :class="[prefixCls + '-empty']" v-if="!data.length">{{ localeEmptyText }}</div>
+    <div :class="[prefixCls + '-empty']" v-if="!data || !data.length">{{ localeEmptyText }}</div>
   </ul>
 </template>
 <script>
@@ -87,6 +87,10 @@
         default:false
       },
       selectToCheck:{
+        type:Boolean,
+        default:false
+      },
+      notDeepCopy:{
         type:Boolean,
         default:false
       }
@@ -263,12 +267,12 @@
       this.$on('on-selected', this.handleSelect);
       this.$on('toggle-expand', (node,status) => this.$emit('on-toggle-expand', node,status));
       this.$on('mouse-over', (node) => this.$emit('on-mouseover', node));
-      if(this.loadData||this.isFormSelect){
+      if(this.loadData||this.isFormSelect || this.notDeepCopy){
         this.isDeepcopy = true;
         this.stateTree = this.isDeepcopy?this.data:deepCopy(this.data);
       }
-      // this.flatState = this.compileFlatState();
-      // this.rebuildTree();
+      this.flatState = this.compileFlatState();
+      this.rebuildTree();
     },
     watch:{
       data: {

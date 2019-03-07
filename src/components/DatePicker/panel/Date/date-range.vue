@@ -3,7 +3,8 @@
         <div :class="[prefixCls + '-sidebar']" v-if="shortcuts.length">
             <div
                 :class="[prefixCls + '-shortcut']"
-                v-for="shortcut in shortcuts"
+                v-for="(shortcut,index) in shortcuts"
+                :key="index"
                 @click="handleShortcutClick(shortcut)">{{ shortcut.text }}</div>
         </div>
         <div :class="[prefixCls + '-body']">
@@ -146,7 +147,6 @@
         data(){
             const [minDate, maxDate] = this.value.map(date => date || initTimeDate());
             const leftPanelDate = this.startDate ? this.startDate : minDate;
-
             return {
                 prefixCls: prefixCls,
                 datePrefixCls: datePrefixCls,
@@ -156,7 +156,7 @@
                 leftPickerTable: `${this.selectionMode}-table`,
                 rightPickerTable: `${this.selectionMode}-table`,
                 leftPanelDate: leftPanelDate,
-                rightPanelDate: new Date(leftPanelDate.getFullYear(), leftPanelDate.getMonth() + 1, leftPanelDate.getDate())
+                rightPanelDate: new Date(leftPanelDate.getFullYear(), leftPanelDate.getMonth() + 1, 1)
             };
         },
         computed: {
@@ -214,7 +214,7 @@
                 // set panels positioning
                 const leftPanelDate = this.startDate || this.dates[0] || new Date();
                 this.leftPanelDate = leftPanelDate;
-                const rightPanelDate = new Date(leftPanelDate.getFullYear(), leftPanelDate.getMonth() + 1, leftPanelDate.getDate());
+                const rightPanelDate = new Date(leftPanelDate.getFullYear(), leftPanelDate.getMonth() + 1, 1);
                 this.rightPanelDate = this.splitPanels ? new Date(Math.max(this.dates[1], rightPanelDate)) : rightPanelDate;
             },
             currentView(currentView){

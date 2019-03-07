@@ -1,0 +1,129 @@
+$calendar-prefix-cls: "#{$css-prefix}calendar";
+.#{$calendar-prefix-cls}{
+  &-top-change &-top-icon,
+  &-top-change &-top-text {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 28px
+  }
+  &-top-change &-top-text {
+    padding: 0 30px;
+    margin: 0;
+  }
+  &-top-change{
+    margin: 0 auto 15px;
+    width: 200px;
+    height: 50px;
+    line-height: 50px;
+  }
+  &-month-content {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  &-top-icon {
+    cursor: pointer;
+  }
+  &-month-content.#{$calendar-prefix-cls}-month-week &-month-content-item-tag,
+  &-month-content.#{$calendar-prefix-cls}-month-week &-month-content-item {
+    color: #333;
+    font-size: 15px;
+    background: #e9eaec;
+    border-color:#e9eaec;
+  }
+  &-month-content-item {
+    font-size: 15px;
+    width: 14.28%;
+    text-align: center;
+    color: black;
+    position: relative;
+    height: 40px;
+    line-height: 40px;
+    padding: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* border:2px solid #fff; */
+    border: 1px solid #fff;
+    border-width: 0 1px 1px 0;
+  }
+  &-month-content-item:nth-child(7n + 1){
+    border-width: 0 1px 1px 1px;
+  }
+  &-month-week &-month-content-item {
+    border-top-width: 1px;
+  }
+  &-month-content.#{$calendar-prefix-cls}-month-day &-month-content-item {
+    cursor: pointer;
+    background: $date-picker-cell-hover-bg;
+  }
+  &-month-content.#{$calendar-prefix-cls}-month-day &-month-content-item.#{$calendar-prefix-cls}-month-item-empty {
+    background: none;
+  }
+  &-month-content-item.#{$calendar-prefix-cls}-month-item-disable{
+    background: $input-disabled-bg !important;
+    color: $btn-disable-color;
+  }
+  &-month-content.#{$calendar-prefix-cls}-month-day &-month-content-item.#{$calendar-prefix-cls}-month-restDay{
+    color: red;
+    background: none;
+  }
+  &-month-content.#{$calendar-prefix-cls}-month-day &-month-content-item.#{$calendar-prefix-cls}-month-day-active {
+    background: $primary-color;
+    border-radius:4px;
+    color:#fff;
+  }
+  &-month-content.#{$calendar-prefix-cls}-month-day {
+    border: 1px #e9eaec solid;
+  }
+  &-month {
+    width: 22%;
+    margin: 0 1.5% 0 1.5%;
+    float: left;
+    flex: 0 0 auto;
+    height: 330px;
+    & > div {
+      box-shadow: 0 2px 8px #d3ddeb;
+    }
+  }
+  &-month-title {
+    display: block;
+    font-size: 15px;
+    height: 36px;
+    line-height: 40px;
+    text-align: center;
+    background:#e9eaec;
+    border-radius:2px 2px 0 0;
+  }
+  &-handle {
+    display: none;
+    position: fixed;
+    width: 100px;
+    height: 70px;
+    padding: 2px 0;
+    text-align: center;
+    background-color: #fff;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+    border: 1px solid #ccc;
+  }
+  &-handle &-handle-item {
+    display: block;
+    height: 32px;
+    line-height: 32px;
+    outline: none;
+    list-style: none;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  &-handle &-handle-item.#{$calendar-prefix-cls}-handle-setWorkDay {
+    border-bottom: 1px solid #ccc;
+  }
+  &-handle &-handle-item:hover {
+      background: #4A94FA;
+      color: #fff;
+  }
+}

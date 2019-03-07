@@ -289,25 +289,12 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
     position: absolute;
     top: 0;
     left: 0;
-    box-shadow: 2px 0 6px -2px rgba(0, 0, 0, 0.2);
     border-bottom:none;
-
-    // &::before {
-    //   content: '';
-    //   width: 100%;
-    //   height: 1px;
-    //   background-color: $border-color-base;
-    //   position: absolute;
-    //   left: 0;
-    //   bottom: 0;
-    //   z-index: 4;
-    // }
   }
   &-fixed-right{
     top: 0;
     left: auto;
     right: 0;
-    box-shadow: -2px 0 6px -2px rgba(0, 0, 0, 0.2);
   }
   &-fixed-right-patch{
     position: absolute;
@@ -317,15 +304,31 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
     border-bottom:1px solid $border-color-bottom;
     // border-bottom: 1px solid #e6ebf5;
   }
+  &-fixed{
+    &-header{
+      box-shadow: 2px 0 6px -2px rgba(0, 0, 0, 0.2);
+    }
+    &-body-shadow{
+      box-shadow: 2px 0 6px -2px rgba(0, 0, 0, 0.2);
+    }
+  }
+  &-fixed-right{
+    .#{$table-prefix-cls}-fixed-header{
+      box-shadow: -2px 0 6px -2px rgba(0, 0, 0, 0.2);
+    }
+    .#{$table-prefix-cls}-fixed-body-shadow{
+      box-shadow: -2px 0 6px -2px rgba(0, 0, 0, 0.2);
+    }
+  }
   &-fixed-header{
     overflow: hidden;
   }
+  
   &-fixed-body{
     overflow: hidden;
     position: relative;
     z-index: 3;
   }
-
   &-fixed-shadow {
     width: 1px;
     height: 100%;

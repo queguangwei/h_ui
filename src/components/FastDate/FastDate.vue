@@ -249,7 +249,6 @@ export default {
           break;
         case 'months':
           value = this.verificaMonth(value,isRange);
-          event.target.value = value;
           if (!isRange) {this.months = value;}
           else {this.months1 = value;}
           break;

@@ -13,6 +13,7 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		adaptParentWidth: Boolean,
 		maxDropWidth: {
 			type:[String,Number],
 		},
@@ -112,6 +113,11 @@ export default {
 					this.width = this.dropWidth;
 					this.parentWidth = this.dropWidth;
 				}
+			}
+			if(this.$parent.$options.name === 'Dropdown' && this.adaptParentWidth){
+				let width = parseInt(getStyle(this.$parent.$el, 'width'));
+				this.width = width
+				this.parentWidth = width
 			}
 		},
 		destroy () {

@@ -2,11 +2,11 @@
   <div>
     <slot name="header">
       <span></span>
-      <Button v-if="!isSure" type="ghost" @click="validateData">添加</Button>
-      <Button v-if="isSure" type="ghost" @click="modifySure">确认</Button>
+      <h-button v-if="!isSure" type="ghost" @click="validateData">添加</h-button>
+      <h-button v-if="isSure" type="ghost" @click="modifySure">确认</h-button>
     </slot>
     <slot></slot>
-    <Table  ref="table" 
+    <h-table  ref="table" 
       :columns="fColumn" 
       :data="fData" 
       :height="height"
@@ -18,15 +18,15 @@
       :loading="loading"
       highlight-row
       patibleHeight
-      @on-row-click="rowClick"></Table>
+      @on-row-click="rowClick"></h-table>
      <slot name="footer">
     </slot>
   </div>
 </template>
 <script>
 import {deepCopy,typeOf} from '../../util/tools';
-import Table from  '../Table/Table.vue';
-import Button from  '../Button/Button.vue';
+import hTable from  '../Table/Table.vue';
+import hButton from  '../Button/Button.vue';
 // import FormItem from  '../FormItem.vue';
 
 const prefixCls = 'h-form-gird';
@@ -34,7 +34,7 @@ const prefixCls = 'h-form-gird';
 export default {
   name: 'FormGird',
   mixins: [],
-  components: {Table,Button},
+  components: {hTable,hButton},
   props: {
     value:{
       type: Object

@@ -7,13 +7,13 @@
       <P slot="loading">我是自定义de</P>
     </h-group-table>
     <Button @click="setLoad">切换loading</Button>
-    <h-group-table :columns="columns1" :data="data1" @on-row-click="click1" :loading="loading"></h-group-table>
-      <h-group-table :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" stripe :loading="loading"></h-group-table>
-      <h-group-table :columns="columns1" :data="[]" no-data-text="哎呀你好" :loading="loading"></h-group-table>
-      <Button @click="getDate">获取数据</Button>
-      <h3>多选分组组件</h3>
-      <h-group-table :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading"></h-group-table>
-      <h-group-table :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" @on-selection-change="selsetChange" :loading="loading"></h-group-table>
+    <h-group-table :columns="columns1" :data="data1" @on-row-dblclick="dblClick" :loading="loading"></h-group-table>
+    <h-group-table :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" stripe :loading="loading"></h-group-table>
+    <h-group-table :columns="columns1" :data="[]" no-data-text="哎呀你好" :loading="loading"></h-group-table>
+    <Button @click="getDate">获取数据</Button>
+    <h3>多选分组组件</h3>
+    <h-group-table :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading"></h-group-table>
+    <h-group-table :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" @on-selection-change="selsetChange" :loading="loading"></h-group-table>
   </div>
 </template>
 
@@ -229,20 +229,31 @@ export default {
       loading:false,
       columns1: [
         {
-          title: '姓名',
-          key: 'name',
-          width: 200,
-          hiddenOther:true,
-          render:(h,params)=>{
-            return h('span',[
-              h('Icon', {
-                props: {
-                  name: 'person'
-                }
-              }),
-            ])
+          type: 'expand',
+          width: 50,
+          render: (h, params) => {
+            return h(TexpandRow, {
+              props: {
+                  row: params.row
+              }
+            })
           }
         },
+        // {
+        //   title: '姓名',
+        //   key: 'name',
+        //   width: 200,
+        //   hiddenOther:true,
+        //   render:(h,params)=>{
+        //     return h('span',[
+        //       h('Icon', {
+        //         props: {
+        //           name: 'person'
+        //         }
+        //       }),
+        //     ])
+        //   }
+        // },
         {
           title: '年龄',
           width: 200,
@@ -404,6 +415,10 @@ export default {
     }
   },
   methods: {
+    dblClick(e,i,j){
+      debugger;
+      console.log(e,i,j);
+    },
     setLoad(){
       this.loading = !this.loading;
     },

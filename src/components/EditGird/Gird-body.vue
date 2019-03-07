@@ -42,7 +42,6 @@
         </table-tr>
         <tr v-if="rowExpanded(row._index)">
           <td :colspan="columns.length" :class="prefixCls + '-expanded-cell'">
-
             <Expand :key="row._rowKey" :row="row" :render="expandRender" :index="row._index"></Expand>
           </td>
         </tr>
@@ -55,16 +54,16 @@
           :expanded = "Boolean(rowTitle.expand)"
           :checked = "rowChecked(rowTitle._index)">         
         </group-tr>
-        <table-tr
-          v-if="rowTitle.expand"
-          v-for="(row,index) in rowTitle.item"
+        <template v-if="rowTitle.expand" v-for="(row,index) in rowTitle.item">
+          <table-tr
           :row="row"
           :key="row._rowKey"
           :prefix-cls="prefixCls"
           :typeName = "typeName"
           @mouseenter.native.stop="handleMouseIn(row._index)"
           @mouseleave.native.stop="handleMouseOut(row._index)"
-          @click.native="clickCurrentRow(row._index)">
+          @click.native="clickCurrentRow(row._index)"
+          @dblclick.native="dblclickCurrentRow(row._index)">
           <td v-for="column in columns" :class="alignCls(column, row)">
             <Cell
               @click.native="cellCkick(column.key)"
@@ -75,13 +74,20 @@
               :column="column"
               :natural-index="index"
               :index="row._index"
+              :typeName="typeName"
               :checked="rowChecked(row._index)"
               :disabled="rowDisabled(row._index)"
-              :expanded="rowExpanded(row._index)"
+              :expanded="rowExpandedChild(row._index)"
               :showEditInput="showEditInput"
             ></Cell>
           </td>
         </table-tr>
+        <tr v-if="rowExpandedChild(row._index)">
+          <td :colspan="columns.length" :class="prefixCls + '-expanded-cell'">
+            <Expand :key="row._rowKey" :row="row" :render="expandRender" :index="row._index" :fixed="fixed"></Expand>
+          </td>
+        </tr>
+        </template>
       </template>
       <template v-if="typeName=='treeGird'" v-for="(row, index) in treeData">
         <table-tr
@@ -216,6 +222,11 @@
         rowExpanded(_index){
           return this.objData[_index] && this.objData[_index]._isExpanded;
         },
+        rowExpandedChild(_index){
+          let k = String(_index).split('.')[0];
+          let m = Number(String(_index).split('.')[1])-1;
+           return this.objData[k].item[m] && this.objData[k].item[m]._isExpanded;
+        },
         handleMouseIn (_index) {
           this.$parent.handleMouseIn(_index);
         },
@@ -228,6 +239,9 @@
             // this.objData[_index]._isChecked=!this.objData[_index]._isChecked;
             this.$parent.toggleSelect(_index);
           }
+        },
+        dblclickCurrentRow (_index){
+          this.$parent.dblclickCurrentRow(_index);
         },
         cellCkick (key){
           this.$parent.curKey = key;

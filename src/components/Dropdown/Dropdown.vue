@@ -11,6 +11,7 @@
         :placement="placement"
         :widthAdaption="false"
         ref="drop"
+        :adaptParentWidth="adaptParentWidth"
         @mouseenter.native="handleMouseenter"
         @mouseleave.native="handleMouseleave"
         :data-transfer="transfer"
@@ -47,10 +48,14 @@
         type: Boolean,
         default: false
       },
+      adaptParentWidth: {
+        type:Boolean,
+        default: false
+      },
       transfer: {
         type: Boolean,
         default: false
-      }
+      },
     },
     computed: {
       transition () {

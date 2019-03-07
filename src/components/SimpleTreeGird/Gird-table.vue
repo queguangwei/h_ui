@@ -18,7 +18,7 @@
         v-show="!(!!localeNoDataText && (!data || data.length === 0))">
         <Tree-table
           ref="tbody"
-          :styleObject ="tableStyle"
+          :styleObject ="tableBodyStyle"
           :indent ="Number(0)"
           :data="data"
           :prefix-cls="prefixCls"
@@ -28,7 +28,12 @@
           :checkedObj="checkedObj"
           :indexAndId="indexAndId"
           :selectRoot="selectRoot"
-          :isCheckbox="isCheckbox">
+          :isCheckbox="isCheckbox"
+          :bodyRealHeight="bodyRealHeight"
+          :tableWidth="tableWidth"
+          :initWidth="initWidth"
+          :scrollBarWidth="scrollBarWidth"
+          :height="height">
         </Tree-table>
       </div>
       <div :class="[prefixCls + '-tip']"
@@ -36,13 +41,7 @@
         <div class="h-table-tiptext" :style="textStyle" >
           <span v-html="localeNoDataText" v-if="!data || data.length === 0"></span>
         </div>
-        <table cellspacing="0" cellpadding="0" border="0" :style="tipStyle">
-          <tbody>
-            <tr>
-              <td :style="{ 'height': bodyStyle.height }">
-              </td>
-            </tr>
-          </tbody>
+        <table cellspacing="0" cellpadding="0" border="0" :style="tableStyle" style="height:1px">
         </table>
       </div>
       <div class="h-table__column-resize-proxy" ref="resizeProxy" v-show="resizeProxyVisible"> </div>
@@ -60,7 +59,7 @@ import GirdHead from './Gird-head.vue';
 import TreeTable from './Tree-table.vue';
 import Spin from '../Spin/Spin.vue';
 import Mixin from './mixin';
-import { oneOf, getStyle, deepCopy, deepCopyEx, getScrollBarSize,getBarBottom,findInx} from '../../util/tools';
+import { oneOf, getStyle, deepCopy, deepCopyEx, getScrollBarSize,getBarBottom,findInx,IEVersion} from '../../util/tools';
 import { on, off } from '../../util/dom';
 import Locale from '../../mixins/locale';
 // import Csv from '../../util/csv';
@@ -160,11 +159,11 @@ export default {
     selectRoot:{
       type:Boolean,
       default:false,
-    }
-    // notAdaptive: {
-    //   type:Boolean,
-    //   default:false,
-    // },
+    },
+    notAdaptive: {
+      type:Boolean,
+      default:false,
+    },
     // highlightRow: {
     //   type:Boolean,
     //   default:false,
@@ -240,8 +239,8 @@ export default {
     styles () {
       let style = {};
       if (this.height) {
-        const height = (this.isLeftFixed || this.isRightFixed) ? parseInt(this.height) + this.scrollBarWidth : parseInt(this.height);
-        style.height = `${height+2}px`;
+        const height = Number(this.height)+2;
+        style.height = `${height}px`;
       }
       if (this.width) style.width = `${this.width}px`;
       return style;
@@ -249,24 +248,18 @@ export default {
     tableStyle () {
       let style = {};
       if (this.tableWidth !== 0) {
-        let width = '';
-        if (this.bodyHeight === 0) {
-          width = this.tableWidth;
-        } else {
-          if (this.bodyHeight > this.bodyRealHeight && this.data.length>0) {
-            width = this.tableWidth;
-          } else {
-            width = this.tableWidth - this.scrollBarWidth;
-          }
-        }
+        let width = this.tableWidth;
         style.width = `${width}px`;
       }
       return style;
     },
-    tipStyle () {
+    tableBodyStyle () {
       let style = {};
       if (this.tableWidth !== 0) {
         let width = this.tableWidth;
+        if(this.tableWidth+1>=this.initWidth-this.scrollBarWidth && this.bodyRealHeight>this.height){
+          width = parseInt(this.tableWidth) - this.scrollBarWidth
+        }
         style.width = `${width}px`;
       }
       return style;
@@ -315,9 +308,6 @@ export default {
         var colWidth = col.width||col._width
         totalWidth = totalWidth+ colWidth;
       });
-      if (this.bodyHeight !=0 && !that.notAdaptive) {
-        totalWidth = totalWidth + this.scrollBarWidth;
-      }
       this.tableWidth=totalWidth;
       // && !that.notAdaptive
       if (this.tableWidth<this.initWidth && !that.notAdaptive) {
@@ -357,7 +347,6 @@ export default {
               } else {
                   if (width < 100) width = 100
               }
-
               this.cloneColumns[i]._width = width||'';
 
               columnsWidth[column._index] = {
@@ -373,6 +362,9 @@ export default {
               let width = parseInt(getStyle($th[i], 'width'));
               if (i === autoWidthIndex) {
                 width = parseInt(getStyle($th[i], 'width')) - 1;
+              }
+              if(IEVersion()!=-1){               
+                width = width+31;
               }
              // 自适应列在表格宽度较小时显示异常，为自适应列设置最小宽度100（拖拽后除外）
               if (column.width) {
@@ -430,6 +422,7 @@ export default {
     },
     toggleExpand (row,status) {
       this.$nextTick(()=>{
+        this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'));
         this.$emit('on-expand', row,status);
       })
     },

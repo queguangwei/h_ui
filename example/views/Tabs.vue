@@ -132,7 +132,7 @@
     </h-tabs> -->
     <h2>附加内容 </h2>
     <p>设置 slot extra 可以在页签右边添加附加操作。</p>
-    <h-tabs ref="remove" type="card" closable @on-tab-remove="handleTabRemove1" showArrow>
+    <h-tabs ref="remove" type="card" @on-tab-remove="handleTabRemove1" showArrow>
       <h-tab-pane v-for="tab in tabs" :key="tab" :label="'标签' + tab">标签{{ tab }}的内容</h-tab-pane>  
     </h-tabs>
      <h-button type="ghost" @click="handleTabsAdd(true)" size="small" slot="extra">增加</h-button>
