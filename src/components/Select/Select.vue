@@ -457,7 +457,7 @@
       },
       /* 是否开启新建条目功能 */
       enableCreate() {
-        return this.allowCreate && this.filterable && !this.remote; 
+        return this.allowCreate && this.filterable; 
       }
     },
     methods: {
@@ -1282,6 +1282,9 @@
               if(this.readonly || this.disabled) return false;
               this.remoteMethod(val);
           }
+          if (this.enableCreate && this.$refs.newOptions) {
+            this.$refs.newOptions.forEach(op => op.queryChange(val));
+          }
           this.focusIndex = 0;
           this.findChild(child => {
             child.isFocus = false;
@@ -1292,21 +1295,20 @@
             }
             // if(val.trim()) this.broadcastQuery(val);
             this.broadcastQuery(val);
-
-            let is_hidden = true;
-            /* 是否有value相等的option存在 */
-            let optionValMatched = false;
-            this.$nextTick(() => {
-                this.findChild((child) => {
-                    if (!child.hidden) {
-                        is_hidden = false;
-                    }
-                    !optionValMatched && (optionValMatched = val === child.searchLabel || val === child.value);
-                });
-                this.notFound = is_hidden;
-                this.showNewOption = val && (!optionValMatched || is_hidden);
-            });
         }
+        /* 是否有value相等的option存在 */
+        let optionValMatched = false;
+        let isHidden = true;
+        this.$nextTick(() => {
+          this.findChild((child) => {
+              if (!child.hidden) {
+                  isHidden = false;
+              }
+              !optionValMatched && (optionValMatched = val === child.searchLabel || val === child.value);
+          });
+          if (!this.remote) this.notFound = isHidden;
+          this.showNewOption = val && (!optionValMatched || isHidden);
+        })
         if (this.filterable&&!this.remote) {
           this.$nextTick(()=>{
             this.focusIndex = 1;
