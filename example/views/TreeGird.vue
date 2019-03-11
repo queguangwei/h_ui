@@ -305,7 +305,7 @@
           {
             type: 'selectTree',
             title: '下拉树',
-            width: 200,
+            // width: 200,
             key: 'tree',
             treeData:[{
               expand: true,

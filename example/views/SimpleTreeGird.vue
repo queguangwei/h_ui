@@ -74,6 +74,9 @@ export default {
           width: 200,
           key: 'age',
           align: 'center',
+          renderHeader:(h,params)=>{
+            return h('span','123')
+          },
           render:(h,params)=>{
             return h('span','123')
           }

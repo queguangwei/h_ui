@@ -352,7 +352,7 @@
                 width:800,
                 scrollable:true,
                 okText:'确定1',
-                zIndex:1100
+                zIndex:1100,
                 // loading:true
             });
             break;
@@ -361,21 +361,23 @@
                 width:600,
                 title: title,
                 content: content,
-                zIndex:1200
+                zIndex:1200,
+                
             });
             break;
           case 'warning':
             this.$hMsgBox.warning({
                 title: title,
                 content: content,
-                zIndex:1300
+                zIndex:1300,
+                
             });
             break;
           case 'error':
             this.$hMsgBox.error({
                 title: title,
                 content: content,
-                zIndex:1400
+                zIndex:1400,
             });
             break;
         }
@@ -389,7 +391,10 @@
           },
           onCancel: () => {
             console.log('点击了取消');
-          }
+          },
+          okIcon:'search',
+          cancelIcon:'search',
+          isOkLeft:true,
         });
       },
       custom () {
@@ -410,7 +415,10 @@
               this.$hMsgBox.remove();
               this.$hNotice.info({title: '异步关闭了对话框'});
             }, 2000);
-          }
+          },
+          okIcon:'search',
+          cancelIcon:'search',
+          isOkLeft:true,
         });
       },
       render () {

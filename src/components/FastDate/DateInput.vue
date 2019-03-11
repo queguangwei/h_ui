@@ -41,7 +41,7 @@ export default {
   },
   computed:{
     classes(){
-    }
+    },
   },
   methods: {
     val(event){
@@ -58,7 +58,7 @@ export default {
           this.$emit('on-change-focus');
         }
       }
-      if (this.type == 'months' || this.type == 'day') {
+      if (this.type == 'months') {
         if (pos>2 ||Number(value)>12||value =='00') {
           value = value.substr(-1)
           event.target.value = value
@@ -70,6 +70,8 @@ export default {
         if (pos>2 ||Number(value)>31||value =='00') {
           value = value.substr(-1)
           event.target.value = value
+        }else if (pos==2){
+          this.$emit('on-change-focus');
         }
       }
       this.inputValue = value;
@@ -129,6 +131,7 @@ export default {
       }
     },
     handleMouseWheel(event){
+      if(this.disabled || this.readonly) return false
       event.preventDefault();
       if(!this.isFocus) return;
       let value = event.target.value;
