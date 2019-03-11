@@ -668,16 +668,23 @@ export function scrollAnimate(obj,curTop,newTop){
   },ins);
 }
 
-export function cmp( x, y ) { 
+export function cmp( a, b ) { 
+  var x= deepCopy(a);
+  var y= deepCopy(b);
   if ( x === y ) { 
     return true; 
   }  
+  // instanceof运算符用于测试构造函数的prototype属性是否出现在对象的原型链中的任何位置
   if ( ! ( x instanceof Object ) || ! ( y instanceof Object ) ) { 
     return false; 
   }   
   if ( x.constructor !== y.constructor ) { 
     return false; 
   }  
+  if(Array.isArray(x)&&Array.isArray(y)){
+    x.sort();
+    y.sort();
+  }
   for ( var p in x ) { 
     if ( x.hasOwnProperty( p ) ) { 
       if ( ! y.hasOwnProperty( p ) ) { 

@@ -122,8 +122,9 @@
             </Cell>
           </td>
         </table-tr>
-        <collapse-transition>
+        <!-- <collapse-transition> -->
           <Tree-table
+            :key="row._rowKey+'tree'"
             v-if="objData[row._index]._isExpanded && row.children && row.children.length!=0"
             :styleObject = "styleObject"
             :parent="parent"
@@ -138,7 +139,7 @@
             :treeOption="treeOption[index]"
             :isCheckbox="isCheckbox">
           </Tree-table>
-        </collapse-transition>
+        <!-- </collapse-transition> -->
       </template>
     </tbody>
   </table>

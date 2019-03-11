@@ -434,6 +434,7 @@ export default {
       this.isFocus = true;
     },
     rangeSelect(event){
+      if(this.disabled || this.readonly) return false
       let obj =  event.target;
       let pos = obj.value.trim().length;
       obj.setSelectionRange(0, pos);

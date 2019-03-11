@@ -3,7 +3,7 @@
     <h2>基础用法 </h2>
     <h-row>
     	<h-col span="24">
-    		<h-field-panel @on-change="change" collapse>
+    		<h-field-panel @on-change="change" collapse :showIcon="false">
     		  <span slot="title">提示标题文案</span>
     		  12124
     		  <h-input></h-input>

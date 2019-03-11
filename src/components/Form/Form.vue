@@ -100,6 +100,7 @@ export default {
             }
           }
         }
+        field.commonRule();
         field.validate('', errors => {
           if (errors) {
             valid = false;
@@ -177,8 +178,11 @@ export default {
     },
   },
   watch: {
-    rules() {
-      this.validate();
+    rules: {
+      deep:true,
+      handler(val){
+        this.validate();
+      }
     },
     placement(){
       if(this.placement=='null') return;
@@ -187,7 +191,7 @@ export default {
     model:{
       deep:true,
       handler(val){
-       this.changeStyle(val);
+        this.changeStyle(val);
       }
     }
   },

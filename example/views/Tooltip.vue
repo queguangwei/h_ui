@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>基本用法</h1>
-    <h-tooltip content="这里是提示文字">
+    <h-tooltip content="这里是提示文字" imdiaClose>
       当鼠标经过这段文字时，会显示一个气泡框
     </h-tooltip>
     <br>

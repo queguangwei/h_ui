@@ -4,7 +4,7 @@
     <CollapseTransition>
       <div v-show="isCollapse"><slot></slot></div>
     </CollapseTransition>
-    <div :class="footerClass">
+    <div :class="footerClass" v-if="showIcon">
       <a href="javascript:void(0)" @click="handleCollapse" :class="iconClass">
         <Icon name="doublearrow" size="12"></Icon>
       </a>
@@ -40,6 +40,10 @@ import CollapseTransition from '../Notice/collapse-transition';
           return oneOf(value, ['left', 'center', 'right']);
         },
         default:'center'
+      },
+      showIcon: {
+        type: Boolean,
+        default: true
       }
     },
     computed: {

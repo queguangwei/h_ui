@@ -8,7 +8,6 @@ const prefixCls = 'h-modal-confirm';
 
 Modal.newInstance = properties => {
   const _props = properties || {};
-
   const Instance = new Vue({
       mixins: [ Locale ],
       data: Object.assign({}, _props, {
@@ -26,15 +25,19 @@ Modal.newInstance = properties => {
           buttonLoading: false,
           scrollable: false,
           closable: false,
-          height: undefined
+          height: undefined,
+          isOkLeft: false,
+          cancleIcon: '',
+          okIcon: ''
       }),
       render (h) {
           let footerVNodes = [];
-          if (this.showCancel) {
+          if (this.showCancel && !this.isOkLeft) {
               footerVNodes.push(h(Button, {
                   props: {
                       type: 'text',
-                      size: 'large'
+                      size: 'large',
+                      icon: this.cancleIcon
                   },
                   on: {
                       click: this.cancel
@@ -45,13 +48,25 @@ Modal.newInstance = properties => {
               props: {
                   type: 'primary',
                   size: 'large',
-                  loading: this.buttonLoading
+                  loading: this.buttonLoading,
+                  icon: this.okIcon
               },
               on: {
                   click: this.ok
               }
           }, this.localeOkText));
-
+          if (this.showCancel && this.isOkLeft) {
+            footerVNodes.push(h(Button, {
+                props: {
+                    type: 'ghost',
+                    size: 'large',
+                    icon: this.cancelIcon
+                },
+                on: {
+                    click: this.cancel
+                }
+            }, this.localeCancelText));
+          }
           // render content
           let body_render;
           if (this.render) {
@@ -272,6 +287,15 @@ Modal.newInstance = properties => {
       }
       if ('zIndex' in props) {
         modal.$parent.zIndex = props.zIndex;
+      }
+      if ('isOkLeft' in props) {
+        modal.$parent.isOkLeft= props.isOkLeft;
+      }
+      if('cancelIcon' in props){
+        modal.$parent.cancelIcon= props.cancelIcon;
+      }
+      if('okIcon' in props){
+        modal.$parent.okIcon= props.okIcon;
       }
       // notice when component destroy
       modal.$parent.onRemove = props.onRemove;

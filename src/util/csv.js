@@ -60,7 +60,7 @@ export default function csv(columns, datas, options, noHeader = false) {
                     if (typeof exportVal == 'string' && exportVal.substr(0, 1) == '0' || typeof exportVal == 'number') {
                         exportVal =  '="' + exportVal + '"'
                     }
-                    return exportVal.replace(/,/g,'，')
+                    return typeof exportVal === 'string' ?exportVal.replace(/,/g,'，'):exportVal
                 })
             }
             appendLine(content, row, options);
