@@ -539,8 +539,8 @@
 
         if (init) {
             if (!this.remote) {
-                this.updateSingleSelected(true, slot);
-                this.updateMultipleSelected(true, slot);
+              this.updateSingleSelected(true, slot);
+              this.updateMultipleSelected(true, slot);
             }
         }
       },
@@ -1101,7 +1101,9 @@
           this.broadcast('Drop', 'on-update-popper');
         } else {
           if (this.filterable) {
-            this.$refs.input.blur();
+            if(this.$refs.input){
+              this.$refs.input.blur();
+            }
             setTimeout(() => {
               this.query='';
               this.broadcastQuery('');
