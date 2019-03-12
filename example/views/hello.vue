@@ -1,38 +1,127 @@
 <template>
+<div>
+    <h-simple-table :columns="columnsBig" 
+      :data="bigData" border stripe headAlgin="right" 
+      bodyAlgin="left" height="500" rowSelect 
+      @on-select="select" @on-select-cancel="select"  
+      @on-select-all='change' 
+      @on-selection-change="change"></h-simple-table>
+</div>
+</template>
+<script>
+let jsonData=[];
+let tData =require('../assets/aa.json'); 
+    for (let i = 0; i < 2; i++) {
+      jsonData = jsonData.concat(tData);
+    }
+    export default {
+        data () {
+            return {
+                columnsBig: [
+                 {
+                  title:'测试',
+                  key:'ceshi',
+                  algin:'center',
+                 }
+                ],
+                bigData:jsonData,
+            }
+        },
+        methods: {
+            select (selection,row){//已选择的项和刚刚选择的项
+             console.log(selection);
+             console.log(row);
+            },
+            change(e){
+              console.log(e);
+            },
+        },
+        mounted (){
+            this.columnsBig=[
+                { 
+                  type: 'selection',
+                  align: 'center',
+                },
+                { 
+                  type: 'index',
+                  align: 'center',
+                  key:'index'
+                },
+                {
+                  title: '姓名',
+                  key: 'fundId',
+                  align: 'center',
+                },
+                {
+                  title: '年龄',
+                  key: 'tradeDate',
+                },
+                {
+                  title: '地址',
+                  key: 'securityCode',
+                },
+                {
+                  title: '地址1',
+                  key: 'securityName',
+                  ellipsis:true,
+                },
+                {
+                  title: '地址2',
+                  key: 'securityId',
+                },
+                {
+                  title: '地址3',
+                  key: 'tradeDir',
+                },
+                {
+                  title: '地址4',
+                  key: 'tradeSubtype',
+                },
+                {
+                  title: '地址5',
+                  key: 'marketNo',
+                },
+                {
+                  title: '地址6',
+                  key: 'tradeQuantity',
+                }
+            ]
+        },
+    }
+</script>
+<!--<template>
     <div>
-        <h-checkbox-group v-model="formGroup">
-            <div v-for="item in list" :key="item.key">
-                <h-checkbox label="twitter">
-                    <h-icon name="social-twitter"></h-icon>
-                    <span>Twitter</span>
-                </h-checkbox>
-                <h-select v-model="selectName" transfer isString multiple :width="160">
-                    <h-option v-for="it in list" :key="it.key" :value="it.key">{{it.text}}</h-option>
-                </h-select>
-            </div>
-        </h-checkbox-group>
-        <h-button @click="click">sdsds</h-button>
+        
+        <h-button @click="click1">先点我</h-button>
+        <h-button @click="click2">再点我</h-button>
         <h-form :model="formData" :label-width="100" ref="formMsgbox" :rules="ruleValidate"
         :showMessage='false' :errorFocus='true' class="h-modal-content">
-            <h-form-item prop="aaa" class="formItem" label="AAA">
-                <h-input v-model="formData.aaa"></h-input>
+            
+            <h-form-item prop="selectName" class="formItem" label="selectName">
+                
+                <h-simple-select v-model="selectName" placeholder="sdsdads" ref="test">
+                    <h-select-block :data="formGroup"></h-select-block>
+                </h-simple-select>
             </h-form-item>
-            <h-form-item prop="bbb" class="formItem" label="bbb">
-                <h-input v-model="formData.bbb"></h-input>
-            </h-form-item>
+            {{selectName}}
         </h-form>
+        
     </div>
 </template>
 <script>
 export default {
     data(){
         return{
-            formGroup:[],
+            flag:false,
+            val2:"",
+            formGroup:[{"value":"1","label":"1"},{"value":"2","label":"2"},{"value":"3","label":"2"},{"value":"4","label":"2"}],
             selectName:"",
             list:[{key:1,text:"xxx"},{key:2,text:"yyy"}],
             formData:{
                 aaa:"",
                 bbb:"",
+                security_code:"",
+                market_no:"",
             },
             ruleValidate:{
                 aaa:[{
@@ -50,9 +139,19 @@ export default {
         click(){
             this.ruleValidate.aaa[0].required = false
         },
+        click1(){
+            this.selectName = "1"
+        },
+        click2(){
+            this.selectName = "5"
+        },
+        getSelection(selection){
+            console.info(selection)
+        }
     },
 }
 </script>
+-->
 <!--<template>
 <div>
   <h-select-tree

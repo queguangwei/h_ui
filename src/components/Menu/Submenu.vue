@@ -52,6 +52,7 @@ export default {
       dropWidth: parseFloat(getStyle(this.$el, 'width')),
       parent: findComponentsUpward(this, 'Menu'),
       shrinked:true,
+      timeout:null,
     };
   },
   computed: {
@@ -188,7 +189,7 @@ export default {
         this.dropWidth = parseFloat(getStyle(this.$el, 'width'));
         this.$refs.drop.update();
       } else {
-        this.$refs.drop.destroy();
+        // this.$refs.drop.destroy();
       }
     }
   },
@@ -208,6 +209,9 @@ export default {
         this.shrinked = true;
       })
     })
+  },
+  beforeDestroy(){
+    this.$refs.drop.destroy();
   }
 };
 </script>

@@ -2,7 +2,7 @@
   <div>
     <!-- <h-msg-box v-model="changeform" width="900" escClose left="10" closeDrop> -->
     <Button @on-click="changeSelect"></Button>
-      <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus cols="3">
+      <h-form ref="formItem1" :model="formItem1" onlyBlurRequire :compareModel="formItem2" :label-width="80" errorFocus cols="3">
         <h-form-item label="日期控件">
           <h-row>
             <h-col span="11">
@@ -58,6 +58,7 @@
         <h-form-item label="特殊日期" prop="fatdate" required>
           <h-fast-date v-model="formItem1.fatdate"></h-fast-date>
         </h-form-item>
+        {{formItem2.select1}}
         <h-form-item label="下拉多选" prop="select1" required>
           <h-select v-model="formItem1.select1"
             multiple
@@ -70,6 +71,7 @@
             </h-option>
           </h-select>
         </h-form-item>
+        {{formItem1.select1}}
         <h-form-item label="下拉单选" prop="select2" required>
           <h-select v-model="formItem1.select2"
                     filterable

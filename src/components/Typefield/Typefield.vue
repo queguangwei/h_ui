@@ -189,7 +189,9 @@ export default {
   },
   watch: {
     value (val) {
-      this.initValue(String(val));
+      if(val!=null||val!=undefined){
+        this.initValue(String(val)); 
+      }
     },
     inputValue(val){
     }
@@ -197,7 +199,9 @@ export default {
   mounted () {
     this.prepend = this.$slots.prepend !== undefined;
     this.append = this.$slots.append !== undefined;
-    this.initValue(String(this.value));
+    if(this.value !=null||this.value!=undefined){
+      this.initValue(String(this.value)); 
+    }
   },
   methods:{
     //keyup,focus,blur

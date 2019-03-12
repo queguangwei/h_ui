@@ -424,7 +424,6 @@
         e.stopPropagation();
       },
       setPlacement(){
-        //   debugger;
         if(this.autoPlacement){
             let obj = this.$refs.wrapper;
             let allWidth= document.body.clientWidth;
