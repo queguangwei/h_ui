@@ -53,11 +53,12 @@
 
             if (this.childrens) {
                 this.childrens.forEach(child => {
-                    child.model = value;
-
-                    if (update) {
-                        child.currentValue = value.indexOf(child.label) >= 0;
-                        child.group = true;
+                    if(!child.notGroup){
+                        child.model = value;
+                        if (update) {
+                            child.currentValue = value.indexOf(child.label) >= 0;
+                            child.group = true;
+                        }
                     }
                 });
             }

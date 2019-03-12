@@ -68,6 +68,96 @@ var tData= [
         dating:'2018-03-07',
         timing:'16:00:00.00',
         tree:'leaf1'
+      },
+      {
+        name: '王小明',
+        age: 18,
+        address: '北京市朝阳区芍药居',
+        money: '120.00',
+        cardId: '6223 5678 1234 5678',
+        city: '北京',
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
+        // _highlight: true//默认选择当前项
+      },
+      {
+        name: '张小刚',
+        age: 25,
+        address: '北京市海淀区西二旗',
+        money: '130.00',
+        cardId: '6223 5678 1234 5678',
+        city: '北京',
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
+      },
+      {
+        name: '李小红',
+        age: 30,
+        address: '上海市浦东新区世纪大道',
+        money: '140.00',
+        cardId: '6223 5678 1234 5678',
+        city: '北京',
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
+      },
+      {
+        name: '周小伟',
+        age: 26,
+        address: '深圳市南山区深南大道',
+        money: '150.00',
+        cardId: '6223 5678 1234 5678',
+        city: '北京',
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
+      },
+      {
+        name: '王小明',
+        age: 18,
+        address: '北京市朝阳区芍药居',
+        money: '120.00',
+        cardId: '6223 5678 1234 5678',
+        city: '北京',
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
+        // _highlight: true//默认选择当前项
+      },
+      {
+        name: '张小刚',
+        age: 25,
+        address: '北京市海淀区西二旗',
+        money: '130.00',
+        cardId: '6223 5678 1234 5678',
+        city: '北京',
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
+      },
+      {
+        name: '李小红',
+        age: 30,
+        address: '上海市浦东新区世纪大道',
+        money: '140.00',
+        cardId: '6223 5678 1234 5678',
+        city: '北京',
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
+      },
+      {
+        name: '周小伟',
+        age: 26,
+        address: '深圳市南山区深南大道',
+        money: '150.00',
+        cardId: '6223 5678 1234 5678',
+        city: '北京',
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
       }
     ]
   },
@@ -228,17 +318,17 @@ export default {
     return {
       loading:false,
       columns1: [
-        {
-          type: 'expand',
-          width: 50,
-          render: (h, params) => {
-            return h(TexpandRow, {
-              props: {
-                  row: params.row
-              }
-            })
-          }
-        },
+        // {
+        //   type: 'expand',
+        //   width: 50,
+        //   render: (h, params) => {
+        //     return h(TexpandRow, {
+        //       props: {
+        //           row: params.row
+        //       }
+        //     })
+        //   }
+        // },
         // {
         //   title: '姓名',
         //   key: 'name',
@@ -415,9 +505,8 @@ export default {
     }
   },
   methods: {
-    dblClick(e,i,j){
-      debugger;
-      console.log(e,i,j);
+    dblClick(e,curIndex){
+      console.log(e,curIndex);
     },
     setLoad(){
       this.loading = !this.loading;
