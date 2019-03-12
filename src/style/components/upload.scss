@@ -1,7 +1,7 @@
 $upload-prefix-cls: "#{$css-prefix}upload";
 $uploaded-prefix-cls: "#{$upload-prefix-cls}-uploaded";
 .#{$upload-prefix-cls} {
-  input[type="file"]{
+  form, input[type="file"]{
     display: none;
   }
 
