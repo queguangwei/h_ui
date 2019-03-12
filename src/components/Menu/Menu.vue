@@ -179,7 +179,6 @@ export default {
     updateOpened () {
       const items = findComponentsDownward(this, 'Submenu');
       if(this.collapse) return;
-      // debugger;
       if (items.length) {
         items.forEach(item => {
           if (this.openName.indexOf(item.name) > -1) item.opened = true;

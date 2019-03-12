@@ -2,14 +2,14 @@
   <div>
     <h2>format支持2种格式yyyy/MM/dd或者yyyy-MM-dd或者yyMMdd</h2>
     <h-fast-date v-model="val1" format="yyyy/MM/dd"></h-fast-date>{{val1}}
-    <h-fast-date v-model="val2" :setDefault='true' format="yyyy-MM-dd"></h-fast-date>{{val2}}
+    <h-fast-date v-model="val2" :setDefault='true' format="yyyy-MM-dd" readonly></h-fast-date>{{val2}}
     <h-fast-date v-model="val5" placement="top-start" format="yyyyMMdd" style="width:300px"></h-fast-date>{{val5}}
     <h2>clearable支持是否显示可清空按钮</h2>
-    <h-fast-date v-model="val3" clearable placeholder="请选择日期"  @on-clear="clear" readonly></h-fast-date>{{val2}}
+    <h-fast-date v-model="val3" clearable placeholder="请选择日期"  @on-clear="clear" ></h-fast-date>{{val3}}
      <h2>setDefault支持是否显示默认时间</h2>
     <h-fast-date v-model="val4" :setDefault="true" placement="bottom-start" clearable @on-clear="clear"></h-fast-date>{{val4}}
     <h2>范围选择</h2>
-    <h-fast-date v-model="valrange1" type="daterange" format="yyyy-MM-dd" clearable @on-clear="clear"></h-fast-date>{{valrange1}}
+    <h-fast-date v-model="valrange1" type="daterange" format="yyyyMMdd" clearable @on-clear="clear"></h-fast-date>{{valrange1}}
     <h-fast-date type="daterange" placement="bottom-end" placeholder="选择日期" ></h-fast-date>
     <h2>readonly和disabled</h2>
     <h-fast-date readonly type="daterange" ></h-fast-date>
@@ -38,7 +38,7 @@ export default {
       val3:'20180101',
       val4:'',
       val5:20180101,
-      valrange1:['2018-01-01','2018-01-02'],
+      valrange1:['20180101','20180102'],
       readonly:false,
       options1: {
         shortcuts: [

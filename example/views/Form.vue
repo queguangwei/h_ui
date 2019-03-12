@@ -2,7 +2,7 @@
     <div>
         <h1>异步测试</h1>
         <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
-            <h-form-item label="密码" prop="passwd">
+            <h-form-item label="密码" prop="passwd" labelTitle="123">
                 <h-input type="password" v-model="formCustom.passwd"></h-input>
             </h-form-item>
             <h-form-item label="年龄" prop="age">
@@ -17,6 +17,7 @@
             </h-form-item>
         </h-form>
         <h1>测试</h1>
+        <h-button @click="changeRequire">改变必填</h-button>
         <h-form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="250" label-position='left' :showMessage="true" placement="top-start">
             <h-form-item label="姓名" prop="name" :label-width="50" :showMessage="true">
               <h-typefield v-model="formValidate.name" type="money" ></h-typefield>
@@ -450,7 +451,7 @@
                     <h-col span="8">
                         <h-form-item label="姓名" prop="name">
                             <div>
-                                <h-input v-model="formValidate.name" placeholder="请输入姓名" disabled></h-input>
+                                <h-input v-model="formValidate.name" placeholder="请输入姓名"></h-input>
                             </div>
                         </h-form-item>
                     </h-col>
@@ -796,11 +797,6 @@
                 formValidate: {
                     name: ''
                 },
-                // ruleValidate: {
-                //     name: [
-                //         { required: true, message: '姓名不能为空', trigger: 'blur' }
-                //     ]
-                // },
                 formInline: {
                     user: '',
                     password: ''
@@ -973,7 +969,10 @@ ty: [
                 }
             }
         },
-        methods: {            
+        methods: { 
+            changeRequire(){
+                this.ruleValidate.name[0].required = false
+            },         
             handleSubmit(name) {
                 this.$refs[name].validate((valid) => {
                     if (valid) {

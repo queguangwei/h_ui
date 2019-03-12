@@ -1,6 +1,6 @@
 <template>
     <div :class="classes">
-        <label :class="[prefixCls + '-label']" :style="labelStyles" v-if="label || $slots.label">
+        <label :class="[prefixCls + '-label']" :style="labelStyles" v-if="label || $slots.label" :title="labelTitle">
             <slot name="label">{{ label }}</slot>
         </label>
         <div :class="[prefixCls + '-requiredIcon']" v-else v-show="isRequired"><span >*</span></div>
@@ -95,7 +95,8 @@
             onlyBlurRequire:{
                 type: Boolean,
                 default: false
-            }
+            },
+            labelTitle:String
         },
         data () {
             return {
@@ -338,6 +339,8 @@
                         if (rule.required) {
                             this.isRequired = true;
                             return false;
+                        }else{
+                            this.isRequired = false;
                         }
                     });
                     this.$on('on-form-blur', this.onFieldBlur);
