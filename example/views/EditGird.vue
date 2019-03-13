@@ -90,10 +90,10 @@ var columns=[
         //     })
         //   }
         // },
-        // {
-        //   type: 'selection',
-        //   width: 50,
-        // },
+        {
+          type: 'selection',
+          width: 50,
+        },
         {
           title: '姓名',
           key: 'name',
@@ -437,8 +437,9 @@ export default {
       console.log(selection);
       console.log(row);
     },
-    selsetChange (selection){//选项发生变化时触发已选择的项
+    selsetChange (selection,inx){//选项发生变化时触发已选择的项
       console.log(selection);
+      console.log(inx);
     },
     getData(){
       console.log(this.$refs.editGird.cloneData); 

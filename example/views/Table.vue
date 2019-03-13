@@ -1764,7 +1764,7 @@ export default {
           type: 'radio',
           width:60,
           align:'center',
-          // fixed:'left'
+          // fixed:'right'
         },
         {
           title: '姓名',

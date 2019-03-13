@@ -337,6 +337,7 @@ export default {
             for (let i = 0; i < $td.length; i++) {    // can not use forEach in Firefox
               const column = this.cloneColumns[i];
               let width = parseInt(getStyle($td[i], 'width'));
+              console.log('td'+width)
               if (i === autoWidthIndex) {
                   width = parseInt(getStyle($td[i], 'width')) - 1;
               }
@@ -360,12 +361,13 @@ export default {
             for (let i = 0; i < $th.length; i++) {    // can not use forEach in Firefox
               const column = this.cloneColumns[i]; 
               let width = parseInt(getStyle($th[i], 'width'));
+              console.log('th'+width)
               if (i === autoWidthIndex) {
                 width = parseInt(getStyle($th[i], 'width')) - 1;
               }
-              // if(IEVersion()!=-1){               
-              //   width = width+31;
-              // }
+              if(IEVersion()!=-1){               
+                width = width+31;
+              }
              // 自适应列在表格宽度较小时显示异常，为自适应列设置最小宽度100（拖拽后除外）
               if (column.width) {
                   width = column.width||'';
