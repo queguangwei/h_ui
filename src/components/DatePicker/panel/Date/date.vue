@@ -2,9 +2,9 @@
     <div :class="classes" @mousedown.prevent>
         <div :class="[prefixCls + '-sidebar']" v-if="shortcuts.length">
             <div
-                :class="[prefixCls + '-shortcut']"
-                v-for="shortcut in shortcuts"
-                @click="handleShortcutClick(shortcut)">{{ shortcut.text }}</div>
+             :class="[prefixCls + '-shortcut']"
+             v-for="shortcut in shortcuts" 
+              @click="handleShortcutClick(shortcut)">{{ shortcut.text }}</div>
         </div>
         <div :class="[prefixCls + '-body']">
             <div :class="[datePrefixCls + '-header']" v-show="currentView !== 'time'">
@@ -62,9 +62,11 @@
                 v-if="confirm"
                 :show-time="showTime"
                 :is-time="isTime"
+                :show-long="showLong"
                 @on-pick-toggle-time="handleToggleTime"
                 @on-pick-clear="handlePickClear"
                 @on-pick-success="handlePickSuccess"
+                @on-pick-long="handleLongDate"
             ></Confirm>
         </div>
     </div>
@@ -183,6 +185,9 @@
 
                 this.$emit('on-pick', value);
             },
+            handleLongDate(){
+                this.$emit('on-pick-long');
+            }
         },
     };
 </script>
