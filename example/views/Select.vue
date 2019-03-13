@@ -331,6 +331,37 @@
                   :value="item.value"
                   :key="item.value">{{ item.label }}</h-option>
       </h-select>
+      <h2>允许新建条目</h2>
+        <span>单选:</span>
+        <h-select v-model="model14"
+                  width="200"
+                  filterable
+                  :showBottom="true"
+                  isBackClear
+                  allowCreate
+                  @on-change="handle"
+                  label-in-value
+                  :transfer="true">
+          <h-option v-for="(item, index) in uList"
+                    :value="item.id"
+                    :key="item.id">{{ item.name }}</h-option>
+        </h-select>
+        <span>多选:</span>
+        <h-select v-model="model15"
+                  width="200"
+                  multiple
+                  filterable
+                  :showBottom="true"
+                  isBackClear
+                  allowCreate
+                  @on-change="handle"
+                  label-in-value
+                  algin="center"
+                  :transfer="true">
+          <h-option v-for="(item, index) in uList"
+                    :value="item.id"
+                    :key="item.id">{{ item.name }}</h-option>
+        </h-select>
     </div>
   </div>
 </template>
@@ -492,6 +523,8 @@ export default {
       model10: '',
       model11: '',
       model13: 'hangzhou',
+      model14: '',
+      model15: [],
       loading1: false,
       options1: [
         {
@@ -619,6 +652,9 @@ export default {
     }
   },
   methods: {
+    handle(d) {
+      console.log(d);
+    },
     setNull(){
       this.model34 = "0"
       // this.model44 = ['124124']

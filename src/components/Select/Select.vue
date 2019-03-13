@@ -26,10 +26,8 @@
         :readonly = "readonly || !editable"
         :class="[prefixCls + '-input']"
         :placeholder="showPlaceholder?localePlaceholder:''"
-        :style="inputStyle"
         autocomplete="off"
         @blur="handleBlur"
-        @keydown="resetInputState"
         @keydown.delete="handleInputDelete"
         tabindex="-1"
         ref="input">
@@ -60,14 +58,23 @@
               :placeholder="localeSearchHolder"
               autocomplete="off"
               @blur="handleBlur"
-              @keydown="resetInputState"
               @keydown.delete="handleInputDelete"
               tabindex="-1"
               ref="input">
           </span>
           <span v-if="hideMult&&multiple" :class="hideMultHead" @click="toggleSelect(!isSelectAll)">全选</span>
-          <ul v-show="notFoundShow" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul>
-          <ul v-show="(!notFound && !remote) || (remote && !loading && !notFound)" :class="[prefixCls + '-dropdown-list']"><slot></slot></ul>
+          <ul v-show="notFoundShow && !enableCreate" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul>
+          <ul v-show="(!notFound && !remote) || (remote && !loading && !notFound) || enableCreate" :class="[prefixCls + '-dropdown-list']">
+            <!-- 多选、支持搜索和新建条目的情况下，如果检索词不匹配任何一个条目时，显示此项供用户选择 -->
+            <li :class="`${prefixCls}-item`" v-if="enableCreate && showNewOption" 
+                @click.stop="createNewOption(query)">
+              <checkbox v-show="multiple && !hideMult" v-model="newOptionChecked"></checkbox>
+              {{query}}
+            </li>
+            <!-- 新建项 -->
+            <h-option ref="newOptions" v-for="option in newOptions" :value="option.value" :key="option.key">{{option.value}}</h-option>
+            <slot></slot>
+          </ul>
           <ul v-show="loading" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
           <ul v-show="isComputed" :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>
         </div>
@@ -274,7 +281,12 @@
       maxDropWidth: {
         type:[String,Number],
         default: 500
-		  },
+      },
+      /* 条目不存在时允许增加新条目 */
+      allowCreate: {
+        type: Boolean,
+        default: false
+      }
     },
     data () {
       return {
@@ -289,7 +301,6 @@
         query: '',
         lastQuery: '',
         selectToChangeQuery: false,
-        inputLength: 56,
         notFound: false,
         slotChangeDuration: false,
         model: null,
@@ -304,6 +315,12 @@
         fPlacement:this.placement,
         isSelectAll:false,
         typeValue:'string',
+        /* 新建条目 */
+        newOptions: [],
+        /* 是否显示待新建条目 */
+        showNewOption: false,
+        /* 待新建条目勾选状态 */
+        newOptionChecked: false
       };
     },
     computed: {
@@ -368,17 +385,6 @@
       },
       showCloseIcon () {
           return (!this.multiple && this.clearable||this.multiple&&this.multClearable) && !this.showPlaceholder;
-      },
-      inputStyle () {
-          let style = {};
-          if (this.multiple) {
-              if (this.showPlaceholder) {
-                  style.width = '100%';
-              } else {
-                  style.width = `${this.inputLength}px`;
-              }
-          }
-          return style;
       },
       localePlaceholder () {
           if (this.placeholder === undefined) {
@@ -448,6 +454,10 @@
       },
       showFooter () {
         return this.$slots.footer || this.isCheckall;
+      },
+      /* 是否开启新建条目功能 */
+      enableCreate() {
+        return this.allowCreate && this.filterable; 
       }
     },
     methods: {
@@ -502,9 +512,14 @@
               arr.push(item.value);
             })
             this.model = arr;
+            if (this.enableCreate && this.showNewOption) {
+              this.createNewOption(this.query);
+            }
           }
         }else{
           this.model=[];
+          // 清空新建条目，allowCreate = true时有意义
+          this.newOptions = [];
         }
       },
       offsetArrow(){
@@ -631,6 +646,8 @@
           }
         })
         this.model=disArr;
+        // 清空新建条目，allowCreate = true时有意义
+        this.newOptions = [];
       },
       clearSingleSelect () {
         if (this.showCloseIcon) {
@@ -644,6 +661,8 @@
             }
             this.hideMenu();
             this.titleTip='';
+            // 清空新建条目，allowCreate = true时有意义
+            this.newOptions = [];
         }
       },
       updateMultipleSelected (init = false, slot = false) {
@@ -695,6 +714,13 @@
         if (this.remote) {
           const tag = this.model[index];
           this.selectedMultiple = this.selectedMultiple.filter(item => item.value !== tag);
+        }
+        // 移除用户新建的条目
+        if (this.enableCreate) {
+          const newOptions = this.newOptions;
+          const value = this.model[index];
+          let i = newOptions.findIndex(op => op.value === value);
+          i > -1 && newOptions.splice(i, 1);
         }
         if(this.disabledOpts.indexOf(this.model[index])==-1){
           this.model.splice(index, 1);
@@ -1015,6 +1041,30 @@
             this.clearSingleSelect();
           }
         }
+      },
+      /**
+       * 创建新条目并添加为选中项
+       */
+      createNewOption(value) {
+        if (value) {
+          this.newOptionChecked = false;
+          this.showNewOption = false;
+          this.newOptions.push({key: Symbol(value), value});
+          if (this.multiple) {
+            this.selectedMultiple.push({label: value, value});
+          } else {
+            this.selectedSingle = value;
+          }
+          this.$nextTick(() => {
+            let newOptions = this.$refs.newOptions;
+            for (let option of newOptions) {
+              if (option.value === value) {
+                option.select();
+                break;
+              }
+            }
+          })
+        }
       }
     },
     mounted () {
@@ -1103,6 +1153,10 @@
                   this.lastQuery = this.query = child.label === undefined ? child.searchLabel : child.label;
                 }
               });
+            }
+            if (this.enableCreate) {
+              let idx = this.newOptions.findIndex(op => op.value !== value);
+              idx > -1 &&this.newOptions.splice(idx, 1);
             }
           }
         }
@@ -1228,6 +1282,9 @@
               if(this.readonly || this.disabled) return false;
               this.remoteMethod(val);
           }
+          if (this.enableCreate && this.$refs.newOptions) {
+            this.$refs.newOptions.forEach(op => op.queryChange(val));
+          }
           this.focusIndex = 0;
           this.findChild(child => {
             child.isFocus = false;
@@ -1238,18 +1295,20 @@
             }
             // if(val.trim()) this.broadcastQuery(val);
             this.broadcastQuery(val);
-
-            let is_hidden = true;
-
-            this.$nextTick(() => {
-                this.findChild((child) => {
-                    if (!child.hidden) {
-                        is_hidden = false;
-                    }
-                });
-                this.notFound = is_hidden;
-            });
         }
+        /* 是否有value相等的option存在 */
+        let optionValMatched = false;
+        let isHidden = true;
+        this.$nextTick(() => {
+          this.findChild((child) => {
+              if (!child.hidden) {
+                  isHidden = false;
+              }
+              !optionValMatched && (optionValMatched = val === child.searchLabel || val === child.value);
+          });
+          if (!this.remote) this.notFound = isHidden;
+          this.showNewOption = val && (!optionValMatched || isHidden);
+        })
         if (this.filterable&&!this.remote) {
           this.$nextTick(()=>{
             this.focusIndex = 1;
