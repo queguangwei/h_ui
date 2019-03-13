@@ -1,5 +1,62 @@
 <template>
 <div>
+  <h-checkbox-group v-model="formGroup">
+    {{formGroup}}
+      <div v-for="(item1,inx) in rightItemLIst" :key="inx">
+         <h-checkbox :label="'item1'+inx"></h-checkbox>         
+          <h-select v-model="formData[item1.segment_code]" @on-change="onSelectChange" multiple :isString='true'>
+            <h-option v-for="item2 in item1.realData" :value="item2.value" :key="item2.value" >{{ item2.text }}</h-option>
+          </h-select>
+      </div>
+  </h-checkbox-group>
+</div>
+</template>
+<script>
+    export default {
+        data () {
+            return {
+                formData:{
+                  selet1:'',
+                  selet2:'',
+                  selet3:'',
+                  selet4:'',
+                },
+                formGroup:[],
+                rightItemLIst:[
+                  {segment_code:'selet1',realData:[{"value":'1',"text":"境外"},{"value":'0',"text":"境内"}]},
+                  {segment_code:'selet2',realData:[{"value":'1',"text":"境外"},{"value":'0',"text":"境内"}]},
+                  {segment_code:'selet3',realData:[{"value":'1',"text":"境外"},{"value":'0',"text":"境内"}]},
+                  {segment_code:'selet4',realData:[{"value":'1',"text":"境外"},{"value":'0',"text":"境内"}]},
+                  ]    
+            }
+        },
+        methods:{
+          onSelectChange(val){
+           
+          }
+        }
+    }
+</script>
+
+<!--<template>
+   <h-checkbox-group v-model="social">
+      <h-checkbox label="twitter" v-for="(item,key) in list" :key="key">
+        <h-select ></h-select>
+      </h-checkbox>
+   </h-checkbox-group>
+</template>
+<script>
+export default {
+  data () {
+    return {
+      social: ['facebook', 'github'],
+      list: ['social-twitter','facebook', 'github','snapchat']
+    }
+  }
+}
+</script>-->
+<!--<template>
+<div>
     <h-simple-table :columns="columnsBig" 
       :data="bigData" border stripe headAlgin="right" 
       bodyAlgin="left" height="500" rowSelect 
@@ -24,7 +81,7 @@ let tData =require('../assets/aa.json');
                   algin:'center',
                  }
                 ],
-                bigData:jsonData,
+                bigData:[],
             }
         },
         methods: {
@@ -89,6 +146,7 @@ let tData =require('../assets/aa.json');
         },
     }
 </script>
+-->
 <!--<template>
     <div>
         

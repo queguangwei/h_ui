@@ -60,6 +60,10 @@
         validator (value) {
           return oneOf(value, ['small', 'large', 'default']);
         }
+      },
+      notGroup:{
+        type: Boolean,
+        default: false
       }
     },
     data () {
@@ -103,6 +107,7 @@
     mounted () {
       this.parent = findComponentsUpward(this, 'CheckboxGroup');
       if (this.parent) this.group = true;
+      if (this.notGroup) this.group = false;
       if (!this.group) {
           this.updateModel();
           this.showSlot = this.$slots.default !== undefined;
