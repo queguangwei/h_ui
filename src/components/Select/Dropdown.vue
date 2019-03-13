@@ -104,7 +104,7 @@ export default {
 					}
 				});
 			}
-			if (this.$parent.$options.name === 'Select'|| this.$parent.$options.name === 'SelectTree' || this.$parent.$options.name === 'SelectTable') {
+			if (this.$parent.$options.name === 'Select'|| this.$parent.$options.name === 'SelectTree' || this.$parent.$options.name === 'SelectTable'|| this.$parent.$options.name ==='SimpleSelect') {
 				if (!this.dropWidth) {
 					let width = parseInt(getStyle(this.$parent.$el, 'width'));
 					this.width = width

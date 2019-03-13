@@ -147,7 +147,7 @@ export default {
     parent:Object,
     naturalIndex: Number,    // index of rebuildData
     columnIndex:Number,
-    index: Number,           // _index of data
+    index: [Number,String],           // _index of data
     checked: Boolean,
     disabled: Boolean,
     expanded: Boolean,
