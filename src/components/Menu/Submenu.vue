@@ -211,7 +211,9 @@ export default {
     })
   },
   beforeDestroy(){
-    this.$refs.drop.destroy();
+    if(this.$refs.drop){
+      this.$refs.drop.destroy();
+    }
   }
 };
 </script>

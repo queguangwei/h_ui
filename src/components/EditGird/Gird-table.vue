@@ -631,7 +631,7 @@ export default {
         let i = arr[0];
         let j = Number(arr[1])-1;
         let currentData = this.getGroupData(i,j);
-        this.$emit('on-row-dblclick', JSON.parse(JSON.stringify(currentData)),Number(i),j);
+        this.$emit('on-row-dblclick', JSON.parse(JSON.stringify(currentData)),{k:Number(i),m:j,key:this.curKey});
       }else{
         if ((!this.rowSelect || !this.selectType)&&this.highlightRow) {
           this.highlightCurrentRow (_index);
@@ -706,10 +706,9 @@ export default {
         }
         const status = !data._isChecked;
         _this.objData[_index]._isChecked = status;
-
         const selection = this.getSelection();
         this.$emit(status ? 'on-select' : 'on-select-cancel', selection, JSON.parse(JSON.stringify(this.cloneData[_index])));
-        this.$emit('on-selection-change', selection);
+        this.$emit('on-selection-change', selection, this.getSelection('transfer'));
       }
     },
     toggleExpand (_index) {
@@ -764,7 +763,7 @@ export default {
         if (status) {
             this.$emit('on-select-all', selection);
         }
-        this.$emit('on-selection-change', selection);
+        this.$emit('on-selection-change', selection, this.getSelection('transfer'));
     },
     fixedHeader () {
         if (this.height) {
@@ -832,7 +831,7 @@ export default {
             if (row.item && typeof(row.item)=='object') {
               row.item.forEach((obj,i)=>{
                 i=i+1;
-                obj._index = Number(index+'.'+i);
+                obj._index =index+'.'+i;
                 obj._rowKey = rowKey++;
                 obj.expand = obj.expand? true:false;
               });
