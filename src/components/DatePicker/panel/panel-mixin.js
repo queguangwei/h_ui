@@ -54,6 +54,9 @@ export default {
             const {timeSpinner, timeSpinnerEnd} = this.$refs;
             if (open && timeSpinner) timeSpinner.updateScroll();
             if (open && timeSpinnerEnd) timeSpinnerEnd.updateScroll();
+        },
+        handleLongTime(){
+            this.$emit('on-pick-long');
         }
     }
 };
