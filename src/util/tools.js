@@ -212,6 +212,7 @@ function camelCase(name) {
 }
 //for slide
 // getStyle
+let isIEOr = IEVersion()!=-1?true:false
 export function getStyle (element, styleName) {
   if (!element || !styleName) return null;
   styleName = camelCase(styleName);
@@ -220,7 +221,11 @@ export function getStyle (element, styleName) {
   }
   try {
     const computed = document.defaultView.getComputedStyle(element, '');
-    return element.style[styleName] || computed ? computed[styleName] : null;
+    if(isIEOr&&styleName=='width'){
+      return computed ? parseFloat(computed[styleName],)+parseInt(computed['padding-left'])+parseInt(computed['padding-right'])+parseInt(computed['border-left-width'])+parseInt(computed['border-right-width']): null;
+    }else{
+      return element.style[styleName] || computed ? computed[styleName] : null;
+    }
   } catch(e) {
     return element.style[styleName];
   }
@@ -729,7 +734,8 @@ export function IEVersion() {
           return 6;//IE版本<=7
       }   
   } else if(isEdge) {
-      return 'edge';//edge
+      // return 'edge';//edge
+      return -1;//edge
   } else if(isIE11) {
       return 11; //IE11  
   }else{
