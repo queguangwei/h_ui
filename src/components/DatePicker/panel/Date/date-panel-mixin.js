@@ -9,6 +9,10 @@ export default {
             type: Boolean,
             default: false
         },
+        showLong: {
+            type: Boolean,
+            default: false
+        },
         format: {
             type: String,
             default: 'yyyy-MM-dd'
