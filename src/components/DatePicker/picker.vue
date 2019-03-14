@@ -39,6 +39,7 @@
                :visible="visible"
                :showTime="type === 'datetime' || type === 'datetimerange'"
                :confirm="isConfirm"
+               :showLong="showLong"
                :selectionMode="selectionMode"
                :steps="steps"
                :format="format"
@@ -58,6 +59,7 @@
                @on-pick-click="disableClickOutSide = true"
                @on-selection-mode-change="onSelectionModeChange"
                @on-select-range="handleSelectRange"
+               @on-pick-long="handleLongDate"
             ></component>
        </div>
       </Drop>
@@ -104,6 +106,10 @@
           default: true
       },
       confirm: {
+          type: Boolean,
+          default: false
+      },
+      showLong: {
           type: Boolean,
           default: false
       },
@@ -155,6 +161,9 @@
       },
       value: {
           type: [Date, String, Array]
+      },
+      longValue:{
+           type: [Date, String, Array]
       },
       showFormat:{
         type:Boolean,
@@ -230,7 +239,7 @@
           return this.formatDate(this.internalValue);
       },
       isConfirm(){
-          return this.confirm || this.type === 'datetime' || this.type === 'datetimerange' || this.multiple;
+          return this.confirm || this.type === 'datetime' || this.type === 'datetimerange' || this.multiple||this.showLong;
       },
     },
     methods: {
@@ -424,6 +433,7 @@
         e.stopPropagation();
       },
       setPlacement(){
+        //   debugger;
         if(this.autoPlacement){
             let obj = this.$refs.wrapper;
             let allWidth= document.body.clientWidth;
@@ -454,6 +464,22 @@
             
         }
       },
+      handleLongDate(){
+        let isdateRange = this.type.indexOf('range')>-1?true:false;
+        let emptyAry = isdateRange ? [null, null] : [null];
+        let date=isdateRange?this.parseDate([this.longValue]):this.parseDate(this.longValue);
+        let longtime = isEmptyArray([this.longValue] || []) ? emptyAry : date;
+        if(!longtime[0]) return;
+        if(isdateRange){
+            let start=this.internalValue[0]?this.internalValue[0].getTime():0;
+            let long=longtime[0].getTime();
+            if(start===0||long-start<0) return;
+            this.$set(this.internalValue, 1, longtime[0]);
+        }else{
+          this.internalValue =longtime;
+        }      
+        this.emitChange();
+      }
     },
     watch: {
       visible (state) {
