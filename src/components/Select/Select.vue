@@ -465,7 +465,21 @@
             break;
           } 
         }
-        let selected = this.multiple ? model.indexOf(query) > -1 : model === query;
+        let selected = false;
+        if (this.multiple) {
+          for (let m of model) {
+            if (this.labelInValue && m.value === query) {
+              selected = true;
+              break;
+            }
+            if (!this.labelInValue && m === query) {
+              selected = true;
+              break;
+            }
+          }
+        } else {
+          selected = model === query;
+        }
         return query && !existed && !selected;
       }
     },
@@ -695,7 +709,7 @@
                 } else if (this.enableCreate) {
                   selected.push({
                     value: model,
-                    label: model
+                    label: this.labelInValue ? model.label : model
                   })
                 }
             }
@@ -762,7 +776,7 @@
               if (this.labelInValue) {
                   this.$emit('on-change', {
                       value: value,
-                      label: label
+                      label: label ? label : value
                   });
                   this.dispatch('FormItem', 'on-form-change', {
                       value: value,
@@ -1060,7 +1074,9 @@
        */
       createNewOption(value) {
         if (value) {
-          this.newOptionChecked = false;
+          this.$nextTick(() => {
+            this.newOptionChecked = false;
+          })
           if (this.multiple) {
             this.model.push(this.labelInValue ? {value, label: value} : value);
           } else {
