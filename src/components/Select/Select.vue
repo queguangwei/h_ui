@@ -456,7 +456,15 @@
       showNewOption() {
         const model = this.model;
         const query = this.query;
-        let existed = this.optionInstances.findIndex(option => option.searchLabel === query || option.value === query) > -1;
+        const optionInstances = this.optionInstances;
+        let existed = false;
+        for (let i in optionInstances) {
+          let option = optionInstances[i];
+          if (option.searchLabel === query || option.value === query) {
+            existed = true;
+            break;
+          } 
+        }
         let selected = this.multiple ? model.indexOf(query) > -1 : model === query;
         return query && !existed && !selected;
       }
@@ -671,7 +679,14 @@
             let selected = this.remote && this.model.length > 0 ? this.selectedMultiple : [];
             for (let i = 0; i < this.model.length; i++) {
                 const model = this.model[i];
-                const option = this.options.find(op => op.value === model);
+                const options = this.options; 
+                let option;
+                for (let op of this.options) {
+                  if (op.value === model) {
+                    option = op;
+                    break;
+                  }
+                }
                 if (option) {
                   selected.push({
                     value: option.value,
