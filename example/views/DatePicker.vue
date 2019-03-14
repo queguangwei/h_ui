@@ -121,6 +121,16 @@
     </h-row>
     <h-date-picker size="large" type="date" placeholder="不可编辑" :editable="false"></h-date-picker>
     <h-date-picker type="date" placeholder="选择日期" style="width: 200px"></h-date-picker>
+     <h-row>
+      <h2>带有长期功能</h2>
+      <p>设置属性 showLong，配置longValue，点击长期改为longValue日期。</p>
+      <h-col span="12">
+        <h-date-picker type="date" placeholder="选择日期" style="width: 200px" showLong :longValue="longdate1"></h-date-picker>
+      </h-col>
+      <h-col span="12">
+        <h-date-picker type="daterange"  placeholder="选择日期" :value="value2" showLong :longValue="longdate"></h-date-picker>
+      </h-col>
+    </h-row>
   </div>
 </template>
 <script>
@@ -221,6 +231,8 @@
         model6:'',
         model7:'',
         changeable:false,
+         longdate:'2100-09-05',
+        longdate1:'2019-09-05',
       }
     },
     methods:{
