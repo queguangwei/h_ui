@@ -2,7 +2,7 @@
   <div>
     <!-- <h-msg-box v-model="changeform" width="900" escClose left="10" closeDrop> -->
     <Button @on-click="changeSelect"></Button>
-      <h-form ref="formItem1" :model="formItem1" onlyBlurRequire :compareModel="formItem2" :label-width="80" errorFocus cols="3">
+      <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus cols="3">
         <h-form-item label="日期控件">
           <h-row>
             <h-col span="11">
@@ -88,7 +88,7 @@
           </h-select-table>
         </h-form-item>
         <h-form-item label="下拉树" prop='tree' required>
-          <h-select-tree v-model="formItem1.tree" :first-value="firstValc" style="width:200px" :data="baseData1" placement="top" placeholder="你好"></h-select-tree>
+          <h-select-tree v-model="formItem1.tree" style="width:200px" :data="baseData1" placement="top" placeholder="你好"></h-select-tree>
         </h-form-item>
         <h-form-item label="文本域" prop="textarea" required>
           <h-input v-model="formItem1.textarea" type="textarea" :canResize="false" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></h-input>

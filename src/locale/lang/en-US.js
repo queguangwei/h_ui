@@ -66,7 +66,8 @@ export default {
                 m10: 'Oct',
                 m11: 'Nov',
                 m12: 'Dec'
-            }
+            },
+            long: 'Long Effective'
         },
         transfer: {
             titles: {
