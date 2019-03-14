@@ -611,6 +611,7 @@
               if(child.disabled){
                 disabledOpts.push(child.value);
               }
+              child.index = index++;
               if (init) {
                   this.optionInstances.push(child);
               }
