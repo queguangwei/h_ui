@@ -41,6 +41,8 @@
         v-show="dropVisible" 
         :placement="fPlacement"
         :data-transfer="transfer" 
+        :widthAdaption="widthAdaption"
+        :maxDropWidth="maxDropWidth"
         ref="dropdown"
         v-transfer-dom>
         <div :class="content" ref="content" @click="handleclick">
@@ -230,7 +232,19 @@
       checkToHead:{
         type:Boolean,
         default:false,
-      }
+      },
+      autoPlacement:{
+        type:Boolean,
+        default:false,
+      },
+      widthAdaption:{
+        type:Boolean,
+        default:false,
+      },
+      maxDropWidth: {
+        type:[String,Number],
+        default: 500
+      },
     },
     data () {
       return {
@@ -539,8 +553,8 @@
 
         if (init) {
             if (!this.remote) {
-                this.updateSingleSelected(true, slot);
-                this.updateMultipleSelected(true, slot);
+              this.updateSingleSelected(true, slot);
+              this.updateMultipleSelected(true, slot);
             }
         }
       },
@@ -965,7 +979,19 @@
           this.model.push(value);
           this.broadcast('Drop', 'on-update-popper');
         }
-      }
+      },
+      setPlacement(){
+        if(this.autoPlacement){
+            let obj = this.$refs.select;
+            let allWidth= document.body.clientWidth;
+            let allHeight= document.body.clientHeight;
+            let curbottom =allHeight-obj.offsetTop-obj.clientHeight;
+            let bottomNum = this.isCheckall?250:210;
+            if(curbottom<bottomNum){
+              this.fPlacement = 'top';
+            }
+        }
+      },
     },
     mounted () {
       this.isBlock = this.block?true:false;
@@ -1047,6 +1073,7 @@
       if (this.disabled) {
         this.tabIndex = -1;
       }
+      this.setPlacement();
     },
     beforeDestroy () {
       off(document, 'keydown', this.handleKeydown);
@@ -1101,7 +1128,9 @@
           this.broadcast('Drop', 'on-update-popper');
         } else {
           if (this.filterable) {
-            this.$refs.input.blur();
+            if(this.$refs.input){
+              this.$refs.input.blur();
+            }
             setTimeout(() => {
               this.query='';
               this.broadcastQuery('');

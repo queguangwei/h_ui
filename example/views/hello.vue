@@ -1,17 +1,18 @@
 <template>
 <div>
     <h-simple-table :columns="columnsBig" 
-      :data="bigData" border stripe headAlgin="right" 
-      bodyAlgin="left" height="500" rowSelect 
-      @on-select="select" @on-select-cancel="select"  
-      @on-select-all='change' 
-      @on-selection-change="change"></h-simple-table>
-</div>
+     :row-class-name="rowClassName"  
+      :data="bigData" border :stripe=false headAlgin="center"  bodyAlgin="center"  
+  :canDrag=false :disabled-hover=true :highlight-row=false
+      @on-drag="select" 
+      @on-selection-change="change" ref="transferTable"></h-simple-table>
+ <h-button type="ghost" size="small" @click="reloadMockData">获取</h-button>
+  </div>
 </template>
 <script>
 let jsonData=[];
 let tData =require('../assets/aa.json'); 
-    for (let i = 0; i < 2; i++) {
+for (let i = 0; i < 2; i++) {
       jsonData = jsonData.concat(tData);
     }
     export default {
@@ -28,20 +29,34 @@ let tData =require('../assets/aa.json');
             }
         },
         methods: {
-            select (selection,row){//已选择的项和刚刚选择的项
+     rowClassName (row, index) {
+              if (index === 1) {
+                return 'demo-table-info-row';
+              } else if (index === 3) {
+                return 'demo-table-error-row';
+              }
+              return '';
+            },
+    reloadMockData () {
+                console.log(this.$refs.transferTable. getSelection());
+            },
+            select (selection,index){
+             console.log(selection);
+            },
+selectcancel(selection,row){//已选择的项和刚刚选择的项
              console.log(selection);
              console.log(row);
             },
             change(e){
+console.log("change事件触发");
+              console.log(e);
+            },
+selectall(e){
               console.log(e);
             },
         },
         mounted (){
             this.columnsBig=[
-                { 
-                  type: 'selection',
-                  align: 'center',
-                },
                 { 
                   type: 'index',
                   align: 'center',
@@ -51,10 +66,28 @@ let tData =require('../assets/aa.json');
                   title: '姓名',
                   key: 'fundId',
                   align: 'center',
+                  renderHeader:(h,params)=>{
+                    return h('h-icon', {
+                        props: {
+                          name: 'add'
+                        }
+                      })
+                  },
+                  render:(h, params)=>{
+                    return h('div', [
+                      h('h-icon', {
+                        props: {
+                          name: 'addressbook'
+                        }
+                      }),
+                      h('strong', params.row.name)
+                    ]);
+                  }
                 },
                 {
                   title: '年龄',
                   key: 'tradeDate',
+                  className: 'demo-table-info-column'
                 },
                 {
                   title: '地址',
@@ -86,9 +119,54 @@ let tData =require('../assets/aa.json');
                   key: 'tradeQuantity',
                 }
             ]
-        },
+        }
     }
 </script>
+<style>
+.demo-table-info-row{
+  color: red
+}
+</style>
+<!--<template>
+<div>
+  <h-checkbox-group v-model="formGroup">
+    {{formGroup}}
+      <div v-for="(item1,inx) in rightItemLIst" :key="inx">
+         <h-checkbox :label="'item1'+inx"></h-checkbox>         
+          <h-select v-model="formData[item1.segment_code]" @on-change="onSelectChange" multiple :isString='true'>
+            <h-option v-for="item2 in item1.realData" :value="item2.value" :key="item2.value" >{{ item2.text }}</h-option>
+          </h-select>
+      </div>
+  </h-checkbox-group>
+</div>
+</template>
+<script>
+    export default {
+        data () {
+            return {
+                formData:{
+                  selet1:'',
+                  selet2:'',
+                  selet3:'',
+                  selet4:'',
+                },
+                formGroup:[],
+                rightItemLIst:[
+                  {segment_code:'selet1',realData:[{"value":'1',"text":"境外"},{"value":'0',"text":"境内"}]},
+                  {segment_code:'selet2',realData:[{"value":'1',"text":"境外"},{"value":'0',"text":"境内"}]},
+                  {segment_code:'selet3',realData:[{"value":'1',"text":"境外"},{"value":'0',"text":"境内"}]},
+                  {segment_code:'selet4',realData:[{"value":'1',"text":"境外"},{"value":'0',"text":"境内"}]},
+                  ]    
+            }
+        },
+        methods:{
+          onSelectChange(val){
+           
+          }
+        }
+    }
+</script>
+-->
 <!--<template>
     <div>
         

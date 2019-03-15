@@ -340,8 +340,6 @@ export default {
               if (i === autoWidthIndex) {
                   width = parseInt(getStyle($td[i], 'width')) - 1;
               }
-             // if (column.width) width = column.width||'';
-             // 自适应列在表格宽度较小时显示异常，为自适应列设置最小宽度100（拖拽后除外）
               if (column.width) {
                   width = column.width||''
               } else {
@@ -363,9 +361,6 @@ export default {
               if (i === autoWidthIndex) {
                 width = parseInt(getStyle($th[i], 'width')) - 1;
               }
-              // if(IEVersion()!=-1){               
-              //   width = width+31;
-              // }
              // 自适应列在表格宽度较小时显示异常，为自适应列设置最小宽度100（拖拽后除外）
               if (column.width) {
                   width = column.width||'';
