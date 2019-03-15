@@ -99,7 +99,7 @@
             labelTitle:String,
             /* 校验信息向右偏移距离 */
             msgOffset: {
-              type: Number,
+              type: [Number, String],
               default: 0
             }
         },
