@@ -169,8 +169,8 @@
         handler:function(){
           this.$nextTick(()=>{
             this.cloneData = deepCopy(this.data);
+            this.$parent.$parent.updateOptions(true);
           })
-           this.$parent.$parent.updateOptions();
         }
       },
       cloneData:{

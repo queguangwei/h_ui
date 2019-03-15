@@ -58,23 +58,29 @@ export default {
 		handleClick(event){
 			this.$emit('click', event);
 		},
+		setWidthAdaption(){
+			let content = this.$refs.selectdrop.children[0]
+			if(this.$parent.$options.name ==='SimpleSelect'){
+				content= content.children[0].children[0]
+			}
+			// 横向或者纵向滚动条导致的像素偏移的问题
+			// 是否有纵向滚动条
+			let isScrollY = parseInt(this.$refs.selectdrop.clientWidth) > parseInt(content.clientWidth) ? true : false
+			// 是否有横向滚动条
+			let isScrollX = parseInt(this.$refs.selectdrop.clientHeight) > parseInt(content.clientHeight) ? true : false
+			if (isScrollX) {
+				this.width = isScrollY ? parseInt(content.scrollWidth) + this.scrollBarWidth : content.scrollWidth
+			}
+		},
 		update () {
 			if (isServer) return;
 			if (this.popper) {
 				this.$nextTick(() => {
-						this.popper.update();
-						// 有滚动条时，下拉宽度为内容宽度
-						if (this.widthAdaption) {
-							let content = this.$refs.selectdrop.children[0]
-							// 横向或者纵向滚动条导致的像素偏移的问题
-							// 是否有纵向滚动条
-							let isScrollY = parseInt(this.$refs.selectdrop.clientWidth) > parseInt(content.clientWidth) ? true : false
-							// 是否有横向滚动条
-							let isScrollX = parseInt(this.$refs.selectdrop.clientHeight) > parseInt(content.clientHeight) ? true : false
-							if (isScrollX) {
-								this.width = isScrollY ? parseInt(content.scrollWidth) + this.scrollBarWidth : content.scrollWidth
-							}
-						}
+					this.popper.update();
+					// 有滚动条时，下拉宽度为内容宽度
+					if (this.widthAdaption) {
+						this.setWidthAdaption()
+					}
 				});
 			} else {
 				this.$nextTick(() => {
@@ -92,19 +98,11 @@ export default {
 					});
 					// 有滚动条时，下拉宽度为内容宽度
 					if (this.widthAdaption) {
-						let content = this.$refs.selectdrop.children[0]
-						// 横向或者纵向滚动条导致的像素偏移的问题
-						// 是否有纵向滚动条
-						let isScrollY = parseInt(this.$refs.selectdrop.clientWidth) > parseInt(content.clientWidth) ? true : false
-						// 是否有横向滚动条
-						let isScrollX = parseInt(this.$refs.selectdrop.clientHeight) > parseInt(content.clientHeight) ? true : false
-						if (isScrollX) {
-							this.width = isScrollY ? parseInt(content.scrollWidth) + this.scrollBarWidth : content.scrollWidth
-						}
+						this.setWidthAdaption()
 					}
 				});
 			}
-			if (this.$parent.$options.name === 'Select'|| this.$parent.$options.name === 'SelectTree' || this.$parent.$options.name === 'SelectTable') {
+			if (this.$parent.$options.name === 'Select'|| this.$parent.$options.name === 'SelectTree' || this.$parent.$options.name === 'SelectTable'|| this.$parent.$options.name ==='SimpleSelect') {
 				if (!this.dropWidth) {
 					let width = parseInt(getStyle(this.$parent.$el, 'width'));
 					this.width = width

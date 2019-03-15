@@ -26,10 +26,8 @@
         :readonly = "readonly || !editable"
         :class="[prefixCls + '-input']"
         :placeholder="showPlaceholder?localePlaceholder:''"
-        :style="inputStyle"
         autocomplete="off"
         @blur="handleBlur"
-        @keydown="resetInputState"
         @keydown.delete="handleInputDelete"
         tabindex="-1"
         ref="input">
@@ -60,14 +58,21 @@
               :placeholder="localeSearchHolder"
               autocomplete="off"
               @blur="handleBlur"
-              @keydown="resetInputState"
               @keydown.delete="handleInputDelete"
               tabindex="-1"
               ref="input">
           </span>
           <span v-if="hideMult&&multiple" :class="hideMultHead" @click="toggleSelect(!isSelectAll)">全选</span>
-          <ul v-show="notFoundShow" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul>
-          <ul v-show="(!notFound && !remote) || (remote && !loading && !notFound)" :class="[prefixCls + '-dropdown-list']"><slot></slot></ul>
+          <ul v-show="notFoundShow && !enableCreate" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul>
+          <ul v-show="(!notFound && !remote) || (remote && !loading && !notFound) || enableCreate" :class="[prefixCls + '-dropdown-list']">
+            <!-- 多选、支持搜索和新建条目的情况下，如果检索词不匹配任何一个条目时，显示此项供用户选择 -->
+            <li :class="`${prefixCls}-item`" v-if="enableCreate && showNewOption" 
+                @click.stop="createNewOption(query)">
+              <checkbox v-show="multiple && !hideMult" v-model="newOptionChecked"></checkbox>
+              {{query}}
+            </li>
+            <slot></slot>
+          </ul>
           <ul v-show="loading" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
           <ul v-show="isComputed" :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>
         </div>
@@ -274,7 +279,12 @@
       maxDropWidth: {
         type:[String,Number],
         default: 500
-		  },
+      },
+      /* 条目不存在时允许增加新条目 */
+      allowCreate: {
+        type: Boolean,
+        default: false
+      }
     },
     data () {
       return {
@@ -289,7 +299,6 @@
         query: '',
         lastQuery: '',
         selectToChangeQuery: false,
-        inputLength: 56,
         notFound: false,
         slotChangeDuration: false,
         model: null,
@@ -304,6 +313,8 @@
         fPlacement:this.placement,
         isSelectAll:false,
         typeValue:'string',
+        /* 待新建条目勾选状态 */
+        newOptionChecked: false
       };
     },
     computed: {
@@ -368,17 +379,6 @@
       },
       showCloseIcon () {
           return (!this.multiple && this.clearable||this.multiple&&this.multClearable) && !this.showPlaceholder;
-      },
-      inputStyle () {
-          let style = {};
-          if (this.multiple) {
-              if (this.showPlaceholder) {
-                  style.width = '100%';
-              } else {
-                  style.width = `${this.inputLength}px`;
-              }
-          }
-          return style;
       },
       localePlaceholder () {
           if (this.placeholder === undefined) {
@@ -448,6 +448,39 @@
       },
       showFooter () {
         return this.$slots.footer || this.isCheckall;
+      },
+      /* 是否开启新建条目功能 */
+      enableCreate() {
+        return this.allowCreate && this.filterable; 
+      },
+      showNewOption() {
+        const model = this.model;
+        const query = this.query;
+        const optionInstances = this.optionInstances;
+        let existed = false;
+        for (let i in optionInstances) {
+          let option = optionInstances[i];
+          if (option.searchLabel === query || option.value === query) {
+            existed = true;
+            break;
+          } 
+        }
+        let selected = false;
+        if (this.multiple) {
+          for (let m of model) {
+            if (this.labelInValue && m.value === query) {
+              selected = true;
+              break;
+            }
+            if (!this.labelInValue && m === query) {
+              selected = true;
+              break;
+            }
+          }
+        } else {
+          selected = model === query;
+        }
+        return query && !existed && !selected;
       }
     },
     methods: {
@@ -502,6 +535,9 @@
               arr.push(item.value);
             })
             this.model = arr;
+            if (this.enableCreate && this.showNewOption) {
+              this.createNewOption(this.query);
+            }
           }
         }else{
           this.model=[];
@@ -606,6 +642,11 @@
                   }
               }
 
+              if (this.enableCreate && !findModel) {
+                this.selectedSingle = this.model;
+                findModel = true;
+              }
+
               if (slot && !findModel) {
                   this.model = '';
                   this.query = '';
@@ -631,6 +672,8 @@
           }
         })
         this.model=disArr;
+        // 清空新建条目，allowCreate = true时有意义
+        this.newOptions = [];
       },
       clearSingleSelect () {
         if (this.showCloseIcon) {
@@ -651,14 +694,24 @@
             let selected = this.remote && this.model.length > 0 ? this.selectedMultiple : [];
             for (let i = 0; i < this.model.length; i++) {
                 const model = this.model[i];
-                for (let j = 0; j < this.options.length; j++) {
-                    const option = this.options[j];
-                    if (model === option.value) {
-                        selected.push({
-                            value: option.value,
-                            label: option.label
-                        });
-                    }
+                const options = this.options; 
+                let option;
+                for (let op of this.options) {
+                  if (op.value === model) {
+                    option = op;
+                    break;
+                  }
+                }
+                if (option) {
+                  selected.push({
+                    value: option.value,
+                    label: option.label
+                  });
+                } else if (this.enableCreate) {
+                  selected.push({
+                    value: model,
+                    label: this.labelInValue ? model.label : model
+                  })
                 }
             }
 
@@ -692,7 +745,7 @@
         if (this.disabled || this.readonly || !this.editable) {
           return false;
         }
-        if (this.remote) {
+        if (this.remote || this.enableCreate) {
           const tag = this.model[index];
           this.selectedMultiple = this.selectedMultiple.filter(item => item.value !== tag);
         }
@@ -724,7 +777,7 @@
               if (this.labelInValue) {
                   this.$emit('on-change', {
                       value: value,
-                      label: label
+                      label: label ? label : value
                   });
                   this.dispatch('FormItem', 'on-form-change', {
                       value: value,
@@ -891,6 +944,7 @@
         }
       },
       handleBlur () {
+        if (this.multiple && this.filterable) this.$refs.reference.scrollTop = 0
         this.$emit('on-blur');
         if (this.showBottom) return false;          
         // this.isInputFocus = false
@@ -1013,6 +1067,21 @@
             this.clearMultipleSelect();
           }else{
             this.clearSingleSelect();
+          }
+        }
+      },
+      /**
+       * 创建新条目并添加为选中项
+       */
+      createNewOption(value) {
+        if (value) {
+          this.$nextTick(() => {
+            this.newOptionChecked = false;
+          })
+          if (this.multiple) {
+            this.model.push(this.labelInValue ? {value, label: value} : value);
+          } else {
+            this.model = value;
           }
         }
       }
@@ -1238,17 +1307,15 @@
             }
             // if(val.trim()) this.broadcastQuery(val);
             this.broadcastQuery(val);
-
-            let is_hidden = true;
-
+            let isHidden = true;
             this.$nextTick(() => {
-                this.findChild((child) => {
-                    if (!child.hidden) {
-                        is_hidden = false;
-                    }
-                });
-                this.notFound = is_hidden;
-            });
+              this.findChild((child) => {
+                  if (!child.hidden) {
+                      isHidden = false;
+                  }
+              });
+              if (!this.remote) this.notFound = isHidden;
+            })
         }
         if (this.filterable&&!this.remote) {
           this.$nextTick(()=>{

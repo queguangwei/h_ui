@@ -70,6 +70,8 @@
             :headAlgin="headAlgin"
             :lastColWidth="lastColWidth"
             :minDragWidth="minDragWidth"
+            :multiLevel="cloneMultiLevel"
+            :notSetWidth="notSetWidth"
             @on-change-width="changeWidth"
             ></table-head>
         </div>
@@ -102,6 +104,7 @@
             :canDrag="Boolean(false)"
             :canMove="Boolean(false)"
             :headAlgin="headAlgin"
+            :multiLevel="cloneMultiLevel"
             :notSetWidth="notSetWidth"
             ></table-head>
         </div>

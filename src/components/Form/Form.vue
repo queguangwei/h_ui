@@ -79,10 +79,12 @@ export default {
   },
   methods: {
     resetFields(isResetReadonlyOrDisabled = false) {
-      this.fields.forEach(field => {
-        field.resetField(isResetReadonlyOrDisabled);
-      });
-      this.validMsgList = []
+      setTimeout(()=>{
+        this.fields.forEach(field => {
+          field.resetField(isResetReadonlyOrDisabled);
+        });
+        this.validMsgList = []
+      },0)
     },
     validate(callback) {
       this.validMsgList = []
