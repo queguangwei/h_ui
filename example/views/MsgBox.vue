@@ -418,7 +418,7 @@
           },
           okIcon:'search',
           cancelIcon:'search',
-          isOkLeft:true,
+          isOkLeft:false,
         });
       },
       render () {

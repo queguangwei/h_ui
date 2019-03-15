@@ -103,8 +103,10 @@
                 v-if="confirm"
                 :show-time="showTime"
                 :is-time="isTime"
+                :show-long="showLong"
                 :time-disabled="timeDisabled"
                 @on-pick-toggle-time="handleToggleTime"
+                @on-pick-long="handleLongDate"
                 @on-pick-clear="handlePickClear"
                 @on-pick-success="handlePickSuccess"></Confirm>
         </div>
@@ -347,6 +349,9 @@
             handleChangeRange (val) {
                 this.rangeState.to = val;
             },
+             handleLongDate(){
+                this.$emit('on-pick-long');
+            }
         },
     };
 </script>

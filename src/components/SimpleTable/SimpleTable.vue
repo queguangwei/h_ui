@@ -794,14 +794,19 @@ export default {
           if (allWidth) autoWidthIndex = findInx(this.cloneColumns,cell => !cell.width);
           if (this.data.length) {
             const $td = this.$refs.tbody.querySelectorAll('tbody tr')[0].querySelectorAll('td');
+            let errorNum = 0
             for (let i = 0; i < $td.length; i++) {    // can not use forEach in Firefox
               const column = this.cloneColumns[i];
-              let width = parseInt(getStyle($td[i], 'width'));
-              if (i === autoWidthIndex) {
-                  width = parseInt(getStyle($td[i], 'width')) - 1;
+              let curWidth = parseFloat(getStyle($td[i], 'width'));
+              let width = parseInt(curWidth)
+              errorNum = errorNum+ curWidth - width;
+              if(errorNum>1){
+                width=  width+1;
+                errorNum = errorNum -1;
               }
-             // if (column.width) width = column.width||'';
-             // 自适应列在表格宽度较小时显示异常，为自适应列设置最小宽度100（拖拽后除外）
+              if (i === autoWidthIndex) {
+                width = width - 1;
+              }
               if (column.width) {
                   width = column.width||'';
               } else {
@@ -1391,20 +1396,6 @@ export default {
         this.selectType = curType;
       })
       return left.concat(center).concat(right);
-    },
-    // rowClasses (_index) {
-    //   return [
-    //     `${this.prefixCls}-row`,
-    //     this.rowClsName(_index),
-    //     {
-    //       [`${this.prefixCls}-row-checked`]: this.objData[_index] && this.objData[_index]._isChecked,
-    //       [`${this.prefixCls}-row-highlight`]: this.objData[_index] && this.objData[_index]._isHighlight,
-    //       [`${this.prefixCls}-row-hover`]: this.objData[_index] && this.objData[_index]._isHover
-    //     }
-    //   ];
-    // },
-    rowClsName (_index) {
-      return this.rowClassName(this.objData[_index], _index);
     },
     initResize(){
       this.$nextTick(() => {
