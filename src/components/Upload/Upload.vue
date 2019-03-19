@@ -7,13 +7,15 @@
         @drop.prevent="onDrop"
         @dragover.prevent="dragOver = true"
         @dragleave.prevent="dragOver = false">
-        <input
+        <form ref="form">
+          <input
           ref="input"
           type="file"
           :class="[prefixCls + '-input']"
           @change="handleChange"
           :multiple="multiple"
           :accept="accept">
+        </form>
         <!-- 手动配置 -->
         <slot v-if="selfConfig" name="chooseFile"></slot>
         <slot v-else></slot>
@@ -63,6 +65,7 @@
           @on-file-click = "handleListClick"
           @on-file-remove = "handleUploadedRemove"
           @on-file-preview = "handlePreview">
+        <span>
            <slot name="uploadlist"></slot> 
         </span>          
       </upload-list>
@@ -313,7 +316,8 @@ export default {
           return;
       }
       this.uploadFiles(files);
-      this.$refs.input.value = null;
+      e.target.value = '';
+      this.$refs.form.reset();
     },
     onDrop (e) {
       this.dragOver = false;
