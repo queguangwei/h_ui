@@ -665,10 +665,11 @@ export default {
     },
     getLeftWidth (){
       this.$nextTick(()=>{
-        for (let i = 0; i < this.columns.length; i++) {
+        const columns = this.cloneColumns;
+        for (let i = 0; i < columns.length; i++) {
           let leftWidth = 0;
           for (let j = 0; j<i; j++) {
-            leftWidth = leftWidth + this.columns[j].width;
+            leftWidth = leftWidth + columns[j].width;
           }
           this.cloumnsLeft[i] = leftWidth;
         }
@@ -1719,7 +1720,6 @@ export default {
           // todo 这里有性能问题，可能是左右固定计算属性影响的
           this.cloneColumns = this.makeColumns();
           this.rebuildData = this.makeDataWithSortAndFilter();
-          this.getLeftWidth();
           this.handleResize();
           this.buttomNum = null;
           this.topNum = null;
@@ -1728,6 +1728,12 @@ export default {
           });
         },
         deep: true
+      },
+      cloneColumns: {
+        deep: true,
+        handler() {
+          this.getLeftWidth();
+        }
       },
       height () {
           this.fixedHeader();
