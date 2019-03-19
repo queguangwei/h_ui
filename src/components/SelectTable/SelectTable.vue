@@ -309,7 +309,7 @@
       },
       dropdownCls () {
         return {
-          [prefixCls + '-dropdown-transfer']: this.transfer,
+          ['h-select-dropdown-transfer']: this.transfer,
           [prefixCls + '-multiple']: this.multiple && this.transfer,
           ['h-auto-complete']: this.autoComplete,
         };
@@ -493,6 +493,11 @@
           }
           this.visible = !this.visible;
           this.isInputFocus = true
+          if(this.visible && this.filterable && this.showBottom){
+            this.$nextTick(()=>{
+              this.$refs.input.focus();
+            })
+          }
       },
       hideMenu () {
           this.visible = false;
@@ -653,8 +658,10 @@
 
         this.model.splice(index, 1);
 
-        if (this.filterable && this.visible&&this.showBottom) {
+        if (this.filterable && this.visible) {
+          this.$nextTick(()=>{
             this.$refs.input.focus();
+          })
         }
 
         this.broadcast('Drop', 'on-update-popper');
@@ -796,6 +803,7 @@
         }
       },
       navigateOptions (direction) {
+        if(this.block) return;
         let curTop = this.$refs.list.scrollTop;
         if (this.focusIndex-1>=0) {
           this.findChild((child) => {
@@ -926,6 +934,7 @@
         if (this.filterable && this.showBottom) {
           if(this.isBlock){
             this.$refs.search.style.width ='100%';
+            this.$refs.input.style.width ='100%';
           }else{
             let width =this.dropWidth>0?this.dropWidth:parseInt(getStyle(this.$el, 'width'));
             width = width-getScrollBarSize()+'px';
@@ -1178,11 +1187,11 @@
       options(val) {
       },
       selectedMultiple(val){
-        if (val.length==0&&this.filterable && !this.showBottom) {
-          this.$nextTick(()=>{
-            this.$refs.input.focus();
-          });
-        }
+        // if (val.length==0&&this.filterable && !this.showBottom) {
+        //   this.$nextTick(()=>{
+        //     this.$refs.input.focus();
+        //   });
+        // }
         this.$nextTick(()=>{
           this.offsetArrow();
         })
