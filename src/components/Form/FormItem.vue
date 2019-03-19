@@ -7,7 +7,7 @@
         <div :class="[prefixCls + '-content']" :style="contentStyles">
             <slot></slot>
             <transition name="fade">
-                <div class="verify-tip verify-bottom"  v-if="isShowError">
+                <div class="verify-tip verify-bottom" v-if="isShowError" :style="{left: `${msgOffset}px`}">
                     <div class="verify-tip-arrow"></div>
                     <div class="verify-tip-inner">{{validateMessage}}</div>
                 </div>
@@ -96,7 +96,12 @@
                 type: Boolean,
                 default: false
             },
-            labelTitle:String
+            labelTitle:String,
+            /* 校验信息向右偏移距离 */
+            msgOffset: {
+              type: [Number, String],
+              default: 0
+            }
         },
         data () {
             return {
