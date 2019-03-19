@@ -3,7 +3,12 @@
   <h1 >SimpleSelect组件</h1>
   <p>选择器支持单选、多选、搜索，以及键盘快捷操作。</p>
   <h1>selectBlock测试用例</h1>
-  <h-simple-select v-model="value2" placement="bottom-start" autoPlacement widthAdaption autoPl filterable placeholder="123" isArrow=false>
+  {{value2}}
+  <h-simple-select v-model="value2" style="width:200px" transfer showBottom maxDropWidth="400" filterable autoPlacement widthAdaption placeholder="123" isArrow=false>
+    <h-select-block :data="bigData" @on-scroll="select"></h-select-block>
+  </h-simple-select>
+  <h-button @on-click="loaddata">加载数据</h-button>
+  <h-simple-select v-model="value2" style="width:200px" transfer filterable autoPlacement widthAdaption placeholder="123" isArrow=false>
     <h-select-block :data="bigData" @on-scroll="select"></h-select-block>
   </h-simple-select>
   <!-- <h-simple-select v-model="value1" multiple ref="test" placement="top-start" filterable checkToHead showBottom @on-change="change">
@@ -24,7 +29,7 @@ let bigData = [];
 for(let i=0;i<60;i++){
   let obj={};
   obj.value="value"+i;
-  obj.label="labellabellabellabellabellabellabellabellabellabellabellabellabellabellabel"+i;
+  obj.label="labellabellabellalabellabella"+i;
   bigData.push(obj);
 }
 
@@ -35,10 +40,13 @@ export default {
       bigData:[],
       value:'',
       value1:[],
-      value2:'',
+      value2:'value2',
     }
   },
   methods: {
+    loaddata(){
+      this.bigData = bigData;
+    },
     changeValue(){
       this.value = 'value1'
     },
@@ -86,7 +94,7 @@ export default {
 
   },
   mounted(){
-    this.bigData = bigData;
+    // this.bigData = bigData;
     setTimeout(() => {
       this.value = "value0";
       this.value1 = ['value0'];

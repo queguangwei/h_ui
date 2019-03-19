@@ -9,7 +9,8 @@
     <h-input algin="right" placeholder="请输入..." @mousedown.native="onChange"></h-input>
     <h2>基础用法</h2>
     <p>可以直接设置 style 来改变输入框的宽度</p>
-    <h-input v-model="value" placeholder="请输入..." style="width: 300px" @on-keypress="keypress"></h-input>
+    {{formData}}
+    <h-input v-model="formData.value" placeholder="请输入..." style="width: 300px" @on-change="keypress"></h-input>
     <h-input placeholder="请输入..." icon="unfold" style="width: 300px" disabled></h-input>
     <h-input value="你好呀我不好呀" placeholder="请输入..." style="width: 300px" readonly></h-input>
     <h-input placeholder="请输入..." style="width: 300px" :editable="false"></h-input>
@@ -83,6 +84,7 @@ export default {
     return {
       example:'<script><\/script>',
       disabled:false,
+      formData:{},
       value:'0.301',
       value1: '',
       value2: '',
@@ -141,14 +143,20 @@ export default {
       console.log(this.$refs.input)
       this.$refs.input.focus();
     },
-    keypress(){
-      console.log("案件事件");
+    keypress(event){
+      this.$set(this.formData,'value',event.target.value)
+      console.log(this.formData)
+      // console.log("案件事件");
     }
   },
   watch:{
     value14(){
       // console.log(this.value14);
     }
+  },
+  mounted(){
+    this.formData.value='123'
+    // this.$set(this.formData,'value','123')
   }
 }
 function validFunc(val) {

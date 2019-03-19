@@ -1,5 +1,335 @@
 <template>
 <div>
+    <h-table :columns="columns1" :data="data1" :multiLevel="multiLevel1" border height="400"></h-table>
+<button @click="clicktest">数据加载</button>
+<button @click="clicktest1">数据加载2条</button>
+</div>
+</template>
+<script>
+    export default {
+        data () {
+            return {
+                columns1: [
+                    {
+                        title: '姓名',
+                        key: 'name',
+                        fixed:"left"
+                    },
+                    {
+                        title: '年龄',
+                        key: 'age',
+                        fixed:"left"
+                    },
+                    {
+                        title: '地址',
+                        key: 'address',
+                        fixed:"right"
+                    },
+                    {
+                        title: '年龄1',
+                        key: 'age1'
+                    },
+                    {
+                        title: '地址1',
+                        key: 'address1'
+                    },
+                    {
+                        title: '年龄',
+                        key: 'age1'
+                    },
+                    {
+                        title: '地址',
+                        key: 'address1'
+                    },
+                    {
+                        title: '年龄1',
+                        key: 'age111'
+                    },
+                    {
+                        title: '地址1',
+                        key: 'address111'
+                    },
+                    {
+                        title: '年龄1',
+                        key: 'age11'
+                    },
+                    {
+                        title: '地址1',
+                        key: 'address11'
+                    },
+                    {
+                        title: '年龄',
+                        key: 'age11'
+                    },
+                    {
+                        title: '地址',
+                        key: 'address11'
+                    },
+                    {
+                        title: '年龄1',
+                        key: 'age111'
+                    },
+                    {
+                        title: '地址1',
+                        key: 'address111'
+                    }
+                ],
+                multiLevel1:[
+                {
+                title:'省',
+                align:'center',
+                classname:'multi1',
+                hiddenCol:true,
+                align:"left",
+                        fixed:"left"
+                },
+                {
+                title:'市',
+                cols:'1',
+                align:"left",
+                classname:'multi2'
+                },
+                                {
+                title:'省',
+                align:'center',
+                classname:'multi1',
+                        fixed:"left"
+                },
+                {
+                title:'市',
+                cols:'1',
+                align:'center',
+                classname:'multi2'
+                },
+                {
+                title:'市',
+                cols:'1',
+                align:"left",
+                classname:'multi2'
+                },
+                                {
+                title:'省',
+                align:'center',
+                classname:'multi1',
+                        fixed:"left"
+                },
+                {
+                title:'市',
+                cols:'1',
+                align:'center',
+                classname:'multi2'
+                },
+                {
+                title:'市',
+                cols:'1',
+                align:"left",
+                classname:'multi2'
+                },
+                                {
+                title:'省',
+                align:'center',
+                classname:'multi1',
+                        fixed:"left"
+                },
+                {
+                title:'市',
+                cols:'1',
+                align:'center',
+                classname:'multi2'
+                },
+                {
+                title:'市',
+                cols:'1',
+                align:"left",
+                classname:'multi2'
+                },
+                                {
+                title:'省',
+                align:'center',
+                classname:'multi1',
+                        fixed:"left"
+                },
+                {
+                title:'市',
+                cols:'1',
+                align:'center',
+                classname:'multi2'
+                },
+                                {
+                title:'省',
+                align:'center',
+                classname:'multi1',
+                        fixed:"left"
+                },
+                {
+                title:'市',
+                cols:'1',
+                align:'center',
+                classname:'multi2'
+                }
+                ],
+                data1: [
+                    {
+                        name: '王小明',
+                        age: 18,
+                        address: '北京市朝阳区芍药居',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '张小刚',
+                        age: 25,
+                        address: '北京市海淀区西二旗',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '李小红',
+                        age: 30,
+                        address: '上海市浦东新区世纪大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '周小伟',
+                        age: 26,
+                        address: '深圳市南山区深南大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '张小刚',
+                        age: 25,
+                        address: '北京市海淀区西二旗',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '李小红',
+                        age: 30,
+                        address: '上海市浦东新区世纪大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '周小伟',
+                        age: 26,
+                        address: '深圳市南山区深南大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '张小刚',
+                        age: 25,
+                        address: '北京市海淀区西二旗',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '李小红',
+                        age: 30,
+                        address: '上海市浦东新区世纪大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '周小伟',
+                        age: 26,
+                        address: '深圳市南山区深南大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '张小刚',
+                        age: 25,
+                        address: '北京市海淀区西二旗',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '李小红',
+                        age: 30,
+                        address: '上海市浦东新区世纪大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '周小伟',
+                        age: 26,
+                        address: '深圳市南山区深南大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '张小刚',
+                        age: 25,
+                        address: '北京市海淀区西二旗',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '李小红',
+                        age: 30,
+                        address: '上海市浦东新区世纪大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '周小伟',
+                        age: 26,
+                        address: '深圳市南山区深南大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '张小刚',
+                        age: 25,
+                        address: '北京市海淀区西二旗',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '李小红',
+                        age: 30,
+                        address: '上海市浦东新区世纪大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '周小伟',
+                        age: 26,
+                        address: '深圳市南山区深南大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    }
+                ]
+            }
+        },
+        methods:{
+        clicktest(){
+        this.data1=[];
+        },
+          clicktest1(){
+        this.data1=[{
+                        name: '李小红',
+                        age: 30,
+                        address: '上海市浦东新区世纪大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '周小伟',
+                        age: 26,
+                        address: '深圳市南山区深南大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    }];
+        }
+        }
+    }
+</script>
+<!--<template>
+<div>
     <h-simple-table :columns="columnsBig" 
      :row-class-name="rowClassName"  
       :data="bigData" border :stripe=false headAlgin="center"  bodyAlgin="center"  
@@ -127,6 +457,7 @@ selectall(e){
   color: red
 }
 </style>
+-->
 <!--<template>
 <div>
   <h-checkbox-group v-model="formGroup">
