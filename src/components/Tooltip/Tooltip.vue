@@ -68,7 +68,8 @@
     },
     data () {
       return {
-          prefixCls: prefixCls
+          prefixCls: prefixCls,
+          visible:false
       };
     },
     methods: {

@@ -27,11 +27,8 @@
         <h-icon name="prompt"></h-icon>
         <span>删除确认</span>
       </p>
-      <span slot="close">删除</span>
-      <div style="text-align:center">
-        <p>此任务删除后，下游 10 个任务将无法执行。</p>
-        <p>是否继续删除？</p>
-      </div>
+      <h-simple-select transfer></h-simple-select>
+      <h-select transfer></h-select>
       <div slot="footer">
         <h-button type="error" size="large" long :loading="modal_loading" @click="del">删除</h-button>
       </div>
@@ -418,7 +415,7 @@
           },
           okIcon:'search',
           cancelIcon:'search',
-          isOkLeft:true,
+          isOkLeft:false,
         });
       },
       render () {

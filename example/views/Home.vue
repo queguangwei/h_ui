@@ -2,7 +2,7 @@
   <div>
     <!-- <h-msg-box v-model="changeform" width="900" escClose left="10" closeDrop> -->
     <Button @on-click="changeSelect"></Button>
-      <h-form ref="formItem1" :model="formItem1" onlyBlurRequire :compareModel="formItem2" :label-width="80" errorFocus cols="3">
+      <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus cols="3">
         <h-form-item label="日期控件">
           <h-row>
             <h-col span="11">
@@ -45,6 +45,7 @@
           </h-radio-group>
         </h-form-item>
         <h-form-item label="多选框" prop="checkbox" required>
+          {{formItem1.checkbox}}
           <h-checkbox-group v-model="formItem1.checkbox">
               <h-checkbox label="吃饭"></h-checkbox>
               <h-checkbox label="睡觉"></h-checkbox>
@@ -88,7 +89,7 @@
           </h-select-table>
         </h-form-item>
         <h-form-item label="下拉树" prop='tree' required>
-          <h-select-tree v-model="formItem1.tree" :first-value="firstValc" style="width:200px" :data="baseData1" placement="top" placeholder="你好"></h-select-tree>
+          <h-select-tree v-model="formItem1.tree" style="width:200px" :data="baseData1" placement="top" placeholder="你好"></h-select-tree>
         </h-form-item>
         <h-form-item label="文本域" prop="textarea" required>
           <h-input v-model="formItem1.textarea" type="textarea" :canResize="false" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></h-input>
@@ -97,18 +98,18 @@
           <h-cascader v-model="formItem1.cascader" :data="data2" trigger="hover" style="width:200px"></h-cascader>
         </h-form-item>
         <h-form-item label="简单选择框" prop="simpleSelect" required>
-          <h-simple-select v-model="formItem1.simpleSelect" multiple ref="test" placement="top-start" filterable>
+          <h-simple-select v-model="formItem1.simpleSelect" transfer multiple  placement="top-start" filterable>
             <h-select-block :data="bigData" ></h-select-block>
           </h-simple-select>
         </h-form-item>
         <h-form-item label="简单选择框单选" prop="simpleSelect1" required>
-          <h-simple-select v-model="formItem1.simpleSelect1" ref="test" placement="top-start" filterable>
+          <h-simple-select v-model="formItem1.simpleSelect1" placement="top-start" filterable>
             <h-select-block :data="bigData" ></h-select-block>
           </h-simple-select>
         </h-form-item>
         <h-form-item>
             <h-button type="primary" @click="handleSubmit('formItem1')">提交</h-button>
-            <h-button type="ghost" style="margin-left: 8px" @click="handleReset('formItem1')">取消</h-button>
+            <h-button type="ghost" style="margin-left: 8px" @click.native.stop="handleReset('formItem1')">取消</h-button>
         </h-form-item>
 
       </h-form>
