@@ -1,5 +1,5 @@
 <template>
-  <div :class="wrapperClass" v-clickoutside="handleClose">
+  <div :class="wrapperClass" v-clickoutside="{trigger: 'mousedown', handler: handleClose}">
     <Datepicker
       :value="inputValue"
       :type="type"

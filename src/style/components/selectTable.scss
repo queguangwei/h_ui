@@ -201,8 +201,12 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
         }
     }
 
-    // select-dropdown-list checkbox
-    &-dropdown &-dropdown-list {
+    &-dropdown {
+      &-transfer{
+        z-index: $zindex-transfer;
+      }
+      // select-dropdown-list checkbox
+      &-list {
         .#{$selectTable-prefix-cls}-item {
             position: relative;
             & label {
@@ -210,6 +214,7 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
                 // left: 8px;
             }
         }
+      }
     }
 
     &-dropdown-content{
