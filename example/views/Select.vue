@@ -362,6 +362,27 @@
                     :value="item.id"
                     :key="item.id">{{ item.name }}</h-option>
         </h-select>
+        <h1>--------- HUI_V1.0.31_20190321 TS:201903110539 ---------</h1>
+        <p>has transfer</p>
+        <h-select v-model="v20190321.value"
+                  width="200"
+                  filterable
+                  :transfer="true"
+                  >
+          <h-option v-for="item in v20190321.options"
+                    :value="item.value"
+                    :key="item.value">{{ item.label }}</h-option>
+        </h-select>
+        <p>showBottom</p>
+        <h-select v-model="v20190321.value1"
+                  width="200"
+                  filterable
+                  showBottom
+                  >
+          <h-option v-for="item in v20190321.options"
+                    :value="item.value"
+                    :key="item.value">{{ item.label }}</h-option>
+        </h-select>
     </div>
   </div>
 </template>
@@ -649,6 +670,32 @@ export default {
         ]
       },
       bigData:bigData,
+      v20190321: {
+        options: [
+          {
+            value: '1',
+            label: '1'
+          },
+          {
+            value: '11',
+            label: '11'
+          },
+          {
+            value: '112',
+            label: '112'
+          },
+          {
+            value: '2',
+            label: '2'
+          },
+          {
+            value: '3',
+            label: '3'
+          }
+        ],
+        value: '',
+        value1: ''
+      },
     }
   },
   methods: {
