@@ -16,6 +16,7 @@
       rowClasses (_index) {
         return [
           `${this.prefixCls}-row`,
+          this.rowClsName(_index),
           {
             [`${this.prefixCls}-row-checked`]: this.objData[_index] && this.objData[_index]._isChecked,
             [`${this.prefixCls}-row-highlight`]: this.objData[_index] && this.objData[_index]._isHighlight,
@@ -24,9 +25,9 @@
           }
         ];
       },
-      // rowClsName (_index) {
-      //   return this.$parent.$parent.rowClassName(this.objData[_index], _index);
-      // },
+      rowClsName (_index) {
+        return this.$parent.rowClassName(this.objData[_index], _index);
+      },
     }
   };
 </script>

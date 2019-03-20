@@ -100,7 +100,7 @@ export default {
         },
         {
           title: '地区',
-          width: 200,
+          // width: 200,
           key: 'city',
           multiple:false,
         },

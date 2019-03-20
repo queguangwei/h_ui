@@ -4,7 +4,7 @@ export default {
   props: {
     row: Object,
     render: Function,
-    index: Number,
+    index: [Number,String],
     column: {
         type: Object,
         default: null

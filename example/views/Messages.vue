@@ -47,7 +47,6 @@ export default {
     loading(){
       this.$hMessage.loading({
         content: '正在加载中...',
-        duration: 0
       });
     },
     destroy(){
@@ -63,7 +62,11 @@ export default {
         successTop:100,
         warningTop:150,
         errorTop:200,
-        duration: 5
+        duration: 5,
+        infoDuration:1,
+        successDuration:2,
+        errorDuration:3,
+        warningDuration:4,
       })
     }
   },

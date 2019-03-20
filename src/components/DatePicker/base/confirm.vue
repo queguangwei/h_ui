@@ -4,6 +4,7 @@
         <template v-if="isTime">{{ t('i.datepicker.selectDate') }}</template>
         <template v-else>{{ t('i.datepicker.selectTime') }}</template>
     </span>
+    <i-button size="small" type="text"  v-if="showLong" @click.native="handleLongTime">{{ t('i.datepicker.long') }}</i-button>
     <i-button size="small" type="text" @click.native="handleClear">{{ t('i.datepicker.clear') }}</i-button>
     <i-button size="small" type="primary" @click.native="handleSuccess">{{ t('i.datepicker.ok') }}</i-button>
   </div>
@@ -20,6 +21,7 @@
       props: {
           showTime: false,
           isTime: false,
+          showLong:false,
           timeDisabled: false
       },
       data () {
@@ -44,6 +46,9 @@
           handleToggleTime () {
               if (this.timeDisabled) return;
               this.$emit('on-pick-toggle-time');
+          },
+          handleLongTime(){
+              this.$emit('on-pick-long');
           }
       }
   };

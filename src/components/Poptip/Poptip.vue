@@ -102,7 +102,12 @@ export default {
     closeOutClick:{
       type: Boolean,
       default: false
+    },
+    notResponding:{
+      type: Boolean,
+      default: false
     }
+
   },
   data () {
     return {
@@ -146,6 +151,9 @@ export default {
   },
   methods: {
     handleClick () {
+      if(this.notResponding) {
+        return false;
+      }
       if (this.confirm) {
         this.visible = !this.visible;
         return true;
@@ -159,7 +167,7 @@ export default {
       if (this.transfer) this.disableCloseUnderTransfer = true;
     },
     handleClose () {
-      if(this.closeOutClick)return;
+      if(this.closeOutClick || this.notResponding)return;
       if (this.disableCloseUnderTransfer) {
         this.disableCloseUnderTransfer = false;
         return false;
@@ -174,25 +182,25 @@ export default {
       this.visible = false;
     },
     handleFocus (fromInput = true) {
-      if (this.trigger !== 'focus' || this.confirm || (this.isInput && !fromInput)) {
+      if (this.trigger !== 'focus' || this.confirm || (this.isInput && !fromInput) || this.notResponding) {
         return false;
       }
       this.visible = true;
     },
     handleBlur (fromInput = true) {
-      if (this.trigger !== 'focus' || this.confirm || (this.isInput && !fromInput)) {
+      if (this.trigger !== 'focus' || this.confirm || (this.isInput && !fromInput) || this.notResponding) {
         return false;
       }
       this.visible = false;
     },
     handleMouseenter () {
-      if (this.trigger !== 'hover' || this.confirm) {
+      if (this.trigger !== 'hover' || this.confirm || this.notResponding) {
         return false;
       }
       this.visible = true;
     },
     handleMouseleave () {
-      if (this.trigger !== 'hover' || this.confirm) {
+      if (this.trigger !== 'hover' || this.confirm || this.notResponding) {
         return false;
       }
       this.visible = false;

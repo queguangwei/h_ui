@@ -71,8 +71,6 @@
               <checkbox v-show="multiple && !hideMult" v-model="newOptionChecked"></checkbox>
               {{query}}
             </li>
-            <!-- 新建项 -->
-            <h-option ref="newOptions" v-for="option in newOptions" :value="option.value" :key="option.key">{{option.value}}</h-option>
             <slot></slot>
           </ul>
           <ul v-show="loading" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
@@ -315,10 +313,6 @@
         fPlacement:this.placement,
         isSelectAll:false,
         typeValue:'string',
-        /* 新建条目 */
-        newOptions: [],
-        /* 是否显示待新建条目 */
-        showNewOption: false,
         /* 待新建条目勾选状态 */
         newOptionChecked: false
       };
@@ -458,6 +452,35 @@
       /* 是否开启新建条目功能 */
       enableCreate() {
         return this.allowCreate && this.filterable; 
+      },
+      showNewOption() {
+        const model = this.model;
+        const query = this.query;
+        const optionInstances = this.optionInstances;
+        let existed = false;
+        for (let i in optionInstances) {
+          let option = optionInstances[i];
+          if (option.searchLabel === query || option.value === query) {
+            existed = true;
+            break;
+          } 
+        }
+        let selected = false;
+        if (this.multiple) {
+          for (let m of model) {
+            if (this.labelInValue && m.value === query) {
+              selected = true;
+              break;
+            }
+            if (!this.labelInValue && m === query) {
+              selected = true;
+              break;
+            }
+          }
+        } else {
+          selected = model === query;
+        }
+        return query && !existed && !selected;
       }
     },
     methods: {
@@ -518,8 +541,6 @@
           }
         }else{
           this.model=[];
-          // 清空新建条目，allowCreate = true时有意义
-          this.newOptions = [];
         }
       },
       offsetArrow(){
@@ -621,6 +642,11 @@
                   }
               }
 
+              if (this.enableCreate && !findModel) {
+                this.selectedSingle = this.model;
+                findModel = true;
+              }
+
               if (slot && !findModel) {
                   this.model = '';
                   this.query = '';
@@ -661,8 +687,6 @@
             }
             this.hideMenu();
             this.titleTip='';
-            // 清空新建条目，allowCreate = true时有意义
-            this.newOptions = [];
         }
       },
       updateMultipleSelected (init = false, slot = false) {
@@ -670,14 +694,24 @@
             let selected = this.remote && this.model.length > 0 ? this.selectedMultiple : [];
             for (let i = 0; i < this.model.length; i++) {
                 const model = this.model[i];
-                for (let j = 0; j < this.options.length; j++) {
-                    const option = this.options[j];
-                    if (model === option.value) {
-                        selected.push({
-                            value: option.value,
-                            label: option.label
-                        });
-                    }
+                const options = this.options; 
+                let option;
+                for (let op of this.options) {
+                  if (op.value === model) {
+                    option = op;
+                    break;
+                  }
+                }
+                if (option) {
+                  selected.push({
+                    value: option.value,
+                    label: option.label
+                  });
+                } else if (this.enableCreate) {
+                  selected.push({
+                    value: model,
+                    label: this.labelInValue ? model.label : model
+                  })
                 }
             }
 
@@ -711,16 +745,9 @@
         if (this.disabled || this.readonly || !this.editable) {
           return false;
         }
-        if (this.remote) {
+        if (this.remote || this.enableCreate) {
           const tag = this.model[index];
           this.selectedMultiple = this.selectedMultiple.filter(item => item.value !== tag);
-        }
-        // 移除用户新建的条目
-        if (this.enableCreate) {
-          const newOptions = this.newOptions;
-          const value = this.model[index];
-          let i = newOptions.findIndex(op => op.value === value);
-          i > -1 && newOptions.splice(i, 1);
         }
         if(this.disabledOpts.indexOf(this.model[index])==-1){
           this.model.splice(index, 1);
@@ -750,7 +777,7 @@
               if (this.labelInValue) {
                   this.$emit('on-change', {
                       value: value,
-                      label: label
+                      label: label ? label : value
                   });
                   this.dispatch('FormItem', 'on-form-change', {
                       value: value,
@@ -917,6 +944,7 @@
         }
       },
       handleBlur () {
+        if (this.multiple && this.filterable) this.$refs.reference.scrollTop = 0
         this.$emit('on-blur');
         if (this.showBottom) return false;          
         // this.isInputFocus = false
@@ -1047,23 +1075,14 @@
        */
       createNewOption(value) {
         if (value) {
-          this.newOptionChecked = false;
-          this.showNewOption = false;
-          this.newOptions.push({key: Symbol(value), value});
-          if (this.multiple) {
-            this.selectedMultiple.push({label: value, value});
-          } else {
-            this.selectedSingle = value;
-          }
           this.$nextTick(() => {
-            let newOptions = this.$refs.newOptions;
-            for (let option of newOptions) {
-              if (option.value === value) {
-                option.select();
-                break;
-              }
-            }
+            this.newOptionChecked = false;
           })
+          if (this.multiple) {
+            this.model.push(this.labelInValue ? {value, label: value} : value);
+          } else {
+            this.model = value;
+          }
         }
       }
     },
@@ -1153,10 +1172,6 @@
                   this.lastQuery = this.query = child.label === undefined ? child.searchLabel : child.label;
                 }
               });
-            }
-            if (this.enableCreate) {
-              let idx = this.newOptions.findIndex(op => op.value !== value);
-              idx > -1 &&this.newOptions.splice(idx, 1);
             }
           }
         }
@@ -1282,9 +1297,6 @@
               if(this.readonly || this.disabled) return false;
               this.remoteMethod(val);
           }
-          if (this.enableCreate && this.$refs.newOptions) {
-            this.$refs.newOptions.forEach(op => op.queryChange(val));
-          }
           this.focusIndex = 0;
           this.findChild(child => {
             child.isFocus = false;
@@ -1295,20 +1307,16 @@
             }
             // if(val.trim()) this.broadcastQuery(val);
             this.broadcastQuery(val);
+            let isHidden = true;
+            this.$nextTick(() => {
+              this.findChild((child) => {
+                  if (!child.hidden) {
+                      isHidden = false;
+                  }
+              });
+              if (!this.remote) this.notFound = isHidden;
+            })
         }
-        /* 是否有value相等的option存在 */
-        let optionValMatched = false;
-        let isHidden = true;
-        this.$nextTick(() => {
-          this.findChild((child) => {
-              if (!child.hidden) {
-                  isHidden = false;
-              }
-              !optionValMatched && (optionValMatched = val === child.searchLabel || val === child.value);
-          });
-          if (!this.remote) this.notFound = isHidden;
-          this.showNewOption = val && (!optionValMatched || isHidden);
-        })
         if (this.filterable&&!this.remote) {
           this.$nextTick(()=>{
             this.focusIndex = 1;

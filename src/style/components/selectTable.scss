@@ -334,14 +334,13 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
             }
         }
     }
-    &-dropdown-list
-    &-left{
+    &-left {
         text-align:left;
     }
-    &-center{
+    &-center {
         text-align:center;
     }
-    &-right{
+    &-right {
         text-align:right;
     }
 }

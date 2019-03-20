@@ -1,5 +1,465 @@
 <template>
 <div>
+    <h-table :columns="columns1" :data="data1" :multiLevel="multiLevel1" border height="400"></h-table>
+<button @click="clicktest">数据加载</button>
+<button @click="clicktest1">数据加载2条</button>
+</div>
+</template>
+<script>
+    export default {
+        data () {
+            return {
+                columns1: [
+                    {
+                        title: '姓名',
+                        key: 'name',
+                        fixed:"left"
+                    },
+                    {
+                        title: '年龄',
+                        key: 'age',
+                        fixed:"left"
+                    },
+                    {
+                        title: '地址',
+                        key: 'address',
+                        fixed:"right"
+                    },
+                    {
+                        title: '年龄1',
+                        key: 'age1'
+                    },
+                    {
+                        title: '地址1',
+                        key: 'address1'
+                    },
+                    {
+                        title: '年龄',
+                        key: 'age1'
+                    },
+                    {
+                        title: '地址',
+                        key: 'address1'
+                    },
+                    {
+                        title: '年龄1',
+                        key: 'age111'
+                    },
+                    {
+                        title: '地址1',
+                        key: 'address111'
+                    },
+                    {
+                        title: '年龄1',
+                        key: 'age11'
+                    },
+                    {
+                        title: '地址1',
+                        key: 'address11'
+                    },
+                    {
+                        title: '年龄',
+                        key: 'age11'
+                    },
+                    {
+                        title: '地址',
+                        key: 'address11'
+                    },
+                    {
+                        title: '年龄1',
+                        key: 'age111'
+                    },
+                    {
+                        title: '地址1',
+                        key: 'address111'
+                    }
+                ],
+                multiLevel1:[
+                {
+                title:'省',
+                align:'center',
+                classname:'multi1',
+                hiddenCol:true,
+                align:"left",
+                        fixed:"left"
+                },
+                {
+                title:'市',
+                cols:'1',
+                align:"left",
+                classname:'multi2'
+                },
+                                {
+                title:'省',
+                align:'center',
+                classname:'multi1',
+                        fixed:"left"
+                },
+                {
+                title:'市',
+                cols:'1',
+                align:'center',
+                classname:'multi2'
+                },
+                {
+                title:'市',
+                cols:'1',
+                align:"left",
+                classname:'multi2'
+                },
+                                {
+                title:'省',
+                align:'center',
+                classname:'multi1',
+                        fixed:"left"
+                },
+                {
+                title:'市',
+                cols:'1',
+                align:'center',
+                classname:'multi2'
+                },
+                {
+                title:'市',
+                cols:'1',
+                align:"left",
+                classname:'multi2'
+                },
+                                {
+                title:'省',
+                align:'center',
+                classname:'multi1',
+                        fixed:"left"
+                },
+                {
+                title:'市',
+                cols:'1',
+                align:'center',
+                classname:'multi2'
+                },
+                {
+                title:'市',
+                cols:'1',
+                align:"left",
+                classname:'multi2'
+                },
+                                {
+                title:'省',
+                align:'center',
+                classname:'multi1',
+                        fixed:"left"
+                },
+                {
+                title:'市',
+                cols:'1',
+                align:'center',
+                classname:'multi2'
+                },
+                                {
+                title:'省',
+                align:'center',
+                classname:'multi1',
+                        fixed:"left"
+                },
+                {
+                title:'市',
+                cols:'1',
+                align:'center',
+                classname:'multi2'
+                }
+                ],
+                data1: [
+                    {
+                        name: '王小明',
+                        age: 18,
+                        address: '北京市朝阳区芍药居',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '张小刚',
+                        age: 25,
+                        address: '北京市海淀区西二旗',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '李小红',
+                        age: 30,
+                        address: '上海市浦东新区世纪大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '周小伟',
+                        age: 26,
+                        address: '深圳市南山区深南大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '张小刚',
+                        age: 25,
+                        address: '北京市海淀区西二旗',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '李小红',
+                        age: 30,
+                        address: '上海市浦东新区世纪大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '周小伟',
+                        age: 26,
+                        address: '深圳市南山区深南大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '张小刚',
+                        age: 25,
+                        address: '北京市海淀区西二旗',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '李小红',
+                        age: 30,
+                        address: '上海市浦东新区世纪大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '周小伟',
+                        age: 26,
+                        address: '深圳市南山区深南大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '张小刚',
+                        age: 25,
+                        address: '北京市海淀区西二旗',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '李小红',
+                        age: 30,
+                        address: '上海市浦东新区世纪大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '周小伟',
+                        age: 26,
+                        address: '深圳市南山区深南大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '张小刚',
+                        age: 25,
+                        address: '北京市海淀区西二旗',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '李小红',
+                        age: 30,
+                        address: '上海市浦东新区世纪大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '周小伟',
+                        age: 26,
+                        address: '深圳市南山区深南大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '张小刚',
+                        age: 25,
+                        address: '北京市海淀区西二旗',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '李小红',
+                        age: 30,
+                        address: '上海市浦东新区世纪大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '周小伟',
+                        age: 26,
+                        address: '深圳市南山区深南大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    }
+                ]
+            }
+        },
+        methods:{
+        clicktest(){
+        this.data1=[];
+        },
+          clicktest1(){
+        this.data1=[{
+                        name: '李小红',
+                        age: 30,
+                        address: '上海市浦东新区世纪大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    },
+                    {
+                        name: '周小伟',
+                        age: 26,
+                        address: '深圳市南山区深南大道',
+                        age1: 18,
+                        address1: '北京市朝阳区芍药居'
+                    }];
+        }
+        }
+    }
+</script>
+<!--<template>
+<div>
+    <h-simple-table :columns="columnsBig" 
+     :row-class-name="rowClassName"  
+      :data="bigData" border :stripe=false headAlgin="center"  bodyAlgin="center"  
+  :canDrag=false :disabled-hover=true :highlight-row=false
+      @on-drag="select" 
+      @on-selection-change="change" ref="transferTable"></h-simple-table>
+ <h-button type="ghost" size="small" @click="reloadMockData">获取</h-button>
+  </div>
+</template>
+<script>
+let jsonData=[];
+let tData =require('../assets/aa.json'); 
+for (let i = 0; i < 2; i++) {
+      jsonData = jsonData.concat(tData);
+    }
+    export default {
+        data () {
+            return {
+                columnsBig: [
+                 {
+                  title:'测试',
+                  key:'ceshi',
+                  algin:'center',
+                 }
+                ],
+                bigData:jsonData,
+            }
+        },
+        methods: {
+     rowClassName (row, index) {
+              if (index === 1) {
+                return 'demo-table-info-row';
+              } else if (index === 3) {
+                return 'demo-table-error-row';
+              }
+              return '';
+            },
+    reloadMockData () {
+                console.log(this.$refs.transferTable. getSelection());
+            },
+            select (selection,index){
+             console.log(selection);
+            },
+selectcancel(selection,row){//已选择的项和刚刚选择的项
+             console.log(selection);
+             console.log(row);
+            },
+            change(e){
+console.log("change事件触发");
+              console.log(e);
+            },
+selectall(e){
+              console.log(e);
+            },
+        },
+        mounted (){
+            this.columnsBig=[
+                { 
+                  type: 'index',
+                  align: 'center',
+                  key:'index'
+                },
+                {
+                  title: '姓名',
+                  key: 'fundId',
+                  align: 'center',
+                  renderHeader:(h,params)=>{
+                    return h('h-icon', {
+                        props: {
+                          name: 'add'
+                        }
+                      })
+                  },
+                  render:(h, params)=>{
+                    return h('div', [
+                      h('h-icon', {
+                        props: {
+                          name: 'addressbook'
+                        }
+                      }),
+                      h('strong', params.row.name)
+                    ]);
+                  }
+                },
+                {
+                  title: '年龄',
+                  key: 'tradeDate',
+                  className: 'demo-table-info-column'
+                },
+                {
+                  title: '地址',
+                  key: 'securityCode',
+                },
+                {
+                  title: '地址1',
+                  key: 'securityName',
+                  ellipsis:true,
+                },
+                {
+                  title: '地址2',
+                  key: 'securityId',
+                },
+                {
+                  title: '地址3',
+                  key: 'tradeDir',
+                },
+                {
+                  title: '地址4',
+                  key: 'tradeSubtype',
+                },
+                {
+                  title: '地址5',
+                  key: 'marketNo',
+                },
+                {
+                  title: '地址6',
+                  key: 'tradeQuantity',
+                }
+            ]
+        }
+    }
+</script>
+<style>
+.demo-table-info-row{
+  color: red
+}
+</style>
+-->
+<!--<template>
+<div>
   <h-checkbox-group v-model="formGroup">
     {{formGroup}}
       <div v-for="(item1,inx) in rightItemLIst" :key="inx">
@@ -35,115 +495,6 @@
            
           }
         }
-    }
-</script>
-
-<!--<template>
-   <h-checkbox-group v-model="social">
-      <h-checkbox label="twitter" v-for="(item,key) in list" :key="key">
-        <h-select ></h-select>
-      </h-checkbox>
-   </h-checkbox-group>
-</template>
-<script>
-export default {
-  data () {
-    return {
-      social: ['facebook', 'github'],
-      list: ['social-twitter','facebook', 'github','snapchat']
-    }
-  }
-}
-</script>-->
-<!--<template>
-<div>
-    <h-simple-table :columns="columnsBig" 
-      :data="bigData" border stripe headAlgin="right" 
-      bodyAlgin="left" height="500" rowSelect 
-      @on-select="select" @on-select-cancel="select"  
-      @on-select-all='change' 
-      @on-selection-change="change"></h-simple-table>
-</div>
-</template>
-<script>
-let jsonData=[];
-let tData =require('../assets/aa.json'); 
-    for (let i = 0; i < 2; i++) {
-      jsonData = jsonData.concat(tData);
-    }
-    export default {
-        data () {
-            return {
-                columnsBig: [
-                 {
-                  title:'测试',
-                  key:'ceshi',
-                  algin:'center',
-                 }
-                ],
-                bigData:[],
-            }
-        },
-        methods: {
-            select (selection,row){//已选择的项和刚刚选择的项
-             console.log(selection);
-             console.log(row);
-            },
-            change(e){
-              console.log(e);
-            },
-        },
-        mounted (){
-            this.columnsBig=[
-                { 
-                  type: 'selection',
-                  align: 'center',
-                },
-                { 
-                  type: 'index',
-                  align: 'center',
-                  key:'index'
-                },
-                {
-                  title: '姓名',
-                  key: 'fundId',
-                  align: 'center',
-                },
-                {
-                  title: '年龄',
-                  key: 'tradeDate',
-                },
-                {
-                  title: '地址',
-                  key: 'securityCode',
-                },
-                {
-                  title: '地址1',
-                  key: 'securityName',
-                  ellipsis:true,
-                },
-                {
-                  title: '地址2',
-                  key: 'securityId',
-                },
-                {
-                  title: '地址3',
-                  key: 'tradeDir',
-                },
-                {
-                  title: '地址4',
-                  key: 'tradeSubtype',
-                },
-                {
-                  title: '地址5',
-                  key: 'marketNo',
-                },
-                {
-                  title: '地址6',
-                  key: 'tradeQuantity',
-                }
-            ]
-        },
     }
 </script>
 -->
