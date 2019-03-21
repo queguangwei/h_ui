@@ -118,7 +118,9 @@
           }
         });
         this.showEmpty = status;
-        this.dispatch('Drop', 'on-update-popper');
+        if(val){
+          this.dispatch('Drop', 'on-update-popper')
+        }
       },
       handleclick(){
       },
