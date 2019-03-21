@@ -934,7 +934,7 @@
         if (this.filterable && this.showBottom) {
           if(this.isBlock){
             this.$refs.search.style.width ='100%';
-            this.$refs.input.style.width ='100%';
+            this.$refs.input.style.width = this.multiple? 'calc(100% - 40px)':'100%';
           }else{
             let width =this.dropWidth>0?this.dropWidth:parseInt(getStyle(this.$el, 'width'));
             width = width-getScrollBarSize()+'px';

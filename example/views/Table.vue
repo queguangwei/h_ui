@@ -1771,20 +1771,20 @@ export default {
           align: 'center',
           width:200
         },
-        {
-          title: '年龄',
-          key: 'age',
-        },
-        {
-          title: '地址',
-          ellipsis:true,
-          key: 'address',
-          // hiddenCol:true,
-        },
-        {
-          title: '地址1',
-          key: 'address1',
-        },
+        // {
+        //   title: '年龄',
+        //   key: 'age',
+        // },
+        // {
+        //   title: '地址',
+        //   ellipsis:true,
+        //   key: 'address',
+        //   // hiddenCol:true,
+        // },
+        // {
+        //   title: '地址1',
+        //   key: 'address1',
+        // },
         // {
         //   title: '地址2',
         //   key: 'address2',
@@ -1798,16 +1798,16 @@ export default {
         //   key: 'address4',
         //   sortType:'asc',
         // },
-        {
-          title: '地址5',
-          key: 'marketNo',
-          sortType:'asc',
-        },
-        {
-          title: '地址6',
-          key: 'tradeQuantity',
-          sortType:'asc',
-        }
+        // {
+        //   title: '地址5',
+        //   key: 'marketNo',
+        //   sortType:'asc',
+        // },
+        // {
+        //   title: '地址6',
+        //   key: 'tradeQuantity',
+        //   sortType:'asc',
+        // }
     ]
   },
 }
