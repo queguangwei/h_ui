@@ -1,5 +1,5 @@
 <template>
-  <div class="h-select-dropdown" :style="styles" @click="handleClick" ref="selectdrop"><slot></slot></div>
+  <div class="h-select-dropdown" :style="styles" @click="handleClick" @mousedown.stop="handleMouseDown" ref="selectdrop"><slot></slot></div>
 </template>
 <script>
 import Vue from 'vue';
@@ -132,7 +132,12 @@ export default {
 			let placement = popper._popper.getAttribute('x-placement').split('-')[0];
 			let origin = placementMap[placement];
 			popper._popper.style.transformOrigin = `center ${ origin }`;
-		}
+    },
+    handleMouseDown() {
+      // TS201903110540
+      // prevent mousedown event from bubbling up and being caught by handlers on document
+      // which were added in directive v-clickoutside
+    }
 	},
 	created () {
 		this.$on('on-update-popper', this.update);
