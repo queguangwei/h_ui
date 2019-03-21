@@ -8,7 +8,8 @@
                      style="width:200px"
                      maxDropWidth="400"
                      filterable
-                     placement="top"
+                     autoPlacement
+                     widthAdaption
                      placeholder="123"
                      isArrow=false>
       <h-select-block :data="bigData"
@@ -19,9 +20,10 @@
                      style="width:200px"
                      transfer
                      filterable
+                     showBottom
+                     multiple
                      autoPlacement
                      widthAdaption
-                     multiple
                      placeholder="123"
                      isArrow=false>
       <h-select-block :data="bigData"
@@ -101,6 +103,11 @@ export default {
           { value: '8', label: '韩国6' },
           { value: '9', label: '韩国7' },
           { value: '10', label: '韩国8' },
+          { value: '11', label: '韩国9' },
+          { value: '12', label: '韩国10' },
+          { value: '13', label: '韩国11' },
+          { value: '14', label: '韩国12' },
+          { value: '15', label: '韩国13' },
         ],
         value: '',
         value2: '',
