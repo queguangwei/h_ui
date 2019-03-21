@@ -813,7 +813,6 @@
       navigateOptions (direction) {
         if (this.isBlock) {
           let _options = this.options
-          let scrollIndex = this.focusIndex
           if (this.query) {
             _options = this.options.filter(option => option.label.indexOf(this.query) !== -1)
           }
@@ -821,11 +820,9 @@
           if (direction === 'next') {
             const next = this.focusIndex + 1;
             this.focusIndex = (this.focusIndex === _options.length) ? 1 : next;
-            scrollIndex = (scrollIndex === this.options.length) ? 1 : next;
           } else if (direction === 'prev') {
             const prev = this.focusIndex - 1;
             this.focusIndex = (this.focusIndex <= 1) ? _options.length : prev;
-            scrollIndex = (scrollIndex <= 1) ? this.options.length : prev;
           }
 
           // 处理滚动条
