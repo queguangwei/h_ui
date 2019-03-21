@@ -6,8 +6,9 @@
       <checkbox v-show="multiple" size="large" :value="item.selected" @click.native.stop="handleclick" :disabled="item.disabled" @on-change="checkChange($event,item)"></checkbox>
       <slot>{{showLabel(item)}}</slot>
     </li>
-    <li v-if="showEmpty" :class="[prefixCls+'-empty']">{{localeNoMatch}}</li>
+    <!-- <li v-if="showEmpty" :class="[prefixCls+'-empty']">{{localeNoMatch}}</li> -->
   </ul>
+  <div v-if="showEmpty" :class="[prefixCls+'-empty']">{{localeNoMatch}}</div>
 </div>
 </template>
 <script>
@@ -117,6 +118,7 @@
           }
         });
         this.showEmpty = status;
+        this.dispatch('Drop', 'on-update-popper');
       },
       handleclick(){
       },
@@ -184,7 +186,12 @@
     watch:{
       data:{
         deep:true,
-        handler:function(){
+        handler:function(val){
+          if(val.length==0){
+            this.showEmpty = true;
+          }else{
+            this.showEmpty = false;
+          }
           this.$nextTick(()=>{
             this.cloneData = deepCopy(this.data);
             this.$parent.$parent.updateOptions(true);
@@ -194,11 +201,6 @@
       cloneData:{
         deep:true,
         handler:function(val){
-          if(val.length==0) {
-            this.showEmpty = true;
-          } else {
-            this.showEmpty = false;
-          }
           this.$nextTick(()=>{
             this.updateVisibleData();
           })
