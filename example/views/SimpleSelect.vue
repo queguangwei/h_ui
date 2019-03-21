@@ -6,23 +6,22 @@
     {{value2}}
     <h-simple-select v-model="value2"
                      style="width:200px"
-                     showBottom
                      maxDropWidth="400"
                      filterable
-                     autoPlacement
-                     widthAdaption
+                     placement="top"
                      placeholder="123"
                      isArrow=false>
       <h-select-block :data="bigData"
                       @on-scroll="select"></h-select-block>
     </h-simple-select>
     <h-button @on-click="loaddata">加载数据</h-button>
-    <h-simple-select v-model="value2"
+    <h-simple-select v-model="value1"
                      style="width:200px"
                      transfer
                      filterable
                      autoPlacement
                      widthAdaption
+                     multiple
                      placeholder="123"
                      isArrow=false>
       <h-select-block :data="bigData"
@@ -102,11 +101,6 @@ export default {
           { value: '8', label: '韩国6' },
           { value: '9', label: '韩国7' },
           { value: '10', label: '韩国8' },
-          { value: '11', label: '韩国9' },
-          { value: '12', label: '韩国10' },
-          { value: '13', label: '韩国11' },
-          { value: '14', label: '韩国12' },
-          { value: '15', label: '韩国13' },
         ],
         value: '',
         value2: '',
