@@ -32,7 +32,7 @@
       },
       itemHeight:{
         type:[Number,String],
-        default:30
+        default: 30
       }
       // disabled: {
       //   type: Boolean,
@@ -146,7 +146,7 @@
           }
         }
         this.end = j;
-        this.visibleData = this.cloneData.slice(this.start, this.end);
+        this.visibleData = this.cloneData.filter(item => !item.hidden).slice(this.start, this.end);
         this.$refs.content.style.transform = `translate3d(0, ${ this.start * itemHeight }px, 0)`;
       },
     },
@@ -164,7 +164,7 @@
 
       // v20190321
       this.$on('on-focus-index-change', index => {
-        this.cloneData.forEach((item, i) => {
+        this.cloneData.filter(item => !item.hidden).forEach((item, i) => {
           item.focus = false
           if (i === index) {
             item.focus = true
