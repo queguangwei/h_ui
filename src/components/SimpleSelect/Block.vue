@@ -121,6 +121,13 @@
         if(val){
           this.dispatch('Drop', 'on-update-popper')
         }
+        this.$nextTick(()=>{
+          if(val){
+            this.updateVisibleData(1);
+          }else{
+            this.updateVisibleData();
+          }
+        })
       },
       handleclick(){
       },
@@ -148,7 +155,9 @@
           }
         }
         this.end = j;
+        console.log(j)
         this.visibleData = this.cloneData.filter(item => !item.hidden).slice(this.start, this.end);
+        console.log(this.visibleData)
         this.$refs.content.style.transform = `translate3d(0, ${ this.start * itemHeight }px, 0)`;
       },
     },
@@ -197,15 +206,16 @@
           this.$nextTick(()=>{
             this.cloneData = deepCopy(this.data);
             this.$parent.$parent.updateOptions(true);
+            this.updateVisibleData();
           })
         }
       },
       cloneData:{
         deep:true,
         handler:function(val){
-          this.$nextTick(()=>{
-            this.updateVisibleData();
-          })
+          // this.$nextTick(()=>{
+          //   this.updateVisibleData();
+          // })
         }
       },
     },
