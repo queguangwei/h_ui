@@ -231,6 +231,7 @@
       <div>
         <span>单选可搜索:</span>
         <h-select v-model="model10"
+                  placement="top"
                   width="200"
                   @on-blur="blurH"
                   filterable>
