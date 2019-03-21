@@ -1,16 +1,16 @@
 <template>
-  <div :class="classes" v-clickoutside="handleClose" :style="multiplestyle" ref="select" >
+  <div :class="classes" v-clickoutside="{trigger: 'mousedown', handler: handleClose}" :style="multiplestyle" ref="select" >
     <div
       :class="selectionCls"
       ref="reference"
       :tabindex="tabIndex"
-      @keyup="keyup" 
+      @keyup="keyup"
       @keydown="keydown"
       @click="toggleMenu">
       <!-- 多选时输入框内选中值模拟 -->
       <div class="h-tag" v-for="(item, index) in selectedMultiple" :key="index">
         <span class="h-tag-text">{{ item.label }}</span>
-        <Icon name="close" @click.native.stop="removeTag(index)"></Icon> 
+        <Icon name="close" @click.native.stop="removeTag(index)"></Icon>
       </div>
       <!-- 下拉输入框模拟（非远程搜索时渲染）  -->
       <span :class="[prefixCls + '-placeholder']" v-show="showPlaceholder && (!filterable ||showBottom)">{{ localePlaceholder }}</span>
@@ -27,20 +27,20 @@
         @blur="handleBlur"
         @keydown="resetInputState"
         @keydown.delete="handleInputDelete"
-        tabindex="-1" 
+        tabindex="-1"
         ref="input">
 
       <Icon name="close" :class="[prefixCls + '-arrow']" v-show="showCloseIcon" @click.native.stop="clearSingleSelect"></Icon>
       <Icon name="unfold" :class="[prefixCls + '-arrow']" v-if="!remote" ref="arrowb"></Icon>
     </div>
     <transition :name="transitionName">
-      <Drop 
+      <Drop
         :class="dropdownCls"
         :dropWidth="dropWidth"
         :multiple="multiple"
-        v-show="dropVisible" 
+        v-show="dropVisible"
         :placement="fPlacement"
-        :data-transfer="transfer" 
+        :data-transfer="transfer"
         :widthAdaption="widthAdaption"
         :maxDropWidth="maxDropWidth"
         ref="dropdown"
@@ -60,14 +60,14 @@
               @blur="handleBlur"
               @keydown="resetInputState"
               @keydown.delete="handleInputDelete"
-              tabindex="-1" 
+              tabindex="-1"
               ref="input">
             <!-- <input type="text" placeholder="请输入..." class="h-input h-input-left">  -->
           </span>
           <div v-if="!isBlock" v-show="(!notFound && !remote) || (remote && !loading && !notFound)" :class="[prefixCls + '-dropdown-list']" :style="listStyle" ref='list' @scroll="handleSelectScroll"><slot></slot>
             <ul v-show="isComputed" :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>
           </div>
-          <div v-if="isBlock" v-show="(!notFound && !remote) || (remote && !loading && !notFound)" :class="[prefixCls + '-dropdown-list']" :style="listStyle">
+          <div v-if="isBlock" v-show="(!notFound && !remote) || (remote && !loading && !notFound)" :class="[prefixCls + '-dropdown-list']" :style="listStyle" ref='blockWrapper'>
             <slot></slot>
           </div>
           <ul v-show="loading" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
@@ -252,7 +252,7 @@
         visible: false,
         options: [],
         optionInstances: [],
-        selectedSingle: '',  
+        selectedSingle: '',
         selectedMultiple: [],
         focusIndex: 0,
         query: '',
@@ -276,11 +276,11 @@
     },
     computed: {
       searchClass(){
-        return [ 
+        return [
           `${prefixCls}-search`,
           {
             [`${prefixCls}-checkHead`]:this.checkToHead&&this.showBottom&&this.filterable
-          }        
+          }
         ]
       },
       listStyle(){
@@ -396,11 +396,11 @@
           // return this.placement === 'bottom' ? 'slide-up' : 'slide-down';
       },
       dropVisible () {
-        let status = true;         
+        let status = true;
         const options = this.$slots.default || [];
         if (!this.loading && this.remote && this.query === '' && !options.length) status = false;
         return this.visible && status;
-      },    
+      },
       multiplestyle () {
         return {
             width: `${this.width}px`,
@@ -414,7 +414,7 @@
           options = options || [];
           let state= (this.notFound) || (!this.loading && !options.length)||(!options.length);
           return state;
-      }, 
+      },
     },
     methods: {
       handleclick(e){
@@ -437,7 +437,7 @@
         let num = getBarBottom(event.target,this.scrollBarWidth);
         this.$emit('on-scroll',num)
       },
-      toggleSelect(val){        
+      toggleSelect(val){
         if(this.isBlock){
           this.allClick = true;
           let hybridValue=[];
@@ -450,8 +450,8 @@
                   value:col.value,
                   label:col.label
                 })
-                curValue.push(col.value);                   
-              }            
+                curValue.push(col.value);
+              }
             });
           });
           this.model = curValue;
@@ -568,7 +568,7 @@
           if (type === 'string' || type === 'number') {
               let findModel = false;
               for (let i = 0; i < this.options.length; i++) {
-                  if (this.model === this.options[i].value) {                  
+                  if (this.model === this.options[i].value) {
                       this.selectedSingle = this.options[i].label;
                       findModel = true;
                       break;
@@ -761,7 +761,7 @@
           if (this.isInputFocus) {
             if (this.multiple) {
             // 多选返回数组
-            this.dispatch('FormItem', 'on-form-blur', this.selectedMultiple)          
+            this.dispatch('FormItem', 'on-form-blur', this.selectedMultiple)
             } else {
             // 单选返回字符串
             this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
@@ -791,19 +791,46 @@
             if (keyCode === 13) {
               e.preventDefault();
 
+              let index = this.focusIndex - 1
+              if (index < 0) return false;
+
+              if (this.isBlock) {
+                this.selectBlockSingle(this.options[index].value)
+                return
+              }
+
               this.findChild((child) => {
-                if (this.focusIndex-1<0) return false;
                 if (!this.multiple){
-                  child.$refs.table.enterSingle(this.focusIndex-1,true);
+                  child.$refs.table.enterSingle(index,true);
                 }else{
-                  child.$refs.table.enterSelect(this.focusIndex-1,true);
+                  child.$refs.table.enterSelect(index,true);
                 }
               });
             }
         }
       },
       navigateOptions (direction) {
-        if(this.block) return;
+        if (this.isBlock) {
+          if (direction === 'next') {
+            const next = this.focusIndex + 1;
+            this.focusIndex = (this.focusIndex === this.options.length) ? 1 : next;
+          } else if (direction === 'prev') {
+            const prev = this.focusIndex - 1;
+            this.focusIndex = (this.focusIndex <= 1) ? this.options.length : prev;
+          }
+
+          this.broadcast('Block', 'on-focus-index-change', this.focusIndex - 1)
+
+          // 处理滚动条
+          this.findChild((child) => {
+            let curTop = child.$el.scrollTop
+            let itemHeight = child.$el.querySelectorAll('.h-select-block-item')[0].offsetHeight
+            let top = itemHeight * (this.focusIndex - 1)
+            scrollAnimate(child.$el, curTop, top);
+          });
+          return
+        }
+
         let curTop = this.$refs.list.scrollTop;
         if (this.focusIndex-1>=0) {
           this.findChild((child) => {
@@ -822,6 +849,7 @@
         this.findChild((child) => {
           child.$refs.table.changeHover(this.focusIndex-1,true);
         });
+
         // this.$refs.list.scrollTop = top;
         scrollAnimate(this.$refs.list,curTop,top);
       },
@@ -916,7 +944,7 @@
             return '';
           }else{
             return val.join(',');
-          } 
+          }
         }else{
           return val;
         }
@@ -934,7 +962,7 @@
         if (this.filterable && this.showBottom) {
           if(this.isBlock){
             this.$refs.search.style.width ='100%';
-            this.$refs.input.style.width ='100%';
+            this.$refs.input.style.width = this.multiple? 'calc(100% - 40px)':'100%';
           }else{
             let width =this.dropWidth>0?this.dropWidth:parseInt(getStyle(this.$el, 'width'));
             width = width-getScrollBarSize()+'px';
@@ -970,6 +998,7 @@
           this.hideMenu();
         }else{
           this.model = value;
+
           if (this.filterable) {
             this.findChild((child) => {
               if (child.value === value) {
@@ -978,6 +1007,10 @@
               }
             });
           }
+
+          // this.$nextTick(() => {
+          this.hideMenu()
+          // })
         }
       },
       selectBlockMultiple(value){
@@ -1197,7 +1230,7 @@
         })
       },
       selectHead(val){
-        this.toggleSelect(val);        
+        this.toggleSelect(val);
       },
       placement(val){
         this.fPlacement = val;

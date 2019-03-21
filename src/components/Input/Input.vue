@@ -183,6 +183,10 @@
       autocomplete: {
         type: String,
         default: 'off'
+      },
+      focusAllSelect: {
+        type: Boolean,
+        default: false
       }
     },
     data () {
@@ -264,6 +268,9 @@
         this.$emit('on-click', event);
       },
       handleFocus (event) {
+        if(this.focusAllSelect && this.type==='text'){
+          this.$refs.input.select();
+        }
         this.$emit('on-focus', event);
       },
       handleBlur (event) {

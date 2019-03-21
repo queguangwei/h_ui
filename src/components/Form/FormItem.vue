@@ -206,6 +206,9 @@
             },
             isOnlyBlurRequire(){
                 return  this.onlyBlurRequire?true:false||this.form.onlyBlurRequire?true:false;
+            },
+            isNotChecked(){
+                return this.form.isCheck?false:true;
             }
         },
         methods: {
@@ -271,6 +274,7 @@
                 return rules.filter(rule => !rule.trigger || rule.trigger.indexOf(trigger) !== -1);
             },
             validate(trigger, callback = function () {}) {
+                if(this.isNotChecked) return;
                 const rules = this.getFilteredRule(trigger);
                 if (!rules || rules.length === 0) {
                     callback();
