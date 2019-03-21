@@ -669,7 +669,7 @@ export default {
         for (let i = 0; i < columns.length; i++) {
           let leftWidth = 0;
           for (let j = 0; j<i; j++) {
-            leftWidth = leftWidth + columns[j].width;
+            leftWidth = leftWidth + columns[j]._width;
           }
           this.cloumnsLeft[i] = leftWidth;
         }
@@ -788,7 +788,7 @@ export default {
         const handleMouseMove = (event) => {
           this.resizeProxyVisible = true;
           const deltaLeft = event.clientX - _this.moveState.startMouseLeft;
-          const moveLeft = _this.moveState.startLeft + deltaLeft;
+          const moveLeft = _this.moveState.startLeft + deltaLeft;  
           if (deltaLeft > 0) {
             let changeRight = _this.cloumnsLeft[index]+deltaLeft;
             changeRight = changeRight+column._width;

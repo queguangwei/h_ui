@@ -74,18 +74,18 @@ $tabs-prefix-cls: "#{$css-prefix}tabs";
   &-nav-scroll {
     position:relative;
     white-space: nowrap;
+    overflow: hidden;
   }
 
   &-nav-right{
-    float: right;
+    display: inline-block;
+    transition: transform 0.5s $ease-in-out;
   }
 
   &-nav {
-    position:absolute;
-    right: 0;
+    // position:absolute;
+    display: inline-block;
     padding-left: 0;
-    // margin: 0;
-    // float: left;
     list-style: none;
     box-sizing: border-box;
     position: relative;
@@ -276,7 +276,6 @@ $tabs-prefix-cls: "#{$css-prefix}tabs";
   &-nav-right{
     padding-top:10px 0px;
     padding-right:15px;
-    width:100%;
     .h-tabs-tab{
       width:100%;
       height:36px;

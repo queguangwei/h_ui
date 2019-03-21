@@ -1,5 +1,5 @@
 <template>
-  <div :class="classes" v-clickoutside="handleClose" :style="multiplestyle" ref="select">
+  <div :class="classes" v-clickoutside="{trigger: 'mousedown', handler: handleClose}" :style="multiplestyle" ref="select">
     <div
       :title="titleTip"
       :class="selectionCls"
@@ -66,7 +66,7 @@
           <ul v-show="notFoundShow && !enableCreate" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul>
           <ul v-show="(!notFound && !remote) || (remote && !loading && !notFound) || enableCreate" :class="[prefixCls + '-dropdown-list']">
             <!-- 多选、支持搜索和新建条目的情况下，如果检索词不匹配任何一个条目时，显示此项供用户选择 -->
-            <li :class="`${prefixCls}-item`" v-if="enableCreate && showNewOption" 
+            <li :class="`${prefixCls}-item`" v-if="enableCreate && showNewOption"
                 @click.stop="createNewOption(query)">
               <checkbox v-show="multiple && !hideMult" v-model="newOptionChecked"></checkbox>
               {{query}}
@@ -451,7 +451,7 @@
       },
       /* 是否开启新建条目功能 */
       enableCreate() {
-        return this.allowCreate && this.filterable; 
+        return this.allowCreate && this.filterable;
       },
       showNewOption() {
         const model = this.model;
@@ -463,7 +463,7 @@
           if (option.searchLabel === query || option.value === query) {
             existed = true;
             break;
-          } 
+          }
         }
         let selected = false;
         if (this.multiple) {
@@ -555,7 +555,7 @@
         }
       },
       toggleMenu () {
-        
+
         if (this.disabled || this.readonly||!this.editable) {
             return false;
         }
@@ -694,7 +694,7 @@
             let selected = this.remote && this.model.length > 0 ? this.selectedMultiple : [];
             for (let i = 0; i < this.model.length; i++) {
                 const model = this.model[i];
-                const options = this.options; 
+                const options = this.options;
                 let option;
                 for (let op of this.options) {
                   if (op.value === model) {
@@ -904,7 +904,7 @@
               }
           });
           let top = 32*(this.focusIndex-1);
-          let contentHeight = 0 
+          let contentHeight = 0
           let selectItemHeight = 1
           if (this.scrollFix) {
             // 距离底部5px
@@ -917,8 +917,8 @@
             } else if (direction === 'prev') {
               let maxnum = Math.floor((contentHeight + curTop) / selectItemHeight)
               let minnum = Math.floor(curTop/ selectItemHeight)
-              top = this.focusIndex > minnum && this.focusIndex < maxnum ? curTop : (this.focusIndex -1) * selectItemHeight 
-              
+              top = this.focusIndex > minnum && this.focusIndex < maxnum ? curTop : (this.focusIndex -1) * selectItemHeight
+
             }
 
           }
@@ -946,7 +946,7 @@
       handleBlur () {
         if (this.multiple && this.filterable) this.$refs.reference.scrollTop = 0
         this.$emit('on-blur');
-        if (this.showBottom) return false;          
+        if (this.showBottom) return false;
         // this.isInputFocus = false
         setTimeout(() => {
           const model = this.model;
@@ -1176,7 +1176,7 @@
             // }
           } else {
             this.model = value;
-            if(!this.filterable) this.hideMenu();
+
             if (this.filterable && !this.showBottom) {
               this.findChild((child) => {
                 if (child.value === value) {
@@ -1185,6 +1185,10 @@
                 }
               });
             }
+
+            this.$nextTick(() => {
+              this.hideMenu()
+            })
           }
         }
       });
@@ -1278,7 +1282,7 @@
           this.broadcast('Drop', 'on-update-popper');
           setTimeout(() => {
             this.dispatch('Msgbox', 'on-esc-real-close', false);
-          }, 0); 
+          }, 0);
         } else {
           if (this.filterable) {
             this.$refs.input.blur();
@@ -1289,8 +1293,8 @@
             }, 300);
           }
           setTimeout(() => {
-            this.dispatch('Msgbox', 'on-esc-real-close', true);    
-          }, 0);      
+            this.dispatch('Msgbox', 'on-esc-real-close', true);
+          }, 0);
           // this.broadcast('Drop', 'on-destroy-popper');
         }
       },
@@ -1300,11 +1304,11 @@
           if (this.remoteFocusNotShowList && !this.multiple) { // 单选时适用，多选时query会清空，不适用
             if ( val != '' && !this.visible && val != this.value) {
                 this.visible = true
-            } 
+            }
             if (this.visible && !this.isInputFocus) { //点击其他页面触发失去焦点事件
               this.visible = false
             }
-          } 
+          }
           if (!this.selectToChangeQuery) {
               this.$emit('on-query-change', val);
               if(this.readonly || this.disabled) return false;

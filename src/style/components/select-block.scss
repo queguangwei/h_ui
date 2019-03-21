@@ -27,8 +27,16 @@ $selectBlock-prefix-cls:  "#{$css-prefix}select-block";
     background: $background-color-select-hover;
     cursor: pointer;
 }
-.#{$selectBlock-prefix-cls}-selected{
-    color: $selected-color;
+
+.#{$selectBlock-prefix-cls}{
+    &-selected {
+      color: $selected-color;
+      background: #fff;
+    }
+    &-selected:hover, &-focus {
+      color:$selected-color;
+      background: $background-color-select-hover;
+    }
 }
 .#{$selectBlock-prefix-cls}-empty{
     line-height: 30px;
