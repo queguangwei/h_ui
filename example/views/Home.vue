@@ -109,7 +109,7 @@
         </h-form-item>
         <h-form-item>
             <h-button type="primary" @click="handleSubmit('formItem1')">提交</h-button>
-            <h-button type="ghost" style="margin-left: 8px" @click.native.stop="handleReset('formItem1')">取消</h-button>
+            <h-button type="ghost" style="margin-left: 8px" @click="handleReset('formItem1')">取消</h-button>
         </h-form-item>
 
       </h-form>

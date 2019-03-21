@@ -152,6 +152,10 @@ export default {
     cardFormat:{
       type: Boolean,
       default: true,
+    },
+    focusAllSelect:{
+      type: Boolean,
+      default: false,
     }
   },
   computed: {
@@ -268,6 +272,9 @@ export default {
         this.inputValue = this.inputValue?String(this.inputValue).replace(/\s+/g,""):'';
       }
       this.bigShow(this.type,this.bigTips,this.inputValue)
+      if(this.focusAllSelect && this.type==='money'){
+        this.$refs.input.select();
+      }
       this.$emit('on-focus',e)
     },
     focus(){

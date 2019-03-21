@@ -49,6 +49,7 @@
         lastScollTop:0,
         showEmpty:false,
         showBottom:false,
+        focusIndex: 0,
       };
     },
     computed: {
@@ -68,8 +69,11 @@
           }
         ]
       },
-      localeNoMatch () {       
+      localeNoMatch () {
         return this.t('i.select.noMatch');
+      },
+      itemClasses() {
+        return
       }
     },
     methods: {
@@ -77,9 +81,9 @@
         return [
           `${prefixCls}-item`,
           {
-            [`${prefixCls}-disabled`]: item.disabled||false,
-            [`${prefixCls}-selected`]: item.selected||false,
-            // [`${prefixCls}-focus`]: item.isFocus,
+            [`${prefixCls}-disabled`]: item.disabled || false,
+            [`${prefixCls}-selected`]: item.selected || false,
+            [`${prefixCls}-focus`]: item.focus || false
           }
         ];
       },
@@ -114,7 +118,7 @@
         });
         this.showEmpty = status;
       },
-      handleclick(){ 
+      handleclick(){
       },
       handleBodyScroll(event){
         this.lastScollTop = event.target.scrollTop;
@@ -138,7 +142,7 @@
             }
             j++;
           }
-        }      
+        }
         this.end = j;
         this.visibleData = this.cloneData.slice(this.start, this.end);
         this.$refs.content.style.transform = `translate3d(0, ${ this.start * itemHeight }px, 0)`;
@@ -155,11 +159,25 @@
       this.$on('on-query-change', (val) => {
         this.queryChange(val);
       });
+
+      // v20190321
+      this.$on('on-focus-index-change', index => {
+        this.cloneData.forEach((item, i) => {
+          item.focus = false
+          if (i === index) {
+            item.focus = true
+          }
+        })
+      });
       this.multiple=this.$parent.$parent.multiple;
       this.showBottom=this.$parent.$parent.showBottom;
       this.cloneData = deepCopy(this.data);
+      // v20190321 添加focus
+      this.cloneData.forEach(item => {
+        this.$set(item, 'focus', false)
+      })
       this.$nextTick(()=>{
-        this.visibleCount = Math.ceil(210/Number(this.itemHeight))+1; 
+        this.visibleCount = Math.ceil(210/Number(this.itemHeight))+1;
         this.updateVisibleData();
       });
     },

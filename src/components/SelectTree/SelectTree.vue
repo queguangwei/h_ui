@@ -1,5 +1,5 @@
 <template>
-  <div :class="classes" :style="multiplestyle" ref="select" v-clickoutside="handleClose">
+  <div :class="classes" :style="multiplestyle" ref="select" v-clickoutside="{trigger: 'mousedown', handler: handleClose}">
     <div
       :class="[prefixCls + '-selection']"
       ref="reference"
