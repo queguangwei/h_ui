@@ -74,7 +74,7 @@
         </div>
         <div v-if="showFooter" :class="checkAll">
           <slot name="footer">
-            <template  v-if="isCheckall&&multiple&&!notFoundShow">
+            <template  v-if="(isCheckall&&multiple&&!notFoundShow) || (enableCreate && showNewOption)">
               <Button size="small" @click="toggleSelect(false)">全不选</Button>
               <Button type ="primary" size="small" @click="toggleSelect(true)">全选</Button>
             </template>
@@ -1024,8 +1024,8 @@
       },
       broadcastQuery (val) {
           if (findComponentChildren(this, 'OptionGroup')) {
-              this.broadcast('OptionGroup', 'on-query-change', val);
               this.broadcast('Option', 'on-query-change', val);
+              this.broadcast('OptionGroup', 'on-query-change', val);
           } else {
               this.broadcast('Option', 'on-query-change', val);
           }
@@ -1409,11 +1409,16 @@
         if (this.remote) {
           this.$nextTick(()=>{
             this.focusIndex = 1;
-            this.findChild(child => {
-              if (child.index == 1) {
-                child.isFocus = true;
-              }
-            });
+            const createdOption = this.$refs.createdOption;
+            if (createdOption) {
+              createdOption.isFocus = true;
+            } else {
+              this.findChild(child => {
+                if (child.index == 1) {
+                  child.isFocus = true;
+                }
+              });
+            }
           })
         }
       },
