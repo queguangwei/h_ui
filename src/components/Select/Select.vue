@@ -1084,7 +1084,19 @@
             this.model = value;
           }
         }
-      }
+      },
+      setPlacement(){
+        if(this.autoPlacement){
+            let obj = this.$refs.select;
+            let allWidth= document.body.clientWidth;
+            let allHeight= document.body.clientHeight;
+            let curbottom =allHeight-obj.offsetTop-obj.clientHeight;
+            let bottomNum = this.isCheckall?250:210;
+            if(curbottom<bottomNum){
+              this.fPlacement = 'top';
+            }
+        }
+      },
     },
     mounted () {
       if (!this.multiple && this.setDefSelect && this.value == ''){
@@ -1182,6 +1194,7 @@
       if (this.disabled) {
         this.tabIndex = -1;
       }
+      this.setPlacement();
     },
     beforeDestroy () {
       off(document,'keydown',this.handleKeydown)
