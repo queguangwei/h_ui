@@ -96,7 +96,7 @@ export function closest (className) {
     if (!parent.$el) {
       return null
     }
-    
+
     if (parent.$el.classList.contains(className)) {
       return parent
     }
@@ -112,7 +112,7 @@ export function addOnceEventListener (el, event, cb) {
     cb()
     el.removeEventListener(event, once, false)
   }
-  
+
   el.addEventListener(event, once, false)
 }
 
@@ -151,15 +151,15 @@ export function oneOf (value, validList) {
 function isValueNumber (value) {
   return (/(^-?[0-9]+\.{1}\d+$)|(^-?[1-9][0-9]*$)|(^-?0{1}$)/).test(value + '');
 }
-export function arrContains(arr, obj) {  
-  var i = arr.length;  
-    while (i--) {  
-      if (arr[i] === obj) {  
-          return true;  
-      }  
-    }  
-  return false;  
-} 
+export function arrContains(arr, obj) {
+  var i = arr.length;
+    while (i--) {
+      if (arr[i] === obj) {
+          return true;
+      }
+    }
+  return false;
+}
 
 // firstUpperCase
 function firstUpperCase(str) {
@@ -231,7 +231,7 @@ export function getStyle (element, styleName) {
   }
 }
 
-// For notice 
+// For notice
 export function camelcaseToHyphen (str) {
     return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
@@ -542,7 +542,7 @@ export function toFix(d){
     {
       var s="0"+ regexp.$2, pm=regexp.$1, a=regexp.$3.length, b=true;
       if (a==d+2){
-        a=s.match(/\d/g); 
+        a=s.match(/\d/g);
         if (parseint(a[a.length-1])>4){
           for(var i=a.length-2; i>=0; i--) {
             a[i] = parseint(a[i])+1;
@@ -556,9 +556,9 @@ export function toFix(d){
       }
       if(b)s=s.substr(1);
       return (pm+s).replace(/\.$/, "");
-    } 
+    }
     return this+"";
-  // };  
+  // };
 }
 function vliData(num) {
   return num>=10?num:'0'+num;
@@ -646,18 +646,18 @@ export function formatnumber(fnumber,fdivide,fpoint,fround){
   return revalue;
 }
 
-export function isdate(intYear,intMonth,intDay){ 
- if(isNaN(intYear)||isNaN(intMonth)||isNaN(intDay)) return false;   
- if(intMonth>12||intMonth<1) return false; 
- if ( intDay<1||intDay>31)return false; 
- if((intMonth==4||intMonth==6||intMonth==9||intMonth==11)&&(intDay>30)) return false; 
- if(intMonth==2){ 
-   if(intDay>29) return false;  
-   if((((intYear%100==0)&&(intYear%400!=0))||(intYear%4!=0))&&(intDay>28))return false; 
+export function isdate(intYear,intMonth,intDay){
+ if(isNaN(intYear)||isNaN(intMonth)||isNaN(intDay)) return false;
+ if(intMonth>12||intMonth<1) return false;
+ if ( intDay<1||intDay>31)return false;
+ if((intMonth==4||intMonth==6||intMonth==9||intMonth==11)&&(intDay>30)) return false;
+ if(intMonth==2){
+   if(intDay>29) return false;
+   if((((intYear%100==0)&&(intYear%400!=0))||(intYear%4!=0))&&(intDay>28))return false;
   }
- return true; 
+ return true;
 }
-let timer 
+let timer
 // 滚动公用方法
 export function scrollAnimate(obj,curTop,newTop){
   let status=curTop<newTop?true:false;
@@ -673,50 +673,50 @@ export function scrollAnimate(obj,curTop,newTop){
   },ins);
 }
 
-export function cmp( a, b ) { 
+export function cmp( a, b ) {
   var x= deepCopy(a);
   var y= deepCopy(b);
-  if ( x === y ) { 
-    return true; 
-  }  
+  if ( x === y ) {
+    return true;
+  }
   // instanceof运算符用于测试构造函数的prototype属性是否出现在对象的原型链中的任何位置
-  if ( ! ( x instanceof Object ) || ! ( y instanceof Object ) ) { 
-    return false; 
-  }   
-  if ( x.constructor !== y.constructor ) { 
-    return false; 
-  }  
+  if ( ! ( x instanceof Object ) || ! ( y instanceof Object ) ) {
+    return false;
+  }
+  if ( x.constructor !== y.constructor ) {
+    return false;
+  }
   if(Array.isArray(x)&&Array.isArray(y)){
     x.sort();
     y.sort();
   }
-  for ( var p in x ) { 
-    if ( x.hasOwnProperty( p ) ) { 
-      if ( ! y.hasOwnProperty( p ) ) { 
+  for ( var p in x ) {
+    if ( x.hasOwnProperty( p ) ) {
+      if ( ! y.hasOwnProperty( p ) ) {
         return false;
-      }    
-      if ( x[ p ] === y[ p ] ) { 
-        continue; 
-      }   
-      if ( typeof( x[ p ] ) !== "object" ) { 
-        return false; 
-      }   
-      if ( ! Object.equals( x[ p ], y[ p ] ) ) { 
-        return false; 
-      } 
-    } 
-  }    
-  for ( p in y ) { 
-    if (y.hasOwnProperty( p ) && ! x.hasOwnProperty( p )) { 
-      return false; 
-    } 
-  } 
-  return true; 
+      }
+      if ( x[ p ] === y[ p ] ) {
+        continue;
+      }
+      if ( typeof( x[ p ] ) !== "object" ) {
+        return false;
+      }
+      if ( ! Object.equals( x[ p ], y[ p ] ) ) {
+        return false;
+      }
+    }
+  }
+  for ( p in y ) {
+    if (y.hasOwnProperty( p ) && ! x.hasOwnProperty( p )) {
+      return false;
+    }
+  }
+  return true;
 }
 export function IEVersion() {
-  var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串  
-  var isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1; //判断是否IE<11浏览器  
-  var isEdge = userAgent.indexOf("Edge") > -1 && !isIE; //判断是否IE的Edge浏览器  
+  var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+  var isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1; //判断是否IE<11浏览器
+  var isEdge = userAgent.indexOf("Edge") > -1 && !isIE; //判断是否IE的Edge浏览器
   var isIE11 = userAgent.indexOf('Trident') > -1 && userAgent.indexOf("rv:11.0") > -1;
   if(isIE) {
       var reIE = new RegExp("MSIE (\\d+\\.\\d+);");
@@ -732,12 +732,12 @@ export function IEVersion() {
           return 10;
       } else {
           return 6;//IE版本<=7
-      }   
+      }
   } else if(isEdge) {
       // return 'edge';//edge
       return -1;//edge
   } else if(isIE11) {
-      return 11; //IE11  
+      return 11; //IE11
   }else{
       return -1;//不是ie浏览器
   }
