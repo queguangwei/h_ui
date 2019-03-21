@@ -66,11 +66,7 @@
           <ul v-show="notFoundShow && !enableCreate" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul>
           <ul v-show="(!notFound && !remote) || (remote && !loading && !notFound) || enableCreate" :class="[prefixCls + '-dropdown-list']">
             <!-- 多选、支持搜索和新建条目的情况下，如果检索词不匹配任何一个条目时，显示此项供用户选择 -->
-            <li :class="`${prefixCls}-item`" v-if="enableCreate && showNewOption"
-                @click.stop="createNewOption(query)">
-              <checkbox v-show="multiple && !hideMult" v-model="newOptionChecked"></checkbox>
-              {{query}}
-            </li>
+            <h-option ref="createdOption" v-if="enableCreate && showNewOption" :value="query" created>{{query}}</h-option>
             <slot></slot>
           </ul>
           <ul v-show="loading" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
@@ -78,7 +74,7 @@
         </div>
         <div v-if="showFooter" :class="checkAll">
           <slot name="footer">
-            <template  v-if="isCheckall&&multiple&&!notFoundShow">
+            <template  v-if="(isCheckall&&multiple&&!notFoundShow) || (enableCreate && showNewOption)">
               <Button size="small" @click="toggleSelect(false)">全不选</Button>
               <Button type ="primary" size="small" @click="toggleSelect(true)">全选</Button>
             </template>
@@ -312,9 +308,7 @@
         titleTip:'',
         fPlacement:this.placement,
         isSelectAll:false,
-        typeValue:'string',
-        /* 待新建条目勾选状态 */
-        newOptionChecked: false
+        typeValue:'string'
       };
     },
     computed: {
@@ -465,22 +459,7 @@
             break;
           }
         }
-        let selected = false;
-        if (this.multiple) {
-          for (let m of model) {
-            if (this.labelInValue && m.value === query) {
-              selected = true;
-              break;
-            }
-            if (!this.labelInValue && m === query) {
-              selected = true;
-              break;
-            }
-          }
-        } else {
-          selected = model === query;
-        }
-        return query && !existed && !selected;
+        return query && !existed;
       }
     },
     methods: {
@@ -526,6 +505,7 @@
       },
       toggleSelect(val){
         this.isSelectAll = !this.isSelectAll
+        const createdOption = this.$refs.createdOption;
         if (val) {
           if (this.specialIndex) {
             this.model=this.typeValue=='string'?['-1']:[-1];
@@ -535,11 +515,15 @@
               arr.push(item.value);
             })
             this.model = arr;
-            if (this.enableCreate && this.showNewOption) {
-              this.createNewOption(this.query);
+            if (createdOption) {
+              createdOption.select();
+              createdOption.selected = true;
             }
           }
         }else{
+          if (createdOption) {
+            createdOption.selected = false;
+          }
           this.model=[];
         }
       },
@@ -578,8 +562,8 @@
       findChild (cb) {
           const find = function (child) {
               const name = child.$options.componentName;
-
               if (name) {
+                  if (child.created) return;
                   cb(child);
               } else if (child.$children.length) {
                   child.$children.forEach((innerChild) => {
@@ -601,7 +585,7 @@
       updateOptions (init, slot = false) {
           let options = [];
           let disabledOpts = [];
-          let index = 1;
+          let index = this.enableCreate && typeof this.$refs.createdOption !== 'undefined' ? 2 : 1;
           this.findChild((child) => {
               options.push({
                 value: child.value,
@@ -672,8 +656,6 @@
           }
         })
         this.model=disArr;
-        // 清空新建条目，allowCreate = true时有意义
-        this.newOptions = [];
       },
       clearSingleSelect () {
         if (this.showCloseIcon) {
@@ -710,7 +692,7 @@
                 } else if (this.enableCreate) {
                   selected.push({
                     value: model,
-                    label: this.labelInValue ? model.label : model
+                    label: model
                   })
                 }
             }
@@ -763,6 +745,12 @@
       toggleSingleSelected (value, init = false) {
         if (!this.multiple) {
           let label = '';
+          const createdOption = this.$refs.createdOption;
+          if (createdOption) {
+            if (value.indexOf(createdOption.value) > -1) {
+              createdOption.selected = true;
+            }
+          }
           this.findChild((child) => {
               if (child.value === value) {
                   child.selected = true;
@@ -781,7 +769,7 @@
                   });
                   this.dispatch('FormItem', 'on-form-change', {
                       value: value,
-                      label: label
+                      label: label ? label : value
                   });
               } else {
                   this.$emit('on-change', value);
@@ -812,6 +800,14 @@
                 curSelect=false;
               }
           });
+          // 新建条目的label等于value
+          if (this.enableCreate) {
+            hybridValue.forEach(v => {
+              if (typeof v.label === 'undefined') {
+                v.label = v.value;
+              }
+            })
+          }
           this.isSelectAll = curSelect;
           if (!init) {
               if (this.labelInValue) {
@@ -859,11 +855,20 @@
           if (keyCode === 13) {
               e.preventDefault();
 
-              this.findChild((child) => {
+              const createdOption = this.$refs.createdOption;
+              if (createdOption && createdOption.isFocus) {
+                createdOption.select();
+                // 单选时，enter不需要取消选择
+                if (this.multiple || !createdOption.selected) {
+                  createdOption.selected = !createdOption.selected;
+                }
+              } else {
+                this.findChild((child) => {
                   if (child.isFocus) {
                       child.select();
                   }
-              });
+                });
+              }
           }
         }
         if (this.visible || this.isInputFocus) {
@@ -872,12 +877,14 @@
       },
       navigateOptions (direction) {
         let curTop = this.$refs.content.scrollTop ? this.$refs.content.scrollTop : 0;
+        const createdOption = this.$refs.createdOption;
+        let maxIndex = createdOption ? this.options.length + 1 : this.options.length;
           if (direction === 'next') {
               const next = this.focusIndex + 1;
-              this.focusIndex = (this.focusIndex === this.options.length) ? 1 : next;
+              this.focusIndex = (this.focusIndex === maxIndex) ? 1 : next;
           } else if (direction === 'prev') {
               const prev = this.focusIndex - 1;
-              this.focusIndex = (this.focusIndex <= 1) ? this.options.length : prev;
+              this.focusIndex = (this.focusIndex <= 1) ? maxIndex : prev;
           }
 
           let child_status = {
@@ -886,8 +893,16 @@
           };
 
           let find_deep = false;
-
-          this.findChild((child) => {
+          if (createdOption && this.focusIndex === 1) {
+            createdOption.isFocus = true;
+            this.findChild(child => {
+              child.isFocus = false;
+            })
+          } else {
+            if (createdOption) {
+              createdOption.isFocus = false;
+            }
+            this.findChild((child) => {
               if (child.index === this.focusIndex) {
                   child_status.disabled = child.disabled;
                   child_status.hidden = child.hidden;
@@ -902,7 +917,9 @@
               if (!child.hidden && !child.disabled) {
                   find_deep = true;
               }
-          });
+            });
+          }
+          
           let top = 32*(this.focusIndex-1);
           let contentHeight = 0
           let selectItemHeight = 1
@@ -1007,8 +1024,8 @@
       },
       broadcastQuery (val) {
           if (findComponentChildren(this, 'OptionGroup')) {
-              this.broadcast('OptionGroup', 'on-query-change', val);
               this.broadcast('Option', 'on-query-change', val);
+              this.broadcast('OptionGroup', 'on-query-change', val);
           } else {
               this.broadcast('Option', 'on-query-change', val);
           }
@@ -1070,20 +1087,35 @@
           }
         }
       },
-      /**
-       * 创建新条目并添加为选中项
-       */
-      createNewOption(value) {
-        if (value) {
-          this.$nextTick(() => {
-            this.newOptionChecked = false;
-          })
+      checkOptionSelected() {
+        const createdOption = this.$refs.createdOption;
+        if (createdOption) {
+          const model = this.model;
+          const query = this.query;
+          let selected = false;
           if (this.multiple) {
-            this.model.push(this.labelInValue ? {value, label: value} : value);
+            for (let m of model) {
+              if (m === query) {
+                selected = true;
+                break;
+              }
+            }
           } else {
-            this.model = value;
+            selected = model === query;
           }
+          createdOption.selected = selected;
         }
+      },
+      reorderOptionIndex() {
+        const createdOption = this.$refs.createdOption;
+        let index = 1;
+        if (createdOption) {
+          createdOption.index = 1;
+          index = 2;
+        }
+        this.findChild(child => {
+          child.index = index++;
+        })
       },
       setPlacement(){
         if(this.autoPlacement){
@@ -1096,7 +1128,7 @@
               this.fPlacement = 'top';
             }
         }
-      },
+      }
     },
     mounted () {
       if (!this.multiple && this.setDefSelect && this.value == ''){
@@ -1315,6 +1347,7 @@
               this.remoteMethod(val);
           }
           this.focusIndex = 0;
+          typeof this.$refs.createdOption !== 'undefined' && (this.$refs.createdOption.isFocus = false);
           this.findChild(child => {
             child.isFocus = false;
           });
@@ -1334,18 +1367,29 @@
               if (!this.remote) this.notFound = isHidden;
             })
         }
+        this.$nextTick(() => {
+          this.enableCreate && this.checkOptionSelected();
+          this.enableCreate && this.reorderOptionIndex();
+        })
         if (this.filterable&&!this.remote) {
           this.$nextTick(()=>{
             this.focusIndex = 1;
-            let index = 0;
-            this.findChild(child => {
-              if (index==0&& !child.hidden) {
-                index++;
-                child.isFocus = true;
-              }else{
-                 child.isFocus = false;
-              }
-            });
+            if (typeof this.$refs.createdOption !== 'undefined') {
+              this.$refs.createdOption.isFocus = true;
+              this.findChild(child => {
+                child.isFocus = false;
+              })
+            } else {
+              let index = 0;
+              this.findChild(child => {
+                if (index==0&& !child.hidden) {
+                  index++;
+                  child.isFocus = true;
+                }else{
+                  child.isFocus = false;
+                }
+              });
+            }
           })
         }
         this.selectToChangeQuery = false;
@@ -1365,11 +1409,16 @@
         if (this.remote) {
           this.$nextTick(()=>{
             this.focusIndex = 1;
-            this.findChild(child => {
-              if (child.index == 1) {
-                child.isFocus = true;
-              }
-            });
+            const createdOption = this.$refs.createdOption;
+            if (createdOption) {
+              createdOption.isFocus = true;
+            } else {
+              this.findChild(child => {
+                if (child.index == 1) {
+                  child.isFocus = true;
+                }
+              });
+            }
           })
         }
       },
