@@ -187,6 +187,9 @@
         handler:function(){
           this.$nextTick(()=>{
             this.cloneData = deepCopy(this.data);
+            this.cloneData.forEach(item => {
+              this.$set(item, 'focus', false)
+            })
             this.$parent.$parent.updateOptions(true);
           })
         }
