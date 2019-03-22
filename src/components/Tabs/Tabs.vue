@@ -359,6 +359,9 @@
         }
         this.$emit('on-tab-remove', tab.currentName);
         this.updateNav();
+        this.$nextTick(() => {
+          this.updateScroll();
+        })
       },
       showClose (item) {
         if (this.type === 'card') {
@@ -397,7 +400,7 @@
         const tabs = this.getTabs();
         let idx = null;
         for (let i in tabs) {
-          if (tabs[i].label === activeKey) {
+          if (tabs[i].currentName === activeKey) {
             idx = i;
             break;
           }
@@ -406,16 +409,28 @@
           const tabEls = this.$refs.tabs;
           if (!tabEls) return;
           let offsetLeft = tabEls[idx].offsetLeft || 0;
+          let offsetWidth = tabEls[idx].offsetWidth || 0;
           const scrollWidth = this.$refs.scrollCon.clientWidth;
+          const absNavOffset = Math.abs(this.navOffset);
 
-          if ((offsetLeft + tabEls[idx].offsetWidth) > scrollWidth) {
-            const navWidth = this.$refs.nav.offsetWidth;
-            const extraWidth = this.$refs.extra ? this.$refs.extra.offsetWidth : 0;
-            let rightOffset = navWidth + extraWidth - Math.abs(this.navOffset) - scrollWidth;
-            this.navOffset = rightOffset > offsetLeft ? -offsetLeft : -rightOffset;
+          let dist = 0;
+          // the offset is the distance of right border of active tab to the right border of scroll wrapper, 
+          // which determines which direction the tab should scroll into 'view' from. 
+          let offset = offsetLeft + offsetWidth - absNavOffset - scrollWidth;
+          if (offset > 0) {
+            dist = -Math.min(offset, offsetLeft - absNavOffset);
+          } else {
+            offset = offsetLeft - absNavOffset;
+            if (offset < 0) {
+              dist = -offset;
+            }
           }
+          this.navOffset += dist;
         }
       },
+      /**
+       * 当滚动视图中有空余位置，更新滚动位置
+       */
       updateScroll() {
         if (!this.panelRight && this.showArrow) {
           const navWidth = this.$refs.nav.offsetWidth;
@@ -437,6 +452,11 @@
       activeKey () {
         this.updateBar();
         this.updateStatus();
+        if (!this.panelRight && this.showArrow) {
+          setTimeout(() => {
+            this.scrollToActiveTab();
+          }, 0)
+        }
         this.broadcast('Table', 'on-visible-change', true);
       }
     },
