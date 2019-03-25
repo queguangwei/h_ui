@@ -32,7 +32,7 @@
       },
       itemHeight:{
         type:[Number,String],
-        default:30
+        default: 30
       }
       // disabled: {
       //   type: Boolean,
@@ -118,7 +118,16 @@
           }
         });
         this.showEmpty = status;
-        this.dispatch('Drop', 'on-update-popper');
+        if(val){
+          this.dispatch('Drop', 'on-update-popper')
+        }
+        this.$nextTick(()=>{
+          if(val){
+            this.updateVisibleData(1);
+          }else{
+            this.updateVisibleData();
+          }
+        })
       },
       handleclick(){
       },
@@ -146,7 +155,9 @@
           }
         }
         this.end = j;
-        this.visibleData = this.cloneData.slice(this.start, this.end);
+        console.log(j)
+        this.visibleData = this.cloneData.filter(item => !item.hidden).slice(this.start, this.end);
+        console.log(this.visibleData)
         this.$refs.content.style.transform = `translate3d(0, ${ this.start * itemHeight }px, 0)`;
       },
     },
@@ -164,7 +175,7 @@
 
       // v20190321
       this.$on('on-focus-index-change', index => {
-        this.cloneData.forEach((item, i) => {
+        this.cloneData.filter(item => !item.hidden).forEach((item, i) => {
           item.focus = false
           if (i === index) {
             item.focus = true
@@ -194,16 +205,20 @@
           }
           this.$nextTick(()=>{
             this.cloneData = deepCopy(this.data);
+            this.cloneData.forEach(item => {
+              this.$set(item, 'focus', false)
+            })
             this.$parent.$parent.updateOptions(true);
+            this.updateVisibleData();
           })
         }
       },
       cloneData:{
         deep:true,
         handler:function(val){
-          this.$nextTick(()=>{
-            this.updateVisibleData();
-          })
+          // this.$nextTick(()=>{
+          //   this.updateVisibleData();
+          // })
         }
       },
     },

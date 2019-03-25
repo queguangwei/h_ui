@@ -255,6 +255,7 @@
         selectedSingle: '',
         selectedMultiple: [],
         focusIndex: 0,
+        focusValue: '', // simple select 用于选值
         query: '',
         lastQuery: '',
         selectToChangeQuery: false,
@@ -501,6 +502,7 @@
       },
       hideMenu () {
           this.visible = false;
+          this.focusIndex = 0;
           this.broadcast('TabelOption', 'on-select-close');
       },
       findChild (cb) {
@@ -658,7 +660,7 @@
 
         this.model.splice(index, 1);
 
-        if (this.filterable && this.visible) {
+        if (this.filterable && this.visible && this.$refs.input) {
           this.$nextTick(()=>{
             this.$refs.input.focus();
           })
@@ -795,7 +797,11 @@
               if (index < 0) return false;
 
               if (this.isBlock) {
-                this.selectBlockSingle(this.options[index].value)
+                if (!this.multiple) {
+                  this.selectBlockSingle(this.focusValue)
+                } else {
+                  this.selectBlockMultiple(this.focusValue)
+                }
                 return
               }
 
@@ -811,22 +817,28 @@
       },
       navigateOptions (direction) {
         if (this.isBlock) {
-          if (direction === 'next') {
-            const next = this.focusIndex + 1;
-            this.focusIndex = (this.focusIndex === this.options.length) ? 1 : next;
-          } else if (direction === 'prev') {
-            const prev = this.focusIndex - 1;
-            this.focusIndex = (this.focusIndex <= 1) ? this.options.length : prev;
+          let _options = this.options
+
+          if (this.query) {
+            _options = this.options.filter(option => option.label.indexOf(this.query) !== -1)
           }
 
-          this.broadcast('Block', 'on-focus-index-change', this.focusIndex - 1)
+          if (direction === 'next') {
+            const next = this.focusIndex + 1;
+            this.focusIndex = (this.focusIndex === _options.length) ? 1 : next;
+          } else if (direction === 'prev') {
+            const prev = this.focusIndex - 1;
+            this.focusIndex = (this.focusIndex <= 1) ? _options.length : prev;
+          }
+
+          this.focusValue = _options[this.focusIndex - 1].value
 
           // 处理滚动条
           this.findChild((child) => {
             let curTop = child.$el.scrollTop
-            let itemHeight = child.$el.querySelectorAll('.h-select-block-item')[0].offsetHeight
+            let itemHeight = child.itemHeight
             let top = itemHeight * (this.focusIndex - 1)
-            scrollAnimate(child.$el, curTop, top);
+            scrollAnimate(child.$el, curTop + 1, top);
           });
           return
         }
@@ -1008,9 +1020,7 @@
             });
           }
 
-          // this.$nextTick(() => {
           this.hideMenu()
-          // })
         }
       },
       selectBlockMultiple(value){
@@ -1032,6 +1042,11 @@
             if(curbottom<bottomNum){
               this.fPlacement = 'top';
             }
+        }
+      },
+      firstVisibleDom(doms) {
+        for(let i = 0; i < doms.length; i++) {
+          if (doms[i].style.display !== 'none') return doms[i]
         }
       },
     },
@@ -1185,12 +1200,13 @@
         }
       },
       query (val) {
+        this.focusIndex = 0;
+
         if (this.remote && this.remoteMethod) {
             if (!this.selectToChangeQuery) {
                 this.$emit('on-query-change', val);
                 this.remoteMethod(val);
             }
-            this.focusIndex = 0;
             this.findChild(child => {
                 child.isFocus = false;
             });
@@ -1234,6 +1250,11 @@
       },
       placement(val){
         this.fPlacement = val;
+      },
+      focusIndex(nv) {
+        if (this.isBlock) {
+          this.broadcast('Block', 'on-focus-index-change', nv - 1)
+        }
       }
     }
   };
