@@ -72,6 +72,10 @@
           </div>
           <ul v-show="loading" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
         </div>
+        <div v-if="showFooter" :class="checkAll">
+          <slot name="footer">
+          </slot>
+        </div>
         <div v-if="isCheckall&&multiple&&!notFoundShow" :class="checkAll">
           <Button size="small" @click="toggleSelect(false)">全不选</Button>
           <Button type ="primary" size="small" @click="toggleSelect(true)">全选</Button>
@@ -408,13 +412,16 @@
         };
       },
       checkAll(){
-        return `${prefixCls}-checkall`
+        return `h-select-checkall`
       },
       notFoundShow () {
           let options = this.options;
           options = options || [];
           let state= (this.notFound) || (!this.loading && !options.length)||(!options.length);
           return state;
+      },
+      showFooter () {
+        return this.$slots.footer 
       },
     },
     methods: {
@@ -974,7 +981,12 @@
         if (this.filterable && this.showBottom) {
           if(this.isBlock){
             this.$refs.search.style.width ='100%';
-            this.$refs.input.style.width = this.multiple? 'calc(100% - 40px)':'100%';
+            if(this.multiple&&this.checkToHead){
+              this.$refs.input.style.width = 'calc(100% - 40px)'
+            }else{
+              this.$refs.input.style.width = '100%'
+            }
+
           }else{
             let width =this.dropWidth>0?this.dropWidth:parseInt(getStyle(this.$el, 'width'));
             width = width-getScrollBarSize()+'px';
@@ -1201,7 +1213,6 @@
       },
       query (val) {
         this.focusIndex = 0;
-
         if (this.remote && this.remoteMethod) {
             if (!this.selectToChangeQuery) {
                 this.$emit('on-query-change', val);

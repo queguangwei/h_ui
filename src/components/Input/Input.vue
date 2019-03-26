@@ -26,7 +26,7 @@
         @keydown="handleKeydown"
         @focus="handleFocus"
         @blur="handleBlur"
-        @input="handleInput"
+        @input="handleInputValue"
         @change="handleChange">
       <div :class="[prefixCls + '-group-append']" v-if="append" v-show="slotReady"><slot name="append"></slot></div>
     </template>
@@ -51,7 +51,7 @@
       @keydown="handleKeydown"
       @focus="handleFocus"
       @blur="handleBlur"
-      @input="handleInput"
+      @input="handleInputValue"
       @change="handleChange">
     </textarea>
     <div v-if="type=='password'&&strengthTip" :class="`${prefixCls}-tips`">
@@ -187,6 +187,11 @@
       focusAllSelect: {
         type: Boolean,
         default: false
+      },
+      //键盘松开触发on-input事件
+      keyUpMode: {
+        type: Boolean,
+        default: false
       }
     },
     data () {
@@ -263,6 +268,9 @@
       },
       handleKeyup (event) {
         this.$emit('on-keyup', event);
+        if(this.keyUpMode){
+          this.handleInput(event);
+        }
       },
       handleIconClick (event) {
         this.$emit('on-click', event);
@@ -282,6 +290,11 @@
         this.$emit('on-blur', event);
         if (!findComponentsUpward(this, ['HDatePicker', 'DatePicker','HTimePicker','TimePicker', 'HCascader','Cascader', 'HSearch','Search'])) {
           this.dispatch('FormItem', 'on-form-blur', this.currentValue);
+        }
+      },
+      handleInputValue (event) {
+        if(!this.keyUpMode){
+          this.handleInput(event)
         }
       },
       handleInput (event) {
