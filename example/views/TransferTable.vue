@@ -24,6 +24,7 @@
       :rColumns = "columns2"
       :lData="data2"
       :rData="data2"
+      showEditInput
       @on-change="handleChange2">
         12342412<br>12342412<br>12342412<br>
       </h-transfer-table>
@@ -56,7 +57,7 @@ var tData= [
     cardId: '6223 5678 1234 5678',
     city: '北京',
     dating:'2018-03-07',
-    timing:'16:00:00.00',
+    timing:'16:00:00',
     tree:'leaf1'
     // _highlight: true//默认选择当前项
   },
@@ -68,7 +69,7 @@ var tData= [
     cardId: '6223 5678 1234 5678',
     city: '北京',
     dating:'2018-03-07',
-    timing:'16:00:00.00',
+    timing:'16:00:00',
     tree:'leaf1'
   },
   {
@@ -79,7 +80,7 @@ var tData= [
     cardId: '6223 5678 1234 5678',
     city: '北京',
     dating:'2018-03-07',
-    timing:'16:00:00.00',
+    timing:'16:00:00',
     tree:'leaf1'
   },
   {
@@ -90,7 +91,7 @@ var tData= [
     cardId: '6223 5678 1234 5678',
     city: '北京',
     dating:'2018-03-07',
-    timing:'16:00:00.00',
+    timing:'16:00:00',
     tree:'leaf1'
   },
   {
@@ -101,7 +102,7 @@ var tData= [
     cardId: '6223 5678 1234 5678',
     city: '北京',
     dating:'2018-03-07',
-    timing:'16:00:00.00',
+    timing:'16:00:00',
     tree:'leaf1'
     // _highlight: true//默认选择当前项
   },
@@ -113,7 +114,7 @@ var tData= [
     cardId: '6223 5678 1234 5678',
     city: '北京',
     dating:'2018-03-07',
-    timing:'16:00:00.00',
+    timing:'16:00:00',
     tree:'leaf1'
   },
   {
@@ -124,7 +125,7 @@ var tData= [
     cardId: '6223 5678 1234 5678',
     city: '北京',
     dating:'2018-03-07',
-    timing:'16:00:00.00',
+    timing:'16:00:00',
     tree:'leaf1'
   },
   {
@@ -135,7 +136,7 @@ var tData= [
     cardId: '6223 5678 1234 5678',
     city: '北京',
     dating:'2018-03-07',
-    timing:'16:00:00.00',
+    timing:'16:00:00',
     tree:'leaf1'
   }
 ];
@@ -326,8 +327,11 @@ var column=[
         console.log(moveKeys);
         this.targetKeys1 = newTargetKeys;
       },
-      handleChange2 (newTargetKeys) {
+      handleChange2 (newTargetKeys, direction, moveKeys) {
         this.targetKeys2 = newTargetKeys;
+        console.log(newTargetKeys);
+        console.log(direction);
+        console.log(moveKeys);
       },
       filterMethod (data, query) {
         return data.label.indexOf(query) > -1;

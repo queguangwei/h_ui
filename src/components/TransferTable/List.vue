@@ -5,19 +5,19 @@
       <span :class="prefixCls + '-header-count'">{{ count }}</span>
     </div>
     <div :class="bodyClasses">
-        <div :class="prefixCls + '-body-search-wrapper'" v-if="filterable">
-            <Search
-                :prefix-cls="prefixCls + '-search'"
-                :query="query"
-                @on-query-clear="handleQueryClear"
-                @on-query-change="handleQueryChange"
-                :placeholder="filterPlaceholder">
-            </Search>
-        </div>
+      <div :class="prefixCls + '-body-search-wrapper'" v-if="filterable">
+        <Search
+          :prefix-cls="prefixCls + '-search'"
+          :query="query"
+          @on-query-clear="handleQueryClear"
+          @on-query-change="handleQueryChange"
+          :placeholder="filterPlaceholder"
+        ></Search>
+      </div>
       <ul :class="prefixCls + '-content'">
         <h-edit-gird
           ref="table"
-          :data="data"
+          :data="filterData"
           :columns="columns"
           :stripe="stripe"
           :border="border"
@@ -40,11 +40,10 @@
 <script>
   import Search from './Search.vue';
   import Checkbox from '../Checkbox/Checkbox.vue';
-  import Draggable from 'vuedraggable';
 
   export default {
     name: 'TransferList',
-    components: { Search, Checkbox, Draggable},
+    components: { Search, Checkbox },
     props: {
       prefixCls: String,
       data: Array,
@@ -64,7 +63,7 @@
       notData: String,
       filterable: Boolean,
       filterPlaceholder: String,
-      filterMethod: Function,
+      filterMethod: Function
     },
     data () {
         return {
@@ -145,7 +144,10 @@
         index > -1 ? this.checkedKeys.splice(index, 1) : this.checkedKeys.push(item.key);
       },
       updateFilteredData () {
-        this.showItems = this.data;
+        this.showItems = this.data.map((d, i) => {
+          d._hkey_ = i;
+          return d;
+        });
       },
       toggleSelectAll (status) {
           const keys = status ?
