@@ -132,8 +132,8 @@
     </h-tabs> -->
     <h2>附加内容 </h2>
     <p>设置 slot extra 可以在页签右边添加附加操作。</p>
-    <h-tabs ref="remove" type="card" @on-tab-remove="handleTabRemove1" showArrow>
-      <h-tab-pane v-for="tab in tabs" :key="tab" :label="'标签' + tab">标签{{ tab }}的内容</h-tab-pane>  
+    <h-tabs ref="remove" type="card" @on-tab-remove="handleTabRemove1" showArrow closable v-model="key">
+      <h-tab-pane v-for="tab in tabs" :key="tab" :name="'标签' + tab" :label="'标签' + tab">标签{{ tab }}的内容</h-tab-pane>  
     </h-tabs>
      <h-button type="ghost" @click="handleTabsAdd(true)" size="small" slot="extra">增加</h-button>
      <h-button type="ghost" @click="handleTabsAdd(false)" size="small" slot="extra">减少</h-button>
@@ -161,7 +161,8 @@
 <script>
   export default {  
     data () {
-      return { 
+      return {
+        key: "标签12",
         columns1:[{
           title: '姓名',
           key: 'name'
@@ -183,7 +184,7 @@
         tabs0: true,
         tabs1: true,
         tabs2: true,
-        tabs:2,
+        tabs:16,
         val:'name2',
         model6:'',
         val1:[],
@@ -263,6 +264,7 @@
       handleTabsAdd (status) {
         if(status){
           this.tabs ++;
+          this.key = "标签" + this.tabs;
         }else{
           this.tabs --;
           this.$refs.remove.handleRemove(this.tabs,true);//this.tabs 表示tab的顺序数
