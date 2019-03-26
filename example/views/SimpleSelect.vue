@@ -4,51 +4,51 @@
     <p>选择器支持单选、多选、搜索，以及键盘快捷操作。</p>
     <h1>selectBlock测试用例</h1>
     {{value2}}
-    <h-simple-select v-model="value2"
-                     style="width:200px"
-                     maxDropWidth="400"
+    <h-simple-select autoPlacement
                      filterable
-                     autoPlacement
-                     widthAdaption
+                     isArrow="false"
+                     maxDropWidth="400"
                      placeholder="123"
-                     isArrow=false>
+                     style="width:200px"
+                     v-model="value2"
+                     widthAdaption>
       <h-select-block :data="bigData"
                       @on-scroll="select"></h-select-block>
     </h-simple-select>
     <h-button @on-click="loaddata">加载数据</h-button>
-    <h-simple-select v-model="value1"
+    <h-simple-select autoPlacement
+                     filterable
+                     isArrow="false"
+                     multiple
+                     placeholder="123"
+                     showBottom
                      style="width:200px"
                      transfer
-                     filterable
-                     showBottom
-                     multiple
-                     autoPlacement
-                     widthAdaption
-                     placeholder="123"
-                     isArrow=false>
+                     v-model="value1"
+                     widthAdaption>
       <h-select-block :data="bigData"
                       @on-scroll="select"></h-select-block>
     </h-simple-select>
     <h1>--------- HUI_V1.0.31_20190321 TS:201903110539 ---------</h1>
-    <h-simple-select v-model="v20190321.value"
+    <h-simple-select autoPlacement
+                     filterable
+                     isArrow="false"
+                     placeholder="123"
                      style="width:200px"
                      transfer
-                     filterable
-                     autoPlacement
-                     widthAdaption
-                     placeholder="123"
-                     isArrow=false>
+                     v-model="v20190321.value"
+                     widthAdaption>
       <h-select-block :data="v20190321.options2"></h-select-block>
     </h-simple-select>
-    <h-simple-select v-model="v20190321.value2"
+    <h-simple-select autoPlacement
+                     filterable
+                     isArrow="false"
+                     placeholder="123"
+                     showBottom
                      style="width:200px"
                      transfer
-                     filterable
-                     autoPlacement
-                     widthAdaption
-                     showBottom
-                     placeholder="123"
-                     isArrow=false>
+                     v-model="v20190321.value2"
+                     widthAdaption>
       <h-select-block :data="v20190321.options2"></h-select-block>
     </h-simple-select>
   </div>
@@ -107,11 +107,11 @@ export default {
           { value: '12', label: '韩国10' },
           { value: '13', label: '韩国11' },
           { value: '14', label: '韩国12' },
-          { value: '15', label: '韩国13' },
+          { value: '15', label: '韩国13' }
         ],
         value: '',
-        value2: '',
-      },
+        value2: ''
+      }
     }
   },
   methods: {
@@ -137,7 +137,7 @@ export default {
     },
     select(e, b) {
       console.log(e)
-      // console.log(b);
+      console.log(b)
     },
     allSelect(e) {
       console.log(e)
@@ -153,7 +153,7 @@ export default {
         setTimeout(() => {
           console.log(_this.index)
           if (_this.index == 0) {
-            _this.data1 = _this.data1.concat(cdata)
+            _this.data1 = _this.data1.concat()
             _this.canPage = true
             _this.index = 1
           } else {
@@ -171,7 +171,7 @@ export default {
     }, 1000)
   },
   watch: {
-    data1(val) {}
+    data1() {}
   }
 }
 </script>
