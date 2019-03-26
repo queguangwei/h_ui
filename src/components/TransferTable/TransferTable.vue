@@ -184,9 +184,6 @@
         default (data, query) {
           return true;
         }
-      },
-      notFoundText: {
-        type: String
       }
     },
     data () {
