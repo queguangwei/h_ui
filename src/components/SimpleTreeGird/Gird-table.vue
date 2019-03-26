@@ -67,7 +67,7 @@ import Locale from '../../mixins/locale';
 const prefixCls = 'h-editgird';
 let columnKey = 1;
 export default {
-  name: 'SimpleAsycTree',
+  name: 'SimpleTreeGird',
   mixins: [ Locale,Mixin ],
   components: { GirdHead,TreeTable},
   props: {

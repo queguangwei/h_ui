@@ -17,7 +17,7 @@
           dating:'2018-03-07',
           timing:'16:00:00.00',
           tree:'leaf1',
-          expand:true,
+          expanded:true,
           // _highlight: true//默认选择当前项
         },
         {

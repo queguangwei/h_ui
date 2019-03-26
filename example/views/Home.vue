@@ -2,7 +2,7 @@
   <div>
     <!-- <h-msg-box v-model="changeform" width="900" escClose left="10" closeDrop> -->
     <Button @on-click="changeSelect"></Button>
-      <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus cols="3">
+      <h-form ref="formItem1" :model="formItem1" :label-width="80" errorFocus cols="3">
         <h-form-item label="日期控件">
           <h-row>
             <h-col span="11">
@@ -35,8 +35,9 @@
           </h-typefield>
         </h-form-item>
         <h-form-item label="金额框" prop="moneyrange" required>
-          <h-typefield-range v-model="formItem1.moneyrange">
-          </h-typefield-range>
+          {{formItem1.moneyrange}}
+          <h-input v-model="formItem1.moneyrange">
+          </h-input>
         </h-form-item>
         <h-form-item label="单选框" prop="radio" required>
           <h-radio-group v-model="formItem1.radio">
@@ -225,30 +226,13 @@ for(let i=0;i<60;i++){
         model1:'',
         changeform:false,
         formItem1: {
-          input: '1',
-          select: '',
-          select1: [],
-          select2: '',
-          radio: '',
-          money: '',
-          moneyrange:[],
-          checkbox: [],
-          fatdate: '',
-          date: '',
-          time: '',
-          slider: '',
-          tree:'',
-          textarea: '',
-          cascader:[],
-          simpleSelect:[],
-          simpleSelect1:'',
         },
         formItem2:{
           input: '1',
           select: '',
           radio: '',
           money: '1244',
-          moneyrange:[],
+          moneyrange:'',
           checkbox: [],
           fatdate: '',
           date: '',
@@ -420,7 +404,7 @@ for(let i=0;i<60;i++){
           select: '',
           radio: '',
           money: '1244',
-          moneyrange:[],
+          moneyrange:'',
           checkbox: [],
           fatdate: '',
           date: '',
@@ -469,7 +453,25 @@ for(let i=0;i<60;i++){
       }
     },
     mounted () {
-      this.formItem1.input = '222';
+      this.formItem1={
+          input: '1',
+          select: '',
+          select1: [],
+          select2: '',
+          radio: '',
+          money: '',
+          moneyrange:'',
+          checkbox: [],
+          fatdate: '',
+          date: '',
+          time: '',
+          slider: '',
+          tree:'',
+          textarea: '',
+          cascader:[],
+          simpleSelect:[],
+          simpleSelect1:'',
+      }
       this.bigData = bigData;
     }
   }

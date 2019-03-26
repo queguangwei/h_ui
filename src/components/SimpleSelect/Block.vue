@@ -155,9 +155,7 @@
           }
         }
         this.end = j;
-        console.log(j)
         this.visibleData = this.cloneData.filter(item => !item.hidden).slice(this.start, this.end);
-        console.log(this.visibleData)
         this.$refs.content.style.transform = `translate3d(0, ${ this.start * itemHeight }px, 0)`;
       },
     },
