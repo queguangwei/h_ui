@@ -9,8 +9,8 @@
             <Icon name="return"></Icon>
           </div>
           <div :class="navWrap"  style="float:left">
-            <div :class="[prefixCls + '-nav-scroll']">
-              <div :class="[prefixCls + '-nav']" ref="nav">
+            <div :class="[prefixCls + '-nav-scroll']" ref="scrollCon">
+              <div :class="[prefixCls + '-nav']" :style="scrollStyle" ref="nav">
                 <div :class="barClasses" :style="barStyle"></div>
                 <div :class="tabCls(item)" v-for="(item, index) in navList" @click="handleChange(index)" :key="index" @dblclick="handleChange(index,true)">
                   <Icon v-if="item.icon !== ''" :name="item.icon">{{item.icon}}</Icon>
@@ -19,7 +19,7 @@
                   <Icon v-if="showClose(item)" name="close" @click.native.stop="handleRemove(index)"></Icon>
                 </div>
               </div>
-              <div :class="[prefixCls + '-nav-right']" v-if="showSlot"><slot name="extra"></slot></div>
+              <div :class="[prefixCls + '-nav-right']" :style="scrollStyle" ref="extra" v-if="showSlot"><slot name="extra"></slot></div>
             </div>
           </div>
           <div v-if="showArrow" :class="[prefixCls + '-enter']" v-on:click = "rightClick($event)">
@@ -51,17 +51,17 @@
             <Icon name="return"></Icon>
           </div>
           <div :class="navWrap"  style="float:left">
-            <div :class="[prefixCls + '-nav-scroll']">
-              <div :class="[prefixCls + '-nav']" ref="nav">
+            <div :class="[prefixCls + '-nav-scroll']" ref="scrollCon">
+              <div :class="[prefixCls + '-nav']" :style="scrollStyle" ref="nav">
                 <div :class="barClasses" :style="barStyle"></div>
-                <div :class="tabCls(item)" v-for="(item, index) in navList" @click="handleChange(index)" :key="index">
+                <div :class="tabCls(item)" ref="tabs" v-for="(item, index) in navList" @click="handleChange(index)" :key="index">
                   <Icon v-if="item.icon !== ''" :name="item.icon">{{item.icon}}</Icon>
                   <Render v-if="item.labelType === 'function'" :render="item.label"></Render>
                   <template v-else>{{ item.label }}</template>
                   <Icon v-if="showClose(item)" name="close" @click.native.stop="handleRemove(index)"></Icon>
                 </div>
               </div>
-              <div :class="[prefixCls + '-nav-right']" v-if="showSlot"><slot name="extra"></slot></div>
+              <div :class="[prefixCls + '-nav-right']" ref="extra" :style="scrollStyle" v-if="showSlot"><slot name="extra"></slot></div>
             </div>
           </div>
           <div v-if="showArrow" :class="[prefixCls + '-enter']" v-on:click = "rightClick($event)">
@@ -152,8 +152,7 @@
         barOffset: 0,
         activeKey: this.value,
         showSlot: false,
-        scrollLeft:0,
-        scrollRight:null
+        navOffset: 0
       };
     },
     computed: {
@@ -243,12 +242,10 @@
         }
         return style;
       },
-      navStyle(){
-        let style = {
-          magrinLeft:`${this.scrollLeft}px`,
-          marginRight:`${this.scrollright}px`,
-        };
-        return style;
+      scrollStyle(){
+        return {
+          transform: `translateX(${this.navOffset}px)`
+        }
       }
     },
     methods: {
@@ -362,6 +359,9 @@
         }
         this.$emit('on-tab-remove', tab.currentName);
         this.updateNav();
+        this.$nextTick(() => {
+          this.updateScroll();
+        })
       },
       showClose (item) {
         if (this.type === 'card') {
@@ -374,11 +374,75 @@
           return false;
         }
       },
-      leftClick(e){
-        this.$refs.nav.style.float = 'left';
+      leftClick(e) {
+        const scrollWidth = this.$refs.scrollCon.clientWidth;
+
+        let currentOffset = this.navOffset;
+        if (currentOffset >= 0) return;
+
+        let navOffset = Math.abs(currentOffset) < scrollWidth ? 0 : currentOffset + scrollWidth;
+        this.navOffset = navOffset;
       },
-      rightClick(e){
-        this.$refs.nav.style.float = 'right';
+      rightClick(e) {
+        const navWidth = this.$refs.nav.offsetWidth;
+        const extraWidth = this.$refs.extra ? this.$refs.extra.offsetWidth : 0;
+        const scrollWidth = this.$refs.scrollCon.clientWidth;
+
+        let currentOffset = this.navOffset;
+        let rightOffset = navWidth + extraWidth - Math.abs(currentOffset) - scrollWidth;
+        if (rightOffset <= 0) return;
+        
+        let navOffset = rightOffset > scrollWidth ? currentOffset - scrollWidth : currentOffset - rightOffset;
+        this.navOffset = navOffset;
+      },
+      scrollToActiveTab() {
+        const activeKey = this.activeKey;
+        const tabs = this.getTabs();
+        let idx = null;
+        for (let i in tabs) {
+          if (tabs[i].currentName === activeKey) {
+            idx = i;
+            break;
+          }
+        }
+        if (idx != null) {
+          const tabEls = this.$refs.tabs;
+          if (!tabEls) return;
+          let offsetLeft = tabEls[idx].offsetLeft || 0;
+          let offsetWidth = tabEls[idx].offsetWidth || 0;
+          const scrollWidth = this.$refs.scrollCon.clientWidth;
+          const absNavOffset = Math.abs(this.navOffset);
+
+          let dist = 0;
+          // the offset is the distance of right border of active tab to the right border of scroll wrapper, 
+          // which determines which direction the tab should scroll into 'view' from. 
+          let offset = offsetLeft + offsetWidth - absNavOffset - scrollWidth;
+          if (offset > 0) {
+            dist = -Math.min(offset, offsetLeft - absNavOffset);
+          } else {
+            offset = offsetLeft - absNavOffset;
+            if (offset < 0) {
+              dist = -offset;
+            }
+          }
+          this.navOffset += dist;
+        }
+      },
+      /**
+       * 当滚动视图中有空余位置，更新滚动位置
+       */
+      updateScroll() {
+        if (!this.panelRight && this.showArrow) {
+          const navWidth = this.$refs.nav.offsetWidth;
+          const extraWidth = this.$refs.extra ? this.$refs.extra.offsetWidth : 0;
+          const scrollWidth = this.$refs.scrollCon.clientWidth;
+
+          const currentOffset = this.navOffset;
+          const offset = scrollWidth - (navWidth + extraWidth - Math.abs(currentOffset));
+          if (offset > 0) {
+            this.navOffset = Math.min(offset + currentOffset, 0);
+          }
+        }
       }
     },
     watch: {
@@ -388,11 +452,25 @@
       activeKey () {
         this.updateBar();
         this.updateStatus();
+        if (!this.panelRight && this.showArrow) {
+          setTimeout(() => {
+            this.scrollToActiveTab();
+          }, 0)
+        }
         this.broadcast('Table', 'on-visible-change', true);
       }
     },
     mounted () {
+      window.addEventListener('resize', this.updateScroll);
       this.showSlot = this.$slots.extra !== undefined;
+      if (!this.panelRight && this.showArrow) {
+        setTimeout(() => {
+          this.scrollToActiveTab();
+        }, 0)
+      }
+    },
+    beforeDestroy() {
+      window.removeEventListener('resize', this.updateScroll);
     }
   };
 </script>

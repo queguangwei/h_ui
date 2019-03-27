@@ -2,7 +2,7 @@
   <div>
     <!-- <h-msg-box v-model="changeform" width="900" escClose left="10" closeDrop> -->
     <Button @on-click="changeSelect"></Button>
-      <h-form ref="formItem1" :model="formItem1" onlyBlurRequire :compareModel="formItem2" :label-width="80" errorFocus cols="3">
+      <h-form ref="formItem1" :model="formItem1" :label-width="80" errorFocus cols="3">
         <h-form-item label="日期控件">
           <h-row>
             <h-col span="11">
@@ -35,8 +35,9 @@
           </h-typefield>
         </h-form-item>
         <h-form-item label="金额框" prop="moneyrange" required>
-          <h-typefield-range v-model="formItem1.moneyrange">
-          </h-typefield-range>
+          {{formItem1.moneyrange}}
+          <h-input v-model="formItem1.moneyrange">
+          </h-input>
         </h-form-item>
         <h-form-item label="单选框" prop="radio" required>
           <h-radio-group v-model="formItem1.radio">
@@ -45,6 +46,7 @@
           </h-radio-group>
         </h-form-item>
         <h-form-item label="多选框" prop="checkbox" required>
+          {{formItem1.checkbox}}
           <h-checkbox-group v-model="formItem1.checkbox">
               <h-checkbox label="吃饭"></h-checkbox>
               <h-checkbox label="睡觉"></h-checkbox>
@@ -88,7 +90,7 @@
           </h-select-table>
         </h-form-item>
         <h-form-item label="下拉树" prop='tree' required>
-          <h-select-tree v-model="formItem1.tree" :first-value="firstValc" style="width:200px" :data="baseData1" placement="top" placeholder="你好"></h-select-tree>
+          <h-select-tree v-model="formItem1.tree" style="width:200px" :data="baseData1" placement="top" placeholder="你好"></h-select-tree>
         </h-form-item>
         <h-form-item label="文本域" prop="textarea" required>
           <h-input v-model="formItem1.textarea" type="textarea" :canResize="false" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></h-input>
@@ -97,12 +99,12 @@
           <h-cascader v-model="formItem1.cascader" :data="data2" trigger="hover" style="width:200px"></h-cascader>
         </h-form-item>
         <h-form-item label="简单选择框" prop="simpleSelect" required>
-          <h-simple-select v-model="formItem1.simpleSelect" multiple ref="test" placement="top-start" filterable>
+          <h-simple-select v-model="formItem1.simpleSelect" transfer multiple  placement="top-start" filterable>
             <h-select-block :data="bigData" ></h-select-block>
           </h-simple-select>
         </h-form-item>
         <h-form-item label="简单选择框单选" prop="simpleSelect1" required>
-          <h-simple-select v-model="formItem1.simpleSelect1" ref="test" placement="top-start" filterable>
+          <h-simple-select v-model="formItem1.simpleSelect1" placement="top-start" filterable>
             <h-select-block :data="bigData" ></h-select-block>
           </h-simple-select>
         </h-form-item>
@@ -224,30 +226,13 @@ for(let i=0;i<60;i++){
         model1:'',
         changeform:false,
         formItem1: {
-          input: '1',
-          select: '',
-          select1: [],
-          select2: '',
-          radio: '',
-          money: '',
-          moneyrange:[],
-          checkbox: [],
-          fatdate: '',
-          date: '',
-          time: '',
-          slider: '',
-          tree:'',
-          textarea: '',
-          cascader:[],
-          simpleSelect:[],
-          simpleSelect1:'',
         },
         formItem2:{
           input: '1',
           select: '',
           radio: '',
           money: '1244',
-          moneyrange:[],
+          moneyrange:'',
           checkbox: [],
           fatdate: '',
           date: '',
@@ -419,7 +404,7 @@ for(let i=0;i<60;i++){
           select: '',
           radio: '',
           money: '1244',
-          moneyrange:[],
+          moneyrange:'',
           checkbox: [],
           fatdate: '',
           date: '',
@@ -468,7 +453,25 @@ for(let i=0;i<60;i++){
       }
     },
     mounted () {
-      this.formItem1.input = '222';
+      this.formItem1={
+          input: '1',
+          select: '',
+          select1: [],
+          select2: '',
+          radio: '',
+          money: '',
+          moneyrange:'',
+          checkbox: [],
+          fatdate: '',
+          date: '',
+          time: '',
+          slider: '',
+          tree:'',
+          textarea: '',
+          cascader:[],
+          simpleSelect:[],
+          simpleSelect1:'',
+      }
       this.bigData = bigData;
     }
   }

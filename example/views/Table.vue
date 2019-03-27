@@ -160,16 +160,15 @@ export default {
       multiLevel2:[
         [
           {title:'123',rows:2,align:'center',className:'demo-table-info-column'},
-          {title:'456',cols:2,align:'center'},
-          {title:'789',align:'right'},
+          {title:'123',rows:2,align:'center',className:'demo-table-info-column'},
+          {title:'123',rows:2,align:'center',className:'demo-table-info-column'},
+          {title:'123',rows:2,align:'center',className:'demo-table-info-column'},
+          {title:'456',cols:3,align:'center'},
         ],
         [
-          {title:'123',cols:2,hiddenCol:true},
+          {title:'123'},
           {title:'456'},
-        ],
-        [
-          {title:'234'},
-          {title:'678',cols:2},
+          {title:'456'},
         ],
       ],
       columns18: [
@@ -1772,20 +1771,20 @@ export default {
           align: 'center',
           width:200
         },
-        {
-          title: '年龄',
-          key: 'age',
-        },
-        {
-          title: '地址',
-          ellipsis:true,
-          key: 'address',
-          // hiddenCol:true,
-        },
-        {
-          title: '地址1',
-          key: 'address1',
-        },
+        // {
+        //   title: '年龄',
+        //   key: 'age',
+        // },
+        // {
+        //   title: '地址',
+        //   ellipsis:true,
+        //   key: 'address',
+        //   // hiddenCol:true,
+        // },
+        // {
+        //   title: '地址1',
+        //   key: 'address1',
+        // },
         // {
         //   title: '地址2',
         //   key: 'address2',
@@ -1799,16 +1798,16 @@ export default {
         //   key: 'address4',
         //   sortType:'asc',
         // },
-        {
-          title: '地址5',
-          key: 'marketNo',
-          sortType:'asc',
-        },
-        {
-          title: '地址6',
-          key: 'tradeQuantity',
-          sortType:'asc',
-        }
+        // {
+        //   title: '地址5',
+        //   key: 'marketNo',
+        //   sortType:'asc',
+        // },
+        // {
+        //   title: '地址6',
+        //   key: 'tradeQuantity',
+        //   sortType:'asc',
+        // }
     ]
   },
 }

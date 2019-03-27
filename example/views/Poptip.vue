@@ -2,16 +2,17 @@
   <div>
     <h1>气泡提示组件基本用法</h1>
     <h2>基本用法</h2>
-    <h-poptip trigger="hover" title="提示标题" content="提示内容" closeOutClick>
+    <h-poptip trigger="hover" ref="poptip" title="提示标题" content="提示内容" notResponding>
       <h-button>hover 激活</h-button>
     </h-poptip>
-    <h-poptip title="悬浮/点击出现的消息" content="悬浮出现的消息气泡气泡气泡气泡">
+    <h-button @click="open">打开/关闭</h-button>
+    <h-poptip title="悬浮/点击出现的消息" content="悬浮出现的消息气泡气泡气泡气泡" notResponding>
       <h-button>click 激活</h-button>
     </h-poptip>
-    <h-poptip trigger="focus" title="悬浮/点击出现的消息" content="悬浮出现的消息气泡气泡气泡气泡">
+    <h-poptip trigger="focus" title="悬浮/点击出现的消息" content="悬浮出现的消息气泡气泡气泡气泡" notResponding>
       <h-button>focus 激活</h-button>
     </h-poptip>
-    <h-poptip trigger="focus" title="悬浮/点击出现的消息" content="悬浮出现的消息气泡气泡气泡">
+    <h-poptip trigger="focus" title="悬浮/点击出现的消息" content="悬浮出现的消息气泡气泡气泡" notResponding>
       <h-input placeholder="输入框的 focus"></h-input>
     </h-poptip>
     <h2>位置</h2>
@@ -151,6 +152,9 @@ export default {
     },
     vChange(){
       console.log("提示框消失了");
+    },
+    open () {
+      this.$refs.poptip.visible = !this.$refs.poptip.visible
     }
   } 
 }

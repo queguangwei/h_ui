@@ -497,10 +497,19 @@ export default {
       let style = {};
       let width = this.scrollBarWidth;
       let height = this.headerRealHeight;
+      if(height <=0 ) return ;
+      let curHeight =  getStyle(this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0],'height');
+      if(curHeight==='auto'&&this.multiLevel.length>0){
+        curHeight = height/(this.multiLevel.length) -1;
+      }else{
+        curHeight = parseInt(curHeight)-1;
+      }
       let top = parseInt(getStyle(this.$refs.title, 'height')) || 0;
       style.width = `${width}px`;
       style.height = `${height}px`;
       style.top = `${top}px`;
+      style.background=`repeating-linear-gradient(#fff 0, #fff ${curHeight}px,#DCE1E7 ${curHeight}px, #DCE1E7 ${curHeight+1}px)`;
+
       return style;
     },
     bodyStyle () {

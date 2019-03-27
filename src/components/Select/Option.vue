@@ -26,6 +26,13 @@
       disabled: {
         type: Boolean,
         default: false
+      },
+      /**
+       * 是否是内部新建条目
+       */
+      created: {
+        type: Boolean,
+        default: false
       }
     },
     data () {
@@ -69,8 +76,10 @@
         this.isFocus = false;
       },
       queryChange (val) {
-        const parsedQuery = val.replace(/(\^|\(|\)|\[|\]|\$|\*|\+|\.|\?|\\|\{|\}|\|)/g, '\\$1');
-        this.hidden = !new RegExp(parsedQuery, 'i').test(this.searchLabel);
+        if (!this.created) {
+          const parsedQuery = val.replace(/(\^|\(|\)|\[|\]|\$|\*|\+|\.|\?|\\|\{|\}|\|)/g, '\\$1');
+          this.hidden = !new RegExp(parsedQuery, 'i').test(this.searchLabel);
+        }
       },
       handleclick(){ 
       }
@@ -79,7 +88,7 @@
       var str=this.$el.innerText
       this.searchLabel = str.replace('false','').replace('true','').trim();
       // this.searchLabel =str.slice(Number(str.indexOf('</label>')+9));
-      this.dispatch('Select', 'append');
+      !this.created && this.dispatch('Select', 'append');
       this.$on('on-select-close', () => {
         this.isFocus = false;
       });
@@ -94,7 +103,7 @@
       this.hideMult=obj.hideMult;
     },
     destroyed () {
-      this.dispatch('Select', 'remove');
+      !this.created && this.dispatch('Select', 'remove');
     }
   };
 </script>

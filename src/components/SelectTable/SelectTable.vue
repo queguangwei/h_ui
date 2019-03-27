@@ -1,16 +1,16 @@
 <template>
-  <div :class="classes" v-clickoutside="handleClose" :style="multiplestyle" ref="select" >
+  <div :class="classes" v-clickoutside="{trigger: 'mousedown', handler: handleClose}" :style="multiplestyle" ref="select" >
     <div
       :class="selectionCls"
       ref="reference"
       :tabindex="tabIndex"
-      @keyup="keyup" 
+      @keyup="keyup"
       @keydown="keydown"
       @click="toggleMenu">
       <!-- 多选时输入框内选中值模拟 -->
       <div class="h-tag" v-for="(item, index) in selectedMultiple" :key="index">
         <span class="h-tag-text">{{ item.label }}</span>
-        <Icon name="close" @click.native.stop="removeTag(index)"></Icon> 
+        <Icon name="close" @click.native.stop="removeTag(index)"></Icon>
       </div>
       <!-- 下拉输入框模拟（非远程搜索时渲染）  -->
       <span :class="[prefixCls + '-placeholder']" v-show="showPlaceholder && (!filterable ||showBottom)">{{ localePlaceholder }}</span>
@@ -27,20 +27,22 @@
         @blur="handleBlur"
         @keydown="resetInputState"
         @keydown.delete="handleInputDelete"
-        tabindex="-1" 
+        tabindex="-1"
         ref="input">
 
       <Icon name="close" :class="[prefixCls + '-arrow']" v-show="showCloseIcon" @click.native.stop="clearSingleSelect"></Icon>
       <Icon name="unfold" :class="[prefixCls + '-arrow']" v-if="!remote" ref="arrowb"></Icon>
     </div>
     <transition :name="transitionName">
-      <Drop 
+      <Drop
         :class="dropdownCls"
         :dropWidth="dropWidth"
         :multiple="multiple"
-        v-show="dropVisible" 
+        v-show="dropVisible"
         :placement="fPlacement"
-        :data-transfer="transfer" 
+        :data-transfer="transfer"
+        :widthAdaption="widthAdaption"
+        :maxDropWidth="maxDropWidth"
         ref="dropdown"
         v-transfer-dom>
         <div :class="content" ref="content" @click="handleclick">
@@ -58,17 +60,21 @@
               @blur="handleBlur"
               @keydown="resetInputState"
               @keydown.delete="handleInputDelete"
-              tabindex="-1" 
+              tabindex="-1"
               ref="input">
             <!-- <input type="text" placeholder="请输入..." class="h-input h-input-left">  -->
           </span>
           <div v-if="!isBlock" v-show="(!notFound && !remote) || (remote && !loading && !notFound)" :class="[prefixCls + '-dropdown-list']" :style="listStyle" ref='list' @scroll="handleSelectScroll"><slot></slot>
             <ul v-show="isComputed" :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>
           </div>
-          <div v-if="isBlock" v-show="(!notFound && !remote) || (remote && !loading && !notFound)" :class="[prefixCls + '-dropdown-list']" :style="listStyle">
+          <div v-if="isBlock" v-show="(!notFound && !remote) || (remote && !loading && !notFound)" :class="[prefixCls + '-dropdown-list']" :style="listStyle" ref='blockWrapper'>
             <slot></slot>
           </div>
           <ul v-show="loading" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
+        </div>
+        <div v-if="showFooter" :class="checkAll">
+          <slot name="footer">
+          </slot>
         </div>
         <div v-if="isCheckall&&multiple&&!notFoundShow" :class="checkAll">
           <Button size="small" @click="toggleSelect(false)">全不选</Button>
@@ -230,7 +236,19 @@
       checkToHead:{
         type:Boolean,
         default:false,
-      }
+      },
+      autoPlacement:{
+        type:Boolean,
+        default:false,
+      },
+      widthAdaption:{
+        type:Boolean,
+        default:false,
+      },
+      maxDropWidth: {
+        type:[String,Number],
+        default: 500
+      },
     },
     data () {
       return {
@@ -238,9 +256,10 @@
         visible: false,
         options: [],
         optionInstances: [],
-        selectedSingle: '',  
+        selectedSingle: '',
         selectedMultiple: [],
         focusIndex: 0,
+        focusValue: '', // simple select 用于选值
         query: '',
         lastQuery: '',
         selectToChangeQuery: false,
@@ -262,11 +281,11 @@
     },
     computed: {
       searchClass(){
-        return [ 
+        return [
           `${prefixCls}-search`,
           {
             [`${prefixCls}-checkHead`]:this.checkToHead&&this.showBottom&&this.filterable
-          }        
+          }
         ]
       },
       listStyle(){
@@ -295,7 +314,7 @@
       },
       dropdownCls () {
         return {
-          [prefixCls + '-dropdown-transfer']: this.transfer,
+          ['h-select-dropdown-transfer']: this.transfer,
           [prefixCls + '-multiple']: this.multiple && this.transfer,
           ['h-auto-complete']: this.autoComplete,
         };
@@ -382,25 +401,28 @@
           // return this.placement === 'bottom' ? 'slide-up' : 'slide-down';
       },
       dropVisible () {
-        let status = true;         
+        let status = true;
         const options = this.$slots.default || [];
         if (!this.loading && this.remote && this.query === '' && !options.length) status = false;
         return this.visible && status;
-      },    
+      },
       multiplestyle () {
         return {
             width: `${this.width}px`,
         };
       },
       checkAll(){
-        return `${prefixCls}-checkall`
+        return `h-select-checkall`
       },
       notFoundShow () {
           let options = this.options;
           options = options || [];
           let state= (this.notFound) || (!this.loading && !options.length)||(!options.length);
           return state;
-      }, 
+      },
+      showFooter () {
+        return this.$slots.footer 
+      },
     },
     methods: {
       handleclick(e){
@@ -423,7 +445,7 @@
         let num = getBarBottom(event.target,this.scrollBarWidth);
         this.$emit('on-scroll',num)
       },
-      toggleSelect(val){        
+      toggleSelect(val){
         if(this.isBlock){
           this.allClick = true;
           let hybridValue=[];
@@ -436,8 +458,8 @@
                   value:col.value,
                   label:col.label
                 })
-                curValue.push(col.value);                   
-              }            
+                curValue.push(col.value);
+              }
             });
           });
           this.model = curValue;
@@ -479,9 +501,15 @@
           }
           this.visible = !this.visible;
           this.isInputFocus = true
+          if(this.visible && this.filterable && this.showBottom){
+            this.$nextTick(()=>{
+              this.$refs.input.focus();
+            })
+          }
       },
       hideMenu () {
           this.visible = false;
+          this.focusIndex = 0;
           this.broadcast('TabelOption', 'on-select-close');
       },
       findChild (cb) {
@@ -549,7 +577,7 @@
           if (type === 'string' || type === 'number') {
               let findModel = false;
               for (let i = 0; i < this.options.length; i++) {
-                  if (this.model === this.options[i].value) {                  
+                  if (this.model === this.options[i].value) {
                       this.selectedSingle = this.options[i].label;
                       findModel = true;
                       break;
@@ -639,8 +667,10 @@
 
         this.model.splice(index, 1);
 
-        if (this.filterable && this.visible&&this.showBottom) {
+        if (this.filterable && this.visible && this.$refs.input) {
+          this.$nextTick(()=>{
             this.$refs.input.focus();
+          })
         }
 
         this.broadcast('Drop', 'on-update-popper');
@@ -740,7 +770,7 @@
           if (this.isInputFocus) {
             if (this.multiple) {
             // 多选返回数组
-            this.dispatch('FormItem', 'on-form-blur', this.selectedMultiple)          
+            this.dispatch('FormItem', 'on-form-blur', this.selectedMultiple)
             } else {
             // 单选返回字符串
             this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
@@ -770,18 +800,56 @@
             if (keyCode === 13) {
               e.preventDefault();
 
+              let index = this.focusIndex - 1
+              if (index < 0) return false;
+
+              if (this.isBlock) {
+                if (!this.multiple) {
+                  this.selectBlockSingle(this.focusValue)
+                } else {
+                  this.selectBlockMultiple(this.focusValue)
+                }
+                return
+              }
+
               this.findChild((child) => {
-                if (this.focusIndex-1<0) return false;
                 if (!this.multiple){
-                  child.$refs.table.enterSingle(this.focusIndex-1,true);
+                  child.$refs.table.enterSingle(index,true);
                 }else{
-                  child.$refs.table.enterSelect(this.focusIndex-1,true);
+                  child.$refs.table.enterSelect(index,true);
                 }
               });
             }
         }
       },
       navigateOptions (direction) {
+        if (this.isBlock) {
+          let _options = this.options
+
+          if (this.query) {
+            _options = this.options.filter(option => option.label.indexOf(this.query) !== -1)
+          }
+
+          if (direction === 'next') {
+            const next = this.focusIndex + 1;
+            this.focusIndex = (this.focusIndex === _options.length) ? 1 : next;
+          } else if (direction === 'prev') {
+            const prev = this.focusIndex - 1;
+            this.focusIndex = (this.focusIndex <= 1) ? _options.length : prev;
+          }
+
+          this.focusValue = _options[this.focusIndex - 1].value
+
+          // 处理滚动条
+          this.findChild((child) => {
+            let curTop = child.$el.scrollTop
+            let itemHeight = child.itemHeight
+            let top = itemHeight * (this.focusIndex - 1)
+            scrollAnimate(child.$el, curTop + 1, top);
+          });
+          return
+        }
+
         let curTop = this.$refs.list.scrollTop;
         if (this.focusIndex-1>=0) {
           this.findChild((child) => {
@@ -800,6 +868,7 @@
         this.findChild((child) => {
           child.$refs.table.changeHover(this.focusIndex-1,true);
         });
+
         // this.$refs.list.scrollTop = top;
         scrollAnimate(this.$refs.list,curTop,top);
       },
@@ -894,7 +963,7 @@
             return '';
           }else{
             return val.join(',');
-          } 
+          }
         }else{
           return val;
         }
@@ -912,6 +981,12 @@
         if (this.filterable && this.showBottom) {
           if(this.isBlock){
             this.$refs.search.style.width ='100%';
+            if(this.multiple&&this.checkToHead){
+              this.$refs.input.style.width = 'calc(100% - 40px)'
+            }else{
+              this.$refs.input.style.width = '100%'
+            }
+
           }else{
             let width =this.dropWidth>0?this.dropWidth:parseInt(getStyle(this.$el, 'width'));
             width = width-getScrollBarSize()+'px';
@@ -947,6 +1022,7 @@
           this.hideMenu();
         }else{
           this.model = value;
+
           if (this.filterable) {
             this.findChild((child) => {
               if (child.value === value) {
@@ -955,6 +1031,8 @@
               }
             });
           }
+
+          this.hideMenu()
         }
       },
       selectBlockMultiple(value){
@@ -965,7 +1043,24 @@
           this.model.push(value);
           this.broadcast('Drop', 'on-update-popper');
         }
-      }
+      },
+      setPlacement(){
+        if(this.autoPlacement){
+            let obj = this.$refs.select;
+            let allWidth= document.body.clientWidth;
+            let allHeight= document.body.clientHeight;
+            let curbottom =allHeight-obj.offsetTop-obj.clientHeight;
+            let bottomNum = this.isCheckall?250:210;
+            if(curbottom<bottomNum){
+              this.fPlacement = 'top';
+            }
+        }
+      },
+      firstVisibleDom(doms) {
+        for(let i = 0; i < doms.length; i++) {
+          if (doms[i].style.display !== 'none') return doms[i]
+        }
+      },
     },
     mounted () {
       this.isBlock = this.block?true:false;
@@ -1047,6 +1142,7 @@
       if (this.disabled) {
         this.tabIndex = -1;
       }
+      this.setPlacement();
     },
     beforeDestroy () {
       off(document, 'keydown', this.handleKeydown);
@@ -1116,12 +1212,12 @@
         }
       },
       query (val) {
+        this.focusIndex = 0;
         if (this.remote && this.remoteMethod) {
             if (!this.selectToChangeQuery) {
                 this.$emit('on-query-change', val);
                 this.remoteMethod(val);
             }
-            this.focusIndex = 0;
             this.findChild(child => {
                 child.isFocus = false;
             });
@@ -1151,20 +1247,25 @@
       options(val) {
       },
       selectedMultiple(val){
-        if (val.length==0&&this.filterable && !this.showBottom) {
-          this.$nextTick(()=>{
-            this.$refs.input.focus();
-          });
-        }
+        // if (val.length==0&&this.filterable && !this.showBottom) {
+        //   this.$nextTick(()=>{
+        //     this.$refs.input.focus();
+        //   });
+        // }
         this.$nextTick(()=>{
           this.offsetArrow();
         })
       },
       selectHead(val){
-        this.toggleSelect(val);        
+        this.toggleSelect(val);
       },
       placement(val){
         this.fPlacement = val;
+      },
+      focusIndex(nv) {
+        if (this.isBlock) {
+          this.broadcast('Block', 'on-focus-index-change', nv - 1)
+        }
       }
     }
   };

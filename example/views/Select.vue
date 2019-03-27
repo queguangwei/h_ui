@@ -231,8 +231,10 @@
       <div>
         <span>单选可搜索:</span>
         <h-select v-model="model10"
+                  placement="top"
                   width="200"
                   @on-blur="blurH"
+                   :showBottom="true"
                   filterable>
           <h-option :value="3">{{'<你>'}}</h-option>
           <h-option v-for="(item, index) in uList"
@@ -336,31 +338,54 @@
         <h-select v-model="model14"
                   width="200"
                   filterable
-                  :showBottom="true"
+                  :showBottom="false"
                   isBackClear
                   allowCreate
                   @on-change="handle"
-                  label-in-value
-                  :transfer="true">
+                  label-in-value>
           <h-option v-for="(item, index) in uList"
                     :value="item.id"
                     :key="item.id">{{ item.name }}</h-option>
         </h-select>
+        <span>{{JSON.stringify(model14)}}</span>
         <span>多选:</span>
         <h-select v-model="model15"
                   width="200"
                   multiple
                   filterable
                   :showBottom="true"
-                  isBackClear
                   allowCreate
                   @on-change="handle"
                   label-in-value
                   algin="center"
+                  isCheckall
+                  checkToHead
                   :transfer="true">
           <h-option v-for="(item, index) in uList"
                     :value="item.id"
                     :key="item.id">{{ item.name }}</h-option>
+        </h-select>
+        <span>{{JSON.stringify(model15)}}</span>
+        <h1>--------- HUI_V1.0.31_20190321 TS:201903110539 ---------</h1>
+        <p>has transfer</p>
+        <h-select v-model="v20190321.value"
+                  width="200"
+                  filterable
+                  :transfer="true"
+                  >
+          <h-option v-for="item in v20190321.options"
+                    :value="item.value"
+                    :key="item.value">{{ item.label }}</h-option>
+        </h-select>
+        <p>showBottom</p>
+        <h-select v-model="v20190321.value1"
+                  width="200"
+                  filterable
+                  showBottom
+                  >
+          <h-option v-for="item in v20190321.options"
+                    :value="item.value"
+                    :key="item.value">{{ item.label }}</h-option>
         </h-select>
     </div>
   </div>
@@ -649,6 +674,32 @@ export default {
         ]
       },
       bigData:bigData,
+      v20190321: {
+        options: [
+          {
+            value: '1',
+            label: '1'
+          },
+          {
+            value: '11',
+            label: '11'
+          },
+          {
+            value: '112',
+            label: '112'
+          },
+          {
+            value: '2',
+            label: '2'
+          },
+          {
+            value: '3',
+            label: '3'
+          }
+        ],
+        value: '',
+        value1: ''
+      },
     }
   },
   methods: {
