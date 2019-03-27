@@ -430,15 +430,17 @@ export default {
         }        
       }
       this.$nextTick(()=>{
-        this.$emit('on-select-change',this.getSelection());
+        this.$emit('on-select-change',this.getSelection(),this.getSelection(true));
       })
     },
-    getSelection(){
+    getSelection(status){
       let arr = [];
+      let selectIndex=[];
       for(let i in this.selection){
         arr.push(this.selection[i]); 
+        selectIndex.push(parseInt(i));
       }
-      return arr;
+      return status?selectIndex:arr;
     },
     selectAll (status) {
       this.$emit('on-select-all', status);
