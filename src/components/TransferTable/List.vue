@@ -5,6 +5,15 @@
       <span :class="prefixCls + '-header-count'">{{ count }}</span>
     </div>
     <div :class="bodyClasses">
+        <div :class="prefixCls + '-body-search-wrapper'" v-if="filterable">
+            <Search
+                :prefix-cls="prefixCls + '-search'"
+                :query="query"
+                @on-query-clear="handleQueryClear"
+                @on-query-change="handleQueryChange"
+                :placeholder="filterPlaceholder">
+            </Search>
+        </div>
       <ul :class="prefixCls + '-content'">
         <h-edit-gird
           ref="table"
@@ -53,6 +62,9 @@
       showTitle:Boolean,
       width:[String, Number],
       notData: String,
+      filterable: Boolean,
+      filterPlaceholder: String,
+      filterMethod: Function,
     },
     data () {
         return {

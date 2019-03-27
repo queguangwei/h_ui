@@ -40,6 +40,13 @@
         <h-tree :data="baseData2" @on-select-change="showChange" ></h-tree>
       </h-col>
     </h-row>
+    <h1>过滤高亮</h1>
+    <h-input v-model="query"></h-input>
+    <Button @click="changeFocus(-1)">上一个</Button>
+    <Button @click="changeFocus(1)">下一个</Button>
+    <div style="height:100px;overflow:auto;position:relative" ref="list">
+      <h-tree :data="data2" ref="filter"></h-tree>
+    </div>
   </div>
 </template>
 <script>
@@ -58,6 +65,7 @@ bigObj = curdata;
   export default {
     data () {
       return {
+        curIndex:null,
         bd: [],
         baseData: [
           {
@@ -475,9 +483,27 @@ bigObj = curdata;
           size: 'small',
         },
         test:[],
+        query:'',
       }
     },
     methods: {
+      changeFocus(num){
+        let queryEl = this.$refs.filter.$el.querySelectorAll('.h-tree-title-filterable');
+        let allIndex = queryEl.length
+        if(this.curIndex == null||(this.curIndex==0&&num<0)){
+          this.curIndex = 0
+        }else if(this.curIndex== allIndex && num>0){
+          this.curIndex = allIndex
+        }else{
+          this.curIndex = this.curIndex + num
+        }
+        if (queryEl[this.curIndex]) {
+          let top = queryEl[this.curIndex].offsetTop
+          this.$refs.list.scrollTop = top;
+        }else{
+          this.$refs.list.scrollTop = 0;
+        }
+      },
       loadData (item, callback) {
         setTimeout(() => {
           const data = [{
@@ -586,6 +612,11 @@ bigObj = curdata;
     },
     mounted () {
       // this.updateTree(this.baseData);
+    },
+    watch: {
+      query(val){
+        this.$refs.filter.filterHighlight(val)
+      }
     }
   }
 </script>

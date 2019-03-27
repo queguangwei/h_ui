@@ -1,63 +1,26 @@
 <template>
 <div>
-  <h-checkbox-group v-model="formGroup">
-    {{formGroup}}
-      <div v-for="(item1,inx) in rightItemLIst" :key="inx">
-         <h-checkbox :label="'item1'+inx"></h-checkbox>         
-          <h-select v-model="formData[item1.segment_code]" @on-change="onSelectChange" multiple :isString='true'>
-            <h-option v-for="item2 in item1.realData" :value="item2.value" :key="item2.value" >{{ item2.text }}</h-option>
-          </h-select>
-      </div>
-  </h-checkbox-group>
+    <h-typefield v-model="test1" integerNum="3" type="money" placeholder="金额" bigTips focusAllSelect></h-typefield>
+    <h-typefield v-model="test2" integerNum="3" type="money" placeholder="金额" readonly focusAllSelect></h-typefield>
+    <h-typefield v-model="test3" integerNum="3" type="money" placeholder="金额" disabled focusAllSelect></h-typefield>
+       <h-typefield v-model="test4" type="cardNo" placeholder="卡号" bigTips focusAllSelect></h-typefield>
 </div>
 </template>
 <script>
     export default {
         data () {
             return {
-                formData:{
-                  selet1:'',
-                  selet2:'',
-                  selet3:'',
-                  selet4:'',
-                },
-                formGroup:[],
-                rightItemLIst:[
-                  {segment_code:'selet1',realData:[{"value":'1',"text":"境外"},{"value":'0',"text":"境内"}]},
-                  {segment_code:'selet2',realData:[{"value":'1',"text":"境外"},{"value":'0',"text":"境内"}]},
-                  {segment_code:'selet3',realData:[{"value":'1',"text":"境外"},{"value":'0',"text":"境内"}]},
-                  {segment_code:'selet4',realData:[{"value":'1',"text":"境外"},{"value":'0',"text":"境内"}]},
-                  ]    
+                test1: "33",
+                test2: "0",
+                test3: "0",
+                test4: "1111111111",
             }
-        },
-        methods:{
-          onSelectChange(val){
-           
-          }
         }
     }
 </script>
-
-<!--<template>
-   <h-checkbox-group v-model="social">
-      <h-checkbox label="twitter" v-for="(item,key) in list" :key="key">
-        <h-select ></h-select>
-      </h-checkbox>
-   </h-checkbox-group>
-</template>
-<script>
-export default {
-  data () {
-    return {
-      social: ['facebook', 'github'],
-      list: ['social-twitter','facebook', 'github','snapchat']
-    }
-  }
-}
-</script>-->
 <!--<template>
 <div>
-    <h-simple-table :columns="columnsBig" 
+    <h-simple-table :columns="columnsBig" canMove @onMove="test111" 
       :data="bigData" border stripe headAlgin="right" 
       bodyAlgin="left" height="500" rowSelect 
       @on-select="select" @on-select-cancel="select"  
@@ -68,7 +31,7 @@ export default {
 <script>
 let jsonData=[];
 let tData =require('../assets/aa.json'); 
-    for (let i = 0; i < 2; i++) {
+for (let i = 0; i < 2; i++) {
       jsonData = jsonData.concat(tData);
     }
     export default {
@@ -81,10 +44,14 @@ let tData =require('../assets/aa.json');
                   algin:'center',
                  }
                 ],
-                bigData:[],
+                bigData:jsonData,
             }
         },
         methods: {
+        test111(a,b){
+        console.log(a);
+         console.log(b);
+        },
             select (selection,row){//已选择的项和刚刚选择的项
              console.log(selection);
              console.log(row);
@@ -143,7 +110,177 @@ let tData =require('../assets/aa.json');
                   key: 'tradeQuantity',
                 }
             ]
+        }
+    }
+</script>
+-->
+<!--<template>
+<div>
+    <h-simple-table :columns="columnsBig" 
+     :row-class-name="rowClassName"  
+      :data="bigData" border :stripe=false headAlgin="center"  bodyAlgin="center"  
+  :canDrag=false :disabled-hover=true :highlight-row=false
+      @on-drag="select" 
+      @on-selection-change="change" ref="transferTable"></h-simple-table>
+ <h-button type="ghost" size="small" @click="reloadMockData">获取</h-button>
+  </div>
+</template>
+<script>
+let jsonData=[];
+let tData =require('../assets/aa.json'); 
+for (let i = 0; i < 2; i++) {
+      jsonData = jsonData.concat(tData);
+    }
+    export default {
+        data () {
+            return {
+                columnsBig: [
+                 {
+                  title:'测试',
+                  key:'ceshi',
+                  algin:'center',
+                 }
+                ],
+                bigData:jsonData,
+            }
         },
+        methods: {
+     rowClassName (row, index) {
+              if (index === 1) {
+                return 'demo-table-info-row';
+              } else if (index === 3) {
+                return 'demo-table-error-row';
+              }
+              return '';
+            },
+    reloadMockData () {
+                console.log(this.$refs.transferTable. getSelection());
+            },
+            select (selection,index){
+             console.log(selection);
+            },
+selectcancel(selection,row){//已选择的项和刚刚选择的项
+             console.log(selection);
+             console.log(row);
+            },
+            change(e){
+console.log("change事件触发");
+              console.log(e);
+            },
+selectall(e){
+              console.log(e);
+            },
+        },
+        mounted (){
+            this.columnsBig=[
+                { 
+                  type: 'index',
+                  align: 'center',
+                  key:'index'
+                },
+                {
+                  title: '姓名',
+                  key: 'fundId',
+                  align: 'center',
+                  renderHeader:(h,params)=>{
+                    return h('h-icon', {
+                        props: {
+                          name: 'add'
+                        }
+                      })
+                  },
+                  render:(h, params)=>{
+                    return h('div', [
+                      h('h-icon', {
+                        props: {
+                          name: 'addressbook'
+                        }
+                      }),
+                      h('strong', params.row.name)
+                    ]);
+                  }
+                },
+                {
+                  title: '年龄',
+                  key: 'tradeDate',
+                  className: 'demo-table-info-column'
+                },
+                {
+                  title: '地址',
+                  key: 'securityCode',
+                },
+                {
+                  title: '地址1',
+                  key: 'securityName',
+                  ellipsis:true,
+                },
+                {
+                  title: '地址2',
+                  key: 'securityId',
+                },
+                {
+                  title: '地址3',
+                  key: 'tradeDir',
+                },
+                {
+                  title: '地址4',
+                  key: 'tradeSubtype',
+                },
+                {
+                  title: '地址5',
+                  key: 'marketNo',
+                },
+                {
+                  title: '地址6',
+                  key: 'tradeQuantity',
+                }
+            ]
+        }
+    }
+</script>
+<style>
+.demo-table-info-row{
+  color: red
+}
+</style>
+-->
+<!--<template>
+<div>
+  <h-checkbox-group v-model="formGroup">
+    {{formGroup}}
+      <div v-for="(item1,inx) in rightItemLIst" :key="inx">
+         <h-checkbox :label="'item1'+inx"></h-checkbox>         
+          <h-select v-model="formData[item1.segment_code]" @on-change="onSelectChange" multiple :isString='true'>
+            <h-option v-for="item2 in item1.realData" :value="item2.value" :key="item2.value" >{{ item2.text }}</h-option>
+          </h-select>
+      </div>
+  </h-checkbox-group>
+</div>
+</template>
+<script>
+    export default {
+        data () {
+            return {
+                formData:{
+                  selet1:'',
+                  selet2:'',
+                  selet3:'',
+                  selet4:'',
+                },
+                formGroup:[],
+                rightItemLIst:[
+                  {segment_code:'selet1',realData:[{"value":'1',"text":"境外"},{"value":'0',"text":"境内"}]},
+                  {segment_code:'selet2',realData:[{"value":'1',"text":"境外"},{"value":'0',"text":"境内"}]},
+                  {segment_code:'selet3',realData:[{"value":'1',"text":"境外"},{"value":'0',"text":"境内"}]},
+                  {segment_code:'selet4',realData:[{"value":'1',"text":"境外"},{"value":'0',"text":"境内"}]},
+                  ]    
+            }
+        },
+        methods:{
+          onSelectChange(val){
+           
+          }
+        }
     }
 </script>
 -->

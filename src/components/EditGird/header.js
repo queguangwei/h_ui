@@ -4,7 +4,7 @@ export default {
   props: {
     render: Function,
     column: Object,
-    index: Number
+    index: [Number,String]
   },
   render: (h, ctx) => {
     const params = {

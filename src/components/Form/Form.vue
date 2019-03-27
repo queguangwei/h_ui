@@ -63,6 +63,7 @@ export default {
         fields: [],
         validMsgList: [],
         changeObj:{},
+        isCheck: true,
     };
   },
   computed: {
@@ -79,10 +80,14 @@ export default {
   },
   methods: {
     resetFields(isResetReadonlyOrDisabled = false) {
-      this.fields.forEach(field => {
-        field.resetField(isResetReadonlyOrDisabled);
-      });
-      this.validMsgList = []
+        this.fields.forEach(field => {
+          field.resetField(isResetReadonlyOrDisabled);
+        });
+        this.validMsgList = []
+        this.isCheck = false;
+        setTimeout(()=>{
+          this.isCheck = true;
+        },0)
     },
     validate(callback) {
       this.validMsgList = []

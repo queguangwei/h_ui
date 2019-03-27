@@ -19,6 +19,7 @@
     <h2>搜索</h2>
     <p>通过设置属性 filterable 可以进行搜索，可以自定义搜索函数</p>
     <h-transfer-table
+      filterable
       :lColumns = "columns2"
       :rColumns = "columns2"
       :lData="data2"

@@ -50,6 +50,9 @@
             option:this.option,
             treeOption:this.treeOption,
             showTitle:this.showTitle,
+            filterable: this.filterable,
+            filterPlaceholder: this.localeFilterPlaceholder,
+            filterMethod: this.filterMethod,
           },
           on: {
             // 'on-checked-keys-change': this.handleLeftCheckedKeysChange
@@ -84,6 +87,9 @@
             option:this.option,
             treeOption:this.treeOption,
             showTitle:this.showTitle,
+            filterable: this.filterable,
+            filterPlaceholder: this.localeFilterPlaceholder,
+            filterMethod: this.filterMethod,
           },
           on: {
             // 'on-checked-keys-change': this.handleRightCheckedKeysChange
@@ -157,8 +163,32 @@
         type:Boolean,
         default:false
       },
-      option:Array,
-      treeOption:Array,
+      option:{
+        type:Array,
+        default:()=>{
+          return []
+        }
+      },
+      treeOption:{
+        type:Array,
+        default:()=>{
+          return []
+        }
+      },
+      filterable: {
+        type: Boolean,
+        default: false
+      },
+      filterPlaceholder: {
+        type: String
+      },
+      filterMethod: {
+        type: Function,
+        default (data, query) {
+          const type = ('label' in data) ? 'label' : 'key';
+          return data[type].indexOf(query) > -1;
+        }
+      },
     },
     data () {
       return {

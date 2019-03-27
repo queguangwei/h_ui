@@ -1,5 +1,5 @@
 <template>
-  <div class="h-select-dropdown" :style="styles" @click="handleClick" ref="selectdrop"><slot></slot></div>
+  <div class="h-select-dropdown" :style="styles" @click="handleClick" @mousedown.stop="handleMouseDown" ref="selectdrop"><slot></slot></div>
 </template>
 <script>
 import Vue from 'vue';
@@ -58,23 +58,29 @@ export default {
 		handleClick(event){
 			this.$emit('click', event);
 		},
+		setWidthAdaption(){
+			let content = this.$refs.selectdrop.children[0]
+			if(this.$parent.$options.name ==='SimpleSelect'){
+				content=this.$parent.showBottom? content.children[1].children[0]:content.children[0].children[0]
+			}
+			// 横向或者纵向滚动条导致的像素偏移的问题
+			// 是否有纵向滚动条
+			let isScrollY = parseInt(this.$refs.selectdrop.clientWidth) > parseInt(content.clientWidth) ? true : false
+			// 是否有横向滚动条
+			let isScrollX = parseInt(this.$refs.selectdrop.clientHeight) > parseInt(content.clientHeight) ? true : false
+			if (isScrollX) {
+				this.width = isScrollY ? parseInt(content.scrollWidth) + this.scrollBarWidth : content.scrollWidth
+			}
+		},
 		update () {
 			if (isServer) return;
 			if (this.popper) {
 				this.$nextTick(() => {
-						this.popper.update();
-						// 有滚动条时，下拉宽度为内容宽度
-						if (this.widthAdaption) {
-							let content = this.$refs.selectdrop.children[0]
-							// 横向或者纵向滚动条导致的像素偏移的问题
-							// 是否有纵向滚动条
-							let isScrollY = parseInt(this.$refs.selectdrop.clientWidth) > parseInt(content.clientWidth) ? true : false
-							// 是否有横向滚动条
-							let isScrollX = parseInt(this.$refs.selectdrop.clientHeight) > parseInt(content.clientHeight) ? true : false
-							if (isScrollX) {
-								this.width = isScrollY ? parseInt(content.scrollWidth) + this.scrollBarWidth : content.scrollWidth
-							}
-						}
+					this.popper.update();
+					// 有滚动条时，下拉宽度为内容宽度
+					if (this.widthAdaption) {
+						this.setWidthAdaption()
+					}
 				});
 			} else {
 				this.$nextTick(() => {
@@ -92,15 +98,7 @@ export default {
 					});
 					// 有滚动条时，下拉宽度为内容宽度
 					if (this.widthAdaption) {
-						let content = this.$refs.selectdrop.children[0]
-						// 横向或者纵向滚动条导致的像素偏移的问题
-						// 是否有纵向滚动条
-						let isScrollY = parseInt(this.$refs.selectdrop.clientWidth) > parseInt(content.clientWidth) ? true : false
-						// 是否有横向滚动条
-						let isScrollX = parseInt(this.$refs.selectdrop.clientHeight) > parseInt(content.clientHeight) ? true : false
-						if (isScrollX) {
-							this.width = isScrollY ? parseInt(content.scrollWidth) + this.scrollBarWidth : content.scrollWidth
-						}
+						this.setWidthAdaption()
 					}
 				});
 			}
@@ -134,7 +132,12 @@ export default {
 			let placement = popper._popper.getAttribute('x-placement').split('-')[0];
 			let origin = placementMap[placement];
 			popper._popper.style.transformOrigin = `center ${ origin }`;
-		}
+    },
+    handleMouseDown() {
+      // TS201903110540
+      // prevent mousedown event from bubbling up and being caught by handlers on document
+      // which were added in directive v-clickoutside
+    }
 	},
 	created () {
 		this.$on('on-update-popper', this.update);

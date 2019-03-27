@@ -172,6 +172,7 @@
         </div>
       </div>
       <div class="h-table__column-resize-proxy" ref="resizeProxy" v-show="resizeProxyVisible"> </div>
+      <div class="h-table__column-move-proxy h-table-cell" ref="moveProxy" v-show="moveProxyVisible"> </div>
     </div>
     <Spin fix size="large" v-if="loading">
       <slot name="loading">
@@ -328,8 +329,9 @@ export default {
     splitIndex:{
       type:Boolean,
       default:false,
-    }
     },
+    addData: Array, // 追加数据
+  },
   data () {
     return {
       ready: false,
@@ -351,6 +353,7 @@ export default {
       currentContext: this.context,
       cloneData: deepCopy(this.data),    // when Cell has a button to delete row data, clickCurrentRow will throw an error, so clone a data
       resizeProxyVisible: false,
+      moveProxyVisible: false,
       showScroll:false,
       headerRealHeight:0,
       visibleCount:50,
@@ -364,6 +367,8 @@ export default {
       ctrlSelect:[],
       dragging:false,
       draggingColumn:false,
+      moving: false,
+      movingColumn: null,
       isScrollX: false, //是否有横向滚动
       focusIndex: -1,
       curPageFirstIndex: 0, 
@@ -371,6 +376,7 @@ export default {
       isCurrent: true,
       privateToScrollTop: false,
       selectType:false,
+      cloumnsLeft: []
     };
   },
   computed: {
@@ -657,10 +663,24 @@ export default {
         this.$emit('on-drag', width, key);
       })
     },
-    mousedown(event,column,index){
-      if (this.$isServer || !this.canDrag || !this.draggingColumn) return;
+    getLeftWidth (){
+      this.$nextTick(()=>{
+        const columns = this.cloneColumns;
+        for (let i = 0; i < columns.length; i++) {
+          let leftWidth = 0;
+          for (let j = 0; j<i; j++) {
+            leftWidth = leftWidth + columns[j]._width;
+          }
+          this.cloumnsLeft[i] = leftWidth;
+        }
+      })
+    },
+    mousedown(event,column,index) {
+      if (this.$isServer) return;
       if (!column) return;
+      if (!this.canDrag && !this.canMove) return;
       let _this = this;
+      if (this.draggingColumn) {
         this.dragging = true;      
         this.resizeProxyVisible = true;
         const table = this; 
@@ -738,6 +758,80 @@ export default {
         };
         document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('mouseup', handleMouseUp);
+      }
+
+      if (this.movingColumn) {
+        this.moving = true;  
+        addClass(document.body, 'useSelect');
+        this.moveProxyVisible = true;
+        let dom = this.findObj(event,'TH').cloneNode(true);
+        dom.width = column._width;
+        addClass(dom,'move-proxy-th');
+        const tableEl = this.$el;
+        const tableLeft = tableEl.getBoundingClientRect().left;
+        const tableTop = tableEl.getBoundingClientRect().top;
+        const columnEl = this.$el.querySelector(`th.h-ui-${column.key}`);
+        const columnRect = columnEl.getBoundingClientRect();
+        addClass(columnEl, 'noclick');
+        this.moveState = {
+          startMouseLeft: event.clientX,
+          startLeft: columnRect.left - tableLeft - 1,
+          tableLeft
+        };
+        const moveProxy = this.$refs.moveProxy;
+        const resizeProxy = this.$refs.resizeProxy;
+        moveProxy.style.left = this.moveState.startLeft + 'px';
+        moveProxy.style.top = event.clientY - tableTop - 20 + 'px';
+        moveProxy.appendChild(dom);
+        let resizeIndex = Number(index);
+        let resizeLeft;
+        const handleMouseMove = (event) => {
+          this.resizeProxyVisible = true;
+          const deltaLeft = event.clientX - _this.moveState.startMouseLeft;
+          const moveLeft = _this.moveState.startLeft + deltaLeft;  
+          if (deltaLeft > 0) {
+            let changeRight = _this.cloumnsLeft[index]+deltaLeft;
+            changeRight = changeRight+column._width;
+            for (let i in _this.cloumnsLeft) {
+              if (changeRight >_this.cloumnsLeft[i]+30) resizeIndex = Number(i);
+            }
+            resizeLeft = _this.$el.querySelectorAll(`th`)[resizeIndex].getBoundingClientRect().right - tableLeft -1;
+          }
+          if (deltaLeft < 0){
+            let changeLeft = _this.cloumnsLeft[index]+deltaLeft;
+            for (let i in _this.cloumnsLeft) {
+              if (changeLeft >_this.cloumnsLeft[i]-50) resizeIndex = Number(i);
+            }
+            resizeLeft = _this.$el.querySelectorAll(`th`)[resizeIndex].getBoundingClientRect().left - tableLeft -1;
+          }
+          moveProxy.style.left = moveLeft + 'px';
+          moveProxy.style.top = event.clientY-tableTop-20 + 'px';
+          resizeProxy.style.left = resizeLeft + 'px';
+        };
+
+        const handleMouseUp = () => {
+          if (_this.moving) {
+            _this.sortCloumn(index,resizeIndex,column._index);
+            document.body.style.cursor = '';
+            removeClass(document.body, 'useSelect');
+            _this.moving = false;
+            _this.movingColumn = null;
+            _this.moveState = {};
+            moveProxy.removeChild(dom);
+            _this.resizeProxyVisible = false;
+            _this.moveProxyVisible = false;
+          }
+
+          document.removeEventListener('mousemove', handleMouseMove);
+          document.removeEventListener('mouseup', handleMouseUp);
+
+          setTimeout(function() {
+            removeClass(columnEl, 'noclick');
+          }, 0);
+        };
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+      }
     },
     mousemove(event,column,index){
       if (!this.canDrag ||!column) return;
@@ -747,6 +841,9 @@ export default {
       if(this.canDrag){
         // moveDrag需传入event win7下FF60版本不可拖拽
         this.moveDrag(event, target,column);
+      }
+      if(this.canMove) {
+        this.moveMove(event, target,column)
       }
     },
     moveDrag(event, target,column){
@@ -762,9 +859,31 @@ export default {
         }
       }
     },
+    moveMove(event, target,column){
+      if (!this.moving && !this.dragging) {
+        let rect = target.getBoundingClientRect();
+        const bodyStyle = document.body.style;
+        if (rect.right - event.pageX > 8 && rect.right - event.pageX<rect.width && !column.fixed) {
+          bodyStyle.cursor = 'pointer';
+          // bodyStyle.userSelect = 'none';
+          this.movingColumn = column;
+        } else if (!this.moving) {
+          if(!this.canDrag) bodyStyle.cursor = '';
+          // bodyStyle.userSelect = 'text';
+          this.movingColumn = null;
+        }
+      }
+    },
     mouseout() {
       if (this.$isServer) return;
       document.body.style.cursor = '';
+    },
+    sortCloumn (curIndex,insertIndex,_index){
+      if (this.cloneColumns[insertIndex].fixed) return;
+      const item = this.cloneColumns[curIndex];
+      this.cloneColumns.splice(curIndex,1);
+      this.cloneColumns.splice(insertIndex,0,item);
+      this.$emit('on-move',_index,insertIndex);
     },
     findObj(e,name){
       var obj=e.target;
@@ -793,14 +912,19 @@ export default {
           if (allWidth) autoWidthIndex = findInx(this.cloneColumns,cell => !cell.width);
           if (this.data.length) {
             const $td = this.$refs.tbody.querySelectorAll('tbody tr')[0].querySelectorAll('td');
+            let errorNum = 0
             for (let i = 0; i < $td.length; i++) {    // can not use forEach in Firefox
               const column = this.cloneColumns[i];
-              let width = parseInt(getStyle($td[i], 'width'));
-              if (i === autoWidthIndex) {
-                  width = parseInt(getStyle($td[i], 'width')) - 1;
+              let curWidth = parseFloat(getStyle($td[i], 'width'));
+              let width = parseInt(curWidth)
+              errorNum = errorNum+ curWidth - width;
+              if(errorNum>1){
+                width=  width+1;
+                errorNum = errorNum -1;
               }
-             // if (column.width) width = column.width||'';
-             // 自适应列在表格宽度较小时显示异常，为自适应列设置最小宽度100（拖拽后除外）
+              if (i === autoWidthIndex) {
+                width = width - 1;
+              }
               if (column.width) {
                   width = column.width||'';
               } else {
@@ -989,7 +1113,9 @@ export default {
       for (let i in this.objData) {
           if (this.objData[i]._isChecked) selectionIndexes.push(parseInt(i));
       }
-      return status?selectionIndexes:JSON.parse(JSON.stringify(this.data.filter((data, index) => selectionIndexes.indexOf(index) > -1)));
+      // return status?selectionIndexes:JSON.parse(JSON.stringify(this.data.filter((data, index) => selectionIndexes.indexOf(index) > -1)));
+      // 考虑addData模式
+      return status?selectionIndexes:JSON.parse(JSON.stringify(this.cloneData.filter((data, index) => selectionIndexes.indexOf(index) > -1)));
     },
     toggleSelect (_index) {
       this.allclick = false;
@@ -1006,7 +1132,9 @@ export default {
       }
       this.$nextTick(()=>{
         const selection = this.getSelection();
-        this.$emit(status ? 'on-select' : 'on-select-cancel', selection, JSON.parse(JSON.stringify(this.data[_index])));
+        // this.$emit(status ? 'on-select' : 'on-select-cancel', selection, JSON.parse(JSON.stringify(this.data[_index])));
+        // 考虑addData模式
+        this.$emit(status ? 'on-select' : 'on-select-cancel', selection, JSON.parse(JSON.stringify(this.cloneData[_index])));
         this.$emit('on-selection-change', selection,this.getSelection(true));
       })
     },
@@ -1242,6 +1370,46 @@ export default {
         });
         return data;
     },
+    makeAddData () {
+      // let addData = deepCopy(this.addData);
+      let oldLength = this.rebuildData.length
+      let data = {}
+      this.addData.forEach((row, index) => {
+        const newRow = deepCopy(row)
+        newRow._isHover = false;
+        if (newRow._disabled) {
+            newRow._isDisabled = newRow._disabled;
+        } else {
+            newRow._isDisabled = false;
+        }
+        if (newRow._checked) {
+            newRow._isChecked = newRow._checked;
+        } else {
+            newRow._isChecked = false;
+        }
+        if (newRow._expanded) {
+            newRow._isExpanded = newRow._expanded;
+        } else {
+            newRow._isExpanded = false;
+        }
+        if (newRow._highlight) {
+            newRow._isHighlight = newRow._highlight;
+        } else {
+            newRow._isHighlight = false;
+        }
+        if (newRow._isMatched) {
+            newRow._isMatched = newRow._isMatched;
+        } else {
+            newRow._isMatched = false;
+        }
+        // const newRowdata = deepCopy(row)
+        newRow._index = oldLength + index
+        newRow._rowKey = rowKey++;
+        data[oldLength + index] = newRow;
+      })
+      Object.assign(this.objData, data)
+      return Object.values(data)
+    },
     makeDataWithSort () {
       let data = this.makeData();
       if(this.notSort){
@@ -1347,20 +1515,6 @@ export default {
       })
       return left.concat(center).concat(right);
     },
-    // rowClasses (_index) {
-    //   return [
-    //     `${this.prefixCls}-row`,
-    //     this.rowClsName(_index),
-    //     {
-    //       [`${this.prefixCls}-row-checked`]: this.objData[_index] && this.objData[_index]._isChecked,
-    //       [`${this.prefixCls}-row-highlight`]: this.objData[_index] && this.objData[_index]._isHighlight,
-    //       [`${this.prefixCls}-row-hover`]: this.objData[_index] && this.objData[_index]._isHover
-    //     }
-    //   ];
-    // },
-    rowClsName (_index) {
-      return this.rowClassName(this.objData[_index], _index);
-    },
     initResize(){
       this.$nextTick(() => {
         this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
@@ -1424,11 +1578,13 @@ export default {
       let contentHeight = this.$refs.body.clientHeight
       // curPageFirstIndex当前屏第一条数据
       let top = this.itemHeight * this.focusIndex;
-      let curPageCount = this.isScrollX ? this.visibleCount - 1 : this.visibleCount      
+      // let curPageCount = this.isScrollX ? this.visibleCount - 1 : this.visibleCount      
+      let curPageCount = this.isScrollX ? this.visibleCount - 2 : this.visibleCount - 1      
       // 焦点在当前屏，则进行+1或者-1
       if (this.focusIndex >= this.curPageFirstIndex && this.focusIndex <= this.curPageFirstIndex + curPageCount) {
         if (direction === 'next') {
-          if (this.focusIndex == this.data.length - 1) return
+          // if (this.focusIndex == this.data.length - 1) return
+          if (this.focusIndex == this.rebuildData.length - 1) return
           this.focusIndex = this.focusIndex + 1;
         } else if (direction === 'prev') {
           if (this.focusIndex == 0) return
@@ -1482,6 +1638,7 @@ export default {
   mounted () {
     this.handleResize();
     this.fixedHeader();
+    this.getLeftWidth();
     on(document,'keydown', this.handleKeydown);
     on(document,'keyup', this.handleKeyup);
     this.$nextTick(() => {
@@ -1494,10 +1651,12 @@ export default {
     //window.addEventListener('resize', this.handleResize, false);
     on(window, 'resize', this.handleResize);
     on(window, 'resize', this.initResize);
+    on(window, 'resize', this.getLeftWidth);
     this.$on('on-visible-change', (val) => {
       if (val) {
         this.handleResize();
         this.fixedHeader();
+        this.getLeftWidth();
       }
     });
   },
@@ -1505,6 +1664,7 @@ export default {
       //window.removeEventListener('resize', this.handleResize, false);
       off(window, 'resize', this.handleResize);
       off(window, 'resize', this.initResize);
+      off(window, 'resize', this.getLeftWidth);
       off(document,'keydown',this.handleKeydown)
       off(document,'keyup', this.handleKeyup);
       
@@ -1521,11 +1681,27 @@ export default {
           })
         }
       },
+      addData: {
+        handler (val, old) {
+          if (val && val.length > 0) {
+            let addData = this.makeAddData(val)
+            this.rebuildData.push.apply(this.rebuildData, addData)
+            this.updateVisibleData();
+            this.$nextTick(()=>{
+              this.cloneData.push.apply(this.cloneData, deepCopy(this.addData))
+            })
+          }
+        },
+        deep: true
+      },
       data: {
         handler () {
           // const oldDataLen = this.rebuildData.length;
           this.rebuildData = this.makeDataWithSortAndFilter();
           this.objData = this.makeObjData();
+          if (this.addData && this.addData.length > 0) { // 针对addData 模式
+            this.$refs.body.scrollTop = 0
+          }
           // this.rebuildData = this.data;
           // if (!oldDataLen) {
           //   this.fixedHeader();
@@ -1553,6 +1729,12 @@ export default {
         },
         deep: true
       },
+      cloneColumns: {
+        deep: true,
+        handler() {
+          this.getLeftWidth();
+        }
+      },
       height () {
           this.fixedHeader();
           this.$nextTick(()=>{
@@ -1565,8 +1747,6 @@ export default {
         this.$nextTick(()=>{
           this.$emit('on-scroll',this.buttomNum);
         })
-      },
-      topNum(val,oldvalue){
       },
       shiftSelect(val){
         if (val.length==2) {
