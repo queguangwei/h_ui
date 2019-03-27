@@ -78,7 +78,7 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
             @include active();
         }
 
-        .#{$select-prefix-cls}-arrow:nth-of-type(2) {
+        .#{$select-prefix-cls}-arrow.h-icon-unfold {
             transform: rotate(180deg);
         }
     }
