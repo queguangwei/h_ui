@@ -386,6 +386,18 @@
                     :value="item.value"
                     :key="item.value">{{ item.label }}</h-option>
         </h-select>
+        <p>多选远程搜索配置搜索图标</p>
+         <h-select
+            v-model="model20"
+            multiple
+            filterable
+            remote
+            multClearable
+            remoteIcon="search"
+            :remote-method="remoteMethod2"
+            :loading="loading1">
+            <h-option v-for="option in options2" :value="option.value" :key="option.value">{{option.label}}</h-option>
+        </h-select>
     </div>
   </div>
 </template>
@@ -549,6 +561,7 @@ export default {
       model13: 'hangzhou',
       model14: '',
       model15: [],
+      model20:[],
       loading1: false,
       options1: [
         {
@@ -777,7 +790,24 @@ export default {
           }
         })
       }
-    }
+    },
+    remoteMethod2 (query) {
+            if (query !== '') {
+                this.loading2 = true;
+                setTimeout(() => {
+                    this.loading2 = false;
+                    const list = this.list.map(item => {
+                        return {
+                            value: item,
+                            label: item
+                        };
+                    });
+                    this.options2 = list.filter(item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1);
+                }, 200);
+            } else {
+                this.options2 = [];
+            }
+     }
   },
   mounted() {
     var _this = this
