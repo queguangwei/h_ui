@@ -96,6 +96,9 @@ $transfer-item-prefix-cls: "#{$css-prefix}transfer-table-list-content-item";
       top: 0;
       left: 0;
       right: 0;
+      border-bottom: none;
+      border-top: none;
+      border: 1px solid $border-color-base;
     }
 
     &-search{
