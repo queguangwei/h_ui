@@ -34,6 +34,7 @@
       <!-- 单选时清空按钮 -->
       <Icon name="close" :class="[prefixCls + '-arrow']" v-if="showCloseIcon" @click.native.stop="handleIconClose" ref="close"></Icon>
       <Icon name="unfold" :class="[prefixCls + '-arrow']" v-if="!remote && isArrow" ref="arrowb"></Icon>
+      <Icon :name="remoteIcon" :class="[prefixCls + '-arrow']" v-if="showRemoteIcon" ref="searchb"></Icon>
     </div>
     <transition :name="transitionName">
       <Drop
@@ -151,6 +152,10 @@
       },
       remoteMethod: {
         type: Function
+      },
+      remoteIcon:{
+         type: String,
+         default: ""
       },
       loading: {
           type: Boolean,
@@ -373,6 +378,13 @@
       },
       showCloseIcon () {
           return (!this.multiple && this.clearable||this.multiple&&this.multClearable) && !this.showPlaceholder;
+      },
+      showRemoteIcon(){
+        if(this.remote&&this.remoteIcon!=""){
+          return true;
+        }else{
+            return false;
+        }
       },
       localePlaceholder () {
           if (this.placeholder === undefined) {
