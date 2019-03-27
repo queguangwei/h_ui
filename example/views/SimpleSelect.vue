@@ -43,15 +43,17 @@
                      isArrow="false"
                      placeholder="123"
                      showBottom
+                     multiple
                      style="width:200px"
                      transfer
                      v-model="v20190321.value2"
                      widthAdaption>
       <h-select-block :data="v20190321.options2"></h-select-block>
     </h-simple-select>
+    <h-button @click="changValue2">选中第三项</h-button>
      <h1>远程搜索</h1>
-    <h-simple-select width="200"
-      v-model="valueRemote"
+     <h-simple-select width="200"
+      v-model="valueRemote1"
       filterable
       remote          
       :remote-method="remoteMethod"
@@ -59,7 +61,17 @@
       <h-select-block :data="remoteData"></h-select-block>
       <div slot="footer">我是fotter</div>
     </h-simple-select>
-    {{valueRemote}}
+    <h-simple-select width="200"
+      v-model="valueRemote"
+      filterable
+      show-bottom
+      remote          
+      multiple
+      :remote-method="remoteMethod"
+      >
+      <h-select-block :data="remoteData"></h-select-block>
+      <div slot="footer">我是fotter</div>
+    </h-simple-select>
   </div>
 </template>
 <script>
@@ -119,13 +131,17 @@ export default {
           { value: "15", label: "韩国13" }
         ],
         value: "",
-        value2: ""
+        value2: ["1","2"]
       },
       remoteData:[],
-      valueRemote:'',
+      valueRemote:[],
+      valueRemote1:'',
     };
   },
   methods: {
+    changValue2 () {
+      this.v20190321.value2 = ["3"]
+    },
     loaddata() {
       this.bigData = bigData;
     },
@@ -174,6 +190,7 @@ export default {
       }
     },
     remoteMethod(query) {
+      console.log(query)
       if (query !== "") {
         this.loading1 = true;
         setTimeout(() => {

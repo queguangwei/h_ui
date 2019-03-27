@@ -14,7 +14,7 @@
       </div>
       <!-- 下拉输入框模拟（非远程搜索时渲染）  -->
       <span :class="[prefixCls + '-placeholder']" v-show="showPlaceholder && (!filterable ||showBottom)">{{ localePlaceholder }}</span>
-      <span :class="[prefixCls + '-selected-value']" v-show="!showPlaceholder && !multiple">{{ selectedSingle }}</span>
+      <span :class="[prefixCls + '-selected-value']" v-show="!showPlaceholder && !multiple && !(filterable && !showBottom)">{{ selectedSingle }}</span>
       <!-- 下拉输入框(远程搜索时渲染) -->
       <input
         type="text"
@@ -566,7 +566,7 @@
         this.options = options;
 
         if (init) {
-            if (!this.remote) {
+            if (!this.remote || this.isBlock) {
               this.updateSingleSelected(true, slot);
               this.updateMultipleSelected(true, slot);
             }
@@ -588,8 +588,8 @@
                   this.query = '';
               }
           }
-
           this.toggleSingleSelected(this.model, init);
+          
       },
       clearSingleSelect () {
         if(this.readonly || this.disabled) return;
@@ -1022,15 +1022,16 @@
           this.hideMenu();
         }else{
           this.model = value;
-
-          if (this.filterable) {
-            this.findChild((child) => {
-              if (child.value === value) {
-                if (this.query !== '') this.selectToChangeQuery = true;
-                this.lastQuery = this.query = child.label === undefined ? child.searchLabel : child.label;
-              }
-            });
-          }
+          // if (this.filterable && !this.showBorder) {
+            // this.query = value
+            // this.findChild((child) => {
+            //   console.log(child.value)
+            //   if (child.value === value) {
+            //     if (this.query !== '') this.selectToChangeQuery = true;
+            //     this.lastQuery = this.query = child.label === undefined ? child.searchLabel : child.label;
+            //   }
+            // });
+          // }
 
           this.hideMenu()
         }
@@ -1044,12 +1045,12 @@
           this.broadcast('Drop', 'on-update-popper');
         }
       },
-      setPlacement(){
+      setPlacement(top = 0){
         if(this.autoPlacement){
             let obj = this.$refs.select;
             let allWidth= document.body.clientWidth;
             let allHeight= document.body.clientHeight;
-            let curbottom =allHeight-obj.offsetTop-obj.clientHeight;
+            let curbottom =allHeight-obj.offsetTop-obj.clientHeight-top;
             let bottomNum = this.isCheckall?250:210;
             if(curbottom<bottomNum){
               this.fPlacement = 'top';
@@ -1143,6 +1144,13 @@
         this.tabIndex = -1;
       }
       this.setPlacement();
+      this.$on('on-visible-change', (val,top) => {
+        if(val){
+          this.$nextTick(()=>{
+            this.setPlacement(parseInt(top));
+          })
+        }
+      });
     },
     beforeDestroy () {
       off(document, 'keydown', this.handleKeydown);
@@ -1201,8 +1209,9 @@
               this.$refs.input.blur();
             }
             setTimeout(() => {
-              this.query='';
+              if (this.showBottom) {this.query='';}
               this.broadcastQuery('');
+
             }, 300);
           }
           setTimeout(() => {
@@ -1241,7 +1250,11 @@
         this.selectToChangeQuery = false;
         // this.broadcast('Drop', 'on-update-popper');
       },
-      selectedSingle(){
+      selectedSingle(val){
+        if(this.filterable&&!this.showBottom){                
+          this.query = val
+          if (this.query !== '') this.selectToChangeQuery = true;
+        }
         this.hideMenu();
       },
       options(val) {
