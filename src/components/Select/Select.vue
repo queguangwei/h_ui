@@ -1117,12 +1117,12 @@
           child.index = index++;
         })
       },
-      setPlacement(){
+      setPlacement(top = 0){
         if(this.autoPlacement){
             let obj = this.$refs.select;
             let allWidth= document.body.clientWidth;
             let allHeight= document.body.clientHeight;
-            let curbottom =allHeight-obj.offsetTop-obj.clientHeight;
+            let curbottom =allHeight-obj.offsetTop-obj.clientHeight-top;
             let bottomNum = this.isCheckall?250:210;
             if(curbottom<bottomNum){
               this.fPlacement = 'top';
@@ -1231,6 +1231,13 @@
         this.tabIndex = -1;
       }
       this.setPlacement();
+      this.$on('on-visible-change', (val,top) => {
+        if(val){
+          this.$nextTick(()=>{
+            this.setPlacement(parseInt(top));
+          })
+        }
+      });
     },
     beforeDestroy () {
       off(document,'keydown',this.handleKeydown)

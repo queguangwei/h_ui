@@ -1,19 +1,104 @@
 <template>
 <div>
-    <h-typefield v-model="test1" integerNum="3" type="money" placeholder="金额" bigTips focusAllSelect></h-typefield>
-    <h-typefield v-model="test2" integerNum="3" type="money" placeholder="金额" readonly focusAllSelect></h-typefield>
-    <h-typefield v-model="test3" integerNum="3" type="money" placeholder="金额" disabled focusAllSelect></h-typefield>
-       <h-typefield v-model="test4" type="cardNo" placeholder="卡号" bigTips focusAllSelect></h-typefield>
+    <h-button type="primary" @click="modal1 = true">显示对话框</h-button>
+    <br> <br> <br> <br> <br> <br> <br>
+      <h-select v-model="model9" style="width:200px" :autoPlacement=true>
+        <h-option value="beijing" label="北京市">
+            <span>北京</span>
+            <span style="float:right;color:#ccc">Beiing</span>
+        </h-option>
+        <h-option value="shanghai" label="上海市">
+            <span>上海</span>
+            <span style="float:right;color:#ccc">ShangHai</span>
+        </h-option>
+        <h-option value="shenzhen" label="深圳市">
+            <span>深圳</span>
+            <span style="float:right;color:#ccc">ShenZhen</span>
+        </h-option>
+        <h-option value="beijing1" label="北京市">
+            <span>北京</span>
+            <span style="float:right;color:#ccc">Beiing</span>
+        </h-option>
+        <h-option value="shanghai1" label="上海市">
+            <span>上海</span>
+            <span style="float:right;color:#ccc">ShangHai</span>
+        </h-option>
+        <h-option value="shenzhen1" label="深圳市">
+            <span>深圳</span>
+            <span style="float:right;color:#ccc">ShenZhen</span>
+        </h-option>
+        <h-option value="beijing2" label="北京市">
+            <span>北京</span>
+            <span style="float:right;color:#ccc">Beiing</span>
+        </h-option>
+        <h-option value="shanghai2" label="上海市">
+            <span>上海</span>
+            <span style="float:right;color:#ccc">ShangHai</span>
+        </h-option>
+        <h-option value="shenzhen2" label="深圳市">
+            <span>深圳</span>
+            <span style="float:right;color:#ccc">ShenZhen</span>
+        </h-option>
+      </h-select>
+      <h-simple-select autoPlacement></h-simple-select>
+    <h-msgBox
+        v-model="modal1"
+        title="普通的Modal对话框标题"
+        @on-ok="ok"
+        @on-cancel="cancel">
+           <br> <br> <br> <br> <br> <br> <br>   <br> <br> <br> <br> <br> <br> <br>
+     <h-select v-model="model9" style="width:200px" :autoPlacement=true>
+        <h-option value="beijing" label="北京市">
+            <span>北京</span>
+            <span style="float:right;color:#ccc">Beiing</span>
+        </h-option>
+        <h-option value="shanghai" label="上海市">
+            <span>上海</span>
+            <span style="float:right;color:#ccc">ShangHai</span>
+        </h-option>
+        <h-option value="shenzhen" label="深圳市">
+            <span>深圳</span>
+            <span style="float:right;color:#ccc">ShenZhen</span>
+        </h-option>
+                <h-option value="shanghai1" label="上海市">
+            <span>上海</span>
+            <span style="float:right;color:#ccc">ShangHai</span>
+        </h-option>
+        <h-option value="shenzhen1" label="深圳市">
+            <span>深圳</span>
+            <span style="float:right;color:#ccc">ShenZhen</span>
+        </h-option>
+        <h-option value="beijing2" label="北京市">
+            <span>北京</span>
+            <span style="float:right;color:#ccc">Beiing</span>
+        </h-option>
+        <h-option value="shanghai2" label="上海市">
+            <span>上海</span>
+            <span style="float:right;color:#ccc">ShangHai</span>
+        </h-option>
+        <h-option value="shenzhen2" label="深圳市">
+            <span>深圳</span>
+            <span style="float:right;color:#ccc">ShenZhen</span>
+        </h-option>
+    </h-select>
+    <h-simple-select autoPlacement transfer></h-simple-select>
+    </h-msgBox>
 </div>
 </template>
 <script>
     export default {
         data () {
             return {
-                test1: "33",
-                test2: "0",
-                test3: "0",
-                test4: "1111111111",
+                modal1: false,
+                   model9: ''
+            }
+        },
+        methods: {
+            ok () {
+                this.$hMessage.info('点击了确定');
+            },
+            cancel () {
+                this.$hMessage.info('点击了取消');
             }
         }
     }

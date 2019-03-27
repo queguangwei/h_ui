@@ -1,7 +1,6 @@
 function broadcast(componentName, eventName, params,params1) {
   this.$children.forEach(child => {
     const name = child.$options.name;
-
     if (name === componentName) {
       child.$emit.apply(child, [eventName].concat(params).concat(params1));
     } else {

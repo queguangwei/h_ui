@@ -139,7 +139,7 @@
       },
       updateVisibleData(scrollTop) {
         let itemHeight = Number(this.itemHeight);
-        scrollTop = scrollTop||this.lastScollTop;
+        scrollTop = scrollTop==undefined?this.lastScollTop:scrollTop;
         this.start = Math.floor(scrollTop / itemHeight);
         let i =0
         let j = this.start
@@ -207,7 +207,7 @@
               this.$set(item, 'focus', false)
             })
             this.$parent.$parent.updateOptions(true);
-            this.updateVisibleData();
+            this.updateVisibleData(0);
           })
         }
       },

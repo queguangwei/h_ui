@@ -234,7 +234,6 @@
                   placement="top"
                   width="200"
                   @on-blur="blurH"
-                   :showBottom="true"
                   filterable>
           <h-option :value="3">{{'<你>'}}</h-option>
           <h-option v-for="(item, index) in uList"
