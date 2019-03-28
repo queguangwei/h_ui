@@ -55,11 +55,12 @@
      <h-simple-select width="200"
       v-model="valueRemote1"
       filterable
-      remote          
+      remote      
       :remote-method="remoteMethod"
       >
-      <h-select-block :data="remoteData"></h-select-block>
-      <div slot="footer">我是fotter</div>
+      <h-select-block :data="remoteData" ref="block"></h-select-block>
+      <div slot="header">我是header</div>
+       <div slot="footer"><h-button @click = "changeData">已选置顶</h-button></div>
     </h-simple-select>
     <h-simple-select width="200"
       v-model="valueRemote"
@@ -70,7 +71,8 @@
       :remote-method="remoteMethod"
       >
       <h-select-block :data="remoteData"></h-select-block>
-      <div slot="footer">我是fotter</div>
+      <div slot="header">我是header</div>
+      <div slot="footer"><h-button @click = "changeData">已选置顶</h-button></div>
     </h-simple-select>
   </div>
 </template>
@@ -202,6 +204,9 @@ export default {
       } else {
         this.remoteData = bigData;
       }
+    },
+    changeData () {
+      this.$refs.block.selectedTop();
     }
   },
   mounted() {

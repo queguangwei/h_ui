@@ -64,6 +64,10 @@
               ref="input">
             <!-- <input type="text" placeholder="请输入..." class="h-input h-input-left">  -->
           </span>
+          <div v-if="showHeader" :class="headerSlotCls">
+            <slot name="header">
+            </slot>
+          </div>
           <div v-if="!isBlock" v-show="(!notFound && !remote) || (remote && !loading && !notFound)" :class="[prefixCls + '-dropdown-list']" :style="listStyle" ref='list' @scroll="handleSelectScroll"><slot></slot>
             <ul v-show="isComputed" :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>
           </div>
@@ -290,11 +294,13 @@
       },
       listStyle(){
         let style = {};
-        if (this.showBorder) {
-          style.paddingTop=this.showBottom?'52px':'0';
-        }else{
-          style.paddingTop=this.showBottom?'38px':'0';
-        }
+        if(!this.showHeader){
+          if (this.showBorder) {
+            style.paddingTop=this.showBottom?'52px':'0';
+          }else{
+            style.paddingTop=this.showBottom?'38px':'0';
+          }
+        } 
         return style;
       },
       classes () {
@@ -423,6 +429,15 @@
       showFooter () {
         return this.$slots.footer 
       },
+      showHeader () {
+        return this.$slots.header 
+      },
+      headerSlotCls () {
+        return {
+          [`${prefixCls}-header-slot-top`]:this.showBottom,
+          [`${prefixCls}-header-slot`]:!this.showBottom
+        } 
+      }
     },
     methods: {
       handleclick(e){
@@ -541,7 +556,7 @@
         this.findChild((child) => {
           let data=[];
           if(_this.isBlock){
-            data = child.data;
+            data = child.cloneData;
             data.forEach((col,i)=>{
               options.push({
                 value:col.value,
@@ -733,7 +748,7 @@
 
           this.findChild((child) => {
             if(this.isBlock){
-              this.options.forEach((col,i)=>{
+              _this.options.forEach((col,i)=>{
                 let index = value.indexOf(col.value);
                 if(index>-1){
                   this.$set(child.cloneData[i],'selected',true);
