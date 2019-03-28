@@ -464,3 +464,10 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
         border: 1px solid #F7F7F7 !important
     }
 }
+.#{$selectTable-prefix-cls}-header-slot{
+    border-bottom: 1px solid #e1e1e1;
+}
+.#{$selectTable-prefix-cls}-header-slot-top{
+    border-bottom: 1px solid #e1e1e1;
+    margin-top:52px;
+}

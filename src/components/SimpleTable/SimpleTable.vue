@@ -894,6 +894,10 @@ export default {
     },
     handleResize () {
       this.$nextTick(() => {
+        this.$refs.content.style.transform = `translate3d(0, ${this.$refs.body.scrollTop}px, 0)`;
+        if (this.$refs.leftContent) {
+          this.$refs.leftContent.style.transform = `translate3d(0, ${this.$refs.body.scrollTop}px, 0)`;
+        }
         let width = this.$refs.body.getBoundingClientRect().width;
         let conentWidth = this.$refs.body.scrollWidth;
         this.isScrollX = conentWidth + this.scrollBarWidth > width ? true :false
