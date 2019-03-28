@@ -929,9 +929,6 @@ export default {
     },
     changeHover(_index,status){
       this.$nextTick(()=>{
-        // if (!this.rebuildData||this.rebuildData.length==0)return false;
-        // if (!this.rebuildData[_index]) _index=0;
-        // let index = this.rebuildData[_index]._index; 
         if (!this.objData[_index]) return false;
         this.objData[_index]._isHover=status;
       })

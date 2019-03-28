@@ -44,6 +44,6 @@ import renderHeader from './header';
       handleSort(index,type){
         this.$parent.handleSort(index,type);
       }
-    }
+    },
   };
 </script>

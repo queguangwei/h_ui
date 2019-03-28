@@ -331,6 +331,10 @@ export default {
       default:false,
     },
     addData: Array, // 追加数据
+    lastColWidth:{
+      type:[Number,String],
+      default:80,
+    },
   },
   data () {
     return {
@@ -724,7 +728,7 @@ export default {
             const columnWidth = finalLeft - startColumnLeft;
             let dragWidth = finalLeft - startLeft;//>0为输入框增大，<0为减小
             if (dragWidth>=0) {
-              lastWidth = (lastWidth-dragWidth)>=80?(lastWidth-dragWidth):80;
+              lastWidth = (lastWidth-dragWidth)>=this.lastColWidth?(lastWidth-dragWidth):this.lastColWidth;
             }else{
               if (headWidth>=tableWidth) {//此时有滚动条
                 if (headWidth+dragWidth<=tableWidth) {

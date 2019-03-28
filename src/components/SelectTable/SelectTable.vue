@@ -18,7 +18,7 @@
       <!-- 下拉输入框(远程搜索时渲染) -->
       <input
         type="text"
-        v-if="filterable && !showBottom && selectedMultiple.length==0"
+        v-if="filterable && !showBottom"
         v-model="query"
         :disabled="disabled"
         :readonly = "!editable||readonly"
@@ -440,6 +440,9 @@
       }
     },
     methods: {
+      selectedTop(){
+        this.broadcast('Block', 'on-select-top');
+      },
       handleclick(e){
         e.stopPropagation();
       },
@@ -1247,9 +1250,9 @@
             });
         } else {
             if (!this.selectToChangeQuery) {
-                this.$emit('on-query-change', val);
+              this.$emit('on-query-change', val);
+              this.broadcastQuery(val);
             }
-            this.broadcastQuery(val);
             if(!this.isBlock){
               if (this.filterable&&val) {
                 this.$nextTick(()=>{

@@ -182,6 +182,9 @@
       this.$on('on-query-change', (val) => {
         this.queryChange(val);
       });
+      this.$on('on-select-top', () => {
+        this.selectedTop();
+      });
 
       // v20190321
       this.$on('on-focus-index-change', index => {
