@@ -499,7 +499,7 @@ export default {
       let height = this.headerRealHeight;
       if(height <=0 ) return ;
       let curHeight =  getStyle(this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0],'height');
-      if(curHeight==='auto'&&this.multiLevel.length>0){
+      if(curHeight==='auto'&&this.multiLevel&&this.multiLevel.length>0){
         curHeight = height/(this.multiLevel.length) -1;
       }else{
         curHeight = parseInt(curHeight)-1;
