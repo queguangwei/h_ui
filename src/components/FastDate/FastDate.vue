@@ -560,6 +560,13 @@ export default {
     },
     placement(val){
       this.fPlacement = val;
+    },
+    isFocus(val) {
+      if (val) {
+        this.$emit('on-focus');
+      } else {
+        this.$emit('on-blur');
+      }
     }
   },
   mounted(){

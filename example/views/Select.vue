@@ -712,6 +712,7 @@ export default {
         value: '',
         value1: ''
       },
+      options2:[],
     }
   },
   methods: {

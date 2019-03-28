@@ -123,7 +123,7 @@
         }
         this.$nextTick(()=>{
           if(val){
-            this.updateVisibleData(1);
+            this.updateVisibleData(0);
           }else{
             this.updateVisibleData();
           }
@@ -158,6 +158,18 @@
         this.visibleData = this.cloneData.filter(item => !item.hidden).slice(this.start, this.end);
         this.$refs.content.style.transform = `translate3d(0, ${ this.start * itemHeight }px, 0)`;
       },
+      selectedTop(){
+        this.cloneData.sort((a,b)=>{
+          if(a.selected && !b.selected){
+            return -1
+          }else{
+            return 0
+          }
+        })
+        this.$refs.block.scrollTop = 0;
+        this.updateVisibleData(0);
+        this.$parent.$parent.updateOptions();
+      }
     },
     mounted () {
       var str=this.$el.innerText
