@@ -27,11 +27,11 @@
   {{model2}}
   <h1>筛选框在上</h1>
   <h2>模糊多列匹配</h2>
-  <h-select-table v-model="model3" :filterable="true" matchable :matchCol="matchCol" :multiple="true" isCheckall ref="test" placement="bottom-start" :dropWidth='800'>
+  <h-select-table v-model="model3" :filterable="true"  matchable :matchCol="matchCol" :multiple="true" isCheckall ref="test" placement="bottom-start" :dropWidth='800'>
     <h-table-option border :columns="columns1" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange"></h-table-option>
   </h-select-table>
   <h2>左列多列搜索</h2>
-  <h-select-table v-model="model4" :filterable="true" :matchCol="matchCol" matchWay="left" placement="top-start">
+  <h-select-table v-model="model4" :filterable="true" :matchCol="matchCol"  matchWay="left" placement="top-start">
     <h-table-option border :columns="columns1" :data="data1" @on-select-all="allSelect" @on-select="select" @on-selection-change="selsetChange" :highlightRow="true"></h-table-option>
   </h-select-table>
   <h2>全匹配多列搜索</h2>

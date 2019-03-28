@@ -13,7 +13,7 @@
           :key="index"
           :class="alignCls(column)" 
           >
-          <div>
+          <div :class="[`${prefixCls}-cell`]">
             <!-- <Checkbox v-if="headSelection&&!index" @on-change="selectAll" class="asyc-check"></Checkbox> -->
             <template>
               <span v-if="!column.renderHeader" @click="handleSortByHead(index)">{{ column.title || '#' }}</span>

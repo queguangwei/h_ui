@@ -19,8 +19,6 @@
                      isArrow="false"
                      multiple
                      placeholder="123"
-                     showBottom
-                     style="width:200px"
                      transfer
                      v-model="value1"
                      widthAdaption>
@@ -57,8 +55,9 @@
       filterable
       remote      
       :remote-method="remoteMethod"
+      ref="block"
       >
-      <h-select-block :data="remoteData" ref="block"></h-select-block>
+      <h-select-block :data="remoteData"></h-select-block>
       <div slot="header">我是header</div>
        <div slot="footer"><h-button @click = "changeData">已选置顶</h-button></div>
     </h-simple-select>

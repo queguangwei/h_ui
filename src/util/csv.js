@@ -49,7 +49,7 @@ export default function csv(columns, datas, options, noHeader = false) {
                 row = columnOrder.map((key, index) =>{
                     let exportVal = ''
                     if (columns && columns.length > 0 && columns[index].exportRender) {
-                        exportVal =  columns[index].exportRender(row[key])
+                        exportVal =  columns[index].exportRender(row[key], row)
                     } else {
                         exportVal = typeof row[key] !== 'undefined' ? row[key] : ''
                     }
