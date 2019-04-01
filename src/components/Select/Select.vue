@@ -952,7 +952,7 @@
 
           }
           if (curTop != top) {
-            scrollAnimate(this.$refs.content,curTop,top);
+            this.$refs.content.scrollTop = top;
           }
           this.resetScrollTop();
 
