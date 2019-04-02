@@ -1008,9 +1008,6 @@ export default {
     editdateChange(val,i,j){
       this.$emit('on-editdate-change',val,i,j);
     },
-    editdateBlur(val,i,j){
-      this.$emit('on-editdate-blur',val,i,j);
-    },
     initResize(){
       this.$nextTick(() => {
         this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
