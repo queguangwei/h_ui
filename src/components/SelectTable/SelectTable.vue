@@ -1227,6 +1227,7 @@
               this.$refs.input.blur();
             }
             setTimeout(() => {
+              if(this.remote&&this.remoteMethod) return ;
               if (this.showBottom) {this.query='';}
               this.broadcastQuery('');
 
