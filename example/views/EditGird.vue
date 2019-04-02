@@ -6,7 +6,18 @@
     <Button @click="delDate">删除数据</Button>
     <!-- <Button @click="changeMsg">显示</Button> -->
     <!-- <h-msg-box v-model = "showMsgBox" width="1000"> -->
-      <h-edit-gird ref="table" border height="200" :columns="columns1" :data="data2" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" stripe :loading="loading" @on-expand="expand" :option="options1" :treeOption="treeOption" @on-editselect-change="selectchange" @on-editinput-change="selectchange" @on-editinput-blur="selectchange" @on-editarea-change="selectchange" @on-editarea-blur="selectchange" @on-money-blur="selectchange" @on-money-change="selectchange">
+      <h-edit-gird ref="table" border height="200" 
+        :columns="columns1" 
+        :data="data2" 
+        :disabled-hover="true" 
+        :highlight-row="true" 
+        @on-current-change="click1" 
+        stripe 
+        :loading="loading" 
+        @on-expand="expand" 
+        :option="options1" 
+        :treeOption="treeOption" 
+        @on-editdate-blur="selectchange">
         <p slot='loading'>我是自定义loading</p>
       </h-edit-gird>
     <!-- </h-msg-box> -->
