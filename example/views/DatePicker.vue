@@ -2,7 +2,7 @@
   <div>
     <Button @on-click="testClick(true)">获取焦点</Button>
     <Button @on-click="testClick(false)">失去焦点</Button>
-    <h-date-picker v-model="model1" :options="options5" @on-illegal-input="handleIllegalInput" clearOnIllegal @on-change="handleChange1" confirm showTwoPanel format="yyyy-MM-dd" :showFormat="true" style="width:180px" :disabled="changeable" ref="test"></h-date-picker>
+    <h-date-picker v-model="model1" @on-blur="dateBlur" :options="options5" @on-illegal-input="handleIllegalInput" clearOnIllegal @on-change="handleChange1" confirm showTwoPanel format="yyyy-MM-dd" :showFormat="true" style="width:180px" :disabled="changeable" ref="test"></h-date-picker>
     <span>{{formItem.date}}</span>
     <Button @click = "changedis">改变状态</Button>
     <h-row>
@@ -241,6 +241,9 @@
     methods:{
       handleIllegalInput() {
         this.$hMessage.warning('日期输入不合法');
+      },
+      dateBlur() {
+        console.log('blur')
       },
       testClick(val){
         if (val) {

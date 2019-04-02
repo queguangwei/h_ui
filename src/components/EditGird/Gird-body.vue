@@ -38,7 +38,6 @@
               @on-typefield-blur="typefieldBlur"
               @on-typefield-change="typefieldChange"
               @on-editdate-change="editdateChange"
-              @on-editdate-blur="editdateBlur"
             ></Cell>
           </td>
         </table-tr>
@@ -343,9 +342,6 @@
         },
         editdateChange(val,i,j){
           this.$parent.editdateChange(val,i,j)
-        },
-        editdateBlur(val,i,j){
-          this.$parent.editdateBlur(val,i,j)
         },
       },
       mounted(){

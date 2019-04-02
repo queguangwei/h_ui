@@ -268,6 +268,7 @@
         if (this.isFocus) {
             this.dispatch('FormItem', 'on-form-blur', this.currentValue);
             this.isFocus = false
+            this.$emit('on-blur')
         }
       },
       handleFocus () {

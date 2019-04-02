@@ -1,3 +1,4 @@
+
 <template>
 <div>
   <h-msg-box v-model="changeform" width="900" escClose left="10" > 
@@ -61,6 +62,7 @@ import Ceshi from './ceshi.vue'
     },
   }
 </script>
+
 <!--<template>
 <div>
     <h-table :columns="columns8" :data="data7" size="small" ref="table" :multiLevel="multiLevel"></h-table>

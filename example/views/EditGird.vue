@@ -17,7 +17,14 @@
         @on-expand="expand" 
         :option="options1" 
         :treeOption="treeOption" 
-        @on-editdate-blur="selectchange">
+        @on-editselect-change="selectchange"
+        @on-editinput-change="selectchange"
+        @on-editinput-blur="selectchange" 
+        @on-editarea-change="selectchange" 
+        @on-editarea-blur="selectchange" 
+        @on-money-blur="selectchange" 
+        @on-money-change="selectchange"
+        @on-editdate-change="selectchange">
         <p slot='loading'>我是自定义loading</p>
       </h-edit-gird>
     <!-- </h-msg-box> -->

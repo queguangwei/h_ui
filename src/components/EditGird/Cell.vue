@@ -72,7 +72,6 @@
         :showFormat = "true"
         :transfer="column.transfer"
         @on-change = "editdateChange"
-        @on-blur = "editdateBlur"
         class="canEdit"></Date>
       </template>
       <template v-if="renderType === 'time'">
@@ -373,10 +372,6 @@ export default {
     },
     editdateChange(val){
       this.$emit('on-editdate-change',val,this.columnIndex,this.index);
-    },
-    editdateBlur(){
-      debugger;
-      this.$emit('on-editdate-blur',this.columnText,this.columnIndex,this.index);
     },
     editinputChange(){
       this.$emit('on-editinput-change',this.columnText,this.columnIndex,this.index);
