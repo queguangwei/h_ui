@@ -863,7 +863,7 @@
             let curTop = child.$el.scrollTop
             let itemHeight = child.itemHeight
             let top = itemHeight * (this.focusIndex - 1)
-            scrollAnimate(child.$el, curTop + 1, top);
+            child.$el.scrollTop = top;
           });
           return
         }
