@@ -339,7 +339,6 @@ export default {
           ? this.currentValue.toFixed(this.precision)
           : this.currentValue
       }
-
     }
   },
   mounted() {
