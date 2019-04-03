@@ -115,8 +115,8 @@ export default {
       type: Boolean,
       default: false
     },
-    // 以string方式显示值，即0.0000007不以科学计数法7e-7展示，实际值依然是数字
-    viewString: {
+    // 不使用科学计数法显示
+    notScientificNotation: {
       type: Boolean,
       default: false
     }
@@ -247,8 +247,10 @@ export default {
     },
     setValue(val) {
       // 如果 step 是小数，且没有设置 precision，是有问题的
-      if (!isNaN(this.precision))
+      if (!isNaN(this.precision)) {
         val = Number(Number(val).toFixed(this.precision))
+        isNaN(val) && (val = 0)
+      }
       this.$nextTick(() => {
         this.currentValue = val
         this.$emit('input', val)
@@ -308,7 +310,7 @@ export default {
         //     this.setValue(val);
         // }
       } else {
-        event.target.value = this.currentValue
+        event.target.value = this.viewValue
       }
     },
     changeVal(val) {
@@ -327,7 +329,7 @@ export default {
      * @description 计算显示值
      */
     calcViewValue() {
-      if (this.viewString) {
+      if (this.notScientificNotation) {
         let s = scientificNotationToString(this.currentValue)
         this.viewValue = this.precision
           ? toFixedForString(s, this.precision)

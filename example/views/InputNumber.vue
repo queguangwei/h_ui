@@ -41,9 +41,9 @@
                     :disabled="disabled"></h-input-number>
     <h-button type="primary"
               @click="disabled = !disabled">Toggle Disabled</h-button>
-    <h1>2019/04/04</h1>
-    <h-input-number viewString :precision="4" v-model="value7"></h-input-number>
-    <h-input-number viewString v-model="value8"></h-input-number>
+    <h1>2019/04/04 notScientificNotation props</h1>
+    <h-input-number notScientificNotation :precision="4" v-model="value7"></h-input-number>
+    <h-input-number notScientificNotation v-model="value8"></h-input-number>
   </div>
 </template>
 
