@@ -808,7 +808,8 @@ export function scientificNotationToString(param) {
 * @decription 字符串的toFixed实现
 */
 export function toFixedForString(str, num) {
-  if (num < 1) return
+  if (num < 1) return str
+  if (/[^\d\.-]/.test(str)) return str
 
   let decimal = str.replace(/^[\d-]+\.?/, '')
   decimal = decimal.padEnd(num, 0)
