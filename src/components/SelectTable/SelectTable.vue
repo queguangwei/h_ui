@@ -1227,7 +1227,8 @@
               this.$refs.input.blur();
             }
             setTimeout(() => {
-              if (this.showBottom) {this.query='';}
+              if(this.remote&&this.remoteMethod) return ;
+              if (this.showBottom || this.multiple) {this.query='';}
               this.broadcastQuery('');
 
             }, 300);

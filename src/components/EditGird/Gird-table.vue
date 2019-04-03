@@ -1005,6 +1005,9 @@ export default {
     typefieldChange(val,i,j){
       this.$emit('on-money-change',val,i,j);
     },
+    editdateChange(val,i,j){
+      this.$emit('on-editdate-change',val,i,j);
+    },
     initResize(){
       this.$nextTick(() => {
         this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 

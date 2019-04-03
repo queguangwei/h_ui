@@ -950,7 +950,6 @@ export default {
     },
     toggleExpand (_index) {
         let data = {};
-
         for (let i in this.objData) {
             if (parseInt(i) === _index) {
                 data = this.objData[i];
@@ -1352,12 +1351,11 @@ export default {
             if (!('original' in params)) params.original = true;
             datas = params.original ? this.data : this.rebuildData;
         }
-
+        
         let noHeader = false;
         if ('noHeader' in params) noHeader = params.noHeader;
 
-        // const data = Csv(columns, datas, ',', noHeader);
-        const data = Csv(columns, datas, params, noHeader);
+        const data = Csv(columns, datas, params, noHeader,);
         ExportCsv.download(params.filename, data);
     },
     moveUp(colIndex){
@@ -1387,7 +1385,7 @@ export default {
   },
   mounted () {
     this.$on('on-expand',()=>{
-      this.$nextTick(()=>{
+      this.$nextTick(()=>{//会引起render多次执行
         this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
         this.handleResize();
       })

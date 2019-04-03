@@ -176,13 +176,6 @@
 
         });
       },
-      // filterData(arr){
-      //   let filterData = []
-      //   arr.forEach(col=>{
-      //     filterData.push(this.data[col])
-      //   })
-      //   this.rebuildData = filterData;
-      // }
     },
     mounted () {
       this.dispatch('SelectTable', 'append');
@@ -208,10 +201,11 @@
       matchArr(val){
         if (!this.matchable) {
           let filterData = []
+          let curData = this.$refs.table.makeData();
           val.forEach((i)=>{
-            filterData.push(this.data[i]);
+            filterData.push(curData[i]);
           })
-          this.rebuildData = filterData;
+          this.$refs.table.rebuildData = filterData;
           this.$nextTick(()=>{
             this.$parent.$parent.updateOptions(false);
           })
