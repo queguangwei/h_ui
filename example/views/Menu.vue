@@ -48,7 +48,8 @@
       <br>
       <h-row>
       <h-col span="8">
-          <h-menu  mode="vertical" :theme="theme2"  active-name="2" :open-names="openName" :accordion="false" @on-open-change="openChange" :width="120" @on-select="s">
+        <h-menu  mode="vertical" :theme="theme2"  active-name="2" :open-names="openName" :accordion="true" @on-open-change="openChange" :width="120" @on-select="s">
+          <div>
           <h-submenu name="1">
               <template slot="title">
                   <h-icon name="ios-paper"></h-icon>
@@ -81,7 +82,9 @@
                   <h-menu-item name="3-5">流失用户</h-menu-item>
               </h-menu-group>
           </h-submenu>
-          </h-menu>
+          <h-menu-item name="4">文章管理4</h-menu-item>
+        </div>
+        </h-menu>
           <Button @on-click="setOpen">动态设置openName</Button>
       </h-col>
       <h-col span="8">

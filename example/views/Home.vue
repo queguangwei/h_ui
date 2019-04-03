@@ -2,7 +2,7 @@
   <div>
     <!-- <h-msg-box v-model="changeform" width="900" escClose left="10" closeDrop> -->
     <Button @on-click="changeSelect"></Button>
-      <h-form ref="formItem1" :model="formItem1" :label-width="80" errorFocus cols="3">
+      <h-form ref="formItem1" :model="formItem1" :label-width="80" errorFocus cols="0">
         <h-form-item label="日期控件">
           <h-row>
             <h-col span="11">

@@ -70,9 +70,10 @@
       :remote-method="remoteMethod"
       >
       <h-select-block :data="remoteData"></h-select-block>
-      <div slot="header">我是header</div>
+      <!-- <div slot="header">我是header</div> -->
       <div slot="footer"><h-button @click = "changeData">已选置顶</h-button></div>
     </h-simple-select>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
   </div>
 </template>
 <script>
