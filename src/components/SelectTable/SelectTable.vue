@@ -594,13 +594,15 @@
           const type = typeof this.model;
           if (type === 'string' || type === 'number') {
               let findModel = false;
+              let curSingle = ''
               for (let i = 0; i < this.options.length; i++) {
                   if (this.model === this.options[i].value) {
-                      this.selectedSingle = this.options[i].label;
+                      curSingle = this.options[i].label;
                       findModel = true;
                       break;
                   }
               }
+              this.selectedSingle = curSingle;
               if (slot && !findModel) {
                   this.model = '';
                   this.query = '';

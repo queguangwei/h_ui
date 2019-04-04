@@ -1774,6 +1774,18 @@ export default {
           this.curPageFirstIndex = 0
         }
       }
-  }
+  },
+  activated() {
+    if (this.keepAliveFlag) {
+      this.handleResize();
+      on(window, 'resize', this.handleResize);
+    }
+    this.keepAliveFlag = true    
+  },
+  deactivated() {
+    if (this.keepAliveFlag) {
+      off(window, 'resize', this.handleResize);
+    }
+  },
 };
 </script>
