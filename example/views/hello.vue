@@ -1,5 +1,25 @@
 
-<template>
+ <template>
+  <div>
+    <h-input v-model="value" placeholder="请输入..." style="width: 300px"  @on-keypress="t3"></h-input>
+ <span>{{value}}</span> </div>
+</template>
+<script>
+    export default {
+        data () {
+            return {
+                value: ''
+            }
+        },
+         methods: {
+               t3(){
+              console.log("原生的 keypress 事件");
+            },
+        }
+    }
+</script>
+
+<!--<template>
 <div>
   <h-msg-box v-model="changeform" width="900" escClose left="10" > 
     <h-simple-table :columns="columns1" :data="data1"></h-simple-table>
@@ -62,7 +82,7 @@ import Ceshi from './ceshi.vue'
     },
   }
 </script>
-
+-->
 <!--<template>
 <div>
     <h-table :columns="columns8" :data="data7" size="small" ref="table" :multiLevel="multiLevel"></h-table>

@@ -568,7 +568,7 @@
               })
             })
           }else{
-            data =  child.rebuildData;
+            data =  child.$refs.table.rebuildData;
             data.forEach((col,i)=>{
               options.push({
                 value: _this.getFormatValue(col),
@@ -876,7 +876,6 @@
             child.$refs.table.changeHover(this.focusIndex-1,false);
           });
         }
-
         if (direction === 'next') {
             const next = this.focusIndex + 1;
             this.focusIndex = (this.focusIndex === this.options.length) ? 1 : next;
@@ -1230,9 +1229,8 @@
             }
             setTimeout(() => {
               if(this.remote&&this.remoteMethod) return ;
-              if (this.showBottom || this.multiple) {this.query='';}
+              if (this.showBottom || this.multiple || this.query!==this.selectedSingle) {this.query='';}
               this.broadcastQuery('');
-
             }, 300);
           }
           setTimeout(() => {
