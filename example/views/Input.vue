@@ -144,8 +144,8 @@
 
     </h-input>
 
-    <h1>2019/04/04 type = number</h1>
-    <h-input type="number"
+    <h1>2019/04/04 type = int</h1>
+    <h-input type="int"
              v-model="v20190404.value"></h-input>
   </div>
 </template>
