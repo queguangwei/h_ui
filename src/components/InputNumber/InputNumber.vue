@@ -348,9 +348,12 @@ export default {
     this.append = this.$slots.append !== undefined
   },
   watch: {
-    value(val) {
-      this.currentValue = val < this.min ? this.min : val
-      this.calcViewValue()
+    value: {
+      immediate: true,
+      handler: function(val) {
+        this.currentValue = val < this.min ? this.min : val
+        this.calcViewValue()
+      }
     },
     currentValue(val) {
       this.changeVal(val)
