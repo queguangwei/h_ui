@@ -28,6 +28,7 @@ module.exports = {
     'space-before-function-paren': ['error', 'never'],
     // 逗号风格 行尾
     'comma-style': [2, 'last'],
-    'vue/use-v-on-exact': 0
+    'vue/use-v-on-exact': 0,
+    'no-useless-escape': 0
   }
 }
