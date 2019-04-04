@@ -60,7 +60,7 @@ export default {
       disabled: true,
       value6: 1,
       value7: 0,
-      value8: 0
+      value8: 0.0000007
     }
   },
   watch: {
