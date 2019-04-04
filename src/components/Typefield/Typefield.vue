@@ -273,7 +273,9 @@ export default {
       }
       this.bigShow(this.type,this.bigTips,this.inputValue)
       if(this.focusAllSelect && this.type==='money'){
-        this.$refs.input.select();
+        this.$nextTick(()=>{
+          this.$refs.input.select();
+        })
       }
       this.$emit('on-focus',e)
     },

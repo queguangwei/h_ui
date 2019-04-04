@@ -1,6 +1,6 @@
 <template>
   <div class="ceshi-demo">
-    <h1>SimpleSelect组件</h1>
+    <!-- <h1>SimpleSelect组件</h1>
     <p>选择器支持单选、多选、搜索，以及键盘快捷操作。</p>
     <h1>selectBlock测试用例</h1>
     {{value2}}
@@ -72,7 +72,7 @@
       <h-select-block :data="remoteData"></h-select-block>
       <!-- <div slot="header">我是header</div> -->
       <div slot="footer"><h-button @click = "changeData">已选置顶</h-button></div>
-    </h-simple-select>
+    <!-- </h-simple-select> --> -->
     <h1>测试</h1>
     <h-simple-select 
                      filterable
