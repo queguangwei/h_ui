@@ -17,7 +17,7 @@
               v-if="!icon"></Icon>
       </transition>
       <input ref="input"
-             :type="type !== 'number' ? type : 'text'"
+             :type="type"
              :class="inputClasses"
              :placeholder="placeholder"
              :disabled="disabled"
@@ -101,7 +101,7 @@ export default {
   props: {
     type: {
       validator(value) {
-        return oneOf(value, ['text', 'textarea', 'password', 'number'])
+        return oneOf(value, ['text', 'textarea', 'password', 'int'])
       },
       default: 'text'
     },
@@ -302,11 +302,6 @@ export default {
     },
     handleBlur(event) {
       let value = event.target.value
-      // if (this.type === 'number') {
-      //   value = value.replace(/[^\d\.-]/g, '')
-      //   let _value = Number(value)
-      //   isNaN(_value) && (event.target.value = value.replace(/[^\d]/g, ''))
-      // }
 
       if (this.specialFilter && value.charAt(value.length - 1) == '.') {
         value = value.replace('.', '')
@@ -342,11 +337,13 @@ export default {
         event.target.value = value
       }
 
-      if (this.type === 'number') {
-        if (!isNaN(Number(value))) {
-          event.target.value = value.replace(/[^\d\.-]/g, '')
-        } else {
+      if (this.type === 'int') {
+        console.log(value, this.currentValue)
+        if (isNaN(Number(value)) && value !== '-' ) {
           value = this.currentValue
+        } else if (value !== '' && value !== '-') {
+          value = value.replace(/[^\d-]/g, '').replace(/^(-?)0*/, '$1')
+          value === '' && (value = '0')
         }
 
         event.target.value = value
@@ -371,6 +368,7 @@ export default {
         // value = curvalue;
         event.target.value = value
       }
+
       if (this.lengthByByte) {
         let bytesCount = 0
         for (var i = 0; i < value.length; i++) {
@@ -388,6 +386,7 @@ export default {
           }
         }
       }
+
       this.$emit('input', value)
       this.setCurrentValue(value)
       this.$emit('on-change', event)
