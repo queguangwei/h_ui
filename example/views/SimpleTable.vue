@@ -60,7 +60,6 @@ let tData =require('../assets/aa.json');
 for (let i = 0; i < 1; i++) {
       jsonData =tData.slice(0,500);
     }
-console.log(jsonData.length);
 export default {
 
   components:{TexpandRow},
@@ -243,18 +242,19 @@ export default {
           title: '姓名',
           key: 'name',
           render: (h, params) => {
-            if (params.row._index==1) {
-              return h('div', [
-                h('h-icon', {
-                  props: {
-                    name: 'addressbook'
-                  }
-                }),
-                h('strong', params.row.name)
-              ]);
-            }else{
-              return h('span',params.row.name)
-            }
+            return h('div',params.row.name+'1')
+            // if (params.row._index==1) {
+            //   return h('div', [
+            //     h('h-icon', {
+            //       props: {
+            //         name: 'addressbook'
+            //       }
+            //     }),
+            //     h('strong', params.row.name)
+            //   ]);
+            // }else{
+            //   return h('span',params.row.name)
+            // }
           },
           renderHeader:(h, params)=>{
             return h('span','123')
@@ -491,7 +491,8 @@ export default {
       }
     },
     setLoading(){
-      this.loading = !this.loading;
+      this.$set(this.bigData[0],'fundId','sheishi')
+      // this.loading = !this.loading;
     },
     click1 (selection) {
       console.log(selection);
@@ -687,6 +688,10 @@ export default {
           // fixed:'left',
           renderHeader:(h, params)=>{
             return h('span','123')
+          },
+          render:(h, params)=>{
+            return h('span',params.row.fundId+' 123')
+            // return params.row.fundId+' 123'
           }
           // hiddenCol:true,
           // align: 'center',
