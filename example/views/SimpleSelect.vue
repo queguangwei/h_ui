@@ -1,6 +1,6 @@
 <template>
   <div class="ceshi-demo">
-    <h1>SimpleSelect组件</h1>
+    <!-- <h1>SimpleSelect组件</h1>
     <p>选择器支持单选、多选、搜索，以及键盘快捷操作。</p>
     <h1>selectBlock测试用例</h1>
     {{value2}}
@@ -72,6 +72,15 @@
       <h-select-block :data="remoteData"></h-select-block>
       <!-- <div slot="header">我是header</div> -->
       <div slot="footer"><h-button @click = "changeData">已选置顶</h-button></div>
+    <!-- </h-simple-select> --> -->
+    <h1>测试</h1>
+    <h-simple-select 
+                     filterable
+                     v-model="ceshi1"
+                     transfer
+                     widthAdaption>
+      <h-select-block :data="ceshiData"
+                     ></h-select-block>
     </h-simple-select>
     <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
   </div>
@@ -138,6 +147,8 @@ export default {
       remoteData:[],
       valueRemote:[],
       valueRemote1:'',
+      ceshi1:'',
+      ceshiData:[]
     };
   },
   methods: {
@@ -215,6 +226,7 @@ export default {
       this.value = "value0";
       this.value1 = ["value0"];
     }, 1000);
+    this.ceshiData = [{"label":"GSLC-12(CW)","value":"GSLC-12"},{"label":"GSLC-13(CW)","value":"GSLC-13"},{"label":"GSLC-14(CW)","value":"GSLC-14"},{"label":"GSLC-15(CW)","value":"GSLC-15"},{"label":"GSLC-01(CW)","value":"GSLC-01"},{"label":"GSLC-02(CW)","value":"GSLC-02"},{"label":"GSLC-03(CW)","value":"GSLC-03"},{"label":"GSLC-04(CW)","value":"GSLC-04"},{"label":"GSLC-05(CW)","value":"GSLC-05"},{"label":"GSLC-06(CW)","value":"GSLC-06"},{"label":"GSLC-07(CW)","value":"GSLC-07"},{"label":"GSLC-08(CW)","value":"GSLC-08"},{"label":"GSLC-09(CW)","value":"GSLC-09"},{"label":"GSLC-10(CW)","value":"GSLC-10"},{"label":"GSLC-11(CW)","value":"GSLC-11"},{"label":"JZLC-01(CW)","value":"JZLC-01"},{"label":"JZLC-02(CW)","value":"JZLC-02"},{"label":"JZLC-03(CW)","value":"JZLC-03"},{"label":"JZLC-04(CW)","value":"JZLC-04"},{"label":"JZLC-05(CW)","value":"JZLC-05"},{"label":"JZLC-06(CW)","value":"JZLC-06"},{"label":"JZLC-07(CW)","value":"JZLC-07"},{"label":"JZLC-08(CW)","value":"JZLC-08"},{"label":"JZLC-09(CW)","value":"JZLC-09"},{"label":"JZLC-10(CW)","value":"JZLC-10"},{"label":"JZLC-11(CW)","value":"JZLC-11"}]
   },
   watch: {
     data1() {}

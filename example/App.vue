@@ -241,7 +241,6 @@
     
   </div>  
 </template>
-
 <script>
 export default {
   name: 'app',
@@ -269,6 +268,8 @@ export default {
     //     this.page = ''
     //   }
     // }
+  },
+  mounted(){
   }
   
 }
