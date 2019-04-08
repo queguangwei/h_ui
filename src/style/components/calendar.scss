@@ -11,7 +11,7 @@ $calendar-prefix-cls: "#{$css-prefix}calendar";
     margin: 0;
   }
   &-top-change{
-    margin: 0 auto 15px;
+    margin: 0 auto;
     width: 200px;
     height: 50px;
     line-height: 50px;
@@ -78,10 +78,10 @@ $calendar-prefix-cls: "#{$css-prefix}calendar";
   }
   &-month {
     width: 22%;
-    margin: 0 1.5% 0 1.5%;
+    margin: 1.5%;
     float: left;
     flex: 0 0 auto;
-    height: 330px;
+    // height: 330px;
     & > div {
       box-shadow: 0 2px 8px #d3ddeb;
     }
