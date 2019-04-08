@@ -983,12 +983,19 @@
               this.query = '';
           } else {
             if (model !== '') {
+                let found = false;
                 this.findChild((child) => {
                     if (child.value === model) {
+                        found = true;
                         this.query = child.label === undefined ? child.searchLabel : child.label;
                         this.query = this.query.trim();
                     }
                 });
+                if (!found && this.enableCreate) {
+                  if (model !== this.query) {
+                    this.query = model;
+                  }
+                }
                 // 如果删除了搜索词，下拉列表也清空了，所以强制调用一次remoteMethod
                 // if (this.remote && this.query !== this.lastQuery) {
                 //     this.$nextTick(() => {
@@ -1294,21 +1301,21 @@
           backModel = '0';
         }
         this.$emit('input', backModel);
-        this.modelToQuery();
-        if (this.multiple) {
-          if (this.slotChangeDuration) {
-              this.slotChangeDuration = false;
+          this.modelToQuery();
+          if (this.multiple) {
+            if (this.slotChangeDuration) {
+                this.slotChangeDuration = false;
+            } else {
+                this.updateMultipleSelected();
+            }
           } else {
-              this.updateMultipleSelected();
+            this.updateSingleSelected();
           }
-        } else {
-          this.updateSingleSelected();
-        }
-        if (!this.visible && this.filterable) {
-          this.$nextTick(() => {
-              this.broadcastQuery('');
-          });
-        }
+          if (!this.visible && this.filterable) {
+            this.$nextTick(() => {
+                this.broadcastQuery('');
+            });
+          }
       },
       visible (val) {
         if (val) {
