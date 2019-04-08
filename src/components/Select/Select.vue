@@ -628,16 +628,15 @@
           const type = typeof this.model;
           if (type === 'string' || type === 'number') {
               let findModel = false;
-
+              let curSingle = ''
               for (let i = 0; i < this.options.length; i++) {
                   if (this.model === this.options[i].value) {
-
-                      this.selectedSingle = this.options[i].label;
+                      curSingle = this.options[i].label;
                       findModel = true;
                       break;
                   }
               }
-
+              this.selectedSingle = curSingle;
               if (this.enableCreate && !findModel) {
                 this.selectedSingle = this.model;
                 findModel = true;
@@ -1295,21 +1294,21 @@
           backModel = '0';
         }
         this.$emit('input', backModel);
-          this.modelToQuery();
-          if (this.multiple) {
-            if (this.slotChangeDuration) {
-                this.slotChangeDuration = false;
-            } else {
-                this.updateMultipleSelected();
-            }
+        this.modelToQuery();
+        if (this.multiple) {
+          if (this.slotChangeDuration) {
+              this.slotChangeDuration = false;
           } else {
-            this.updateSingleSelected();
+              this.updateMultipleSelected();
           }
-          if (!this.visible && this.filterable) {
-            this.$nextTick(() => {
-                this.broadcastQuery('');
-            });
-          }
+        } else {
+          this.updateSingleSelected();
+        }
+        if (!this.visible && this.filterable) {
+          this.$nextTick(() => {
+              this.broadcastQuery('');
+          });
+        }
       },
       visible (val) {
         if (val) {

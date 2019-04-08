@@ -2,16 +2,16 @@
   <div v-if="!hidden" :class="clazz">
     <div :class="[prefixCls + '-group-prepend']" v-if="prepend"><slot name="prepend"></slot></div>
     <input
-      :class="classes" 
-      :disabled="disabled" 
-      :readonly="!editable||readonly" 
-      :placeholder="localePlaceholder" 
-      :value="inputValue" 
+      :class="classes"
+      :disabled="disabled"
+      :readonly="!editable||readonly"
+      :placeholder="localePlaceholder"
+      :value="inputValue"
       :maxlength="maxlength"
-      @blur="blurValue" 
+      @blur="blurValue"
       @input="valChange"
       @change="valChange"
-      @focus="focusValue($event)" 
+      @focus="focusValue($event)"
       ref="input">
     <transition name="label-fade">
       <div v-show="tipShow" :class="tipzz">{{bigNum}}</div>
@@ -194,7 +194,7 @@ export default {
   watch: {
     value (val) {
       if(val!=null||val!=undefined){
-        this.initValue(String(val)); 
+        this.initValue(String(val));
       }
     },
     inputValue(val){
@@ -204,7 +204,7 @@ export default {
     this.prepend = this.$slots.prepend !== undefined;
     this.append = this.$slots.append !== undefined;
     if(this.value !=null||this.value!=undefined){
-      this.initValue(String(this.value)); 
+      this.initValue(String(this.value));
     }
   },
   methods:{
@@ -273,7 +273,9 @@ export default {
       }
       this.bigShow(this.type,this.bigTips,this.inputValue)
       if(this.focusAllSelect && this.type==='money'){
-        this.$refs.input.select();
+        this.$nextTick(()=>{
+          this.$refs.input.select();
+        })
       }
       this.$emit('on-focus',e)
     },
@@ -283,7 +285,7 @@ export default {
     valChange (event) {
       let value = event.target.value.trim().replace(/,/g,'');
       // if (event.type == 'input' && value.match(/^\-?\.?$|\.$/)) return; // prevent fire early if decimal. If no more input the change event will fire later
-      // if (event.type == 'change' && Number(value) == this.currentValue) return; // already fired change for input event 
+      // if (event.type == 'change' && Number(value) == this.currentValue) return; // already fired change for input event
       if (!isNaN(value) || value=='-') {
         this.currentValue = value;
       } else {
@@ -312,9 +314,9 @@ export default {
       }
       return num>=0?array[0]+revalue+pointStr:'-'+array[0]+revalue+pointStr;
     },
-    changeTipsVal (value){   
+    changeTipsVal (value){
       value  = String(value).replace(/[^0-9\.-]/g,"");
-      var firstChar = value.substring(0,1); 
+      var firstChar = value.substring(0,1);
       value = this.cutNum(value,this.integerNum);
       if(value.split(".")[1] && value.split(".")[1].length > 2){
         var isround = this.isround;
@@ -330,7 +332,7 @@ export default {
     formatNum (value){
       value = value.trim().replace(/,/g, "");
       var suffixNum = this.suffixNum;
-      var integerNum = this.integerNum;  
+      var integerNum = this.integerNum;
       value  = value.replace(/[^0-9\.-]/g,"")||'';
       var firstChar = value.substring(0,1)||'';
       if(this.type == "cardNo"){
@@ -587,12 +589,12 @@ export default {
         newchar = newchar.replace("零元", "元");
         newchar = newchar.replace("零角", "");
         newchar = newchar.replace("零分", "");
-              
+
         newchar = newchar.replace("亿万", "亿");
         newchar = newchar.replace("兆亿", "兆");
         newchar = newchar.replace("零兆", "兆");
         newchar = newchar.replace("京兆", "京");
-      
+
       if (newchar.charAt(newchar.length - 1) == "元"
           || newchar.charAt(newchar.length - 1) == "角")
         newchar = newchar + "整";
@@ -611,7 +613,7 @@ export default {
       if(firstChar=="-"){
         newchar = "负"+newchar;
       }
-     
+
       var lastChar=newchar.charAt(newchar.length-1);
       if("零" == lastChar){
         newchar=newchar.substring(0,newchar.length-1);
@@ -623,25 +625,25 @@ export default {
       }
       return newchar;
     },
-    fillZero(number, bitNum) { 
-      /// 小数位不够，用0补足位数   
-      var f_x = parseFloat(number);  
-      if (isNaN(f_x)) {  
-        return ;  
-      }  
-      var s_x = number.toString();  
-      var pos_decimal = s_x.indexOf('.');  
-      if (pos_decimal < 0) {  
-        pos_decimal = s_x.length;  
-        s_x += '.';  
-      } 
-      while (s_x.length <= pos_decimal + bitNum && !this.notFillin) {  
-          s_x += '0';  
-      }  
+    fillZero(number, bitNum) {
+      /// 小数位不够，用0补足位数
+      var f_x = parseFloat(number);
+      if (isNaN(f_x)) {
+        return ;
+      }
+      var s_x = number.toString();
+      var pos_decimal = s_x.indexOf('.');
+      if (pos_decimal < 0) {
+        pos_decimal = s_x.length;
+        s_x += '.';
+      }
+      while (s_x.length <= pos_decimal + bitNum && !this.notFillin) {
+          s_x += '0';
+      }
       if (bitNum==0) {
         s_x = s_x.slice(0,pos_decimal);
       }
-      return s_x;  
+      return s_x;
     },
     cutNum(value,integerNum){
       var arrNum=value.split(".");
@@ -651,7 +653,7 @@ export default {
           value=integerNumber+"."+arrNum[1]
         }else{
           value=integerNumber
-        }        
+        }
       }
       return value;
     },
@@ -699,7 +701,7 @@ export default {
       }
       // 失焦的时候才更新v-model绑定值，避免不能输入的问题
       !this.havefocused && this.$emit('input', this.cardFormatValue(formatVal));
-    }  
+    }
   }
 }
 </script>

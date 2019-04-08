@@ -2,7 +2,7 @@
   <div>
     <!-- <h-msg-box v-model="changeform" width="900" escClose left="10" closeDrop> -->
     <Button @on-click="changeSelect"></Button>
-      <h-form ref="formItem1" :model="formItem1" :label-width="80" errorFocus cols="0">
+      <h-form ref="formItem1" :model="formItem1" :label-width="80" errorFocus cols="3">
         <h-form-item label="日期控件">
           <h-row>
             <h-col span="11">
@@ -99,6 +99,7 @@
           <h-cascader v-model="formItem1.cascader" :data="data2" trigger="hover" style="width:200px"></h-cascader>
         </h-form-item>
         <h-form-item label="简单选择框" prop="simpleSelect" required>
+          {{formItem1.simpleSelect}}
           <h-simple-select v-model="formItem1.simpleSelect" transfer multiple  placement="top-start" filterable>
             <h-select-block :data="bigData" ></h-select-block>
           </h-simple-select>

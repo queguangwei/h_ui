@@ -928,9 +928,10 @@ export default {
       });
     },
     changeHover(_index,status){
+      if (!this.rebuildData[_index]) return false;
+      let index = this.rebuildData[_index]._index;
       this.$nextTick(()=>{
-        if (!this.objData[_index]) return false;
-        this.objData[_index]._isHover=status;
+        this.objData[index]._isHover=status;
       })
     },
     toggleMached(arr){

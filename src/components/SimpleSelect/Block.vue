@@ -123,6 +123,7 @@
         }
         this.$nextTick(()=>{
           if(val){
+            this.$refs.block.scrollTop = '0px'
             this.updateVisibleData(0);
           }else{
             this.updateVisibleData();
@@ -211,12 +212,12 @@
       data:{
         deep:true,
         handler:function(val){
-          if(val.length==0){
-            this.showEmpty = true;
-          }else{
-            this.showEmpty = false;
-          }
           this.$nextTick(()=>{
+            if(val.length==0){
+              this.showEmpty = true;
+            }else{
+              this.showEmpty = false;
+            }
             this.cloneData = deepCopy(this.data);
             this.cloneData.forEach(item => {
               this.$set(item, 'focus', false)
