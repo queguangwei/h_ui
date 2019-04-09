@@ -1,6 +1,6 @@
 <template>
   <div class="ceshi-demo">
-    <!-- <h1>SimpleSelect组件</h1>
+    <h1>SimpleSelect组件</h1>
     <p>选择器支持单选、多选、搜索，以及键盘快捷操作。</p>
     <h1>selectBlock测试用例</h1>
     {{value2}}
@@ -36,6 +36,7 @@
                      widthAdaption>
       <h-select-block :data="v20190321.options2"></h-select-block>
     </h-simple-select>
+    {{v20190321.value}}
     <h-simple-select autoPlacement
                      filterable
                      isArrow="false"
@@ -48,190 +49,205 @@
                      widthAdaption>
       <h-select-block :data="v20190321.options2"></h-select-block>
     </h-simple-select>
+    {{v20190321.value2}}
     <h-button @click="changValue2">选中第三项</h-button>
-     <h1>远程搜索</h1>
-     <h-simple-select width="200"
-      v-model="valueRemote1"
-      filterable
-      remote      
-      :remote-method="remoteMethod"
-      ref="block"
-      >
+    <h1>远程搜索</h1>
+    <h-simple-select width="200"
+                     v-model="valueRemote1"
+                     filterable
+                     remote
+                     :remote-method="remoteMethod"
+                     ref="block">
       <h-select-block :data="remoteData"></h-select-block>
       <div slot="header">我是header</div>
-       <div slot="footer"><h-button @click = "changeData">已选置顶</h-button></div>
+      <div slot="footer">
+        <h-button @click="changeData">已选置顶</h-button>
+      </div>
     </h-simple-select>
     <h-simple-select width="200"
-      v-model="valueRemote"
-      filterable
-      show-bottom
-      remote          
-      multiple
-      :remote-method="remoteMethod"
-      >
+                     v-model="valueRemote"
+                     filterable
+                     show-bottom
+                     remote
+                     multiple
+                     :remote-method="remoteMethod">
       <h-select-block :data="remoteData"></h-select-block>
       <!-- <div slot="header">我是header</div> -->
-      <div slot="footer"><h-button @click = "changeData">已选置顶</h-button></div>
-    <!-- </h-simple-select> --> -->
-    <h1>测试</h1>
-    <h-simple-select 
-                     filterable
+      <div slot="footer">
+        <h-button @click="changeData">已选置顶</h-button>
+      </div>
+    </h-simple-select>
+    <!-- <h1>测试</h1>
+    <h-simple-select filterable
                      v-model="ceshi1"
                      transfer
                      widthAdaption>
-      <h-select-block :data="ceshiData"
-                     ></h-select-block>
-    </h-simple-select>
-    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+      <h-select-block :data="ceshiData"></h-select-block>
+    </h-simple-select> -->
   </div>
 </template>
 <script>
-let bigData = [];
+let bigData = []
 for (let i = 0; i < 60; i++) {
-  let obj = {};
-  obj.value = "value" + i;
-  obj.label = "lab" + i;
-  bigData.push(obj);
+  let obj = {}
+  obj.value = 'value' + i
+  obj.label = 'lab' + i
+  bigData.push(obj)
 }
 export default {
   data() {
     return {
-      matchCol: ["name", "age"],
+      matchCol: ['name', 'age'],
       bigData: [],
-      value: "",
+      value: '',
       value1: [],
-      value2: "value2",
+      value2: 'value2',
       v20190321: {
         options: [
           {
-            value: "1",
-            label: "1"
+            value: '1',
+            label: '1'
           },
           {
-            value: "11",
-            label: "11"
+            value: '11',
+            label: '11'
           },
           {
-            value: "112",
-            label: "112"
+            value: '112',
+            label: '112'
           },
           {
-            value: "2",
-            label: "2"
+            value: '2',
+            label: '2'
           },
           {
-            value: "3",
-            label: "3"
+            value: '3',
+            label: '3'
           }
         ],
         options2: [
-          { value: "1", label: "中国" },
-          { value: "2", label: "美国" },
-          { value: "3", label: "韩国1" },
-          { value: "4", label: "韩国2" },
-          { value: "5", label: "韩国3" },
-          { value: "6", label: "韩国4" },
-          { value: "7", label: "韩国5" },
-          { value: "8", label: "韩国6" },
-          { value: "9", label: "韩国7" },
-          { value: "10", label: "韩国8" },
-          { value: "11", label: "韩国9" },
-          { value: "12", label: "韩国10" },
-          { value: "13", label: "韩国11" },
-          { value: "14", label: "韩国12" },
-          { value: "15", label: "韩国13" }
+          { value: '1', label: '中国' },
+          { value: '2', label: '美国' },
+          { value: '3', label: '韩国1' },
+          { value: '4', label: '韩国2' },
+          { value: '5', label: '韩国3' },
+          { value: '6', label: '韩国4' },
+          { value: '7', label: '韩国5' },
+          { value: '8', label: '韩国6' },
+          { value: '9', label: '韩国7' },
+          { value: '10', label: '韩国8' },
+          { value: '11', label: '韩国9' },
+          { value: '12', label: '韩国10' },
+          { value: '13', label: '韩国11' },
+          { value: '14', label: '韩国12' },
+          { value: '15', label: '韩国13' }
         ],
-        value: "",
-        value2: ["1","2"]
+        value: '',
+        value2: ['1', '2']
       },
-      remoteData:[],
-      valueRemote:[],
-      valueRemote1:'',
-      ceshi1:'',
-      ceshiData:[]
-    };
+      remoteData: [],
+      valueRemote: [],
+      valueRemote1: '',
+      ceshi1: '',
+      ceshiData: []
+    }
   },
   methods: {
-    changValue2 () {
-      this.v20190321.value2 = ["3"]
+    changValue2() {
+      this.v20190321.value2 = ['3']
     },
     loaddata() {
-      this.bigData = bigData;
+      this.bigData = bigData
     },
     changeValue() {
-      this.value = "value1";
+      this.value = 'value1'
     },
     testClick(val) {
       if (val) {
-        this.$refs.test.focus();
+        this.$refs.test.focus()
       } else {
-        this.$refs.test.blur();
+        this.$refs.test.blur()
       }
     },
     ceshi() {
-      this.model1 = [];
-      this.model2 = "";
+      this.model1 = []
+      this.model2 = ''
     },
     change(e) {
-      console.log(e);
+      console.log(e)
     },
     select(e, b) {
       console.log(e)
       console.log(b)
     },
     allSelect(e) {
-      console.log(e);
+      console.log(e)
     },
     selsetChange(e) {
-      console.log(e);
-    },
-    scroll(num) {
-      console.log(num);
-      let _this = this;
-      if (num <= 1 && _this.canPage) {
-        _this.canPage = false;
-        setTimeout(() => {
-          console.log(_this.index);
-          if (_this.index == 0) {
-            _this.data1 = _this.data1.concat(cdata);
-            _this.canPage = true;
-            _this.index = 1;
-          } else {
-            this.isComputed = true;
-          }
-        }, 200);
-      }
+      console.log(e)
     },
     remoteMethod(query) {
       console.log(query)
-      if (query !== "") {
-        this.loading1 = true;
+      if (query !== '') {
+        this.loading1 = true
         setTimeout(() => {
-          this.loading1 = false;
+          this.loading1 = false
           this.remoteData = bigData.filter(
             item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1
-          );
-        }, 200);
+          )
+        }, 200)
       } else {
-        this.remoteData = bigData;
+        this.remoteData = bigData
       }
     },
-    changeData () {
-      this.$refs.block.selectedTop();
+    changeData() {
+      this.$refs.block.selectedTop()
     }
   },
   mounted() {
     // this.bigData = bigData;
     setTimeout(() => {
-      this.value = "value0";
-      this.value1 = ["value0"];
-    }, 1000);
-    this.ceshiData = [{"label":"GSLC-12(CW)","value":"GSLC-12"},{"label":"GSLC-13(CW)","value":"GSLC-13"},{"label":"GSLC-14(CW)","value":"GSLC-14"},{"label":"GSLC-15(CW)","value":"GSLC-15"},{"label":"GSLC-01(CW)","value":"GSLC-01"},{"label":"GSLC-02(CW)","value":"GSLC-02"},{"label":"GSLC-03(CW)","value":"GSLC-03"},{"label":"GSLC-04(CW)","value":"GSLC-04"},{"label":"GSLC-05(CW)","value":"GSLC-05"},{"label":"GSLC-06(CW)","value":"GSLC-06"},{"label":"GSLC-07(CW)","value":"GSLC-07"},{"label":"GSLC-08(CW)","value":"GSLC-08"},{"label":"GSLC-09(CW)","value":"GSLC-09"},{"label":"GSLC-10(CW)","value":"GSLC-10"},{"label":"GSLC-11(CW)","value":"GSLC-11"},{"label":"JZLC-01(CW)","value":"JZLC-01"},{"label":"JZLC-02(CW)","value":"JZLC-02"},{"label":"JZLC-03(CW)","value":"JZLC-03"},{"label":"JZLC-04(CW)","value":"JZLC-04"},{"label":"JZLC-05(CW)","value":"JZLC-05"},{"label":"JZLC-06(CW)","value":"JZLC-06"},{"label":"JZLC-07(CW)","value":"JZLC-07"},{"label":"JZLC-08(CW)","value":"JZLC-08"},{"label":"JZLC-09(CW)","value":"JZLC-09"},{"label":"JZLC-10(CW)","value":"JZLC-10"},{"label":"JZLC-11(CW)","value":"JZLC-11"}]
+      this.value = 'value0'
+      this.value1 = ['value0']
+    }, 1000)
+    this.ceshiData = [
+      { label: 'GSLC-12(CW)', value: 'GSLC-12' },
+      { label: 'GSLC-13(CW)', value: 'GSLC-13' },
+      { label: 'GSLC-14(CW)', value: 'GSLC-14' },
+      { label: 'GSLC-15(CW)', value: 'GSLC-15' },
+      { label: 'GSLC-01(CW)', value: 'GSLC-01' },
+      { label: 'GSLC-02(CW)', value: 'GSLC-02' },
+      { label: 'GSLC-03(CW)', value: 'GSLC-03' },
+      { label: 'GSLC-04(CW)', value: 'GSLC-04' },
+      { label: 'GSLC-05(CW)', value: 'GSLC-05' },
+      { label: 'GSLC-06(CW)', value: 'GSLC-06' },
+      { label: 'GSLC-07(CW)', value: 'GSLC-07' },
+      { label: 'GSLC-08(CW)', value: 'GSLC-08' },
+      { label: 'GSLC-09(CW)', value: 'GSLC-09' },
+      { label: 'GSLC-10(CW)', value: 'GSLC-10' },
+      { label: 'GSLC-11(CW)', value: 'GSLC-11' },
+      { label: 'JZLC-01(CW)', value: 'JZLC-01' },
+      { label: 'JZLC-02(CW)', value: 'JZLC-02' },
+      { label: 'JZLC-03(CW)', value: 'JZLC-03' },
+      { label: 'JZLC-04(CW)', value: 'JZLC-04' },
+      { label: 'JZLC-05(CW)', value: 'JZLC-05' },
+      { label: 'JZLC-06(CW)', value: 'JZLC-06' },
+      { label: 'JZLC-07(CW)', value: 'JZLC-07' },
+      { label: 'JZLC-08(CW)', value: 'JZLC-08' },
+      { label: 'JZLC-09(CW)', value: 'JZLC-09' },
+      { label: 'JZLC-10(CW)', value: 'JZLC-10' },
+      { label: 'JZLC-11(CW)', value: 'JZLC-11' }
+    ]
   },
   watch: {
-    data1() {}
+    v20190321: {
+      deep: true,
+      handler: function(val) {
+        console.log(val)
+      }
+    }
   }
-};
+}
 </script>
 <style>
 .ceshi-demo {
