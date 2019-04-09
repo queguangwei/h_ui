@@ -529,26 +529,8 @@
         this.$emit('on-open-change', state);
       },
       value: {
-        immediate: true,
         handler(val) {
-          const newDate = this.parseDate(val);
-          // 检查绑定值是否为合法值
-          if (this.clearOnIllegal && val && this.type === 'date') {
-            const date = newDate[0];
-            const disabledDateFn =
-                this.options &&
-                typeof this.options.disabledDate === 'function' &&
-                this.options.disabledDate;
-            const isDisabled = disabledDateFn && disabledDateFn(date);
-            const isValidDate = date instanceof Date 
-              && (val instanceof Date && val.getTime() === date.getTime() || this.checkLegality(val, date));
-            if (!isValidDate || isDisabled) {
-              this.internalValue = this.internalValue.map(() => null);
-              this.$emit('on-illegal-input', val);
-              return;
-            }
-          }
-          this.internalValue = newDate;
+          this.internalValue = this.parseDate(val);
         }
       },
       open (val) {
