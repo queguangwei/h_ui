@@ -1,7 +1,7 @@
 <template>
   <div class="ceshi-demo">
     <h1>SimpleSelect组件</h1>
-    <p>选择器支持单选、多选、搜索，以及键盘快捷操作。</p>
+    <!-- <p>选择器支持单选、多选、搜索，以及键盘快捷操作。</p>
     <h1>selectBlock测试用例</h1>
     {{value2}}
     <h-simple-select autoPlacement
@@ -24,7 +24,7 @@
                      widthAdaption>
       <h-select-block :data="bigData"
                       @on-scroll="select"></h-select-block>
-    </h-simple-select>
+    </h-simple-select> -->
     <h1>--------- HUI_V1.0.31_20190321 TS:201903110539 ---------</h1>
     <h-simple-select autoPlacement
                      filterable
@@ -33,8 +33,11 @@
                      style="width:200px"
                      transfer
                      v-model="v20190321.value"
+                     remote
+                     :remote-method="remoteMethod"
                      widthAdaption>
-      <h-select-block :data="v20190321.options2"></h-select-block>
+      <h-select-block :data="remoteData"></h-select-block>
+      <!-- <h-select-block :data="v20190321.options2"></h-select-block> -->
     </h-simple-select>
     {{v20190321.value}}
     <h-simple-select autoPlacement
@@ -45,13 +48,17 @@
                      multiple
                      style="width:200px"
                      transfer
+                     remote
+                     :remote-method="remoteMethod"
                      v-model="v20190321.value2"
                      widthAdaption>
-      <h-select-block :data="v20190321.options2"></h-select-block>
+      <h-select-block :data="remoteData"></h-select-block>
+      <!-- <h-select-block :data="v20190321.options2"></h-select-block> -->
     </h-simple-select>
     {{v20190321.value2}}
-    <h-button @click="changValue2">选中第三项</h-button>
-    <h1>远程搜索</h1>
+    <h-button @click="changValue2">选中二三项</h-button>
+
+    <!-- <h1>远程搜索</h1>
     <h-simple-select width="200"
                      v-model="valueRemote1"
                      filterable
@@ -72,11 +79,11 @@
                      multiple
                      :remote-method="remoteMethod">
       <h-select-block :data="remoteData"></h-select-block>
-      <!-- <div slot="header">我是header</div> -->
+      <div slot="header">我是header</div>
       <div slot="footer">
         <h-button @click="changeData">已选置顶</h-button>
       </div>
-    </h-simple-select>
+    </h-simple-select> -->
     <!-- <h1>测试</h1>
     <h-simple-select filterable
                      v-model="ceshi1"
@@ -88,9 +95,10 @@
 </template>
 <script>
 let bigData = []
-for (let i = 0; i < 60; i++) {
+for (let i = 0; i < 160; i++) {
   let obj = {}
-  obj.value = 'value' + i
+  obj.value = i + ''
+  // obj.value = 'value' + i
   obj.label = 'lab' + i
   bigData.push(obj)
 }
@@ -154,7 +162,7 @@ export default {
   },
   methods: {
     changValue2() {
-      this.v20190321.value2 = ['3']
+      this.v20190321.value2 = ['2', '3']
     },
     loaddata() {
       this.bigData = bigData
@@ -187,10 +195,11 @@ export default {
       console.log(e)
     },
     remoteMethod(query) {
+      clearTimeout(this.timer)
       console.log(query)
       if (query !== '') {
         this.loading1 = true
-        setTimeout(() => {
+        this.timer = setTimeout(() => {
           this.loading1 = false
           this.remoteData = bigData.filter(
             item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1
@@ -205,7 +214,9 @@ export default {
     }
   },
   mounted() {
-    // this.bigData = bigData;
+    // 远程搜索赋初始值
+    this.remoteMethod('')
+
     setTimeout(() => {
       this.value = 'value0'
       this.value1 = ['value0']
@@ -240,12 +251,12 @@ export default {
     ]
   },
   watch: {
-    v20190321: {
-      deep: true,
-      handler: function(val) {
-        console.log(val)
-      }
-    }
+    // v20190321: {
+    //   deep: true,
+    //   handler: function(val) {
+    //     console.log(val)
+    //   }
+    // }
   }
 }
 </script>
