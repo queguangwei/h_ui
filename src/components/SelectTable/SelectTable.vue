@@ -726,16 +726,25 @@ export default {
           }
         }
 
-        const selectedArray = []
-        const selectedObject = {}
-        selected.forEach(item => {
-          if (!selectedObject[item.value]) {
-            selectedArray.push(item)
-            selectedObject[item.value] = 1
-          }
-        })
+        this.selectedMultiple = selected
 
-        this.selectedMultiple = this.remote ? selectedArray : selected
+
+        // const selectedArray = []
+        // const selectedObject = {}
+        // selected.forEach(item => {
+        //   if (!selectedObject[item.value]) {
+        //     selectedArray.push(item)
+        //     selectedObject[item.value] = 1
+        //   }
+        // })
+        // selected.forEach(item => {
+        //   selectedObject[item.value] = item
+        // })
+        // for (let key in selectedObject) {
+        //   selectedArray.push(selectedObject[key])
+        // }
+
+        // this.selectedMultiple = this.remote ? selectedArray : selected
 
         if (slot) {
           let selectedModel = []
