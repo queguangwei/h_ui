@@ -33,11 +33,11 @@
                      style="width:200px"
                      transfer
                      v-model="v20190321.value"
-                     remote
-                     :remote-method="remoteMethod"
                      widthAdaption>
-      <h-select-block :data="remoteData"></h-select-block>
-      <!-- <h-select-block :data="v20190321.options2"></h-select-block> -->
+                     <!-- remote
+                     :remote-method="remoteMethod" -->
+      <!-- <h-select-block :data="remoteData"></h-select-block> -->
+      <h-select-block :data="v20190321.options2"></h-select-block>
     </h-simple-select>
     {{v20190321.value}}
     <h-simple-select autoPlacement
@@ -215,7 +215,7 @@ export default {
   },
   mounted() {
     // 远程搜索赋初始值
-    this.remoteMethod('')
+    // this.remoteMethod('')
 
     setTimeout(() => {
       this.value = 'value0'
