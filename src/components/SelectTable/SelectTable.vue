@@ -595,6 +595,10 @@ export default {
     hideMenu() {
       this.visible = false
       this.focusIndex = 0
+      console.log(this.value)
+      if (!this.value) {
+        this.query = ''
+      }
       this.broadcast('TabelOption', 'on-select-close')
     },
     findChild(cb) {
