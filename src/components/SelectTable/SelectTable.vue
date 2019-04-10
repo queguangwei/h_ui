@@ -595,10 +595,14 @@ export default {
     hideMenu() {
       this.visible = false
       this.focusIndex = 0
-      console.log(this.value)
-      if (!this.value) {
-        this.query = ''
+
+      // 单选 恢复 query 值
+      // console.log('hideMenu')
+      if (!this.multiple && this.query !== this.selectedSingle) {
+        this.query = this.selectedSingle
+        this.selectToChangeQuery = true
       }
+
       this.broadcast('TabelOption', 'on-select-close')
     },
     findChild(cb) {
@@ -626,6 +630,7 @@ export default {
     updateOptions(init, slot = false) {
       let _this = this
       let options = []
+
       this.findChild(child => {
         let data = []
         if (_this.isBlock) {
@@ -651,6 +656,7 @@ export default {
           }
         }
       })
+
       this.options = options
       this.availableOptions = options
 
@@ -702,7 +708,8 @@ export default {
     },
     updateMultipleSelected(init = false, slot = false) {
       if (this.multiple && Array.isArray(this.model)) {
-        let selected = this.remote ? this.selectedMultiple : []
+        // let selected = this.remote ? this.selectedMultiple : []
+        let selected = []
 
         for (let i = 0; i < this.model.length; i++) {
           const model = this.model[i]
@@ -727,6 +734,7 @@ export default {
             selectedObject[item.value] = 1
           }
         })
+
         this.selectedMultiple = this.remote ? selectedArray : selected
 
         if (slot) {
@@ -916,21 +924,14 @@ export default {
     },
     navigateOptions(direction) {
       if (this.isBlock) {
-        // let _options = this.options
-
-        // if (this.query && this.selectToChangeQuery) {
-        //   _options = this.options.filter(
-        //     option => option.label.indexOf(this.query) !== -1
-        //   )
-        // }
-        console.log(this.query, this.selectToChangeQuery, this.availableOptions.length)
-
         if (direction === 'next') {
           const next = this.focusIndex + 1
-          this.focusIndex = this.focusIndex === this.availableOptions.length ? 1 : next
+          this.focusIndex =
+            this.focusIndex === this.availableOptions.length ? 1 : next
         } else if (direction === 'prev') {
           const prev = this.focusIndex - 1
-          this.focusIndex = this.focusIndex <= 1 ? this.availableOptions.length : prev
+          this.focusIndex =
+            this.focusIndex <= 1 ? this.availableOptions.length : prev
         }
 
         this.focusValue = this.availableOptions[this.focusIndex - 1].value
@@ -1037,6 +1038,7 @@ export default {
         } else if (this.multiple && this.model.length) {
           if (this.currentLabel.length !== this.model.length)
             this.currentLabel = this.model
+
           this.selectedMultiple = this.model.map((item, index) => {
             return {
               value: item,
@@ -1122,6 +1124,10 @@ export default {
       }
     },
     selectBlockSingle(value) {
+      // console.log('selectBlockSingle')
+      this.availableOptions = this.options
+      this.selectToChangeQuery = true
+
       if (this.model === value) {
         this.hideMenu()
       } else {
@@ -1331,13 +1337,13 @@ export default {
       }
     },
     query(val) {
-      debugger
       this.focusIndex = 0
 
       if (this.remote && this.remoteMethod) {
         if (!this.selectToChangeQuery) {
-          this.$emit('on-query-change', val)
           this.remoteMethod(val)
+          this.$emit('on-query-change', val)
+          this.broadcastQuery(val)
         }
         this.findChild(child => {
           child.isFocus = false
@@ -1346,10 +1352,12 @@ export default {
         if (!this.selectToChangeQuery) {
           this.$emit('on-query-change', val)
           this.broadcastQuery(val)
+
           this.availableOptions = this.options.filter(
             option => option.label.indexOf(val) !== -1
           )
         }
+
         if (!this.isBlock) {
           if (this.filterable && val) {
             this.$nextTick(() => {
@@ -1376,8 +1384,12 @@ export default {
       }
       this.hideMenu()
     },
-    options() {},
-    selectedMultiple() {
+    // options(val) {
+    //   console.log('options', val)
+    // },
+    // eslint-disable-next-line
+    selectedMultiple(val) {
+      console.log('selectedMultiple', val)
       // if (val.length==0&&this.filterable && !this.showBottom) {
       //   this.$nextTick(()=>{
       //     this.$refs.input.focus();
