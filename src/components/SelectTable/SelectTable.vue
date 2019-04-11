@@ -1029,7 +1029,6 @@ export default {
     // 处理 remote 初始值
     updateLabel() {
       if (this.remote) {
-        debugger
         if (!this.multiple && this.model !== '') {
           this.selectToChangeQuery = true
           if (this.currentLabel === '') this.currentLabel = this.model
