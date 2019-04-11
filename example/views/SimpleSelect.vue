@@ -48,9 +48,9 @@
                      multiple
                      style="width:200px"
                      transfer
+                     v-model="v20190321.value2"
                      remote
                      :remote-method="remoteMethod"
-                     v-model="v20190321.value2"
                      widthAdaption>
       <h-select-block :data="remoteData"></h-select-block>
       <!-- <h-select-block :data="v20190321.options2"></h-select-block> -->
