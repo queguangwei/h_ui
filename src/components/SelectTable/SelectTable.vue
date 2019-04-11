@@ -12,6 +12,7 @@
       <!-- 多选时输入框内选中值模拟 -->
       <div class="h-tag"
            v-for="(item, index) in selectedMultiple"
+           v-show="item.label"
            :key="index">
         <span class="h-tag-text">{{ item.label }}</span>
         <Icon name="close"
@@ -708,8 +709,7 @@ export default {
     },
     updateMultipleSelected(init = false, slot = false) {
       if (this.multiple && Array.isArray(this.model)) {
-        // let selected = this.remote ? this.selectedMultiple : []
-        let selected = []
+        let selected = this.remote ? this.selectedMultiple.filter(item => this.model.filter(v => v === item.value).length) : []
 
         for (let i = 0; i < this.model.length; i++) {
           const model = this.model[i]
@@ -726,25 +726,15 @@ export default {
           }
         }
 
-        this.selectedMultiple = selected
-
-
-        // const selectedArray = []
-        // const selectedObject = {}
-        // selected.forEach(item => {
-        //   if (!selectedObject[item.value]) {
-        //     selectedArray.push(item)
-        //     selectedObject[item.value] = 1
-        //   }
-        // })
-        // selected.forEach(item => {
-        //   selectedObject[item.value] = item
-        // })
-        // for (let key in selectedObject) {
-        //   selectedArray.push(selectedObject[key])
-        // }
-
-        // this.selectedMultiple = this.remote ? selectedArray : selected
+        const selectedArray = []
+        const selectedObject = {}
+        selected.forEach(item => {
+          selectedObject[item.value] = item
+        })
+        for (let key in selectedObject) {
+          selectedArray.push(selectedObject[key])
+        }
+        this.selectedMultiple = this.remote ? selectedArray : selected
 
         if (slot) {
           let selectedModel = []
@@ -1039,6 +1029,7 @@ export default {
     // 处理 remote 初始值
     updateLabel() {
       if (this.remote) {
+        debugger
         if (!this.multiple && this.model !== '') {
           this.selectToChangeQuery = true
           if (this.currentLabel === '') this.currentLabel = this.model
@@ -1046,7 +1037,7 @@ export default {
           this.query = this.currentLabel
         } else if (this.multiple && this.model.length) {
           if (this.currentLabel.length !== this.model.length)
-            this.currentLabel = this.model
+            this.currentLabel = new Array(this.model.length).fill('')
 
           this.selectedMultiple = this.model.map((item, index) => {
             return {
