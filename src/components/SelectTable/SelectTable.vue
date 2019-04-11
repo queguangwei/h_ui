@@ -1020,6 +1020,7 @@
         if (this.disabled || this.readonly) return;
         this.$nextTick(()=>{
           // this.visible =status =='notShow'?false:true;
+          this.isInputFocus = true;
           this.visible = true;
           if (this.filterable) {
             this.$refs.input.focus();
@@ -1029,6 +1030,7 @@
         })
       },
       blur(){
+        this.isInputFocus = false;
         this.visible = false;
         if (this.filterable) {
           this.$refs.input.blur();

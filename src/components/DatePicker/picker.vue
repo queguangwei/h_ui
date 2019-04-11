@@ -279,13 +279,15 @@
       },
       focus(){
         if (this.disabled) return false;
-        this.$nextTick(()=>{
-        //   this.visible =status =='notShow'?false:true;
+        // this.$nextTick(()=>{
+        setTimeout(()=>{
           this.visible = true;
           this.$refs.pickerPanel.onToggleVisibility(true);
           this.isFocus = true
           if(this.$refs.input) this.$refs.input.focus();
-        })
+        },0)
+        //   this.visible =status =='notShow'?false:true;
+        // })
       },
       blur(){
         this.visible = false;

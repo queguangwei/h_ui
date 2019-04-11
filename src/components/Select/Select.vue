@@ -493,6 +493,7 @@
         }
       },
       focus(){
+        this.isInputFocus = true;
         if (this.disabled || this.readonly) return;
         this.$nextTick(()=>{
           this.visible = true;
@@ -504,6 +505,7 @@
         })
       },
       blur(){
+        this.isInputFocus = false;
         this.visible = false;
         if (this.filterable) {
           this.$refs.input.blur();

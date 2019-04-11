@@ -380,7 +380,8 @@ export default {
       isCurrent: true,
       privateToScrollTop: false,
       selectType:false,
-      cloumnsLeft: []
+      cloumnsLeft: [],
+      curShiftIndex:null,
     };
   },
   computed: {
@@ -976,6 +977,7 @@ export default {
       });
     },
     getshiftSelect(_index){
+      this.curShiftIndex = _index;
       switch(this.shiftSelect.length){
         case 0:
           this.shiftSelect[0]=_index;
@@ -985,7 +987,6 @@ export default {
           let max = Math.max(this.shiftSelect[0],_index);
           this.$set(this.shiftSelect,0,min);
           this.$set(this.shiftSelect,1,max);
-          // this.shiftSelect[0] = min;
           break;
         case 2:
           if (_index<this.shiftSelect[0]) this.$set(this.shiftSelect,0,_index);
@@ -1006,7 +1007,7 @@ export default {
         this.objData[_index]._isChecked = false;
       }
       this.$nextTick(()=>{
-        this.$emit('on-selection-change', this.getSelection(),this.getSelection(true));
+        this.$emit('on-selection-change', this.getSelection(),this.getSelection(true), _index);
       })
     },
     handleClick(){
@@ -1062,7 +1063,7 @@ export default {
           })
         }
         this.$nextTick(()=>{
-          this.$emit('on-selection-change',this.getSelection(),this.getSelection(true));
+          this.$emit('on-selection-change',this.getSelection(),this.getSelection(true), _index);
         })
     },
     clickCurrentRowTr (event,_index) { 
@@ -1143,7 +1144,7 @@ export default {
         // this.$emit(status ? 'on-select' : 'on-select-cancel', selection, JSON.parse(JSON.stringify(this.data[_index])));
         // 考虑addData模式
         this.$emit(status ? 'on-select' : 'on-select-cancel', selection, JSON.parse(JSON.stringify(this.cloneData[_index])));
-        this.$emit('on-selection-change', selection,this.getSelection(true));
+        this.$emit('on-selection-change', selection,this.getSelection(true), _index);
       })
     },
     clearAllRow(){
@@ -1190,7 +1191,7 @@ export default {
         this.$nextTick(()=>{
           const selection = this.getSelection();
           this.$emit('on-select-all', selection);
-          this.$emit('on-selection-change', selection,this.getSelection(true));          
+          this.$emit('on-selection-change', selection,this.getSelection(true), null);          
         })
       }, 0);
     },
@@ -1269,7 +1270,7 @@ export default {
         }
       }
       this.$nextTick(()=>{
-        this.$emit('on-selection-change', this.getSelection(),this.getSelection(true));
+        this.$emit('on-selection-change', this.getSelection(),this.getSelection(true), this.curShiftIndex);
       })
     },
     fixedHeader () {

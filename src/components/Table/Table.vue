@@ -70,7 +70,7 @@
             :headAlgin="headAlgin"
             :lastColWidth="lastColWidth"
             :minDragWidth="minDragWidth"
-            :multiLevel="cloneMultiLevel"
+            :multiLevel="leftCloneMultiLevel"
             :notSetWidth="notSetWidth"
             @on-change-width="changeWidth"
             ></table-head>
@@ -104,7 +104,7 @@
             :canDrag="Boolean(false)"
             :canMove="Boolean(false)"
             :headAlgin="headAlgin"
-            :multiLevel="cloneMultiLevel"
+            :multiLevel="rightCloneMultiLevel"
             :notSetWidth="notSetWidth"
             ></table-head>
         </div>
@@ -317,6 +317,14 @@ export default {
       default:false,
     },
     ctrSelection:{//仅开启highlight-row时支持ctrl多选
+      type:Boolean,
+      default:false,
+    },
+    closeExpandResize:{//关闭展开过程中重新resize功能
+      type:Boolean,
+      default:false,
+    },
+    disabledExpand:{//禁用展开功能
       type:Boolean,
       default:false,
     }
@@ -576,7 +584,7 @@ export default {
         return this.columns.some(col => col.fixed && col.fixed === 'right');
     },
     isSummation () {
-      return this.summationData.length > 0 && !this.isRightFixed && !this.isLeftFixed
+      return this.summationData.length > 0
     },
     summationStyle () {
       return {
@@ -587,22 +595,68 @@ export default {
       if (!this.multiLevel || this.multiLevel.length==0) return null;
       let data = [];
           data[0]=[];
-      this.multiLevel.forEach((cols,i)=>{
-        if(typeOf(cols)!='array'){
+      let left=[], right=[],center=[];
+      if(typeOf(this.multiLevel[0])!='array'){
+        this.multiLevel.forEach((cols)=>{
           if(!cols.hiddenCol&&cols.hiddenCol!='false'){
-            data[0].push(cols);
+            if(cols.fixed&&cols.fixed==='left'){
+              left.push(cols)
+            }else if(cols.fixed&&cols.fixed==='right'){
+              right.push(cols)
+            }else{
+              center.push(cols)
+            }
           }
-        }else{
-          let data2=[]
+        })
+        data[0] = left.concat(center).concat(right)
+      }else{
+        this.multiLevel.forEach((cols)=>{
+          left=[] 
+          right=[]
+          center=[]
           cols.forEach((item,inx)=>{
             if(!item.hiddenCol&&item.hiddenCol!='false'){
-              data2.push(item);
+              if(item.fixed&&item.fixed==='left'){
+                left.push(item)
+              }else if(item.fixed&&item.fixed==='right'){
+                right.push(item)
+              }else{
+                center.push(item)
+              }
             }
           })
-          data.push(data2);
-        }
-      })
+          data.push(left.concat(center).concat(right))
+        })
+      }
       return data.length>0?data:null;
+    },
+    leftCloneMultiLevel () {
+      if(!this.cloneMultiLevel || this.cloneMultiLevel.length==0) return null
+      let data = []
+      this.cloneMultiLevel.forEach((cols)=>{
+        let data2 = []
+        cols.forEach((item)=>{
+          if(item.fixed&&item.fixed==='left'){
+            data2.push(item)
+          }
+        })
+        data.push(data2)
+      })
+      return data
+    },
+    rightCloneMultiLevel () {
+      if(!this.cloneMultiLevel || this.cloneMultiLevel.length==0) return null
+      let data = []
+      this.cloneMultiLevel.forEach((cols)=>{
+        let data2 = []
+        cols.forEach((item)=>{
+          if(item.fixed&&item.fixed==='right'){
+            data2.push(item)
+          }
+        })
+        data.push(data2)
+      })
+      return data
     }
   },
   methods: {
@@ -950,6 +1004,7 @@ export default {
       this.rebuildData = filterData;
     },
     toggleExpand (_index) {
+      if(this.disabledExpand) return;
         let data = {};
         for (let i in this.objData) {
             if (parseInt(i) === _index) {
@@ -1386,6 +1441,7 @@ export default {
   },
   mounted () {
     this.$on('on-expand',()=>{
+      if(this.closeExpandResize) return false;
       this.$nextTick(()=>{//会引起render多次执行
         this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
         this.handleResize();

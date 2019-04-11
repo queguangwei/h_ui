@@ -2,6 +2,9 @@
   <div>
     <h-date-picker type="datetime" v-model="datatime"></h-date-picker>
     <h-time-picker></h-time-picker>
+    <h-steps :current="0" ref="step">
+        <h-step v-for="(item,inx) in curData" :title="item.title" :content="item.content" :key="inx"></h-step>       
+    </h-steps>
     <h-steps :current="0">
         <h-step title="已完成" content="这里是该步骤的描述信息"></h-step>
         <h-step status="wait" title="已完成" content="这里是该步骤的描述信息"></h-step>
@@ -68,6 +71,8 @@
               return {
                   current: 0,
                   datatime:'',
+                  curData:[
+                  ]
               }
           },
     methods: {
@@ -78,6 +83,15 @@
                 this.current += 1;
             }
         }
+    },
+    mounted(){
+        this.curData = [ {title:'123', content:"这里是该步骤的描述信息"},
+                      {title:'456', content:"这里是该步骤的描述信息"},
+                      {title:'789', content:"这里是该步骤的描述信息"},
+                      {title:'012', content:"这里是该步骤的描述信息"},]
+        this.$nextTick(()=>{
+            this.$refs.step.updateChildProps()
+        })
     }
   }
 </script>
