@@ -14,7 +14,7 @@ $checkbtn-prefix-cls: "#{$css-prefix}checkbtn";
         cursor: pointer;
         user-select: none;
 
-    }
+    }   
     &-wrapper-selected{
         border: solid 1px $primary-color;
         color: $primary-color;

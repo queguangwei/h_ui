@@ -231,6 +231,7 @@
       <div>
         <span>单选可搜索:</span>
         <h-select v-model="model10"
+                  placement="top"
                   width="200"
                   @on-blur="blurH"
                   filterable>
@@ -331,6 +332,72 @@
                   :value="item.value"
                   :key="item.value">{{ item.label }}</h-option>
       </h-select>
+      <h2>允许新建条目</h2>
+        <span>单选:</span>
+        <h-select v-model="model14"
+                  width="200"
+                  filterable
+                  :showBottom="false"
+                  isBackClear
+                  allowCreate
+                  @on-change="handle"
+                  label-in-value>
+          <h-option v-for="(item, index) in uList"
+                    :value="item.id"
+                    :key="item.id">{{ item.name }}</h-option>
+        </h-select>
+        <span>{{JSON.stringify(model14)}}</span>
+        <span>多选:</span>
+        <h-select v-model="model15"
+                  width="200"
+                  multiple
+                  filterable
+                  :showBottom="true"
+                  allowCreate
+                  @on-change="handle"
+                  label-in-value
+                  algin="center"
+                  isCheckall
+                  checkToHead
+                  :transfer="true">
+          <h-option v-for="(item, index) in uList"
+                    :value="item.id"
+                    :key="item.id">{{ item.name }}</h-option>
+        </h-select>
+        <span>{{JSON.stringify(model15)}}</span>
+        <h1>--------- HUI_V1.0.31_20190321 TS:201903110539 ---------</h1>
+        <p>has transfer</p>
+        <h-select v-model="v20190321.value"
+                  width="200"
+                  filterable
+                  :transfer="true"
+                  >
+          <h-option v-for="item in v20190321.options"
+                    :value="item.value"
+                    :key="item.value">{{ item.label }}</h-option>
+        </h-select>
+        <p>showBottom</p>
+        <h-select v-model="v20190321.value1"
+                  width="200"
+                  filterable
+                  showBottom
+                  >
+          <h-option v-for="item in v20190321.options"
+                    :value="item.value"
+                    :key="item.value">{{ item.label }}</h-option>
+        </h-select>
+        <p>多选远程搜索配置搜索图标</p>
+         <h-select
+            v-model="model20"
+            multiple
+            filterable
+            remote
+            multClearable
+            remoteIcon="search"
+            :remote-method="remoteMethod2"
+            :loading="loading1">
+            <h-option v-for="option in options2" :value="option.value" :key="option.value">{{option.label}}</h-option>
+        </h-select>
     </div>
   </div>
 </template>
@@ -492,6 +559,9 @@ export default {
       model10: '',
       model11: '',
       model13: 'hangzhou',
+      model14: '',
+      model15: [],
+      model20:[],
       loading1: false,
       options1: [
         {
@@ -616,9 +686,39 @@ export default {
         ]
       },
       bigData:bigData,
+      v20190321: {
+        options: [
+          {
+            value: '1',
+            label: '1'
+          },
+          {
+            value: '11',
+            label: '11'
+          },
+          {
+            value: '112',
+            label: '112'
+          },
+          {
+            value: '2',
+            label: '2'
+          },
+          {
+            value: '3',
+            label: '3'
+          }
+        ],
+        value: '',
+        value1: ''
+      },
+      options2:[],
     }
   },
   methods: {
+    handle(d) {
+      console.log(d);
+    },
     setNull(){
       this.model34 = "0"
       // this.model44 = ['124124']
@@ -691,7 +791,24 @@ export default {
           }
         })
       }
-    }
+    },
+    remoteMethod2 (query) {
+            if (query !== '') {
+                this.loading2 = true;
+                setTimeout(() => {
+                    this.loading2 = false;
+                    const list = this.list.map(item => {
+                        return {
+                            value: item,
+                            label: item
+                        };
+                    });
+                    this.options2 = list.filter(item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1);
+                }, 200);
+            } else {
+                this.options2 = [];
+            }
+     }
   },
   mounted() {
     var _this = this

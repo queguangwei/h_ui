@@ -1,5 +1,5 @@
 <template>
-  <div :class="classes" :style="multiplestyle" ref="select" v-clickoutside="handleClose">
+  <div :class="classes" :style="multiplestyle" ref="select" v-clickoutside="{trigger: 'mousedown', handler: handleClose}">
     <div
       :class="[prefixCls + '-selection']"
       ref="reference"
@@ -612,6 +612,7 @@
       focus(){
         if (this.disabled || this.readonly) return;
         this.$nextTick(()=>{
+          this.isFocus = true;
           this.visible = true;
           if (this.filterable) {
             this.$refs.input.focus();
@@ -621,6 +622,7 @@
         })
       },
       blur(){
+        this.isFocus = false;
         this.visible = false;
         if (this.filterable) {
           this.$refs.input.blur();

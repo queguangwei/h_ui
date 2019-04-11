@@ -66,7 +66,8 @@ export default {
             m10: '10月',
             m11: '11月',
             m12: '12月'
-        }
+        },
+        long: '长期'
     },
     transfer: {
         titles: {

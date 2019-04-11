@@ -71,6 +71,7 @@
         :editable ="column.editable"
         :showFormat = "true"
         :transfer="column.transfer"
+        @on-change = "editdateChange"
         class="canEdit"></Date>
       </template>
       <template v-if="renderType === 'time'">
@@ -147,7 +148,7 @@ export default {
     parent:Object,
     naturalIndex: Number,    // index of rebuildData
     columnIndex:Number,
-    index: Number,           // _index of data
+    index: [Number,String],           // _index of data
     checked: Boolean,
     disabled: Boolean,
     expanded: Boolean,
@@ -368,6 +369,9 @@ export default {
     editselectChange(val){
       this.currentSelect =this.column.singleShowLabel ? [val] : val
       this.$emit('on-editselect-change',val,this.columnIndex,this.index);
+    },
+    editdateChange(val){
+      this.$emit('on-editdate-change',val,this.columnIndex,this.index);
     },
     editinputChange(){
       this.$emit('on-editinput-change',this.columnText,this.columnIndex,this.index);

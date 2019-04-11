@@ -6,7 +6,25 @@
     <Button @click="delDate">删除数据</Button>
     <!-- <Button @click="changeMsg">显示</Button> -->
     <!-- <h-msg-box v-model = "showMsgBox" width="1000"> -->
-      <h-edit-gird ref="table" border height="200" :columns="columns1" :data="data2" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" stripe :loading="loading" @on-expand="expand" :option="options1" :treeOption="treeOption" @on-editselect-change="selectchange" @on-editinput-change="selectchange" @on-editinput-blur="selectchange" @on-editarea-change="selectchange" @on-editarea-blur="selectchange" @on-money-blur="selectchange" @on-money-change="selectchange">
+      <h-edit-gird ref="table" border height="200" 
+        :columns="columns1" 
+        :data="data2" 
+        :disabled-hover="true" 
+        :highlight-row="true" 
+        @on-current-change="click1" 
+        stripe 
+        :loading="loading" 
+        @on-expand="expand" 
+        :option="options1" 
+        :treeOption="treeOption" 
+        @on-editselect-change="selectchange"
+        @on-editinput-change="selectchange"
+        @on-editinput-blur="selectchange" 
+        @on-editarea-change="selectchange" 
+        @on-editarea-blur="selectchange" 
+        @on-money-blur="selectchange" 
+        @on-money-change="selectchange"
+        @on-editdate-change="selectchange">
         <p slot='loading'>我是自定义loading</p>
       </h-edit-gird>
     <!-- </h-msg-box> -->
@@ -90,10 +108,10 @@ var columns=[
         //     })
         //   }
         // },
-        // {
-        //   type: 'selection',
-        //   width: 50,
-        // },
+        {
+          type: 'selection',
+          width: 50,
+        },
         {
           title: '姓名',
           key: 'name',
@@ -437,8 +455,9 @@ export default {
       console.log(selection);
       console.log(row);
     },
-    selsetChange (selection){//选项发生变化时触发已选择的项
+    selsetChange (selection,inx){//选项发生变化时触发已选择的项
       console.log(selection);
+      console.log(inx);
     },
     getData(){
       console.log(this.$refs.editGird.cloneData); 

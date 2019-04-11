@@ -49,7 +49,7 @@ export default function csv(columns, datas, options, noHeader = false) {
                 row = columnOrder.map((key, index) =>{
                     let exportVal = ''
                     if (columns && columns.length > 0 && columns[index].exportRender) {
-                        exportVal =  columns[index].exportRender(row[key])
+                        exportVal =  columns[index].exportRender(row[key], row)
                     } else {
                         exportVal = typeof row[key] !== 'undefined' ? row[key] : ''
                     }
@@ -57,7 +57,8 @@ export default function csv(columns, datas, options, noHeader = false) {
                         // 强制换行（
                         exportVal =  "\"" + exportVal.replace(/\<br\>/g, "\n") + "\""
                     }
-                    if (typeof exportVal == 'string' && exportVal.substr(0, 1) == '0' || typeof exportVal == 'number') {
+                    // || typeof exportVal == 'number'
+                    if (typeof exportVal == 'string' && exportVal.substr(0, 1) == '0') {
                         exportVal =  '="' + exportVal + '"'
                     }
                     return typeof exportVal === 'string' ?exportVal.replace(/,/g,'，'):exportVal

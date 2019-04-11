@@ -1,5 +1,5 @@
 <template>
-  <div :class="classes" v-clickoutside="handleClose" :style="multiplestyle" ref="select">
+  <div :class="classes" v-clickoutside="{trigger: 'mousedown', handler: handleClose}" :style="multiplestyle" ref="select">
     <div
       :title="titleTip"
       :class="selectionCls"
@@ -26,16 +26,15 @@
         :readonly = "readonly || !editable"
         :class="[prefixCls + '-input']"
         :placeholder="showPlaceholder?localePlaceholder:''"
-        :style="inputStyle"
         autocomplete="off"
         @blur="handleBlur"
-        @keydown="resetInputState"
         @keydown.delete="handleInputDelete"
         tabindex="-1"
         ref="input">
       <!-- 单选时清空按钮 -->
       <Icon name="close" :class="[prefixCls + '-arrow']" v-if="showCloseIcon" @click.native.stop="handleIconClose" ref="close"></Icon>
       <Icon name="unfold" :class="[prefixCls + '-arrow']" v-if="!remote && isArrow" ref="arrowb"></Icon>
+      <Icon :name="remoteIcon" :class="[prefixCls + '-arrow']" v-if="showRemoteIcon" ref="searchb"></Icon>
     </div>
     <transition :name="transitionName">
       <Drop
@@ -60,20 +59,23 @@
               :placeholder="localeSearchHolder"
               autocomplete="off"
               @blur="handleBlur"
-              @keydown="resetInputState"
               @keydown.delete="handleInputDelete"
               tabindex="-1"
               ref="input">
           </span>
           <span v-if="hideMult&&multiple" :class="hideMultHead" @click="toggleSelect(!isSelectAll)">全选</span>
-          <ul v-show="notFoundShow" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul>
-          <ul v-show="(!notFound && !remote) || (remote && !loading && !notFound)" :class="[prefixCls + '-dropdown-list']"><slot></slot></ul>
+          <ul v-show="notFoundShow && !enableCreate" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul>
+          <ul v-show="(!notFound && !remote) || (remote && !loading && !notFound) || enableCreate" :class="[prefixCls + '-dropdown-list']">
+            <!-- 多选、支持搜索和新建条目的情况下，如果检索词不匹配任何一个条目时，显示此项供用户选择 -->
+            <h-option ref="createdOption" v-if="enableCreate && showNewOption" :value="query" created>{{query}}</h-option>
+            <slot></slot>
+          </ul>
           <ul v-show="loading" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
           <ul v-show="isComputed" :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>
         </div>
         <div v-if="showFooter" :class="checkAll">
           <slot name="footer">
-            <template  v-if="isCheckall&&multiple&&!notFoundShow">
+            <template  v-if="(isCheckall&&multiple&&!notFoundShow) || (enableCreate && showNewOption)">
               <Button size="small" @click="toggleSelect(false)">全不选</Button>
               <Button type ="primary" size="small" @click="toggleSelect(true)">全选</Button>
             </template>
@@ -150,6 +152,10 @@
       },
       remoteMethod: {
         type: Function
+      },
+      remoteIcon:{
+         type: String,
+         default: ""
       },
       loading: {
           type: Boolean,
@@ -274,7 +280,12 @@
       maxDropWidth: {
         type:[String,Number],
         default: 500
-		  },
+      },
+      /* 条目不存在时允许增加新条目 */
+      allowCreate: {
+        type: Boolean,
+        default: false
+      }
     },
     data () {
       return {
@@ -289,7 +300,6 @@
         query: '',
         lastQuery: '',
         selectToChangeQuery: false,
-        inputLength: 56,
         notFound: false,
         slotChangeDuration: false,
         model: null,
@@ -303,7 +313,7 @@
         titleTip:'',
         fPlacement:this.placement,
         isSelectAll:false,
-        typeValue:'string',
+        typeValue:'string'
       };
     },
     computed: {
@@ -369,16 +379,12 @@
       showCloseIcon () {
           return (!this.multiple && this.clearable||this.multiple&&this.multClearable) && !this.showPlaceholder;
       },
-      inputStyle () {
-          let style = {};
-          if (this.multiple) {
-              if (this.showPlaceholder) {
-                  style.width = '100%';
-              } else {
-                  style.width = `${this.inputLength}px`;
-              }
-          }
-          return style;
+      showRemoteIcon(){
+        if(this.remote&&this.remoteIcon!=""){
+          return true;
+        }else{
+            return false;
+        }
       },
       localePlaceholder () {
           if (this.placeholder === undefined) {
@@ -448,6 +454,24 @@
       },
       showFooter () {
         return this.$slots.footer || this.isCheckall;
+      },
+      /* 是否开启新建条目功能 */
+      enableCreate() {
+        return this.allowCreate && this.filterable;
+      },
+      showNewOption() {
+        const model = this.model;
+        const query = this.query;
+        const optionInstances = this.optionInstances;
+        let existed = false;
+        for (let i in optionInstances) {
+          let option = optionInstances[i];
+          if (option.searchLabel === query || option.value === query) {
+            existed = true;
+            break;
+          }
+        }
+        return query && !existed;
       }
     },
     methods: {
@@ -469,6 +493,7 @@
         }
       },
       focus(){
+        this.isInputFocus = true;
         if (this.disabled || this.readonly) return;
         this.$nextTick(()=>{
           this.visible = true;
@@ -480,6 +505,7 @@
         })
       },
       blur(){
+        this.isInputFocus = false;
         this.visible = false;
         if (this.filterable) {
           this.$refs.input.blur();
@@ -493,6 +519,7 @@
       },
       toggleSelect(val){
         this.isSelectAll = !this.isSelectAll
+        const createdOption = this.$refs.createdOption;
         if (val) {
           if (this.specialIndex) {
             this.model=this.typeValue=='string'?['-1']:[-1];
@@ -502,8 +529,15 @@
               arr.push(item.value);
             })
             this.model = arr;
+            if (createdOption) {
+              createdOption.select();
+              createdOption.selected = true;
+            }
           }
         }else{
+          if (createdOption) {
+            createdOption.selected = false;
+          }
           this.model=[];
         }
       },
@@ -519,7 +553,7 @@
         }
       },
       toggleMenu () {
-        
+
         if (this.disabled || this.readonly||!this.editable) {
             return false;
         }
@@ -542,8 +576,8 @@
       findChild (cb) {
           const find = function (child) {
               const name = child.$options.componentName;
-
               if (name) {
+                  if (child.created) return;
                   cb(child);
               } else if (child.$children.length) {
                   child.$children.forEach((innerChild) => {
@@ -565,7 +599,7 @@
       updateOptions (init, slot = false) {
           let options = [];
           let disabledOpts = [];
-          let index = 1;
+          let index = this.enableCreate && typeof this.$refs.createdOption !== 'undefined' ? 2 : 1;
           this.findChild((child) => {
               options.push({
                 value: child.value,
@@ -596,14 +630,18 @@
           const type = typeof this.model;
           if (type === 'string' || type === 'number') {
               let findModel = false;
-
+              let curSingle = ''
               for (let i = 0; i < this.options.length; i++) {
                   if (this.model === this.options[i].value) {
-
-                      this.selectedSingle = this.options[i].label;
+                      curSingle = this.options[i].label;
                       findModel = true;
                       break;
                   }
+              }
+              this.selectedSingle = curSingle;
+              if (this.enableCreate && !findModel) {
+                this.selectedSingle = this.model;
+                findModel = true;
               }
 
               if (slot && !findModel) {
@@ -651,14 +689,24 @@
             let selected = this.remote && this.model.length > 0 ? this.selectedMultiple : [];
             for (let i = 0; i < this.model.length; i++) {
                 const model = this.model[i];
-                for (let j = 0; j < this.options.length; j++) {
-                    const option = this.options[j];
-                    if (model === option.value) {
-                        selected.push({
-                            value: option.value,
-                            label: option.label
-                        });
-                    }
+                const options = this.options;
+                let option;
+                for (let op of this.options) {
+                  if (op.value === model) {
+                    option = op;
+                    break;
+                  }
+                }
+                if (option) {
+                  selected.push({
+                    value: option.value,
+                    label: option.label
+                  });
+                } else if (this.enableCreate) {
+                  selected.push({
+                    value: model,
+                    label: model
+                  })
                 }
             }
 
@@ -692,7 +740,7 @@
         if (this.disabled || this.readonly || !this.editable) {
           return false;
         }
-        if (this.remote) {
+        if (this.remote || this.enableCreate) {
           const tag = this.model[index];
           this.selectedMultiple = this.selectedMultiple.filter(item => item.value !== tag);
         }
@@ -710,6 +758,12 @@
       toggleSingleSelected (value, init = false) {
         if (!this.multiple) {
           let label = '';
+          const createdOption = this.$refs.createdOption;
+          if (createdOption) {
+            if (value.indexOf(createdOption.value) > -1) {
+              createdOption.selected = true;
+            }
+          }
           this.findChild((child) => {
               if (child.value === value) {
                   child.selected = true;
@@ -724,11 +778,11 @@
               if (this.labelInValue) {
                   this.$emit('on-change', {
                       value: value,
-                      label: label
+                      label: label ? label : value
                   });
                   this.dispatch('FormItem', 'on-form-change', {
                       value: value,
-                      label: label
+                      label: label ? label : value
                   });
               } else {
                   this.$emit('on-change', value);
@@ -759,6 +813,14 @@
                 curSelect=false;
               }
           });
+          // 新建条目的label等于value
+          if (this.enableCreate) {
+            hybridValue.forEach(v => {
+              if (typeof v.label === 'undefined') {
+                v.label = v.value;
+              }
+            })
+          }
           this.isSelectAll = curSelect;
           if (!init) {
               if (this.labelInValue) {
@@ -806,11 +868,20 @@
           if (keyCode === 13) {
               e.preventDefault();
 
-              this.findChild((child) => {
+              const createdOption = this.$refs.createdOption;
+              if (createdOption && createdOption.isFocus) {
+                createdOption.select();
+                // 单选时，enter不需要取消选择
+                if (this.multiple || !createdOption.selected) {
+                  createdOption.selected = !createdOption.selected;
+                }
+              } else {
+                this.findChild((child) => {
                   if (child.isFocus) {
                       child.select();
                   }
-              });
+                });
+              }
           }
         }
         if (this.visible || this.isInputFocus) {
@@ -819,12 +890,14 @@
       },
       navigateOptions (direction) {
         let curTop = this.$refs.content.scrollTop ? this.$refs.content.scrollTop : 0;
+        const createdOption = this.$refs.createdOption;
+        let maxIndex = createdOption ? this.options.length + 1 : this.options.length;
           if (direction === 'next') {
               const next = this.focusIndex + 1;
-              this.focusIndex = (this.focusIndex === this.options.length) ? 1 : next;
+              this.focusIndex = (this.focusIndex === maxIndex) ? 1 : next;
           } else if (direction === 'prev') {
               const prev = this.focusIndex - 1;
-              this.focusIndex = (this.focusIndex <= 1) ? this.options.length : prev;
+              this.focusIndex = (this.focusIndex <= 1) ? maxIndex : prev;
           }
 
           let child_status = {
@@ -833,8 +906,16 @@
           };
 
           let find_deep = false;
-
-          this.findChild((child) => {
+          if (createdOption && this.focusIndex === 1) {
+            createdOption.isFocus = true;
+            this.findChild(child => {
+              child.isFocus = false;
+            })
+          } else {
+            if (createdOption) {
+              createdOption.isFocus = false;
+            }
+            this.findChild((child) => {
               if (child.index === this.focusIndex) {
                   child_status.disabled = child.disabled;
                   child_status.hidden = child.hidden;
@@ -849,9 +930,11 @@
               if (!child.hidden && !child.disabled) {
                   find_deep = true;
               }
-          });
+            });
+          }
+          
           let top = 32*(this.focusIndex-1);
-          let contentHeight = 0 
+          let contentHeight = 0
           let selectItemHeight = 1
           if (this.scrollFix) {
             // 距离底部5px
@@ -864,13 +947,13 @@
             } else if (direction === 'prev') {
               let maxnum = Math.floor((contentHeight + curTop) / selectItemHeight)
               let minnum = Math.floor(curTop/ selectItemHeight)
-              top = this.focusIndex > minnum && this.focusIndex < maxnum ? curTop : (this.focusIndex -1) * selectItemHeight 
-              
+              top = this.focusIndex > minnum && this.focusIndex < maxnum ? curTop : (this.focusIndex -1) * selectItemHeight
+
             }
 
           }
           if (curTop != top) {
-            scrollAnimate(this.$refs.content,curTop,top);
+            this.$refs.content.scrollTop = top;
           }
           this.resetScrollTop();
 
@@ -891,8 +974,9 @@
         }
       },
       handleBlur () {
+        if (this.multiple && this.filterable) this.$refs.reference.scrollTop = 0
         this.$emit('on-blur');
-        if (this.showBottom) return false;          
+        if (this.showBottom) return false;
         // this.isInputFocus = false
         setTimeout(() => {
           const model = this.model;
@@ -953,8 +1037,8 @@
       },
       broadcastQuery (val) {
           if (findComponentChildren(this, 'OptionGroup')) {
-              this.broadcast('OptionGroup', 'on-query-change', val);
               this.broadcast('Option', 'on-query-change', val);
+              this.broadcast('OptionGroup', 'on-query-change', val);
           } else {
               this.broadcast('Option', 'on-query-change', val);
           }
@@ -1014,6 +1098,48 @@
           }else{
             this.clearSingleSelect();
           }
+        }
+      },
+      checkOptionSelected() {
+        const createdOption = this.$refs.createdOption;
+        if (createdOption) {
+          const model = this.model;
+          const query = this.query;
+          let selected = false;
+          if (this.multiple) {
+            for (let m of model) {
+              if (m === query) {
+                selected = true;
+                break;
+              }
+            }
+          } else {
+            selected = model === query;
+          }
+          createdOption.selected = selected;
+        }
+      },
+      reorderOptionIndex() {
+        const createdOption = this.$refs.createdOption;
+        let index = 1;
+        if (createdOption) {
+          createdOption.index = 1;
+          index = 2;
+        }
+        this.findChild(child => {
+          child.index = index++;
+        })
+      },
+      setPlacement(top = 0){
+        if(this.autoPlacement){
+            let obj = this.$refs.select;
+            let allWidth= document.body.clientWidth;
+            let allHeight= document.body.clientHeight;
+            let curbottom =allHeight-obj.offsetTop-obj.clientHeight-top;
+            let bottomNum = this.isCheckall?250:210;
+            if(curbottom<bottomNum){
+              this.fPlacement = 'top';
+            }
         }
       }
     },
@@ -1095,7 +1221,7 @@
             // }
           } else {
             this.model = value;
-            if(!this.filterable) this.hideMenu();
+
             if (this.filterable && !this.showBottom) {
               this.findChild((child) => {
                 if (child.value === value) {
@@ -1104,6 +1230,10 @@
                 }
               });
             }
+
+            this.$nextTick(() => {
+              this.hideMenu()
+            })
           }
         }
       });
@@ -1113,6 +1243,14 @@
       if (this.disabled) {
         this.tabIndex = -1;
       }
+      this.setPlacement();
+      this.$on('on-visible-change', (val,top) => {
+        if(val){
+          this.$nextTick(()=>{
+            this.setPlacement(parseInt(top));
+          })
+        }
+      });
     },
     beforeDestroy () {
       off(document,'keydown',this.handleKeydown)
@@ -1158,21 +1296,21 @@
           backModel = '0';
         }
         this.$emit('input', backModel);
-          this.modelToQuery();
-          if (this.multiple) {
-            if (this.slotChangeDuration) {
-                this.slotChangeDuration = false;
-            } else {
-                this.updateMultipleSelected();
-            }
+        this.modelToQuery();
+        if (this.multiple) {
+          if (this.slotChangeDuration) {
+              this.slotChangeDuration = false;
           } else {
-            this.updateSingleSelected();
+              this.updateMultipleSelected();
           }
-          if (!this.visible && this.filterable) {
-            this.$nextTick(() => {
-                this.broadcastQuery('');
-            });
-          }
+        } else {
+          this.updateSingleSelected();
+        }
+        if (!this.visible && this.filterable) {
+          this.$nextTick(() => {
+              this.broadcastQuery('');
+          });
+        }
       },
       visible (val) {
         if (val) {
@@ -1196,7 +1334,7 @@
           this.broadcast('Drop', 'on-update-popper');
           setTimeout(() => {
             this.dispatch('Msgbox', 'on-esc-real-close', false);
-          }, 0); 
+          }, 0);
         } else {
           if (this.filterable) {
             this.$refs.input.blur();
@@ -1207,8 +1345,8 @@
             }, 300);
           }
           setTimeout(() => {
-            this.dispatch('Msgbox', 'on-esc-real-close', true);    
-          }, 0);      
+            this.dispatch('Msgbox', 'on-esc-real-close', true);
+          }, 0);
           // this.broadcast('Drop', 'on-destroy-popper');
         }
       },
@@ -1218,17 +1356,18 @@
           if (this.remoteFocusNotShowList && !this.multiple) { // 单选时适用，多选时query会清空，不适用
             if ( val != '' && !this.visible && val != this.value) {
                 this.visible = true
-            } 
+            }
             if (this.visible && !this.isInputFocus) { //点击其他页面触发失去焦点事件
               this.visible = false
             }
-          } 
+          }
           if (!this.selectToChangeQuery) {
               this.$emit('on-query-change', val);
               if(this.readonly || this.disabled) return false;
               this.remoteMethod(val);
           }
           this.focusIndex = 0;
+          typeof this.$refs.createdOption !== 'undefined' && (this.$refs.createdOption.isFocus = false);
           this.findChild(child => {
             child.isFocus = false;
           });
@@ -1238,30 +1377,39 @@
             }
             // if(val.trim()) this.broadcastQuery(val);
             this.broadcastQuery(val);
-
-            let is_hidden = true;
-
+            let isHidden = true;
             this.$nextTick(() => {
-                this.findChild((child) => {
-                    if (!child.hidden) {
-                        is_hidden = false;
-                    }
-                });
-                this.notFound = is_hidden;
-            });
+              this.findChild((child) => {
+                  if (!child.hidden) {
+                      isHidden = false;
+                  }
+              });
+              if (!this.remote) this.notFound = isHidden;
+            })
         }
+        this.$nextTick(() => {
+          this.enableCreate && this.checkOptionSelected();
+          this.enableCreate && this.reorderOptionIndex();
+        })
         if (this.filterable&&!this.remote) {
           this.$nextTick(()=>{
             this.focusIndex = 1;
-            let index = 0;
-            this.findChild(child => {
-              if (index==0&& !child.hidden) {
-                index++;
-                child.isFocus = true;
-              }else{
-                 child.isFocus = false;
-              }
-            });
+            if (typeof this.$refs.createdOption !== 'undefined') {
+              this.$refs.createdOption.isFocus = true;
+              this.findChild(child => {
+                child.isFocus = false;
+              })
+            } else {
+              let index = 0;
+              this.findChild(child => {
+                if (index==0&& !child.hidden) {
+                  index++;
+                  child.isFocus = true;
+                }else{
+                  child.isFocus = false;
+                }
+              });
+            }
           })
         }
         this.selectToChangeQuery = false;
@@ -1281,11 +1429,16 @@
         if (this.remote) {
           this.$nextTick(()=>{
             this.focusIndex = 1;
-            this.findChild(child => {
-              if (child.index == 1) {
-                child.isFocus = true;
-              }
-            });
+            const createdOption = this.$refs.createdOption;
+            if (createdOption) {
+              createdOption.isFocus = true;
+            } else {
+              this.findChild(child => {
+                if (child.index == 1) {
+                  child.isFocus = true;
+                }
+              });
+            }
           })
         }
       },
