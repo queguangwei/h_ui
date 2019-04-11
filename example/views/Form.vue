@@ -34,6 +34,7 @@
     <h1>测试</h1>
     <h-button @click="changeRequire">改变必填</h-button>
     <h-form ref="formValidate"
+            closeRuleChangeValidate
             :model="formValidate"
             :rules="ruleValidate"
             :label-width="250"
