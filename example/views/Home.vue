@@ -239,7 +239,7 @@ for(let i=0;i<60;i++){
               label: '王府井'
             }
           ]
-          }, 
+          },
           {
             value: 'jiangsu',
             label: '江苏',
@@ -667,12 +667,12 @@ var tData= [
 
 <!-- <template>
   <div class="wrapper">
-    <h2>hUI</h2> 
+    <h2>hUI</h2>
     <p>h_ui是由恒生电子研发中心推出的一套专用于服务金融IT的UI基础组件库</p>
     <h1>datagird示例2</h1>
     <h-table border :columns="columns" :data="data"></h-table>
     <h-page></h-page>
-  </div>  
+  </div>
 </template>
 
 <script>
@@ -824,9 +824,9 @@ export default {
           content: '你点击了修改操作'
         });
       }
-      
+
     }
-  } 
+  }
 }
 </script>
 <style lang='scss' scoped>
