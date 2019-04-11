@@ -352,12 +352,14 @@
         return data.map(item => deleteData(item));
       },
       focus(){
-        this.visible=true;
-        this.$nextTick(()=>{
+        setTimeout(() => {
+          this.isFocus = true;
+          this.visible=true;
           this.$refs.input.focus();
-        });
+        }, 0);
       },
       blur(){
+        this.isFocus = false;
         this.visible=false;
         this.$refs.input.blur();
       },

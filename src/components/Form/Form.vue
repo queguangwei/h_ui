@@ -71,6 +71,10 @@ export default {
     onlyBlurRequire: {
       type: Boolean,
       default: false
+    },
+    closeRuleChangeValidate: {//关闭rule改变时的校验
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -167,7 +171,6 @@ export default {
           '[HUI warn]: must call resetValidate with valid prop string!'
         )
       }
-
       field.resetValidate(cb)
     },
     /**
@@ -236,7 +239,13 @@ export default {
     rules: {
       deep: true,
       handler() {
-        this.validate()
+        if(this.closeRuleChangeValidate){
+          this.fields.forEach((field)=>{
+            field.commonRule('ruleChange');
+          });
+        }else{
+          this.validate();
+        }
       }
     },
     placement() {
