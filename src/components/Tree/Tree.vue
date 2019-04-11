@@ -257,6 +257,17 @@
       nodeCheck(){
 
       },
+      filterHighlight(val,key='title'){
+        this.flatState.forEach(item=>{
+          this.$set(item.node, 'filterable', false);
+          if (val!=''&&!!item.node[key]&& item.node[key].indexOf(val)!=-1) {
+            this.$set(item.node, 'filterable', true);
+            if(item.parent!=undefined && !this.flatState[item.parent].node.expand){
+              this.$set(this.flatState[item.parent].node, 'expand', true);
+            }
+          }
+        })
+      }
     },
     created(){
       this.flatState = this.compileFlatState();

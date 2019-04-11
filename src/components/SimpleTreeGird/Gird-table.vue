@@ -67,7 +67,7 @@ import Locale from '../../mixins/locale';
 const prefixCls = 'h-editgird';
 let columnKey = 1;
 export default {
-  name: 'SimpleAsycTree',
+  name: 'SimpleTreeGird',
   mixins: [ Locale,Mixin ],
   components: { GirdHead,TreeTable},
   props: {
@@ -340,8 +340,6 @@ export default {
               if (i === autoWidthIndex) {
                   width = parseInt(getStyle($td[i], 'width')) - 1;
               }
-             // if (column.width) width = column.width||'';
-             // 自适应列在表格宽度较小时显示异常，为自适应列设置最小宽度100（拖拽后除外）
               if (column.width) {
                   width = column.width||''
               } else {
@@ -363,9 +361,6 @@ export default {
               if (i === autoWidthIndex) {
                 width = parseInt(getStyle($th[i], 'width')) - 1;
               }
-              // if(IEVersion()!=-1){               
-              //   width = width+31;
-              // }
              // 自适应列在表格宽度较小时显示异常，为自适应列设置最小宽度100（拖拽后除外）
               if (column.width) {
                   width = column.width||'';
@@ -435,15 +430,17 @@ export default {
         }        
       }
       this.$nextTick(()=>{
-        this.$emit('on-select-change',this.getSelection());
+        this.$emit('on-select-change',this.getSelection(),this.getSelection(true));
       })
     },
-    getSelection(){
+    getSelection(status){
       let arr = [];
+      let selectIndex=[];
       for(let i in this.selection){
         arr.push(this.selection[i]); 
+        selectIndex.push(parseInt(i));
       }
-      return arr;
+      return status?selectIndex:arr;
     },
     selectAll (status) {
       this.$emit('on-select-all', status);

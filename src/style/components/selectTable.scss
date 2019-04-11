@@ -37,6 +37,16 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
                 display: inline-block;
             }
         }
+        .h-tag {
+            max-width: 45%;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            padding-right: 16px;
+        }
+        .h-tag span {
+            display: inline-block;
+            width: 100%;
+        }
     }
     &-show-clear &-selection:hover .#{$selectTable-prefix-cls}-arrow:nth-of-type(2) {
         display: none;
@@ -95,7 +105,7 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
             line-height: $input-height-base - 2px;
             font-size: $font-size-small;
             overflow: hidden;
-            // text-overflow: ellipsis;
+            text-overflow: ellipsis;
             white-space: nowrap;
             padding-left: 8px;
             padding-right: 24px;
@@ -123,7 +133,7 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
     }
 
     &-multiple &-selection{
-        overflow: auto;
+        overflow-y: auto;
         height: $input-height-base;
         padding-left:2px;
         padding-right:30px;
@@ -176,6 +186,7 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
         height: $input-height-base - 3px;
         line-height: $input-height-base;
         padding: 0 0 0 8px;
+        vertical-align: top;
     }
 
     &-not-found{
@@ -201,8 +212,12 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
         }
     }
 
-    // select-dropdown-list checkbox
-    &-dropdown &-dropdown-list {
+    &-dropdown {
+      &-transfer{
+        z-index: $zindex-transfer;
+      }
+      // select-dropdown-list checkbox
+      &-list {
         .#{$selectTable-prefix-cls}-item {
             position: relative;
             & label {
@@ -210,6 +225,7 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
                 // left: 8px;
             }
         }
+      }
     }
 
     &-dropdown-content{
@@ -329,14 +345,13 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
             }
         }
     }
-    &-dropdown-list
-    &-left{
+    &-left {
         text-align:left;
     }
-    &-center{
+    &-center {
         text-align:center;
     }
-    &-right{
+    &-right {
         text-align:right;
     }
 }
@@ -449,4 +464,11 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
         background: #F5F5F5 !important;
         border: 1px solid #F7F7F7 !important
     }
+}
+.#{$selectTable-prefix-cls}-header-slot{
+    border-bottom: 1px solid #e1e1e1;
+}
+.#{$selectTable-prefix-cls}-header-slot-top{
+    border-bottom: 1px solid #e1e1e1;
+    margin-top:52px;
 }

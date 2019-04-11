@@ -3,6 +3,7 @@
   import Operation from './Operation.vue';
   import Locale from '../../mixins/locale';
   import Emitter from '../../mixins/emitter';
+  import { deepCopy } from '../../util/tools';
 
   const prefixCls = 'h-transfer-table';
 
@@ -50,6 +51,9 @@
             option:this.option,
             treeOption:this.treeOption,
             showTitle:this.showTitle,
+            filterable: this.filterable,
+            filterMethod: this.filterMethod,
+            filterPlaceholder: this.localeFilterPlaceholder
           },
           on: {
             // 'on-checked-keys-change': this.handleLeftCheckedKeysChange
@@ -84,6 +88,9 @@
             option:this.option,
             treeOption:this.treeOption,
             showTitle:this.showTitle,
+            filterable: this.filterable,
+            filterMethod: this.filterMethod,
+            filterPlaceholder: this.localeFilterPlaceholder
           },
           on: {
             // 'on-checked-keys-change': this.handleRightCheckedKeysChange
@@ -157,8 +164,27 @@
         type:Boolean,
         default:false
       },
-      option:Array,
-      treeOption:Array,
+      option:{
+        type: Array,
+        default: () => []
+      },
+      treeOption:{
+        type: Array,
+        default: () => []
+      },
+      filterable: {
+        type: Boolean,
+        default: false
+      },
+      filterPlaceholder: {
+        type: String
+      },
+      filterMethod: {
+        type: Function,
+        default (data, query) {
+          return true;
+        }
+      }
     },
     data () {
       return {
@@ -181,7 +207,7 @@
       },
       localeFilterPlaceholder () {
         if (this.filterPlaceholder === undefined) {
-          return this.t('i.transfer.filterPlaceholder');
+          return this.t('i.transferTable.filterPlaceholder');
         } else {
           return this.filterPlaceholder;
         }
@@ -217,54 +243,78 @@
     },
     methods: {
       getAllKeys (direction) {
-        const objData = this.$refs[direction].$refs.table.cloneData;
-        return objData.filter(data => !data.disabled);
+        return this.getList(direction).filter(data => !data.disabled);
       },
       moveTo (direction) {
-        const lCData = this.$refs.left.$refs.table.cloneData;
-        const rCData = this.$refs.right.$refs.table.cloneData;
+        const lData = this.getList('left');
+        const rData = this.getList('right');
         const opposite = direction === 'left' ? 'right' : 'left';
         const moveKeys = this.$refs[opposite].$refs.table.getSelection(); 
-        const moveIndex = this.$refs[opposite].$refs.table. getSelection('transfer');
+        const moveIndex = moveKeys.map(m => m._hkey_);
         if (direction === 'right') {
-          this.rightData = moveKeys.concat(rCData)
-          this.leftData = lCData.filter((col,i)=>!moveIndex.some(index => i == index));
+          this.rightData = moveKeys.concat(rData)
+          this.leftData = lData.filter((col,i)=>!moveIndex.some(index => col._hkey_ == index));
         }else{
-          this.leftData = moveKeys.concat(lCData)
-          this.rightData = rCData.filter((col,i)=>!moveIndex.some(index => i == index));
+          this.leftData = moveKeys.concat(lData)
+          this.rightData = rData.filter((col,i)=>!moveIndex.some(index => col._hkey_ == index));
         }
-        this.$emit('on-change', rCData, direction, moveKeys);
+        const cleanRData = this.getRidOfInnerKey(this.rightData);
+        const cleanMoveKeys = this.getRidOfInnerKey(moveKeys);
+        this.$emit('on-change', cleanRData, direction, cleanMoveKeys);
         this.dispatch('FormItem', 'on-form-change', {
-          tarketKeys: rCData,
+          tarketKeys: cleanRData,
           direction: direction,
-          moveKeys: moveKeys
+          moveKeys: cleanMoveKeys
         });
       },
       moveAllTo (direction) {
-        const lCData = this.$refs.left.$refs.table.cloneData;
-        const rCData = this.$refs.right.$refs.table.cloneData;
+        const lData = this.getList('left');
+        const rData = this.getList('right');
         const opposite = direction === 'left' ? 'right' : 'left';
         const moveKeys = this.getAllKeys(opposite);
         if (direction === 'right') {
-          this.rightData = moveKeys.concat(rCData)
+          this.rightData = moveKeys.concat(rData)
           this.leftData = [];
         }else{
-          this.leftData = moveKeys.concat(lCData)
+          this.leftData = moveKeys.concat(lData)
           this.rightData = [];
         }
-        this.$emit('on-change', this.rightData,direction, moveKeys);
+        const cleanRData = this.getRidOfInnerKey(this.rightData);
+        const cleanMoveKeys = this.getRidOfInnerKey(moveKeys);
+        this.$emit('on-change', cleanRData, direction, cleanMoveKeys);
         this.dispatch('FormItem', 'on-form-change', {
-            tarketKeys: this.rightData,
+            tarketKeys: cleanRData,
             direction: direction,
-            moveKeys: moveKeys 
+            moveKeys: cleanMoveKeys 
         });
       },
       getAlldata(){
         let data = {};
-        data.leftData= this.$refs.left.$refs.table.cloneData;
-        data.rightData= this.$refs.right.$refs.table.cloneData;
+        data.leftData= this.getList('left');
+        data.rightData= this.getList('right');
         return data;
       },
+      getList(direction) {
+        const cloneData = this.$refs[direction].$refs.table.cloneData;
+        const listData = direction === 'left' ? this.leftData : this.rightData;
+        return listData.map((d, index) => {
+          for (let i = 0; i < cloneData.length; i++) {
+            if (cloneData[i]._hkey_ === index) {
+              return cloneData[i];
+            }
+          }
+          return d;
+        });
+      },
+      getRidOfInnerKey(arr) {
+        return arr.map(item => {
+          let copied = deepCopy(item);
+          if (copied.hasOwnProperty('_hkey_')) {
+            delete copied._hkey_;
+          }
+          return copied;
+        });
+      }
     },
     watch: {
       lData (val) {

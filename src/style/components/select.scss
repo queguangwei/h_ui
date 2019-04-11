@@ -78,7 +78,7 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
             @include active();
         }
 
-        .#{$select-prefix-cls}-arrow:nth-of-type(2) {
+        .#{$select-prefix-cls}-arrow.h-icon-unfold {
             transform: rotate(180deg);
         }
     }
@@ -152,10 +152,12 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
     }
 
     &-multiple &-selection{
-        overflow: auto;
+        overflow-y: auto;
         height: $input-height-base;
         padding-right:30px;
         padding-left: 2px;
+        display: flex;
+        flex-flow: wrap;
         .#{$select-prefix-cls}-placeholder{
             display: block;
             height: $input-height-base - 2px;
@@ -168,6 +170,10 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
             padding-left: 8px;
             padding-right: 22px;
         }
+    }
+
+    &-multiple &-selection &-input {
+      flex-grow: 1;
     }
 
     // input

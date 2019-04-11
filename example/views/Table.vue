@@ -13,7 +13,7 @@
      <Button @click="changemsg">显示</Button>
      <!-- :multiLevel="multiLevel1" -->
      <!-- :multiLevel="multiLevel2"  -->
-    <h-table :columns="columns1" :data="[]" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="300" canMove @on-move="onMove" :lastColWidth="150">
+    <h-table :columns="columns1" :multiLevel="multiLevel1" :data="[]" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="300" canMove @on-move="onMove" :lastColWidth="150">
       <span slot="loading">我是自定义加载！！！</span>
     </h-table>
     <h-button @click="setLoading">切换状态</h-button>
@@ -77,7 +77,7 @@
     <p>通过给 columns 数据设置一项，指定 type: 'expand'，即可开启扩展功能。</p>
     <p>给行数据 data 的某项设置 _expanded 为 true，可以默认展开当前行，设置 _disableExpand 可以禁用当前行的展开功能。</p>
     <p>渲染展开区域与自定义列模板方法类似，使用 render 函数。当内容较复杂时，可拆分为组件或使用 JSX。</p>
-    <h-table :columns="columns10" :height="300" :data="data9" @on-expand="expand" @on-row-click="rowclick" @on-row-dblclick="rowdblclick" :loading="loading" border></h-table>
+    <h-table :columns="columns10" :height="300" :data="data9" @on-expand="expand" disabledExpand closeExpandResize @on-row-click="rowclick" @on-row-dblclick="rowdblclick" :loading="loading" border></h-table>
     <h2>设置大小</h2>
     <p>通过设置属性 size 为 large 或 small 可以调整表格尺寸为大或小，默认不填或填写 default 为中。</p>
     <h-table size="large" :columns="columns1" :data="data1" :loading="loading"></h-table>
@@ -154,22 +154,24 @@ export default {
       loading:false,
       multiLevel1:[
         {title:'123',cols:2,},
-        {title:'456',},
-        // {title:'789'},
+        {title:'123',cols:2,},
+        {title:'123',cols:2,},
+        {title:'123',cols:2,},
+        {title:'456', fixed:"right"},
+        {title:'789', fixed:"left"},
       ],
       multiLevel2:[
         [
           {title:'123',rows:2,align:'center',className:'demo-table-info-column'},
-          {title:'456',cols:2,align:'center'},
-          {title:'789',align:'right'},
+          {title:'123',rows:2,align:'center',className:'demo-table-info-column'},
+          {title:'123',rows:2,align:'center',className:'demo-table-info-column'},
+          {title:'123',rows:2,align:'center',className:'demo-table-info-column'},
+          {title:'456',cols:3,align:'center'},
         ],
         [
-          {title:'123',cols:2,hiddenCol:true},
+          {title:'123'},
           {title:'456'},
-        ],
-        [
-          {title:'234'},
-          {title:'678',cols:2},
+          {title:'456'},
         ],
       ],
       columns18: [
@@ -363,7 +365,7 @@ export default {
             "show": "730,124,2",
             "weak": "730,124,2",
             "signin": null,
-            "click": 4254,
+            "click": '0254111111111111111111111111111111111111',
             "active": 1438,
             "day7": 274,
             "day30": 285,
@@ -800,7 +802,8 @@ export default {
         {
           type: 'index',
           width: 60,
-          align: 'center'
+          align: 'center',
+          fixed: "left"
         },
         {
           type: 'selection',
@@ -812,7 +815,7 @@ export default {
           title: "名称",
           key: "name",
           width: 100,
-          // fixed: "right",
+          fixed: "right",
         },
         {
           title: "展示",
@@ -924,6 +927,7 @@ export default {
           type: 'expand',
           width: 50,
           render: (h, params) => {
+            console.log(1);
             return h(TexpandRow, {
               props: {
                   row: params.row
@@ -1357,7 +1361,8 @@ export default {
           birthday: '1991-05-14',
           book: '乔布斯传',
           movie: '致命魔术',
-          music: 'I Cry'
+          music: 'I Cry',
+          _expanded:true,
         },
         {
           name: '张小刚',
@@ -1764,13 +1769,14 @@ export default {
           type: 'radio',
           width:60,
           align:'center',
-          // fixed:'left'
+          fixed:'right',
         },
         {
           title: '姓名',
           key: 'name',
           align: 'center',
-          width:200
+          width:200,
+          fixed:'left',
         },
         {
           title: '年龄',
@@ -1780,25 +1786,26 @@ export default {
           title: '地址',
           ellipsis:true,
           key: 'address',
+                    // fixed:'right'
           // hiddenCol:true,
         },
         {
           title: '地址1',
           key: 'address1',
         },
-        // {
-        //   title: '地址2',
-        //   key: 'address2',
-        // },
-        // {
-        //   title: '地址3',
-        //   key: 'address3',
-        // },
-        // {
-        //   title: '地址4',
-        //   key: 'address4',
-        //   sortType:'asc',
-        // },
+        {
+          title: '地址2',
+          key: 'address2',
+        },
+        {
+          title: '地址3',
+          key: 'address3',
+        },
+        {
+          title: '地址4',
+          key: 'address4',
+          sortType:'asc',
+        },
         {
           title: '地址5',
           key: 'marketNo',

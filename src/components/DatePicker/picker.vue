@@ -39,6 +39,7 @@
                :visible="visible"
                :showTime="type === 'datetime' || type === 'datetimerange'"
                :confirm="isConfirm"
+               :showLong="showLong"
                :selectionMode="selectionMode"
                :steps="steps"
                :format="format"
@@ -58,6 +59,7 @@
                @on-pick-click="disableClickOutSide = true"
                @on-selection-mode-change="onSelectionModeChange"
                @on-select-range="handleSelectRange"
+               @on-pick-long="handleLongDate"
             ></component>
        </div>
       </Drop>
@@ -71,7 +73,7 @@
   import TransferDom from '../../directives/transfer-dom';
   import { oneOf,indexOf} from '../../util/tools';
   import { on, off } from '../../util/dom';
-  import {DEFAULT_FORMATS, TYPE_VALUE_RESOLVER_MAP } from './util';
+  import {DEFAULT_FORMATS, TYPE_VALUE_RESOLVER_MAP, formatDate } from './util';
   import Emitter from '../../mixins/emitter';
   import Locale from '../../mixins/locale';
 
@@ -104,6 +106,10 @@
           default: true
       },
       confirm: {
+          type: Boolean,
+          default: false
+      },
+      showLong: {
           type: Boolean,
           default: false
       },
@@ -156,6 +162,9 @@
       value: {
           type: [Date, String, Array]
       },
+      longValue:{
+           type: [Date, String, Array]
+      },
       showFormat:{
         type:Boolean,
         default:false,
@@ -175,6 +184,10 @@
       autoPlacement:{
         type:Boolean,
         default:false,
+      },
+      clearOnIllegal: {
+        type: Boolean,
+        default: false
       }
     },
     data () {
@@ -230,7 +243,7 @@
           return this.formatDate(this.internalValue);
       },
       isConfirm(){
-          return this.confirm || this.type === 'datetime' || this.type === 'datetimerange' || this.multiple;
+          return this.confirm || this.type === 'datetime' || this.type === 'datetimerange' || this.multiple||this.showLong;
       },
     },
     methods: {
@@ -255,6 +268,7 @@
         if (this.isFocus) {
             this.dispatch('FormItem', 'on-form-blur', this.currentValue);
             this.isFocus = false
+            this.$emit('on-blur')
         }
       },
       handleFocus () {
@@ -265,13 +279,15 @@
       },
       focus(){
         if (this.disabled) return false;
-        this.$nextTick(()=>{
-        //   this.visible =status =='notShow'?false:true;
+        // this.$nextTick(()=>{
+        setTimeout(()=>{
           this.visible = true;
           this.$refs.pickerPanel.onToggleVisibility(true);
           this.isFocus = true
           if(this.$refs.input) this.$refs.input.focus();
-        })
+        },0)
+        //   this.visible =status =='notShow'?false:true;
+        // })
       },
       blur(){
         this.visible = false;
@@ -289,6 +305,27 @@
       reset(){
           this.$refs.pickerPanel.reset && this.$refs.pickerPanel.reset();
       },
+      /**
+       * 检查输入值合法性
+       * 
+       * @param text 输入值
+       * @param date 输入值转换后的Date对象
+       */
+      checkLegality(text, date) {
+        // clearOnIllagal暂只支持date类型
+        if (this.clearOnIllegal && this.type === 'date') {
+          const textFormat = ["yyyyMMdd", "yyyy-MM-dd", "yyyy/MM/dd"];
+          if (date instanceof Date) {
+            for (let format of textFormat) {
+              if (formatDate(date.toString(), format) === text) {
+                return true;
+              }
+            }    
+          }
+          return false;
+        }
+        return true;
+      },
       handleInputChange (event) {
         // if (value==''||String(value).length==0) {
         //   this.handleClear();
@@ -305,13 +342,17 @@
             this.options.disabledDate;
         const valueToTest = isArrayValue ? newDate : newDate[0];
         const isDisabled = disabledDateFn && disabledDateFn(valueToTest);
-        const isValidDate = newDate.reduce((valid, date) => valid && date instanceof Date, true);
+        const isValidDate = newDate.reduce((valid, date) => valid && date instanceof Date && this.checkLegality(newValue, date), true);
 
         if (newValue !== oldValue && !isDisabled && isValidDate) {
             this.emitChange();
             this.internalValue = newDate;
         } else {
-            this.forceInputRerender++;
+          if (this.clearOnIllegal && (!isValidDate || isDisabled)) {
+            this.handleClear();
+            this.$emit('on-illegal-input', newValue);
+          }
+          this.forceInputRerender++;
         }
       },
       handleInputMouseenter () {
@@ -371,7 +412,7 @@
                       val = parser(val, format);
                   } else if (type === 'timerange') {
                       val = parser(val, format);
-                  } else if (Array.isArray(val)) { /* FIX: TS:201902280227: yyyyMMdd类型的范围类型的日期处理出错 */
+                  } else if (Array.isArray(val) && format.toLowerCase() === 'yyyymmdd') { /* FIX: TS:201902280227: yyyyMMdd类型的范围类型的日期处理出错 */
                     val = parser(val, format);
                   } else {
                       val = val.map(date => new Date(date)); // try to parse
@@ -424,6 +465,7 @@
         e.stopPropagation();
       },
       setPlacement(){
+        //   debugger;
         if(this.autoPlacement){
             let obj = this.$refs.wrapper;
             let allWidth= document.body.clientWidth;
@@ -454,6 +496,22 @@
             
         }
       },
+      handleLongDate(){
+        let isdateRange = this.type.indexOf('range')>-1?true:false;
+        let emptyAry = isdateRange ? [null, null] : [null];
+        let date=isdateRange?this.parseDate([this.longValue]):this.parseDate(this.longValue);
+        let longtime = isEmptyArray([this.longValue] || []) ? emptyAry : date;
+        if(!longtime[0]) return;
+        if(isdateRange){
+            let start=this.internalValue[0]?this.internalValue[0].getTime():0;
+            let long=longtime[0].getTime();
+            if(start===0||long-start<0) return;
+            this.$set(this.internalValue, 1, longtime[0]);
+        }else{
+          this.internalValue =longtime;
+        }      
+        this.emitChange();
+      }
     },
     watch: {
       visible (state) {
@@ -472,8 +530,10 @@
         this.$refs.drop.update();
         this.$emit('on-open-change', state);
       },
-      value(val) {
-        this.internalValue = this.parseDate(val);
+      value: {
+        handler(val) {
+          this.internalValue = this.parseDate(val);
+        }
       },
       open (val) {
         this.visible = val === true;

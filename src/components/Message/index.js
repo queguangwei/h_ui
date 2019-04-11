@@ -40,23 +40,23 @@ function getMessageInstance (type) {
     });
   return messageInstance;
 }
-function getMessageDuration(type) {
+function getMessageDuration(type,duration) {
   let msgDuration;
   switch (type) {
     case 'info':
-      msgDuration = infoDuration >=0 ? infoDuration:defaultDuration;
+      msgDuration = infoDuration >=0 ? infoDuration:duration;
       break;
     case 'success':
-      msgDuration = successDuration >=0 ? successDuration:defaultDuration;
+      msgDuration = successDuration >=0 ? successDuration:duration;
       break;
     case 'error':
-      msgDuration = errorDuration >=0 ? errorDuration:defaultDuration;
+      msgDuration = errorDuration >=0 ? errorDuration:duration;
       break;
     case 'warning':
-    msgDuration = warningDuration >=0 ? warningDuration:defaultDuration;
+    msgDuration = warningDuration >=0 ? warningDuration:duration;
       break;
     default:
-      msgDuration = defaultDuration;
+      msgDuration = duration;
   }
   return msgDuration;
 }
@@ -67,7 +67,7 @@ function notice (content = '', duration = defaultDuration, type, onClose = funct
   const loadCls = type === 'loading' ? ' h-load-loop' : '';
 
   let instance = getMessageInstance(type);
-  let noticeDuration=getMessageDuration(type);
+  let noticeDuration=getMessageDuration(type,duration);
   instance.notice({
     name: `${prefixKey}${name}`,
     duration: noticeDuration,

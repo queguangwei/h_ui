@@ -35,8 +35,9 @@
               @on-editinput-blur="editinputBlur"
               @on-editarea-change="editAreaChange"
               @on-editarea-blur="editAreaBlur"
-              @on-typefield-blur = "typefieldBlur"
-              @on-typefield-change = "typefieldChange"
+              @on-typefield-blur="typefieldBlur"
+              @on-typefield-change="typefieldChange"
+              @on-editdate-change="editdateChange"
             ></Cell>
           </td>
         </table-tr>
@@ -338,6 +339,9 @@
         },
         typefieldChange(val,i,j){
           this.$parent.typefieldChange(val,i,j)
+        },
+        editdateChange(val,i,j){
+          this.$parent.editdateChange(val,i,j)
         },
       },
       mounted(){

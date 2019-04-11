@@ -1,6 +1,433 @@
 <template>
+  <div>
+    <h-checkbox-group v-model="social" vertical>
+        <h-checkbox label="twitter">
+            <h-icon name="social-twitter"></h-icon>
+            <span>Twitter</span>
+        </h-checkbox>
+        <h-checkbox label="facebook">
+            <h-icon name="social-facebook"></h-icon>
+            <span>Facebook</span>
+        </h-checkbox>
+        <h-checkbox label="github">
+            <h-icon name="social-github"></h-icon>
+            <span>Github</span>
+        </h-checkbox>
+        <h-checkbox label="snapchat">
+            <h-icon name="social-snapchat"></h-icon>
+            <span>Snapchat</span>
+        </h-checkbox>
+    </h-checkbox-group>
+    <h-checkbox-group v-model="fruit">
+        <h-checkbox label="香蕉"></h-checkbox>
+        <h-checkbox label="苹果"></h-checkbox>
+        <h-checkbox label="西瓜"></h-checkbox>
+    </h-checkbox-group>
+  </div>
+</template>
+<script>
+    export default {
+        data () {
+            return {
+                social: ['facebook', 'github'],
+                fruit: ['苹果']
+            }
+        }
+    }
+</script>
+<!--<template>
+  <div>
+    <h-select v-model="model9" style="width:200px" >
+     <h-option v-for="item2 in realData" :value="item2.value" :key="item2.value" >
+            <span>{{item2.text}}</span>
+            <span style="float:right;color:#ccc">{{item2.value}}</span>
+      </h-option>
+    </h-select>
+    <Button @click="tt">赋值</Button>
+    {{model9}}
+  </div>
+</template>
+<script>
+    export default {
+        data () {
+            return {
+              realData:[{"value":'1',"text":"境外"},{"value":'0',"text":"境内"}],
+              model9: ""
+            }
+        },
+        methods:{
+        tt(){
+        this.model9="3";
+        }
+        }
+    }
+</script>
+-->
+<!--<template>
 <div>
-    <h-simple-table :columns="columnsBig" 
+  <h-msg-box v-model="changeform" width="900" escClose left="10" > 
+    <h-simple-table :columns="columns1" :data="data1"></h-simple-table>
+  </h-msg-box>
+  <Button @on-click="changeform1">显示隐藏</Button>
+</div>
+</template>
+<script>
+import Ceshi from './ceshi.vue'
+  export default {
+    components:{Ceshi},
+    data () {
+      return {
+        columns1: [
+            {
+                title: '姓名',
+                key: 'name',
+                render: (h, params) => {
+                  return h(Ceshi)
+                }
+            },
+            {
+                title: '年龄',
+                key: 'age'
+            },
+            {
+                title: '地址',
+                key: 'address'
+            }
+        ],
+        data1: [
+            {
+                name: '王小明',
+                age: 18,
+                address: '北京市朝阳区芍药居'
+            },
+            {
+                name: '张小刚',
+                age: 25,
+                address: '北京市海淀区西二旗'
+            },
+            {
+                name: '李小红',
+                age: 30,
+                address: '上海市浦东新区世纪大道'
+            },
+            {
+                name: '周小伟',
+                age: 26,
+                address: '深圳市南山区深南大道'
+            }
+        ],
+        changeform:false
+      }
+    },
+    methods:{
+      changeform1(){
+        this.changeform = !this.changeform;
+      },
+    },
+  }
+</script>
+-->
+<!--<template>
+<div>
+    <h-table :columns="columns8" :data="data7" size="small" ref="table" :multiLevel="multiLevel"></h-table>
+    <br>
+    <h-button type="primary" size="large" @click="exportData(1)"><h-icon type="ios-download-outline"></h-icon> 导出原始数据</h-button>
+    <h-button type="primary" size="large" @click="exportData(2)"><h-icon type="ios-download-outline"></h-icon> 导出排序和过滤后的数据</h-button>
+    <h-button type="primary" size="large" @click="exportData(3)"><h-icon type="ios-download-outline"></h-icon> 导出自定义数据</h-button>
+</div>
+</template>
+<script>
+    export default {
+        data () {
+            return {
+              multiLevel:[
+                [
+                  {'title':'123','cols':2},
+                  {'title':'456','cols':3},
+                  {'title':'789','cols':2},
+                ],
+                [
+                  {'title':'123','cols':2},
+                  {'title':'456','cols':3},
+                  {'title':'789','cols':2},
+                ]
+              ],
+              columns8: [
+                  {
+                      "title": "名称",
+                      "key": "name",
+                      "fixed": "left",
+                      "width": 200,
+                      exportRender: (cellData) => {
+                          return 'render之后的值<br>换行'
+                      }
+
+                  },
+                  {
+                      "title": "展示",
+                      "key": "show",
+                      "width": 150,
+                      "sortable": true,
+                      filters: [
+                          {
+                              label: '大于4000',
+                              value: 1
+                          },
+                          {
+                              label: '小于4000',
+                              value: 2
+                          }
+                      ],
+                      filterMultiple: false,
+                      filterMethod (value, row) {
+                          if (value === 1) {
+                              return row.show > 4000;
+                          } else if (value === 2) {
+                              return row.show < 4000;
+                          }
+                      }
+                  },
+                  {
+                      "title": "唤醒",
+                      "key": "weak",
+                      "width": 150,
+                      "sortable": true
+                  },
+                  {
+                      "title": "登录",
+                      "key": "signin",
+                      "width": 150,
+                      "sortable": true
+                  },
+                  {
+                      "title": "点击",
+                      "key": "click",
+                      "width": 150,
+                      "sortable": true
+                  },
+                  {
+                      "title": "激活",
+                      "key": "active",
+                      "width": 150,
+                      "sortable": true
+                  },
+                  {
+                      "title": "7日留存",
+                      "key": "day7",
+                      "width": 150,
+                      "sortable": true
+                  },
+                  {
+                      "title": "30日留存",
+                      "key": "day30",
+                      "width": 150,
+                      "sortable": true
+                  },
+                  {
+                      "title": "次日留存",
+                      "key": "tomorrow",
+                      "width": 150,
+                      "sortable": true
+                  },
+                  {
+                      "title": "日活跃",
+                      "key": "day",
+                      "width": 150,
+                      "sortable": true
+                  },
+                  {
+                      "title": "周活跃",
+                      "key": "week",
+                      "width": 150,
+                      "sortable": true
+                  },
+                  {
+                      "title": "月活跃",
+                      "key": "month",
+                      "width": 150,
+                      "sortable": true
+                  }
+              ],
+              data7: [
+                  {
+                      "name": "推广名称1",
+                      "fav": 0,
+                      "show1": '0007302<br>000345',
+                      "weak": 'testtesttest<br>wewerwerwerer',
+                      "signin": 1563,
+                      "click": 4254,
+                      "active": 1438,
+                      "day7": 274,
+                      "day30": 285,
+                      "tomorrow": 1727,
+                      "day": 558,
+                      "week": 4440,
+                      "month": 5610
+                  },
+                  {
+                      "name": "推广名称2",
+                      "fav": 0,
+                      "show": 4720,
+                      "weak": 4086,
+                      "signin": 3792,
+                      "click": 8690,
+                      "active": 8470,
+                      "day7": 8172,
+                      "day30": 5197,
+                      "tomorrow": 1684,
+                      "day": 2593,
+                      "week": 2507,
+                      "month": 1537
+                  },
+                  {
+                      "name": "推广名称3",
+                      "fav": 0,
+                      "show": 7181,
+                      "weak": 8007,
+                      "signin": 8477,
+                      "click": 1879,
+                      "active": 16,
+                      "day7": 2249,
+                      "day30": 3450,
+                      "tomorrow": 377,
+                      "day": 1561,
+                      "week": 3219,
+                      "month": 1588
+                  },
+                  {
+                      "name": "推广名称4",
+                      "fav": 0,
+                      "show": 9911,
+                      "weak": 8976,
+                      "signin": 8807,
+                      "click": 8050,
+                      "active": 7668,
+                      "day7": 1547,
+                      "day30": 2357,
+                      "tomorrow": 7278,
+                      "day": 5309,
+                      "week": 1655,
+                      "month": 9043
+                  },
+                  {
+                      "name": "推广名称5",
+                      "fav": 0,
+                      "show": 934,
+                      "weak": 1394,
+                      "signin": 6463,
+                      "click": 5278,
+                      "active": 9256,
+                      "day7": 209,
+                      "day30": 3563,
+                      "tomorrow": 8285,
+                      "day": 1230,
+                      "week": 4840,
+                      "month": 9908
+                  },
+                  {
+                      "name": "推广名称6",
+                      "fav": 0,
+                      "show": 6856,
+                      "weak": 1608,
+                      "signin": 457,
+                      "click": 4949,
+                      "active": 2909,
+                      "day7": 4525,
+                      "day30": 6171,
+                      "tomorrow": 1920,
+                      "day": 1966,
+                      "week": 904,
+                      "month": 6851
+                  },
+                  {
+                      "name": "推广名称7",
+                      "fav": 0,
+                      "show": 5107,
+                      "weak": 6407,
+                      "signin": 4166,
+                      "click": 7970,
+                      "active": 1002,
+                      "day7": 8701,
+                      "day30": 9040,
+                      "tomorrow": 7632,
+                      "day": 4061,
+                      "week": 4359,
+                      "month": 3676
+                  },
+                  {
+                      "name": "推广名称8",
+                      "fav": 0,
+                      "show": 862,
+                      "weak": 6520,
+                      "signin": 6696,
+                      "click": 3209,
+                      "active": 6801,
+                      "day7": 6364,
+                      "day30": 6850,
+                      "tomorrow": 9408,
+                      "day": 2481,
+                      "week": 1479,
+                      "month": 2346
+                  },
+                  {
+                      "name": "推广名称9",
+                      "fav": 0,
+                      "show": 567,
+                      "weak": 5859,
+                      "signin": 128,
+                      "click": 6593,
+                      "active": 1971,
+                      "day7": 7596,
+                      "day30": 3546,
+                      "tomorrow": 6641,
+                      "day": 1611,
+                      "week": 5534,
+                      "month": 3190
+                  },
+                  {
+                      "name": "推广名称10",
+                      "fav": 0,
+                      "show": 3651,
+                      "weak": 1819,
+                      "signin": 4595,
+                      "click": 7499,
+                      "active": 7405,
+                      "day7": 8710,
+                      "day30": 5518,
+                      "tomorrow": 428,
+                      "day": 9768,
+                      "week": 2864,
+                      "month": 5811
+                  }
+              ]
+            }
+        },
+        methods: {
+            exportData (type) {
+                if (type === 1) {
+                    this.$refs.table.exportCsv({
+                        filename: '原始数据'
+                    });
+                } else if (type === 2) {
+                    this.$refs.table.exportCsv({
+                        filename: '排序和过滤后的数据',
+                        original: false
+                    });
+                } else if (type === 3) {
+                    this.$refs.table.exportCsv({
+                        filename: '自定义数据',
+                        columns: this.multiLevel[0],
+                        data: this.data7.filter((data, index) => index < 4)
+                    });
+                }
+            }        
+        }
+    }
+</script>
+-->
+<!--<template>
+<div>
+    <h-simple-table :columns="columnsBig" canMove @onMove="test111" 
       :data="bigData" border stripe headAlgin="right" 
       bodyAlgin="left" height="500" rowSelect 
       @on-select="select" @on-select-cancel="select"  
@@ -11,7 +438,7 @@
 <script>
 let jsonData=[];
 let tData =require('../assets/aa.json'); 
-    for (let i = 0; i < 2; i++) {
+for (let i = 0; i < 2; i++) {
       jsonData = jsonData.concat(tData);
     }
     export default {
@@ -28,6 +455,10 @@ let tData =require('../assets/aa.json');
             }
         },
         methods: {
+        test111(a,b){
+        console.log(a);
+         console.log(b);
+        },
             select (selection,row){//已选择的项和刚刚选择的项
              console.log(selection);
              console.log(row);
@@ -86,9 +517,180 @@ let tData =require('../assets/aa.json');
                   key: 'tradeQuantity',
                 }
             ]
-        },
+        }
     }
 </script>
+-->
+<!--<template>
+<div>
+    <h-simple-table :columns="columnsBig" 
+     :row-class-name="rowClassName"  
+      :data="bigData" border :stripe=false headAlgin="center"  bodyAlgin="center"  
+  :canDrag=false :disabled-hover=true :highlight-row=false
+      @on-drag="select" 
+      @on-selection-change="change" ref="transferTable"></h-simple-table>
+ <h-button type="ghost" size="small" @click="reloadMockData">获取</h-button>
+  </div>
+</template>
+<script>
+let jsonData=[];
+let tData =require('../assets/aa.json'); 
+for (let i = 0; i < 2; i++) {
+      jsonData = jsonData.concat(tData);
+    }
+    export default {
+        data () {
+            return {
+                columnsBig: [
+                 {
+                  title:'测试',
+                  key:'ceshi',
+                  algin:'center',
+                 }
+                ],
+                bigData:jsonData,
+            }
+        },
+        methods: {
+     rowClassName (row, index) {
+              if (index === 1) {
+                return 'demo-table-info-row';
+              } else if (index === 3) {
+                return 'demo-table-error-row';
+              }
+              return '';
+            },
+    reloadMockData () {
+                console.log(this.$refs.transferTable. getSelection());
+            },
+            select (selection,index){
+             console.log(selection);
+            },
+selectcancel(selection,row){//已选择的项和刚刚选择的项
+             console.log(selection);
+             console.log(row);
+            },
+            change(e){
+console.log("change事件触发");
+              console.log(e);
+            },
+selectall(e){
+              console.log(e);
+            },
+        },
+        mounted (){
+            this.columnsBig=[
+                { 
+                  type: 'index',
+                  align: 'center',
+                  key:'index'
+                },
+                {
+                  title: '姓名',
+                  key: 'fundId',
+                  align: 'center',
+                  renderHeader:(h,params)=>{
+                    return h('h-icon', {
+                        props: {
+                          name: 'add'
+                        }
+                      })
+                  },
+                  render:(h, params)=>{
+                    return h('div', [
+                      h('h-icon', {
+                        props: {
+                          name: 'addressbook'
+                        }
+                      }),
+                      h('strong', params.row.name)
+                    ]);
+                  }
+                },
+                {
+                  title: '年龄',
+                  key: 'tradeDate',
+                  className: 'demo-table-info-column'
+                },
+                {
+                  title: '地址',
+                  key: 'securityCode',
+                },
+                {
+                  title: '地址1',
+                  key: 'securityName',
+                  ellipsis:true,
+                },
+                {
+                  title: '地址2',
+                  key: 'securityId',
+                },
+                {
+                  title: '地址3',
+                  key: 'tradeDir',
+                },
+                {
+                  title: '地址4',
+                  key: 'tradeSubtype',
+                },
+                {
+                  title: '地址5',
+                  key: 'marketNo',
+                },
+                {
+                  title: '地址6',
+                  key: 'tradeQuantity',
+                }
+            ]
+        }
+    }
+</script>
+<style>
+.demo-table-info-row{
+  color: red
+}
+</style>
+-->
+<!--<template>
+<div>
+  <h-checkbox-group v-model="formGroup">
+    {{formGroup}}
+      <div v-for="(item1,inx) in rightItemLIst" :key="inx">
+         <h-checkbox :label="'item1'+inx"></h-checkbox>         
+          <h-select v-model="formData[item1.segment_code]" @on-change="onSelectChange" multiple :isString='true'>
+            <h-option v-for="item2 in item1.realData" :value="item2.value" :key="item2.value" >{{ item2.text }}</h-option>
+          </h-select>
+      </div>
+  </h-checkbox-group>
+</div>
+</template>
+<script>
+    export default {
+        data () {
+            return {
+                formData:{
+                  selet1:'',
+                  selet2:'',
+                  selet3:'',
+                  selet4:'',
+                },
+                formGroup:[],
+                rightItemLIst:[
+                  {segment_code:'selet1',realData:[{"value":'1',"text":"境外"},{"value":'0',"text":"境内"}]},
+                  {segment_code:'selet2',realData:[{"value":'1',"text":"境外"},{"value":'0',"text":"境内"}]},
+                  {segment_code:'selet3',realData:[{"value":'1',"text":"境外"},{"value":'0',"text":"境内"}]},
+                  {segment_code:'selet4',realData:[{"value":'1',"text":"境外"},{"value":'0',"text":"境内"}]},
+                  ]    
+            }
+        },
+        methods:{
+          onSelectChange(val){
+           
+          }
+        }
+    }
+</script>
+-->
 <!--<template>
     <div>
         

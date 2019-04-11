@@ -2,7 +2,7 @@
   <div>
     <!-- <h-msg-box v-model="changeform" width="900" escClose left="10" closeDrop> -->
     <Button @on-click="changeSelect"></Button>
-      <h-form ref="formItem1" :model="formItem1" onlyBlurRequire :compareModel="formItem2" :label-width="80" errorFocus cols="3">
+      <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus onlyBlurRequire cols="3">
         <h-form-item label="日期控件">
           <h-row>
             <h-col span="11">
@@ -35,8 +35,9 @@
           </h-typefield>
         </h-form-item>
         <h-form-item label="金额框" prop="moneyrange" required>
-          <h-typefield-range v-model="formItem1.moneyrange">
-          </h-typefield-range>
+          {{formItem1.moneyrange}}
+          <h-input v-model="formItem1.moneyrange">
+          </h-input>
         </h-form-item>
         <h-form-item label="单选框" prop="radio" required>
           <h-radio-group v-model="formItem1.radio">
@@ -45,6 +46,7 @@
           </h-radio-group>
         </h-form-item>
         <h-form-item label="多选框" prop="checkbox" required>
+          {{formItem1.checkbox}}
           <h-checkbox-group v-model="formItem1.checkbox">
               <h-checkbox label="吃饭"></h-checkbox>
               <h-checkbox label="睡觉"></h-checkbox>
@@ -58,7 +60,6 @@
         <h-form-item label="特殊日期" prop="fatdate" required>
           <h-fast-date v-model="formItem1.fatdate"></h-fast-date>
         </h-form-item>
-        {{formItem2.select1}}
         <h-form-item label="下拉多选" prop="select1" required>
           <h-select v-model="formItem1.select1"
             multiple
@@ -71,7 +72,6 @@
             </h-option>
           </h-select>
         </h-form-item>
-        {{formItem1.select1}}
         <h-form-item label="下拉单选" prop="select2" required>
           <h-select v-model="formItem1.select2"
                     filterable
@@ -88,7 +88,7 @@
           </h-select-table>
         </h-form-item>
         <h-form-item label="下拉树" prop='tree' required>
-          <h-select-tree v-model="formItem1.tree" :first-value="firstValc" style="width:200px" :data="baseData1" placement="top" placeholder="你好"></h-select-tree>
+          <h-select-tree v-model="formItem1.tree" style="width:200px" :data="baseData1" placement="top" placeholder="你好"></h-select-tree>
         </h-form-item>
         <h-form-item label="文本域" prop="textarea" required>
           <h-input v-model="formItem1.textarea" type="textarea" :canResize="false" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></h-input>
@@ -97,15 +97,15 @@
           <h-cascader v-model="formItem1.cascader" :data="data2" trigger="hover" style="width:200px"></h-cascader>
         </h-form-item>
         <h-form-item label="简单选择框" prop="simpleSelect" required>
-          <h-simple-select v-model="formItem1.simpleSelect" multiple ref="test" placement="top-start" filterable>
+          <h-simple-select v-model="formItem1.simpleSelect" transfer multiple >
             <h-select-block :data="bigData" ></h-select-block>
           </h-simple-select>
         </h-form-item>
-        <h-form-item label="简单选择框单选" prop="simpleSelect1" required>
-          <h-simple-select v-model="formItem1.simpleSelect1" ref="test" placement="top-start" filterable>
+        <!-- <h-form-item label="简单选择框单选" prop="simpleSelect1" required>
+          <h-simple-select v-model="formItem1.simpleSelect1" placement="top-start" filterable>
             <h-select-block :data="bigData" ></h-select-block>
           </h-simple-select>
-        </h-form-item>
+        </h-form-item> -->
         <h-form-item>
             <h-button type="primary" @click="handleSubmit('formItem1')">提交</h-button>
             <h-button type="ghost" style="margin-left: 8px" @click="handleReset('formItem1')">取消</h-button>
@@ -113,45 +113,6 @@
 
       </h-form>
     <!-- </h-msg-box> -->
-    <Button @on-click="changeform1">显示隐藏</Button>
-    <h-select-table v-model="model1" ref="changeDrop">
-      <h-table-option border :columns="columns1" :data="data1"></h-table-option>
-    </h-select-table>
-      <h-button type="primary"  @click="totest">
-          <span>方法</span>
-      </h-button>
-    <h-form ref="formValid" :model="formValid">
-        <h-form-item prop="user" required>
-            <h-input type="text" v-model="formValid.user" placeholder="仅required验证">
-                <h-icon name="people" slot="prepend"></h-icon>
-            </h-input>
-        </h-form-item>
-        <h-form-item prop="stringInput" :validRules="stringRule">
-            <h-input type="text" v-model="formValid.stringInput" placeholder="stringInput验证">
-                <h-icon name="people" slot="prepend"></h-icon>
-            </h-input>
-        </h-form-item>
-        <h-form-item prop="password" required>
-            <h-input type="text" v-model="formValid.password" placeholder="仅正则[全是字母]验证">
-                <h-icon name="lock" slot="prepend"></h-icon>
-            </h-input>
-        </h-form-item>
-        <h-form-item prop="test1" required>
-            <h-input type="text" v-model="formValid.test1" placeholder="仅Func[值为test]验证">
-                <h-icon name="people" slot="prepend"></h-icon>
-            </h-input>
-        </h-form-item>
-        <h-form-item prop="test2" required>
-            <h-input type="text" v-model="formValid.test2" placeholder="混合验证">
-                <h-icon name="people" slot="prepend"></h-icon>
-            </h-input>
-        </h-form-item>
-        <h-form-item>
-            <h-button type="primary" @click="handleSubmit('formValid')">提交</h-button>
-        </h-form-item>
-    </h-form>
-    <Button @click="getFocus">获取焦点</Button>
-    <Button @click="getFocus2">获取焦点2</Button>
   </div>
 </template>
 <script>
@@ -230,7 +191,7 @@ for(let i=0;i<60;i++){
           select2: '',
           radio: '',
           money: '',
-          moneyrange:[],
+          moneyrange:'',
           checkbox: [],
           fatdate: '',
           date: '',
@@ -240,14 +201,14 @@ for(let i=0;i<60;i++){
           textarea: '',
           cascader:[],
           simpleSelect:[],
-          simpleSelect1:'',
+          simpleSelect1:'value1',
         },
         formItem2:{
           input: '1',
           select: '',
           radio: '',
           money: '1244',
-          moneyrange:[],
+          moneyrange:'',
           checkbox: [],
           fatdate: '',
           date: '',
@@ -278,7 +239,7 @@ for(let i=0;i<60;i++){
               label: '王府井'
             }
           ]
-          }, 
+          },
           {
             value: 'jiangsu',
             label: '江苏',
@@ -419,7 +380,7 @@ for(let i=0;i<60;i++){
           select: '',
           radio: '',
           money: '1244',
-          moneyrange:[],
+          moneyrange:'',
           checkbox: [],
           fatdate: '',
           date: '',
@@ -468,7 +429,25 @@ for(let i=0;i<60;i++){
       }
     },
     mounted () {
-      this.formItem1.input = '222';
+      this.formItem1={
+          input: '1',
+          select: '',
+          select1: [],
+          select2: '',
+          radio: '',
+          money: '',
+          moneyrange:'',
+          checkbox: [],
+          fatdate: '',
+          date: '',
+          time: '',
+          slider: '',
+          tree:'',
+          textarea: '',
+          cascader:[],
+          simpleSelect:[],
+          simpleSelect1:'value1',
+      }
       this.bigData = bigData;
     }
   }
@@ -688,12 +667,12 @@ var tData= [
 
 <!-- <template>
   <div class="wrapper">
-    <h2>hUI</h2> 
+    <h2>hUI</h2>
     <p>h_ui是由恒生电子研发中心推出的一套专用于服务金融IT的UI基础组件库</p>
     <h1>datagird示例2</h1>
     <h-table border :columns="columns" :data="data"></h-table>
     <h-page></h-page>
-  </div>  
+  </div>
 </template>
 
 <script>
@@ -845,9 +824,9 @@ export default {
           content: '你点击了修改操作'
         });
       }
-      
+
     }
-  } 
+  }
 }
 </script>
 <style lang='scss' scoped>

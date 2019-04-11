@@ -70,6 +70,8 @@
             :headAlgin="headAlgin"
             :lastColWidth="lastColWidth"
             :minDragWidth="minDragWidth"
+            :multiLevel="leftCloneMultiLevel"
+            :notSetWidth="notSetWidth"
             @on-change-width="changeWidth"
             ></table-head>
         </div>
@@ -102,6 +104,7 @@
             :canDrag="Boolean(false)"
             :canMove="Boolean(false)"
             :headAlgin="headAlgin"
+            :multiLevel="rightCloneMultiLevel"
             :notSetWidth="notSetWidth"
             ></table-head>
         </div>
@@ -316,6 +319,14 @@ export default {
     ctrSelection:{//仅开启highlight-row时支持ctrl多选
       type:Boolean,
       default:false,
+    },
+    closeExpandResize:{//关闭展开过程中重新resize功能
+      type:Boolean,
+      default:false,
+    },
+    disabledExpand:{//禁用展开功能
+      type:Boolean,
+      default:false,
     }
   },
   data () {
@@ -494,10 +505,19 @@ export default {
       let style = {};
       let width = this.scrollBarWidth;
       let height = this.headerRealHeight;
+      if(height <=0 ) return ;
+      let curHeight =  getStyle(this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0],'height');
+      if(curHeight==='auto'&&this.multiLevel&&this.multiLevel.length>0){
+        curHeight = height/(this.multiLevel.length) -1;
+      }else{
+        curHeight = parseInt(curHeight)-1;
+      }
       let top = parseInt(getStyle(this.$refs.title, 'height')) || 0;
       style.width = `${width}px`;
       style.height = `${height}px`;
       style.top = `${top}px`;
+      style.background=`repeating-linear-gradient(#fff 0, #fff ${curHeight}px,#DCE1E7 ${curHeight}px, #DCE1E7 ${curHeight+1}px)`;
+
       return style;
     },
     bodyStyle () {
@@ -564,7 +584,7 @@ export default {
         return this.columns.some(col => col.fixed && col.fixed === 'right');
     },
     isSummation () {
-      return this.summationData.length > 0 && !this.isRightFixed && !this.isLeftFixed
+      return this.summationData.length > 0
     },
     summationStyle () {
       return {
@@ -575,22 +595,68 @@ export default {
       if (!this.multiLevel || this.multiLevel.length==0) return null;
       let data = [];
           data[0]=[];
-      this.multiLevel.forEach((cols,i)=>{
-        if(typeOf(cols)!='array'){
+      let left=[], right=[],center=[];
+      if(typeOf(this.multiLevel[0])!='array'){
+        this.multiLevel.forEach((cols)=>{
           if(!cols.hiddenCol&&cols.hiddenCol!='false'){
-            data[0].push(cols);
+            if(cols.fixed&&cols.fixed==='left'){
+              left.push(cols)
+            }else if(cols.fixed&&cols.fixed==='right'){
+              right.push(cols)
+            }else{
+              center.push(cols)
+            }
           }
-        }else{
-          let data2=[]
+        })
+        data[0] = left.concat(center).concat(right)
+      }else{
+        this.multiLevel.forEach((cols)=>{
+          left=[] 
+          right=[]
+          center=[]
           cols.forEach((item,inx)=>{
             if(!item.hiddenCol&&item.hiddenCol!='false'){
-              data2.push(item);
+              if(item.fixed&&item.fixed==='left'){
+                left.push(item)
+              }else if(item.fixed&&item.fixed==='right'){
+                right.push(item)
+              }else{
+                center.push(item)
+              }
             }
           })
-          data.push(data2);
-        }
-      })
+          data.push(left.concat(center).concat(right))
+        })
+      }
       return data.length>0?data:null;
+    },
+    leftCloneMultiLevel () {
+      if(!this.cloneMultiLevel || this.cloneMultiLevel.length==0) return null
+      let data = []
+      this.cloneMultiLevel.forEach((cols)=>{
+        let data2 = []
+        cols.forEach((item)=>{
+          if(item.fixed&&item.fixed==='left'){
+            data2.push(item)
+          }
+        })
+        data.push(data2)
+      })
+      return data
+    },
+    rightCloneMultiLevel () {
+      if(!this.cloneMultiLevel || this.cloneMultiLevel.length==0) return null
+      let data = []
+      this.cloneMultiLevel.forEach((cols)=>{
+        let data2 = []
+        cols.forEach((item)=>{
+          if(item.fixed&&item.fixed==='right'){
+            data2.push(item)
+          }
+        })
+        data.push(data2)
+      })
+      return data
     }
   },
   methods: {
@@ -916,12 +982,10 @@ export default {
       });
     },
     changeHover(_index,status){
+      if (!this.rebuildData[_index]) return false;
+      let index = this.rebuildData[_index]._index;
       this.$nextTick(()=>{
-        // if (!this.rebuildData||this.rebuildData.length==0)return false;
-        // if (!this.rebuildData[_index]) _index=0;
-        // let index = this.rebuildData[_index]._index; 
-        if (!this.objData[_index]) return false;
-        this.objData[_index]._isHover=status;
+        this.objData[index]._isHover=status;
       })
     },
     toggleMached(arr){
@@ -940,8 +1004,8 @@ export default {
       this.rebuildData = filterData;
     },
     toggleExpand (_index) {
+      if(this.disabledExpand) return;
         let data = {};
-
         for (let i in this.objData) {
             if (parseInt(i) === _index) {
                 data = this.objData[i];
@@ -1343,12 +1407,11 @@ export default {
             if (!('original' in params)) params.original = true;
             datas = params.original ? this.data : this.rebuildData;
         }
-
+        
         let noHeader = false;
         if ('noHeader' in params) noHeader = params.noHeader;
 
-        // const data = Csv(columns, datas, ',', noHeader);
-        const data = Csv(columns, datas, params, noHeader);
+        const data = Csv(columns, datas, params, noHeader,);
         ExportCsv.download(params.filename, data);
     },
     moveUp(colIndex){
@@ -1378,7 +1441,8 @@ export default {
   },
   mounted () {
     this.$on('on-expand',()=>{
-      this.$nextTick(()=>{
+      if(this.closeExpandResize) return false;
+      this.$nextTick(()=>{//会引起render多次执行
         this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
         this.handleResize();
       })

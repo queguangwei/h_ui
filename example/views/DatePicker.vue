@@ -2,7 +2,7 @@
   <div>
     <Button @on-click="testClick(true)">获取焦点</Button>
     <Button @on-click="testClick(false)">失去焦点</Button>
-    <h-date-picker v-model="model1" placement="top-start" confirm showTwoPanel format="yyyy-MM-dd" :showFormat="true" style="width:180px" :disabled="changeable" ref="test"></h-date-picker>
+    <h-date-picker v-model="model1" @on-blur="dateBlur" :options="options5" @on-illegal-input="handleIllegalInput" clearOnIllegal @on-change="handleChange1" confirm showTwoPanel format="yyyy-MM-dd" :showFormat="true" style="width:180px" :disabled="changeable" ref="test"></h-date-picker>
     <span>{{formItem.date}}</span>
     <Button @click = "changedis">改变状态</Button>
     <h-row>
@@ -121,6 +121,16 @@
     </h-row>
     <h-date-picker size="large" type="date" placeholder="不可编辑" :editable="false"></h-date-picker>
     <h-date-picker type="date" placeholder="选择日期" style="width: 200px"></h-date-picker>
+     <h-row>
+      <h2>带有长期功能</h2>
+      <p>设置属性 showLong，配置longValue，点击长期改为longValue日期。</p>
+      <h-col span="12">
+        <h-date-picker type="date" placeholder="选择日期" style="width: 200px" showLong :longValue="longdate1"></h-date-picker>
+      </h-col>
+      <h-col span="12">
+        <h-date-picker type="daterange"  placeholder="选择日期" :value="value2" showLong :longValue="longdate"></h-date-picker>
+      </h-col>
+    </h-row>
   </div>
 </template>
 <script>
@@ -205,7 +215,10 @@
           }
         },
         options5: {
-
+          disabledDate (date) {
+            if (date == null) return false;
+            return new Date().getTime() < date.getTime();
+          }
         },
         formItem:{date:''},
         value1: '2016-01-01',
@@ -221,9 +234,17 @@
         model6:'',
         model7:'',
         changeable:false,
+         longdate:'2100-09-05',
+        longdate1:'2019-09-05',
       }
     },
     methods:{
+      handleIllegalInput() {
+        this.$hMessage.warning('日期输入不合法');
+      },
+      dateBlur() {
+        console.log('blur')
+      },
       testClick(val){
         if (val) {
           this.$refs.test.focus();

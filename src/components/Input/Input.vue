@@ -1,60 +1,73 @@
 <template>
   <div :class="wrapClasses">
     <template v-if="type !== 'textarea'">
-      <div :class="[prefixCls + '-group-prepend']" v-if="prepend" v-show="slotReady"><slot name="prepend"></slot></div>
-      <Icon :name="icon" :class="[prefixCls + '-icon',prefixCls + '-icon-normal']" v-if="icon&&type!='textarea'" @on-click="handleIconClick"></Icon>
+      <div :class="[prefixCls + '-group-prepend']"
+           v-if="prepend"
+           v-show="slotReady">
+        <slot name="prepend"></slot>
+      </div>
+      <Icon :name="icon"
+            :class="[prefixCls + '-icon',prefixCls + '-icon-normal']"
+            v-if="icon&&type!='textarea'"
+            @on-click="handleIconClick"></Icon>
       <transition name="fade">
-        <Icon name="load-c" class="h-icon h-load-loop" :class="[prefixCls + '-icon', prefixCls + '-icon-validate']" v-if="!icon"></Icon>
+        <Icon name="load-c"
+              class="h-icon h-load-loop"
+              :class="[prefixCls + '-icon', prefixCls + '-icon-validate']"
+              v-if="!icon"></Icon>
       </transition>
-      <input
-        ref="input"
-        :type="type"
-        :class="inputClasses"
-        :placeholder="placeholder"
-        :disabled="disabled"
-        :maxlength="maxlength"
-        :readonly="!editable || readonly"
-        :name="name"
-        :value="currentValue"
-        :number="number"
-        :autofocus="autofocus"
-        :spellcheck="spellcheck"
-        :autocomplete="autocomplete"
-        @keyup.enter="handleEnter"
-        @keyup="handleKeyup"
-        @keypress="handleKeypress"
-        @keydown="handleKeydown"
-        @focus="handleFocus"
-        @blur="handleBlur"
-        @input="handleInput"
-        @change="handleChange">
-      <div :class="[prefixCls + '-group-append']" v-if="append" v-show="slotReady"><slot name="append"></slot></div>
+      <input ref="input"
+             :type="type"
+             :class="inputClasses"
+             :placeholder="placeholder"
+             :disabled="disabled"
+             :maxlength="maxlength"
+             :readonly="!editable || readonly"
+             :name="name"
+             :value="currentValue"
+             :number="number"
+             :autofocus="autofocus"
+             :spellcheck="spellcheck"
+             :autocomplete="autocomplete"
+             @keyup.enter="handleEnter"
+             @keyup="handleKeyup"
+             @keypress="handleKeypress"
+             @keydown="handleKeydown"
+             @focus="handleFocus"
+             @blur="handleBlur"
+             @input="handleInputValue"
+             @change="handleChange">
+      <div :class="[prefixCls + '-group-append']"
+           v-if="append"
+           v-show="slotReady">
+        <slot name="append"></slot>
+      </div>
     </template>
-    <textarea
-      v-else
-      ref="textarea"
-      :class="textareaClasses"
-      :style="textareaStyles"
-      :placeholder="placeholder"
-      :disabled="disabled"
-      :rows="rows"
-      :maxlength="maxlength"
-      :readonly="readonly"
-      :name="name"
-      :value="currentValue"
-      :autofocus="autofocus"
-      :spellcheck="spellcheck"
-      :autocomplete="autocomplete"
-      @keyup.enter="handleEnter"
-      @keyup="handleKeyup"
-      @keypress="handleKeypress"
-      @keydown="handleKeydown"
-      @focus="handleFocus"
-      @blur="handleBlur"
-      @input="handleInput"
-      @change="handleChange">
+    <textarea v-else
+              ref="textarea"
+              :class="textareaClasses"
+              :style="textareaStyles"
+              :placeholder="placeholder"
+              :disabled="disabled"
+              :rows="rows"
+              :maxlength="maxlength"
+              :readonly="readonly"
+              :name="name"
+              :value="currentValue"
+              :autofocus="autofocus"
+              :spellcheck="spellcheck"
+              :autocomplete="autocomplete"
+              @keyup.enter="handleEnter"
+              @keyup="handleKeyup"
+              @keypress="handleKeypress"
+              @keydown="handleKeydown"
+              @focus="handleFocus"
+              @blur="handleBlur"
+              @input="handleInputValue"
+              @change="handleChange">
     </textarea>
-    <div v-if="type=='password'&&strengthTip" :class="`${prefixCls}-tips`">
+    <div v-if="type=='password'&&strengthTip"
+         :class="`${prefixCls}-tips`">
       <ul>
         <li>
           <div :class="weakClass"></div>
@@ -73,307 +86,379 @@
   </div>
 </template>
 <script>
-  import { oneOf, findComponentsUpward } from '../../util/tools';
-  import calcTextareaHeight from '../../util/calcTextareaHeight';
-  import Emitter from '../../mixins/emitter';
-  import Locale from '../../mixins/locale';
-  import Icon from '../Icon/Icon.vue'
+import { oneOf, findComponentsUpward } from '../../util/tools'
+import calcTextareaHeight from '../../util/calcTextareaHeight'
+import Emitter from '../../mixins/emitter'
+import Locale from '../../mixins/locale'
+import Icon from '../Icon/Icon.vue'
 
-  const prefixCls = 'h-input';
+const prefixCls = 'h-input'
 
-  export default {
-    name: 'Input',
-    mixins: [ Emitter,Locale ],
-    components:{Icon},
-    props: {
-      type: {
-        validator (value) {
-          return oneOf(value, ['text', 'textarea', 'password']);
-        },
-        default: 'text'
+export default {
+  name: 'Input',
+  mixins: [Emitter, Locale],
+  components: { Icon },
+  props: {
+    type: {
+      validator(value) {
+        return oneOf(value, ['text', 'textarea', 'password', 'int'])
       },
-      value: {
-        type: [String, Number],
-        default: ''
-      },
-      size: {
-        validator (value) {
-          return oneOf(value, ['small', 'large','normal']);
-        }
-      },
-      placeholder: {
-        type: String,
-        default: ''
-      },
-      maxlength: {
-        type: Number
-      },
-      disabled: {
-        type: Boolean,
-        default: false
-      },
-      icon: String,
-      autosize: {
-        type: [Boolean, Object],
-        default: false
-      },
-      rows: {
-        type: Number,
-        default: 2
-      },
-      readonly: {
-        type: Boolean,
-        default: false
-      },
-      editable: {
-        type: Boolean,
-        default: true
-      },
-      name: {
-        type: String
-      },
-      number: {
-        type: Boolean,
-        default: false
-      },
-      autofocus: {
-        type: Boolean,
-        default: false
-      },
-      algin:{//金额组件内部显示
-        type:String,
-        default:'left',
-      },
-      strengthTip:{
-        type:Boolean,
-        default:false
-      },
-      tipState:{
-        type:String,
-        default:null,
-      },
-      spellcheck:{
-        type:Boolean,
-        default:false,
-      },
-      canResize:{
-        type:Boolean,
-        default:true
-      },
-      filterRE:{
-        type:[Object,RegExp],
-        default:null
-      },
-      specialFilter:{
-        type:Boolean,
-        default:false,
-      },
-      specialLength:{
-        type:[Number,String],
-        default:12,
-      },
-      specialDecimal :{
-        type:[Number,String],
-        default:2,
-      },
-      lengthByByte: {
-        type:Boolean,
-        default: false
-      }, // 是否按照字节计算长度
-      autocomplete: {
-        type: String,
-        default: 'off'
+      default: 'text'
+    },
+    value: {
+      type: [String, Number],
+      default: ''
+    },
+    size: {
+      validator(value) {
+        return oneOf(value, ['small', 'large', 'normal'])
       }
     },
-    data () {
-      return {
-        currentValue: this.value,
-        prefixCls: prefixCls,
-        prepend: true,
-        append: true,
-        slotReady: false,
-        textareaStyles: {},
-      };
+    placeholder: {
+      type: String,
+      default: ''
     },
-    computed: {
-      wrapClasses () {
-        return [
-          `${prefixCls}-wrapper`,
-          {
-            [`${prefixCls}-wrapper-${this.size}`]: !!this.size,
-            [`${prefixCls}-type`]: this.type!='textarea',
-            [`${prefixCls}-group`]: this.prepend || this.append,
-            [`${prefixCls}-group-${this.size}`]: (this.prepend || this.append) && !!this.size,
-            [`${prefixCls}-group-with-prepend`]: this.prepend,
-            [`${prefixCls}-group-with-append`]: this.append,
-            [`${prefixCls}-hide-icon`]: this.append  // #554
-          }
-        ];
-      },
-      inputClasses () {
-        return [
-          `${prefixCls}`,
-          `${prefixCls}-${this.algin}`,
-          {
-            [`${prefixCls}-${this.size}`]: !!this.size,
-            [`${prefixCls}-disabled`]: this.disabled,
-            [`${prefixCls}-readonly`]: this.readonly,
-            [`${prefixCls}-editable`]: !this.editable
-          }
-        ];
-      },
-      textareaClasses () {
-        return [
-          `${prefixCls}`,
-          {
-            [`${prefixCls}-disabled`]: this.disabled,
-            [`${prefixCls}-noresize`]:!this.canResize,  
-          }
-        ];
-      },
-      weakClass(){
-        return{
-          [`${prefixCls}-tips-weak`]:this.tipState=='weak'||this.tipState=='general'||this.tipState=='complex',
-        }
-      },
-      generalClass(){
-        return{
-          [`${prefixCls}-tips-general`]:this.tipState=='general'||this.tipState=='complex',
-        }
-      },
-      complexClass(){
-        return{
-          [`${prefixCls}-tips-complex`]:this.tipState=='complex',
-        }
-      }
+    maxlength: {
+      type: Number
     },
-    methods: {
-      handleEnter (event) {
-        this.$emit('on-enter', event);
-      },
-      handleKeydown (event) {
-        this.$emit('on-keydown', event);
-      },
-      handleKeypress(event) {
-        this.$emit('on-keypress', event);
-      },
-      handleKeyup (event) {
-        this.$emit('on-keyup', event);
-      },
-      handleIconClick (event) {
-        this.$emit('on-click', event);
-      },
-      handleFocus (event) {
-        this.$emit('on-focus', event);
-      },
-      handleBlur (event) {
-        let value = event.target.value;
-        if(this.specialFilter&&value.charAt(value.length-1)=='.'){
-          value = value.replace('.','');
-          event.target.value = value;
-        }
-        this.$emit('on-blur', event);
-        if (!findComponentsUpward(this, ['HDatePicker', 'DatePicker','HTimePicker','TimePicker', 'HCascader','Cascader', 'HSearch','Search'])) {
-          this.dispatch('FormItem', 'on-form-blur', this.currentValue);
-        }
-      },
-      handleInput (event) {
-        let value = event.target.value;
-        if (this.number) value = Number.isNaN(Number(value)) ? value : Number(value);
-        if (this.filterRE) {
-          value = value.replace(this.filterRE,'');
-          event.target.value = value
-        }
-        if(this.specialFilter){      
-          if(!isNaN(value)&&Number(value)>=0){
-            if(value.replace('.','').length>this.specialLength){
-              value = this.currentValue;
-            }
-            if(value.split('.')[1]&&(value.split('.')[1].length>this.specialDecimal)){
-              value = this.currentValue;
-            }
-            value = value.replace('+','');
-            // event.target.value = value;
-          }else{
-            value = this.currentValue;
-          }
-          // value = curvalue;
-          event.target.value = value;
-        }
-        if (this.lengthByByte) {
-          let bytesCount = 0
-          for (var i = 0; i < value.length; i++) {
-            var c = value.charAt(i);
-            if (/^[\u0000-\u00ff]$/.test(c)) {//匹配双字节
-              bytesCount += 1;
-            } else {
-              bytesCount += 2;
-            }
-            if (bytesCount > this.maxlength) {
-              value = value.substr(0, i)
-              event.target.value = value.substr(0, i)
-              break
-            }
-          }
-        }
-        this.$emit('input', value);
-        this.setCurrentValue(value);
-        this.$emit('on-change', event);
-      },
-      handleChange (event) {
-        this.$emit('on-input-change', event);
-      },
-      setCurrentValue (value) {
-        if (value === this.currentValue) return;
-        this.$nextTick(() => {
-          this.resizeTextarea();
-        });
-        this.currentValue = value;
-        if (!findComponentsUpward(this, ['HDatePicker', 'DatePicker','HTimePicker','TimePicker', 'HCascader','Cascader', 'HSearch','Search'])) {
-          this.dispatch('FormItem', 'on-form-change', value);
-        }
-      },
-      resizeTextarea () {
-        const autosize = this.autosize;
-        if (!autosize || this.type !== 'textarea') {
-          return false;
-        }
-
-        const minRows = autosize.minRows;
-        const maxRows = autosize.maxRows;
-
-        this.textareaStyles = calcTextareaHeight(this.$refs.textarea, minRows, maxRows);
-      },
-      focus() {
-        if (this.type === 'textarea') {
-          this.$refs.textarea.focus();
-        } else {
-          this.$refs.input.focus();
-        }
-      },
-      blur() {
-        if (this.type === 'textarea') {
-          this.$refs.textarea.blur();
-        } else {
-          this.$refs.input.blur();
-        }
-      }
+    disabled: {
+      type: Boolean,
+      default: false
     },
-    watch: {
-      value (val) {
-        this.setCurrentValue(val);
-      }
+    icon: String,
+    autosize: {
+      type: [Boolean, Object],
+      default: false
     },
-    mounted () {
-      if (this.type !== 'textarea') {
-        this.prepend = this.$slots.prepend !== undefined;
-        this.append = this.$slots.append !== undefined;
-      } else {
-        this.prepend = false;
-        this.append = false;
-      }
-      this.slotReady = true;
-      this.resizeTextarea();
+    rows: {
+      type: Number,
+      default: 2
+    },
+    readonly: {
+      type: Boolean,
+      default: false
+    },
+    editable: {
+      type: Boolean,
+      default: true
+    },
+    name: {
+      type: String
+    },
+    number: {
+      type: Boolean,
+      default: false
+    },
+    autofocus: {
+      type: Boolean,
+      default: false
+    },
+    algin: {
+      //金额组件内部显示
+      type: String,
+      default: 'left'
+    },
+    strengthTip: {
+      type: Boolean,
+      default: false
+    },
+    tipState: {
+      type: String,
+      default: null
+    },
+    spellcheck: {
+      type: Boolean,
+      default: false
+    },
+    canResize: {
+      type: Boolean,
+      default: true
+    },
+    filterRE: {
+      type: [Object, RegExp],
+      default: null
+    },
+    specialFilter: {
+      type: Boolean,
+      default: false
+    },
+    specialLength: {
+      type: [Number, String],
+      default: 12
+    },
+    specialDecimal: {
+      type: [Number, String],
+      default: 2
+    },
+    lengthByByte: {
+      type: Boolean,
+      default: false
+    }, // 是否按照字节计算长度
+    autocomplete: {
+      type: String,
+      default: 'off'
+    },
+    focusAllSelect: {
+      type: Boolean,
+      default: false
+    },
+    //键盘松开触发on-input事件
+    keyUpMode: {
+      type: Boolean,
+      default: false
     }
-  };
+  },
+  data() {
+    return {
+      currentValue: this.value,
+      prefixCls: prefixCls,
+      prepend: true,
+      append: true,
+      slotReady: false,
+      textareaStyles: {}
+    }
+  },
+  computed: {
+    wrapClasses() {
+      return [
+        `${prefixCls}-wrapper`,
+        {
+          [`${prefixCls}-wrapper-${this.size}`]: !!this.size,
+          [`${prefixCls}-type`]: this.type != 'textarea',
+          [`${prefixCls}-group`]: this.prepend || this.append,
+          [`${prefixCls}-group-${this.size}`]:
+            (this.prepend || this.append) && !!this.size,
+          [`${prefixCls}-group-with-prepend`]: this.prepend,
+          [`${prefixCls}-group-with-append`]: this.append,
+          [`${prefixCls}-hide-icon`]: this.append // #554
+        }
+      ]
+    },
+    inputClasses() {
+      return [
+        `${prefixCls}`,
+        `${prefixCls}-${this.algin}`,
+        {
+          [`${prefixCls}-${this.size}`]: !!this.size,
+          [`${prefixCls}-disabled`]: this.disabled,
+          [`${prefixCls}-readonly`]: this.readonly,
+          [`${prefixCls}-editable`]: !this.editable
+        }
+      ]
+    },
+    textareaClasses() {
+      return [
+        `${prefixCls}`,
+        {
+          [`${prefixCls}-disabled`]: this.disabled,
+          [`${prefixCls}-noresize`]: !this.canResize
+        }
+      ]
+    },
+    weakClass() {
+      return {
+        [`${prefixCls}-tips-weak`]:
+          this.tipState == 'weak' ||
+          this.tipState == 'general' ||
+          this.tipState == 'complex'
+      }
+    },
+    generalClass() {
+      return {
+        [`${prefixCls}-tips-general`]:
+          this.tipState == 'general' || this.tipState == 'complex'
+      }
+    },
+    complexClass() {
+      return {
+        [`${prefixCls}-tips-complex`]: this.tipState == 'complex'
+      }
+    }
+  },
+  methods: {
+    handleEnter(event) {
+      this.$emit('on-enter', event)
+    },
+    handleKeydown(event) {
+      this.$emit('on-keydown', event)
+    },
+    handleKeypress(event) {
+      this.$emit('on-keypress', event)
+    },
+    handleKeyup(event) {
+      this.$emit('on-keyup', event)
+      if (this.keyUpMode) {
+        this.handleInput(event)
+      }
+    },
+    handleIconClick(event) {
+      this.$emit('on-click', event)
+    },
+    handleFocus(event) {
+      if (this.focusAllSelect && this.type === 'text') {
+        this.$refs.input.select()
+      }
+      this.$emit('on-focus', event)
+    },
+    handleBlur(event) {
+      let value = event.target.value
+
+      if (this.specialFilter && value.charAt(value.length - 1) == '.') {
+        value = value.replace('.', '')
+        event.target.value = value
+      }
+      this.$emit('on-blur', event)
+      if (
+        !findComponentsUpward(this, [
+          'HDatePicker',
+          'DatePicker',
+          'HTimePicker',
+          'TimePicker',
+          'HCascader',
+          'Cascader',
+          'HSearch',
+          'Search'
+        ])
+      ) {
+        this.dispatch('FormItem', 'on-form-blur', this.currentValue)
+      }
+    },
+    handleInputValue(event) {
+      if (!this.keyUpMode) {
+        this.handleInput(event)
+      }
+    },
+    handleInput(event) {
+      let value = event.target.value
+      if (this.number)
+        value = Number.isNaN(Number(value)) ? value : Number(value)
+      if (this.filterRE) {
+        value = value.replace(this.filterRE, '')
+        event.target.value = value
+      }
+
+      if (this.type === 'int') {
+        if (isNaN(Number(value)) && value !== '-' ) {
+          value = this.currentValue
+        } else if (value !== '' && value !== '-') {
+          value = value.replace(/[^\d-]/g, '').replace(/^(-?)0*/, '$1')
+          value === '' && (value = '0')
+        }
+
+        event.target.value = value
+      }
+
+      if (this.specialFilter) {
+        if (!isNaN(value) && Number(value) >= 0) {
+          if (value.replace('.', '').length > this.specialLength) {
+            value = this.currentValue
+          }
+          if (
+            value.split('.')[1] &&
+            value.split('.')[1].length > this.specialDecimal
+          ) {
+            value = this.currentValue
+          }
+          value = value.replace('+', '')
+          // event.target.value = value;
+        } else {
+          value = this.currentValue
+        }
+        // value = curvalue;
+        event.target.value = value
+      }
+
+      if (this.lengthByByte) {
+        let bytesCount = 0
+        for (var i = 0; i < value.length; i++) {
+          var c = value.charAt(i)
+          if (/^[\u0000-\u00ff]$/.test(c)) {
+            //匹配双字节
+            bytesCount += 1
+          } else {
+            bytesCount += 2
+          }
+          if (bytesCount > this.maxlength) {
+            value = value.substr(0, i)
+            event.target.value = value.substr(0, i)
+            break
+          }
+        }
+      }
+
+      this.$emit('input', value)
+      this.setCurrentValue(value)
+      this.$emit('on-change', event)
+    },
+    handleChange(event) {
+      this.$emit('on-input-change', event)
+    },
+    setCurrentValue(value) {
+      if (value === this.currentValue) return
+      this.$nextTick(() => {
+        this.resizeTextarea()
+      })
+      this.currentValue = value
+      if (
+        !findComponentsUpward(this, [
+          'HDatePicker',
+          'DatePicker',
+          'HTimePicker',
+          'TimePicker',
+          'HCascader',
+          'Cascader',
+          'HSearch',
+          'Search'
+        ])
+      ) {
+        this.dispatch('FormItem', 'on-form-change', value)
+      }
+    },
+    resizeTextarea() {
+      const autosize = this.autosize
+      if (!autosize || this.type !== 'textarea') {
+        return false
+      }
+
+      const minRows = autosize.minRows
+      const maxRows = autosize.maxRows
+
+      this.textareaStyles = calcTextareaHeight(
+        this.$refs.textarea,
+        minRows,
+        maxRows
+      )
+    },
+    focus() {
+      if (this.type === 'textarea') {
+        this.$refs.textarea.focus()
+      } else {
+        this.$refs.input.focus()
+      }
+    },
+    blur() {
+      if (this.type === 'textarea') {
+        this.$refs.textarea.blur()
+      } else {
+        this.$refs.input.blur()
+      }
+    }
+  },
+  watch: {
+    value(val) {
+      this.setCurrentValue(val)
+    }
+  },
+  mounted() {
+    if (this.type !== 'textarea') {
+      this.prepend = this.$slots.prepend !== undefined
+      this.append = this.$slots.append !== undefined
+    } else {
+      this.prepend = false
+      this.append = false
+    }
+    this.slotReady = true
+    this.resizeTextarea()
+  }
+}
 </script>
