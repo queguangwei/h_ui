@@ -31,6 +31,7 @@
              :readonly="!editable||readonly"
              :class="[prefixCls + '-input']"
              :placeholder="showPlaceholder?localePlaceholder:''"
+             @focus="handleFocus"
              @blur="handleBlur"
              @keydown="resetInputState"
              @keydown.delete="handleInputDelete"
@@ -598,10 +599,12 @@ export default {
       this.focusIndex = 0
 
       // 单选 恢复 query 值
-      // console.log('hideMenu')
       if (!this.multiple && this.query !== this.selectedSingle) {
         this.query = this.selectedSingle
-        this.selectToChangeQuery = true
+
+        if (!this.remote) {
+          this.selectToChangeQuery = true
+        }
       }
 
       this.broadcast('TabelOption', 'on-select-close')
@@ -680,7 +683,12 @@ export default {
             break
           }
         }
-        this.selectedSingle = curSingle
+
+        if (curSingle) {
+          this.selectedSingle = curSingle
+        }
+        // this.selectedSingle = curSingle
+
         if (slot && !findModel) {
           this.model = ''
           this.query = ''
@@ -702,6 +710,7 @@ export default {
 
         if (this.filterable) {
           this.query = ''
+          this.selectedSingle = ''
         }
         this.hideMenu()
         this.isInputFocus = true
@@ -985,6 +994,10 @@ export default {
       if (topOverflowDistance < 0) {
         this.$refs.dropdown.$el.scrollTop += topOverflowDistance
       }
+    },
+    handleFocus(e) {
+      e.target.selectionStart = 0
+      e.target.selectionEnd = this.query.length
     },
     handleBlur() {},
     resetInputState() {
@@ -1388,7 +1401,7 @@ export default {
     // },
     // eslint-disable-next-line
     selectedMultiple(val) {
-      console.log('selectedMultiple', val)
+      // console.log('selectedMultiple', val)
       // if (val.length==0&&this.filterable && !this.showBottom) {
       //   this.$nextTick(()=>{
       //     this.$refs.input.focus();
