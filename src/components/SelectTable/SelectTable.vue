@@ -1098,9 +1098,6 @@ export default {
           this.$refs.search.style.width = width
         }
       }
-      // let style = {}
-      // style.width="600psx";
-      // return style;
     },
     focus() {
       if (this.disabled || this.readonly) return
