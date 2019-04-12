@@ -108,7 +108,7 @@ export default {
     precision: {
       type: Number,
       validator(value) {
-        return value > 0 && value <= 20
+        return value >= 0 && value <= 20
       }
     },
     setzero: {

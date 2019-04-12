@@ -1,24 +1,68 @@
-
- <template>
+<template>
   <div>
-    <h-input v-model="value" placeholder="请输入..." style="width: 300px"  @on-keypress="t3"></h-input>
- <span>{{value}}</span> </div>
+    <h-checkbox-group v-model="social" vertical>
+        <h-checkbox label="twitter">
+            <h-icon name="social-twitter"></h-icon>
+            <span>Twitter</span>
+        </h-checkbox>
+        <h-checkbox label="facebook">
+            <h-icon name="social-facebook"></h-icon>
+            <span>Facebook</span>
+        </h-checkbox>
+        <h-checkbox label="github">
+            <h-icon name="social-github"></h-icon>
+            <span>Github</span>
+        </h-checkbox>
+        <h-checkbox label="snapchat">
+            <h-icon name="social-snapchat"></h-icon>
+            <span>Snapchat</span>
+        </h-checkbox>
+    </h-checkbox-group>
+    <h-checkbox-group v-model="fruit">
+        <h-checkbox label="香蕉"></h-checkbox>
+        <h-checkbox label="苹果"></h-checkbox>
+        <h-checkbox label="西瓜"></h-checkbox>
+    </h-checkbox-group>
+  </div>
 </template>
 <script>
     export default {
         data () {
             return {
-                value: ''
+                social: ['facebook', 'github'],
+                fruit: ['苹果']
             }
-        },
-         methods: {
-               t3(){
-              console.log("原生的 keypress 事件");
-            },
         }
     }
 </script>
-
+<!--<template>
+  <div>
+    <h-select v-model="model9" style="width:200px" >
+     <h-option v-for="item2 in realData" :value="item2.value" :key="item2.value" >
+            <span>{{item2.text}}</span>
+            <span style="float:right;color:#ccc">{{item2.value}}</span>
+      </h-option>
+    </h-select>
+    <Button @click="tt">赋值</Button>
+    {{model9}}
+  </div>
+</template>
+<script>
+    export default {
+        data () {
+            return {
+              realData:[{"value":'1',"text":"境外"},{"value":'0',"text":"境内"}],
+              model9: ""
+            }
+        },
+        methods:{
+        tt(){
+        this.model9="3";
+        }
+        }
+    }
+</script>
+-->
 <!--<template>
 <div>
   <h-msg-box v-model="changeform" width="900" escClose left="10" > 

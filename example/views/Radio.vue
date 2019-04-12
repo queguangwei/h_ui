@@ -37,8 +37,9 @@
     </h-radio-group>
     <h2>垂直</h2>
     <p>设置属性 vertical 可以垂直显示，按钮样式下无效。</p>
+    {{vertical}}
     <h-radio-group v-model="vertical" vertical>
-        <h-radio label="apple">
+        <h-radio :label="0">
             <h-icon name="clock"></h-icon>
             <span>Apple</span>
         </h-radio>
@@ -110,7 +111,7 @@
                 animal: '爪哇犀牛',
                 disabledSingle: true,
                 disabledGroup: '爪哇犀牛',	
-                vertical: 'apple',
+                vertical: '',
                 button1: '北京',
                 button2: '北京',
                 button3: '北京',

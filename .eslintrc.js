@@ -17,8 +17,9 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    // 缩进
     indent: ['error', 2],
-
+    // 换行格式
     'linebreak-style': 0,
     // 引号
     quotes: ['error', 'single'],

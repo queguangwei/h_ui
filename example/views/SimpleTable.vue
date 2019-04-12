@@ -12,7 +12,7 @@
     <!-- :multiLevel="multiLevel1" -->
     <!-- <h-msg-box v-model="showmsg" :width="1000"> -->
       <!-- notAdaptive  -->
-    <h-simple-table ref="simTable" canMove :lastColWidth="120" :columns="columnsBig1" border :data="bigData" no-data-text="数据为空" :loading="loading" height="300" @on-selection-change="select" :highlight-row="true" @on-current-change="select" @on-current-change-cnacle="select" @on-scroll="scroll" @on-sort-change="change">
+    <h-simple-table ref="simTable" :columns="columnsBig1" border :data="bigData" height="300" @on-selection-change="selsetChange">
     </h-simple-table>
     <!-- </h-msg-box> -->
      <h-button type="primary" size="large" @click="exportData(1)"><h-icon type="ios-download-outline"></h-icon> 导出原始数据</h-button>
@@ -535,8 +535,10 @@ export default {
       console.log(selection);
       console.log(row);
     },
-    selsetChange (selection){//选项发生变化时触发已选择的项
+    selsetChange (selection,inx,i){//选项发生变化时触发已选择的项
       console.log(selection);
+      console.log(inx);
+      console.log(i);
     },
     show (index) {
       this.$hMsgBox.info({
