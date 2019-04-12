@@ -1,14 +1,3 @@
-<template>
-  <div
-    :class="cellClass"
-    @click.left="leftClick"
-    @click.right.stop.prevent="rightClick($event)"
-    @dblclick="dblClick"
-    @mouseover="mouseOver"
-    @mouseout="mouseOut"
-  >{{isEmptyCell ? '' : data.date.getDate()}}</div>
-</template>
-
 <script>
 import Emitter from '../../mixins/emitter';
 
@@ -17,7 +6,8 @@ export default {
   mixins: [Emitter],
   props: {
     prefixCls: String,
-    data: Object
+    data: Object,
+    dateRender: Function
   },
   computed: {
     root() {
@@ -39,7 +29,8 @@ export default {
         [`${prefixCls}-month-restDay`]: !isEmptyCell && data.workFlag == 0,
         [`${prefixCls}-month-item-empty`]: isEmptyCell,
         [`${prefixCls}-month-item-disable`]: !isEmptyCell && data.disabled,
-        [`${prefixCls}-month-day-active`]: this.selected
+        [`${prefixCls}-month-day-active`]: this.selected,
+        [`${prefixCls}-today`]: !isEmptyCell && data.isToday
       }
     },
     selected() {
@@ -51,25 +42,56 @@ export default {
   },
   methods: {
     dblClick() {
-      if (this.isEmptyCell) return;
+      if (this.isEmptyCell || this.data.disabled) return;
       this.dispatch('Calendar', 'on-cell-dblclick', this.data);
     },
     mouseOver() {
-      if (this.isEmptyCell) return;
+      if (this.isEmptyCell || this.data.disabled) return;
       this.dispatch('Calendar', 'on-cell-mouseover', this.data);
     },
     mouseOut() {
-      if (this.isEmptyCell) return;
+      if (this.isEmptyCell || this.data.disabled) return;
       this.dispatch('Calendar', 'on-cell-mouseout', this.data);
     },
-    leftClick() {
+    click(evt) {
       if (this.isEmptyCell || this.data.disabled) return;
+      // 鼠标左键被按下
+      if (evt.button === 0) {
+        this.leftClick();
+      }
+    },
+    leftClick() {
       this.dispatch('Calendar', 'on-cell-left-click', this.data);
     },
-    rightClick(event) {
+    handleCtxMenu(evt) {
+      evt.preventDefault();
       if (this.isEmptyCell || this.data.disabled) return;
-      this.dispatch('Calendar', 'on-cell-right-click', event, this.data);
+      this.dispatch('Calendar', 'on-context-menu', event, this.data);
     }
+  },
+  render(h) {
+    const dateRender = this.dateRender;
+    let dateContent;
+    if (typeof dateRender === 'function') {
+      dateContent = dateRender(h, this.data);
+    } else {
+      dateContent = h('span', {
+        'class': {
+          [`${this.prefixCls}-month-content-item-text`]: true
+        }
+      }, [this.isEmptyCell ? '' : this.data.date.getDate()]);
+    }
+    return h('div', {
+      'class': this.cellClass,
+      on: {
+        mouseover: this.mouseOver,
+        mouseout: this.mouseOut,
+        dblclick: this.dblClick,
+        contextmenu: this.handleCtxMenu,
+        click: this.click
+      }
+    }, [dateContent]
+    );
   }
 }
 </script>

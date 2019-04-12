@@ -26,6 +26,7 @@
             :style="cellStyle"
             :prefixCls="prefixCls"
             :data="item"
+            :dateRender="dateRender"
           ></date-cell>
         </div>
       </div>
@@ -46,7 +47,8 @@ export default {
     monthViewNum: Number,
     currentDate: Date,
     disabledDate: Function,
-    presetDates: Array
+    presetDates: Array,
+    dateRender: Function
   },
   data() {
     return {
@@ -128,7 +130,10 @@ export default {
      */
     getDateList(year, month) {
       const dateList = new Array(42);
-      dateList.fill(null);
+      let i = 0;
+      while (i < 42) {
+        dateList[i++] = null;
+      }
 
       const now = new Date();
       const lastDate = new Date(year, month + 1, 0).getDate();

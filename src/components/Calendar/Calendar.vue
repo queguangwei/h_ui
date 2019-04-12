@@ -2,20 +2,36 @@
   <div :class="[`${prefixCls}-wrapper`]" ref="calendarWrap">
     <slot name="header">
       <div :class="[`${prefixCls}-top-change`]">
-        <div :class="[`${prefixCls}-top-icon h-prev-year`]" @click="handleToPrevYear">
+        <div
+          :class="[`${prefixCls}-top-icon h-prev-year`]"
+          @click="monthViewNum === 12 ? handleToPrevYear() : jumpToPrevMonth()"
+        >
           <h-icon name="chevron-left"></h-icon>
         </div>
         <h1 :class="[`${prefixCls}-top-text ${prefixCls}-year`]">{{curYear}}年</h1>
-        <div :class="[`${prefixCls}-top-icon h-next-year`]" @click="handleToNextYear">
+        <h1
+          v-if="monthViewNum < 12 && monthViewNum > 1"
+          :class="[`${prefixCls}-top-text`]"
+        >&nbsp{{(curMonth + 1) + '月'}} - {{(curMonth + monthViewNum) + '月'}}</h1>
+        <h1
+          v-if="monthViewNum === 1"
+          :class="[`${prefixCls}-top-text`]"
+        >&nbsp{{(curMonth + 1) + '月'}}</h1>
+        <div
+          :class="[`${prefixCls}-top-icon h-next-year`]"
+          @click="monthViewNum === 12 ? handleToNextYear() : jumpToNextMonth()"
+        >
           <h-icon name="chevron-right"></h-icon>
         </div>
       </div>
     </slot>
     <month-view
       :prefixCls="prefixCls"
-      :monthViewNum="12"
+      :monthViewNum="monthViewNum"
       :currentDate="currentDate"
       :presetDates="dateData"
+      :disabledDate="disableDate"
+      :dateRender="dateCellRender"
     ></month-view>
     <transition name="slide-up">
       <ul :class="[`${prefixCls}-handle`]" v-clickoutside="hideCtxMenu" :style="styles">
@@ -37,15 +53,17 @@
 </template>
 <script>
 import clickoutside from '../../directives/clickoutside.js'
+import locale from '../../mixins/locale';
 import MonthView from './MonthView';
 const prefixCls = 'h-calendar';
 
 export default {
   name: 'Calendar',
+  mixins: [locale],
   components: { MonthView },
   data() {
     return {
-      currentDate: new Date(),
+      currentDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
       prefixCls: prefixCls,
       styles: {},
       selectedDate: [],
@@ -59,6 +77,11 @@ export default {
       type: Number,
       default: new Date().getFullYear()
     },
+    /* 1-based */
+    currentMonth: {
+      type: Number,
+      default: new Date().getMonth() + 1
+    },
     dateData: {
       // 传入日期信息 {date, workFlag}
       type: Array,
@@ -70,7 +93,15 @@ export default {
     multiSelect: {
       type: Boolean,
       default: true
-    }
+    },
+    monthViewNum: {
+      type: Number,
+      default: 12,
+      validator(val) {
+        return [1, 2, 4, 12].indexOf(val) > -1;
+      }
+    },
+    dateCellRender: Function
   },
   directives: {
     clickoutside
@@ -78,12 +109,26 @@ export default {
   computed: {
     curYear() {
       return this.currentDate.getFullYear();
+    },
+    /* 0-based */
+    curMonth() {
+      return this.currentDate.getMonth();
     }
   },
   watch: {
-    currentYear(val) {
-      const currentDate = this.currentDate;
-      this.currentDate = new Date(val, currentDate.getMonth(), currentDate.getDate());
+    currentYear: {
+      immediate: true,
+      handler(val) {
+        const currentDate = this.currentDate;
+        this.currentDate = new Date(val, currentDate.getMonth(), currentDate.getDate());
+      }
+    },
+    currentMonth: {
+      immediate: true,
+      handler(val) {
+        const currentDate = this.currentDate;
+        this.currentDate = new Date(currentDate.getFullYear(), val - 1, currentDate.getDate());
+      }
     }
   },
   methods: {
@@ -106,7 +151,7 @@ export default {
         selectedDate.push(dateObj);
       }
     },
-    handleCellRightClick(event) {
+    handleCtxMenu(event) {
       this.styles = {
         display: 'block',
         top: `${event.clientY}px`,
@@ -155,7 +200,7 @@ export default {
       const currentMonth = currentDate.getMonth();
       const date = currentDate.getDate();
       if (currentMonth === 0) {
-        this.currentDate = new Date(currentYear - 1, 11, date);
+        this.currentDate = new Date(currentYear - 1, 12 - this.monthViewNum, date);
       } else {
         this.currentDate = new Date(currentYear, currentMonth - 1, date);
       }
@@ -165,7 +210,7 @@ export default {
       const currentYear = currentDate.getFullYear();
       const currentMonth = currentDate.getMonth();
       const date = currentDate.getDate();
-      if (currentMonth === 11) {
+      if (currentMonth >= (12 - this.monthViewNum)) {
         this.currentDate = new Date(currentYear + 1, 0, date);
       } else {
         this.currentDate = new Date(currentYear, currentMonth + 1, date);
@@ -188,7 +233,7 @@ export default {
   },
   created() {
     this.$on('on-cell-left-click', this.handleCellLeftClick);
-    this.$on('on-cell-right-click', this.handleCellRightClick);
+    this.$on('on-context-menu', this.handleCtxMenu);
     this.$on('on-cell-mouseover', this.handleCellMouseOver);
     this.$on('on-cell-mouseout', this.handleCellMouseOut);
     this.$on('on-cell-dblclick', this.handleCellDblClick);
