@@ -1,7 +1,7 @@
 <template>
   <div class="ceshi-demo">
     <h1>SimpleSelect组件</h1>
-    <!-- <p>选择器支持单选、多选、搜索，以及键盘快捷操作。</p>
+    <p>选择器支持单选、多选、搜索，以及键盘快捷操作。</p>
     <h1>selectBlock测试用例</h1>
     {{value2}}
     <h-simple-select autoPlacement
@@ -24,7 +24,7 @@
                      widthAdaption>
       <h-select-block :data="bigData"
                       @on-scroll="select"></h-select-block>
-    </h-simple-select> -->
+    </h-simple-select>
     <h1>--------- HUI_V1.0.31_20190321 TS:201903110539 ---------</h1>
     <h-simple-select autoPlacement
                      filterable
@@ -40,8 +40,7 @@
       <h-select-block :data="v20190321.options2"></h-select-block>
     </h-simple-select>
     {{v20190321.value}}
-    <h-simple-select autoPlacement
-                     filterable
+    <h-simple-select filterable
                      isArrow="false"
                      placeholder="123"
                      showBottom
@@ -58,7 +57,7 @@
     {{v20190321.value2}}
     <h-button @click="changValue2">选中二三项</h-button>
 
-    <!-- <h1>远程搜索</h1>
+    <h1>远程搜索</h1>
     <h-simple-select width="200"
                      v-model="valueRemote1"
                      filterable
@@ -71,21 +70,19 @@
         <h-button @click="changeData">已选置顶</h-button>
       </div>
     </h-simple-select>
-    <h-simple-select width="200"
-
-        <h-simple-select 
-          v-model="valueRemote"
-          filterable
-          show-bottom
-          remote
-          multiple
-          :remote-method="remoteMethod">
-      <h-select-block :data="remoteData"></h-select-block>
+    <h-simple-select 
+      v-model="valueRemote"
+      filterable
+      show-bottom
+      remote
+      multiple
+      :remote-method="remoteMethod">
+      <h-select-block :data="remoteData" ref="block1"></h-select-block>
       <div slot="header">我是header</div>
       <div slot="footer">
         <h-button @click="changeData">已选置顶</h-button>
       </div>
-    </h-simple-select> -->
+    </h-simple-select>
     <!-- <h1>测试</h1>
     <h-simple-select filterable
                      v-model="ceshi1"
@@ -93,6 +90,7 @@
                      widthAdaption>
       <h-select-block :data="ceshiData"></h-select-block>
     </h-simple-select> -->
+    <br><br><br><br><br><br><br><br><br><br><br><br><br>
   </div>
 </template>
 <script>
@@ -111,7 +109,7 @@ export default {
       bigData: [],
       value: '',
       value1: [],
-      value2: 'value2',
+      value2: '2',
       v20190321: {
         options: [
           {
@@ -198,7 +196,6 @@ export default {
     },
     remoteMethod(query) {
       clearTimeout(this.timer)
-      console.log(query)
       if (query !== '') {
         this.loading1 = true
         this.timer = setTimeout(() => {
@@ -213,6 +210,7 @@ export default {
     },
     changeData() {
       this.$refs.block.selectedTop()
+      this.$refs.block1.selectedTop()
     }
   },
   mounted() {

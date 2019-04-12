@@ -101,11 +101,11 @@
             <h-select-block :data="bigData" ></h-select-block>
           </h-simple-select>
         </h-form-item>
-        <!-- <h-form-item label="简单选择框单选" prop="simpleSelect1" required>
+        <h-form-item label="简单选择框单选" prop="simpleSelect1" required>
           <h-simple-select v-model="formItem1.simpleSelect1" placement="top-start" filterable>
             <h-select-block :data="bigData" ></h-select-block>
           </h-simple-select>
-        </h-form-item> -->
+        </h-form-item>
         <h-form-item>
             <h-button type="primary" @click="handleSubmit('formItem1')">提交</h-button>
             <h-button type="ghost" style="margin-left: 8px" @click="handleReset('formItem1')">取消</h-button>
@@ -219,7 +219,7 @@ for(let i=0;i<60;i++){
           select1: ['1','2'],
           select2: '',
           simpleSelect:["value1"],
-          // simpleSelect1:"",
+          simpleSelect1:"",
         },
         bigData:[],
         data2: [{
