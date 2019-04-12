@@ -2,7 +2,7 @@
   <div>
     <!-- <h-msg-box v-model="changeform" width="900" escClose left="10" closeDrop> -->
     <Button @on-click="changeSelect"></Button>
-      <h-form ref="formItem1" :model="formItem1" :label-width="80" errorFocus cols="3">
+      <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus onlyBlurRequire cols="3">
         <h-form-item label="日期控件">
           <h-row>
             <h-col span="11">
@@ -60,7 +60,6 @@
         <h-form-item label="特殊日期" prop="fatdate" required>
           <h-fast-date v-model="formItem1.fatdate"></h-fast-date>
         </h-form-item>
-        {{formItem2.select1}}
         <h-form-item label="下拉多选" prop="select1" required>
           <h-select v-model="formItem1.select1"
             multiple
@@ -73,7 +72,6 @@
             </h-option>
           </h-select>
         </h-form-item>
-        {{formItem1.select1}}
         <h-form-item label="下拉单选" prop="select2" required>
           <h-select v-model="formItem1.select2"
                     filterable
@@ -99,8 +97,7 @@
           <h-cascader v-model="formItem1.cascader" :data="data2" trigger="hover" style="width:200px"></h-cascader>
         </h-form-item>
         <h-form-item label="简单选择框" prop="simpleSelect" required>
-          {{formItem1.simpleSelect}}
-          <h-simple-select v-model="formItem1.simpleSelect" transfer multiple  placement="top-start" filterable>
+          <h-simple-select v-model="formItem1.simpleSelect" transfer multiple >
             <h-select-block :data="bigData" ></h-select-block>
           </h-simple-select>
         </h-form-item>
@@ -116,45 +113,6 @@
 
       </h-form>
     <!-- </h-msg-box> -->
-    <Button @on-click="changeform1">显示隐藏</Button>
-    <h-select-table v-model="model1" ref="changeDrop">
-      <h-table-option border :columns="columns1" :data="data1"></h-table-option>
-    </h-select-table>
-      <h-button type="primary"  @click="totest">
-          <span>方法</span>
-      </h-button>
-    <h-form ref="formValid" :model="formValid">
-        <h-form-item prop="user" required>
-            <h-input type="text" v-model="formValid.user" placeholder="仅required验证">
-                <h-icon name="people" slot="prepend"></h-icon>
-            </h-input>
-        </h-form-item>
-        <h-form-item prop="stringInput" :validRules="stringRule">
-            <h-input type="text" v-model="formValid.stringInput" placeholder="stringInput验证">
-                <h-icon name="people" slot="prepend"></h-icon>
-            </h-input>
-        </h-form-item>
-        <h-form-item prop="password" required>
-            <h-input type="text" v-model="formValid.password" placeholder="仅正则[全是字母]验证">
-                <h-icon name="lock" slot="prepend"></h-icon>
-            </h-input>
-        </h-form-item>
-        <h-form-item prop="test1" required>
-            <h-input type="text" v-model="formValid.test1" placeholder="仅Func[值为test]验证">
-                <h-icon name="people" slot="prepend"></h-icon>
-            </h-input>
-        </h-form-item>
-        <h-form-item prop="test2" required>
-            <h-input type="text" v-model="formValid.test2" placeholder="混合验证">
-                <h-icon name="people" slot="prepend"></h-icon>
-            </h-input>
-        </h-form-item>
-        <h-form-item>
-            <h-button type="primary" @click="handleSubmit('formValid')">提交</h-button>
-        </h-form-item>
-    </h-form>
-    <Button @click="getFocus">获取焦点</Button>
-    <Button @click="getFocus2">获取焦点2</Button>
   </div>
 </template>
 <script>
@@ -227,6 +185,23 @@ for(let i=0;i<60;i++){
         model1:'',
         changeform:false,
         formItem1: {
+          input: '1',
+          select: '',
+          select1: [],
+          select2: '',
+          radio: '',
+          money: '',
+          moneyrange:'',
+          checkbox: [],
+          fatdate: '',
+          date: '',
+          time: '',
+          slider: '',
+          tree:'',
+          textarea: '',
+          cascader:[],
+          simpleSelect:[],
+          simpleSelect1:'value1',
         },
         formItem2:{
           input: '1',
@@ -244,7 +219,7 @@ for(let i=0;i<60;i++){
           select1: ['1','2'],
           select2: '',
           simpleSelect:["value1"],
-          // simpleSelect1:"",
+          simpleSelect1:"",
         },
         bigData:[],
         data2: [{
@@ -264,7 +239,7 @@ for(let i=0;i<60;i++){
               label: '王府井'
             }
           ]
-          }, 
+          },
           {
             value: 'jiangsu',
             label: '江苏',
@@ -471,7 +446,7 @@ for(let i=0;i<60;i++){
           textarea: '',
           cascader:[],
           simpleSelect:[],
-          simpleSelect1:'',
+          simpleSelect1:'value1',
       }
       this.bigData = bigData;
     }
@@ -692,12 +667,12 @@ var tData= [
 
 <!-- <template>
   <div class="wrapper">
-    <h2>hUI</h2> 
+    <h2>hUI</h2>
     <p>h_ui是由恒生电子研发中心推出的一套专用于服务金融IT的UI基础组件库</p>
     <h1>datagird示例2</h1>
     <h-table border :columns="columns" :data="data"></h-table>
     <h-page></h-page>
-  </div>  
+  </div>
 </template>
 
 <script>
@@ -849,9 +824,9 @@ export default {
           content: '你点击了修改操作'
         });
       }
-      
+
     }
-  } 
+  }
 }
 </script>
 <style lang='scss' scoped>

@@ -22,6 +22,10 @@
             validator (value) {
                 return oneOf(value, ['small', 'large', 'default']);
             }
+        },
+        vertical: {
+            type:Boolean,
+            default:false,
         }
     },
     data () {
@@ -37,7 +41,8 @@
             return [
                 `${prefixCls}`,
                 {
-                    [`h-checkbox-${this.size}`]: !!this.size
+                    [`h-checkbox-${this.size}`]: !!this.size,
+                    [`${prefixCls}-vertical`]: !!this.vertical,
                 }
             ];
         }
