@@ -55,6 +55,8 @@
 import clickoutside from '../../directives/clickoutside.js'
 import locale from '../../mixins/locale';
 import MonthView from './MonthView';
+import dateUtil from '../../util/date';
+
 const prefixCls = 'h-calendar';
 
 export default {
@@ -88,7 +90,7 @@ export default {
       default: () => []
     },
     disableDate: {
-      type: Function
+      type: [Function, Array],
     },
     multiSelect: {
       type: Boolean,
@@ -129,7 +131,7 @@ export default {
         const currentDate = this.currentDate;
         this.currentDate = new Date(currentDate.getFullYear(), val - 1, currentDate.getDate());
       }
-    }
+   }
   },
   methods: {
     handleCellLeftClick(dateObj) {
@@ -150,6 +152,7 @@ export default {
       } else {
         selectedDate.push(dateObj);
       }
+      this.$emit('on-select', date.getMonth() + 1, date.getDate())
     },
     handleCtxMenu(event) {
       this.styles = {
@@ -229,6 +232,15 @@ export default {
       if (currentYear < 10000) {
         this.currentDate = new Date(currentYear + 1, currentDate.getMonth(), currentDate.getDate());
       }
+    },
+    getSelectDate(){
+      let select = this.selectedDate;
+      for (let i = 0; i < select.length; i++){
+        if (!select[i].formatDate){
+          select[i].formatDate = dateUtil.format(select[i].date, 'yyyy-MM-dd');
+        }
+      }
+      return select;
     }
   },
   created() {

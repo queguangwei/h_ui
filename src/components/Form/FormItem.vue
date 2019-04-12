@@ -396,9 +396,8 @@ export default {
       if (this.isOnlyBlurRequire) return
       this.validate('change')
     },
-    commonRule() {
+    commonRule(str) {
       let rules = this.getRules()
-
       if (rules.length) {
         rules.every(rule => {
           if (rule.required) {
@@ -408,6 +407,9 @@ export default {
             this.isRequired = false
           }
         })
+        if(str==='ruleChange'&&!this.isRequired){
+          this.validateState = ''
+        }
         this.$on('on-form-blur', this.onFieldBlur)
         this.$on('on-form-change', this.onFieldChange)
       }

@@ -34,6 +34,7 @@
     <h1>测试</h1>
     <h-button @click="changeRequire">改变必填</h-button>
     <h-form ref="formValidate"
+            closeRuleChangeValidate
             :model="formValidate"
             :rules="ruleValidate"
             :label-width="250"
@@ -48,10 +49,10 @@
                      type="money"></h-typefield>
       </h-form-item>
       <h-form-item label="姓名"
-                   prop="name"
+                   prop="tree"
                    :label-width="50"
                    :showMessage='true'>
-        <h-select-tree v-model="formValidate.name"></h-select-tree>
+        <h-select-tree v-model="formValidate.tree"></h-select-tree>
       </h-form-item>
       <h-form-item :showMessage='true'>
         <h-button type="primary"
@@ -1324,7 +1325,7 @@ export default {
   },
   methods: {
     changeRequire() {
-      this.ruleValidate.name[0].required = false
+      this.ruleValidate.name[0].required = !this.ruleValidate.name[0].required
     },
     handleSubmit(name) {
       this.$refs[name].validate(valid => {

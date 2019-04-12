@@ -146,9 +146,31 @@ export default {
       })
       const dayOfWeek = sd.getDay();
       const disabledDate = this.disabledDate;
-      const shouldDisabled = typeof disabledDate === 'function';
+      const shouldDisabled = typeof disabledDate === 'function' || Array.isArray(disabledDate);
       for (let i = 1; i <= lastDate; i++) {
         let date = new Date(year, month, i);
+        // 处理日期是否禁用
+        let disabled = false;
+        if (Array.isArray(disabledDate) && disabledDate.length > 0){
+          for (let i = 0; i < disabledDate.length; i++) {
+            let disableStr = new Date(disabledDate[i]).toDateString();
+             if (disableStr == date.toDateString()) {
+               disabled=true;
+             }
+          }
+        } else if (typeof disabledDate === 'function') {
+          disabled=disabledDate(date)
+        }
+        dateList[i + dayOfWeek - 1] = {
+          date: date,
+          /* 禁用日期 */
+          disabled: shouldDisabled && disabled,
+          /* 0休息日，1工作日 */
+          workFlag: (date.getDay() == 6 || date.getDay() == 0) ? 0 : 1,
+          isToday: now.toDateString() === date.toDateString()
+        }
+
+        // 使用用户预设数据覆盖日期相关属性
         let presetDate = null;
         presetDates.some(d => {
           if (d.toDateString() === date.toDateString()) {
@@ -156,14 +178,6 @@ export default {
             return true;
           }
         });
-        dateList[i + dayOfWeek - 1] = {
-          date: date,
-          /* 禁用日期 */
-          disabled: shouldDisabled && disabledDate(date),
-          /* 0休息日，1工作日 */
-          workFlag: (date.getDay() == 6 || date.getDay() == 0) ? 0 : 1,
-          isToday: now.toDateString() === date.toDateString()
-        }
         presetDate != null && this.setDatePropByPresets(presetDate, dateList[i + dayOfWeek - 1]);
       }
       return dateList;

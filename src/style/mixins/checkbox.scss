@@ -246,4 +246,14 @@
             margin-top: -5px;
         }
     }
+    .#{$checkbox-prefix-cls}-group-vertical{
+        display: inline-block;
+        vertical-align: middle;
+        .#{$checkbox-prefix-cls}-wrapper{
+            display: block;
+            height: 30px;
+            line-height: 30px;
+        }
+    }
+
 }
