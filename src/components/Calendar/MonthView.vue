@@ -46,7 +46,7 @@ export default {
     prefixCls: String,
     monthViewNum: Number,
     currentDate: Date,
-    disabledDate: Function,
+    disabledDate: [Function, Array],
     presetDates: Array,
     dateRender: Function
   },
