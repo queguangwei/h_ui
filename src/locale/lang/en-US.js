@@ -150,7 +150,8 @@ export default {
             w5: 'Thur.',
             w6: 'Fri.',
             w7: 'Sat.'
-          }
+          },
+          today: 'today'
         }
     }
 };
