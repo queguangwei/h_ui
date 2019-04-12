@@ -338,7 +338,6 @@ export default {
       }
 
       if (this.type === 'int') {
-        console.log(value, this.currentValue)
         if (isNaN(Number(value)) && value !== '-' ) {
           value = this.currentValue
         } else if (value !== '' && value !== '-') {

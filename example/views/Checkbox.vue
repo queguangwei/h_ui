@@ -23,7 +23,7 @@
   </h-msg-box>
   <Button @on-click="changeform1">显示隐藏</Button>
 		<h2>组合使用</h2>
-		<h-checkbox-group v-model="social">
+		<h-checkbox-group v-model="social" vertical>
       <h-checkbox label="twitter">
         <h-Icon name="clock"></h-Icon>
         <span>Twitter</span>

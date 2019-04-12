@@ -7,13 +7,13 @@ export default {
       default: true,
     },
   },
-  data () {
+  data() {
     return {
-    };
+    }
   },
   methods: {},
-  mounted () {
+  mounted() {
   },
-  beforeDestroy () {
+  beforeDestroy() {
   }
-};
+}
