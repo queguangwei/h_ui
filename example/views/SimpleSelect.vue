@@ -1,7 +1,7 @@
 <template>
   <div class="ceshi-demo">
-    <h1>SimpleSelect组件</h1>
-    <!-- <p>选择器支持单选、多选、搜索，以及键盘快捷操作。</p>
+    <!-- <h1>SimpleSelect组件</h1>
+    <p>选择器支持单选、多选、搜索，以及键盘快捷操作。</p>
     <h1>selectBlock测试用例</h1>
     {{value2}}
     <h-simple-select autoPlacement
@@ -33,11 +33,11 @@
                      style="width:200px"
                      transfer
                      v-model="v20190321.value"
+                     remote
+                     :remote-method="remoteMethod"
                      widthAdaption>
-                     <!-- remote
-                     :remote-method="remoteMethod" -->
-      <!-- <h-select-block :data="remoteData"></h-select-block> -->
-      <h-select-block :data="v20190321.options2"></h-select-block>
+      <h-select-block :data="remoteData"></h-select-block>
+      <!-- <h-select-block :data="v20190321.options2"></h-select-block> -->
     </h-simple-select>
     {{v20190321.value}}
     <h-simple-select autoPlacement
@@ -52,11 +52,12 @@
                      remote
                      :remote-method="remoteMethod"
                      widthAdaption>
-      <h-select-block :data="remoteData"></h-select-block>
+      <h-select-block ref="block" :data="remoteData"></h-select-block>
       <!-- <h-select-block :data="v20190321.options2"></h-select-block> -->
     </h-simple-select>
     {{v20190321.value2}}
     <h-button @click="changValue2">选中二三项</h-button>
+    <h-button @click="changeData">已选置顶</h-button>
 
     <!-- <h1>远程搜索</h1>
     <h-simple-select width="200"
@@ -111,7 +112,7 @@ export default {
       bigData: [],
       value: '',
       value1: [],
-      value2: 'value2',
+      value2: '2',
       v20190321: {
         options: [
           {
@@ -198,7 +199,6 @@ export default {
     },
     remoteMethod(query) {
       clearTimeout(this.timer)
-      console.log(query)
       if (query !== '') {
         this.loading1 = true
         this.timer = setTimeout(() => {
