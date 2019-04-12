@@ -179,6 +179,9 @@
         <li>
           <router-link to="/affix">Affix</router-link>
         </li>
+        <li>
+          <router-link to="/schedule">Schedule</router-link>
+        </li>
         <br>
         <span>表格组件</span>
         <li>
