@@ -7,7 +7,6 @@ export default {
   props: {
     prefixCls: String,
     data: Object,
-    markToday: Boolean,
     dateRender: Function
   },
   computed: {
@@ -31,7 +30,7 @@ export default {
         [`${prefixCls}-month-item-empty`]: isEmptyCell,
         [`${prefixCls}-month-item-disable`]: !isEmptyCell && data.disabled,
         [`${prefixCls}-month-day-active`]: this.selected,
-        [`${prefixCls}-today`]: !isEmptyCell && this.markToday && data.isToday
+        [`${prefixCls}-today`]: !isEmptyCell && data.isToday
       }
     },
     selected() {
