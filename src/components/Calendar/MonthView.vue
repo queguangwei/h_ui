@@ -26,7 +26,6 @@
             :style="cellStyle"
             :prefixCls="prefixCls"
             :data="item"
-            :markToday="markToday"
             :dateRender="dateRender"
           ></date-cell>
         </div>
@@ -47,9 +46,8 @@ export default {
     prefixCls: String,
     monthViewNum: Number,
     currentDate: Date,
-    disabledDate: [Function,Array],
+    disabledDate: [Function, Array],
     presetDates: Array,
-    markToday: Boolean,
     dateRender: Function
   },
   data() {
@@ -148,25 +146,19 @@ export default {
       })
       const dayOfWeek = sd.getDay();
       const disabledDate = this.disabledDate;
-      const shouldDisabled = typeof disabledDate === 'function'||Array.isArray(disabledDate);
+      const shouldDisabled = typeof disabledDate === 'function' || Array.isArray(disabledDate);
       for (let i = 1; i <= lastDate; i++) {
         let date = new Date(year, month, i);
-        let presetDate = null;
-        presetDates.some(d => {
-          if (d.toDateString() === date.toDateString()) {
-            presetDate = d;
-            return true;
-          }
-        });
-        let disabled=false;
-        if(Array.isArray(disabledDate)&&disabledDate.length>0){
-          for(let i=0;i<disabledDate.length;i++){
-            let disableStr=new Date(disabledDate[i]).toDateString();
-             if(disableStr==date.toDateString()){
+        // 处理日期是否禁用
+        let disabled = false;
+        if (Array.isArray(disabledDate) && disabledDate.length > 0){
+          for (let i = 0; i < disabledDate.length; i++) {
+            let disableStr = new Date(disabledDate[i]).toDateString();
+             if (disableStr == date.toDateString()) {
                disabled=true;
              }
           }
-        }else if(typeof disabledDate === 'function'){
+        } else if (typeof disabledDate === 'function') {
           disabled=disabledDate(date)
         }
         dateList[i + dayOfWeek - 1] = {
@@ -177,6 +169,15 @@ export default {
           workFlag: (date.getDay() == 6 || date.getDay() == 0) ? 0 : 1,
           isToday: now.toDateString() === date.toDateString()
         }
+
+        // 使用用户预设数据覆盖日期相关属性
+        let presetDate = null;
+        presetDates.some(d => {
+          if (d.toDateString() === date.toDateString()) {
+            presetDate = d;
+            return true;
+          }
+        });
         presetDate != null && this.setDatePropByPresets(presetDate, dateList[i + dayOfWeek - 1]);
       }
       return dateList;

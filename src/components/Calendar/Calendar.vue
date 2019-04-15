@@ -2,14 +2,25 @@
   <div :class="[`${prefixCls}-wrapper`]" ref="calendarWrap">
     <slot name="header">
       <div :class="[`${prefixCls}-top-change`]">
-        <h-button type="primary" v-if="markToday" :disabled="disableTodayBtn" :class="[`${prefixCls}-today-btn`]" @click="jumpToday">{{t('i.calendar.today')}}</h-button>
-        <div :class="[`${prefixCls}-top-icon h-prev-year`]" @click="monthViewNum === 12 ? handleToPrevYear() : jumpToPrevMonth()">
+        <div
+          :class="[`${prefixCls}-top-icon h-prev-year`]"
+          @click="monthViewNum === 12 ? handleToPrevYear() : jumpToPrevMonth()"
+        >
           <h-icon name="chevron-left"></h-icon>
         </div>
         <h1 :class="[`${prefixCls}-top-text ${prefixCls}-year`]">{{curYear}}年</h1>
-        <h1 v-if="monthViewNum < 12 && monthViewNum > 1" :class="[`${prefixCls}-top-text`]">&nbsp{{(curMonth + 1) + '月'}} - {{(curMonth + monthViewNum) + '月'}}</h1>
-        <h1 v-if="monthViewNum === 1" :class="[`${prefixCls}-top-text`]">&nbsp{{(curMonth + 1) + '月'}}</h1>
-        <div :class="[`${prefixCls}-top-icon h-next-year`]" @click="monthViewNum === 12 ? handleToNextYear() : jumpToNextMonth()">
+        <h1
+          v-if="monthViewNum < 12 && monthViewNum > 1"
+          :class="[`${prefixCls}-top-text`]"
+        >&nbsp{{(curMonth + 1) + '月'}} - {{(curMonth + monthViewNum) + '月'}}</h1>
+        <h1
+          v-if="monthViewNum === 1"
+          :class="[`${prefixCls}-top-text`]"
+        >&nbsp{{(curMonth + 1) + '月'}}</h1>
+        <div
+          :class="[`${prefixCls}-top-icon h-next-year`]"
+          @click="monthViewNum === 12 ? handleToNextYear() : jumpToNextMonth()"
+        >
           <h-icon name="chevron-right"></h-icon>
         </div>
       </div>
@@ -20,15 +31,20 @@
       :currentDate="currentDate"
       :presetDates="dateData"
       :disabledDate="disableDate"
-      :markToday="markToday"
       :dateRender="dateCellRender"
     ></month-view>
     <transition name="slide-up">
       <ul :class="[`${prefixCls}-handle`]" v-clickoutside="hideCtxMenu" :style="styles">
-        <li :class="[`${prefixCls}-handle-item ${prefixCls}-handle-setWorkDay`]" @click.stop.prevent="handleSetWorkDay(1)">
+        <li
+          :class="[`${prefixCls}-handle-item ${prefixCls}-handle-setWorkDay`]"
+          @click.stop.prevent="handleSetWorkDay(1)"
+        >
           <span>设为工作日</span>
         </li>
-        <li :class="[`${prefixCls}-handle-item ${prefixCls}-handle-setRestDay`]" @click.stop.prevent="handleSetWorkDay(0)">
+        <li
+          :class="[`${prefixCls}-handle-item ${prefixCls}-handle-setRestDay`]"
+          @click.stop.prevent="handleSetWorkDay(0)"
+        >
           <span>设为休息日</span>
         </li>
       </ul>
@@ -40,7 +56,9 @@ import clickoutside from '../../directives/clickoutside.js'
 import locale from '../../mixins/locale';
 import MonthView from './MonthView';
 import dateUtil from '../../util/date';
+
 const prefixCls = 'h-calendar';
+
 export default {
   name: 'Calendar',
   mixins: [locale],
@@ -72,7 +90,7 @@ export default {
       default: () => []
     },
     disableDate: {
-      type: [Function,Array],
+      type: [Function, Array],
     },
     multiSelect: {
       type: Boolean,
@@ -81,14 +99,9 @@ export default {
     monthViewNum: {
       type: Number,
       default: 12,
-      validator (val) {
+      validator(val) {
         return [1, 2, 4, 12].indexOf(val) > -1;
       }
-    },
-    /* 是否在日期视图中标记出当天日期 */
-    markToday: {
-      type: Boolean,
-      default: false
     },
     dateCellRender: Function
   },
@@ -102,14 +115,8 @@ export default {
     /* 0-based */
     curMonth() {
       return this.currentDate.getMonth();
-    },
-    disableTodayBtn() {
-      const currentDate = this.currentDate;
-      const today = new Date();
-      return currentDate.getFullYear() === today.getFullYear() && currentDate.getMonth() === today.getMonth();
     }
   },
-
   watch: {
     currentYear: {
       immediate: true,
@@ -226,17 +233,14 @@ export default {
         this.currentDate = new Date(currentYear + 1, currentDate.getMonth(), currentDate.getDate());
       }
     },
-    jumpToday() {
-      this.currentDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-    },
     getSelectDate(){
-      let select=this.selectedDate
-      for(let i=0;i<select.length;i++){
-        if(!select[i].formatDate){
-          select[i].formatDate=dateUtil.format(select[i].date,'yyyy-MM-dd');
+      let select = this.selectedDate;
+      for (let i = 0; i < select.length; i++){
+        if (!select[i].formatDate){
+          select[i].formatDate = dateUtil.format(select[i].date, 'yyyy-MM-dd');
         }
       }
-        return select;
+      return select;
     }
   },
   created() {
@@ -248,5 +252,3 @@ export default {
   }
 }
 </script>
-
-
