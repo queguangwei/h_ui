@@ -47,7 +47,7 @@
           <tbody>
             <tr :style="{ 'height': tipBodyHeight + 'px'}">
                <!-- <td :style="{ 'height': bodyStyle.height}">  -->
-               <td> 
+               <td>
                <!--  <span v-html="localeNoDataText" v-if="!data || data.length === 0"></span>
                 <span v-html="localeNoFilteredDataText" v-else></span> -->
               </td>
@@ -140,7 +140,7 @@
           :showTitle="showTitle"></table-body>
         <!-- </div> -->
       </div>
-      
+
       <div class="h-table__column-resize-proxy" ref="resizeProxy" v-show="resizeProxyVisible"> </div>
       <div class="h-table__column-move-proxy h-table-cell" ref="moveProxy" v-show="moveProxyVisible"> </div>
 
@@ -539,7 +539,7 @@ export default {
         }
         // height不存在时bodyheight为0
         if (this.height) style.height = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`;
-        if (this.maxHeight) style.maxHeight = this.scrollBarWidth > 0 ? `${height}px` : `${height}px` 
+        if (this.maxHeight) style.maxHeight = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`
       }
       return style;
     },
@@ -611,7 +611,7 @@ export default {
         data[0] = left.concat(center).concat(right)
       }else{
         this.multiLevel.forEach((cols)=>{
-          left=[] 
+          left=[]
           right=[]
           center=[]
           cols.forEach((item,inx)=>{
@@ -688,7 +688,7 @@ export default {
       }
       this.$emit('on-drag', width, key);
     },
-    handleMouseLeave() {      
+    handleMouseLeave() {
     },
     handleResize () {
       // keep-alive时，页面改变大小会不断触发resize【非本组件页面】
@@ -701,6 +701,7 @@ export default {
           let columnsWidth = {};
           let tableWidth = '';
           let $td =null
+
           if(this.autoHeadWidth||this.data.length==0 || !this.$refs.tbody){
             $td = this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0].querySelectorAll('th');
           }else{
@@ -732,10 +733,14 @@ export default {
           this.columnsWidth = columnsWidth;
           this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
           this.headerRealHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
-        },0)  
+        },0)
         return;
       }
+
       this.$nextTick(() => {
+        // tab 中 $el 报错问题
+        if (!this.$refs.tbody) return
+
         if(this.cloneColumns.length==0) return;
         const allWidth = !this.cloneColumns.some(cell => !cell.width&&cell.width!==0);    // each column set a width
         if (allWidth) {
@@ -750,6 +755,7 @@ export default {
         this.$nextTick(() => {
           let columnsWidth = {};
           let autoWidthIndex = -1;
+
           // if (allWidth) autoWidthIndex = this.cloneColumns.findIndex(cell => !cell.width);//todo 这行可能有问题
           if (allWidth) autoWidthIndex = findInx(this.cloneColumns,cell => !cell.width);
           this.cloneColumns.forEach((cell,i)=>{})
@@ -779,7 +785,7 @@ export default {
             if (!this.$refs.thead) return;
             const $th = this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0].querySelectorAll('th');
             for (let i = 0; i < $th.length; i++) {    // can not use forEach in Firefox
-              const column = this.cloneColumns[i]; 
+              const column = this.cloneColumns[i];
               let width = parseInt(getStyle($th[i], 'width'));
               if (i === autoWidthIndex) {
                 width = parseInt(getStyle($th[i], 'width')) - 1;
@@ -798,13 +804,14 @@ export default {
             }
             this.columnsWidth = columnsWidth;
           }
-          this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
+          this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0;
         });
+
         // get table real height,for fixed when set height prop,but height < table's height,show scrollBarWidth
         this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
         this.headerRealHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
       });
-      
+
     },
     getshiftSelect(_index){
       if(!this.highlightRow) return;
@@ -902,7 +909,7 @@ export default {
         }
       }else if(event.shiftKey){
         window.getSelection()?window.getSelection().removeAllRanges():document.selection.empty();
-        this.getshiftSelect(_index);  
+        this.getshiftSelect(_index);
       }else{
         this.getctrlSelect(_index);
       }
@@ -1167,7 +1174,7 @@ export default {
       this.cloneColumns.splice(insertIndex,0,item);
       this.$emit('on-move',_index,insertIndex);
     },
-    setMoveProxy(index){  
+    setMoveProxy(index){
       let el = this.$refs.moveProxy;
       let width = this.cloneColumns[index]._width;
       el.style.width = width+'px';
@@ -1407,7 +1414,7 @@ export default {
             if (!('original' in params)) params.original = true;
             datas = params.original ? this.data : this.rebuildData;
         }
-        
+
         let noHeader = false;
         if ('noHeader' in params) noHeader = params.noHeader;
 
@@ -1451,7 +1458,7 @@ export default {
     this.fixedHeader();
     this.$nextTick(() => {
       this.ready = true;
-      this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
+      this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0;
     });
     //window.addEventListener('resize', this.handleResize, false);
     on(window, 'resize', this.handleResize);
@@ -1467,7 +1474,7 @@ export default {
       this.handleResize();
       on(window, 'resize', this.handleResize);
     }
-    this.keepAliveFlag = true    
+    this.keepAliveFlag = true
   },
   deactivated() {
     if (this.keepAliveFlag) {
@@ -1493,7 +1500,7 @@ export default {
             this.cloneData = deepCopy(this.data);
             this.buttomNum = null;
           });
-          
+
         },
         deep: true
       },
@@ -1523,7 +1530,7 @@ export default {
         if (val.length==2) {
           this.selectRange();
         }
-      }, 
+      },
   }
 };
 </script>
