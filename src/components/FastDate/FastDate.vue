@@ -228,6 +228,7 @@ export default {
   },
   methods: {
     editBlur(event,str,isRange){
+      debugger;
       let value = event.target.value.trim().replace(/[^0-9]/ig,"");
       if (!value || value.length==0){
         if(isRange){
@@ -424,7 +425,9 @@ export default {
     handleClose(){
       this.opened = false;
       if(this.isFocus){
-        this.dispatch('FormItem', 'on-form-blur',this.inputValue);
+        setTimeout(()=>{
+          this.dispatch('FormItem', 'on-form-blur',this.inputValue);
+        },0)
         this.isFocus = false;
       }
     },

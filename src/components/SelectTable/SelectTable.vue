@@ -68,6 +68,7 @@
                 v-if="filterable && showBottom">
             <Checkbox v-model="selectHead"
                       size="large"
+                      @on-change="toggleSelect"
                       v-if="checkToHead&&multiple"></Checkbox>
             <input type="text"
                    v-model="query"
@@ -311,6 +312,10 @@ export default {
     maxDropWidth: {
       type: [String, Number],
       default: 500
+    },
+    isSelectFilter: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -539,6 +544,9 @@ export default {
         let curValue = []
         this.findChild(child => {
           this.options.forEach((col, i) => {
+            if(this.isSelectFilter && child.cloneData[i].hidden){
+              return false            
+            }
             this.$set(child.cloneData[i], 'selected', val)
             if (val) {
               hybridValue.push({
@@ -1035,6 +1043,18 @@ export default {
     broadcastQuery(val) {
       if (this.isBlock) {
         this.broadcast('Block', 'on-query-change', val)
+        if(this.isSelectFilter){
+          this.findChild(child => {
+            let isAll = child.cloneData.length==0?false:true
+            for(let i=0; i<child.cloneData.length; i++){
+              if(!child.cloneData[i].selected && !child.cloneData[i].hidden){
+                isAll = false
+                break
+              }
+            }
+            this.selectHead = isAll 
+          })
+        }
       } else {
         this.broadcast('TabelOption', 'on-query-change', val)
       }
@@ -1410,7 +1430,7 @@ export default {
       })
     },
     selectHead(val) {
-      this.toggleSelect(val)
+      // this.toggleSelect(val)
     },
     placement(val) {
       this.fPlacement = val

@@ -99,7 +99,6 @@ export default {
   },
   methods: {
     resetFields(isResetReadonlyOrDisabled = false) {
-      debugger
       this.fields.forEach(field => {
         field.resetField(isResetReadonlyOrDisabled)
       })
