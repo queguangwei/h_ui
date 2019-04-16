@@ -594,9 +594,9 @@ export default {
     cloneMultiLevel () {
       if (!this.multiLevel || this.multiLevel.length==0) return null;
       let data = [];
-          data[0]=[];
       let left=[], right=[],center=[];
       if(typeOf(this.multiLevel[0])!='array'){
+        data[0]=[];
         this.multiLevel.forEach((cols)=>{
           if(!cols.hiddenCol&&cols.hiddenCol!='false'){
             if(cols.fixed&&cols.fixed==='left'){
@@ -721,9 +721,10 @@ export default {
             };
           }
           this.initWidth =parseInt(getStyle(this.$refs.tableInner, 'width')) || 0;
+          let lastInx = this.cloneColumns[$td.length-1]._index;
           if(tableWidth<this.initWidth){
-            columnsWidth[$td.length-1]={
-              width: columnsWidth[$td.length-1].width+this.initWidth - tableWidth
+            columnsWidth[lastInx]={
+              width: columnsWidth[lastInx].width+this.initWidth - tableWidth
             }
             this.tableWidth = this.initWidth;
           }else{
@@ -754,6 +755,7 @@ export default {
           if (allWidth) autoWidthIndex = findInx(this.cloneColumns,cell => !cell.width);
           this.cloneColumns.forEach((cell,i)=>{})
           if (this.data.length && this.$refs.tbody) {
+            if(!this.$refs.tbody.$el) return;
             const $td = this.$refs.tbody.$el.querySelectorAll('tbody tr')[0].querySelectorAll('td');
             for (let i = 0; i < $td.length; i++) {    // can not use forEach in Firefox
               const column = this.cloneColumns[i];

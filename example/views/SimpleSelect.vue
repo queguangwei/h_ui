@@ -18,6 +18,9 @@
                      filterable
                      isArrow="false"
                      multiple
+                     isSelectFilter
+                     showBottom
+                     checkToHead
                      placeholder="123"
                      transfer
                      v-model="value1"
