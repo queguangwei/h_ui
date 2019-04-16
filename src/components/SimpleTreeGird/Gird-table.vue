@@ -20,7 +20,7 @@
           ref="tbody"
           :styleObject ="tableBodyStyle"
           :indent ="Number(0)"
-          :data="data"
+          :data="rebuildData"
           :prefix-cls="prefixCls"
           :columns="cloneColumns"
           :columnsWidth="columnsWidth" 
@@ -194,6 +194,7 @@ export default {
       indexAndId:{},
       selection:{},
       buttomNum:null,
+      rebuildData:[],
     };
   },
   computed: {
@@ -290,6 +291,9 @@ export default {
       }else{
         this.$set(this.checkedObj[index],item,status);
       }
+    },
+    changeCollection(index,status){
+      this.checkedObj[index]._collectionState = status;
     },
     changeWidth(width,key,lastWidth){
       var that = this;
@@ -416,6 +420,8 @@ export default {
       })
     },
     toggleExpand (row,status) {
+      let index = this.indexAndId[row.id];
+      this.$set(this.checkedObj[index],'_isExpand',status)
       this.$nextTick(()=>{
         this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'));
         this.$emit('on-expand', row,status);
@@ -460,7 +466,7 @@ export default {
       this.buttomNum = getBarBottom(event.target,this.scrollBarWidth);
       if (this.showHeader) this.$refs.header.scrollLeft = event.target.scrollLeft;
     },
-    // 将数据转换成objData,同时rebuild rebuildData
+    // 将数据转换成objData,同时rebuild 
     makeColumns () {
       var that = this;
       let columns = deepCopy(this.columns);
@@ -491,7 +497,29 @@ export default {
         this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
       });
     },
-
+    deepTraversal(data,id,status){
+      for(let i=0;i<data.length; i++){
+        if(data[i].id == id){
+          this.$set(data[i],'expand',status)
+          break;
+        } 
+        if(data[i].children&&data[i].children.length>0){
+          this.deepTraversal(data[i].children,id,status)
+        }
+      }
+    },
+    expandRow(id,status){
+      if(!this.data || this.data.length==0) return;
+      let index = this.indexAndId[id];
+      if(!this.checkedObj[index]){
+        this.deepTraversal(this.rebuildData, id, status)
+      }else{
+        if(!this.checkedObj[index]._collectionState){
+          this.deepTraversal(this.rebuildData, id, status)
+        }
+        this.$set(this.checkedObj[index],'_isExpand',status)
+      }
+    }
   },
   created () {
     if (!this.context) this.currentContext = this.$parent;
@@ -523,6 +551,7 @@ export default {
           this.fixedHeader();
       }
     });
+    this.rebuildData = this.data
   },
   beforeDestroy () {
     off(window, 'resize', this.handleResize);
@@ -532,6 +561,7 @@ export default {
     data: {
       handler () {
         this.handleResize();
+        this.rebuildData = this.data
       },
       deep: true
     },
