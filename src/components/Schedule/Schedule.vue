@@ -6,6 +6,10 @@
       :current-month="curMonth"
       :monthViewNum="1"
       :multiSelect="false"
+      :enableCtxMenu="false"
+      @on-click="handleCellClick"
+      @on-dblclick="handleCellDblClick"
+      @on-select="handleCellSelect"
     >
       <slot slot="header" name="header">
         <div :class="[`${prefixCls}-header`]">
@@ -40,7 +44,7 @@
           v-if="item !== null && item.events.length > showEvtNum"
           :class="[`${prefixCls}-event-more`]"
         >
-          <h-icon name="unfold" @on-click="showMore(item.events, item, index)"></h-icon>
+          <h-icon name="unfold" @on-click="showMore(item, index)"></h-icon>
         </div>
       </div>
       <div
@@ -56,7 +60,7 @@
           <div 
             :class="[`${prefixCls}-popover-body-item`]" 
             :style="{display: evt.hidden ? 'none' : 'block'}" 
-            v-for="(evt, i) in evts" 
+            v-for="(evt, i) in moreEvents" 
             :key="i"
             @click="handleEvtClick(evt)"
             @dblclick="handleEvtDblClick(event)">
@@ -90,38 +94,31 @@ export default {
       curYear: new Date().getFullYear(),
       curMonth: new Date().getMonth() + 1,
       prefixCls: prefixCls,
-      dateEvents: [],
       /* 最多展示三个活动 */
       showEvtNum: 3,
       /* 展示更多活动的窗口 */
       isShowMore: false,
       /* 查看更多活动的日期 */
       viewDate: "",
-      evts: [],
       viewCoord: {
         x: 0,
         y: 0
-      }
+      },
+      /* 展示全部活动的日期的序号 */
+      showMoreDateIndex: 0
     }
   },
   computed: {
     disableTodayBtn() {
       const today = new Date();
       return this.curYear === today.getFullYear() && this.curMonth - 1 === today.getMonth();
-    }
-  },
-  watch: {
-    events: {
-      immediate: true,
-      handler(val) {
-        this.makeDateEvents(val);
-      }
     },
-    curYear() {
-      this.makeDateEvents(this.events);
+    dateEvents() {
+      return this.makeDateEvents();
     },
-    curMonth() {
-      this.makeDateEvents(this.events);
+    moreEvents() {
+      const dateEvents = this.dateEvents;
+      return dateEvents[this.showMoreDateIndex] ? dateEvents[this.showMoreDateIndex].events : [];
     }
   },
   methods: {
@@ -154,7 +151,8 @@ export default {
     dateStr(date) {
       return date ? `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日` : '';
     },
-    makeDateEvents(events) {
+    makeDateEvents() {
+      const events = this.events;
       if (events.length === 0) {
         this.dateEvents = [];
       } else {
@@ -164,6 +162,10 @@ export default {
         const minDate = new Date(curYear, curMonth - 1, 1);
         // 最后一天
         const maxDate = new Date(curYear, curMonth, 0);
+
+        // 清除events上面的order属性
+        events.forEach(evt => delete evt.order);
+        
         // 筛选出包含或部分包含在当前日期范围的活动
         let eventsInRange = events.filter(e => {
           let sd = new Date(e.startDate);
@@ -215,7 +217,7 @@ export default {
             });
           }
         }
-        this.dateEvents = dateEvents;
+        return dateEvents;
       }
     },
     isStart(item, event) {
@@ -239,8 +241,8 @@ export default {
         [`event-place-end`]: this.isEnd(item, event)
       }
     },
-    showMore(evts, dateObj, index) {
-      this.evts = evts;
+    showMore(dateObj, index) {
+      this.showMoreDateIndex = index;
       this.viewDate = this.dateStr(dateObj.date);
       this.viewCoord.x = (index % 7 * 14.28) + '%';
       this.viewCoord.y = Math.floor(index / 7) * 100 + 2 + 'px';
@@ -251,6 +253,15 @@ export default {
     },
     handleEvtDblClick(evt) {
       this.$emit("on-event-dblclick", evt);
+    },
+    handleCellClick(month, date) {
+      this.$emit("on-click", month, date);
+    },
+    handleCellDblClick(month, date) {
+      this.$emit("on-dblclick", month, date);
+    },
+    handleCellSelect(month, date) {
+      this.$emit("on-select", month, date);
     }
   }
 }

@@ -103,7 +103,11 @@ export default {
         return [1, 2, 4, 12].indexOf(val) > -1;
       }
     },
-    dateCellRender: Function
+    dateCellRender: Function,
+    enableCtxMenu: {
+      type: Boolean,
+      default: true
+    }
   },
   directives: {
     clickoutside
@@ -129,9 +133,10 @@ export default {
       immediate: true,
       handler(val) {
         const currentDate = this.currentDate;
-        this.currentDate = new Date(currentDate.getFullYear(), val - 1, currentDate.getDate());
+        let lastDate = new Date(currentDate.getFullYear(), val, 0).getDate();
+        this.currentDate = new Date(currentDate.getFullYear(), val - 1, Math.min(currentDate.getDate(), lastDate));
       }
-   }
+    }
   },
   methods: {
     handleCellLeftClick(dateObj) {
@@ -155,10 +160,12 @@ export default {
       this.$emit('on-select', date.getMonth() + 1, date.getDate())
     },
     handleCtxMenu(event) {
-      this.styles = {
-        display: 'block',
-        top: `${event.clientY}px`,
-        left: `${event.clientX}px`,
+      if (this.enableCtxMenu) {
+        this.styles = {
+          display: 'block',
+          top: `${event.clientY}px`,
+          left: `${event.clientX}px`,
+        }
       }
     },
     handleCellMouseOver(dateObj) {
