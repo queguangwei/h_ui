@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h-typefield v-model="typeValue"></h-typefield>
     <!-- <h-msg-box v-model="changeform" width="900" escClose left="10" closeDrop> -->
     <Button @on-click="changeSelect"></Button>
       <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus onlyBlurRequire cols="3">
@@ -56,9 +57,6 @@
         </h-form-item>
         <h-form-item label="特殊日期" prop="fatdate" required >
           <h-fast-date v-model="formItem1.fatdate" clearable></h-fast-date>
-        </h-form-item>
-        <h-form-item label="特殊日期" prop="fatdate" required>
-          <h-fast-date v-model="formItem1.fatdate"></h-fast-date>
         </h-form-item>
         <h-form-item label="下拉多选" prop="select1" required>
           <h-select v-model="formItem1.select1"
@@ -159,6 +157,7 @@ for(let i=0;i<60;i++){
         ],
         isrequired:true,
         phone:0,
+        typeValue:'',
         data123: [
                     {
                         name: '王小明',
@@ -218,8 +217,9 @@ for(let i=0;i<60;i++){
           textarea: '',
           select1: ['1','2'],
           select2: '',
+          cascader:[],
           simpleSelect:["value1"],
-          simpleSelect1:"",
+          simpleSelect1:"value2",
         },
         bigData:[],
         data2: [{
@@ -449,6 +449,7 @@ for(let i=0;i<60;i++){
           simpleSelect1:'value1',
       }
       this.bigData = bigData;
+      console.log(this.typeValue)
     }
   }
 </script>

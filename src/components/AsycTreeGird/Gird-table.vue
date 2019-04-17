@@ -27,6 +27,7 @@
           :rowSelect = "rowSelect && selectType"
           :obj-data="objData"
           :showEditInput="showEditInput"
+          :disableEdit="disableEdit"
           :isCheckbox="isCheckbox"
           :checkStrictly="checkStrictly"
           :option="options"
@@ -186,6 +187,10 @@ export default {
     notAdaptive: {
       type:Boolean,
       default:false,
+    },
+    disableEdit: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -342,7 +347,7 @@ export default {
       return this.rowClassName(this.data[index], index);
     },
     handleMouseLeave() {
-      
+
     },
     handleResize () {
       this.$nextTick(() => {
@@ -387,7 +392,7 @@ export default {
             if (!this.$refs.thead) return;
             const $th = this.$refs.thead.$el.querySelectorAll('thead tr')[0].querySelectorAll('th');
             for (let i = 0; i < $th.length; i++) {    // can not use forEach in Firefox
-              const column = this.cloneColumns[i]; 
+              const column = this.cloneColumns[i];
               let width = parseInt(getStyle($th[i], 'width'));
               if (i === autoWidthIndex) {
                 width = parseInt(getStyle($th[i], 'width')) - 1;
@@ -406,7 +411,7 @@ export default {
             }
             this.columnsWidth = columnsWidth;
           }
-          
+
 
         });
         // get table real height,for fixed when set height prop,but height < table's height,show scrollBarWidth
@@ -425,7 +430,7 @@ export default {
     highlightCurrentRow (_index) {
       if (!this.highlightRow || this.objData[_index]._isHighlight) return;
       let oldIndex = -1;
-      for (let i in this.objData) { 
+      for (let i in this.objData) {
         if (this.objData[i]._isHighlight) {
           oldIndex = parseInt(i);
           this.objData[i]._isHighlight = false;
@@ -438,7 +443,7 @@ export default {
     clickCurrentRow (_index) {
       this.currentRow  = deepCopyEx(this.rebuildData[_index], privateKey)
       this.$emit('on-row-click', [JSON.parse(JSON.stringify(this.currentRow)),_index]);
-      
+
       if ((!this.rowSelect || !this.selectType) && this.highlightRow) {
         this.highlightCurrentRow(_index);
       }
@@ -544,7 +549,7 @@ export default {
         }
       if (item.children && item.children.length > 0 && !item.leaf) {
         item.children.forEach((child, childIndex) => {
-          this.cursorIndex++ 
+          this.cursorIndex++
           this.rebuildData.splice(this.cursorIndex, 0, child);
           //设置监听属性
           this.$set(this.rebuildData[this.cursorIndex], '_rowNodekey', child._rowNodeKey + '_' + childIndex);
@@ -556,8 +561,8 @@ export default {
           if (this.loadData) this.$set(this.rebuildData[this.cursorIndex], 'checked', item.checked || child.checked);
           // length = length + 1
           // if (child.children && child.children.length > 0 && child.children.expand) {
-          if (child.children && child.children.length > 0) { 
-            this.$set(this.rebuildData[this.cursorIndex], '_loaded', true); 
+          if (child.children && child.children.length > 0) {
+            this.$set(this.rebuildData[this.cursorIndex], '_loaded', true);
             this.expandBuildTree(child, this.cursorIndex)
           } else {
             this.$set(this.rebuildData[this.cursorIndex], 'expand', false);
@@ -634,7 +639,7 @@ export default {
             verifyTip.style.display = 'none';
           }else{
             verifyTip.style.display = 'block';
-          }        
+          }
         }
       }
     },
@@ -680,10 +685,10 @@ export default {
           }
           that.$set(item, '_loaded', item.expand ? true : false)
           that.$set(item, '_rowNodeKey', parent ? parent._rowNodeKey + '_' + index : 'root' + index)
-          that.$set(item, '_index', keyCounter ++)          
+          that.$set(item, '_index', keyCounter ++)
           flattTreeList.push(item)
           // if (item.children && item.expand && !item.leaf) {
-          if (item.children && !item.leaf) {  
+          if (item.children && !item.leaf) {
             that.$set(item, '_loaded', true)
             item.children.forEach((child, inx) => flattTreeChildren(child, inx , _level + 1, item))
           }
@@ -798,7 +803,7 @@ export default {
       for (let key in changes) {
         this.$set(node, key, changes[key]);
       }
-      // 如果当前节点leaf属性为true，则返回当前节点        
+      // 如果当前节点leaf属性为true，则返回当前节点
       if (node.children && !this.checkStrictly && !node.leaf) {
         node.children.forEach(child => {
             this.updateTreeDown(child, changes);
@@ -874,7 +879,7 @@ export default {
     // },
     initResize(){
       this.$nextTick(() => {
-        this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
+        this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0;
       });
     }
 
@@ -901,7 +906,7 @@ export default {
     this.fixedHeader();
     this.$nextTick(() => {
       this.ready = true;
-      this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
+      this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0;
     });
     //window.addEventListener('resize', this.handleResize, false);
     on(window, 'resize', this.handleResize);
