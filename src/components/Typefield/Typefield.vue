@@ -685,17 +685,17 @@ export default {
     },
     initValue(val){
       let formatVal;
-      if ((!val||Number(val)==0)&&this.setNull&&this.type=='money'&& !this.focused) {
+      if ((!val || Number(val) == 0) && this.setNull && this.type=='money' && !this.focused) {
         this.inputValue=this.setNullStr();
         formatVal = this.inputValue;
       } else {
         // 失焦的时候才格式化，避免不能增删小数位的问题
-        formatVal = this.notFormat || this.havefocused ? val : this.formatNum(val.replace(/,/g, ''));
-        if (formatVal && this.divided && this.type=='money'&&!this.havefocused) {
+        formatVal = this.notFormat || this.havefocused || !val ? val : this.formatNum(val.replace(/,/g, ''));
+        if (formatVal && this.divided && this.type=='money' && !this.havefocused) {
           this.inputValue = this.divideNum(formatVal);
-        }else if(this.immeDivided && formatVal && this.type=='money'){
+        } else if (this.immeDivided && formatVal && this.type=='money'){
           this.inputValue = this.divideNum(formatVal);
-        }else{
+        } else {
           this.inputValue = formatVal;
         }
       }
