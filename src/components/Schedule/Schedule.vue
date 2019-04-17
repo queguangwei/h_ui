@@ -20,7 +20,7 @@
             :disabled="disableTodayBtn"
             :class="[`${prefixCls}-today-btn`]"
             @click="jumpToday"
-            :title="todayStr()"
+            :title="dateStr(new Date())"
           >{{t('i.calendar.today')}}</h-button>
           <h1 :class="[`${prefixCls}-date-text`]">{{curYear}}年 {{curMonth}}月</h1>
         </div>
@@ -33,11 +33,36 @@
           v-for="(event, j) in (item != null ? item.events : [])"
           v-show="event.order <= showEvtNum"
           :key="j"
+          @click="handleEvtClick(event)"
+          @dblclick="handleEvtDblClick(event)"
         >{{isEventPlaceBegin(item, event) ? event.title : ''}}</div>
         <div
           v-if="item !== null && item.events.length > showEvtNum"
           :class="[`${prefixCls}-event-more`]"
-        >更多...</div>
+        >
+          <h-icon name="unfold" @on-click="showMore(item.events, item, index)"></h-icon>
+        </div>
+      </div>
+      <div
+        :class="[`${prefixCls}-popover`]"
+        :style="{left: viewCoord.x, top: viewCoord.y}"
+        v-show="isShowMore"
+      >
+        <div :class="[`${prefixCls}-popover-header`]">
+          <span>{{viewDate}}</span>
+          <h-icon size="12" name="close" @on-click="isShowMore = false"></h-icon>
+        </div>
+        <div :class="[`${prefixCls}-popover-body`]">
+          <div 
+            :class="[`${prefixCls}-popover-body-item`]" 
+            :style="{display: evt.hidden ? 'none' : 'block'}" 
+            v-for="(evt, i) in evts" 
+            :key="i"
+            @click="handleEvtClick(evt)"
+            @dblclick="handleEvtDblClick(event)">
+            {{evt.title}}
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -67,7 +92,16 @@ export default {
       prefixCls: prefixCls,
       dateEvents: [],
       /* 最多展示三个活动 */
-      showEvtNum: 3
+      showEvtNum: 3,
+      /* 展示更多活动的窗口 */
+      isShowMore: false,
+      /* 查看更多活动的日期 */
+      viewDate: "",
+      evts: [],
+      viewCoord: {
+        x: 0,
+        y: 0
+      }
     }
   },
   computed: {
@@ -88,7 +122,7 @@ export default {
     },
     curMonth() {
       this.makeDateEvents(this.events);
-    },
+    }
   },
   methods: {
     jumpToday() {
@@ -117,9 +151,8 @@ export default {
     nextYear() {
       this.curYear++;
     },
-    todayStr() {
-      const today = new Date();
-      return `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
+    dateStr(date) {
+      return date ? `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日` : '';
     },
     makeDateEvents(events) {
       if (events.length === 0) {
@@ -132,7 +165,7 @@ export default {
         // 最后一天
         const maxDate = new Date(curYear, curMonth, 0);
         // 筛选出包含或部分包含在当前日期范围的活动
-        let eventsInRange = deepCopy(events.filter(e => {
+        let eventsInRange = events.filter(e => {
           let sd = new Date(e.startDate);
           sd = new Date(sd.getFullYear(), sd.getMonth(), sd.getDate());
           let ed = e.endDate ? new Date(e.endDate) : sd;
@@ -140,7 +173,7 @@ export default {
           return (sd >= minDate && ed <= maxDate)
             || (sd < minDate && ed >= minDate)
             || (sd <= maxDate && ed > maxDate);
-        }));
+        });
 
         // 生成固定长度为42的每日活动数组
         const dateEvents = new Array(42);
@@ -205,6 +238,19 @@ export default {
         [`event-place-start`]: this.isStart(item, event),
         [`event-place-end`]: this.isEnd(item, event)
       }
+    },
+    showMore(evts, dateObj, index) {
+      this.evts = evts;
+      this.viewDate = this.dateStr(dateObj.date);
+      this.viewCoord.x = (index % 7 * 14.28) + '%';
+      this.viewCoord.y = Math.floor(index / 7) * 100 + 2 + 'px';
+      this.isShowMore = true;
+    },
+    handleEvtClick(evt) {
+      this.$emit("on-event-click", evt);
+    },
+    handleEvtDblClick(evt) {
+      this.$emit("on-event-dblclick", evt);
     }
   }
 }
