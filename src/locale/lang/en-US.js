@@ -126,6 +126,32 @@ export default {
         },
         log:{
             clear:'Clear'
+        },
+        calendar: {
+          month: {
+            m1: 'Jan.',
+            m2: 'Feb.',
+            m3: 'Mar.',
+            m4: 'Apr.',
+            m5: 'May',
+            m6: 'Jun.',
+            m7: 'Jul.',
+            m8: 'Aug.',
+            m9: 'Sept.',
+            m10: 'Oct.',
+            m11: 'Nov.',
+            m12: 'Dec.'
+          },
+          week: {
+            w1: 'Sun.',
+            w2: 'Mon.',
+            w3: 'Tues.',
+            w4: 'Wed.',
+            w5: 'Thur.',
+            w6: 'Fri.',
+            w7: 'Sat.'
+          },
+          today: 'today'
         }
     }
 };

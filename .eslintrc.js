@@ -18,7 +18,7 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     // 缩进
-    indent: ['error', 2],
+    'indent': ['error', 2, { 'SwitchCase': 1 }],
     // 换行格式
     'linebreak-style': 0,
     // 引号
@@ -30,6 +30,7 @@ module.exports = {
     // 逗号风格 行尾
     'comma-style': [2, 'last'],
     'vue/use-v-on-exact': 0,
+    'vue/no-parsing-error': [2, { 'x-invalid-end-tag': 0 }],
     'no-useless-escape': 0
   }
 }
