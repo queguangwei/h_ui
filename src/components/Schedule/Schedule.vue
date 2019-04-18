@@ -51,10 +51,11 @@
         :class="[`${prefixCls}-popover`]"
         :style="{left: viewCoord.x, top: viewCoord.y}"
         v-show="isShowMore"
+        v-clickoutside="{trigger: 'mousedown', handler: closePopup}"
       >
         <div :class="[`${prefixCls}-popover-header`]">
           <span>{{viewDate}}</span>
-          <h-icon size="12" name="close" @on-click="isShowMore = false"></h-icon>
+          <h-icon size="12" name="close" @on-click="closePopup"></h-icon>
         </div>
         <div :class="[`${prefixCls}-popover-body`]">
           <div 
@@ -63,7 +64,7 @@
             v-for="(evt, i) in moreEvents" 
             :key="i"
             @click="handleEvtClick(evt)"
-            @dblclick="handleEvtDblClick(event)">
+            @dblclick="handleEvtDblClick(evt)">
             {{evt.title}}
           </div>
         </div>
@@ -75,6 +76,7 @@
 <script>
 import Calendar from '../Calendar';
 import locale from '../../mixins/locale';
+import clickoutside from '../../directives/clickoutside.js';
 
 const prefixCls = 'h-schedule';
 
@@ -82,6 +84,7 @@ export default {
   name: 'Schedule',
   components: { Calendar },
   mixins: [locale],
+  directives: { clickoutside },
   props: {
     events: {
       type: Array,
@@ -244,8 +247,12 @@ export default {
       this.showMoreDateIndex = index;
       this.viewDate = this.dateStr(dateObj.date);
       this.viewCoord.x = (index % 7 * 14.28) + '%';
-      this.viewCoord.y = Math.floor(index / 7) * 100 + 2 + 'px';
+      this.viewCoord.y = Math.floor(index / 7) * 100 + 'px';
       this.isShowMore = true;
+    },
+    closePopup() {
+      this.isShowMore = false;
+      this.viewDate = "";
     },
     handleEvtClick(evt) {
       this.$emit("on-event-click", evt);

@@ -188,6 +188,7 @@ const h_ui = {
     hStep: Steps.Step,
   // Switch,
     hSwitch: Switch,
+    Schedule,
     hSchedule: Schedule,
     Table,
     hTable: Table,

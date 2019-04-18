@@ -34,6 +34,7 @@ $schedule-prefix-cls: "#{$css-prefix}schedule";
     z-index: $zindex-spin;
     width: 97%;
     margin: 1.5%;
+    border-left: 1px solid transparent;
     pointer-events: none;
     display: flex;
     flex-wrap: wrap;
@@ -41,6 +42,12 @@ $schedule-prefix-cls: "#{$css-prefix}schedule";
       width: 14.28%;
       height: 75px;
       margin-top: 25px;
+      &:nth-child(7n + 1) {
+        padding-left: 1px;
+      }
+      &:nth-child(7n) {
+        padding-right: 2px;
+      }
       .#{$schedule-prefix-cls}-event-content {
         pointer-events: auto;
         height: 16px;
@@ -60,9 +67,14 @@ $schedule-prefix-cls: "#{$css-prefix}schedule";
         }
         &.event-place-start {
           margin-left: 5px;
+          border-radius: 3px 0 0 3px;
         }
         &.event-place-end {
           margin-right: 5px;
+          border-radius: 0 3px 3px 0;
+        }
+        &.event-place-start.event-place-end {
+          border-radius: 3px;
         }
       }
       .#{$schedule-prefix-cls}-event-more {
@@ -109,7 +121,7 @@ $schedule-prefix-cls: "#{$css-prefix}schedule";
           background: #2e97d0;
           color: #fff;
           margin-bottom: 2px;
-          border-radius: 2px;
+          border-radius: 3px;
           padding: 0 4px;
           text-overflow: ellipsis;
           white-space: nowrap;
