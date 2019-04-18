@@ -75,7 +75,6 @@
 <script>
 import Calendar from '../Calendar';
 import locale from '../../mixins/locale';
-import { deepCopy } from '../../util/tools';
 
 const prefixCls = 'h-schedule';
 
@@ -165,7 +164,7 @@ export default {
 
         // 清除events上面的order属性
         events.forEach(evt => delete evt.order);
-        
+
         // 筛选出包含或部分包含在当前日期范围的活动
         let eventsInRange = events.filter(e => {
           let sd = new Date(e.startDate);
