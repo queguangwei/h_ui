@@ -427,6 +427,9 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
         .h-tag{
             color:$changed-color !important; 
         }
+        &-input{
+            color:$changed-color;
+        }
     }
 }
 .#{$editgird-prefix-cls}-cell-error{

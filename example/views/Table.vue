@@ -137,7 +137,7 @@
         <span slot="footer">恒生电子有限公司提供</span>
     </h-table>
       <br>
-     <h-table border :columns="columns6" :data="data5" no-filtered-data-text="找不到数据" :loading="loading"></h-table> 
+     <h-table border canMove :columns="columns6" :data="data5" no-filtered-data-text="找不到数据" :loading="loading"></h-table> 
   </div>
 </template>
 <script>

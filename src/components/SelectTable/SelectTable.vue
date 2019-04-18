@@ -31,6 +31,7 @@
              :readonly="!editable||readonly"
              :class="[prefixCls + '-input']"
              :placeholder="showPlaceholder?localePlaceholder:''"
+             @focus="handleFocus"
              @blur="handleBlur"
              @keydown="resetInputState"
              @keydown.delete="handleInputDelete"
@@ -67,6 +68,7 @@
                 v-if="filterable && showBottom">
             <Checkbox v-model="selectHead"
                       size="large"
+                      @on-change="toggleSelect"
                       v-if="checkToHead&&multiple"></Checkbox>
             <input type="text"
                    v-model="query"
@@ -310,6 +312,10 @@ export default {
     maxDropWidth: {
       type: [String, Number],
       default: 500
+    },
+    isSelectFilter: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -538,6 +544,9 @@ export default {
         let curValue = []
         this.findChild(child => {
           this.options.forEach((col, i) => {
+            if(this.isSelectFilter && child.cloneData[i].hidden){
+              return false            
+            }
             this.$set(child.cloneData[i], 'selected', val)
             if (val) {
               hybridValue.push({
@@ -598,10 +607,12 @@ export default {
       this.focusIndex = 0
 
       // 单选 恢复 query 值
-      // console.log('hideMenu')
       if (!this.multiple && this.query !== this.selectedSingle) {
         this.query = this.selectedSingle
-        this.selectToChangeQuery = true
+
+        if (!this.remote) {
+          this.selectToChangeQuery = true
+        }
       }
 
       this.broadcast('TabelOption', 'on-select-close')
@@ -680,7 +691,12 @@ export default {
             break
           }
         }
-        this.selectedSingle = curSingle
+
+        if (curSingle) {
+          this.selectedSingle = curSingle
+        }
+        // this.selectedSingle = curSingle
+
         if (slot && !findModel) {
           this.model = ''
           this.query = ''
@@ -702,6 +718,7 @@ export default {
 
         if (this.filterable) {
           this.query = ''
+          this.selectedSingle = ''
         }
         this.hideMenu()
         this.isInputFocus = true
@@ -986,6 +1003,10 @@ export default {
         this.$refs.dropdown.$el.scrollTop += topOverflowDistance
       }
     },
+    handleFocus(e) {
+      e.target.selectionStart = 0
+      e.target.selectionEnd = this.query.length
+    },
     handleBlur() {},
     resetInputState() {
       this.inputLength = this.$refs.input.value.length * 12 + 56
@@ -1022,6 +1043,18 @@ export default {
     broadcastQuery(val) {
       if (this.isBlock) {
         this.broadcast('Block', 'on-query-change', val)
+        if(this.isSelectFilter){
+          this.findChild(child => {
+            let isAll = child.cloneData.length==0?false:true
+            for(let i=0; i<child.cloneData.length; i++){
+              if(!child.cloneData[i].selected && !child.cloneData[i].hidden){
+                isAll = false
+                break
+              }
+            }
+            this.selectHead = isAll 
+          })
+        }
       } else {
         this.broadcast('TabelOption', 'on-query-change', val)
       }
@@ -1029,7 +1062,6 @@ export default {
     // 处理 remote 初始值
     updateLabel() {
       if (this.remote) {
-        debugger
         if (!this.multiple && this.model !== '') {
           this.selectToChangeQuery = true
           if (this.currentLabel === '') this.currentLabel = this.model
@@ -1099,9 +1131,6 @@ export default {
           this.$refs.search.style.width = width
         }
       }
-      // let style = {}
-      // style.width="600psx";
-      // return style;
     },
     focus() {
       if (this.disabled || this.readonly) return
@@ -1390,7 +1419,7 @@ export default {
     // },
     // eslint-disable-next-line
     selectedMultiple(val) {
-      console.log('selectedMultiple', val)
+      // console.log('selectedMultiple', val)
       // if (val.length==0&&this.filterable && !this.showBottom) {
       //   this.$nextTick(()=>{
       //     this.$refs.input.focus();
@@ -1401,7 +1430,7 @@ export default {
       })
     },
     selectHead(val) {
-      this.toggleSelect(val)
+      // this.toggleSelect(val)
     },
     placement(val) {
       this.fPlacement = val
