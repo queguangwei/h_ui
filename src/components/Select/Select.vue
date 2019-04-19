@@ -992,11 +992,11 @@
                     }
                 });
                 // 如果删除了搜索词，下拉列表也清空了，所以强制调用一次remoteMethod
-                // if (this.remote && this.query !== this.lastQuery) {
-                //     this.$nextTick(() => {
-                //         this.query = this.lastQuery.trim();
-                //     });
-                // }
+                if (this.remote && this.query !== this.lastQuery) {
+                    this.$nextTick(() => {
+                        this.query = this.lastQuery.trim();
+                    });
+                }
             } else {
                 this.query = '';
             }
@@ -1223,12 +1223,17 @@
             this.model = value;
 
             if (this.filterable && !this.showBottom) {
+              let found = false;
               this.findChild((child) => {
                 if (child.value === value) {
                   if (this.query !== '') this.selectToChangeQuery = true;
                   this.lastQuery = this.query = child.label === undefined ? child.searchLabel : child.label;
+                  found = true;
                 }
               });
+              if (!found && this.enableCreate && value !== '') {
+                this.lastQuery = this.query = value;
+              }
             }
 
             this.$nextTick(() => {
