@@ -373,7 +373,6 @@
           } else if( this.model === null){
               status = true;
           }
-
           return status;
       },
       showCloseIcon () {
@@ -450,7 +449,6 @@
         options = options || [];
         let state= (this.notFound && !this.remote) || (this.remote && !this.loading && !options.length)||(!this.remote&&!options.length);
         return state;
-
       },
       showFooter () {
         return this.$slots.footer || this.isCheckall;
@@ -553,7 +551,6 @@
         }
       },
       toggleMenu () {
-
         if (this.disabled || this.readonly||!this.editable) {
             return false;
         }
@@ -585,7 +582,6 @@
                   });
               }
           };
-
           if (this.optionInstances.length) {
               this.optionInstances.forEach((child) => {
                   find(child);
@@ -643,13 +639,11 @@
                 this.selectedSingle = this.model;
                 findModel = true;
               }
-
               if (slot && !findModel) {
                   this.model = '';
                   this.query = '';
               }
           }
-
           this.toggleSingleSelected(this.model, init);
       },
       handleIconClose(){
@@ -676,7 +670,6 @@
                 child.selected = false;
             });
             this.model = '';
-
             if (this.filterable && !this.showBottom) {
                 this.query = '';
             }
@@ -709,7 +702,6 @@
                   })
                 }
             }
-
             const selectedArray = [];
             const selectedObject = {};
             selected.forEach(item => {
@@ -719,18 +711,14 @@
                 }
             });
             this.selectedMultiple = this.remote ? selectedArray : selected;
-
             if (slot) {
                 let selectedModel = [];
-
                 for (let i = 0; i < selected.length; i++) {
                     selectedModel.push(selected[i].value);
                 }
-
                 if (this.model.length === selectedModel.length) {
                     this.slotChangeDuration = true;
                 }
-
                 this.model = selectedModel;
             }
         }
@@ -820,6 +808,13 @@
                 v.label = v.value;
               }
             })
+            const createdOption = this.$refs.createdOption;
+            if (createdOption) {
+              createdOption.selected = value.indexOf(createdOption.value) >= 0;
+              if(curSelect && !createdOption.selected){
+                curSelect = false;
+              }
+            }
           }
           this.isSelectAll = curSelect;
           if (!init) {
@@ -867,7 +862,6 @@
           // enter
           if (keyCode === 13) {
               e.preventDefault();
-
               const createdOption = this.$refs.createdOption;
               if (createdOption && createdOption.isFocus) {
                 createdOption.select();
@@ -899,12 +893,10 @@
               const prev = this.focusIndex - 1;
               this.focusIndex = (this.focusIndex <= 1) ? maxIndex : prev;
           }
-
           let child_status = {
               disabled: false,
               hidden: false
           };
-
           let find_deep = false;
           if (createdOption && this.focusIndex === 1) {
             createdOption.isFocus = true;
@@ -919,14 +911,12 @@
               if (child.index === this.focusIndex) {
                   child_status.disabled = child.disabled;
                   child_status.hidden = child.hidden;
-
                   if (!child.disabled && !child.hidden) {
                       child.isFocus = true;
                   }
               } else {
                   child.isFocus = false;
               }
-
               if (!child.hidden && !child.disabled) {
                   find_deep = true;
               }
@@ -948,15 +938,12 @@
               let maxnum = Math.floor((contentHeight + curTop) / selectItemHeight)
               let minnum = Math.floor(curTop/ selectItemHeight)
               top = this.focusIndex > minnum && this.focusIndex < maxnum ? curTop : (this.focusIndex -1) * selectItemHeight
-
             }
-
           }
           if (curTop != top) {
             this.$refs.content.scrollTop = top;
           }
           this.resetScrollTop();
-
           if ((child_status.disabled || child_status.hidden) && find_deep) {
               this.navigateOptions(direction);
           }
@@ -965,7 +952,6 @@
         const index = this.focusIndex - 1;
         let bottomOverflowDistance = this.optionInstances[index] ? this.optionInstances[index].$el.getBoundingClientRect().bottom - this.$refs.dropdown.$el.getBoundingClientRect().bottom : 0;
         let topOverflowDistance = this.optionInstances[index] ? this.optionInstances[index].$el.getBoundingClientRect().top - this.$refs.dropdown.$el.getBoundingClientRect().top : 0;
-
         if (bottomOverflowDistance > 0) {
             this.$refs.dropdown.$el.scrollTop += bottomOverflowDistance;
         }
@@ -982,7 +968,7 @@
           const model = this.model;
 
           if (this.multiple) {
-              this.query = '';
+            this.query = '';
           } else {
             if (model !== '') {
                 this.findChild((child) => {
@@ -998,7 +984,7 @@
                     });
                 }
             } else {
-                this.query = '';
+              this.query = '';
             }
           }
         }, 300);
@@ -1152,11 +1138,9 @@
       this.$nextTick(() => {
           this.broadcastQuery('');
       });
-
       this.updateOptions(true);
       this.updateLabel();
       on(document,'keydown', this.handleKeydown);
-
       this.$on('append', () => {
         if (!this.remote) {
           this.modelToQuery();
@@ -1185,7 +1169,6 @@
           this.slotChange();
           this.updateOptions(true, true);
       });
-
       this.$on('on-select-selected', (value) => {
         if (this.model === value) {
           this.hideMenu();
@@ -1209,7 +1192,6 @@
               this.model.push(value);
               this.broadcast('Drop', 'on-update-popper');
             }
-
             if (this.filterable && !this.showBottom) {
               // remote&filterable&multiple时，一次点多项，不应该设置true，因为无法置为false，下次的搜索会失效
               if (this.query !== '') this.selectToChangeQuery = true;
@@ -1221,7 +1203,6 @@
             // }
           } else {
             this.model = value;
-
             if (this.filterable && !this.showBottom) {
               let found = false;
               this.findChild((child) => {
@@ -1235,7 +1216,6 @@
                 this.lastQuery = this.query = value;
               }
             }
-
             this.$nextTick(() => {
               this.hideMenu()
             })
