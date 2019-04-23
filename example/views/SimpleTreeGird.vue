@@ -1,9 +1,10 @@
 <template>
   <div>
     <h-button @on-click="loadData">加载数据</h-button>
+    <h-button @on-click="changeData">展开关闭某行</h-button>
     <!-- isCheckbox checkStrictly -->
     <!-- selectRoot -->
-    <h-simple-tree-gird :columns="columns1" selectRoot isCheckbox no-data-text="123" :data="treedata" canDrag :height="400" @on-select-root="selectChange" @on-expand="expand" @on-drag="expand" @on-row-click="selectChange" @on-scroll="selectChange">
+    <h-simple-tree-gird ref="treeGird" :columns="columns1" isCheckbox no-data-text="123" :data="treedata" canDrag :height="400" @on-select-root="selectChange" @on-expand="expand" @on-drag="expand" @on-row-click="selectChange" @on-scroll="selectChange">
       <span slot="loading">1244</span>
     </h-simple-tree-gird>
   </div>
@@ -149,6 +150,9 @@ export default {
     expand(data,status){
       console.log(data)
       console.log(status)
+    },
+    changeData(){
+      this.$refs.treeGird.expandRow(1,false);
     }
   },
   mounted () {

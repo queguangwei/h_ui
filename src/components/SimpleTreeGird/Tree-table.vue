@@ -11,7 +11,7 @@
           @click="clickCurrentRow(row)">
           <td v-for="(column,inx) in columns" :class="alignCls(column, row)" :key="column.index">
             <span v-if="inx==(columns[0].type=='index'?1:0)" :style="indentCls" >
-              <Icon v-if="row.children && row.children.length!=0" name = "play_fill" :class="iconClass(index)" @on-click="toggleExpand(index,row,$event)"></Icon>
+              <Icon v-if="row.children && row.children.length!=0" name = "play_fill" :class="iconClass(row.id,index)" @on-click="toggleExpand(index,row,$event)"></Icon>
               <!-- :indeterminate="row.indeterminate" -->
               <Checkbox v-if="isCheckbox" :value="checkValue(row.id)"  @on-click="changeSelect(row.id,row,$event)" @click.native.stop="handleclick"></Checkbox> 
             </span>
@@ -25,7 +25,7 @@
             <span v-else>{{row[column.key]}}</span>
           </td>
         </tr>
-        <tr v-if="collectionState[index]&&row.children&&row.children.length>0" :key="row.id+'child'">
+        <tr v-if="collectionState[index]&&row.children&&row.children.length>0" :key="row.id+'child'" :style="expandStl(row.id,index,row)">
           <td :colspan="columns.length" style="border:0">   
             <Tree-table
               :styleObject = "styleObject"
@@ -101,15 +101,26 @@
           [`${this.prefixCls}-row-highlight`]: this.checkedObj[index]&&this.checkedObj[index]._isHighlight,
         }
       },
+      expandStl(id,inx,row){
+        let index = this.indexAndId[id];
+        let style={}
+        if(this.checkedObj[index]&&this.checkedObj[index]._isExpand){
+          style.display = 'block'
+        }else{
+          style.display = 'none'
+        }
+        return style
+      },
       checkValue(id){
         let index = this.indexAndId[id];
         return this.checkedObj[index]&&this.checkedObj[index].checked;
       },
-      iconClass (index) {
+      iconClass (id,index) {
+        let inx = this.indexAndId[id]
         return[
             `${this.prefixCls}-icon-click`,
             {
-              [`${this.prefixCls}-icon-click-expanded`]:this.collectionState[index],
+              [`${this.prefixCls}-icon-click-expanded`]:this.checkedObj[inx]&&this.checkedObj[inx]._isExpand,
             }
           ]
       },
@@ -143,6 +154,7 @@
         let curStatus;
         if(!this.collectionState[index]){
           this.$set(this.collectionState,index,true)
+          this._parent.changeCollection(this.indexAndId[row.id],true)
           row.children.forEach((col,inx)=>{
             this.setStatus(col,inx);
           })
@@ -151,12 +163,8 @@
           let obj = event.target;
           let objStl = this.findObj(event,"TR").nextElementSibling;
           if(objStl.style.display=='none'){
-            objStl.style.display = 'block';
-            addClass(obj,`${this.prefixCls}-icon-click-expanded`);
             curStatus = true;
           }else{
-            objStl.style.display='none';
-            removeClass(obj,`${this.prefixCls}-icon-click-expanded`);
             curStatus = false;
           }
         }
@@ -217,11 +225,12 @@
       },
       setStatus(col,inx){
         if(!this.indexAndId[col.id]){
-          this._parent.indexAndId[col.id]= this._parent.checkedObj.length;
-          
+          this._parent.indexAndId[col.id]= this._parent.checkedObj.length;          
           this._parent.checkedObj.push({
             id:col.id,
             checked:col.checked||false,
+            _isExpand:col.expand||false,
+            _collectionState: this.collectionState[inx],
             _parentId:col._parentId,
             path:this.getPathIndex(col,inx),
           })
@@ -238,12 +247,15 @@
       getStatus(){
         this._parent = this.findParent();
         this.data.forEach((col,inx)=>{
-          if(col.expand&&col.expand!='false'){
-            this.collectionState.push(true);
+          if(this.collectionState[inx]){           
           }else{
-            this.collectionState.push(false);
+            if(col.expand&&col.expand!='false'){
+              this.collectionState[inx] = true
+            }else{
+              this.collectionState[inx] =false
+            }
+            this.setStatus(col,inx);
           }
-          this.setStatus(col,inx);
         })  
       }
     },

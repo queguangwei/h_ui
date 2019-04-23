@@ -1,40 +1,98 @@
 <template>
   <div>
-    <h-checkbox-group v-model="social" vertical>
-        <h-checkbox label="twitter">
-            <h-icon name="social-twitter"></h-icon>
-            <span>Twitter</span>
-        </h-checkbox>
-        <h-checkbox label="facebook">
-            <h-icon name="social-facebook"></h-icon>
-            <span>Facebook</span>
-        </h-checkbox>
-        <h-checkbox label="github">
-            <h-icon name="social-github"></h-icon>
-            <span>Github</span>
-        </h-checkbox>
-        <h-checkbox label="snapchat">
-            <h-icon name="social-snapchat"></h-icon>
-            <span>Snapchat</span>
-        </h-checkbox>
-    </h-checkbox-group>
-    <h-checkbox-group v-model="fruit">
-        <h-checkbox label="香蕉"></h-checkbox>
-        <h-checkbox label="苹果"></h-checkbox>
-        <h-checkbox label="西瓜"></h-checkbox>
-    </h-checkbox-group>
+    <h-radio-group v-model="vertical" vertical @on-change="onchange" @on-click="clicktest">
+        <h-radio label=0>
+            <h-icon name="mail"></h-icon>
+            <span>Apple</span>
+        </h-radio>
+        <h-radio label="android">
+            <h-icon name="mail"></h-icon>
+            <span>Android</span>
+        </h-radio>
+        <h-radio label="windows">
+            <h-icon name="mail"></h-icon>
+            <span>Windows</span>
+        </h-radio>
+    </h-radio-group>
+    <span>{{vertical}}</span>
   </div>
 </template>
 <script>
     export default {
         data () {
             return {
-                social: ['facebook', 'github'],
-                fruit: ['苹果']
+                vertical: ''
+            }
+        },
+        methods: {
+            onchange () {
+                this.$hMessage.info("当前选中项为："+this.vertical)
+            },
+            clicktest(){
+                console.log("当前选中项为："+this.vertical)
             }
         }
     }
 </script>
+
+
+<!--<template>
+<div>
+    <h-button @click="change">改变列隐藏</h-button>
+    <h-table :columns="columns1" :data="data1" notSetWidth autoHeadWidth></h-table>
+</div>
+</template>
+<script>
+    export default {
+        data () {
+            return {
+                columns1: [
+                    {
+                        title: '姓名1111111111111111111',
+                        key: 'name'
+                    },
+                    {
+                        title: '年龄',
+                        key: 'age',
+                        hiddenCol: false,
+                    },
+                    {
+                        title: '地址',
+                        key: 'address'
+                    }
+                ],
+                data1: [
+                    {
+                        name: '王小明1111111111111111111111111111111111111111111111111',
+                        age: 18,
+                        address: '北京市朝阳区芍药居11111111111111111111111111111111111111111111'
+                    },
+                    {
+                        name: '张小刚',
+                        age: 25,
+                        address: '北京市海淀区西二旗',
+                    },
+                    {
+                        name: '李小红',
+                        age: 30,
+                        address: '上海市浦东新区世纪大道'
+                    },
+                    {
+                        name: '周小伟',
+                        age: 26,
+                        address: '深圳市南山区深南大道'
+                    }
+                ]
+            }
+        },
+        methods:{
+            change(){
+                this.$set(this.columns1[1],'hiddenCol',true)
+            }
+        }
+    }
+</script>
+-->
 <!--<template>
   <div>
     <h-select v-model="model9" style="width:200px" >
