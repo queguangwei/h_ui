@@ -971,14 +971,16 @@
             this.query = '';
           } else {
             if (model !== '') {
+                let found = false;
                 this.findChild((child) => {
-                    if (child.value === model) {
-                        this.query = child.label === undefined ? child.searchLabel : child.label;
-                        this.query = this.query.trim();
-                    }
+                  if (child.value === model) {
+                    found = true;
+                    this.query = child.label === undefined ? child.searchLabel : child.label;
+                    this.query = this.query.trim();
+                  }
                 });
                 // 如果删除了搜索词，下拉列表也清空了，所以强制调用一次remoteMethod
-                if (this.remote && this.query !== this.lastQuery) {
+                if ((this.remote || this.enableCreate) && !found && this.query !== this.lastQuery) {
                     this.$nextTick(() => {
                         this.query = this.lastQuery.trim();
                     });
