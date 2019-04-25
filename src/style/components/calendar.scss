@@ -5,7 +5,6 @@ $calendar-prefix-cls: "#{$css-prefix}calendar";
     display: inline-block;
     vertical-align: middle;
     font-size: 28px;
-    user-select: none;
   }
   &-top-icon {
     &:hover {
@@ -18,16 +17,12 @@ $calendar-prefix-cls: "#{$css-prefix}calendar";
       margin-left: 30px;
     }
   }
+
   &-top-change{
     height: 50px;
     line-height: 50px;
     text-align: center;
     position: relative;
-    .#{$calendar-prefix-cls}-today-btn {
-      position: absolute;
-      left: 1.5%;
-      top: 9px;
-    }
   }
   &-month-content {
     display: flex;

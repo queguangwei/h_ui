@@ -1,61 +1,61 @@
 <template>
 <div>
-    <h1>基本用法</h1>
+    <h1>基本用法(disableEdit)</h1>
   <p>data为树型结构</p>
    <h-button type="ghost" @click="exportCsv">导出表格数据</h-button>
-   <h-asyc-tree-gird :columns="columns1" :data="data2" :option='options1' :treeOption="treeOption" ref="asyctreegird1" border @on-drag="selectAll">
+   <h-asyc-tree-gird disableEdit :columns="columns1" :data="data2" :option='options1' :treeOption="treeOption" ref="asyctreegird1" border @on-drag="selectAll">
     <p slot="header">我是headerSLOT</p>
-  </h-asyc-tree-gird> 
+  </h-asyc-tree-gird>
     <p>外部可以在data中设置checked标识当前行节点是否选中(isCheckbox为true时设置)</p>
   <p>外部可以在data中设置leaf标识当前行是否是叶子节点</p>
   <p>外部可以在data中设置expand标识当前行是否展开</p>
   <h-asyc-tree-gird headSelection :columns="columns1" :data="data1" size="small" @on-row-click="click2" isCheckbox :load-data = 'loaddataMethod' ref="asyctreegird" @on-select-all="selectAll"></h-asyc-tree-gird>
   <p>父节点expand为false时,父、子节点autoLoad无用</p>
-  <h-asyc-tree-gird :columns="columns1" :data="datatest1" size="small" @on-row-click="click2" isCheckbox :load-data = 'loaddataMethod' ref="asyctreegird"></h-asyc-tree-gird> 
+  <h-asyc-tree-gird :columns="columns1" :data="datatest1" size="small" @on-row-click="click2" isCheckbox :load-data = 'loaddataMethod' ref="asyctreegird"></h-asyc-tree-gird>
   <p>父节点expand为true时,无loading设置时，有子节点则显示子节点</p>
   <h-asyc-tree-gird :columns="columns1" :data="datatest2" size="small" @on-row-click="click2" isCheckbox :load-data = 'loaddataMethod' ref="asyctreegird"></h-asyc-tree-gird>
    <h-button type="ghost" @click="toggleexpand">展开当前节点</h-button>
   <p>外部可以在data中设置loading:false标识当前行节点需要异步加载数据，同时配置loadData(传入单层数据或者tree数据)</p>
-  <h-asyc-tree-gird :columns="columns1" :data="data2" size="small" @on-row-click="click2" :load-data = 'loaddataMethod'></h-asyc-tree-gird>  
+  <h-asyc-tree-gird :columns="columns1" :data="data2" size="small" @on-row-click="click2" :load-data = 'loaddataMethod'></h-asyc-tree-gird>
    <h1>测试border</h1>
   <p>是否显示边框</p>
   <h-asyc-tree-gird :columns="columns1" :data="data2" :border='false'></h-asyc-tree-gird>
   <h1>测试show-header</h1>
   <p>是否显示表头</p>
   <h-asyc-tree-gird :columns="columns1" :data="data2" :show-header='false'></h-asyc-tree-gird>
-  <h1>测试width</h1>  
+  <h1>测试width</h1>
   <p>设置表格宽度</p>
   <h-asyc-tree-gird :columns="columns1" :data="data2" width='800'></h-asyc-tree-gird>
-  <h1>测试height及on-scroll</h1>    
+  <h1>测试height及on-scroll</h1>
   <p>设置表格高度</p>
   <h-asyc-tree-gird :columns="columns1" :data="data2" height='200' @on-scroll="click2"></h-asyc-tree-gird>
-  <h1>测试disabled-hover</h1>      
+  <h1>测试disabled-hover</h1>
   <p>禁用鼠标悬停是的高度</p>
   <h-asyc-tree-gird :columns="columns1" :data="data2" disabled-hover></h-asyc-tree-gird>
-  <h1>测试highlight-row及on-current-change</h1>        
+  <h1>测试highlight-row及on-current-change</h1>
   <p>是否支持高亮选中行(单选)，选中后返回currentRow：当前高亮行的数据及oldCurrentRow：上一次高亮的数据</p>
   <h-asyc-tree-gird :columns="columns1" :data="data2" highlight-row @on-current-change='click3'></h-asyc-tree-gird>
-  <h1>测试size</h1>        
+  <h1>测试size</h1>
   <p>设置size为large</p>
   <h-asyc-tree-gird :columns="columns1" :data="data2" highlight-row size="large" @on-current-change='click3'></h-asyc-tree-gird>
-  <h1>测试no-data-text</h1>        
+  <h1>测试no-data-text</h1>
   <p>设置no-data-text为'当前树表格为空'</p>
-  <h-asyc-tree-gird :columns="columns1" :data="data3" highlight-row size="small" @on-current-change='click3' no-data-text='当前树表格为空'></h-asyc-tree-gird> 
-   <h1>测试isCheckbox及on-select-change</h1>        
+  <h-asyc-tree-gird :columns="columns1" :data="data3" highlight-row size="small" @on-current-change='click3' no-data-text='当前树表格为空'></h-asyc-tree-gird>
+   <h1>测试isCheckbox及on-select-change</h1>
   <p>是否显示多选框及选中后返回selection：已选项数据,若当前节点设置loading属性(标识异步加载),异步加载完成后才能返回全部子节点,否则返回当前节点</p>
-  <h-asyc-tree-gird :columns="columns1" :data="data1" isCheckbox no-data-text='当前树表格为空' @on-select-change="click2"></h-asyc-tree-gird> 
+  <h-asyc-tree-gird :columns="columns1" :data="data1" isCheckbox no-data-text='当前树表格为空' @on-select-change="click2"></h-asyc-tree-gird>
   <h-asyc-tree-gird :columns="columns1" :data="data1" isCheckbox no-data-text='当前树表格为空' @on-select-change="click2" :load-data = 'loaddataMethod'></h-asyc-tree-gird>
-  <h1>测试checkStrictly及on-expand</h1>        
+  <h1>测试checkStrictly及on-expand</h1>
   <p>多选模式下多选框是否不联动</p>
-  <h-asyc-tree-gird :columns="columns1" :data="data1" isCheckbox no-data-text='当前树表格为空' @on-select-change="click2" checkStrictly @on-expand="click3"></h-asyc-tree-gird>  
-  <h1>测试表格loading</h1>        
+  <h-asyc-tree-gird :columns="columns1" :data="data1" isCheckbox no-data-text='当前树表格为空' @on-select-change="click2" checkStrictly @on-expand="click3"></h-asyc-tree-gird>
+  <h1>测试表格loading</h1>
   <p>表格是否正在加载中</p>
   <h-asyc-tree-gird :columns="columns1" :data="data1" isCheckbox no-data-text='当前树表格为空' @on-select-change="click2" checkStrictly :loading = 'dataLoading'>
   </h-asyc-tree-gird>
   <h-asyc-tree-gird :columns="columns1" :data="data1" isCheckbox no-data-text='当前树表格为空' @on-select-change="click2" checkStrictly :loading = 'dataLoading'>
     <span slot = "loading">正在加载中 -----</span>
-  </h-asyc-tree-gird>  
-  
+  </h-asyc-tree-gird>
+
 </div>
 </template>
 <script>
@@ -86,7 +86,7 @@
         dating:'2018-01-09T16:00:00.000Z',
         timing:'16:00:00.00',
         tree:'leaf1',
-        loading: false,                
+        loading: false,
         autoLoad: true,
       }]
     }
@@ -104,7 +104,7 @@
       timing:'16:00:00.00',
       tree:'leaf1',
       _parentId: 1,
-      loading: false,                
+      loading: false,
       autoLoad: 'false',
     },
     {
@@ -119,7 +119,7 @@
       timing:'16:00:00.00',
       tree:'leaf1',
       _parentId: 1,
-      loading: false,                
+      loading: false,
       autoLoad: true,
       checked: 'true',
     },
@@ -149,7 +149,7 @@
         dating:'2018-01-09T16:00:00.000Z',
         timing:'16:00:00.00',
         tree:'leaf1',
-        loading: false,                
+        loading: false,
         autoLoad: true,
       }]
     },
@@ -211,7 +211,7 @@
       timing:'16:00:00.00',
       tree:'leaf1',
       _parentId: 1,
-      loading: false,                
+      loading: false,
       autoLoad: true,
       expand: false
     },
@@ -227,7 +227,7 @@
       timing:'16:00:00.00',
       tree:'leaf1',
       _parentId: 1,
-      loading: false,                
+      loading: false,
       autoLoad: false,
       expand: false
     },
@@ -243,7 +243,7 @@
       timing:'16:00:00.00',
       tree:'leaf1',
       _parentId: 1,
-      loading: false,                
+      loading: false,
       autoLoad: true,
       expand: true
     },
@@ -259,7 +259,7 @@
       timing:'16:00:00.00',
       tree:'leaf1',
       _parentId: 1,
-      loading: false,                
+      loading: false,
       autoLoad: "true",
       expand: true
     }
@@ -378,7 +378,7 @@
           ]
           // _highlight: true//默认选择当前项
         },
-        
+
         {
           id: 2,
           name: '王小明222',
@@ -435,7 +435,7 @@
           ]
           // _highlight: true//默认选择当前项
         },
-        
+
         {
           id: 3,
           name: '王小明333',
@@ -618,7 +618,7 @@
           ]
           // _highlight: true//默认选择当前项
         },
-        
+
         {
           id: 2,
           name: '王小明222',
@@ -673,7 +673,7 @@
           ]
           // _highlight: true//默认选择当前项
         },
-        
+
         {
           id: 3,
           name: '王小明333',
@@ -763,7 +763,7 @@
                 }
               },
               {
-                type: 'text',
+                type: 'number',
                 title: '年龄',
                 width: 200,
                 key: 'age',
@@ -777,7 +777,7 @@
                 key: 'address',
                 ellipsis:true,
                 rule: {
-                   required: true, 
+                   required: true,
                    message: '输入不能为空'
                 }
               },

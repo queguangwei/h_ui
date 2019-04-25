@@ -178,7 +178,6 @@
         <h-select v-model="model7"
                   width="200"
                   multiple
-                  :isString="true"
                   isCheckall>
           <h-option-group label="热门城市">
             <h-option v-for="(item, index) in cityList1"
