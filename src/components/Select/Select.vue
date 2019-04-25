@@ -923,7 +923,7 @@
             });
           }
           
-          let top = 32*(this.focusIndex-1);
+          let top = 30*(this.focusIndex-1);
           let contentHeight = 0
           let selectItemHeight = 1
           if (this.scrollFix) {
