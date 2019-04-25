@@ -1778,6 +1778,8 @@ export default {
   },
   activated() {
     if (this.keepAliveFlag) {
+      let transform = this.$refs.content ? this.$refs.content.style.transform : ''
+      this.$refs.body.scrollTop = transform.match(/translate3d\(\d+px,\s*(\d+)px,\s*(\d+)px\)/i)[1];
       this.handleResize();
       on(window, 'resize', this.handleResize);
     }
