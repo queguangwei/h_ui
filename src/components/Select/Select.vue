@@ -942,8 +942,9 @@
               }
             });
           }
+          
           this.focusValue = this.options[this.focusIndex - 1].value
-          let top = 32*(this.focusIndex-1);
+          let top = 30*(this.focusIndex-1);
           let contentHeight = 0
           let selectItemHeight = 1
           if (this.scrollFix) {
@@ -1226,11 +1227,8 @@
           } else {
             this.model = value;
             if (this.filterable && !this.showBottom) {
-<<<<<<< HEAD
               this.selectToChangeQuery = true;
-=======
               let found = false;
->>>>>>> 3723a274d5b4947a99d49c0b8b770719a2ab1758
               this.findChild((child) => {
                 if (child.value === value) {
                   this.lastQuery = this.query = child.label === undefined ? child.searchLabel : child.label;
