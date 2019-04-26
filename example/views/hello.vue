@@ -1,40 +1,325 @@
+<!--<template>
+<div>
+    <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
+        <h-form-item label="input" prop="name">
+            <h-input v-model="formValidate.name" placeholder="请输入姓名"></h-input>
+        </h-form-item>
+        <h-form-item label="typefield" prop="mail">
+            <h-typefield v-model="formValidate.mail" placeholder="请输入邮箱"></h-typefield >
+        </h-form-item>
+        <h-form-item label="select" prop="city">
+            <h-select 
+                v-model="formValidate.city"
+                filterable
+                remote
+                :remote-method="remoteMethod1"
+                >
+                <h-option v-for="option in options1"
+                    :value="option.value"
+                    :key="option.value">{{option.label}}</h-option>
+            </h-select>
+        </h-form-item>
+        <h-form-item label="simpleSelect" prop="city">
+            <h-simple-select v-model="formValidate.city" filterable placeholder="请选择所在地">
+                <h-select-block :data="bigData"></h-select-block>
+            </h-simple-select>
+        </h-form-item>
+        <h-form-item prop="date" label="data">
+            <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date"></h-date-picker>
+        </h-form-item>
+        <h-form-item prop="time" label="time">
+            <h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time"></h-time-picker>
+        </h-form-item>
+        <h-form-item label="radio" prop="gender">
+            <h-radio-group v-model="formValidate.gender">
+                <h-radio label="male">男</h-radio>
+                <h-radio label="female">女</h-radio>
+            </h-radio-group>
+        </h-form-item>
+        <h-form-item label="checkbox" prop="interest">
+            <h-checkbox-group v-model="formValidate.interest">
+                <h-checkbox label="吃饭"></h-checkbox>
+                <h-checkbox label="睡觉"></h-checkbox>
+                <h-checkbox label="跑步"></h-checkbox>
+                <h-checkbox label="看电影"></h-checkbox>
+            </h-checkbox-group>
+        </h-form-item>
+        <h-form-item>
+            <h-button type="primary" canFocus @click="handleSubmit('formValidate')">提交</h-button>
+            <h-button type="ghost"  canFocus  @click="handleReset('formValidate')" style="margin-left: 8px">重置</h-button>
+        </h-form-item>
+    </h-form>
+</div>
+</template>
+<script>
+import { enterHandler } from "../../src/util/tools.js";
+export default {
+  data() {
+    return {
+      formValidate: {
+        name: "",
+        mail: "",
+        city: "",
+        gender: "",
+        interest: [],
+        date: "",
+        time: "",
+        desc: ""
+      },
+      bigData: [
+        { value: "value1", label: "label1" },
+        { value: "value2", label: "label2" },
+        { value: "value3", label: "label3" },
+        { value: "value4", label: "label4" },
+        { value: "value5", label: "label5" },
+        { value: "value6", label: "label6" }
+      ],
+      list: [
+        'Alabama',
+        'Alaska',
+        'Arizona',
+        'Arkansas',
+        'California',
+        'Colorado',
+        'Connecticut',
+        'Delaware',
+        'Florida',
+        'Georgia',
+        'Hawaii',
+        'Idaho',
+        'Illinois',
+        'Indiana',
+        'Iowa',
+        'Kansas',
+        'Kentucky',
+        'Louisiana',
+        'Maine',
+        'Maryland',
+        'Massachusetts',
+        'Michigan',
+        'Minnesota',
+        'Mississippi',
+        'Missouri',
+        'Montana',
+        'Nebraska',
+        'Nevada',
+        'New hampshire',
+        'New jersey',
+        'New mexico',
+        'New york',
+        'North carolina',
+        'North dakota',
+        'Ohio',
+        'Oklahoma',
+        'Oregon',
+        'Pennsylvania',
+        'Rhode island',
+        'South carolina',
+        'South dakota',
+        'Tennessee',
+        'Texas',
+        'Utah',
+        'Vermont',
+        'Virginia',
+        'Washington',
+        'West virginia',
+        'Wisconsin',
+        'Wyoming'
+      ],
+      options1:[],
+    };
+  },
+  methods: {
+    handleSubmit(name) {
+    //   this.$refs[name].validate(valid => {
+    //     if (valid) {
+    //       this.$Message.success("提交成功!");
+    //     } else {
+    //       this.$Message.error("表单验证失败!");
+    //     }
+    //   });
+    },
+    handleReset(name) {
+    //   this.$refs[name].resetFields();
+    },
+    remoteMethod1(query) {
+      if (query !== '') {
+        this.loading1 = true
+        setTimeout(() => {
+          this.loading1 = false
+          this.options1 = []
+          const list = this.list.map(item => {
+            return {
+              value: item,
+              label: item
+            }
+          })
+          this.options1 = list.filter(
+            item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1
+          )
+        }, 200)
+      } 
+    },
+  },
+  mounted() {
+    window.isO45 = true;
+    document.addEventListener("keyup", event => {
+      enterHandler(this.$refs.formValidate, event);
+    });
+  }
+};
+</script>
+-->
 <template>
-  <div>
-    <h-radio-group v-model="vertical" vertical @on-change="onchange" @on-click="clicktest">
-        <h-radio label=0>
-            <h-icon name="mail"></h-icon>
-            <span>Apple</span>
-        </h-radio>
-        <h-radio label="android">
-            <h-icon name="mail"></h-icon>
-            <span>Android</span>
-        </h-radio>
-        <h-radio label="windows">
-            <h-icon name="mail"></h-icon>
-            <span>Windows</span>
-        </h-radio>
-    </h-radio-group>
-    <span>{{vertical}}</span>
-  </div>
+<div>
+ <h-button type="primary" @click="ttt">Toggle required</h-button>
+    <h-form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80" closeRuleChangeValidate>
+        <h-form-item label="姓名" prop="name">
+            <h-input v-model="formValidate.name" placeholder="请输入姓名"></h-input>
+        </h-form-item>
+        <h-form-item label="邮箱" prop="mail">
+            <h-input v-model="formValidate.mail" placeholder="请输入邮箱"></h-input>
+        </h-form-item> 
+        <h-form-item label="城市" prop="city">
+            <h-select v-model="formValidate.city" placeholder="请选择所在地">
+                <h-option value="beijing">北京市</h-option>
+                <h-option value="shanghai">上海市</h-option>
+                <h-option value="shenzhen">深圳市</h-option>
+            </h-select>
+        </h-form-item>
+        <h-form-item label="选择日期">
+            <h-row>
+                <h-col span="11">
+                    <h-form-item prop="date">
+                        <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date"></h-date-picker>
+                    </h-form-item>
+                </h-col>
+                <h-col span="2" style="text-align: center">-</h-col>
+                <h-col span="11">
+                    <h-form-item prop="time">
+                        <h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time"></h-time-picker>
+                    </h-form-item>
+                </h-col>
+            </h-row>
+        </h-form-item>
+        <h-form-item label="性别" prop="gender">
+            <h-radio-group v-model="formValidate.gender">
+                <h-radio label="male">男</h-radio>
+                <h-radio label="female">女</h-radio>
+            </h-radio-group>
+        </h-form-item>
+        <h-form-item label="爱好" prop="interest">
+            <h-checkbox-group v-model="formValidate.interest">
+                <h-checkbox label="吃饭"></h-checkbox>
+                <h-checkbox label="睡觉"></h-checkbox>
+                <h-checkbox label="跑步"></h-checkbox>
+                <h-checkbox label="看电影"></h-checkbox>
+            </h-checkbox-group>
+        </h-form-item>
+        <h-form-item label="介绍" prop="desc">
+            <h-input v-model="formValidate.desc" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></h-input>
+        </h-form-item>
+        <h-form-item>
+            <h-button type="primary" @click="handleSubmit('formValidate')">提交</h-button>
+            <h-button type="ghost" @click="handleReset('formValidate')" style="margin-left: 8px">重置</h-button>
+        </h-form-item>
+    </h-form>
+</div>
 </template>
 <script>
     export default {
         data () {
             return {
-                vertical: ''
+                formValidate: {
+                    name: '',
+                    mail: '',
+                    city: '',
+                    gender: '',
+                    interest: [],
+                    date: '',
+                    time: '',
+                    desc: ''
+                },
+                ruleValidate111: {
+                    name: [
+                        { required: false, message: '姓名不能为空', trigger: 'blur' }
+                    ],
+                    mail: [
+                        { required: false, message: '邮箱不能为空', trigger: 'blur' },
+                        { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
+                    ],
+                    city: [
+                        { required: false, message: '请选择城市', trigger: 'change' }
+                    ],
+                    gender: [
+                        { required: false, message: '请选择性别', trigger: 'change' }
+                    ],
+                    interest: [
+                        { required: false, type: 'array', min: 1, message: '至少选择一个爱好', trigger: 'change' },
+                        { type: 'array', max: 2, message: '最多选择两个爱好', trigger: 'change' }
+                    ],
+                    date: [
+                        { required: false, message: '请选择日期', trigger: 'change' }
+                    ],
+                    time: [
+                        { required: false, message: '请选择时间', trigger: 'change' }
+                    ],
+                    desc: [
+                        { required: false, message: '请输入个人介绍', trigger: 'blur' },
+                        { type: 'string', min: 20, message: '介绍不能少于20字', trigger: 'blur' }
+                    ]
+                },
+                ruleValidate: {
+                    name: [
+                        { required: true, message: '姓名不能为空', trigger: 'blur' }
+                    ],
+                    mail: [
+                        { required: true, message: '邮箱不能为空', trigger: 'blur' },
+                        { type: 'email', message: '邮箱格式不正确', trigger: 'blur' }
+                    ],
+                    city: [
+                        { required: true, message: '请选择城市', trigger: 'change' }
+                    ],
+                    gender: [
+                        { required: true, message: '请选择性别', trigger: 'change' }
+                    ],
+                    interest: [
+                        { required: true, type: 'array', min: 1, message: '至少选择一个爱好', trigger: 'change' },
+                        { type: 'array', max: 2, message: '最多选择两个爱好', trigger: 'change' }
+                    ],
+                    date: [
+                        { required: true, type: 'date', message: '请选择日期', trigger: 'change' }
+                    ],
+                    time: [
+                        { required: true, type: 'date', message: '请选择时间', trigger: 'change' }
+                    ],
+                    desc: [
+                        { required: true, message: '请输入个人介绍', trigger: 'blur' },
+                        { type: 'string', min: 20, message: '介绍不能少于20字', trigger: 'blur' }
+                    ]
+                }
             }
         },
         methods: {
-            onchange () {
-                this.$hMessage.info("当前选中项为："+this.vertical)
+            ttt(){
+                this.ruleValidate=this.ruleValidate111;
+                console.log(this.ruleValidate);
             },
-            clicktest(){
-                console.log("当前选中项为："+this.vertical)
+            handleSubmit (name) {
+                this.$refs[name].validate((valid) => {
+                    if (valid) {
+                        this.$hMessage.success('提交成功!');
+                    } else {
+                        this.$hMessage.error('表单验证失败!');
+                    }
+                })
+            },
+            handleReset (name) {
+                this.$refs[name].resetFields();
             }
         }
     }
 </script>
-
 
 <!--<template>
 <div>

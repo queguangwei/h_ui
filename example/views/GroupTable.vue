@@ -3,7 +3,7 @@
     <h2>基础</h2>
     <h3>单选分组组件</h3>
     <!-- :multiLevel="multiLevel2" -->
-    <h-group-table :columns="columns1" :height="300" :data="data1" size="large" :highlight-row="true" @on-current-change="click1" ref="groupTable" width="800" :loading="loading">
+    <h-group-table :columns="columns1" :height="300" disableExpand :data="data1" size="large" :highlight-row="true" @on-current-change="click1" ref="groupTable" width="800" :loading="loading">
       <P slot="loading">我是自定义de</P>
     </h-group-table>
     <Button @click="setLoad">切换loading</Button>
@@ -22,7 +22,7 @@ import TexpandRow from './Texpand-row.vue'
 var tData= [
   {
     title:'分组表格数据：group1【项目编号：45424451114】 共计：3项',
-    // expand:true,
+    expand:true,
     item:[
       {
         name: '王小明',
