@@ -1227,6 +1227,7 @@
           } else {
             this.model = value;
             if (this.filterable && !this.showBottom) {
+              this.selectToChangeQuery = true;
               let found = false;
               this.findChild((child) => {
                 if (child.value === value) {
