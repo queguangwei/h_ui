@@ -3,11 +3,8 @@
     <h2>基础</h2>
     <h3>单选分组组件</h3>
     <!-- :multiLevel="multiLevel2" -->
-<<<<<<< HEAD
-    <h-group-table :columns="columns1" :height="300" disableExpand :data="data1" size="large" :highlight-row="true" @on-current-change="click1" ref="groupTable" width="800" :loading="loading">
-=======
+
     <h-group-table :columns="columns1" :height="300" width="800" :data="data1" size="small" :highlight-row="true" @on-current-change="click1" ref="groupTable" :loading="loading">
->>>>>>> 3723a274d5b4947a99d49c0b8b770719a2ab1758
       <P slot="loading">我是自定义de</P>
     </h-group-table>
     <Button @click="setLoad">切换loading</Button>
