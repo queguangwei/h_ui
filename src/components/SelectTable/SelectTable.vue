@@ -537,7 +537,7 @@ export default {
       let num = getBarBottom(event.target, this.scrollBarWidth)
       this.$emit('on-scroll', num)
     },
-    toggleSelect(val) {
+    toggleSelect(val) {      
       if (this.isBlock) {
         this.allClick = true
         let hybridValue = []
@@ -604,8 +604,9 @@ export default {
     },
     hideMenu() {
       this.visible = false
-      this.focusIndex = 0
-
+      if(!window.isO45){
+        this.focusIndex = 0
+      }
       // 单选 恢复 query 值
       if (!this.multiple && this.query !== this.selectedSingle) {
         this.query = this.selectedSingle
@@ -902,6 +903,29 @@ export default {
           e.preventDefault()
           this.hideMenu()
         }
+        if(window.isO45){
+          // right
+          if (keyCode === 39) {
+            e.preventDefault();
+            this.navigateOptions('next');
+          }
+          // left
+          if (keyCode === 37) {
+            e.preventDefault();
+            this.navigateOptions('prev');
+          }
+          if(!this.multiple && (keyCode === 39||keyCode === 37)){
+            this.model = this.focusValue
+          }
+          // if (this.isBlock) {
+          //   if (!this.multiple) {
+          //     this.selectBlockSingle(this.focusValue)
+          //   } else {
+          //     this.selectBlockMultiple(this.focusValue)
+          //   }
+          // }
+          return false;
+        }
         // next
         if (keyCode === 40) {
           e.preventDefault()
@@ -1041,6 +1065,7 @@ export default {
       }
     },
     broadcastQuery(val) {
+      this.focusIndex = 0
       if (this.isBlock) {
         this.broadcast('Block', 'on-query-change', val)
         if(this.isSelectFilter){
@@ -1154,12 +1179,10 @@ export default {
       }
     },
     selectBlockSingle(value) {
-      // console.log('selectBlockSingle')
       this.availableOptions = this.options
       this.selectToChangeQuery = true
 
       if (this.model === value) {
-        this.hideMenu()
       } else {
         this.model = value
         // if (this.filterable && !this.showBorder) {
@@ -1172,9 +1195,8 @@ export default {
         //   }
         // });
         // }
-
-        this.hideMenu()
       }
+      this.hideMenu()
     },
     selectBlockMultiple(value) {
       const index = this.model.indexOf(value)
@@ -1228,7 +1250,7 @@ export default {
     // document.addEventListener('keydown', this.handleKeydown);
     this.$on('on-select-selected', (value, status) => {
       value = this.isBlock ? value : this.getFormatValue(value)
-      if (this.model === value) {
+      if (this.model === value && !window.isO45) {
         this.hideMenu()
       } else {
         if (this.multiple && !status) {
@@ -1357,7 +1379,9 @@ export default {
             if (this.showBottom || this.multiple) {
               this.query = ''
             }
-            this.broadcastQuery('')
+            if(!window.isO45){
+              this.broadcastQuery('')
+            }
           }, 300)
         }
         setTimeout(() => {
@@ -1367,8 +1391,6 @@ export default {
       }
     },
     query(val) {
-      this.focusIndex = 0
-
       if (this.remote && this.remoteMethod) {
         if (!this.selectToChangeQuery) {
           this.remoteMethod(val)
@@ -1382,7 +1404,6 @@ export default {
         if (!this.selectToChangeQuery) {
           this.$emit('on-query-change', val)
           this.broadcastQuery(val)
-
           this.availableOptions = this.options.filter(
             option => option.label.indexOf(val) !== -1
           )
@@ -1409,10 +1430,11 @@ export default {
     selectedSingle(val) {
       if (this.filterable && !this.showBottom) {
         this.query = val
-
         if (this.query !== '') this.selectToChangeQuery = true
       }
-      this.hideMenu()
+      if(!window.isO45){
+        this.hideMenu()
+      }
     },
     // options(val) {
     //   console.log('options', val)

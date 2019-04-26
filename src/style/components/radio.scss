@@ -115,6 +115,9 @@ $radio-group-button-prefix-cls: "#{$radio-group-prefix-cls}-button";
         opacity: 0;
         cursor: pointer;
     }
+    &-inner-focus {
+        @include active();
+    }
 }
 
 // 选中状态

@@ -409,6 +409,10 @@ export default {
         })
         if(str==='ruleChange'&&!this.isRequired){
           this.validateState = ''
+          let parentFormItem = findComponentParent(this, 'FormItem')
+          if (parentFormItem) {
+            parentFormItem.isRequired = this.isRequired
+          }
         }
         this.$on('on-form-blur', this.onFieldBlur)
         this.$on('on-form-change', this.onFieldChange)

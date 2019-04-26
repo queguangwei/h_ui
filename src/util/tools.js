@@ -816,3 +816,208 @@ export function toFixedForString(str, num) {
 
   return str.replace(/(\.\d+)?$/, '.' + decimal)
 }
+
+// 获取当前节点
+function findCurNode(obj){
+  while(obj.parentElement.parentElement.className.indexOf('h-form-item-content')==-1){
+    obj = obj.parentNode;
+  }
+  if(obj.className.indexOf('h-radio')!=-1 || obj.className.indexOf('h-checkbox')!=-1){
+    return [obj,true];
+  }else{
+    return [obj.parentNode,false];
+  }
+}
+function isButtonOr(obj){
+  if(obj.nodeName.toLowerCase() === 'button'){
+    return true;
+  }else{
+    return false
+  }
+}
+// 获取下一个对象
+function getNextElement(ele,field) {
+    var isButton = isButtonOr(field)
+    if(isButton){
+      return field.nextElementSibling?field.nextElementSibling:null;
+    }
+    var curArr = findCurNode(field);
+    var curNode = curArr[0];
+    var isRadioOrCheck = curArr[1];
+    var nextNode = null;
+    curNode.__vue__.blur();
+    var form = ele;
+    var nodes = form.children;
+    var index = 0;
+    if(isRadioOrCheck && curNode.nextElementSibling){
+      nextNode = curNode.nextElementSibling;
+    }else{
+      if(isRadioOrCheck && !curNode.nextElementSibling){
+        curNode = curNode.parentNode;
+      }
+      for(var i=0;i<nodes.length;i++){
+        if (nodes[i].children&&curNode == nodes[i].children[1].children[0]){
+          index = i+1;
+          break;
+        }
+      }
+      isRadioOrCheck = nodes[index].children[1].children[0].className.indexOf('h-radio-group')!=-1 || nodes[index].children[1].children[0].className.indexOf('h-checkbox-group')!=-1;
+      if (index == 0) return;
+      if(isRadioOrCheck){
+        nextNode = nodes[index].children[1].children[0].children[0];
+      }else{
+        nextNode = nodes[index].children[1].children[0];
+      }
+    }
+    return nextNode;
+}
+//获取上一个对象
+function getPrevioueElement(ele,field){
+  var isButton = isButtonOr(field)
+  var curNode = null
+  var isRadioOrCheck = false
+  if(isButton){
+    curNode = field;
+  }else{
+    var curArr = findCurNode(field);
+    curNode = curArr[0];
+    isRadioOrCheck = curArr[1];
+  }
+  var form = ele;
+  var nodes = form.children;
+  var index = 0;
+  var previousNode = null;
+  curNode.__vue__.blur();
+  if((isButton&&curNode.previousElementSibling)||isRadioOrCheck && curNode.previousElementSibling){
+    return curNode.previousElementSibling;
+  }else{
+    if(isRadioOrCheck && !curNode.previousElementSibling){
+      curNode = curNode.parentNode;
+    }
+    for(var i=nodes.length-1;i>-1;i--){
+      if (nodes[i].children&&curNode == nodes[i].children[1].children[0]){
+        index = i-1;
+        break;
+      }
+    }
+    if (index == -1) index = 0;
+    isRadioOrCheck = nodes[index].children[1].children[0].className.indexOf('h-radio-group')!=-1 || nodes[index].children[1].children[0].className.indexOf('h-checkbox-group')!=-1;
+    if(isRadioOrCheck){
+      let curObj = nodes[index].children[1].children[0];
+      previousNode = curObj.children[curObj.children.length-1];
+    }else{
+      previousNode = nodes[index].children[1].children[0];
+    }
+    return previousNode;
+  }
+  var form = ele;
+  var nodes = form.children;
+  var index = form.children-1;
+}
+
+/* 表单键盘Enter事件
+@author: 研发中心-谭露阳提供-未支持浏览器兼容和深层嵌套
+@date: 2018-06-22
+@params: 
+ele 
+evt 
+*/
+export function enterHandler(ele,evt) {
+  ele = ele.$el
+  var isie = (document.all) ? true : false;
+  var key;
+  var srcobj;
+  if (isie) {
+    key = event.keyCode;
+    srcobj=event.srcElement;
+  } else {
+    key = evt.which;
+    srcobj=evt.target;
+  } 
+  if(srcobj.type =='submit' ||srcobj.type=='reset' || srcobj.type=='textarea' || srcobj.type=='') return
+  //enter键盘 下键盘
+  if(evt.keyCode == 13 || evt.keyCode == 40) {
+    if(isie){
+      evt.keyCode=9;
+    } else {
+      var el=getNextElement(ele,evt.target);
+      if(!el){
+        return false;
+      }else{
+        el.__vue__.focus();
+      }
+    }
+  }
+  // 上键盘
+  if(evt.keyCode == 38) {
+    var el=getPrevioueElement(ele,evt.target);
+    if(!el){
+      return false;
+    }else{
+      el.__vue__.focus();
+    }
+  }
+}
+
+
+function getCurNode(obj){
+  while(obj.className.indexOf('curItemClass')==-1){
+    obj = obj.parentNode;
+  }
+  return obj
+}
+function getElement(ele,field,status){
+  var nodes = ele.querySelectorAll('.curItemClass');
+  var index = 0;
+  var curNode = getCurNode(field);
+  curNode.__vue__.blur();
+  for(var i=0;i<nodes.length;i++){
+    if (nodes[i]&&curNode == nodes[i]){
+      index = i;
+      break;
+    }
+  }    
+  if(status){
+    index = index +1
+    index = index>=nodes.length?nodes.length-1:index
+  }else{
+    index = index -1
+    index = index<0?0:index
+  }
+  return nodes[index];
+}
+export function enterHandler1(ele,evt) {
+  ele = ele.$el
+  var isie = (document.all) ? true : false;
+  var key;
+  var srcobj;
+  if (isie) {
+    key = event.keyCode;
+    srcobj=event.srcElement;
+  } else {
+    key = evt.which;
+    srcobj=evt.target;
+  } 
+  //enter键盘 下键盘
+  if(evt.keyCode == 13 || evt.keyCode == 40) {
+    if(isie){
+      evt.keyCode=9;
+    } else {
+      var el=getElement(ele,evt.target,true);
+      if(!el){
+        return false;
+      }else{
+        el.__vue__.focus();
+      }
+    }
+  }
+  // 上键盘
+  if(evt.keyCode == 38) {
+    var el=getElement(ele,evt.target,false);
+    if(!el){
+      return false;
+    }else{
+      el.__vue__.focus();
+    }
+  }
+}
