@@ -313,7 +313,8 @@
         titleTip:'',
         fPlacement:this.placement,
         isSelectAll:false,
-        typeValue:'string'
+        typeValue:'string',
+        focusValue:'',
       };
     },
     computed: {
@@ -567,7 +568,9 @@
       },
       hideMenu () {
           this.visible = false;
-          this.focusIndex = 0;
+          if(!window.isO45){
+            this.focusIndex = 0;
+          }
           this.broadcast('Option', 'on-select-close');
       },
       findChild (cb) {
@@ -849,6 +852,23 @@
               e.preventDefault();
               this.hideMenu();
           }
+          if(window.isO45){
+            // right
+            if (keyCode === 39) {
+              e.preventDefault();
+              this.navigateOptions('next');
+            }
+            // left
+            if (keyCode === 37) {
+              e.preventDefault();
+              this.navigateOptions('prev');
+            }
+            if((keyCode === 39||keyCode === 37)&&!this.multiple){
+              this.model = this.focusValue
+              this.selectToChangeQuery = true
+            }
+            return false;
+          }
           // next
           if (keyCode === 40) {
               e.preventDefault();
@@ -912,7 +932,7 @@
                   child_status.disabled = child.disabled;
                   child_status.hidden = child.hidden;
                   if (!child.disabled && !child.hidden) {
-                      child.isFocus = true;
+                    child.isFocus = true;
                   }
               } else {
                   child.isFocus = false;
@@ -923,6 +943,7 @@
             });
           }
           
+          this.focusValue = this.options[this.focusIndex - 1].value
           let top = 30*(this.focusIndex-1);
           let contentHeight = 0
           let selectItemHeight = 1
@@ -971,25 +992,20 @@
             this.query = '';
           } else {
             if (model !== '') {
-              let found = false;
-              this.findChild((child) => {
-                if (child.value === model) {
-                  found = true;
-                  this.query = child.label === undefined ? child.searchLabel : child.label;
-                  this.query = this.query.trim();
+                let found = false;
+                this.findChild((child) => {
+                  if (child.value === model) {
+                    found = true;
+                    this.query = child.label === undefined ? child.searchLabel : child.label;
+                    this.query = this.query.trim();
+                  }
+                });
+                // 如果删除了搜索词，下拉列表也清空了，所以强制调用一次remoteMethod
+                if ((this.remote || this.enableCreate) && !found && this.query !== this.lastQuery) {
+                    this.$nextTick(() => {
+                        this.query = this.lastQuery.trim();
+                    });
                 }
-              });
-              if (!found && this.enableCreate) {
-                if (model !== this.query) {
-                  this.query = model;
-                }
-              }
-              // 如果删除了搜索词，下拉列表也清空了，所以强制调用一次remoteMethod
-              // if (this.remote && this.query !== this.lastQuery) {
-              // this.$nextTick(() => {
-              // this.query = this.lastQuery.trim();
-              // });
-              // }
             } else {
               this.query = '';
             }
@@ -1211,12 +1227,16 @@
           } else {
             this.model = value;
             if (this.filterable && !this.showBottom) {
+              let found = false;
               this.findChild((child) => {
                 if (child.value === value) {
-                  if (this.query !== '') this.selectToChangeQuery = true;
                   this.lastQuery = this.query = child.label === undefined ? child.searchLabel : child.label;
+                  found = true;
                 }
               });
+              if (!found && this.enableCreate && value !== '') {
+                this.lastQuery = this.query = value;
+              }
             }
             this.$nextTick(() => {
               this.hideMenu()
@@ -1293,11 +1313,11 @@
         } else {
           this.updateSingleSelected();
         }
-        if (!this.visible && this.filterable) {
-          this.$nextTick(() => {
-              this.broadcastQuery('');
-          });
-        }
+        // if (!this.visible && this.filterable) {
+        //   this.$nextTick(() => {
+        //       this.broadcastQuery('');
+        //   });
+        // }
       },
       visible (val) {
         if (val) {
@@ -1349,21 +1369,21 @@
             }
           }
           if (!this.selectToChangeQuery) {
-              this.$emit('on-query-change', val);
-              if(this.readonly || this.disabled) return false;
-              this.remoteMethod(val);
+            this.$emit('on-query-change', val);
+            if(this.readonly || this.disabled) return false;
+            this.remoteMethod(val);
+            this.focusIndex = 0;
+            this.findChild(child => {
+              child.isFocus = false;
+            });
           }
-          this.focusIndex = 0;
           typeof this.$refs.createdOption !== 'undefined' && (this.$refs.createdOption.isFocus = false);
-          this.findChild(child => {
-            child.isFocus = false;
-          });
         } else {
             if (!this.selectToChangeQuery) {
-                this.$emit('on-query-change', val);
+              this.$emit('on-query-change', val);
+              this.broadcastQuery(val);
             }
             // if(val.trim()) this.broadcastQuery(val);
-            this.broadcastQuery(val);
             let isHidden = true;
             this.$nextTick(() => {
               this.findChild((child) => {
@@ -1378,7 +1398,7 @@
           this.enableCreate && this.checkOptionSelected();
           this.enableCreate && this.reorderOptionIndex();
         })
-        if (this.filterable&&!this.remote) {
+        if (this.filterable&&!this.remote&&!this.selectToChangeQuery) {
           this.$nextTick(()=>{
             this.focusIndex = 1;
             if (typeof this.$refs.createdOption !== 'undefined') {
@@ -1403,7 +1423,9 @@
         this.broadcast('Drop', 'on-update-popper');
       },
       selectedSingle(val){
-        this.hideMenu();
+        if(!window.isO45){
+          this.hideMenu();
+        }
         if (val&&this.showTitle) {
           this.titleTip=val
         }

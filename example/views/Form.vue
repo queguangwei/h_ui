@@ -1184,7 +1184,7 @@ export default {
         ]
       },
       // stringRule: ['intege1','mobile'],
-      stringRule: ['email'],
+      stringRule: ['decmal4'],
       regRule: [
         { test: /^[a-zA-Z]+$/, message: '不全是字母', trigger: 'blur' }
       ],
