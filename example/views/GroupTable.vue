@@ -3,7 +3,11 @@
     <h2>基础</h2>
     <h3>单选分组组件</h3>
     <!-- :multiLevel="multiLevel2" -->
+<<<<<<< HEAD
     <h-group-table :columns="columns1" :height="300" disableExpand :data="data1" size="large" :highlight-row="true" @on-current-change="click1" ref="groupTable" width="800" :loading="loading">
+=======
+    <h-group-table :columns="columns1" :height="300" width="800" :data="data1" size="small" :highlight-row="true" @on-current-change="click1" ref="groupTable" :loading="loading">
+>>>>>>> 3723a274d5b4947a99d49c0b8b770719a2ab1758
       <P slot="loading">我是自定义de</P>
     </h-group-table>
     <Button @click="setLoad">切换loading</Button>
@@ -357,11 +361,13 @@ export default {
         {
           title: '金额',
           key: 'money',
+          width: 200
         },
         // {
         //   title: '卡号',
         //   width: 200,
         //   key: 'cardId',
+        //   hiddenCol: true
         // },
         // {
         //   title: '地区',
@@ -492,15 +498,7 @@ export default {
           {title:'123',cols:2,align:'center',className:'demo-table-info-column'},
           {title:'456',rows:2,align:'center'},
           {title:'789',align:'right'},
-        ],
-        [
-          {title:'123',cols:2,hiddenCol:true},
-          {title:'456'},
-        ],
-        [
-          {title:'234'},
-          {title:'678',cols:2},
-        ],
+        ]
       ],
     }
   },

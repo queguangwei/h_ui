@@ -65,7 +65,7 @@ export default {
   components: { MonthView },
   data() {
     return {
-      currentDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+      currentDate: new Date(),
       prefixCls: prefixCls,
       styles: {},
       selectedDate: [],
@@ -103,7 +103,11 @@ export default {
         return [1, 2, 4, 12].indexOf(val) > -1;
       }
     },
-    dateCellRender: Function
+    dateCellRender: Function,
+    enableCtxMenu: {
+      type: Boolean,
+      default: true
+    }
   },
   directives: {
     clickoutside
@@ -129,9 +133,10 @@ export default {
       immediate: true,
       handler(val) {
         const currentDate = this.currentDate;
-        this.currentDate = new Date(currentDate.getFullYear(), val - 1, currentDate.getDate());
+        let lastDate = new Date(currentDate.getFullYear(), val, 0).getDate();
+        this.currentDate = new Date(currentDate.getFullYear(), val - 1, Math.min(currentDate.getDate(), lastDate));
       }
-   }
+    }
   },
   methods: {
     handleCellLeftClick(dateObj) {
@@ -155,10 +160,12 @@ export default {
       this.$emit('on-select', date.getMonth() + 1, date.getDate())
     },
     handleCtxMenu(event) {
-      this.styles = {
-        display: 'block',
-        top: `${event.clientY}px`,
-        left: `${event.clientX}px`,
+      if (this.enableCtxMenu) {
+        this.styles = {
+          display: 'block',
+          top: `${event.clientY}px`,
+          left: `${event.clientX}px`,
+        }
       }
     },
     handleCellMouseOver(dateObj) {
@@ -203,9 +210,11 @@ export default {
       const currentMonth = currentDate.getMonth();
       const date = currentDate.getDate();
       if (currentMonth === 0) {
-        this.currentDate = new Date(currentYear - 1, 12 - this.monthViewNum, date);
+        let prevMonthLastDate = new Date(currentYear - 1, 12 - this.monthViewNum + 1, 0).getDate();
+        this.currentDate = new Date(currentYear - 1, 12 - this.monthViewNum, Math.min(prevMonthLastDate, date));
       } else {
-        this.currentDate = new Date(currentYear, currentMonth - 1, date);
+        let prevMonthLastDate = new Date(currentYear, currentMonth, date, 0).getDate();
+        this.currentDate = new Date(currentYear, currentMonth - 1, Math.min(prevMonthLastDate, date));
       }
     },
     jumpToNextMonth() {
@@ -216,6 +225,7 @@ export default {
       if (currentMonth >= (12 - this.monthViewNum)) {
         this.currentDate = new Date(currentYear + 1, 0, date);
       } else {
+        let nextMonthLastDate = new Date(currentYear, currentMonth + 2, 0).getDate();
         this.currentDate = new Date(currentYear, currentMonth + 1, date);
       }
     },
@@ -233,7 +243,7 @@ export default {
         this.currentDate = new Date(currentYear + 1, currentDate.getMonth(), currentDate.getDate());
       }
     },
-    getSelectDate(){
+    getSelectDate() {
       let select = this.selectedDate;
       for (let i = 0; i < select.length; i++){
         if (!select[i].formatDate){
