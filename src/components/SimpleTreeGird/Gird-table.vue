@@ -439,6 +439,15 @@ export default {
         this.$emit('on-select-change',this.getSelection(),this.getSelection(true));
       })
     },
+    clearSelected(){
+      this.selection ={}
+      for(let i in this.checkedObj){
+        this.checkedObj[i].checked = false
+      }
+      this.$nextTick(()=>{
+        this.$emit('on-select-change',[],[]);
+      })
+    },
     getSelection(status){
       let arr = [];
       let selectIndex=[];
