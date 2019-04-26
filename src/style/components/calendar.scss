@@ -1,5 +1,5 @@
 $calendar-prefix-cls: "#{$css-prefix}calendar";
-.#{$calendar-prefix-cls}{
+.#{$calendar-prefix-cls} {
   &-top-change &-top-icon,
   &-top-change &-top-text {
     display: inline-block;
@@ -57,6 +57,9 @@ $calendar-prefix-cls: "#{$css-prefix}calendar";
   }
   &-month-content-item:nth-child(7n + 1){
     border-width: 0 1px 1px 1px;
+  }
+  &-month-week {
+    background: #e9eaec;
   }
   &-month-week &-month-content-item {
     border-top-width: 1px;
