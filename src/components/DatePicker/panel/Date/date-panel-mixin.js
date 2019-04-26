@@ -47,7 +47,10 @@ export default {
             type: String,
             require: true
         },
-        showTwoPanel:Boolean
+        showTwoPanel:Boolean,
+        longValue:{
+            type: [Date, String, Array]
+       }
     },
     computed: {
         isTime(){

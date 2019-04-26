@@ -40,6 +40,7 @@
                :showTime="type === 'datetime' || type === 'datetimerange'"
                :confirm="isConfirm"
                :showLong="showLong"
+               :longValue="longValue"
                :selectionMode="selectionMode"
                :steps="steps"
                :format="format"
@@ -499,7 +500,7 @@
       handleLongDate(){
         let isdateRange = this.type.indexOf('range')>-1?true:false;
         let emptyAry = isdateRange ? [null, null] : [null];
-        let date=isdateRange?this.parseDate([this.longValue]):this.parseDate(this.longValue);
+        let date=isdateRange?this.parseDate([this.longValue,this.longValue]):this.parseDate(this.longValue);
         let longtime = isEmptyArray([this.longValue] || []) ? emptyAry : date;
         if(!longtime[0]) return;
         if(isdateRange){
