@@ -538,7 +538,7 @@ export default {
               };
             }
             if(this.typeName=='groupTable'&&this.height){
-              this.tableWidth = this.tableWidth-this.scrollBarWidth;
+              this.tableWidth = this.tableWidth - this.scrollBarWidth;
             }
             this.columnsWidth = columnsWidth;
           }
