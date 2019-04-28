@@ -936,7 +936,7 @@ export function enterHandler(ele,evt) {
   } 
   if(srcobj.type =='submit' ||srcobj.type=='reset' || srcobj.type=='textarea' || srcobj.type=='') return
   //enter键盘 下键盘
-  if(evt.keyCode == 13 || evt.keyCode == 40) {
+  if(evt.keyCode == 13) {
     if(isie){
       evt.keyCode=9;
     } else {
@@ -946,15 +946,6 @@ export function enterHandler(ele,evt) {
       }else{
         el.__vue__.focus();
       }
-    }
-  }
-  // 上键盘
-  if(evt.keyCode == 38) {
-    var el=getPrevioueElement(ele,evt.target);
-    if(!el){
-      return false;
-    }else{
-      el.__vue__.focus();
     }
   }
 }
@@ -1000,6 +991,7 @@ export function enterHandler1(ele,evt) {
   } 
   //enter键盘 下键盘
   if(evt.keyCode == 13 || evt.keyCode == 40) {
+    evt.preventDefault();
     if(isie){
       evt.keyCode=9;
     } else {
@@ -1013,6 +1005,7 @@ export function enterHandler1(ele,evt) {
   }
   // 上键盘
   if(evt.keyCode == 38) {
+    evt.preventDefault();
     var el=getElement(ele,evt.target,false);
     if(!el){
       return false;

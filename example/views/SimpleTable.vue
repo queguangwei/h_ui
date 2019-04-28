@@ -12,7 +12,7 @@
     <!-- :multiLevel="multiLevel1" -->
     <!-- <h-msg-box v-model="showmsg" :width="1000"> -->
       <!-- notAdaptive  -->
-    <h-simple-table ref="simTable" :columns="columnsBig1" border :data="bigData" height="300" @on-selection-change="selsetChange" @on-sort-change="selsetChange">
+    <h-simple-table ref="simTable" :summationData="summationData" :columns="columnsBig1" border :data="bigData" height="300" @on-selection-change="selsetChange" @on-sort-change="selsetChange">
     </h-simple-table>
     <!-- </h-msg-box> -->
     <h-button type="primary" size="large" @click="exportData(1)"><h-icon type="ios-download-outline"></h-icon> 导出原始数据</h-button>
@@ -461,6 +461,24 @@ export default {
         {title:'456',cols:2,},
         {title:'789',cols:2,hiddenCol:true},]
       ],
+      summationData: [{
+        fundId: '12313',
+        tradeDate: 730211221,
+        securityCode: 5627223123,
+        index: 1563123123,
+        securityCode: 425413,
+        securityId: 1438123,
+        tradeDir: 27412312,
+        day30: 285123,
+        tradeSubtype: 1727123,
+        marketNo: 558,
+        tradeQuantity: 4440,
+      }],
+      summationData1: [{
+        name: 'qeqweqw',
+        age: 123123123,
+        address: 'qqweqwe'
+      }]
     }
   },
   methods:{

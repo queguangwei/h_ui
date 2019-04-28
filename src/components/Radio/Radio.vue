@@ -99,7 +99,7 @@
           return [
             `${prefixCls}-inner`,
             {
-              [`${prefixCls}-inner-focus`]: this.isFocus,
+              [`${prefixCls}-inner-focus`]: this.isFocus&&window.isO45,
             }
           ];
       },
@@ -120,7 +120,6 @@
         if (this.disabled) {
             return false;
         }
-
         const checked = event.target.checked;
         this.currentValue = checked;
 

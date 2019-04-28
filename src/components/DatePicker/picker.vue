@@ -291,6 +291,9 @@
         // })
       },
       blur(){
+        if(this.isFocus){
+          this.dispatch('FormItem', 'on-form-blur', this.currentValue);
+        }
         this.visible = false;
         this.$refs.pickerPanel.onToggleVisibility(false);
         this.isFocus = false
