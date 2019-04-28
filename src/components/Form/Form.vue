@@ -4,7 +4,7 @@
   </form>
 </template>
 <script>
-import { oneOf, hasClass, cmp } from '../../util/tools'
+import { oneOf, hasClass, cmp, findComponentParent } from '../../util/tools'
 
 const prefixCls = 'h-form'
 
@@ -124,7 +124,12 @@ export default {
             }
           }
         }
-        field.commonRule()
+
+        let parentFormItem = findComponentParent(field, 'FormItem')
+        if (!findComponentParent) {
+          field.commonRule()
+        }
+
         field.validate('', errors => {
           if (errors) {
             valid = false
