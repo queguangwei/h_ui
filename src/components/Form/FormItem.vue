@@ -95,7 +95,8 @@ export default {
     },
     // 自定义rules,并将自定义对接至asyc-valid库
     validRules: {
-      type: Array
+      type: Array,
+      default: () => []
     },
     cols: {
       type: [String, Number]
@@ -251,7 +252,10 @@ export default {
   methods: {
     // rules为String类型时，自定义rules
     customRules() {
-      for (let rule of this.validRules) {
+      let rulesForm = this.form.rules ? this.form.rules[this.prop] : []
+      let rules = rulesForm.concat(this.validRules)
+
+      for (let rule of rules) {
         this.custRuleValid(rule)
       }
     },
@@ -288,25 +292,20 @@ export default {
           this.transCustRules.push(funcRule)
         }
       }
+
+      // 判断必填
+      if (rule.required) {
+        this.isRequired = true
+        const reqRule = { required: true, message: '输入不能为空' }
+        this.reqRules.push(reqRule)
+      }
     },
     regularValid(pattern, message, trigger) {
       const rule = { pattern: pattern, message: message, trigger: trigger }
       this.transCustRules.push(rule)
     },
     getRules() {
-      let formRules = this.form.rules
-      const selfRules = this.rules
-      // --自定义封装规则
-      let cuRules
-      if (this.validRules && this.validRules.length > 0) {
-        cuRules = this.transCustRules
-      }
-      // --自定义封装规则
-      formRules = formRules ? formRules[this.prop] : []
-
-      return []
-        .concat(this.reqRules)
-        .concat(cuRules || selfRules || formRules || [])
+      return this.reqRules.concat(this.transCustRules)
     },
     getFilteredRule(trigger) {
       const rules = this.getRules()
@@ -441,27 +440,24 @@ export default {
       Object.defineProperty(this, 'initialValue', {
         value: deepCopy(this.fieldValue)
       })
-      if (this.validRules && this.validRules.length > 0) {
-        this.customRules()
-      }
+
+      // props.required
       if (this.required) {
         this.isRequired = true
         const reqRule = { required: true, message: '输入不能为空' }
-        // const reqRule = {required: true, message: '输入不能为空', trigger: this.requiredTrigger}
         this.reqRules.push(reqRule)
       }
-      let rules = this.getRules()
 
+      // props.validRules && form.rules
+      this.customRules()
+
+      // all rules
+      let rules = this.getRules()
       if (rules.length) {
-        rules.every(rule => {
-          if (rule.required) {
-            this.isRequired = true
-            return false
-          }
-        })
         this.$on('on-form-blur', this.onFieldBlur)
         this.$on('on-form-change', this.onFieldChange)
       }
+
       // 组合formItem时，将自身requiredIcon隐藏，同时，将父元素的formItem的图标显示
       let parentFormItem = findComponentParent(this, 'FormItem')
       if (parentFormItem && this.isRequired) {
