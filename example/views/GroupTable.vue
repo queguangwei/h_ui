@@ -3,7 +3,6 @@
     <h2>基础</h2>
     <h3>单选分组组件</h3>
     <!-- :multiLevel="multiLevel2" -->
-
     <h-group-table disableExpand :columns="columns1" :height="300" width="800" :data="data1" size="small" :highlight-row="true" @on-current-change="click1" ref="groupTable" :loading="loading">
       <P slot="loading">我是自定义de</P>
     </h-group-table>
@@ -509,7 +508,7 @@ export default {
     click1(s,j,i){
       console.log(s);
       console.log(j);
-      console.log(i);      
+      console.log(i);
     },
     allSelect (allSelection){
       console.log(allSelection);
@@ -522,7 +521,7 @@ export default {
       console.log(selection);
     },
     getDate(){
-      console.log(this.$refs.groupTable.cloneData); 
+      console.log(this.$refs.groupTable.cloneData);
     },
     addDate(){
       tData = this.data1.push({
@@ -536,8 +535,8 @@ export default {
         timing:'',
         tree:''
       });
-    }  
-  } 
+    }
+  }
 }
 </script>
 <style>

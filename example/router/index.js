@@ -438,117 +438,117 @@ const router = new Router({
       {
           name: 'Input',
           path: '/Input',
-          component:Input 
+          component:Input
       },
       {
           name: 'inputNum',
           path: '/inputNum',
-          component:InputNumber 
+          component:InputNumber
       },
       {
           name: 'checkbox',
           path: '/checkbox',
-          component:Checkbox 
+          component:Checkbox
       },
       {
           name: 'radio',
           path: '/radio',
-          component:Radio 
+          component:Radio
       },
       {
           name: 'icon',
           path: '/icon',
-          component:Icon 
+          component:Icon
       },
       {
           name: 'buttons',
           path: '/buttons',
-          component:Buttons 
+          component:Buttons
       },
       {
           name: 'messages',
           path: '/messages',
-          component:Messages 
+          component:Messages
       },
       {
           name: 'notices',
           path: '/notices',
-          component:Notices 
+          component:Notices
       },
       {
           name: 'alert',
           path: '/alerts',
-          component:Alerts 
+          component:Alerts
       },
       {
           name: 'msgBox',
           path: '/msgBox',
-          component:MsgBox 
+          component:MsgBox
       },
       {
           name: 'tooltip',
           path: '/tooltip',
-          component:Tooltip 
+          component:Tooltip
       },
       {
           name: 'poptip',
           path: '/poptip',
-          component:Poptip 
+          component:Poptip
       },
       {
           name: 'progress',
           path: '/progress',
-          component:Progress 
+          component:Progress
       },
       {
           name: 'slider',
           path: '/slider',
-          component:Slider 
+          component:Slider
       },
       {
           name: 'badge',
           path: '/badge',
-          component:Badge 
+          component:Badge
       },
       {
           name: 'carousel',
           path: '/carousel',
-          component:Carousel 
+          component:Carousel
       },
       {
           name: 'grid',
           path: '/grid',
-          component:Grid 
+          component:Grid
       },
       {
           name: 'select',
           path: '/select',
-          component:Select 
+          component:Select
       },
       {
           name: 'simpleSelect',
           path: '/simpleSelect',
-          component:SimpleSelect 
+          component:SimpleSelect
       },
       {
           name: 'menu',
           path: '/menu',
-          component: Menu 
+          component: Menu
       },
       {
           name: 'breadcrumb',
           path: '/breadcrumb',
-          component: Breadcrumb 
+          component: Breadcrumb
       },
       {
           name: 'layout',
           path: '/layout',
-          component: Layout 
+          component: Layout
       },
       {
           name: 'upload',
           path: '/upload',
-          component: Upload 
+          component: Upload
       },
       {
           name: 'table',
@@ -561,217 +561,217 @@ const router = new Router({
       {
           name: 'page',
           path: '/page',
-          component: Page 
+          component: Page
       },
       {
           name: 'DatePicker',
           path: '/datePicker',
-          component: DatePicker 
-      }, 
+          component: DatePicker
+      },
       {
           name: 'TimePicker',
           path: '/timePicker',
-          component: TimePicker 
-      },       
+          component: TimePicker
+      },
       {
           name: 'Tree',
           path: '/tree',
-          component: Tree 
-      },       
+          component: Tree
+      },
       {
           name: 'Tabs',
           path: '/tabs',
-          component: Tabs 
-      },       
+          component: Tabs
+      },
       {
           name: 'Dropdown',
           path: '/dropdown',
-          component: Dropdown 
+          component: Dropdown
       },
       {
           name: 'Timeline',
           path: '/timeline',
-          component: Timeline 
+          component: Timeline
       },
       {
           name: 'Collapse',
           path: '/collapse',
-          component: Collapse 
+          component: Collapse
       },
       {
           name: 'Cascader',
           path: '/cascader',
-          component: Cascader 
+          component: Cascader
       },
       {
           name: 'Transfer',
           path: '/transfer',
-          component: Transfer 
+          component: Transfer
       },
       {
           name: 'Loadingbar',
           path: '/loadingbar',
-          component: Loadingbar 
+          component: Loadingbar
       },
       {
           name: 'Spin',
           path: '/spin',
-          component: Spin 
+          component: Spin
       },
       {
           name: 'Backtop',
           path: '/backtop',
-          component: Backtop 
+          component: Backtop
       },
       {
           name: 'Form',
           path: '/form',
-          component: Form 
+          component: Form
       },
       {
           name: 'SelectTree',
           path: '/selectTree',
-          component: SelectTree 
+          component: SelectTree
       },
       {
           name: 'Steps',
           path: '/steps',
-          component: Steps 
+          component: Steps
       },
       {
           name: 'Circle',
           path: '/circle',
-          component: Circle 
+          component: Circle
       },
       {
           name: 'Affix',
           path: '/affix',
-          component: Affix 
+          component: Affix
       },
       {
           name: 'Card',
           path: '/card',
-          component: Card 
+          component: Card
       },
       {
           name: 'EditGird',
           path: '/editgird',
-          component: EditGird 
+          component: EditGird
       },
       {
           name: 'GroupTable',
           path: '/groupTable',
-          component: GroupTable 
+          component: GroupTable
       },
       {
           name: 'TreeGird',
           path: '/treeGird',
-          component: TreeGird 
+          component: TreeGird
       },
       {
           name: 'AsycTreeGird',
           path: '/asyctreeGird',
-          component: AsycTreeGird 
+          component: AsycTreeGird
       },
       {
           name: 'SelectTable',
           path: '/selectTable',
-          component: SelectTable 
+          component: SelectTable
       },
       {
           name: 'FastDate',
           path: '/fastDate',
-          component: FastDate 
+          component: FastDate
       },
       {
           name: 'SplicePanel',
           path: '/splicePanel',
-          component: SplicePanel 
+          component: SplicePanel
       },
       {
           name: 'Panel',
           path: '/panel',
-          component: Panel 
+          component: Panel
       },
       {
           name: 'Hello',
           path: '/hello',
-          component: Hello 
+          component: Hello
       },
       {
           name: 'SimpleTable',
           path: '/simpleTable',
-          component: SimpleTable 
+          component: SimpleTable
       },
       {
           name: 'TransferTable',
           path: '/transferTable',
-          component: TransferTable 
+          component: TransferTable
       },
       {
           name:'FormGird',
           path:'/formGird',
-          component: FormGird 
+          component: FormGird
       },
       {
           name:'Rate',
           path:'/rate',
-          component: Rate 
+          component: Rate
       },
       {
           name: 'Textdiff',
           path: '/textdiff',
-          component: Textdiff 
+          component: Textdiff
       },
       {
           name: 'TypefieldRange',
           path: '/typefieldRange',
-          component: TypefieldRange 
+          component: TypefieldRange
       },
       {
           name: 'FileImport',
           path: '/fileimport',
-          component: FileImport 
+          component: FileImport
       },
       {
           name: 'FileExport',
           path: '/fileexport',
-          component: FileExport 
-      },   
+          component: FileExport
+      },
       {
           name: 'Split',
           path: '/split',
-          component: Split 
+          component: Split
       },
       {
           name: 'Drawer',
           path: '/drawer',
-          component: Drawer 
+          component: Drawer
       },
       {
           name: 'DownLoad',
           path: '/downLoad',
-          component: DownLoad 
+          component: DownLoad
       },
       {
           name: 'Log',
           path: '/log',
-          component: Log 
+          component: Log
       },
       {
           name: 'tag',
           path: '/tag',
-          component: Tag 
+          component: Tag
       },
       {
           name: 'SimpleTreeGird',
           path: '/simpleTreeGird',
-          component: SimpleTreeGird 
+          component: SimpleTreeGird
       },
       {
           name: 'Calendar',
           path: '/calendar',
-          component: Calendar 
+          component: Calendar
       },
       {
         name: 'Schedule',

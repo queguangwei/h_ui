@@ -918,9 +918,9 @@ function getPrevioueElement(ele,field){
 /* 表单键盘Enter事件
 @author: 研发中心-谭露阳提供-未支持浏览器兼容和深层嵌套
 @date: 2018-06-22
-@params: 
-ele 
-evt 
+@params:
+ele
+evt
 */
 export function enterHandler(ele,evt) {
   ele = ele.$el
@@ -933,7 +933,7 @@ export function enterHandler(ele,evt) {
   } else {
     key = evt.which;
     srcobj=evt.target;
-  } 
+  }
   if(srcobj.type =='submit' ||srcobj.type=='reset' || srcobj.type=='textarea' || srcobj.type=='') return
   //enter键盘 下键盘
   if(evt.keyCode == 13) {
@@ -967,7 +967,7 @@ function getElement(ele,field,status){
       index = i;
       break;
     }
-  }    
+  }
   if(status){
     index = index +1
     index = index>=nodes.length?nodes.length-1:index
@@ -988,7 +988,7 @@ export function enterHandler1(ele,evt) {
   } else {
     key = evt.which;
     srcobj=evt.target;
-  } 
+  }
   //enter键盘 下键盘
   if(evt.keyCode == 13 || evt.keyCode == 40) {
     evt.preventDefault();
