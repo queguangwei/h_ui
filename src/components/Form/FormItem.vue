@@ -81,7 +81,8 @@ export default {
       default: false
     },
     rules: {
-      type: [Object, Array]
+      type: [Object, Array],
+      default: () => []
     },
     error: {
       type: String
