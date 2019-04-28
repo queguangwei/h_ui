@@ -1,18 +1,16 @@
-<!--<template>
+<template>
 <div>
-    <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
-        <h-form-item label="input" prop="name">
-            <h-input v-model="formValidate.name" placeholder="请输入姓名"></h-input>
-        </h-form-item>
+    <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80" onlyBlurRequire>
         <h-form-item label="typefield" prop="mail">
-            <h-typefield v-model="formValidate.mail" placeholder="请输入邮箱"></h-typefield >
+            <h-typefield class="curItemClass" v-model="formValidate.mail" placeholder="请输入邮箱"></h-typefield >
         </h-form-item>
-        <h-form-item label="select" prop="city">
+        <h-form-item label="select" prop="city1">
             <h-select 
-                v-model="formValidate.city"
+                v-model="formValidate.city1"
                 filterable
                 remote
                 :remote-method="remoteMethod1"
+                class="curItemClass"
                 >
                 <h-option v-for="option in options1"
                     :value="option.value"
@@ -20,39 +18,42 @@
             </h-select>
         </h-form-item>
         <h-form-item label="simpleSelect" prop="city">
-            <h-simple-select v-model="formValidate.city" filterable placeholder="请选择所在地">
+            <h-simple-select class="curItemClass" v-model="formValidate.city" filterable placeholder="请选择所在地">
                 <h-select-block :data="bigData"></h-select-block>
             </h-simple-select>
         </h-form-item>
+        <h-form-item label="input" prop="name">
+            <h-input class="curItemClass" v-model="formValidate.name" placeholder="请输入姓名"></h-input>
+        </h-form-item>
         <h-form-item prop="date" label="data">
-            <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date"></h-date-picker>
+            <h-date-picker class="curItemClass" type="date" placeholder="选择日期" v-model="formValidate.date"></h-date-picker>
         </h-form-item>
         <h-form-item prop="time" label="time">
-            <h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time"></h-time-picker>
+            <h-time-picker class="curItemClass" type="time" placeholder="选择时间" v-model="formValidate.time"></h-time-picker>
         </h-form-item>
-        <h-form-item label="radio" prop="gender">
+        <h-form-item label="radio" prop="gender" >
             <h-radio-group v-model="formValidate.gender">
-                <h-radio label="male">男</h-radio>
-                <h-radio label="female">女</h-radio>
+                <h-radio label="male" class="curItemClass">男</h-radio>
+                <h-radio label="female" class="curItemClass">女</h-radio>
             </h-radio-group>
         </h-form-item>
         <h-form-item label="checkbox" prop="interest">
             <h-checkbox-group v-model="formValidate.interest">
-                <h-checkbox label="吃饭"></h-checkbox>
-                <h-checkbox label="睡觉"></h-checkbox>
-                <h-checkbox label="跑步"></h-checkbox>
-                <h-checkbox label="看电影"></h-checkbox>
+                <h-checkbox label="吃饭" class="curItemClass"></h-checkbox>
+                <h-checkbox label="睡觉" class="curItemClass"></h-checkbox>
+                <h-checkbox label="跑步" class="curItemClass"></h-checkbox>
+                <h-checkbox label="看电影" class="curItemClass"></h-checkbox>
             </h-checkbox-group>
         </h-form-item>
         <h-form-item>
-            <h-button type="primary" canFocus @click="handleSubmit('formValidate')">提交</h-button>
-            <h-button type="ghost"  canFocus  @click="handleReset('formValidate')" style="margin-left: 8px">重置</h-button>
+            <h-button type="primary" canFocus @click="handleSubmit('formValidate')" class="curItemClass">提交</h-button>
+            <h-button type="ghost" class="curItemClass"  canFocus  @click="handleReset('formValidate')" style="margin-left: 8px">重置</h-button>
         </h-form-item>
     </h-form>
 </div>
 </template>
 <script>
-import { enterHandler } from "../../src/util/tools.js";
+import { enterHandler,enterHandler1 } from "../../src/util/tools.js";
 export default {
   data() {
     return {
@@ -60,6 +61,7 @@ export default {
         name: "",
         mail: "",
         city: "",
+        city1: "",
         gender: "",
         interest: [],
         date: "",
@@ -162,17 +164,17 @@ export default {
     },
   },
   mounted() {
-    window.isO45 = true;
+    // window.isO45 = true;
+    // window.IS_LICAI = true
     document.addEventListener("keyup", event => {
       enterHandler(this.$refs.formValidate, event);
     });
   }
 };
 </script>
--->
-<template>
+<!--<template>
 <div>
- <h-button type="primary" @click="ttt">Toggle required</h-button>
+ <h-button type="primary" @click="ttt">Toggle</h-button>
     <h-form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80" closeRuleChangeValidate>
         <h-form-item label="姓名" prop="name">
             <h-input v-model="formValidate.name" placeholder="请输入姓名"></h-input>
@@ -320,7 +322,7 @@ export default {
         }
     }
 </script>
-
+-->
 <!--<template>
 <div>
     <h-button @click="change">改变列隐藏</h-button>

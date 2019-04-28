@@ -177,18 +177,14 @@
               <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, false)" :key="index">
             </colgroup>
             <tbody :class="[prefixCls + '-tbody']">
-              <template v-for="row in visibleData">
+              <template v-for="row in summationData">
                 <table-tr
                   :row="row"
                   :key="row._rowKey"
                   :prefix-cls="prefixCls"
-                  @mouseenter.native.stop="handleMouseIn(row._index)"
-                  @mouseleave.native.stop="handleMouseOut(row._index)"
-                  @click.native="clickCurrentRowTr($event,row._index)"
-                  @dblclick.native.stop="dblclickCurrentRowTr(row._index)"
                 >
-                  <td v-for="column in cloneColumns" :class="alignCls(column, row)" :data-index="row._index+1" :key="column._index">
-                    <div :class="classesTd(column)">       
+                  <td v-for="column in cloneColumns" :class="alignCls(column, row)" :key="column._index">
+                    <div :class="classesTd(column)">      
                       <span v-html="row[column.key]"></span>                     
                     </div>
                   </td>                  
@@ -525,10 +521,10 @@ export default {
     },
     styles () {
       let style = {};
-      if (this.height) {
-        let height = Number(this.height)+2
-        style.height = `${height}px`;
-      }
+      // if (this.height) {
+      //   let height = Number(this.height)+2
+      //   style.height = `${height}px`;
+      // }
       if (this.width) style.width = `${this.width}px`;
       return style;
     },

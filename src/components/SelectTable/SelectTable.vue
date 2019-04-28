@@ -917,13 +917,6 @@ export default {
           if(!this.multiple && (keyCode === 39||keyCode === 37)){
             this.model = this.focusValue
           }
-          // if (this.isBlock) {
-          //   if (!this.multiple) {
-          //     this.selectBlockSingle(this.focusValue)
-          //   } else {
-          //     this.selectBlockMultiple(this.focusValue)
-          //   }
-          // }
           return false;
         }
         // next
@@ -945,7 +938,11 @@ export default {
 
           if (this.isBlock) {
             if (!this.multiple) {
-              this.selectBlockSingle(this.focusValue)
+              if(window.IS_LICAI){
+                this.model = this.focusValue
+              }else{
+                this.selectBlockSingle(this.focusValue)
+              }
             } else {
               this.selectBlockMultiple(this.focusValue)
             }
@@ -1170,6 +1167,13 @@ export default {
       })
     },
     blur() {
+      if (this.multiple) {
+        // 多选返回数组
+        this.dispatch('FormItem', 'on-form-blur', this.selectedMultiple)
+      } else {
+        // 单选返回字符串
+        this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
+      }
       this.isInputFocus = false
       this.visible = false
       if (this.filterable) {
@@ -1294,6 +1298,7 @@ export default {
               }
             })
           }
+          this.hideMenu()
         }
       }
     })
@@ -1431,9 +1436,6 @@ export default {
       if (this.filterable && !this.showBottom) {
         this.query = val
         if (this.query !== '') this.selectToChangeQuery = true
-      }
-      if(!window.isO45){
-        this.hideMenu()
       }
     },
     // options(val) {
