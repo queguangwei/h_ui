@@ -148,18 +148,6 @@ export default {
       this.curCols = val
     },
     required(val) {
-      // if (val) {
-      //   this.isRequired = true
-      //   const reqRule = { required: true, message: '输入不能为空' }
-      //   this.reqRules.push(reqRule)
-      // } else {
-      //   this.isRequired = false
-      //   this.validateState = ''
-      //   this.reqRules = []
-      // }
-
-
-
       if (val) {
         this.isRequired = true
         const reqRule = { required: true, message: '输入不能为空' }
@@ -274,6 +262,7 @@ export default {
       !rulesForm && (rulesForm = [])
       let rules = rulesForm.concat(this.validRules)
 
+      this.transCustRules = []
       for (let rule of rules) {
         this.custRuleValid(rule)
       }
@@ -314,9 +303,18 @@ export default {
 
       // 判断必填
       if (rule.required) {
-        this.isRequired = true
+        let parentFormItem = findComponentParent(this, 'FormItem')
+        if (parentFormItem) {
+          parentFormItem.isRequired = true
+        } else {
+          this.isRequired = true
+        }
+
         const reqRule = { required: true, message: '输入不能为空' }
-        this.reqRules.push(reqRule)
+        this.transCustRules.push(reqRule)
+      } else {
+        this.isRequired = false
+        this.validateState = ''
       }
     },
     regularValid(pattern, message, trigger) {
@@ -324,6 +322,7 @@ export default {
       this.transCustRules.push(rule)
     },
     getRules() {
+      this.customRules()
       return this.reqRules.concat(this.transCustRules, this.rules)
     },
     getFilteredRule(trigger) {
@@ -416,6 +415,7 @@ export default {
     },
     commonRule(str) {
       let rules = this.getRules()
+      let parentFormItem = findComponentParent(this, 'FormItem')
 
       if (rules.length) {
         rules.every(rule => {
@@ -427,7 +427,6 @@ export default {
           }
         })
 
-        let parentFormItem = findComponentParent(this, 'FormItem')
         if(str==='ruleChange' && !this.isRequired){
           this.validateState = ''
           if (parentFormItem) {
@@ -435,12 +434,15 @@ export default {
           }
         }
 
-        if (parentFormItem) {
+        if (parentFormItem && this.isRequired) {
           this.isRequired = false
+          parentFormItem.isRequired = true
         }
 
         this.$on('on-form-blur', this.onFieldBlur)
         this.$on('on-form-change', this.onFieldChange)
+      } else if(parentFormItem) {
+        parentFormItem.isRequired = false
       }
     }
   },
