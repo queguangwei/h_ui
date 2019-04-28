@@ -81,8 +81,7 @@ export default {
       default: false
     },
     rules: {
-      type: [Object, Array],
-      default: () => []
+      type: [Object, Array]
     },
     error: {
       type: String
@@ -151,18 +150,13 @@ export default {
       if (val) {
         this.isRequired = true
         const reqRule = { required: true, message: '输入不能为空' }
+        // const reqRule = {required: true, message: '输入不能为空', trigger: this.requiredTrigger}
         this.reqRules.push(reqRule)
       } else {
         this.isRequired = false
         this.validateState = ''
         this.reqRules = []
       }
-
-      let parentFormItem = findComponentParent(this, 'FormItem')
-      if (parentFormItem) {
-        parentFormItem.isRequired = val
-      }
-
       this.commonRule()
     },
     rules() {
@@ -259,10 +253,8 @@ export default {
     // rules为String类型时，自定义rules
     customRules() {
       let rulesForm = this.form.rules ? this.form.rules[this.prop] : []
-      !rulesForm && (rulesForm = [])
       let rules = rulesForm.concat(this.validRules)
 
-      this.transCustRules = []
       for (let rule of rules) {
         this.custRuleValid(rule)
       }
@@ -303,18 +295,9 @@ export default {
 
       // 判断必填
       if (rule.required) {
-        let parentFormItem = findComponentParent(this, 'FormItem')
-        if (parentFormItem) {
-          parentFormItem.isRequired = true
-        } else {
-          this.isRequired = true
-        }
-
-        if (!rule.message) rule.message = '输入不能为空'
-        this.transCustRules.push(rule)
-      } else {
-        this.isRequired = false
-        this.validateState = ''
+        this.isRequired = true
+        const reqRule = { required: true, message: '输入不能为空' }
+        this.reqRules.push(reqRule)
       }
     },
     regularValid(pattern, message, trigger) {
@@ -322,8 +305,7 @@ export default {
       this.transCustRules.push(rule)
     },
     getRules() {
-      this.customRules()
-      return this.reqRules.concat(this.transCustRules, this.rules)
+      return this.reqRules.concat(this.transCustRules)
     },
     getFilteredRule(trigger) {
       const rules = this.getRules()
@@ -415,8 +397,6 @@ export default {
     },
     commonRule(str) {
       let rules = this.getRules()
-      let parentFormItem = findComponentParent(this, 'FormItem')
-
       if (rules.length) {
         rules.every(rule => {
           if (rule.required) {
@@ -426,23 +406,15 @@ export default {
             this.isRequired = false
           }
         })
-
-        if(str==='ruleChange' && !this.isRequired){
+        if(str==='ruleChange'&&!this.isRequired){
           this.validateState = ''
+          let parentFormItem = findComponentParent(this, 'FormItem')
           if (parentFormItem) {
             parentFormItem.isRequired = this.isRequired
           }
         }
-
-        if (parentFormItem && this.isRequired) {
-          this.isRequired = false
-          parentFormItem.isRequired = true
-        }
-
         this.$on('on-form-blur', this.onFieldBlur)
         this.$on('on-form-change', this.onFieldChange)
-      } else if(parentFormItem) {
-        parentFormItem.isRequired = false
       }
     }
   },
