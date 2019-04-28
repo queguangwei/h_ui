@@ -108,7 +108,7 @@
         return  [
           `${prefixCls}-inner`,
           {
-              [`${prefixCls}-inner-focus`]: this.isFocus,
+            [`${prefixCls}-inner-focus`]: this.isFocus&&window.isO45,
           }
         ];
       },

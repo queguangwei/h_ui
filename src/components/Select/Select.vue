@@ -504,6 +504,13 @@
         })
       },
       blur(){
+        if (this.multiple) {
+        // 多选返回数组
+        this.dispatch('FormItem', 'on-form-blur', this.selectedMultiple)
+        } else {
+        // 单选返回字符串
+        this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
+        }
         this.isInputFocus = false;
         this.visible = false;
         if (this.filterable) {
@@ -890,11 +897,16 @@
                   createdOption.selected = !createdOption.selected;
                 }
               } else {
-                this.findChild((child) => {
+                if(!this.multiple&&window.IS_LICAI){
+                  this.model = this.focusValue
+                  this.selectToChangeQuery = true
+                }else{
+                  this.findChild((child) => {
                   if (child.isFocus) {
-                      child.select();
+                    child.select();
                   }
                 });
+                }
               }
           }
         }
@@ -1424,9 +1436,9 @@
         this.broadcast('Drop', 'on-update-popper');
       },
       selectedSingle(val){
-        if(!window.isO45){
-          this.hideMenu();
-        }
+        // if(!window.isO45){
+        //   this.hideMenu();
+        // }
         if (val&&this.showTitle) {
           this.titleTip=val
         }

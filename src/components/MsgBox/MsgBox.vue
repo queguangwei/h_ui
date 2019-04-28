@@ -135,6 +135,10 @@ export default {
     closeDrop:{
       type:Boolean,
       default:false,
+    },
+    disableTabEvent:{
+      type:Boolean,//禁止tab点击事件
+      default:false,
     }
   },
   data () {
@@ -274,6 +278,11 @@ export default {
         }
       }
     },
+    tabClose(e){
+      if(e.keyCode==9&&this.visible){
+        event.preventDefault()
+      }
+    },
     animationFinish() {
       this.$emit('on-hidden');
     },
@@ -300,11 +309,17 @@ export default {
     })
     on(document,'keydown', this.EscClose)
     on(window, 'resize', this.ScreenRes);
+    if(this.disableTabEvent){
+      on(document.querySelector("#app"),'keydown', this.tabClose)
+    }
   },
   beforeDestroy () {
     off(document,'keydown',this.EscClose);
     off(window, 'resize', this.ScreenRes);
     this.removeScrollEffect();
+    if(this.disableTabEvent){
+      off(document.querySelector("#app"),'keydown', this.tabClose)
+    }
   },
   watch: {
     value (val) {
