@@ -4,7 +4,7 @@
   </form>
 </template>
 <script>
-import { oneOf, hasClass, cmp, findComponentParent } from '../../util/tools'
+import { oneOf, hasClass, cmp } from '../../util/tools'
 
 const prefixCls = 'h-form'
 
@@ -124,9 +124,7 @@ export default {
             }
           }
         }
-
         field.commonRule()
-
         field.validate('', errors => {
           if (errors) {
             valid = false
