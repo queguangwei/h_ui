@@ -148,16 +148,33 @@ export default {
       this.curCols = val
     },
     required(val) {
+      // if (val) {
+      //   this.isRequired = true
+      //   const reqRule = { required: true, message: '输入不能为空' }
+      //   this.reqRules.push(reqRule)
+      // } else {
+      //   this.isRequired = false
+      //   this.validateState = ''
+      //   this.reqRules = []
+      // }
+
+
+
       if (val) {
         this.isRequired = true
         const reqRule = { required: true, message: '输入不能为空' }
-        // const reqRule = {required: true, message: '输入不能为空', trigger: this.requiredTrigger}
         this.reqRules.push(reqRule)
       } else {
         this.isRequired = false
         this.validateState = ''
         this.reqRules = []
       }
+
+      let parentFormItem = findComponentParent(this, 'FormItem')
+      if (parentFormItem) {
+        parentFormItem.isRequired = val
+      }
+
       this.commonRule()
     },
     rules() {
@@ -233,8 +250,6 @@ export default {
       return style
     },
     isShowError() {
-      console.log(this.mustShowError, this.validateState)
-
       return this.mustShowError
         ? this.mustShowError
         : this.validateState === 'error' &&
@@ -401,7 +416,6 @@ export default {
     },
     commonRule(str) {
       let rules = this.getRules()
-      console.log(rules)
 
       if (rules.length) {
         rules.every(rule => {
@@ -413,12 +427,16 @@ export default {
           }
         })
 
+        let parentFormItem = findComponentParent(this, 'FormItem')
         if(str==='ruleChange' && !this.isRequired){
           this.validateState = ''
-          let parentFormItem = findComponentParent(this, 'FormItem')
           if (parentFormItem) {
             parentFormItem.isRequired = this.isRequired
           }
+        }
+
+        if (parentFormItem) {
+          this.isRequired = false
         }
 
         this.$on('on-form-blur', this.onFieldBlur)
