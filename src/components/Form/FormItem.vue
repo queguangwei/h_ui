@@ -310,8 +310,8 @@ export default {
           this.isRequired = true
         }
 
-        const reqRule = { required: true, message: '输入不能为空' }
-        this.transCustRules.push(reqRule)
+        if (!rule.message) rule.message = '输入不能为空'
+        this.transCustRules.push(rule)
       } else {
         this.isRequired = false
         this.validateState = ''
