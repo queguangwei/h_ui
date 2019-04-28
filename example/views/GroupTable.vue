@@ -4,7 +4,7 @@
     <h3>单选分组组件</h3>
     <!-- :multiLevel="multiLevel2" -->
 
-    <h-group-table :columns="columns1" :height="300" width="800" :data="data1" size="small" :highlight-row="true" @on-current-change="click1" ref="groupTable" :loading="loading">
+    <h-group-table disableExpand :columns="columns1" :height="300" width="800" :data="data1" size="small" :highlight-row="true" @on-current-change="click1" ref="groupTable" :loading="loading">
       <P slot="loading">我是自定义de</P>
     </h-group-table>
     <Button @click="setLoad">切换loading</Button>

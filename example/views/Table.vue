@@ -1415,10 +1415,10 @@ export default {
         month: 5610
       }],
       summationData1: [{
-          name: 'qeqweqw',
-          age: 123123123,
-          address: 'qqweqwe'
-        }]
+        name: 'qeqweqw',
+        age: 123123123,
+        address: 'qqweqwe'
+      }]
     }
   },
   methods:{

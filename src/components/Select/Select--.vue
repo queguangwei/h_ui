@@ -832,7 +832,7 @@
           }
           // next
           if (keyCode === 40) {
-              e.preventDefault();
+              // e.preventDefault();
               this.navigateOptions('next');
           }
           // prev
