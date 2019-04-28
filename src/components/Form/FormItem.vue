@@ -233,6 +233,8 @@ export default {
       return style
     },
     isShowError() {
+      console.log(this.mustShowError, this.validateState)
+
       return this.mustShowError
         ? this.mustShowError
         : this.validateState === 'error' &&
@@ -254,6 +256,7 @@ export default {
     // rules为String类型时，自定义rules
     customRules() {
       let rulesForm = this.form.rules ? this.form.rules[this.prop] : []
+      !rulesForm && (rulesForm = [])
       let rules = rulesForm.concat(this.validRules)
 
       for (let rule of rules) {
@@ -398,6 +401,8 @@ export default {
     },
     commonRule(str) {
       let rules = this.getRules()
+      console.log(rules)
+
       if (rules.length) {
         rules.every(rule => {
           if (rule.required) {
@@ -407,13 +412,15 @@ export default {
             this.isRequired = false
           }
         })
-        if(str==='ruleChange'&&!this.isRequired){
+
+        if(str==='ruleChange' && !this.isRequired){
           this.validateState = ''
           let parentFormItem = findComponentParent(this, 'FormItem')
           if (parentFormItem) {
             parentFormItem.isRequired = this.isRequired
           }
         }
+
         this.$on('on-form-blur', this.onFieldBlur)
         this.$on('on-form-change', this.onFieldChange)
       }
