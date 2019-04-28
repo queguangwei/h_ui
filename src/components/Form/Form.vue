@@ -125,10 +125,7 @@ export default {
           }
         }
 
-        let parentFormItem = findComponentParent(field, 'FormItem')
-        if (!findComponentParent) {
-          field.commonRule()
-        }
+        field.commonRule()
 
         field.validate('', errors => {
           if (errors) {
