@@ -305,7 +305,7 @@ export default {
       this.transCustRules.push(rule)
     },
     getRules() {
-      return this.reqRules.concat(this.transCustRules)
+      return this.reqRules.concat(this.transCustRules, this.rules)
     },
     getFilteredRule(trigger) {
       const rules = this.getRules()
