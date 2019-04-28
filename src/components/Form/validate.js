@@ -1,63 +1,63 @@
 const allCusRules = {
   // 整数
   intege: {
-    pattern: /^(-?[1-9]+\d*$)|^0$/,
-    message: '输入值不是整数'
+    pattern: /^-?\d+$/,
+    message: '输入的不是整数格式'
   },
   // 正整数
   intege1: {
     pattern: /^[1-9]\d*$/,
-    message: '输入值不是正整数'
+    message: '输入的不是正整数格式'
   },
   // 负整数
   intege2: {
     pattern: /^-[1-9]\d*$/,
-    message: '输入值不是负整数'
+    message: '输入的不是负整数格式'
   },
   // 数字
   num: {
-    pattern: /^-?((([1-9]\d*)|0)\.)?\d+$/,
-    message: '输入值不是数字'
+    pattern: /^[1-9]\d*$/,
+    message: '只能输入数字格式'
   },
   // 非负整数
   num1: {
     pattern: /^[1-9]\d*$|^0$/,
-    message: '请输入0或正整数'
+    message: '只能输入非负整数数字格式'
   },
   // 非正整数
   num2: {
     pattern: /^-[1-9]\d*$|^0$/,
-    message: '请输入0或负整数'
+    message: '只能输入非正整数数字格式'
   },
   // 浮点数
   decmal: {
-    pattern: /^-?(([1-9]\d*)|0)\.\d+$/,
-    message: '输入值不是浮点数'
+    pattern: /^-?(([1-9]\d*)|0)(\.\d+)?$/,
+    message: '只能输入浮点数格式'
   },
   // 正浮点数
   decmal1: {
-    pattern: /(^([1-9]\d*)\.\d+$)|(^0\.(\d*[1-9]+\d*))/,
-    message: '输入值不是正浮点数'
+    pattern: /^(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*))$/,
+    message: '只能输入正浮点数格式'
   },
   // 负浮点数
   decmal2: {
-    pattern: /(^-([1-9]\d*)\.\d+$)|(^-0\.(\d*[1-9]+\d*))/,
-    message: '输入值不是负浮点数'
+    pattern: /^-([1-9]\d*.\d*|0.\d*[1-9]\d*)$/,
+    message: '只能输入负浮点数格式'
   },
   // 浮点数
   // decmal3: {
-  //   pattern: /^-?([1-9]\d*.\d*|0.\d*[1-9]\d*|0?.0+|0)$/,
+  //   pattern:  /^-?([1-9]\d*.\d*|0.\d*[1-9]\d*|0?.0+|0)$/,
   //   message: '只能输入浮点数格式'
   // },
   // 非负浮点数
   decmal4: {
-    pattern: /^(([1-9]\d*)|0)\.\d+$/,
-    message: '输入值不是非负浮点数'
+    pattern: /^(([1-9]\d*)|0)(\.\d+)?$/,
+    message: '只能输入非负浮点数格式'
   },
   // 非正浮点数
   decmal5: {
-    pattern: /^-(([1-9]\d*)|0)\.\d+$/,
-    message: '输入值不是非正浮点数'
+    pattern: /^(-([1-9]\d*.\d*|0.\d*[1-9]\d*))|0?.0+|0$/,
+    message: '只能输入非正浮点数格式'
   },
   // 邮件
   email: {
@@ -76,7 +76,7 @@ const allCusRules = {
   },
   // 仅中文
   chinese: {
-    pattern: /^[\u4E00-\u9FA5\u3de3]+$/,
+    pattern: /^[\u4E00-\u9FA5\uF900-\uFA2D]+$/,
     message: '只能输入中文格式'
   },
   // ascii
