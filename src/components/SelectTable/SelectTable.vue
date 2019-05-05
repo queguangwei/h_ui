@@ -537,7 +537,7 @@ export default {
       let num = getBarBottom(event.target, this.scrollBarWidth)
       this.$emit('on-scroll', num)
     },
-    toggleSelect(val) {      
+    toggleSelect(val) {
       if (this.isBlock) {
         this.allClick = true
         let hybridValue = []
@@ -545,7 +545,7 @@ export default {
         this.findChild(child => {
           this.options.forEach((col, i) => {
             if(this.isSelectFilter && child.cloneData[i].hidden){
-              return false            
+              return false
             }
             this.$set(child.cloneData[i], 'selected', val)
             if (val) {
@@ -607,6 +607,7 @@ export default {
       if(!window.isO45){
         this.focusIndex = 0
       }
+
       // 单选 恢复 query 值
       if (!this.multiple && this.query !== this.selectedSingle) {
         this.query = this.selectedSingle
@@ -693,10 +694,11 @@ export default {
           }
         }
 
-        if (curSingle) {
+        if(this.remote && curSingle) {
+          this.selectedSingle = curSingle
+        } else if(!this.remote) {
           this.selectedSingle = curSingle
         }
-        // this.selectedSingle = curSingle
 
         if (slot && !findModel) {
           this.model = ''
@@ -792,7 +794,6 @@ export default {
 
       this.broadcast('Drop', 'on-update-popper')
     },
-
     toggleSingleSelected(value, init = false) {
       // let _this = this
       if (!this.multiple) {
@@ -1074,7 +1075,7 @@ export default {
                 break
               }
             }
-            this.selectHead = isAll 
+            this.selectHead = isAll
           })
         }
       } else {
@@ -1333,6 +1334,7 @@ export default {
           this.model = this.strtoArr(val)
         } else {
           this.model = val
+          // TODO
         }
         if (val === '') this.query = ''
       }
