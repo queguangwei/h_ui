@@ -773,7 +773,8 @@ export default {
           title: '邮编',
           key: 'zip',
           width: 120,
-          ellipsis:true
+          ellipsis:true,
+          headerTooltip: true
         },
         {
           title: '操作',
