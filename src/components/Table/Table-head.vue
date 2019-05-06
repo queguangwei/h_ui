@@ -26,7 +26,7 @@
               <span v-else>{{column.title}}</span>
             </template>
             <template v-else>
-              <span v-if="!column.renderHeader" @click="handleSortByHead(index)" :title="column.showTitleTooltip ? column.title : ''">{{ column.title || '#' }}</span>
+              <span v-if="!column.renderHeader" @click="handleSortByHead(index)" :title="column.headerTooltip ? column.title : ''">{{ column.title || '#' }}</span>
               <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
             </template>
             <template>
