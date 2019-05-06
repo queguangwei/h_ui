@@ -3,6 +3,7 @@
   <!-- 签用于对表格中的列进行组合，以便对其进行格式化。 -->
     <colgroup>
       <col v-for="(column, index) in columns" :width="setCellWidth(column, index, true)" :key="index">
+      <col v-if="!fixed" name="gutter" :width="$parent.scrollBarWidth">
     </colgroup>
     <thead>
       <tr v-if="multiLevel" v-for="(colItem,inx) in multiData" :key="inx">
