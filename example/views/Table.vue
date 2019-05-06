@@ -774,7 +774,7 @@ export default {
           key: 'zip',
           width: 120,
           ellipsis:true,
-          showTitleTooltip: true
+          headerTooltip: true
         },
         {
           title: '操作',
