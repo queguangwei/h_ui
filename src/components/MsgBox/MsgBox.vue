@@ -139,6 +139,14 @@ export default {
     disableTabEvent:{
       type:Boolean,//禁止tab点击事件
       default:false,
+    },
+    maskTop:{
+      top: [String,Number],
+      default: null
+    },
+    maskLeft:{
+      top: [String,Number],
+      default: null
     }
   },
   data () {
@@ -202,6 +210,12 @@ export default {
     stylecls () {
       let style={};
       style.zIndex = this.zIndex;
+      if(this.maskTop){
+        style.top=this.maskTop+"px"
+      }
+      if(this.maskLeft){
+        style.left=this.maskLeft+"px"
+      }
       return style;
     },
     contentStyle () {

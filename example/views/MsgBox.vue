@@ -14,6 +14,8 @@
       @on-visible-change="vChange"
       :escClose="true"
       top="0"
+      maskTop="40"
+      maskLeft="40"
       isOriginal
       class-name="vertical-center-modal"
       >

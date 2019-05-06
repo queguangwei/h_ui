@@ -44,9 +44,7 @@
     <h-input v-model="query"></h-input>
     <Button @click="changeFocus(-1)">上一个</Button>
     <Button @click="changeFocus(1)">下一个</Button>
-    <div style="height:100px;overflow:auto;position:relative" ref="list">
-      <h-tree :data="data2" ref="filter"></h-tree>
-    </div>
+    <h-tree :data="data2" ref="filter" show-checkbox onlyUpdateDown></h-tree>
   </div>
 </template>
 <script>
