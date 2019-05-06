@@ -254,6 +254,7 @@
             title: '地址',
             ellipsis:true,
             key: 'address',
+            showTooltip: true
           },
           {
             type: 'money',
@@ -263,6 +264,7 @@
             suffixNum: 2,
             bigTips: true,
             key: 'money',
+            showTooltip: true
           },
           {
             type: 'card',
