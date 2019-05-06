@@ -77,7 +77,7 @@
     <p>通过给 columns 数据设置一项，指定 type: 'expand'，即可开启扩展功能。</p>
     <p>给行数据 data 的某项设置 _expanded 为 true，可以默认展开当前行，设置 _disableExpand 可以禁用当前行的展开功能。</p>
     <p>渲染展开区域与自定义列模板方法类似，使用 render 函数。当内容较复杂时，可拆分为组件或使用 JSX。</p>
-    <h-table :columns="columns10" :height="300" :data="data9" @on-expand="expand" disabledExpand closeExpandResize @on-row-click="rowclick" @on-row-dblclick="rowdblclick" :loading="loading" border></h-table>
+    <h-table :columns="columns10" :height="300" :data="data9" @on-expand="expand" rowSelect @on-selection-change="select" @on-row-click="rowclick" @on-row-dblclick="rowdblclick" :loading="loading" border></h-table>
     <h2>设置大小</h2>
     <p>通过设置属性 size 为 large 或 small 可以调整表格尺寸为大或小，默认不填或填写 default 为中。</p>
     <h-table size="large" :columns="columns1" :data="data1" :loading="loading"></h-table>
@@ -544,6 +544,9 @@ export default {
         },
         {
           type: 'selection',
+          renderHeader:(h, params)=>{
+            return h('span','')
+          },
           width: 60,
           align: 'center',
         },
@@ -958,7 +961,7 @@ export default {
           name: '王小明',
           age: 18,
           address: '北京市朝阳区\r芍药居',
-          _highlight: true//默认选择当前项
+          _disabled:true,
         },
         {
           name: '张小刚',

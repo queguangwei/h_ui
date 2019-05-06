@@ -11,6 +11,7 @@
                      v-model="value2"
                      widthAdaption>
       <h-select-block :data="bigData"
+                      :showCol="showCol"
                       @on-scroll="select"></h-select-block>
     </h-simple-select>
     <h-button @on-click="loaddata">加载数据</h-button>
@@ -104,11 +105,15 @@ for (let i = 0; i < 160; i++) {
   obj.value = i + ''
   // obj.value = 'value' + i
   obj.label = 'lab' + i
+  obj.label1 = 'lab12'
+  obj.label2 = 'lab13'
+  obj.label3 = 'lab14'
   bigData.push(obj)
 }
 export default {
   data() {
     return {
+      showCol:['label1','label2','label3'],
       matchCol: ['name', 'age'],
       bigData: [],
       value: '',

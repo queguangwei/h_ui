@@ -13,12 +13,15 @@
           @click.stop="select(item)"
           @mouseout.stop="blur">
         <checkbox v-show="multiple"
-                  size="large"
-                  :value="item.selected"
-                  @click.native.stop="handleclick"
-                  :disabled="item.disabled"
-                  @on-change="checkChange($event,item)"></checkbox>
+          size="large"
+          :value="item.selected"
+          @click.native.stop="handleclick"
+          :disabled="item.disabled"
+          @on-change="checkChange($event,item)"></checkbox>
         <slot>{{showLabel(item)}}</slot>
+        <span class="itemcol" v-if="showCol[0]">{{item[showCol[0]]}}</span>
+        <span class="itemcol" v-if="showCol[1]">{{item[showCol[1]]}}</span>
+        <span class="itemcol" v-if="showCol[2]">{{item[showCol[1]]}}</span>
       </li>
       <!-- <li v-if="showEmpty" :class="[prefixCls+'-empty']">{{localeNoMatch}}</li> -->
     </ul>
@@ -53,6 +56,12 @@ export default {
     itemHeight: {
       type: [Number, String],
       default: 30
+    },
+    showCol:{
+      type: Array,
+      default: () => {
+        return []
+      }
     }
     // disabled: {
     //   type: Boolean,
