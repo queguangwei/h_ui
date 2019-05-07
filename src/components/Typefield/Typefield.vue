@@ -382,6 +382,11 @@ export default {
           }
         }
       }
+
+      if (this.positive) {
+        value = value.replace(/-/, '')
+      }
+
       return value
     },
     setBigData(value,arr){
