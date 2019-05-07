@@ -5,6 +5,7 @@
         <table cellspacing="0" cellpadding="0" border="0" :style="headStyles" ref="thead">
           <colgroup>
             <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, true)" :key="index">
+            <col name="gutter" :width="scrollBarWidth">
           </colgroup>
           <thead>
             <tr v-if="multiLevel" v-for="(colItem,inx) in multiData" :key="inx">
