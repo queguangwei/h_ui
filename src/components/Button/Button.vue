@@ -95,7 +95,11 @@ export default {
 	    focus(){
 	    	if (!this.canFocus) return;
 	    	this.$refs.btn.focus();
-	    },
+			},
+			blur(){
+				if (!this.canFocus) return;
+	    	this.$refs.btn.blur();
+			},
 	    keyup(event){
 	    	if (!this.canFocus) return;
 	    	let code = event.keycode;

@@ -85,6 +85,9 @@
                 cursor: $cursor-disabled;
             }
         }
+        &-inner-focus{
+            @include active();
+        }
     }
 
     // 选中状态

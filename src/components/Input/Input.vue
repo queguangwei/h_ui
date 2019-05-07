@@ -359,12 +359,13 @@ export default {
           ) {
             value = this.currentValue
           }
+          if(this.specialDecimal==0){
+            value = value.replace('.', '')
+          }
           value = value.replace('+', '')
-          // event.target.value = value;
         } else {
           value = this.currentValue
         }
-        // value = curvalue;
         event.target.value = value
       }
 

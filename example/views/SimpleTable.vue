@@ -12,10 +12,10 @@
     <!-- :multiLevel="multiLevel1" -->
     <!-- <h-msg-box v-model="showmsg" :width="1000"> -->
       <!-- notAdaptive  -->
-    <h-simple-table ref="simTable" :columns="columnsBig1" border :data="bigData" height="300" @on-selection-change="selsetChange">
+    <h-simple-table ref="simTable" :summationData="summationData" :columns="columnsBig1" border :data="bigData" height="300" @on-selection-change="selsetChange" @on-sort-change="selsetChange">
     </h-simple-table>
     <!-- </h-msg-box> -->
-     <h-button type="primary" size="large" @click="exportData(1)"><h-icon type="ios-download-outline"></h-icon> 导出原始数据</h-button>
+    <h-button type="primary" size="large" @click="exportData(1)"><h-icon type="ios-download-outline"></h-icon> 导出原始数据</h-button>
     <h-button type="primary" size="large" @click="exportData(2)"><h-icon type="ios-download-outline"></h-icon> 导出排序和过滤后的数据</h-button>
     <h-button type="primary" size="large" @click="exportData(3)"><h-icon type="ios-download-outline"></h-icon> 导出自定义数据</h-button>
     <!-- <h2>自定义样式</h2>
@@ -461,6 +461,24 @@ export default {
         {title:'456',cols:2,},
         {title:'789',cols:2,hiddenCol:true},]
       ],
+      summationData: [{
+        fundId: '12313',
+        tradeDate: 730211221,
+        securityCode: 5627223123,
+        index: 1563123123,
+        securityCode: 425413,
+        securityId: 1438123,
+        tradeDir: 27412312,
+        day30: 285123,
+        tradeSubtype: 1727123,
+        marketNo: 558,
+        tradeQuantity: 4440,
+      }],
+      summationData1: [{
+        name: 'qeqweqw',
+        age: 123123123,
+        address: 'qqweqwe'
+      }]
     }
   },
   methods:{
@@ -674,6 +692,7 @@ export default {
           type: 'index',
           align: 'center',
           width:200,
+          sortable:true,
           fixed:'left',
         },
         { 
@@ -687,6 +706,8 @@ export default {
           title: '姓名',
           key: 'fundId',
           width:200,
+          sortable:true,
+          remote: true,
           // fixed:'left',
           renderHeader:(h, params)=>{
             return h('span','123')

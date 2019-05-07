@@ -5,6 +5,8 @@
       <input
         ref="input"
         type="radio"
+        @focus="focus"
+        @blur="blur"
         :class="inputClasses"
         :disabled="disabled"
         :readonly = "readonly"
@@ -56,7 +58,8 @@
       return {
         currentValue: this.value,
         group: false,
-        parent: findComponentsUpward(this, 'RadioGroup')
+        parent: findComponentsUpward(this, 'RadioGroup'),
+        isFocus:false,
       };
     },
     computed: {
@@ -93,7 +96,12 @@
         ];
       },
       innerClasses () {
-          return `${prefixCls}-inner`;
+          return [
+            `${prefixCls}-inner`,
+            {
+              [`${prefixCls}-inner-focus`]: this.isFocus&&window.isO45,
+            }
+          ];
       },
       inputClasses () {
           return `${prefixCls}-input`;
@@ -112,7 +120,6 @@
         if (this.disabled) {
             return false;
         }
-
         const checked = event.target.checked;
         this.currentValue = checked;
 
@@ -138,9 +145,11 @@
       },
       focus () {
         this.$refs.input.focus();
+        this.isFocus = true;
       },
       blur () {
         this.$refs.input.blur();
+        this.isFocus = false;
       }
     },
     watch: {

@@ -110,13 +110,11 @@
           this.$parent.handleMouseOut(_index);
         },
         clickCurrentRow (event,_index) {
-          if (this.sum) return           
+          if (this.sum||this.objData[_index]._isDisabled) return           
           if(this.rowSelect){
-            // this.objData[_index]._isChecked=!this.objData[_index]._isChecked;
             this.$parent.toggleSelect(_index,event);
-          }else{
-            this.$parent.clickCurrentRow(event,_index);
           }
+          this.$parent.clickCurrentRow(event,_index);
         },
         dblclickCurrentRow (_index) {
           if (this.sum) return           
