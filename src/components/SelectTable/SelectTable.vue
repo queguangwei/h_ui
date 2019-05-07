@@ -67,7 +67,7 @@
                 ref='search'
                 v-if="filterable && showBottom">
             <Checkbox v-model="selectHead"
-                      size="large"
+                      :size="checkboxSize"
                       @on-change="toggleSelect"
                       v-if="checkToHead&&multiple"></Checkbox>
             <input type="text"
@@ -316,6 +316,12 @@ export default {
     isSelectFilter: {
       type: Boolean,
       default: false
+    },
+    checkboxSize: {
+      validator(value) {
+        return oneOf(value, ['small', 'large', 'default'])
+      },
+      default: 'large'
     }
   },
   data() {

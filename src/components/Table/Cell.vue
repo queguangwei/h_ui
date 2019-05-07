@@ -7,7 +7,7 @@
       <Radio :value="highlight" style="marginRight:-8px"  @click.native.stop="handleClick" @input="clickCurrentRow"></Radio>
     </template>
     <template v-else-if="renderType === 'selection'">
-      <Checkbox size="large" :value="checked" @click.native.stop="handleClick" @on-change="toggleSelect" :disabled="disabled"></Checkbox>
+      <Checkbox :size="checkboxSize" :value="checked" @click.native.stop="handleClick" @on-change="toggleSelect" :disabled="disabled"></Checkbox>
       <!--<input type="checkbox" v-model="tChecked" @click.native.stop="handleClick" @change="toggleSelect" :disabled="disabled"> -->
     </template>
     <template v-if="renderType === 'normal'" >
@@ -85,6 +85,9 @@ export default {
         }
       ];
     },
+    checkboxSize() {
+      return this.column.checkboxSize ? this.column.checkboxSize : 'large'
+    }
   },
   methods: {
       toggleSelect (status,event) {
