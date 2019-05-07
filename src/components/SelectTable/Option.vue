@@ -31,7 +31,6 @@
   import Checkbox from '../Checkbox/Checkbox.vue';
   import {hasClass,getStyle,typeOf,scrollAnimate,getScrollBarSize} from '../../util/tools';
   const prefixCls = 'h-select-Table';
-  const mutiArr=[{type: 'selection',width: 60,align: 'center',title:'#'}];
   export default {
     name: 'TabelOption',
     componentName: 'tabel-option',
@@ -88,6 +87,14 @@
     },
     data () {
       return {
+        mutiArr: [
+          {
+            title:'#',
+            type: 'selection',
+            align: 'center',
+            width: 60
+          }
+        ],
         selected: false,
         index: 0,
         isFocus: false,
@@ -102,8 +109,7 @@
         rebuildData:this.data
       };
     },
-    computed: {
-    },
+    computed: {},
     methods: {
       currentchange(cur,old){//单选专用
         if (this.disabled) return false;
@@ -189,7 +195,8 @@
       this.multiple=hasClass(el,'h-selectTable-multiple')?true:false;
       let width =this.$parent.dropWidth>0?this.$parent.dropWidth:parseInt(getStyle(el, 'width'));
       this.hasWidth = width-getScrollBarSize();
-      this.tabColumns = this.$parent.$parent.multiple?mutiArr.concat(this.tabColumns):this.tabColumns;
+      this.$set(this.mutiArr[0], 'checkboxSize', this.$parent.$parent.checkboxSize)
+      this.tabColumns = this.$parent.$parent.multiple ? this.mutiArr.concat(this.tabColumns):this.tabColumns;
       this.matchWay = this.$parent.$parent.matchWay;
       this.matchable = this.$parent.$parent.matchable;
       this.col = this.$parent.$parent.matchCol;
@@ -231,9 +238,14 @@
           this.dispatch('SelectTable', 'append');
         }
       },
+      '$parent.$parent.checkboxSize': {
+        handler: function(val) {
+          this.mutiArr[0].checkboxSize = val
+        }
+      },
       columns(val){
         this.tabColumns = val;
-        this.tabColumns = this.$parent.$parent.multiple?mutiArr.concat(this.tabColumns):this.tabColumns; 
+        this.tabColumns = this.$parent.$parent.multiple ? this.mutiArr.concat(this.tabColumns):this.tabColumns;
       },
     }
   };
