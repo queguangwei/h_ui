@@ -11,7 +11,7 @@
           @click="clickCurrentRow(row)">
           <td v-for="(column,inx) in columns" :class="alignCls(column, row)" :key="column.index">
             <span v-if="inx==(columns[0].type=='index'?1:0)" :style="indentCls" >
-              <Icon v-if="row.children && row.children.length!=0" name = "play_fill" :class="iconClass(row.id,index)" @on-click="toggleExpand(index,row,$event)"></Icon>
+              <Icon v-if="row.children && row.children.length!=0" name = "play_fill" :class="iconClass(row.id,index)" @click.native.stop="toggleExpand(index,row,$event)"></Icon>
               <!-- :indeterminate="row.indeterminate" -->
               <Checkbox v-if="isCheckbox" :value="checkValue(row.id)"  @on-click="changeSelect(row.id,row,$event)" @click.native.stop="handleclick"></Checkbox> 
             </span>
@@ -232,7 +232,7 @@
             _isExpand:col.expand||false,
             _collectionState: this.collectionState[inx],
             _parentId:col._parentId,
-            path:this.getPathIndex(col,inx),
+            _isHighlight:col.highlight
           })
         }
       },

@@ -17,7 +17,7 @@
       <span>{{row[column.key]}}</span>
     </template>
     <template v-if="renderType === 'expand' && !row._disableExpand">
-      <div :class="expandCls" @click="toggleExpand">
+      <div :class="expandCls" @click.stop="toggleExpand">
         <Icon name="enter"></Icon>
       </div>
     </template>

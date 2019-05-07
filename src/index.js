@@ -73,6 +73,7 @@ import Calendar from './components/Calendar';
 // import FileImport from './components/FileImport';
 // import FileExport from './components/FileExport';
 import Tag from './components/Tag';
+import Schedule from './components/Schedule';
 import locale from './locale';
 
 
@@ -187,6 +188,8 @@ const h_ui = {
     hStep: Steps.Step,
   // Switch,
     hSwitch: Switch,
+    Schedule,
+    hSchedule: Schedule,
     Table,
     hTable: Table,
     Tabs,

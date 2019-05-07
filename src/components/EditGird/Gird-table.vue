@@ -249,6 +249,10 @@ export default {
       type:Array,
       default:null
     },
+    disableExpand:{
+      type: Boolean,
+      default: false
+    }
   },
   data () {
     return {
@@ -538,7 +542,7 @@ export default {
               };
             }
             if(this.typeName=='groupTable'&&this.height){
-              this.tableWidth = this.tableWidth-this.scrollBarWidth;
+              this.tableWidth = this.tableWidth - this.scrollBarWidth;
             }
             this.columnsWidth = columnsWidth;
           }
@@ -712,6 +716,9 @@ export default {
       }
     },
     toggleExpand (_index) {
+      if(this.disableExpand && this.typeName=='groupTable'){
+          return
+      }
       let _this = this;
       let data = {};
       for (let i in _this.objData) {

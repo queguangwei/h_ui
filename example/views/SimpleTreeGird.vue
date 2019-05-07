@@ -1,7 +1,11 @@
 <template>
   <div>
     <h-button @on-click="loadData">加载数据</h-button>
-    <h-button @on-click="changeData">展开关闭某行</h-button>
+    <h-button @on-click="changeData1('1103')">展开第一层</h-button>
+    <h-button @on-click="changeData('1103')">展开关闭某行</h-button>
+    <h-button @on-click="clearData">清除已选项</h-button>
+    <h-button @on-click="selectData(true)">选择某行</h-button>
+    <h-button @on-click="selectData(false)">不选择某行</h-button>
     <!-- isCheckbox checkStrictly -->
     <!-- selectRoot -->
     <h-simple-tree-gird ref="treeGird" :columns="columns1" isCheckbox no-data-text="123" :data="treedata" canDrag :height="400" @on-select-root="selectChange" @on-expand="expand" @on-drag="expand" @on-row-click="selectChange" @on-scroll="selectChange">
@@ -10,6 +14,7 @@
   </div>
 </template>
 <script>
+let tData =require('../assets/simpleTreeGird.json'); 
 let bigData = [];
 for(var i=0;i<5;i++){
   let obj =  {
@@ -57,6 +62,45 @@ for(var i=1000;i<10000;i++){
   }
   bigData.push(obj)
 }
+let bigData1 = [{
+  id:0,
+  expand:true,
+  name: '王小明',
+  age: 18,
+  address: '北京市朝阳区芍药居',
+  money: '120.00',
+  cardId: '6223 ',
+  city: '北京',
+  dating:'2018',
+  timing:'16',
+  tree: '345',
+  children:[{
+    id:1,
+    parentId:0,
+    name: '王小明',
+    age: 18,
+    address: '北京市朝阳区芍药居',
+    money: '120.00',
+    cardId: '6223 ',
+    city: '北京',
+    dating:'2018',
+    timing:'16',
+    tree: '345',
+    children:[{
+      id:2,
+      parentId:1,
+      name: '王小明',
+      age: 18,
+      address: '北京市朝阳区芍药居',
+      money: '120.00',
+      cardId: '6223 ',
+      city: '北京',
+      dating:'2018',
+      timing:'16',
+      tree: '345',
+    }]
+  }]
+}]
 
 export default {
   data () {
@@ -64,53 +108,29 @@ export default {
       baseData: [],
       treedata: [],
       columns1: [
-        {
-          title: '姓名',
-          key: 'name',
-          width: 300,
-          ellipsis:true,
-          // hiddenCol:true,
-        },
-        {
-          title: '年龄',
-          width: 200,
-          key: 'age',
-          align: 'center',
-          renderHeader:(h,params)=>{
-            return h('span','123')
-          },
-          render:(h,params)=>{
-            return h('span','123')
-          }
-        },
-        {
-          width: 100,
-          title: '地址',
-          ellipsis: true,
-          key: 'address',
-          align: 'right',
-        },
-        {
-          title: '金额',
-          width: 200,
-          key: 'money', 
-        },
-        {
-          title: '卡号',
-          width: 200,
-          key: 'cardId',
-        },
-        {
-          title: '地区',
-          // width: 200,
-          key: 'city',
-          multiple:false,
-        },
-        {
-          title: '下拉树',
-          // width: 200,
-          key: 'tree',
-        }
+         {
+                /* type: 'selectTree', */
+                title: '科目',
+                key: 'show_accountelement_fullname',
+                width: 400,
+                align: 'left',
+            },
+            {
+                /* type: 'text', */
+                title: '科目方向',
+                width: 400,
+                key: 'accountelement_dir',
+                align: 'left',
+                hiddenCol: true,
+            },
+            {
+                /* type: 'text', */
+                title: '科目方向',
+                width: 400,
+                key: 'show_dir',
+                align: 'center',
+                hiddenCol: false,
+            }
       ],
     }
   },
@@ -137,7 +157,8 @@ export default {
     },
     loadData(){
       let old = new Date().getTime()
-      this.treedata=this.baseData;
+      // this.treedata=this.baseData;
+      this.treedata=tData;
       // this.bigData = jsonData.slice(0, 100);
       this.$nextTick(() => {
         let newDate = new Date().getTime() - old
@@ -151,9 +172,25 @@ export default {
       console.log(data)
       console.log(status)
     },
-    changeData(){
-      this.$refs.treeGird.expandRow(1,false);
-    }
+    changeData(id){
+      this.$refs.treeGird.expandRow(id,true);
+    },
+    changeData1(){
+      this.$refs.treeGird.expandRow(1,true)
+      this.$refs.treeGird.expandRow(2,true)
+      this.$refs.treeGird.expandRow(3,true)
+      this.$refs.treeGird.expandRow(4,true)
+      this.$refs.treeGird.expandRow(6,true)
+      // for(var item in this.baseData){
+      //   this.$refs['treeGird'].expandRow(this.baseData[item].code,true)
+      // }
+    },
+    clearData(){
+      this.$refs.treeGird.clearSelected();
+    },
+    selectData(status){
+      this.$refs.treeGird.selectRow('1103',status);
+    },
   },
   mounted () {
     let attributes = {

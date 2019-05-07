@@ -7,6 +7,7 @@
              specialFilter
              placeholder="请输入..."
              ref="test"
+             :specialDecimal="0"
              :maxlength="20"
              focusAllSelect></h-input>
     <Button @on-click="testClick(true)">获取焦点</Button>

@@ -14,6 +14,8 @@
       @on-visible-change="vChange"
       :escClose="true"
       top="0"
+      maskTop="40"
+      maskLeft="40"
       isOriginal
       class-name="vertical-center-modal"
       >
@@ -72,7 +74,7 @@
     <h2>自定义内容/有问题</h2>
     <h-button @click="render">自定义内容</h-button>{{value}}
     <h2>MsgBox</h2>
-    <h-msg-box v-model="showModal2" title="弹窗" width="800" isBeyond  maximize @on-maximize="canMax">
+    <h-msg-box v-model="showModal2" title="弹窗" width="800" isBeyond  maximize @on-maximize="canMax" :disableTabEvent="true">
       <div style="height: 200px;" class="tabWarp">
         <h-select v-model="mulmodel" :transfer="true" style="width:400px;" multiple ref="select">
           <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>

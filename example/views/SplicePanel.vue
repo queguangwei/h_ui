@@ -1,14 +1,16 @@
 <template>
   <div>
     <h2>format支持2种格式yyyy/MM/dd或者yyyy-MM-dd或者yyMMdd</h2>
-    <h-splice-panel :open="open" v-model="valrange1" format="yyyy/MM/dd" confirm @on-ok="handleOk">
+    {{valrange1}}
+    <h-splice-panel :open="open" v-model="valrange1" format="yyyy/MM/dd" confirm @on-ok="handleOk" showFormat @on-change="onChange">
       <a href="javascript:void(0)" @click="handleClick">
         <h-icon name="activity"></h-icon>
         <template v-if="valrange1 === []">选择日期</template>
         <template v-else>{{ valrange1 }}</template>
       </a>
     </h-splice-panel>
-    <h-splice-panel v-model="valrange2" controlRange :selectRange="2"></h-splice-panel>
+    {{valrange2}}
+    <h-splice-panel v-model="valrange2" controlRange :selectRange="2" showFormat></h-splice-panel>
   </div>
 </template>
 

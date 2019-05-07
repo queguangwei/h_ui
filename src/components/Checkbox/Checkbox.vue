@@ -4,16 +4,22 @@
       <span :class="innerClasses"></span>
       <input
         v-if="group"
+        ref="input"
         type="checkbox"
         :class="inputClasses"
         :disabled="disabled"
+        @focus="focus"
+        @blur="blur"
         :value="label"
         v-model="model"
         @change="change"
         @click="click($event)">
       <input
         v-if="!group"
+        ref="input"
         type="checkbox"
+        @focus="focus"
+        @blur="blur"
         :class="inputClasses"
         :disabled="disabled"
         :checked="currentValue"
@@ -72,7 +78,8 @@
         currentValue: this.value,
         group: false,
         showSlot: true,
-        parent: findComponentsUpward(this, 'CheckboxGroup')
+        parent: findComponentsUpward(this, 'CheckboxGroup'),
+        isFocus: false,
       };
     },
     computed: {
@@ -98,7 +105,12 @@
         ];
       },
       innerClasses () {
-        return `${prefixCls}-inner`;
+        return  [
+          `${prefixCls}-inner`,
+          {
+            [`${prefixCls}-inner-focus`]: this.isFocus&&window.isO45,
+          }
+        ];
       },
       inputClasses () {
         return `${prefixCls}-input`;
@@ -141,9 +153,11 @@
       },
       focus () {
         this.$refs.input.focus();
+        this.isFocus = true;
       },
       blur () {
         this.$refs.input.blur();
+        this.isFocus = false;
       }
     },
     watch: {

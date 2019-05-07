@@ -171,6 +171,28 @@
           </div>
         </div>
       </div>
+      <div :class="[prefixCls + '-summation']" :style="summationStyle" v-if="isSummation" ref="summation">
+        <table cellspacing="0" cellpadding="0" border="0" :style="tableStyle" ref="tbody">
+            <colgroup>
+              <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, false)" :key="index">
+            </colgroup>
+            <tbody :class="[prefixCls + '-tbody']">
+              <template v-for="row in summationData">
+                <table-tr
+                  :row="row"
+                  :key="row._rowKey"
+                  :prefix-cls="prefixCls"
+                >
+                  <td v-for="column in cloneColumns" :class="alignCls(column, row)" :key="column._index">
+                    <div :class="classesTd(column)">      
+                      <span v-html="row[column.key]"></span>                     
+                    </div>
+                  </td>                  
+                </table-tr>
+              </template>
+            </tbody>
+          </table>
+      </div>
       <div class="h-table__column-resize-proxy" ref="resizeProxy" v-show="resizeProxyVisible"> </div>
       <div class="h-table__column-move-proxy h-table-cell" ref="moveProxy" v-show="moveProxyVisible"> </div>
     </div>
@@ -335,6 +357,12 @@ export default {
       type:[Number,String],
       default:80,
     },
+    summationData: {
+      type: Array,
+      default () {
+        return [];
+      }
+    },
   },
   data () {
     return {
@@ -382,9 +410,18 @@ export default {
       selectType:false,
       cloumnsLeft: [],
       curShiftIndex:null,
+      sumMarginLeft: 0,
     };
   },
   computed: {
+    summationStyle () {
+      return {
+        marginLeft: `${0 - this.sumMarginLeft}px`
+      }
+    },
+    isSummation () {
+      return this.summationData.length > 0
+    },
     multiData(){
       if (!this.multiLevel || this.multiLevel.length==0) return [];
       let data = [];
@@ -484,10 +521,10 @@ export default {
     },
     styles () {
       let style = {};
-      if (this.height) {
-        let height = Number(this.height)+2
-        style.height = `${height}px`;
-      }
+      // if (this.height) {
+      //   let height = Number(this.height)+2
+      //   style.height = `${height}px`;
+      // }
       if (this.width) style.width = `${this.width}px`;
       return style;
     },
@@ -598,6 +635,15 @@ export default {
     }
   },
   methods: {
+    makeSumData () {
+      // 汇总数据只有一条，否则只获取第一条
+      let data = this.summationData && this.summationData.length > 0 ? [deepCopy(this.summationData[0])] : []
+      data.forEach((row, index) => {
+          row._index = index;
+          row._rowKey = rowKey++;
+      });
+      return data;
+    },
     toggleIsCurrent (val) {
       this.isCurrent = val
     },
@@ -1197,10 +1243,20 @@ export default {
     },
     handleSort (index, type) {
       if (this.cloneColumns[index]._sortType === type) {
-          type = 'normal';
+        type = 'normal';
+      }
+      if(this.cloneColumns[index].remote){
+        this.$emit('on-sort-change', {
+          column: JSON.parse(JSON.stringify(this.columns[this.cloneColumns[index]._index])),
+          key: this.cloneColumns[index].key,
+          order: type
+        });
+        this.cloneColumns[index]._sortType = type;
+        return
       }
       let _index = this.cloneColumns[index]._index;
       this.handleSortT(_index, type);
+
     },
     handleSortByHead (index) {
       const column = this.cloneColumns[index];
@@ -1295,6 +1351,7 @@ export default {
       let scrolltop = event.target.scrollTop;
       this.curPageFirstIndex = Math.floor(scrolltop / this.itemHeight)
       this.$refs.header.scrollLeft = event.target.scrollLeft;
+      if (this.isSummation) this.sumMarginLeft = event.target.scrollLeft
       if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = scrolltop;
       this.buttomNum = getBarBottomS(event.target, this.bodyHeight, this.contentHeight,this.scrollBarHeight, this.isScrollX);
       let curtop = Math.floor(scrolltop / this.itemHeight)*this.itemHeight;
