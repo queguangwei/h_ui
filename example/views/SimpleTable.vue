@@ -42,7 +42,7 @@
     <p>@on-select-all，点击全选时触发，返回值为 selection，已选项。</p>
     <p>@on-selection-change，只要选中项发生变化时就会触发，返回值为 selection，已选项。</p>
     <h-simple-table border :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading" canMove></h-simple-table>
-    
+
     <h2>自定义列模板</h2>
     <p>通过给 columns 数据的项，设置一个函数 render，可以自定义渲染当前列，包括渲染自定义组件，它基于 Vue 的 Render 函数。</p>
     <p>render 函数传入两个参数，第一个是 h，第二个是对象，包含 row、column 和 index，分别指当前单元格数据，当前列数据，当前是第几行。</p>
@@ -56,7 +56,7 @@
 <script>
 import TexpandRow from './Texpand-row.vue'
 let jsonData=[];
-let tData =require('../assets/aa.json'); 
+let tData =require('../assets/aa.json');
 for (let i = 0; i < 1; i++) {
       jsonData =tData.slice(0,500);
     }
@@ -189,7 +189,7 @@ export default {
              title: "月活跃",
              key: "month",
              fixed: "right",
-             width: 150,             
+             width: 150,
              sortable: true,
              filters: [
                {
@@ -229,7 +229,7 @@ export default {
        {
         title:'测试',
         key:'ceshi',
-        algin:'center',
+        algin:'center'
        }
       ],
       columns3: [
@@ -347,7 +347,7 @@ export default {
             ]);
           }
         }
-      ],  
+      ],
       columns9: [
         {
           title: '姓名',
@@ -566,7 +566,7 @@ export default {
     },
     remove (index) {
       this.data6.splice(index, 1);
-    }, 
+    },
     exportData (type) {
       if (type === 1) {
           this.$refs.simTable.exportCsv({
@@ -585,15 +585,15 @@ export default {
               data: this.bigData.filter((data, index) => index < 200)
           });
       }
-    }      
+    }
   },
   mounted(){
     this.columns1=[
-        { 
+        {
           type: 'selection',
           align: 'center',
         },
-        { 
+        {
           type: 'index',
           align: 'center',
         },
@@ -638,11 +638,11 @@ export default {
         }
     ]
     this.columnsBig=[
-        { 
+        {
           type: 'selection',
           align: 'center',
         },
-        { 
+        {
           type: 'index',
           align: 'center',
           key:'index'
@@ -688,19 +688,20 @@ export default {
         }
     ]
     this.columnsBig1=[
-        { 
+        {
           type: 'index',
           align: 'center',
           width:200,
           sortable:true,
           fixed:'left',
         },
-        { 
+        {
           type: 'selection',
           align: 'center',
           key:'select',
           width:200,
           fixed:'left',
+          checkboxSize: 'default'
         },
         {
           title: '姓名',
