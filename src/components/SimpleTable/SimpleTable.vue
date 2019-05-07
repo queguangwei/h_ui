@@ -176,6 +176,7 @@
         <table cellspacing="0" cellpadding="0" border="0" :style="tableStyle" ref="tbody">
             <colgroup>
               <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, false)" :key="index">
+              <col name="gutter" :width="scrollBarWidth">
             </colgroup>
             <tbody :class="[prefixCls + '-tbody']">
               <template v-for="row in summationData">
