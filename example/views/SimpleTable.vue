@@ -700,8 +700,7 @@ export default {
           align: 'center',
           key:'select',
           width:200,
-          fixed:'left',
-          checkboxSize: 'default'
+          fixed:'left'
         },
         {
           title: '姓名',
