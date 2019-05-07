@@ -559,7 +559,7 @@ export default {
       model11: '',
       model13: 'hangzhou',
       model14: '',
-      model15: [],
+      model15: ['1'],
       model20:[],
       loading1: false,
       options1: [
