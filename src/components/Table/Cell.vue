@@ -10,6 +10,9 @@
       <Checkbox size="large" :value="checked" @click.native.stop="handleClick" @on-change="toggleSelect" :disabled="disabled"></Checkbox>
       <!--<input type="checkbox" v-model="tChecked" @click.native.stop="handleClick" @change="toggleSelect" :disabled="disabled"> -->
     </template>
+    <template v-else-if="renderType === 'drag'">
+      <h-icon name="arrow-move" size="18" draggable="true" @dragstart.native="dragStart($event, row._index)"></h-icon>
+    </template>
     <template v-if="renderType === 'normal'" >
       <span v-html="row[column.key]"></span>
     </template>
@@ -73,7 +76,8 @@ export default {
         {
           [`${this.prefixCls}-hidden`]: !this.sum&&(!this.fixed && this.column.fixed && (this.column.fixed === 'left' || this.column.fixed === 'right')),
           [`${this.prefixCls}-cell-ellipsis`]: this.column.ellipsis&&this.column.ellipsis!='false',
-          [`${this.prefixCls}-cell-with-expand`]: this.renderType === 'expand'
+          [`${this.prefixCls}-cell-with-expand`]: this.renderType === 'expand',
+          [`${this.prefixCls}-cell-with-drag`]: this.renderType === 'drag'
         }
       ];
     },
@@ -87,6 +91,11 @@ export default {
     },
   },
   methods: {
+      dragStart(event, index) {
+        const dataTransfer = event.dataTransfer;
+        dataTransfer.effectAllowed = "move";
+        dataTransfer.setData("index", index);
+      },
       toggleSelect (status,event) {
         this.$parent.$parent.$parent.toggleSelect(this.index,event);
       },
@@ -120,6 +129,8 @@ export default {
         this.renderType = 'render';
     } else if(this.column.type === 'text'){
         this.renderType = 'text';
+    }else if(this.column.type === 'drag'){
+        this.renderType = 'drag';
     }else{
         this.renderType = 'normal';
     }

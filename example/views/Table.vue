@@ -33,11 +33,11 @@
     <h-table :columns="columns9" :data="data1" :loading="loading"></h-table>
     <p>自定义任意单元格样式：</p>
     <Button @on-click="changeHidden">改变hiddenCol</Button>
-    <h-table :columns="columns1" :data="data8" @on-row-click="click1" :loading="loading"></h-table>
+    <h-table :columns="columns1" :data="data8" @on-row-click="click1" :loading="loading"></h-table> -->
     <h2>固定表头</h2>
     <p>通过设置属性 height 给表格指定高度后，会自动固定表头。当纵向内容过多时可以使用</p>
     <p>设置maxheight 600</p>
-    <h-table maxHeight="600" :columns="columns1" :data="data2" border :loading="loading" showTitle></h-table>
+    <h-table maxHeight="600" :columns="columns1" :data="data2" border :loading="loading" showTitle @on-drag-drop="handleDrop"></h-table>
     <h-table height="200" :columns="columns1" :data="data2" border :loading="loading" showTitle></h-table>
     <h2>固定列</h2>
     <p>通过给数据 columns 的项设置 fixed 为 left 或 right，可以左右固定需要的列。</p>
@@ -1641,6 +1641,9 @@ export default {
           month: 5610
         }]
     },
+    handleDrop(a, b) {
+      console.log('drag: ' + a + ', drop: ' + b)
+    },
     refresh () {
       //  this.$route.meta.isKeepAlive = false
        this.$parent.isKeepAlive = false
@@ -1772,6 +1775,12 @@ export default {
           fixed:'right',
         },
         {
+          type: 'drag',
+          width: 60,
+          fixed: 'left',
+          align: 'center'
+        },
+        {
           title: '姓名',
           key: 'name',
           align: 'center',
@@ -1781,6 +1790,7 @@ export default {
         {
           title: '年龄',
           key: 'age',
+          sortable: true
         },
         {
           title: '地址',
