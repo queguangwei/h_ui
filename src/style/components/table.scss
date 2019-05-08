@@ -285,8 +285,8 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
     }
   }
 
-  &-row-dragover td {
-    background: $primary-color;
+  & tr.#{$table-prefix-cls}-row-dragover td {
+    background-color: $primary-color;
     color: #fff;
   }
   

@@ -94,7 +94,7 @@ export default {
       dragStart(event, index) {
         const dataTransfer = event.dataTransfer;
         dataTransfer.effectAllowed = "move";
-        dataTransfer.setData("index", index);
+        dataTransfer.setData("text", "" + index);
       },
       toggleSelect (status,event) {
         this.$parent.$parent.$parent.toggleSelect(this.index,event);
