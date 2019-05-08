@@ -1,7 +1,7 @@
 <template>
   <div :class="cellClasses">
     <template v-if="column.type === 'selection'">
-      <Checkbox v-if="!column.title" size="large" @mousedown.native.stop="handleClick" :value="checked" @on-change="selectAll"></Checkbox>
+      <Checkbox v-if="!column.title" :size="checkboxSize" @mousedown.native.stop="handleClick" :value="checked" @on-change="selectAll"></Checkbox>
       <span v-else>{{column.title}}</span>
     </template>
     <template v-else>
@@ -34,6 +34,9 @@ import renderHeader from './header';
           `${this.prefixCls}-cell`,
         ];
       },
+      checkboxSize() {
+        return this.column.checkboxSize ? this.column.checkboxSize : 'large'
+      }
     },
     methods: {
       handleClick(){

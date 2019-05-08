@@ -24,7 +24,7 @@
   <Button @on-click="changeform1">显示隐藏</Button>
 		<h2>组合使用</h2>
 		<h-checkbox-group v-model="social" vertical>
-      <h-checkbox label="twitter">
+      <h-checkbox label="twitter" size="large">
         <h-Icon name="clock"></h-Icon>
         <span>Twitter</span>
       </h-checkbox>
@@ -32,7 +32,7 @@
         <h-Icon name="clock"></h-Icon>
         <span>Facebook</span>
       </h-checkbox>
-      <h-checkbox label="github">
+      <h-checkbox label="github" size="small">
         <h-Icon name="clock"></h-Icon>
         <span>Github</span>
       </h-checkbox>
@@ -62,7 +62,7 @@
     <h-checkbox v-model="checked" :disabled="disabled">
         <span v-if="checked">选中</span>
         <span v-else>取消</span>
-         - 
+         -
         <span v-if="!disabled">可用</span>
         <span v-else>不可用</span>
     </h-checkbox>
