@@ -117,7 +117,7 @@
               :treeOption="treeOption[inx]"
             >
               <span v-if="columns.length>0 && inx==(columns[0].type=='index'?1:0)">
-                <Icon name = "play_fill" :class="iconClass(row._index)" v-if="row.children && row.children.length!=0" @on-click="toggleExpand(row._index,$event)"></Icon>
+                <Icon name = "play_fill" :class="iconClass(row._index)" v-if="(row.children && row.children.length!=0)||row.foldable" @on-click="toggleExpand(row._index,$event)"></Icon>
                 <Checkbox v-if="isCheckbox" :value="row.checked" :indeterminate="row.indeterminate" @on-click="changeSelect(row,$event)"></Checkbox> 
               </span>
             </Cell>

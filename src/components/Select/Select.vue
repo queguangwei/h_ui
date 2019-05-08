@@ -315,6 +315,7 @@
         isSelectAll:false,
         typeValue:'string',
         focusValue:'',
+        viewValue:null
       };
     },
     computed: {
@@ -1309,6 +1310,7 @@
         }else{
           this.titleTip = '';
         }
+        this.viewValue = val
       },
       model () {
         let backModel = this.arrtoStr(this.model);
@@ -1442,6 +1444,7 @@
         if (val&&this.showTitle) {
           this.titleTip=val
         }
+        this.viewValue = val
       },
       options(val){
         if (val.length!=0 && this.isfirstSelect) {

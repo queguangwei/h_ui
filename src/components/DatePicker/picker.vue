@@ -51,9 +51,7 @@
                :picker-type="type"
                :showTwoPanel="this.showTwoPanel"
                :range-num="controlRange?selectRange:0"
-
                v-bind="ownPickerProps"
-
                @on-pick="onPick"
                @on-pick-clear="handleClear"
                @on-pick-success="onPickSuccess"
@@ -207,7 +205,8 @@
         forceInputRerender: 1,
         isFocus: false,
         rangeNum:0,
-        fPlacement:this.placement
+        fPlacement:this.placement,
+        viewValue:null
       };
     },
     computed: {
@@ -241,6 +240,7 @@
         return bottomPlaced ? 'slide-up' : 'slide-down';
       },
       visualValue() {
+          this.viewValue = this.formatDate(this.internalValue)
           return this.formatDate(this.internalValue);
       },
       isConfirm(){

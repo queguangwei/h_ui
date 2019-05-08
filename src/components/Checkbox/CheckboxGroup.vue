@@ -34,6 +34,7 @@
             curValue:this.value,
             childrens: [],
             childrensBtn: [],
+            viewValue: this.value,
         };
     },
     computed: {
@@ -97,6 +98,12 @@
         value () {
             this.updateModel(true);
             this.curValue = this.value;
+        },
+        currentValue(val){
+            this.viewValue = val
+        },
+        curValue(val){
+            this.viewValue = val
         }
     }
   };

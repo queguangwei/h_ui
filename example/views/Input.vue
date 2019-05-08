@@ -21,7 +21,6 @@
              @mousedown.native="onChange"></h-input>
     <h2>基础用法</h2>
     <p>可以直接设置 style 来改变输入框的宽度</p>
-    {{formData}}
     <h-input v-model="formData.value"
              placeholder="请输入..."
              style="width: 300px"
@@ -158,7 +157,9 @@ export default {
     return {
       example: '<script><\/script>',
       disabled: false,
-      formData: {},
+      formData: {
+        value:''
+      },
       value: '0.301',
       value1: '',
       value2: '',
