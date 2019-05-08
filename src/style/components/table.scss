@@ -282,8 +282,8 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
     }
   }
   
-  &-summation {
-    border-top: 1px solid #DCE1E7;
+  &-summation td {
+    border-top: 1px solid #dce1e7;
   }
   &-fixed, &-fixed-right{
     position: absolute;
