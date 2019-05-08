@@ -82,6 +82,7 @@ export default {
       currentValue: String(this.value),
       prepend: true,
       append: true,
+      viewValue:''
     }
   },
   mixins: [ Emitter,Locale ],
@@ -198,6 +199,7 @@ export default {
       }
     },
     inputValue(val){
+      this.viewValue=this.changeTipsVal(val)
     }
   },
   mounted () {

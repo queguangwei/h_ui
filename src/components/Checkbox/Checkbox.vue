@@ -80,6 +80,7 @@
         showSlot: true,
         parent: findComponentsUpward(this, 'CheckboxGroup'),
         isFocus: false,
+        viewValue:this.value
       };
     },
     computed: {
@@ -166,6 +167,9 @@
               throw 'Value should be trueValue or falseValue.';
           }
           this.updateModel();
+      },
+      currentValue(val){
+        this.viewValue = val
       }
     }
   };

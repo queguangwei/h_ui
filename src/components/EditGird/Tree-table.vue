@@ -29,7 +29,7 @@
                   :treeOption="treeOption"
                 >
                   <span v-if="inx==(columns[0].type=='index'?1:0)" :style="indentCls" >
-                    <Icon v-if="row.children && row.children.length!=0" :class="iconClass(row._index)" name = "play_fill" @on-click="toggleExpand(row._index,$event)"></Icon>
+                    <Icon v-if="(row.children && row.children.length!=0)||row.foldable" :class="iconClass(row._index)" name = "play_fill" @on-click="toggleExpand(row._index,$event)"></Icon>
                     <Checkbox v-if="isCheckbox" :value="row.checked" :indeterminate="row.indeterminate" @on-click="changeSelect(row,$event)"></Checkbox> 
                   </span>
                 </Cell>

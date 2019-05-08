@@ -321,10 +321,10 @@ export default {
         e.stopPropagation(); 
       }
       if (this.showEditInput) return;
-      if (!this.column.type ||this.column.type === 'html') {
+      if (!this.column.type ||this.column.type === 'html'||this.column.type === 'index'||this.column.type === 'selection') {
         return false;
       }else {
-        this.showSlot = false;
+        this.showSlot = false
         this.renderType = this.column.type;
         this.$nextTick(()=>{
           var inputEl = this.$refs.cell.querySelector('input') || this.$refs.cell.querySelector('textarea');

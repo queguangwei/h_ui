@@ -162,6 +162,7 @@
         isLoadedChildren: false,    // #950
         fPlacement:this.placement,
         isFocus:false,
+        viewValue:''
       };
     },
     computed: {
@@ -196,6 +197,7 @@
         return this.renderFormat(label, this.selected);
       },
       displayInputRender () {
+        this.viewValue = this.filterable ? '' : this.displayRender
         return this.filterable ? '' : this.displayRender;
       },
       localePlaceholder () {

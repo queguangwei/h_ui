@@ -17,6 +17,7 @@
           dating:'2018-03-07',
           timing:'16:00:00.00',
           tree:'leaf1',
+          foldable:true,
           expanded:true,
           // _highlight: true//默认选择当前项
         },
@@ -44,6 +45,7 @@
           dating:'2018-03-07',
           timing:'16:00:00.00',
           tree:'leaf1',
+          foldable:true,
           _parentId: 11,
         },
         {
@@ -57,6 +59,7 @@
           dating:'2018-03-07',
           timing:'16:00:00.00',
           tree:'leaf1',
+          foldable:true,
           _parentId: 111,
         },
         {
@@ -70,6 +73,7 @@
           dating:'2018-03-07',
           timing:'16:00:00.00',
           tree:'leaf1',
+          foldable:true,
           _parentId: 111,
         },
         {

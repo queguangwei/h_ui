@@ -215,7 +215,8 @@ export default {
       prepend: true,
       append: true,
       slotReady: false,
-      textareaStyles: {}
+      textareaStyles: {},
+      viewValue:this.value
     }
   },
   computed: {
@@ -448,6 +449,9 @@ export default {
   watch: {
     value(val) {
       this.setCurrentValue(val)
+    },
+    currentValue(val){
+      this.viewValue = val
     }
   },
   mounted() {

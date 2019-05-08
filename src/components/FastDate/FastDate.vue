@@ -155,6 +155,7 @@ export default {
       yearPlaceholder:'',
       fPlacement:this.placement,
       isFocus:false,
+      viewValue:''
     }
   },
   computed: {
@@ -228,7 +229,6 @@ export default {
   },
   methods: {
     editBlur(event,str,isRange){
-      debugger;
       let value = event.target.value.trim().replace(/[^0-9]/ig,"");
       if (!value || value.length==0){
         if(isRange){
@@ -551,6 +551,7 @@ export default {
       this.setDate(val);
       this.$emit('input',val);
       this.dispatch('FormItem', 'on-form-change',val);
+      this.viewValue = val
     },
     value(val){
       if (typeOf(val)!='array') {

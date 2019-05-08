@@ -345,7 +345,8 @@ export default {
       selectHead: false,
       fPlacement: this.placement,
       isBlock: false,
-      allClick: false
+      allClick: false,
+      viewValue:null
     }
   },
   computed: {
@@ -1437,6 +1438,7 @@ export default {
         this.query = val
         if (this.query !== '') this.selectToChangeQuery = true
       }
+      this.viewValue = val
     },
     // options(val) {
     //   console.log('options', val)
@@ -1452,6 +1454,7 @@ export default {
       this.$nextTick(() => {
         this.offsetArrow()
       })
+      this.viewValue = val
     },
     selectHead(val) {
       // this.toggleSelect(val)
