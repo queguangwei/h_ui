@@ -4,6 +4,7 @@
 </template>
 <script>
   import Emitter from '../../mixins/emitter';
+  import {findInx} from '../../util/tools';
 
   export default {
     mixins: [Emitter],
@@ -20,14 +21,14 @@
         return this.$parent.$parent;
       },
       draggable() {
-        return this.$parent.columns.findIndex(col => col.type === 'drag') > -1;
+        return findInx(this.$parent.columns, col => col.type === 'drag') > -1;
       }
     },
     methods: {
       drop(event, index) {
         const table = this.table;
         const dataTransfer = event.dataTransfer;
-        const dragIndex = dataTransfer.getData("index");
+        const dragIndex = dataTransfer.getData("text");
         const data = table.rebuildData;
         const dragItemIndex = data.findIndex(d => d._index == dragIndex);
         const dragItem = data[dragItemIndex];
