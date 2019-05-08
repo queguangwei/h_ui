@@ -1,5 +1,5 @@
 <template>
-<div>   
+<div>
   <h1>Select组件</h1>
   <p>选择器支持单选、多选、搜索，以及键盘快捷操作。</p>
   <!-- <h1>基础用法</h1>
@@ -20,7 +20,7 @@
     <h-table-option border :columns="columns1" :data="data1" @on-select-all="allSelect" @on-select="select" @on-selection-change="selsetChange" :highlightRow="true"></h-table-option>
   </h-select-table> -->
   {{model1}}
-  <h2>单选</h2> 
+  <h2>单选</h2>
   <!-- <h-select-table v-model="model2" @on-change="change" disabled>
     <h-table-option border :columns="columns1" :data="data1" @on-select-all="allSelect" @on-select="select" @on-selection-change="selsetChange"></h-table-option>
   </h-select-table> -->
@@ -41,11 +41,11 @@
   {{model5}}
   <h1>筛选框在下</h1>
   <h2>模糊多列匹配</h2>
-  <h-select-table v-model="model6" :filterable="true" showBottom matchable :matchCol="matchCol" :multiple="true" isCheckall searchHolder="123" checkToHead transfer>
+  <h-select-table v-model="model6" checkboxSize="small" :filterable="true" showBottom matchable :matchCol="matchCol" :multiple="true" isCheckall searchHolder="123" checkToHead transfer>
     <h-table-option border :columns="columns1" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange"></h-table-option>
   </h-select-table>
   <h2>左列多列搜索</h2>
-  <h-select-table v-model="model7" :filterable="true" showBottom :matchCol="matchCol" matchWay="left" 
+  <h-select-table v-model="model7" :filterable="true" showBottom :matchCol="matchCol" matchWay="left"
   searchHolder="123">
     <h-table-option border :columns="columns1" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange" :highlightRow="true" showBorder></h-table-option>
   </h-select-table>
