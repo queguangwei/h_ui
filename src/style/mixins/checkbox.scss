@@ -59,7 +59,9 @@
             }
         }
         &-small{
-            font-size: 12px;
+            span{
+                font-size:  $font-size-small;
+            }
             & .#{$checkbox-inner-prefix-cls} {
                 width: 12px;
                 height: 12px;
@@ -227,7 +229,7 @@
 
     .#{$checkbox-prefix-cls}-wrapper {
         cursor: pointer;
-        font-size: $font-size-small;
+        font-size: $font-size-base;
         display: inline;
         margin-left: 3px;
         &-disabled{
