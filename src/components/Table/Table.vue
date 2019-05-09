@@ -359,6 +359,8 @@ export default {
       sumMarginLeft: 0,
       shiftSelect:[],
       ctrlSelect:[],
+      /* 当前dragover行序号 */
+      currDragOverIdx: null
     };
   },
   computed: {
