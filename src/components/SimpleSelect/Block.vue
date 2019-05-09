@@ -265,7 +265,7 @@ export default {
             this.$set(item, 'focus', false)
           })
           this.$parent.$parent.updateOptions(true)
-          this.updateVisibleData(0)
+          this.updateVisibleData()
         })
       }
     },
