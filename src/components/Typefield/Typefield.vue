@@ -158,8 +158,8 @@ export default {
       type: Boolean,
       default: false,
     },
-    // 只允许正数
-    positive: {
+    // 非负数
+    nonNegative: {
       type: Boolean,
       default: false
     }
@@ -293,7 +293,7 @@ export default {
       let value = event.target.value.trim().replace(/,/g,'');
       // if (event.type == 'input' && value.match(/^\-?\.?$|\.$/)) return; // prevent fire early if decimal. If no more input the change event will fire later
       // if (event.type == 'change' && Number(value) == this.currentValue) return; // already fired change for input event
-      if (this.positive) {
+      if (this.nonNegative) {
         value = value.replace(/-/, '')
         event.target.value = value
       }
@@ -386,7 +386,7 @@ export default {
         }
       }
 
-      if (this.positive) {
+      if (this.nonNegative) {
         value = value.replace(/-/, '')
       }
 
