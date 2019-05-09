@@ -681,7 +681,8 @@
         }
         this.isFirst = true
       },
-      selectedMultiple (){
+      selectedMultiple (val){
+        this.viewValue = val
         this.$nextTick(()=>{
           this.offsetArrow();
         })
@@ -732,9 +733,6 @@
       selectedSingle(val){
         this.viewValue = val
       },
-      selectedMultiple(val){
-        this.viewValue = val
-      }
     },
     mounted(){
       if (this.data &&this.data.length!=0) {
