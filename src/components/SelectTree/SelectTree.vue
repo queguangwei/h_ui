@@ -233,7 +233,8 @@
         tabIndex:0,
         lastquery: '',
         lastDataCopy: [],
-        fPlacement:this.placement
+        fPlacement:this.placement,
+        viewValue:null,
       }
     },
     computed:{
@@ -727,6 +728,12 @@
       },
       placement(val){
         this.fPlacement = val
+      },
+      selectedSingle(val){
+        this.viewValue = val
+      },
+      selectedMultiple(val){
+        this.viewValue = val
       }
     },
     mounted(){

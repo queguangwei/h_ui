@@ -569,21 +569,21 @@ export default {
     },
     exportData (type) {
       if (type === 1) {
-          this.$refs.simTable.exportCsv({
-              filename: '原始数据'
-          });
+        this.$refs.simTable.exportCsv({
+          filename: '原始数据'
+        });
       } else if (type === 2) {
-          this.$refs.simTable.exportCsv({
-              filename: '排序和过滤后的数据',
-              original: false,
-              noHeader:true,
-          });
+        this.$refs.simTable.exportCsv({
+          filename: '排序和过滤后的数据',
+          original: false,
+          noHeader:true,
+        });
       } else if (type === 3) {
-          this.$refs.simTable.exportCsv({
-              filename: '自定义数据',
-              columns: this.columnsBig1.filter((col, index) => index < 4),
-              data: this.bigData.filter((data, index) => index < 200)
-          });
+        this.$refs.simTable.exportCsv({
+          filename: '自定义数据',
+          columns: this.columnsBig1.filter((col, index) => index < 4),
+          data: this.bigData.filter((data, index) => index < 200)
+        });
       }
     }
   },
@@ -713,7 +713,7 @@ export default {
             return h('span','123')
           },
           render:(h, params)=>{
-            return h('span',params.row.fundId+' 123')
+            return h('span',params.row.fundId+' 567')
             // return params.row.fundId+' 123'
           }
           // hiddenCol:true,

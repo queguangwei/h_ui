@@ -21,7 +21,7 @@
         <slot>{{showLabel(item)}}</slot>
         <span class="itemcol" v-if="showCol[0]">{{item[showCol[0]]}}</span>
         <span class="itemcol" v-if="showCol[1]">{{item[showCol[1]]}}</span>
-        <span class="itemcol" v-if="showCol[2]">{{item[showCol[1]]}}</span>
+        <span class="itemcol" v-if="showCol[2]">{{item[showCol[2]]}}</span>
       </li>
       <!-- <li v-if="showEmpty" :class="[prefixCls+'-empty']">{{localeNoMatch}}</li> -->
     </ul>

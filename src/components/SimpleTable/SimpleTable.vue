@@ -174,26 +174,34 @@
       </div>
       <div :class="[prefixCls + '-summation']" :style="summationStyle" v-if="isSummation" ref="summation">
         <table cellspacing="0" cellpadding="0" border="0" :style="tableStyle" ref="tbody">
-            <colgroup>
-              <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, false)" :key="index">
-              <col name="gutter" :width="scrollBarWidth">
-            </colgroup>
-            <tbody :class="[prefixCls + '-tbody']">
-              <template v-for="row in summationData">
-                <table-tr
-                  :row="row"
-                  :key="row._rowKey"
-                  :prefix-cls="prefixCls"
-                >
-                  <td v-for="column in cloneColumns" :class="alignCls(column, row)" :key="column._index">
-                    <div :class="classesTd(column)">
-                      <span v-html="row[column.key]"></span>
-                    </div>
-                  </td>
-                </table-tr>
-              </template>
-            </tbody>
-          </table>
+          <colgroup>
+            <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, false)" :key="index">
+            <col name="gutter" :width="scrollBarWidth">
+          </colgroup>
+          <tbody :class="[prefixCls + '-tbody']">
+            <template v-for="row in summationData">
+              <table-tr
+                :row="row"
+                :key="row._rowKey"
+                :prefix-cls="prefixCls"
+              >
+                <td v-for="column in cloneColumns" :class="alignCls(column, row)" :key="column._index">
+                  <div :class="classesTd(column)">
+                    <span v-if="(column.type==='index'||column.type==='selection')&&column._index==0">汇总</span>
+                    <Cell
+                      v-else-if="column.render"
+                      :row="row"
+                      :key="column._columnKey"
+                      :column="column"
+                      :index="row._index"
+                    ></Cell>
+                    <span v-else v-html="row[column.key]"></span>
+                  </div>
+                </td>
+              </table-tr>
+            </template>
+          </tbody>
+        </table>
       </div>
       <div class="h-table__column-resize-proxy" ref="resizeProxy" v-show="resizeProxyVisible"> </div>
       <div class="h-table__column-move-proxy h-table-cell" ref="moveProxy" v-show="moveProxyVisible"> </div>
