@@ -701,12 +701,13 @@ export default {
           }
         }
 
-        if(this.remote && (curSingle || !this.options.length)) {
+        if (this.model === '') {
+          this.selectedSingle = ''
+        } else if(this.remote && curSingle) {
           this.selectedSingle = curSingle
         } else if(!this.remote) {
           this.selectedSingle = curSingle
         }
-        // this.selectedSingle = curSingle
 
         if (slot && !findModel) {
           this.model = ''
