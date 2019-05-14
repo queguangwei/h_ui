@@ -1027,10 +1027,10 @@ export default {
             this.columnsWidth = columnsWidth;
           }
 
+          // get table real height,for fixed when set height prop,but height < table's height,show scrollBarWidth
+          this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
+          this.headerRealHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
         });
-        // get table real height,for fixed when set height prop,but height < table's height,show scrollBarWidth
-        this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
-        this.headerRealHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
       });
     },
     getshiftSelect(_index){
@@ -1348,8 +1348,9 @@ export default {
               if(this.$refs.leftF)this.$refs.leftF.style.marginTop=titleHeight+'px';
               if(this.$refs.rightF)this.$refs.rightF.style.marginTop=titleHeight+'px';
             }
-            // const headerHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
-            const headerHeight = this.headerRealHeight;
+
+            // 兼容 columns 异步生成
+            const headerHeight = this.headerRealHeight || parseInt(getStyle(this.$refs.header, 'height')) || 0;
             const footerHeight = parseInt(getStyle(this.$refs.footer, 'height')) || 0;
             this.bodyHeight = this.height - titleHeight - headerHeight - footerHeight;
         });

@@ -70,7 +70,7 @@ import Log from '../views/Log.vue'
 import Tag from '../views/Tag.vue'
 import SimpleTreeGird from '../views/SimpleTreeGird.vue'
 import Calendar from '../views/Calendar.vue'
-// import Cuiyang from '../views/cuiyang/main'
+import Cuiyang from '../views/cuiyang/main'
 import Schedule from '../views/Schedule.vue';
 
 import DownLoad from '../views/DownLoad.vue'
@@ -430,7 +430,7 @@ Vue.use(Router)
 // })
 const router = new Router({
     routes: [
-      // { name: 'cuiyang', path: '/cuiyang/test', component: Cuiyang },
+      { name: 'cuiyang', path: '/cuiyang/test', component: Cuiyang },
       { path: '/', redirect: '/home' },
       { name: 'home', path: '/home', component:Home},
       { name: 'switchs', path: '/switchs', component:Switchs },
