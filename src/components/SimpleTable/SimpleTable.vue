@@ -371,6 +371,8 @@ export default {
         return [];
       }
     },
+    barWidth: Number,
+    barHeight: Number
   },
   data () {
     return {
@@ -388,8 +390,8 @@ export default {
       showSlotFooter: true,
       bodyHeight: 0,
       bodyRealHeight: 0,
-      scrollBarWidth: getScrollBarSize(),
-      scrollBarHeight: getScrollBarSizeHeight(),//横向高度
+      scrollBarWidth: this.barWidth || getScrollBarSize(),
+      scrollBarHeight: this.barHeight || getScrollBarSizeHeight(),//横向高度
       currentContext: this.context,
       cloneData: deepCopy(this.data),    // when Cell has a button to delete row data, clickCurrentRow will throw an error, so clone a data
       resizeProxyVisible: false,
@@ -605,7 +607,7 @@ export default {
       let style = {};
       if (this.bodyHeight !== 0) {
         let height = this.bodyHeight- this.scrollBarHeight;
-        if (this.tableWidth < this.initWidth+1) {
+        if (this.tableWidth < this.initWidth - this.scrollBarWidth) {
           height = this.bodyHeight-1;
         }
         style.height = `${height}px`;
