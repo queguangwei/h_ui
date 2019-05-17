@@ -122,7 +122,7 @@ export default {
   computed: {
     styles () {//深拷贝
       const style = Object.assign({}, this.styleObject);
-      const width = this.$parent.bodyHeight === 0 ? parseInt(this.styleObject.width) : parseInt(this.styleObject.width) + this.$parent.scrollBarWidth;
+      const width = parseInt(this.styleObject.width);
       style.width = `${width}px`;
       return style;
     },
