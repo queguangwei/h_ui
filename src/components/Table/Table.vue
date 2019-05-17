@@ -537,7 +537,7 @@ export default {
       let style = {};
       if (this.bodyHeight !== 0 || this.maxHeight) {
         let height =this.patibleHeight?this.bodyHeight-this.scrollBarWidth:this.bodyHeight;
-        if (this.tableWidth < this.initWidth+1) {
+        if (this.tableWidth < this.initWidth) {
           height = height + this.scrollBarWidth-1;
         }
         // height不存在时bodyheight为0
@@ -550,10 +550,9 @@ export default {
       let style = {};
       // style.width = this.initWidth!=0?this.initWidth+'px': this.hasWidth ? this.hasWidth+'px' : '100%';
       style.width = this.initWidth!=0?this.initWidth+'px':'100%';
-      let height = (this.isLeftFixed || this.isRightFixed) ? this.bodyHeight + this.scrollBarWidth : this.bodyHeight;
-      height = this.patibleHeight?height-2:height;
-      style.height = this.height || this.maxHeight ? Number(height-this.scrollBarWidth)+'px':null;
-      style.lineHeight = this.height  || this.maxHeight ? Number(height-this.scrollBarWidth)+'px':null;
+      let height = (this.isLeftFixed || this.isRightFixed) && !this.patibleHeight ? this.bodyHeight + this.scrollBarWidth : this.bodyHeight;
+      style.height = this.height || this.maxHeight ? Number(height)+'px':null;
+      style.lineHeight = this.height  || this.maxHeight ? Number(height)+'px':null;
       return style;
     },
     leftFixedColumns () {
