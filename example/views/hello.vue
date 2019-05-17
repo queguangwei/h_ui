@@ -21,7 +21,7 @@
       :data="data1"
       height="300"
       width="1000"
-      patibleHeight
+      :patibleHeight="patibleHeight"
     >
     </h-table>
     <h2>总列宽大于表格列宽</h2>
@@ -33,7 +33,7 @@
       :data="data2"
       height="300"
       width="1000"
-      patibleHeight
+      :patibleHeight="patibleHeight"
     >
     </h-table>
     <h2>总列宽大于表格列宽</h2>
@@ -45,7 +45,7 @@
       :data="data3"
       height="300"
       width="1000"
-      patibleHeight
+      :patibleHeight="patibleHeight"
     >
     </h-table>
     <h2>总列宽小于表格列宽，大于表格列宽减滚动条宽</h2>
@@ -57,7 +57,6 @@
       :data="data1"
       height="300"
       width="1000"
-      patibleHeight
     >
     </h-table>
     <h2>总列宽小于表格列宽，大于表格列宽减滚动条宽</h2>
@@ -69,7 +68,7 @@
       :data="data2"
       height="300"
       width="1000"
-      patibleHeight
+      :patibleHeight="patibleHeight"
     >
     </h-table>
     <h2>总列宽小于表格列宽，大于表格列宽减滚动条宽</h2>
@@ -81,7 +80,7 @@
       :data="data3"
       height="300"
       width="1000"
-      patibleHeight
+      :patibleHeight="patibleHeight"
     >
     </h-table>
     <h2>总列宽小于表格列宽</h2>
@@ -93,7 +92,7 @@
       :data="data1"
       height="300"
       width="1000"
-      patibleHeight
+      :patibleHeight="patibleHeight"
     >
     </h-table>
     <h2>总列宽小于表格列宽</h2>
@@ -105,7 +104,7 @@
       :data="data2"
       height="300"
       width="1000"
-      patibleHeight
+      :patibleHeight="patibleHeight"
     >
     </h-table>
     <h2>总列宽小于表格列宽</h2>
@@ -115,9 +114,9 @@
       :barWidth="17"
       :barHeight="17"
       :data="data3"
-      height="300"
       width="1000"
-      patibleHeight
+      maxHeight="300"
+      :patibleHeight="patibleHeight"
     >
     </h-table>
     <h2>最后一列不设置列宽</h2>
@@ -129,7 +128,7 @@
       :data="data1"
       height="300"
       width="1000"
-      patibleHeight
+      :patibleHeight="patibleHeight"
     >
     </h-table>
     <h2>最后一列不设置列宽</h2>
@@ -141,7 +140,7 @@
       :data="data2"
       height="300"
       width="1000"
-      patibleHeight
+      :patibleHeight="patibleHeight"
     >
     </h-table>
     <h2 class="bug">最后一列不设置列宽</h2>
@@ -153,7 +152,7 @@
       :data="data3"
       height="300"
       width="1000"
-      patibleHeight
+      :patibleHeight="patibleHeight"
     >
     </h-table>
   </div>
@@ -167,6 +166,7 @@ for (let i = 0; i < 1; i++) {
 export default {
   data() {
     return {
+      patibleHeight: true,
       columns1: [
         {
           type: "index",
@@ -226,7 +226,7 @@ export default {
         {
           title: "地址1",
           key: "securityName",
-          width: 190
+          width: 200
         }
       ],
       columns3: [
