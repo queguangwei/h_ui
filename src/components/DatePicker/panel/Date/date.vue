@@ -111,6 +111,7 @@
         computed: {
             classes () {
                 return [
+                    `clearfix`,
                     `${prefixCls}-body-wrapper`,
                     {
                         [`${prefixCls}-with-sidebar`]: this.shortcuts.length

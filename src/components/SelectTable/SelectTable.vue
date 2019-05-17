@@ -1065,6 +1065,7 @@ export default {
             } else {
               this.query = child.value
             }
+            this.selectToChangeQuery = true
           }
         })
       }

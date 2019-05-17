@@ -1,176 +1,50 @@
 <template>
-<div>
-    <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80" onlyBlurRequire>
-        <h-form-item label="typefield" prop="mail">
-            <h-typefield class="curItemClass" v-model="formValidate.mail" placeholder="请输入邮箱"></h-typefield >
-        </h-form-item>
-        <h-form-item label="select" prop="city1">
-            <h-select 
-                v-model="formValidate.city1"
-                filterable
-                remote
-                :remote-method="remoteMethod1"
-                class="curItemClass"
-                >
-                <h-option v-for="option in options1"
-                    :value="option.value"
-                    :key="option.value">{{option.label}}</h-option>
-            </h-select>
-        </h-form-item>
-        <h-form-item label="simpleSelect" prop="city">
-            <h-simple-select class="curItemClass" v-model="formValidate.city" filterable placeholder="请选择所在地">
-                <h-select-block :data="bigData"></h-select-block>
-            </h-simple-select>
-        </h-form-item>
-        <h-form-item label="input" prop="name">
-            <h-input class="curItemClass" v-model="formValidate.name" placeholder="请输入姓名"></h-input>
-        </h-form-item>
-        <h-form-item prop="date" label="data">
-            <h-date-picker class="curItemClass" type="date" placeholder="选择日期" v-model="formValidate.date"></h-date-picker>
-        </h-form-item>
-        <h-form-item prop="time" label="time">
-            <h-time-picker class="curItemClass" type="time" placeholder="选择时间" v-model="formValidate.time"></h-time-picker>
-        </h-form-item>
-        <h-form-item label="radio" prop="gender" >
-            <h-radio-group v-model="formValidate.gender">
-                <h-radio label="male" class="curItemClass">男</h-radio>
-                <h-radio label="female" class="curItemClass">女</h-radio>
-            </h-radio-group>
-        </h-form-item>
-        <h-form-item label="checkbox" prop="interest">
-            <h-checkbox-group v-model="formValidate.interest">
-                <h-checkbox label="吃饭" class="curItemClass"></h-checkbox>
-                <h-checkbox label="睡觉" class="curItemClass"></h-checkbox>
-                <h-checkbox label="跑步" class="curItemClass"></h-checkbox>
-                <h-checkbox label="看电影" class="curItemClass"></h-checkbox>
-            </h-checkbox-group>
-        </h-form-item>
-        <h-form-item>
-            <h-button type="primary" canFocus @click="handleSubmit('formValidate')" class="curItemClass">提交</h-button>
-            <h-button type="ghost" class="curItemClass"  canFocus  @click="handleReset('formValidate')" style="margin-left: 8px">重置</h-button>
-        </h-form-item>
-    </h-form>
-</div>
+  <div>
+    <h-select
+      filterable
+      v-model="curItemLevel"
+      :clearable='false'
+      setDefSelect
+      ref="select1"
+      style="width:100px"
+      @on-change="changeItemLevel">
+      <h-option
+        v-for="(item) in itemLevelList"
+        :value="item['val']"
+        :key="item['val']">{{ item['caption'] }}
+      </h-option>
+    </h-select>
+    <h-button type="primary" @click="changeDict">切换下拉框数据</h-button>
+    <h-button type="primary" @click="selectSecondOne">选中第二项</h-button>
+  </div>
 </template>
 <script>
-import { enterHandler,enterHandler1 } from "../../src/util/tools.js";
 export default {
   data() {
     return {
-      formValidate: {
-        name: "",
-        mail: "",
-        city: "",
-        city1: "",
-        gender: "",
-        interest: [],
-        date: "",
-        time: "",
-        desc: ""
-      },
-      bigData: [
-        { value: "value1", label: "label1" },
-        { value: "value2", label: "label2" },
-        { value: "value3", label: "label3" },
-        { value: "value4", label: "label4" },
-        { value: "value5", label: "label5" },
-        { value: "value6", label: "label6" }
-      ],
-      list: [
-        'Alabama',
-        'Alaska',
-        'Arizona',
-        'Arkansas',
-        'California',
-        'Colorado',
-        'Connecticut',
-        'Delaware',
-        'Florida',
-        'Georgia',
-        'Hawaii',
-        'Idaho',
-        'Illinois',
-        'Indiana',
-        'Iowa',
-        'Kansas',
-        'Kentucky',
-        'Louisiana',
-        'Maine',
-        'Maryland',
-        'Massachusetts',
-        'Michigan',
-        'Minnesota',
-        'Mississippi',
-        'Missouri',
-        'Montana',
-        'Nebraska',
-        'Nevada',
-        'New hampshire',
-        'New jersey',
-        'New mexico',
-        'New york',
-        'North carolina',
-        'North dakota',
-        'Ohio',
-        'Oklahoma',
-        'Oregon',
-        'Pennsylvania',
-        'Rhode island',
-        'South carolina',
-        'South dakota',
-        'Tennessee',
-        'Texas',
-        'Utah',
-        'Vermont',
-        'Virginia',
-        'Washington',
-        'West virginia',
-        'Wisconsin',
-        'Wyoming'
-      ],
-      options1:[],
-    };
+      curItemLevel: "1",
+      itemLevelList: [],
+      data1: [{val: "1", caption: "Dict1_11" }, {val: "2", caption: "Dict1_222" },],
+      data2: [{val: "1", caption: "Dict1_11" }, {val: "2", caption: "Dict1_222" }, {val: "3", caption: "Dict1_333" },]
+    }
   },
-  methods: {
-    handleSubmit(name) {
-    //   this.$refs[name].validate(valid => {
-    //     if (valid) {
-    //       this.$Message.success("提交成功!");
-    //     } else {
-    //       this.$Message.error("表单验证失败!");
-    //     }
-    //   });
+  methods:{
+    changeDict() {
+      if (this.itemLevelList == this.data1) {
+        this.itemLevelList = this.data2
+      } else {
+        this.itemLevelList = this.data1
+      }
     },
-    handleReset(name) {
-    //   this.$refs[name].resetFields();
+    selectSecondOne() {
+      this.curItemLevel = "2"
     },
-    remoteMethod1(query) {
-      if (query !== '') {
-        this.loading1 = true
-        setTimeout(() => {
-          this.loading1 = false
-          this.options1 = []
-          const list = this.list.map(item => {
-            return {
-              value: item,
-              label: item
-            }
-          })
-          this.options1 = list.filter(
-            item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1
-          )
-        }, 200)
-      } 
-    },
+    changeItemLevel() {}
   },
-  mounted() {
-    // window.isO45 = true;
-    // window.IS_LICAI = true
-    document.addEventListener("keyup", event => {
-      enterHandler(this.$refs.formValidate, event);
-    });
+  created() {
+    this.itemLevelList = this.data1;
   }
-};
+}
 </script>
 <!--<template>
 <div>

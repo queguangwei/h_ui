@@ -161,7 +161,6 @@ export default {
         } else {
           this.updateVisibleData()
         }
-
         this.$refs.block.scrollTop = 0
       })
     },

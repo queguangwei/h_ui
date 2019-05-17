@@ -165,6 +165,7 @@
         computed: {
             classes(){
                 return [
+                    `clearfix`,
                     `${prefixCls}-body-wrapper`,
                     `${datePrefixCls}-with-range`,
                     {

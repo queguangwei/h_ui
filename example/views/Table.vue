@@ -962,7 +962,8 @@ export default {
           name: '王小明',
           age: 18,
           address: '北京市朝阳区\r芍药居',
-          _disabled:true,
+          // _disabled:true,
+          _checked:true,
         },
         {
           name: '张小刚',
