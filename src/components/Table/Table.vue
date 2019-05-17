@@ -327,7 +327,8 @@ export default {
     disabledExpand:{//禁用展开功能
       type:Boolean,
       default:false,
-    }
+    },
+    barWidth: Number
   },
   data () {
     return {
@@ -345,7 +346,7 @@ export default {
       showSlotFooter: true,
       bodyHeight: 0,
       bodyRealHeight: 0,
-      scrollBarWidth: getScrollBarSize(),
+      scrollBarWidth: this.barWidth || getScrollBarSize(),
       currentContext: this.context,
       cloneData: deepCopy(this.data),    // when Cell has a button to delete row data, clickCurrentRow will throw an error, so clone a data
       resizeProxyVisible: false,
@@ -423,7 +424,7 @@ export default {
         if (this.bodyHeight === 0) {
           width = this.tableWidth;
         } else {
-          if (this.bodyHeight > this.bodyRealHeight && this.data.length>0) {
+          if ((this.bodyHeight > this.bodyRealHeight && this.data.length>0) || (this.data.length === 0)) {
             width = this.tableWidth;
           } else {
             width = this.tableWidth - this.scrollBarWidth;
