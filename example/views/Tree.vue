@@ -589,6 +589,7 @@ bigObj = curdata;
         // console.log(1)
       },
       showChange(arr){
+        debugger
         console.log(arr)
       },
       showExpand (payload) {
