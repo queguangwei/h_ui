@@ -83,6 +83,9 @@
         </li>
       </ul>
     </div>
+    <div v-if="showWordLimit" :class="[prefixCls + '-word-limit']">
+     {{currentLength}}/{{maxlength}}
+    </div>
   </div>
 </template>
 <script>
@@ -206,6 +209,11 @@ export default {
     keyUpMode: {
       type: Boolean,
       default: false
+    },
+    // 显示长度限制提示
+    showWordLimit: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -274,6 +282,9 @@ export default {
       return {
         [`${prefixCls}-tips-complex`]: this.tipState == 'complex'
       }
+    },
+    currentLength() {
+      return this.value.length
     }
   },
   methods: {
@@ -430,6 +441,10 @@ export default {
         minRows,
         maxRows
       )
+
+      if (this.showWordLimit) {
+        this.textareaStyles.minWidth = '100%'
+      }
     },
     focus() {
       if (this.type === 'textarea') {
