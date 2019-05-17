@@ -78,15 +78,15 @@
              placeholder="请输入..."
              style="width: 200px"
              :disabled="true"
-             show-word-limit
-             :maxlength="200"></h-input>
+             show-word-limit></h-input>
     <h-input v-model="value8"
              type="textarea"
              :autosize="{minRows: 2,maxRows: 5}"
              placeholder="请输入..."
              style="width: 200px"
+             lengthByByte
              show-word-limit
-             :maxlength="200"></h-input>
+             :maxlength="20"></h-input>
     <h2>输入框尺寸</h2>
     <h-input v-model="value1"
              size="large"

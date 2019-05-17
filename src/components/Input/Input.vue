@@ -283,7 +283,25 @@ export default {
         [`${prefixCls}-tips-complex`]: this.tipState == 'complex'
       }
     },
+    /**
+     * @description 当前输入字符 / 字节的长度
+     */
     currentLength() {
+      if (this.lengthByByte) {
+        let bytesCount = 0
+        for (var i = 0; i < this.value.length; i++) {
+          var c = this.value.charAt(i)
+          if (/^[\u0000-\u00ff]$/.test(c)) {
+            //匹配双字节
+            bytesCount += 1
+          } else {
+            bytesCount += 2
+          }
+        }
+
+        return bytesCount
+      }
+
       return this.value.length
     }
   },
