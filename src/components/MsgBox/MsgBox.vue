@@ -147,6 +147,11 @@ export default {
     maskLeft:{
       top: [String,Number],
       default: null
+    },
+    // escClose 触发前调用的函数，其返回结果影响弹窗关闭与否
+    beforeEscClose: {
+      type: Function,
+      default: () => true
     }
   },
   data () {
@@ -250,7 +255,7 @@ export default {
       this.isMax = !this.isMax;
       this.$emit('on-maximize', this.isMax);
     },
-    backOrigin(){      
+    backOrigin(){
       const obj = this.$refs.content;
       const width = parseInt(this.curWidth);
       const styleWidth = {
@@ -287,6 +292,10 @@ export default {
     EscClose (e) {
       if (this.visible && this.escClose && this.realClose) {
         if (e.keyCode === 27) {
+          // esc 关闭前判断 beforeEscClose 函数返回
+          let flag = this.beforeEscClose && this.beforeEscClose()
+          if (!flag) return
+
           this.$emit('on-cancel');
           this.close();
         }

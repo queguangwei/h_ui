@@ -14,7 +14,7 @@
  * 5.0 $Font-Awesome
  * 6.0 $Function
  * 7.0 $Color
- *        
+ *
  */
 
 // Prefix
@@ -26,6 +26,7 @@ $info-color: #298DFF;
 $success-color: #1ABE6B;
 $warning-color: #FF9901 ;
 $error-color: #F5222D;
+$transparent-color: transparent;
 $changed-color: #d9534f;
 $link-color: #298DFF;
 $link-hover-color: lighten($link-color, 20%);
@@ -39,7 +40,7 @@ $rate-star-color: #f5a623;
 $icon-color:#9EA7B4;
 // Base
 $body-background: #fff;
-$font-family: 
+$font-family:
 "Helvetica Neue",
 Helvetica,
 "PingFang SC",
@@ -119,6 +120,8 @@ $btn-ghost-border: $border-color-base;
 $btn-danger-color:#F5222D;
 $btn-danger-bg:#F7F7F7;
 $btn-danger-border:  #D7DDE4;
+$btn-transparent-color: $text-color;
+$btn-transparent-bg: $transparent-color;
 $btn-circle-size: 32px;
 $btn-circle-size-large: 36px;
 $btn-circle-size-small: 24px;
@@ -144,6 +147,7 @@ $input-focus-border-color: $primary-color;
 $input-disabled-bg: #F7F7F7;
 $input-readonly-bg: #F7F7F7;
 $input-required-icon-color: #E8380C;
+$input-hint: #909399;
 // Tag
 $tag-font-size: 12px;
 // Media queries breakpoints
