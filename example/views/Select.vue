@@ -53,6 +53,7 @@
                 multiple
                 style="width:320px"
                 isCheckall
+                hideMult
                 @on-change="change"
                 @on-scroll="scroll"
                 :isComputed="isComputed"

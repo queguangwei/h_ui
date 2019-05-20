@@ -373,7 +373,7 @@
         if (this.showClose) {
           this.handleClear();
         } else if (!this.disabled) {
-           this.handleFocus();
+          this.handleFocus();
         }
       },
       handleClear () {
