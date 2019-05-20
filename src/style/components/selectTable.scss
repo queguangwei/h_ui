@@ -356,6 +356,27 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
     &-right {
         text-align:right;
     }
+    &-hideMultHead{
+        position: relative;
+        display: block;
+        font-size: $font-size-small;
+        padding: 7px 12px;
+    }
+    &-hideMultHead:hover{
+        cursor: pointer;
+    }
+    &-hideMultHead:after{
+        @include h-icon();
+        font-size: 22px;
+        content: '\E734';
+        color: $no-select-color;
+        position: absolute;
+        top: 8px;
+        right: 26px;
+    }
+    &-hideMultHead-select,&-hideMultHead-select:after{
+        color: $selected-color;
+    }
 }
 .#{$selectTable-prefix-cls}-checkHead{
     input{
@@ -390,7 +411,6 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
     //     color: $selected-color;
     // }
 }
-
 .#{$select-group-prefix-cls} {
     list-style: none;
     margin: 0;
