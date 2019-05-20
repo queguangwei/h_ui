@@ -281,6 +281,22 @@
     }
 }
 
+// Transparent
+@mixin btn-transparent() {
+  @include button-variant($btn-transparent-color, $btn-transparent-bg, $transparent-color);
+  border: none;
+  background: $btn-transparent-bg !important;
+
+  &:hover {
+    color: lighten($primary-color, 10%);
+  }
+  //&:focus,
+  &:active,
+  &.active {
+      color: darken($primary-color, 10%);
+  }
+}
+
 // Color
 @mixin btn-color($color) {
     @include button-variant($btn-primary-color, $color, $color);
