@@ -10,11 +10,23 @@
       @keyup="keyup"
       @keydown="keydown">
       <!-- 多选时输入框内选中值模拟 -->
-      <div class="h-tag" v-for="(item, index) in selectedMultiple" :key="index">
-        <span class="h-tag-text">{{ item.label }}</span>
-        <Icon name="close" @click.native.stop="removeTag(index)"></Icon>
-      </div>
-        <!-- 下拉输入框模拟（非远程搜索时渲染）  -->
+      <template  v-if="multiple && !collapseTags">
+        <div class="h-tag" v-for="(item, index) in selectedMultiple" :key="index">
+          <span class="h-tag-text">{{ item.label }}</span>
+          <Icon name="close" @click.native.stop="removeTag(index)"></Icon>
+        </div>
+      </template>
+      <!-- 多选时输入框压缩展示个数 -->
+      <template v-if="multiple && collapseTags && selectedMultiple.length > 0">
+        <div class="h-tag">
+          <span class="h-tag-text">{{ selectedMultiple[0].label }}</span>
+          <Icon name="close" @click.native.stop="removeTag(index)"></Icon>
+        </div>
+        <div class="h-tag" v-if="multiple && collapseTags && selectedMultiple && selectedMultiple.length > 1">
+          <span class="h-tag-text">+{{ selectedMultiple.length - 1 }}</span>
+        </div>
+      </template>
+      <!-- 下拉输入框模拟（非远程搜索时渲染）  -->
       <span :class="[prefixCls + '-placeholder']" v-show="showPlaceholder && (!filterable || showBottom)">{{ localePlaceholder }}</span>
       <span :class="[prefixCls + '-selected-value']" v-show="!showPlaceholder && !multiple && !(filterable && !showBottom)">{{ selectedSingle }}</span>
       <!-- 下拉输入框(远程搜索时渲染) -->
@@ -283,6 +295,11 @@
       },
       /* 条目不存在时允许增加新条目 */
       allowCreate: {
+        type: Boolean,
+        default: false
+      },
+      /* 多选时是否将选项压缩展示个数 */
+      collapseTags: {
         type: Boolean,
         default: false
       }

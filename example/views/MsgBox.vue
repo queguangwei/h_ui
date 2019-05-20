@@ -108,7 +108,14 @@
         <!-- </h-tabs> -->
       </div>
     </h-msg-box>
-    <h-button @click="showModal2 = true">Modal无Tabs</h-button>
+    <h-msg-box
+      width="80"
+        height ="70"
+        v-model="modal6">
+       <iframe src="https://www.baidu.com/"></iframe>
+    </h-msg-box>
+    <h-button @click="showModal2 = true">弹窗</h-button>
+    <h-button @click="modal6 = true">iframe</h-button>
 	</div>
 </template>
 <script>
@@ -121,6 +128,7 @@
         modal_loading: false,
         modal3: false,
         val3:[],
+        modal6:false,
         modal4: false,
         modal5: false,
         mulmodel:[],
