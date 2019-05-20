@@ -1,7 +1,9 @@
 <template>
   <div>
     <h2>format支持2种格式yyyy/MM/dd或者yyyy-MM-dd或者yyMMdd</h2>
-    <h-fast-date v-model="val1" format="yyyy/MM/dd" @on-focus="handleFocus" @on-blur="handleBlur"></h-fast-date>{{val1}}
+    <h-fast-date v-model="val1" format="yyyy/MM/dd" @on-focus="handleFocus" @on-blur="handleBlur">
+      <div slot="footer">123</div>
+    </h-fast-date>{{val1}}
     <h-fast-date v-model="val2" :setDefault='true' format="yyyy-MM-dd" readonly></h-fast-date>{{val2}}
     <h-fast-date v-model="val5" placement="top-start" format="yyyyMMdd" style="width:300px"></h-fast-date>{{val5}}
     <h2>clearable支持是否显示可清空按钮</h2>

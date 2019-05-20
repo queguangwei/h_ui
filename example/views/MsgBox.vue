@@ -82,16 +82,16 @@
         <h-select v-model="mulmodel" :transfer="true" style="width:400px;" multiple ref="select">
           <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>
         </h-select>
-        <h-tabs style="height: 200px;overflow:auto">
-          <h-tab-pane label="演示">
+        <!-- <h-tabs style="height: 200px;overflow:auto"> -->
+          <!-- <h-tab-pane label="演示"> -->
           <Button @click="showSec">显示第二个弹框</Button>
          <!--  <h-table border :columns="columns6" :data="data5" no-filtered-data-text="筛选后结果为空123"></h-table> -->
             <h-select :transfer="true" style="width:400px;">
                 <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>
             </h-select>
             <h-select-tree :transfer="true" v-model="val3" style="width:200px" showCheckbox :data="baseData4" filterable></h-select-tree>
-          </h-tab-pane>
-          <h-tab-pane label="演示1">
+          <!-- </h-tab-pane> -->
+          <!-- <h-tab-pane label="演示1"> -->
       <!--     <h-table border :columns="columns6" :data="data5" no-filtered-data-text="筛选后结果为空123"></h-table> -->
             <h-select :transfer="true" style="width:400px;">
                 <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>
@@ -102,8 +102,10 @@
             <h-select :transfer="true" style="width:400px;">
                 <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>
             </h-select>
-          </h-tab-pane>
-        </h-tabs>
+            <h-select-tree :transfer="true" v-model="val3" style="width:200px" showCheckbox :data="baseData4" filterable></h-select-tree>
+
+          <!-- </h-tab-pane> -->
+        <!-- </h-tabs> -->
       </div>
     </h-msg-box>
     <h-button @click="showModal2 = true">Modal无Tabs</h-button>

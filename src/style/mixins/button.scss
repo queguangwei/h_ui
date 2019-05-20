@@ -134,7 +134,8 @@
     line-height: $line-height-base;
     user-select: none;
     @include button-size($btn-padding-base, $btn-font-size, $btn-border-radius);
-    transform: translate3d(0, 0, 0);
+    // 导致按钮文本显示异常（有色差）
+    // transform: translate3d(0, 0, 0);
     //transition: all @transition-time linear;
     transition: color $transition-time linear, background-color $transition-time linear, border $transition-time linear;
 

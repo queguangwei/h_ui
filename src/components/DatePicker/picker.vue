@@ -60,6 +60,7 @@
                @on-select-range="handleSelectRange"
                @on-pick-long="handleLongDate"
             ></component>
+            <slot name="footer"></slot>
        </div>
       </Drop>
     </transition>
@@ -372,7 +373,7 @@
         if (this.showClose) {
           this.handleClear();
         } else if (!this.disabled) {
-           this.handleFocus();
+          this.handleFocus();
         }
       },
       handleClear () {

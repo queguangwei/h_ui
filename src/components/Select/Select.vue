@@ -1053,6 +1053,7 @@
                 } else {
                     this.query = child.value.trim();
                 }
+                this.selectToChangeQuery = true
             }
           });
         }

@@ -11,7 +11,7 @@
       <!--<input type="checkbox" v-model="tChecked" @click.native.stop="handleClick" @change="toggleSelect" :disabled="disabled"> -->
     </template>
     <template v-else-if="renderType === 'drag'">
-      <h-icon name="arrow-move" size="18" draggable="true" @dragstart.native="dragStart($event, row._index)"></h-icon>
+      <h-icon name="arrow-move" size="18" data-drag="true" draggable="true" @dragstart.native="dragStart($event, row._index)"></h-icon>
     </template>
     <template v-if="renderType === 'normal'" >
       <span v-html="row[column.key]"></span>
@@ -98,6 +98,7 @@ export default {
         const dataTransfer = event.dataTransfer;
         dataTransfer.effectAllowed = "move";
         dataTransfer.setData("text", "" + index);
+        this.$parent.table.dragEl = event.currentTarget;
       },
       toggleSelect (status,event) {
         this.$parent.$parent.$parent.toggleSelect(this.index,event);
