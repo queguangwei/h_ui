@@ -53,7 +53,8 @@
           :prefix-cls="prefixCls"
           :rowTitle = "rowTitle"
           :expanded = "Boolean(rowTitle.expand)"
-          :checked = "rowChecked(rowTitle._index)">         
+          :checked = "rowChecked(rowTitle._index)"
+          :titleRender="titleRender">         
         </group-tr>
         <template v-if="rowTitle.expand" v-for="(row,index) in rowTitle.item">
           <table-tr
@@ -177,6 +178,7 @@
         checkStrictly:Boolean,
         option:Array,
         treeOption:Array,
+        titleRender:Function,
       },
       data(){
         return{
