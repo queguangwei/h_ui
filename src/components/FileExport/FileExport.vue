@@ -190,7 +190,7 @@
               row = tHeader.map((item, index) => {
                 let cellData 
                 if (item.key && row[item.key] && item.exportRender) {
-                  cellData = item.exportRender(row[item.key])
+                  cellData = item.exportRender(row[item.key], row)
                 } else  {
                   cellData = typeof row[item.key] !== 'undefined' ? row[item.key] : ''
                 }

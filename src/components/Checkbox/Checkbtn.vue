@@ -44,7 +44,8 @@
         prefixCls: prefixCls,
         isChecked:false,
         model:[],
-        parent: findComponentsUpward(this, 'CheckboxGroup')
+        parent: findComponentsUpward(this, 'CheckboxGroup'),
+        viewValue:''
       };
     },
     computed: {
@@ -68,6 +69,7 @@
     mounted () {
       this.parent = findComponentsUpward(this, 'CheckboxGroup');
       this.parent.updateModel(true);
+      this.viewValue = this.label?this.label:this.value;
     },
     methods: {
       change (event) {
@@ -80,6 +82,12 @@
       },
     },
     watch: {
+      label(val){
+        this.viewValue = val?val:this.value;
+      },
+      value(val){
+        this.viewValue = this.label?this.label:this.value;
+      }
     }
   };
 </script>

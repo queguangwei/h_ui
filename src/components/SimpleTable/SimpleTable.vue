@@ -370,7 +370,7 @@ export default {
       default () {
         return [];
       }
-    },
+    }
   },
   data () {
     return {
@@ -605,7 +605,7 @@ export default {
       let style = {};
       if (this.bodyHeight !== 0) {
         let height = this.bodyHeight- this.scrollBarHeight;
-        if (this.tableWidth < this.initWidth+1) {
+        if (this.tableWidth < this.initWidth - this.scrollBarWidth) {
           height = this.bodyHeight-1;
         }
         style.height = `${height}px`;
