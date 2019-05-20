@@ -28,7 +28,9 @@ Modal.newInstance = properties => {
           height: undefined,
           isOkLeft: false,
           cancleIcon: '',
-          okIcon: ''
+          okIcon: '',
+          top: 100,
+          maskClosable: false
       }),
       render (h) {
           let footerVNodes = [];
@@ -110,7 +112,9 @@ Modal.newInstance = properties => {
                   width: this.width,
                   scrollable: this.scrollable,
                   closable: this.closable,
-                  zIndex:this.zIndex
+                  maskClosable: this.maskClosable,
+                  zIndex:this.zIndex,
+                  top: this.top
               }),
               domProps: {
                   value: this.visible
@@ -297,6 +301,16 @@ Modal.newInstance = properties => {
       if('okIcon' in props){
         modal.$parent.okIcon= props.okIcon;
       }
+      if ('closable' in props) {
+        modal.$parent.closable = props.closable;
+      }
+      if ('maskClosable' in props) {
+        modal.$parent.maskClosable = props.maskClosable;
+      }
+      if ('top' in props) {
+        modal.$parent.top = props.top;
+      }
+
       // notice when component destroy
       modal.$parent.onRemove = props.onRemove;
 
