@@ -327,8 +327,7 @@ export default {
     disabledExpand:{//禁用展开功能
       type:Boolean,
       default:false,
-    },
-    barWidth: Number
+    }
   },
   data () {
     return {
@@ -346,7 +345,7 @@ export default {
       showSlotFooter: true,
       bodyHeight: 0,
       bodyRealHeight: 0,
-      scrollBarWidth: this.barWidth || getScrollBarSize(),
+      scrollBarWidth: getScrollBarSize(),
       currentContext: this.context,
       cloneData: deepCopy(this.data),    // when Cell has a button to delete row data, clickCurrentRow will throw an error, so clone a data
       resizeProxyVisible: false,
@@ -437,7 +436,7 @@ export default {
     tipStyle () {
       let style = {};
       if (this.tableWidth !== 0) {
-        let width = this.tableWidth;
+        let width = this.tableWidth < this.initWidth ? this.initWidth - 1 : this.tableWidth;
         style.width = `${width}px`;
       }
       return style;
@@ -551,6 +550,10 @@ export default {
       // style.width = this.initWidth!=0?this.initWidth+'px': this.hasWidth ? this.hasWidth+'px' : '100%';
       style.width = this.initWidth!=0?this.initWidth+'px':'100%';
       let height = (this.isLeftFixed || this.isRightFixed) && !this.patibleHeight ? this.bodyHeight + this.scrollBarWidth : this.bodyHeight;
+      // 判断是否有横向滚动条
+      if (this.tableWidth !== 0 && this.initWidth != 0) {
+        height = this.tableWidth > this.initWidth ? height - this.scrollBarWidth : height;
+      }
       style.height = this.height || this.maxHeight ? Number(height)+'px':null;
       style.lineHeight = this.height  || this.maxHeight ? Number(height)+'px':null;
       return style;

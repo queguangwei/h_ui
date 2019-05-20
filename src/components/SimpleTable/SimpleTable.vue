@@ -370,9 +370,7 @@ export default {
       default () {
         return [];
       }
-    },
-    barWidth: Number,
-    barHeight: Number
+    }
   },
   data () {
     return {
@@ -390,8 +388,8 @@ export default {
       showSlotFooter: true,
       bodyHeight: 0,
       bodyRealHeight: 0,
-      scrollBarWidth: this.barWidth || getScrollBarSize(),
-      scrollBarHeight: this.barHeight || getScrollBarSizeHeight(),//横向高度
+      scrollBarWidth: getScrollBarSize(),
+      scrollBarHeight: getScrollBarSizeHeight(),//横向高度
       currentContext: this.context,
       cloneData: deepCopy(this.data),    // when Cell has a button to delete row data, clickCurrentRow will throw an error, so clone a data
       resizeProxyVisible: false,
