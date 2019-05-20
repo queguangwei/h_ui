@@ -188,6 +188,10 @@
       clearOnIllegal: {
         type: Boolean,
         default: false
+      },
+      iconVisible:{//是否只能通过点击图标打开弹框
+        type: Boolean,
+        default: false
       }
     },
     data () {
@@ -273,7 +277,11 @@
             this.$emit('on-blur')
         }
       },
-      handleFocus () {
+      handleFocus(){
+        if(this.iconVisible) return
+        this.handleVisible()
+      },
+      handleVisible () {
         if (this.readonly||this.disabled) return;
         this.visible = true;
         this.$refs.pickerPanel.onToggleVisibility(true);
@@ -373,7 +381,7 @@
         if (this.showClose) {
           this.handleClear();
         } else if (!this.disabled) {
-          this.handleFocus();
+          this.handleVisible();
         }
       },
       handleClear () {
@@ -470,7 +478,6 @@
         e.stopPropagation();
       },
       setPlacement(){
-        //   debugger;
         if(this.autoPlacement){
             let obj = this.$refs.wrapper;
             let allWidth= document.body.clientWidth;

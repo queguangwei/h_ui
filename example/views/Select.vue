@@ -807,7 +807,12 @@ export default {
                     this.options2 = list.filter(item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1);
                 }, 200);
             } else {
-                this.options2 = [];
+                this.options2 = this.list.map(item => {
+                        return {
+                            value: item,
+                            label: item
+                        };
+                    });
             }
      }
   },
