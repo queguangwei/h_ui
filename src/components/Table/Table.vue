@@ -360,7 +360,9 @@ export default {
       shiftSelect:[],
       ctrlSelect:[],
       /* 当前dragover行序号 */
-      currDragOverIdx: null
+      currDragOverIdx: null,
+      /* 当前拖拽元素 */
+      dragEl: null
     };
   },
   computed: {

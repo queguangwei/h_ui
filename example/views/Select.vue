@@ -13,6 +13,7 @@
       <Button @on-click="setNull">赋不存在值</Button>{{model34}}
       <h-select v-model="model34"
                 zeroToNull
+                filterable
                 style="width:80px"
                 @on-change="change"
                 @on-scroll="scroll"
@@ -552,7 +553,7 @@ export default {
       model4: '',
       model5: 'beijing',
       model6: '',
-      model7: '',
+      model7: [],
       model8: '',
       model9: '',
       model10: '',
@@ -719,7 +720,7 @@ export default {
       console.log(d);
     },
     setNull(){
-      this.model34 = "0"
+      this.model34 = '2'
       // this.model44 = ['124124']
     },
     cy_change_test(val) {
@@ -736,7 +737,7 @@ export default {
       }
     },
     fuzhi() {
-      this.cityList = data.slice(0, 2)
+      this.cityList = data.slice(0, 10)
     },
     qk() {
       this.cityList = []
@@ -812,9 +813,9 @@ export default {
   mounted() {
     var _this = this
     this.cityList = []
-    var timer = setTimeout(() => {
-      _this.cityList = data.slice(0, 10)
-    }, 10)
+    // var timer = setTimeout(() => {
+    //   _this.cityList = data.slice(0, 10)
+    // }, 10)
     this.uList = [
       { id: '1', name: '中国' },
       { id: '2', name: '美国' },
