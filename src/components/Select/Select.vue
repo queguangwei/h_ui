@@ -10,11 +10,23 @@
       @keyup="keyup"
       @keydown="keydown">
       <!-- 多选时输入框内选中值模拟 -->
-      <div class="h-tag" v-for="(item, index) in selectedMultiple" :key="index">
-        <span class="h-tag-text">{{ item.label }}</span>
-        <Icon name="close" @click.native.stop="removeTag(index)"></Icon>
-      </div>
-        <!-- 下拉输入框模拟（非远程搜索时渲染）  -->
+      <template  v-if="multiple && !collapseTags">
+        <div class="h-tag" v-for="(item, index) in selectedMultiple" :key="index">
+          <span class="h-tag-text">{{ item.label }}</span>
+          <Icon name="close" @click.native.stop="removeTag(index)"></Icon>
+        </div>
+      </template>
+      <!-- 多选时输入框压缩展示个数 -->
+      <template v-if="multiple && collapseTags && selectedMultiple.length > 0">
+        <div class="h-tag">
+          <span class="h-tag-text">{{ selectedMultiple[0].label }}</span>
+          <Icon name="close" @click.native.stop="removeTag(index)"></Icon>
+        </div>
+        <div class="h-tag" v-if="multiple && collapseTags && selectedMultiple && selectedMultiple.length > 1">
+          <span class="h-tag-text">+{{ selectedMultiple.length - 1 }}</span>
+        </div>
+      </template>
+      <!-- 下拉输入框模拟（非远程搜索时渲染）  -->
       <span :class="[prefixCls + '-placeholder']" v-show="showPlaceholder && (!filterable || showBottom)">{{ localePlaceholder }}</span>
       <span :class="[prefixCls + '-selected-value']" v-show="!showPlaceholder && !multiple && !(filterable && !showBottom)">{{ selectedSingle }}</span>
       <!-- 下拉输入框(远程搜索时渲染) -->
@@ -285,6 +297,16 @@
       allowCreate: {
         type: Boolean,
         default: false
+      },
+      /* 多选时是否将选项压缩展示个数 */
+      collapseTags: {
+        type: Boolean,
+        default: false
+      },
+      /* 搜索时是否不将焦点放在第一搜索项 */
+      notAutoFocus:{
+        type: Boolean,
+        default: true
       }
     },
     data () {
@@ -315,6 +337,7 @@
         isSelectAll:false,
         typeValue:'string',
         focusValue:'',
+        viewValue:null
       };
     },
     computed: {
@@ -919,15 +942,15 @@
         const createdOption = this.$refs.createdOption;
         let maxIndex = createdOption ? this.options.length + 1 : this.options.length;
           if (direction === 'next') {
-              const next = this.focusIndex + 1;
-              this.focusIndex = (this.focusIndex === maxIndex) ? 1 : next;
+            const next = this.focusIndex + 1;
+            this.focusIndex = (this.focusIndex === maxIndex) ? 1 : next;
           } else if (direction === 'prev') {
-              const prev = this.focusIndex - 1;
-              this.focusIndex = (this.focusIndex <= 1) ? maxIndex : prev;
+            const prev = this.focusIndex - 1;
+            this.focusIndex = (this.focusIndex <= 1) ? maxIndex : prev;
           }
           let child_status = {
-              disabled: false,
-              hidden: false
+            disabled: false,
+            hidden: false
           };
           let find_deep = false;
           if (createdOption && this.focusIndex === 1) {
@@ -941,16 +964,16 @@
             }
             this.findChild((child) => {
               if (child.index === this.focusIndex) {
-                  child_status.disabled = child.disabled;
-                  child_status.hidden = child.hidden;
-                  if (!child.disabled && !child.hidden) {
-                    child.isFocus = true;
-                  }
+                child_status.disabled = child.disabled;
+                child_status.hidden = child.hidden;
+                if (!child.disabled && !child.hidden) {
+                  child.isFocus = true;
+                }
               } else {
-                  child.isFocus = false;
+                child.isFocus = false;
               }
               if (!child.hidden && !child.disabled) {
-                  find_deep = true;
+                find_deep = true;
               }
             });
           }
@@ -1052,6 +1075,7 @@
                 } else {
                     this.query = child.value.trim();
                 }
+                this.selectToChangeQuery = true
             }
           });
         }
@@ -1309,6 +1333,7 @@
         }else{
           this.titleTip = '';
         }
+        this.viewValue = val
       },
       model () {
         let backModel = this.arrtoStr(this.model);
@@ -1411,7 +1436,7 @@
           this.enableCreate && this.checkOptionSelected();
           this.enableCreate && this.reorderOptionIndex();
         })
-        if (this.filterable&&!this.remote&&!this.selectToChangeQuery) {
+        if (this.filterable&&!this.remote&&!this.selectToChangeQuery&&!this.notAutoFocus) {
           this.$nextTick(()=>{
             this.focusIndex = 1;
             if (typeof this.$refs.createdOption !== 'undefined') {
@@ -1442,13 +1467,14 @@
         if (val&&this.showTitle) {
           this.titleTip=val
         }
+        this.viewValue = val
       },
       options(val){
         if (val.length!=0 && this.isfirstSelect) {
           this.model = val[0].value;
           this.isfirstSelect = false;
         }
-        if (this.remote) {
+        if (this.remote&&!this.notAutoFocus) {
           this.$nextTick(()=>{
             this.focusIndex = 1;
             const createdOption = this.$refs.createdOption;

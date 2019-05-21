@@ -16,6 +16,7 @@
     </h-simple-select>
     <h-button @on-click="loaddata">加载数据</h-button>
     <h-simple-select autoPlacement
+    hideMult
                      filterable
                      isArrow="false"
                      multiple

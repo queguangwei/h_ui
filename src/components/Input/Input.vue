@@ -83,6 +83,9 @@
         </li>
       </ul>
     </div>
+    <div v-if="showWordLimit" :class="[prefixCls + '-word-limit']">
+     {{currentLength}}/{{maxlength}}
+    </div>
   </div>
 </template>
 <script>
@@ -206,6 +209,11 @@ export default {
     keyUpMode: {
       type: Boolean,
       default: false
+    },
+    // 显示长度限制提示
+    showWordLimit: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -215,7 +223,8 @@ export default {
       prepend: true,
       append: true,
       slotReady: false,
-      textareaStyles: {}
+      textareaStyles: {},
+      viewValue:this.value
     }
   },
   computed: {
@@ -273,6 +282,27 @@ export default {
       return {
         [`${prefixCls}-tips-complex`]: this.tipState == 'complex'
       }
+    },
+    /**
+     * @description 当前输入字符 / 字节的长度
+     */
+    currentLength() {
+      if (this.lengthByByte) {
+        let bytesCount = 0
+        for (var i = 0; i < this.value.length; i++) {
+          var c = this.value.charAt(i)
+          if (/^[\u0000-\u00ff]$/.test(c)) {
+            //匹配双字节
+            bytesCount += 1
+          } else {
+            bytesCount += 2
+          }
+        }
+
+        return bytesCount
+      }
+
+      return this.value.length
     }
   },
   methods: {
@@ -429,6 +459,10 @@ export default {
         minRows,
         maxRows
       )
+
+      if (this.showWordLimit) {
+        this.textareaStyles.minWidth = '100%'
+      }
     },
     focus() {
       if (this.type === 'textarea') {
@@ -448,6 +482,9 @@ export default {
   watch: {
     value(val) {
       this.setCurrentValue(val)
+    },
+    currentValue(val){
+      this.viewValue = val
     }
   },
   mounted() {

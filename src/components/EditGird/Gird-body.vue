@@ -53,7 +53,8 @@
           :prefix-cls="prefixCls"
           :rowTitle = "rowTitle"
           :expanded = "Boolean(rowTitle.expand)"
-          :checked = "rowChecked(rowTitle._index)">         
+          :checked = "rowChecked(rowTitle._index)"
+          :titleRender="titleRender">         
         </group-tr>
         <template v-if="rowTitle.expand" v-for="(row,index) in rowTitle.item">
           <table-tr
@@ -117,7 +118,7 @@
               :treeOption="treeOption[inx]"
             >
               <span v-if="columns.length>0 && inx==(columns[0].type=='index'?1:0)">
-                <Icon name = "play_fill" :class="iconClass(row._index)" v-if="row.children && row.children.length!=0" @on-click="toggleExpand(row._index,$event)"></Icon>
+                <Icon name = "play_fill" :class="iconClass(row._index)" v-if="(row.children && row.children.length!=0)||row.foldable" @on-click="toggleExpand(row._index,$event)"></Icon>
                 <Checkbox v-if="isCheckbox" :value="row.checked" :indeterminate="row.indeterminate" @on-click="changeSelect(row,$event)"></Checkbox> 
               </span>
             </Cell>
@@ -177,6 +178,7 @@
         checkStrictly:Boolean,
         option:Array,
         treeOption:Array,
+        titleRender:Function,
       },
       data(){
         return{
