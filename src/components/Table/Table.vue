@@ -40,8 +40,10 @@
       <div :class="[prefixCls + '-tip'] "
         v-show="((!!localeNoDataText && (!data || data.length === 0)) || (!!localeNoFilteredDataText && (!rebuildData || rebuildData.length === 0)))" @scroll="handleBodyScroll" :style="bodyStyle">
         <div :class="[prefixCls+'-tiptext']" :style="textStyle" >
-          <span v-html="localeNoDataText" v-if="!data || data.length === 0"></span>
-          <span v-html="localeNoFilteredDataText" v-else></span>
+          <slot name="nodata">
+            <span v-html="localeNoDataText" v-if="!data || data.length === 0"></span>
+            <span v-html="localeNoFilteredDataText" v-else></span>
+          </slot>
         </div>
         <table cellspacing="0" cellpadding="0" border="0" :style="tipStyle">
           <tbody>
