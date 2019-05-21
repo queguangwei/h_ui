@@ -104,7 +104,8 @@ textarea.#{$input-prefix-cls} {
   vertical-align: bottom;
   font-size: $font-size-small;
   overflow:auto;
-  white-space:normal;
+  // 解决 ie 浏览器下 textarea 不换行问题
+  white-space: pre-line;
 }
 
 .#{$input-prefix-cls}-group{
