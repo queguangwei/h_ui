@@ -49,6 +49,7 @@
           <span class="left-icon" v-show="clearable" ><Icon @on-click="closeClick" name="close" size="14"></Icon></span>
         </div>
       </div>
+      <div slot="footer"><slot name="footer"></slot></div>
     </Datepicker>
   </div>
 </template>

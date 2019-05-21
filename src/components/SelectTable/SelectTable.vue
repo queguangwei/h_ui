@@ -65,7 +65,7 @@
           <!-- <ul v-show="notFoundShow" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul> -->
           <span :class="searchClass"
                 ref='search'
-                v-if="filterable && showBottom">
+                v-if="filterable && showBottom&&!hideMult">
             <Checkbox v-model="selectHead"
                       :size="checkboxSize"
                       @on-change="toggleSelect"
@@ -83,6 +83,7 @@
                    ref="input">
             <!-- <input type="text" placeholder="请输入..." class="h-input h-input-left">  -->
           </span>
+          <span v-if="hideMult&&multiple" :class="hideMultHead" @click="toggleSelect(!isSelectAll)">全选</span>
           <div v-if="showHeader"
                :class="headerSlotCls">
             <slot name="header">
@@ -322,7 +323,11 @@ export default {
         return oneOf(value, ['small', 'large', 'default'])
       },
       default: 'large'
-    }
+    },
+    hideMult:{
+      type:Boolean,
+      default:false,
+    },
   },
   data() {
     return {
@@ -352,10 +357,17 @@ export default {
       fPlacement: this.placement,
       isBlock: false,
       allClick: false,
-      viewValue:null
+      viewValue:null,
+      isSelectAll:false
     }
   },
   computed: {
+    hideMultHead(){
+      return {
+        [`${prefixCls}-hideMultHead`]:this.hideMult&&this.multiple,
+        [`${prefixCls}-hideMultHead-select`]:this.isSelectAll,
+      }
+    },
     searchClass() {
       return [
         `${prefixCls}-search`,
@@ -367,7 +379,7 @@ export default {
     },
     listStyle() {
       let style = {}
-      if (!this.showHeader) {
+      if (!this.showHeader&&!this.hideMult) {
         if (this.showBorder) {
           style.paddingTop = this.showBottom ? '52px' : '0'
         } else {
@@ -387,7 +399,7 @@ export default {
           [`${prefixCls}-multiple`]: this.multiple,
           [`${prefixCls}-single`]: !this.multiple,
           [`${prefixCls}-show-clear`]: this.showCloseIcon,
-          [`${prefixCls}-${this.size}`]: !!this.size
+          [`${prefixCls}-${this.size}`]: !!this.size,
         }
       ]
     },
@@ -545,6 +557,7 @@ export default {
       this.$emit('on-scroll', num)
     },
     toggleSelect(val) {
+      this.isSelectAll = !this.isSelectAll
       if (this.isBlock) {
         this.allClick = true
         let hybridValue = []
@@ -603,7 +616,7 @@ export default {
       }
       this.visible = !this.visible
       this.isInputFocus = true
-      if (this.visible && this.filterable && this.showBottom) {
+      if (this.visible && this.filterable && this.showBottom&&this.$refs.input) {
         this.$nextTick(() => {
           this.$refs.input.focus()
         })
@@ -701,7 +714,9 @@ export default {
           }
         }
 
-        if(this.remote && curSingle) {
+        if (this.model === '') {
+          this.selectedSingle = ''
+        } else if(this.remote && curSingle) {
           this.selectedSingle = curSingle
         } else if(!this.remote) {
           this.selectedSingle = curSingle
@@ -858,6 +873,7 @@ export default {
 
         this.findChild(child => {
           if (this.isBlock) {
+            let curSelect = true;
             _this.options.forEach((col, i) => {
               let index = value.indexOf(col.value)
               if (index > -1) {
@@ -865,8 +881,13 @@ export default {
                 hybridValue[index].label = col.label
               } else {
                 this.$set(child.cloneData[i], 'selected', false)
+                if(curSelect){
+                  curSelect=false;
+                }
               }
             })
+            if(_this.options.length==0) curSelect = false
+            this.isSelectAll = curSelect;
           } else {
             _this.options.forEach(col => {
               let index = value.indexOf(col.value)
@@ -1065,6 +1086,7 @@ export default {
             } else {
               this.query = child.value
             }
+            this.selectToChangeQuery = true
           }
         })
       }
@@ -1144,7 +1166,7 @@ export default {
       return val.slice(0, val.length - 1)
     },
     searchStyle() {
-      if (this.filterable && this.showBottom) {
+      if (this.filterable && this.showBottom && !this.hideMult) {
         if (this.isBlock) {
           this.$refs.search.style.width = '100%'
           if (this.multiple && this.checkToHead) {

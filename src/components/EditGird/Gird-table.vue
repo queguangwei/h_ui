@@ -30,6 +30,7 @@
           :checkStrictly="checkStrictly"
           :option="options"
           :treeOption="treeOptions"
+          :titleRender="titleRender"
           @on-select-change="selectChange"
           @on-editselect-change="editselectChange"
           @on-editinput-change="editinputChange"
@@ -256,7 +257,8 @@ export default {
     disableExpand:{
       type: Boolean,
       default: false
-    }
+    },
+    titleRender: Function,
   },
   data () {
     return {

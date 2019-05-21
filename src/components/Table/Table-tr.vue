@@ -26,6 +26,7 @@
     },
     methods: {
       drop(event, index) {
+        if (!this.checkDragSource()) return;
         const table = this.table;
         const dataTransfer = event.dataTransfer;
         const dragIndex = dataTransfer.getData("text");
@@ -40,10 +41,19 @@
         table.rebuildData = [...data];
       },
       dragOver(event, index) {
+        if (!this.checkDragSource()) return;
         this.table.currDragOverIdx = index;
       },
       dragEnd(event) {
         this.table.currDragOverIdx = null;
+        this.table.dragEl = null;
+      },
+      /**
+       * 检查拖拽的元素是否合法（只有表格行的拖拽列可以拖拽）
+       */
+      checkDragSource() {
+        const dragEl = this.table.dragEl;
+        return dragEl && dragEl.dataset.drag === "true";
       },
       rowClasses (_index) {
         return [
