@@ -448,6 +448,11 @@ export default {
     resizeTextarea() {
       const autosize = this.autosize
       if (!autosize || this.type !== 'textarea') {
+        // 如果显示字符长度限制，则设置宽度为100%
+        if (this.showWordLimit) {
+          this.textareaStyles.minWidth = '100%'
+        }
+
         return false
       }
 
