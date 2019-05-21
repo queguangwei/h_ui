@@ -439,6 +439,15 @@ export default {
         this.$emit('on-select-change',this.getSelection(),this.getSelection(true));
       })
     },
+    clearSelected(){
+      this.selection ={}
+      for(let i in this.checkedObj){
+        this.checkedObj[i].checked = false
+      }
+      this.$nextTick(()=>{
+        this.$emit('on-select-change',[],[]);
+      })
+    },
     getSelection(status){
       let arr = [];
       let selectIndex=[];
@@ -497,14 +506,14 @@ export default {
         this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
       });
     },
-    deepTraversal(data,id,status){
+    deepTraversal(data,id,status,str){
       for(let i=0;i<data.length; i++){
         if(data[i].id == id){
-          this.$set(data[i],'expand',status)
+          this.$set(data[i],str,status)
           break;
         } 
         if(data[i].children&&data[i].children.length>0){
-          this.deepTraversal(data[i].children,id,status)
+          this.deepTraversal(data[i].children,id,status,str)
         }
       }
     },
@@ -512,12 +521,21 @@ export default {
       if(!this.data || this.data.length==0) return;
       let index = this.indexAndId[id];
       if(!this.checkedObj[index]){
-        this.deepTraversal(this.rebuildData, id, status)
+        this.deepTraversal(this.rebuildData, id, status, 'expand')
       }else{
         if(!this.checkedObj[index]._collectionState){
-          this.deepTraversal(this.rebuildData, id, status)
+          this.deepTraversal(this.rebuildData, id, status, 'expand')
         }
         this.$set(this.checkedObj[index],'_isExpand',status)
+      }
+    },
+    selectRow(id,status=true){
+      if(!this.data || this.data.length==0) return;
+      let index = this.indexAndId[id];
+      if(!this.checkedObj[index]){
+        this.deepTraversal(this.rebuildData, id, status,'highlight')
+      }else{
+        this.$set(this.checkedObj[index],'_isHighlight',status)
       }
     }
   },

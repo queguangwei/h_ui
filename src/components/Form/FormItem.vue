@@ -186,8 +186,8 @@ export default {
             this.labelWrap != null
               ? this.labelWrap
               : this.labelWrap == null && this.form.labelWrap != null
-                ? this.form.labelWrap
-                : false
+              ? this.form.labelWrap
+              : false
         }
       ]
     },
@@ -241,8 +241,8 @@ export default {
       return this.onlyBlurRequire
         ? true
         : false || this.form.onlyBlurRequire
-          ? true
-          : false
+        ? true
+        : false
     },
     isNotChecked() {
       return this.form.isCheck ? false : true
@@ -318,6 +318,7 @@ export default {
     validate(trigger, callback = function() {}) {
       if (this.isNotChecked) return
       const rules = this.getFilteredRule(trigger)
+
       if (!rules || rules.length === 0) {
         callback()
         return true
@@ -407,8 +408,12 @@ export default {
             this.isRequired = false
           }
         })
-        if(str==='ruleChange'&&!this.isRequired){
+        if (str === 'ruleChange' && !this.isRequired) {
           this.validateState = ''
+          let parentFormItem = findComponentParent(this, 'FormItem')
+          if (parentFormItem) {
+            parentFormItem.isRequired = this.isRequired
+          }
         }
         this.$on('on-form-blur', this.onFieldBlur)
         this.$on('on-form-change', this.onFieldChange)

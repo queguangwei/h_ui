@@ -7,6 +7,7 @@
              specialFilter
              placeholder="请输入..."
              ref="test"
+             :specialDecimal="0"
              :maxlength="20"
              focusAllSelect></h-input>
     <Button @on-click="testClick(true)">获取焦点</Button>
@@ -20,7 +21,6 @@
              @mousedown.native="onChange"></h-input>
     <h2>基础用法</h2>
     <p>可以直接设置 style 来改变输入框的宽度</p>
-    {{formData}}
     <h-input v-model="formData.value"
              placeholder="请输入..."
              style="width: 300px"
@@ -75,15 +75,18 @@
     <h2>适应文本高度的文本域</h2>
     <h-input v-model="value7"
              type="textarea"
-             :autosize="true"
              placeholder="请输入..."
              style="width: 200px"
-             :disabled="true"></h-input>
+             :disabled="true"
+             show-word-limit></h-input>
     <h-input v-model="value8"
              type="textarea"
              :autosize="{minRows: 2,maxRows: 5}"
              placeholder="请输入..."
-             style="width: 200px"></h-input>
+             style="width: 200px"
+             lengthByByte
+             show-word-limit
+             :maxlength="20"></h-input>
     <h2>输入框尺寸</h2>
     <h-input v-model="value1"
              size="large"
@@ -157,7 +160,9 @@ export default {
     return {
       example: '<script><\/script>',
       disabled: false,
-      formData: {},
+      formData: {
+        value:''
+      },
       value: '0.301',
       value1: '',
       value2: '',

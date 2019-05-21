@@ -4,7 +4,7 @@
        :class="blockCls">
     <div :class="[prefixCls+'-phantom']"
          :style="phantomStl"></div>
-    <ul :class="[prefixCls+'block-conten']"
+    <ul :class="[prefixCls+'block-content']"
         ref="content">
       <li v-for="(item,inx) in visibleData"
           :key="inx"
@@ -12,13 +12,16 @@
           :class="classes(item)"
           @click.stop="select(item)"
           @mouseout.stop="blur">
-        <checkbox v-show="multiple"
-                  size="large"
-                  :value="item.selected"
-                  @click.native.stop="handleclick"
-                  :disabled="item.disabled"
-                  @on-change="checkChange($event,item)"></checkbox>
+        <checkbox v-show="multiple&&!hideMult"
+          size="large"
+          :value="item.selected"
+          @click.native.stop="handleclick"
+          :disabled="item.disabled"
+          @on-change="checkChange($event,item)"></checkbox>
         <slot>{{showLabel(item)}}</slot>
+        <span class="itemcol" v-if="showCol[0]">{{item[showCol[0]]}}</span>
+        <span class="itemcol" v-if="showCol[1]">{{item[showCol[1]]}}</span>
+        <span class="itemcol" v-if="showCol[2]">{{item[showCol[2]]}}</span>
       </li>
       <!-- <li v-if="showEmpty" :class="[prefixCls+'-empty']">{{localeNoMatch}}</li> -->
     </ul>
@@ -53,7 +56,13 @@ export default {
     itemHeight: {
       type: [Number, String],
       default: 30
-    }
+    },
+    showCol:{
+      type: Array,
+      default: () => {
+        return []
+      }
+    },
     // disabled: {
     //   type: Boolean,
     //   default: false
@@ -70,7 +79,7 @@ export default {
       lastScollTop: 0,
       showEmpty: false,
       showBottom: false,
-      focusIndex: 0
+      focusIndex: 0,
     }
   },
   computed: {
@@ -88,7 +97,8 @@ export default {
         `${prefixCls}-drop`,
         {
           [`${prefixCls}-multiple`]: this.multiple,
-          [`${prefixCls}-show-bottom`]: this.showBottom
+          [`${prefixCls}-show-bottom`]: this.showBottom,
+           [`${prefixCls}-hideMult`]:this.hideMult&&this.multiple
         }
       ]
     },
@@ -152,7 +162,6 @@ export default {
         } else {
           this.updateVisibleData()
         }
-
         this.$refs.block.scrollTop = 0
       })
     },
@@ -231,6 +240,7 @@ export default {
     })
     this.multiple = this.$parent.$parent.multiple
     this.showBottom = this.$parent.$parent.showBottom
+    this.hideMult = this.$parent.$parent.hideMult
     this.cloneData = deepCopy(this.data)
     // v20190321 添加focus
     this.cloneData.forEach(item => {
@@ -256,7 +266,7 @@ export default {
             this.$set(item, 'focus', false)
           })
           this.$parent.$parent.updateOptions(true)
-          this.updateVisibleData(0)
+          this.updateVisibleData()
         })
       }
     },

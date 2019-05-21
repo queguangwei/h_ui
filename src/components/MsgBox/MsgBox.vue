@@ -135,6 +135,23 @@ export default {
     closeDrop:{
       type:Boolean,
       default:false,
+    },
+    disableTabEvent:{
+      type:Boolean,//禁止tab点击事件
+      default:false,
+    },
+    maskTop:{
+      top: [String,Number],
+      default: null
+    },
+    maskLeft:{
+      top: [String,Number],
+      default: null
+    },
+    // escClose 触发前调用的函数，其返回结果影响弹窗关闭与否
+    beforeEscClose: {
+      type: Function,
+      default: () => true
     }
   },
   data () {
@@ -146,7 +163,7 @@ export default {
       visible: this.value,
       screenWidth:null,
       curWidth:this.width,
-      curHeight:0,
+      curHeight:this.height,
       isMax:false,
       realClose: true, // esc时是否真正需要关闭弹出窗口
     };
@@ -171,12 +188,19 @@ export default {
       this.screenWidth = document.documentElement.clientWidth;
       let style = {};
       const width = parseInt(this.curWidth);
+      let offsetWidth = width<= 100?this.screenWidth*width/100:width
+      let height = parseInt(this.curHeight)
+      if(height){
+        height = height <= 100 ? `${height}%` : `${height}px`
+      }else{
+        height = 'auto'
+      }
       const styleWidth = {
         width: width <= 100 ? `${width}%` : `${width}px`,
-        height:this.curHeight?this.curHeight+'px':'auto'
+        height:height
       };
-      style.top=this.curHeight?'0':this.top+'px';
-      style.left = this.left==undefined?(this.screenWidth-width)/2+'px':this.left+'px';
+      style.top=this.isMax?'0':this.top+'px';
+      style.left = this.left==undefined?(this.screenWidth-offsetWidth)/2+'px':this.left+'px';
       const customStyle = this.styles ? this.styles : {};
       Object.assign(style, styleWidth, customStyle);
       return style;
@@ -198,12 +222,18 @@ export default {
     stylecls () {
       let style={};
       style.zIndex = this.zIndex;
+      if(this.maskTop){
+        style.top=this.maskTop+"px"
+      }
+      if(this.maskLeft){
+        style.left=this.maskLeft+"px"
+      }
       return style;
     },
     contentStyle () {
       let style = {}
       if (this.height) {
-        style.height = this.height + 'px'
+        style.height = this.height <= 100 ? `auto` : `${this.height}px`
         style.overflowY = "auto"
       }
       return style
@@ -214,9 +244,15 @@ export default {
   },
   methods: {
     close () {
-      this.$emit('input', false);
+      // 如果是 js 调用的 msgbox 则调用 Msgbox-js 的 cancel
+      if (this.$parent && this.$parent.$options && this.$parent.$options.name === 'Msgbox-js') {
+        this.$parent.cancel()
+        return
+      }
+
       this.$emit('on-close');
       this.visible = false;
+      this.$emit('input', false);
     },
     headClick () {
 
@@ -227,12 +263,12 @@ export default {
         this.curHeight = document.documentElement.clientHeight;
       }else{
         this.curWidth = this.width;
-        this.curHeight = 0;
+        this.curHeight = this.height;
       }
       this.isMax = !this.isMax;
       this.$emit('on-maximize', this.isMax);
     },
-    backOrigin(){      
+    backOrigin(){
       const obj = this.$refs.content;
       const width = parseInt(this.curWidth);
       const styleWidth = {
@@ -269,9 +305,18 @@ export default {
     EscClose (e) {
       if (this.visible && this.escClose && this.realClose) {
         if (e.keyCode === 27) {
+          // esc 关闭前判断 beforeEscClose 函数返回
+          let flag = this.beforeEscClose && this.beforeEscClose()
+          if (!flag) return
+
           this.$emit('on-cancel');
           this.close();
         }
+      }
+    },
+    tabClose(e){
+      if(e.keyCode==9&&this.visible){
+        event.preventDefault()
       }
     },
     animationFinish() {
@@ -300,11 +345,17 @@ export default {
     })
     on(document,'keydown', this.EscClose)
     on(window, 'resize', this.ScreenRes);
+    if(this.disableTabEvent){
+      on(document.querySelector("#app"),'keydown', this.tabClose)
+    }
   },
   beforeDestroy () {
     off(document,'keydown',this.EscClose);
     off(window, 'resize', this.ScreenRes);
     this.removeScrollEffect();
+    if(this.disableTabEvent){
+      off(document.querySelector("#app"),'keydown', this.tabClose)
+    }
   },
   watch: {
     value (val) {

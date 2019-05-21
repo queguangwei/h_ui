@@ -1,17 +1,17 @@
 <template>
   <div :class="cellClasses">
     <template v-if="column.type === 'selection'">
-      <Checkbox v-if="!column.title" size="large" @mousedown.native.stop="handleClick" :value="checked" @on-change="selectAll"></Checkbox>
+      <Checkbox v-if="!column.title" :size="checkboxSize" @mousedown.native.stop="handleClick" :value="checked" @on-change="selectAll"></Checkbox>
       <span v-else>{{column.title}}</span>
     </template>
     <template v-else>
       <span v-if="!column.renderHeader">{{ column.title || '#' }}</span>
       <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
-      <span :class="[prefixCls + '-sort']" v-if="column.sortable">
+    </template>
+    <span :class="[prefixCls + '-sort']" v-if="column.sortable">
       <Icon name="android-arrow-dropup" :class="{on: column._sortType === 'asc'}" @on-click="handleSort(index, 'asc')" @mousedown.native.stop="handleClick"></Icon>
       <Icon name="android-arrow-dropdo" :class="{on: column._sortType === 'desc'}" @on-click="handleSort(index, 'desc')" @mousedown.native.stop="handleClick"></Icon>
     </span>
-    </template>
   </div>
 </template>
 <script>
@@ -34,6 +34,9 @@ import renderHeader from './header';
           `${this.prefixCls}-cell`,
         ];
       },
+      checkboxSize() {
+        return this.column.checkboxSize ? this.column.checkboxSize : 'large'
+      }
     },
     methods: {
       handleClick(){

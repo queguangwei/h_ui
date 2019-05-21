@@ -40,6 +40,7 @@
                :showTime="type === 'datetime' || type === 'datetimerange'"
                :confirm="isConfirm"
                :showLong="showLong"
+               :longValue="longValue"
                :selectionMode="selectionMode"
                :steps="steps"
                :format="format"
@@ -50,9 +51,7 @@
                :picker-type="type"
                :showTwoPanel="this.showTwoPanel"
                :range-num="controlRange?selectRange:0"
-
                v-bind="ownPickerProps"
-
                @on-pick="onPick"
                @on-pick-clear="handleClear"
                @on-pick-success="onPickSuccess"
@@ -61,6 +60,7 @@
                @on-select-range="handleSelectRange"
                @on-pick-long="handleLongDate"
             ></component>
+            <slot name="footer"></slot>
        </div>
       </Drop>
     </transition>
@@ -188,6 +188,10 @@
       clearOnIllegal: {
         type: Boolean,
         default: false
+      },
+      iconVisible:{//是否只能通过点击图标打开弹框
+        type: Boolean,
+        default: false
       }
     },
     data () {
@@ -206,7 +210,8 @@
         forceInputRerender: 1,
         isFocus: false,
         rangeNum:0,
-        fPlacement:this.placement
+        fPlacement:this.placement,
+        viewValue:null
       };
     },
     computed: {
@@ -240,6 +245,7 @@
         return bottomPlaced ? 'slide-up' : 'slide-down';
       },
       visualValue() {
+          this.viewValue = this.formatDate(this.internalValue)
           return this.formatDate(this.internalValue);
       },
       isConfirm(){
@@ -271,7 +277,11 @@
             this.$emit('on-blur')
         }
       },
-      handleFocus () {
+      handleFocus(){
+        if(this.iconVisible) return
+        this.handleVisible()
+      },
+      handleVisible () {
         if (this.readonly||this.disabled) return;
         this.visible = true;
         this.$refs.pickerPanel.onToggleVisibility(true);
@@ -290,6 +300,9 @@
         // })
       },
       blur(){
+        if(this.isFocus){
+          this.dispatch('FormItem', 'on-form-blur', this.currentValue);
+        }
         this.visible = false;
         this.$refs.pickerPanel.onToggleVisibility(false);
         this.isFocus = false
@@ -368,7 +381,7 @@
         if (this.showClose) {
           this.handleClear();
         } else if (!this.disabled) {
-           this.handleFocus();
+          this.handleVisible();
         }
       },
       handleClear () {
@@ -465,7 +478,6 @@
         e.stopPropagation();
       },
       setPlacement(){
-        //   debugger;
         if(this.autoPlacement){
             let obj = this.$refs.wrapper;
             let allWidth= document.body.clientWidth;
@@ -499,7 +511,7 @@
       handleLongDate(){
         let isdateRange = this.type.indexOf('range')>-1?true:false;
         let emptyAry = isdateRange ? [null, null] : [null];
-        let date=isdateRange?this.parseDate([this.longValue]):this.parseDate(this.longValue);
+        let date=isdateRange?this.parseDate([this.longValue,this.longValue]):this.parseDate(this.longValue);
         let longtime = isEmptyArray([this.longValue] || []) ? emptyAry : date;
         if(!longtime[0]) return;
         if(isdateRange){

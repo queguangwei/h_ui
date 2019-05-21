@@ -10,9 +10,12 @@
       <template v-if="renderType === 'selection'">
         <Checkbox :value="checked" @click.native.stop="handleClick" @on-change="toggleSelect" :disabled="disabled"></Checkbox>
       </template>
+      <template v-if="renderType === 'radio'">
+        <Radio :value="checked"></Radio>
+      </template>
       <template v-if="renderType === 'normal'">
         {{preLabel}}
-        <span v-html="normalDate">    
+        <span v-html="normalDate" :title="column.showTooltip ? normalDate : ''">
         </span>
         {{rearLabel}}
       </template>
@@ -23,17 +26,17 @@
         <textarea v-model="columnArea" :placeholder="column.placeholder" rows="column.rows" :class="areaClass" @input="editAreaChange" @blur="editAreaBlur"></textarea>
         <!-- <h-input v-model="columnArea" type="textarea" :placeholder="column.placeholder" :rows="column.rows" class="canEdit" @on-change="editAreaChange" @on-blur="editAreaBlur"></h-input> -->
       </template>
-      <template v-if="renderType === 'number'"> 
+      <template v-if="renderType === 'number'">
         <h-input v-model="columnNumber" class="canEdit"></h-input>
       </template>
       <template v-if="renderType === 'money'">
-        <Typefield 
-          v-model="columnMoney" 
+        <Typefield
+          v-model="columnMoney"
           :placeholder="column.placeholder"
-          :integerNum="column.integerNum || '10'" 
-          :suffixNum="column.suffixNum" 
-          :bigTips="column.bigTips || false" 
-          :isround="column.isround || false" 
+          :integerNum="column.integerNum || '10'"
+          :suffixNum="column.suffixNum"
+          :bigTips="column.bigTips || false"
+          :isround="column.isround || false"
           @on-blur="typefieldBlur"
           class="canEdit"></Typefield>
       </template>
@@ -41,13 +44,13 @@
         <Typefield v-model="columnCard" type="cardNo" class="canEdit"></Typefield>
       </template>
       <template v-if="renderType === 'select'">
-        <h-select v-model="columnSelect"  
+        <h-select v-model="columnSelect"
           ref="select"
           :placeholder="column.placeholder"
           :placement="column.placement"
           :dropWidth="column.dropWidth"
           :not-found-text ="column.notFoundText"
-          :multiple="column.multiple || false" 
+          :multiple="column.multiple || false"
           :filterable="column.filterable||false"
           :filterMethod="filterMethod()"
           :remote="column.remote || false"
@@ -62,10 +65,10 @@
         </h-select>
       </template>
       <template v-if="renderType === 'date'">
-        <Date v-model="columnDate" 
+        <Date v-model="columnDate"
         ref="date"
-        :type="column.dateType||'date'" 
-        :format="column.format||'yyyy-MM-dd'" 
+        :type="column.dateType||'date'"
+        :format="column.format||'yyyy-MM-dd'"
         :placeholder="column.placeholder"
         :placement="column.placement"
         :editable ="column.editable"
@@ -75,14 +78,14 @@
         class="canEdit"></Date>
       </template>
       <template v-if="renderType === 'time'">
-        <h-time v-model="columnTime" 
+        <h-time v-model="columnTime"
         ref="time"
-        :type="column.timeType||'time'" 
+        :type="column.timeType||'time'"
         :placement="column.placement"
-        :format="column.format||'yyyy-MM-dd'" 
+        :format="column.format||'yyyy-MM-dd'"
         :placeholder="column.placeholder"
         :editable ="column.editable"
-        :steps="column.steps||[]" 
+        :steps="column.steps||[]"
         :transfer="column.transfer"
         class="canEdit"></h-time>
       </template>
@@ -90,14 +93,14 @@
         <SelectTree v-model="columnTree"
           ref="tree"
           :firstValue = "firstTreeValue"
-          :data="baseData" 
+          :data="baseData"
           :placeholder="column.placeholder"
-          :showCheckbox="column.showCheckbox" 
-          :checkStrictly="column.checkStrictly" 
-          :clearable="true"  
+          :showCheckbox="column.showCheckbox"
+          :checkStrictly="column.checkStrictly"
+          :clearable="true"
           :filterable="true"
           :transfer ="column.transfer"
-          class="canEdit">        
+          class="canEdit">
         </SelectTree>
       </template>
       <template v-if="renderType === 'expand' && !row._disableExpand">
@@ -106,7 +109,7 @@
         </div>
       </template>
     </div>
-    <Cell 
+    <Cell
       v-if="render&&renderType != 'expand'"
       :row="row"
       :column="column"
@@ -132,6 +135,7 @@ import hSelect from '../Select'
 import SelectTree from '../SelectTree/SelectTree.vue'
 import Date from '../DatePicker'
 import hTime from '../TimePicker'
+import Radio from '../Radio'
 import clickoutside from '../../directives/clickoutside';
 import {addClass,removeClass,findComponentsUpward,deepCopy,getYMD,getHMS,typeOf} from '../../util/tools.js'
 const hOption = hSelect.Option;
@@ -140,7 +144,7 @@ const hOptionGroup = hSelect.OptionGroup;
 export default {
   name: 'GirdCell',
   directives: { clickoutside },
-  components: { Icon, Checkbox, Cell, hInput, InputNumber, Typefield, hSelect, hOption,hOptionGroup, SelectTree, Date,hTime},
+  components: { Icon, Checkbox, Cell, hInput, InputNumber, Typefield, hSelect, hOption, hOptionGroup, SelectTree, Date, hTime, Radio},
   props: {
     prefixCls: String,
     row: Object,
@@ -232,7 +236,7 @@ export default {
           `canEdit h-input`,
           {
             [`h-input-disabled`]: this.column.disabled,
-            [`h-input-noresize`]:!this.column.canResize,  
+            [`h-input-noresize`]:!this.column.canResize,
           }
         ];
     }
@@ -267,7 +271,7 @@ export default {
         removeClass(this.$parent,`${this.prefixCls}-row-hover`)
       }
     },
-    save(str){ 
+    save(str){
       this.$nextTick(()=>{
         var _parent = this.parent;
         if (!_parent.cloneData || _parent.cloneData.length==0) return;
@@ -300,7 +304,7 @@ export default {
           case 'date':
             this.normalDate = this.columnDate;
             _parent.cloneData[this.index][this.column.key] = this.columnDate;
-            break; 
+            break;
           case 'time':
             this.normalDate =this.columnTime;
             _parent.cloneData[this.index][this.column.key] = this.columnTime;
@@ -309,7 +313,7 @@ export default {
             this.normalDate = this.columnTree;
             if (!_parent.cloneData[this.index]) return;
             _parent.cloneData[this.index][this.column.key] = this.columnTree;
-            break;    
+            break;
         }
         if (this.rule) {
           this.validate('blur');
@@ -318,13 +322,13 @@ export default {
     },
     dblclickCurrentCell(e){
       if(this.typeName!='groupTable'){
-        e.stopPropagation(); 
+        e.stopPropagation();
       }
       if (this.showEditInput) return;
-      if (!this.column.type ||this.column.type === 'html') {
+      if (!this.column.type ||this.column.type === 'html'||this.column.type === 'index'||this.column.type === 'selection') {
         return false;
       }else {
-        this.showSlot = false;
+        this.showSlot = false
         this.renderType = this.column.type;
         this.$nextTick(()=>{
           var inputEl = this.$refs.cell.querySelector('input') || this.$refs.cell.querySelector('textarea');
@@ -425,10 +429,10 @@ export default {
       }
     },
     selectValToLabel () {
-    // 多选情况下value与label的转换(显示label)     
+    // 多选情况下value与label的转换(显示label)
     //  支持单选
       if ((this.column.multiple || this.column.singleShowLabel) && this.option && this.option.length >0 && this.isSelectTrans && this.column.type == 'select' && this.renderType == 'normal') {
-        // 多选情况下显示label        
+        // 多选情况下显示label
         this.selectedLabel = []
         for (let i = 0; i < this.currentSelect.length; i++) {
           this.selectedLabel.push(this.currentSelect[i].label)
@@ -440,7 +444,7 @@ export default {
     typefieldBlur () {
       this.$emit('on-typefield-blur',this.columnMoney,this.columnIndex,this.index)
     }
-  }, 
+  },
   watch: {
     columnTree(val){
       this.$emit('on-selecttree-change',val)
@@ -489,7 +493,7 @@ export default {
       this.baseData = deepCopy(val);
     },
     renderType (val) {
-    // 多选情况下value与label的转换(显示label)      
+    // 多选情况下value与label的转换(显示label)
       this.selectValToLabel()
     },
     option: { // option服务端传入，初始化无值

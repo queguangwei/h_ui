@@ -43,7 +43,8 @@
     data () {
       return {
         currentValue: this.value,
-        childrens: []
+        childrens: [],
+        viewValue:this.value,
       };
     },
     computed: {
@@ -87,6 +88,9 @@
     watch: {
       value () {
         this.updateValue();
+      },
+      currentValue(val){
+        this.viewValue = val
       }
     }
   };

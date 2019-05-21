@@ -26,7 +26,7 @@
               <span v-else>{{column.title}}</span>
             </template>
             <template v-else>
-              <span v-if="!column.renderHeader" @click="handleSortByHead(index)">{{ column.title || '#' }}</span>
+              <span v-if="!column.renderHeader" @click="handleSortByHead(index)" :title="column.headerTooltip ? column.title : ''">{{ column.title || '#' }}</span>
               <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
             </template>
             <template>
@@ -122,7 +122,7 @@ export default {
   computed: {
     styles () {//深拷贝
       const style = Object.assign({}, this.styleObject);
-      const width = this.$parent.bodyHeight === 0 ? parseInt(this.styleObject.width) : parseInt(this.styleObject.width) + this.$parent.scrollBarWidth;
+      const width = parseInt(this.styleObject.width);
       style.width = `${width}px`;
       return style;
     },

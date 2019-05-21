@@ -15,7 +15,7 @@ export default {
                     [`${this.prefixCls}-head-column-${this.headAlgin}`]: this.headAlgin,
                     [`${this.prefixCls}-body-column-${this.bodyAlgin}`]: this.bodyAlgin,
                     [`${this.prefixCls}-split-index`]: this.splitIndex && column.type=='index',
-                    [`${this.prefixCls}-hidden`]: (fixed === 'left' && column.fixed !== 'left') || (fixed === 'right' && column.fixed !== 'right') || (!fixed && column.fixed && (column.fixed === 'left' || column.fixed === 'right'))
+                    [`${this.prefixCls}-hidden`]: !this.isSummation&&((fixed === 'left' && column.fixed !== 'left') || (fixed === 'right' && column.fixed !== 'right') || (!fixed && column.fixed && (column.fixed === 'left' || column.fixed === 'right')))
                 }
             ];
         
@@ -29,11 +29,11 @@ export default {
             }
             // when browser has scrollBar,set a width to resolve scroll position bug
             if (this.cloneColumns.length === index + 1&& this.bodyHeight !== 0&& width!='') {
-                if(this.tableWidth+1>=this.initWidth-this.scrollBarWidth&&top){
-                    width += this.scrollBarWidth;
-                }else if(this.contentHeight<this.height){
-                    width += this.scrollBarWidth;
-                }
+              if(this.tableWidth+1>=this.initWidth-this.scrollBarWidth&&top){
+                  width += this.scrollBarWidth;
+              }else if(this.contentHeight<this.height){
+                  width += this.scrollBarWidth;
+              }
             }
             if (width === '0') width = '';
             return width;

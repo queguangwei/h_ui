@@ -47,6 +47,7 @@
     <div style="height:100px;overflow:auto;position:relative" ref="list">
       <h-tree :data="data2" ref="filter"></h-tree>
     </div>
+    <!-- <h-tree :data="data2" ref="filter" show-checkbox onlyUpdateDown></h-tree> -->
   </div>
 </template>
 <script>
@@ -591,6 +592,7 @@ bigObj = curdata;
         // console.log(1)
       },
       showChange(arr){
+        debugger
         console.log(arr)
       },
       showExpand (payload) {

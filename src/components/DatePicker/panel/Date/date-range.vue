@@ -32,24 +32,25 @@
                         @click="nextMonth('left')"
                         v-show="currentView === 'date'"><Icon name="enter"></Icon></span>
                 </div>
-                <component
-                    :is="leftPickerTable"
-                    ref="leftYearTable"
-                    v-if="currentView !== 'time'"
-                    :table-date="leftPanelDate"
-                    selection-mode="range"
-                    :disabled-date="disabledDate"
-                    :range-state="rangeState"
-                    :show-week-numbers="showWeekNumbers"
-                    :value="preSelecting.left ? [dates[0]] : dates"
-                    @on-change-range="handleChangeRange"
-                    @on-pick="panelPickerHandlers.left"
-                    @on-pick-click="handlePickClick"
+                <component 
+                :is="leftPickerTable" 
+                ref="leftYearTable" 
+                v-if="currentView !== 'time'" 
+                :table-date="leftPanelDate" 
+                selection-mode="range" 
+                :disabled-date="disabledDate" 
+                :range-state="rangeState" 
+                :longValue="longValue" 
+                :show-week-numbers="showWeekNumbers" 
+                :value="preSelecting.left ? [dates[0]] : dates" 
+                @on-change-range="handleChangeRange" 
+                @on-pick="panelPickerHandlers.left" 
+                @on-pick-click="handlePickClick"
                 ></component>
             </div>
             <div :class="[prefixCls + '-content', prefixCls + '-content-right']" v-show="!isTime">
                 <div :class="[datePrefixCls + '-header']" v-show="currentView !== 'time'">
-                    <span
+                <span
                         v-if="splitPanels || rightPickerTable !== 'date-table'"
                         :class="iconBtnCls('prev', '-double')"
                         @click="prevYear('right')"><Icon name="arrow-l"></Icon></span>
@@ -86,7 +87,7 @@
                     @on-pick-click="handlePickClick"></component>
             </div>
             <div :class="[prefixCls + '-content']" v-show="isTime">
-                <time-picker
+                   <time-picker
                     ref="timePicker"
                     v-if="currentView === 'time'"
                     :value="dates"
@@ -120,7 +121,7 @@
     import TimePicker from '../Time/time-range.vue';
     import Confirm from '../../base/confirm.vue';
 
-    import { toDate, initTimeDate, formatDateLabels } from '../../util';
+    import { toDate, initTimeDate,DEFAULT_FORMATS, TYPE_VALUE_RESOLVER_MAP, formatDate, formatDateLabels} from '../../util';
     import datePanelLabel from './date-panel-label.vue';
 
     import Mixin from '../panel-mixin';
@@ -131,8 +132,8 @@
     const datePrefixCls = 'h-date-picker';
 
     const dateSorter = (a, b) => {
-        if (!a || !b) return 0;
-        return a.getTime() - b.getTime();
+    if (!a || !b) return 0;
+    return a.getTime() - b.getTime();
     };
 
     export default {
@@ -142,8 +143,8 @@
         props: {
             // more props in the mixin
             splitPanels: {
-                type: Boolean,
-                default: false
+            type: Boolean,
+            default: false
             },
         },
         data(){
@@ -164,11 +165,12 @@
         computed: {
             classes(){
                 return [
+                    `clearfix`,
                     `${prefixCls}-body-wrapper`,
                     `${datePrefixCls}-with-range`,
                     {
-                        [`${prefixCls}-with-sidebar`]: this.shortcuts.length,
-                        [`${datePrefixCls}-with-week-numbers`]: this.showWeekNumbers
+                    [`${prefixCls}-with-sidebar`]: this.shortcuts.length,
+                    [`${datePrefixCls}-with-week-numbers`]: this.showWeekNumbers
                     }
                 ];
             },
@@ -188,7 +190,7 @@
                 return !(this.dates[0] && this.dates[1]);
             },
             preSelecting(){
-                const tableType = `${this.currentView}-table`;
+            const tableType = `${this.currentView}-table`;
 
                 return {
                     left: this.leftPickerTable !== tableType,
@@ -198,32 +200,32 @@
             panelPickerHandlers(){
                 return {
                     left: this.preSelecting.left ? this.handlePreSelection.bind(this, 'left') : this.handleRangePick,
-                    right: this.preSelecting.right ? this.handlePreSelection.bind(this, 'right') : this.handleRangePick,
+                     right: this.preSelecting.right ? this.handlePreSelection.bind(this, 'right') : this.handleRangePick,
                 };
             }
         },
         watch: {
             value(newVal) {
-                const minDate = newVal[0] ? toDate(newVal[0]) : null;
-                const maxDate = newVal[1] ? toDate(newVal[1]) : null;
-                this.dates = [minDate, maxDate].sort(dateSorter);
+            const minDate = newVal[0] ? toDate(newVal[0]) : null;
+            const maxDate = newVal[1] ? toDate(newVal[1]) : null;
+            this.dates = [minDate, maxDate].sort(dateSorter);
 
-                this.rangeState = {
-                    from: this.dates[0],
-                    to: this.dates[1],
-                    selecting: false
-                };
-                // set panels positioning
-                const leftPanelDate = this.startDate || this.dates[0] || new Date();
-                this.leftPanelDate = leftPanelDate;
-                const rightPanelDate = new Date(leftPanelDate.getFullYear(), leftPanelDate.getMonth() + 1, 1);
-                this.rightPanelDate = this.splitPanels ? new Date(Math.max(this.dates[1], rightPanelDate)) : rightPanelDate;
+            this.rangeState = {
+                from: this.dates[0],
+                to: this.dates[1],
+                selecting: false
+            };
+            // set panels positioning
+            const leftPanelDate = this.startDate || this.dates[0] || new Date();
+            this.leftPanelDate = leftPanelDate;
+            const rightPanelDate = new Date(leftPanelDate.getFullYear(), leftPanelDate.getMonth() + 1, 1);
+            this.rightPanelDate = this.splitPanels ? new Date(Math.max(this.dates[1], rightPanelDate)) : rightPanelDate;
             },
             currentView(currentView){
                 const leftMonth = this.leftPanelDate.getMonth();
                 const rightMonth = this.rightPanelDate.getMonth();
                 const isSameYear = this.leftPanelDate.getFullYear() === this.rightPanelDate.getFullYear();
-
+                
                 if (currentView === 'date' && isSameYear && leftMonth === rightMonth){
                     this.changePanelDate('right', 'Month', 1);
                 }
@@ -240,9 +242,9 @@
         },
         methods: {
             reset(){
-                this.currentView = this.selectionMode;
-                this.leftPickerTable = `${this.currentView}-table`;
-                this.rightPickerTable = `${this.currentView}-table`;
+            this.currentView = this.selectionMode;
+            this.leftPickerTable = `${this.currentView}-table`;
+            this.rightPickerTable = `${this.currentView}-table`;
             },
             panelLabelConfig (direction) {
                 const locale = this.t('i.locale');
@@ -349,9 +351,31 @@
             handleChangeRange (val) {
                 this.rangeState.to = val;
             },
-             handleLongDate(){
+            parseDate(val) {
+                const isRange =  true;
+                const type = "daterange";
+                const parser = (TYPE_VALUE_RESOLVER_MAP[type] ||
+                    TYPE_VALUE_RESOLVER_MAP["default"]
+                ).parser;
+                 const format = this.format ||"yyyy-MM-dd";
+                if (typeof val === "string") {
+                        val = parser(val, format);
+                    }  else if (Array.isArray(val) && format.toLowerCase() === "yyyymmdd") {
+                        val = parser(val, format);
+                    } else {
+                        val = val.map(date => new Date(date)); // try to parse
+                        val = val.map(date => (isNaN(date.getTime()) ? null : date)); // check if parse passed
+                    }
+                return isRange || this.multiple ? val || [] : [val];
+            },
+            handleLongDate(){
+                if (this.rangeState.selecting && this.currentView === "date") {
+                    let maxDate=this.parseDate([this.longValue,this.longValue])[0];
+                    this.handleRangePick(maxDate);
+                    return;
+                }
                 this.$emit('on-pick-long');
             }
-        },
-    };
+        }
+};
 </script>

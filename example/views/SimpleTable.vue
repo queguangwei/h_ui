@@ -12,10 +12,10 @@
     <!-- :multiLevel="multiLevel1" -->
     <!-- <h-msg-box v-model="showmsg" :width="1000"> -->
       <!-- notAdaptive  -->
-    <h-simple-table ref="simTable" :columns="columnsBig1" border :data="bigData" height="300" @on-selection-change="selsetChange">
+    <h-simple-table ref="simTable" :summationData="summationData" :columns="columnsBig1" border :data="bigData" height="300" @on-selection-change="selsetChange" @on-sort-change="selsetChange">
     </h-simple-table>
     <!-- </h-msg-box> -->
-     <h-button type="primary" size="large" @click="exportData(1)"><h-icon type="ios-download-outline"></h-icon> 导出原始数据</h-button>
+    <h-button type="primary" size="large" @click="exportData(1)"><h-icon type="ios-download-outline"></h-icon> 导出原始数据</h-button>
     <h-button type="primary" size="large" @click="exportData(2)"><h-icon type="ios-download-outline"></h-icon> 导出排序和过滤后的数据</h-button>
     <h-button type="primary" size="large" @click="exportData(3)"><h-icon type="ios-download-outline"></h-icon> 导出自定义数据</h-button>
     <!-- <h2>自定义样式</h2>
@@ -42,7 +42,7 @@
     <p>@on-select-all，点击全选时触发，返回值为 selection，已选项。</p>
     <p>@on-selection-change，只要选中项发生变化时就会触发，返回值为 selection，已选项。</p>
     <h-simple-table border :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading" canMove></h-simple-table>
-    
+
     <h2>自定义列模板</h2>
     <p>通过给 columns 数据的项，设置一个函数 render，可以自定义渲染当前列，包括渲染自定义组件，它基于 Vue 的 Render 函数。</p>
     <p>render 函数传入两个参数，第一个是 h，第二个是对象，包含 row、column 和 index，分别指当前单元格数据，当前列数据，当前是第几行。</p>
@@ -56,7 +56,7 @@
 <script>
 import TexpandRow from './Texpand-row.vue'
 let jsonData=[];
-let tData =require('../assets/aa.json'); 
+let tData =require('../assets/aa.json');
 for (let i = 0; i < 1; i++) {
       jsonData =tData.slice(0,500);
     }
@@ -189,7 +189,7 @@ export default {
              title: "月活跃",
              key: "month",
              fixed: "right",
-             width: 150,             
+             width: 150,
              sortable: true,
              filters: [
                {
@@ -229,7 +229,7 @@ export default {
        {
         title:'测试',
         key:'ceshi',
-        algin:'center',
+        algin:'center'
        }
       ],
       columns3: [
@@ -347,7 +347,7 @@ export default {
             ]);
           }
         }
-      ],  
+      ],
       columns9: [
         {
           title: '姓名',
@@ -461,6 +461,24 @@ export default {
         {title:'456',cols:2,},
         {title:'789',cols:2,hiddenCol:true},]
       ],
+      summationData: [{
+        fundId: '12313',
+        tradeDate: 730211221,
+        securityCode: 5627223123,
+        index: 1563123123,
+        securityCode: 425413,
+        securityId: 1438123,
+        tradeDir: 27412312,
+        day30: 285123,
+        tradeSubtype: 1727123,
+        marketNo: 558,
+        tradeQuantity: 4440,
+      }],
+      summationData1: [{
+        name: 'qeqweqw',
+        age: 123123123,
+        address: 'qqweqwe'
+      }]
     }
   },
   methods:{
@@ -548,34 +566,34 @@ export default {
     },
     remove (index) {
       this.data6.splice(index, 1);
-    }, 
+    },
     exportData (type) {
       if (type === 1) {
-          this.$refs.simTable.exportCsv({
-              filename: '原始数据'
-          });
+        this.$refs.simTable.exportCsv({
+          filename: '原始数据'
+        });
       } else if (type === 2) {
-          this.$refs.simTable.exportCsv({
-              filename: '排序和过滤后的数据',
-              original: false,
-              noHeader:true,
-          });
+        this.$refs.simTable.exportCsv({
+          filename: '排序和过滤后的数据',
+          original: false,
+          noHeader:true,
+        });
       } else if (type === 3) {
-          this.$refs.simTable.exportCsv({
-              filename: '自定义数据',
-              columns: this.columnsBig1.filter((col, index) => index < 4),
-              data: this.bigData.filter((data, index) => index < 200)
-          });
+        this.$refs.simTable.exportCsv({
+          filename: '自定义数据',
+          columns: this.columnsBig1.filter((col, index) => index < 4),
+          data: this.bigData.filter((data, index) => index < 200)
+        });
       }
-    }      
+    }
   },
   mounted(){
     this.columns1=[
-        { 
+        {
           type: 'selection',
           align: 'center',
         },
-        { 
+        {
           type: 'index',
           align: 'center',
         },
@@ -620,11 +638,11 @@ export default {
         }
     ]
     this.columnsBig=[
-        { 
+        {
           type: 'selection',
           align: 'center',
         },
-        { 
+        {
           type: 'index',
           align: 'center',
           key:'index'
@@ -670,29 +688,32 @@ export default {
         }
     ]
     this.columnsBig1=[
-        { 
+        {
           type: 'index',
           align: 'center',
           width:200,
+          sortable:true,
           fixed:'left',
         },
-        { 
+        {
           type: 'selection',
           align: 'center',
           key:'select',
           width:200,
-          fixed:'left',
+          fixed:'left'
         },
         {
           title: '姓名',
           key: 'fundId',
           width:200,
+          sortable:true,
+          remote: true,
           // fixed:'left',
           renderHeader:(h, params)=>{
             return h('span','123')
           },
           render:(h, params)=>{
-            return h('span',params.row.fundId+' 123')
+            return h('span',params.row.fundId+' 567')
             // return params.row.fundId+' 123'
           }
           // hiddenCol:true,
