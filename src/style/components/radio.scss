@@ -22,7 +22,7 @@ $radio-group-button-prefix-cls: "#{$radio-group-prefix-cls}-button";
 
 // 普通状态
 .#{$radio-prefix-cls}-wrapper {
-    font-size: $font-size-base;
+    font-size: $font-size-small;
     vertical-align: middle;
     display: inline-block;
     position: relative;
@@ -301,7 +301,7 @@ span.#{$radio-prefix-cls} + * {
 .#{$radio-group-button-prefix-cls}.#{$radio-group-prefix-cls}-large .#{$radio-prefix-cls}-wrapper{
     height: $btn-circle-size-large;
     line-height: $btn-circle-size-large - 2px;
-    font-size: $font-size-base;
+    font-size: $font-size-small;
     .#{$radio-prefix-cls}-btnIcon.#{$radio-prefix-cls} {
         width: 20px;
         .#{$radio-prefix-cls}-inner {

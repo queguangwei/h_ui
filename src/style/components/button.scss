@@ -94,7 +94,7 @@ $btn-prefix-cls: "#{$css-prefix}btn";
     @include btn-color($info-color);
   }
 
-  &-circle, 
+  &-circle,
   &-circle-outline {
     @include btn-circle($btn-prefix-cls);
   }
@@ -133,5 +133,9 @@ $btn-prefix-cls: "#{$css-prefix}btn";
 
   &-group-vertical {
     @include btn-group-vertical($btn-prefix-cls);
+  }
+
+  &-transparent {
+    @include btn-transparent;
   }
 }

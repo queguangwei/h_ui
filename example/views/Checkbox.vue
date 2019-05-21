@@ -2,18 +2,18 @@
 	<div>
 	  <h2>单独使用</h2>
     {{btncheck}}
-    <h-checkbox-group v-model="btncheck">
-      <h-checkbtn value="twitter" label="Twitter" disabled>
+    <h-checkbox-group v-model="btncheck" @on-change="change" label-in-value>
+      <h-checkbtn value="twitter" label="Twitter1" disabled>
         <!-- <span>Twitter</span> -->
       </h-checkbtn>
-      <h-checkbtn value="facebook" label="facebook" @on-click="click">
-        <span>Facebook</span>
+      <h-checkbtn value="facebook" label="facebook1" @on-click="click">
+        <span>Facebook1</span>
       </h-checkbtn>
-      <h-checkbtn value="github" label="github">
-        <span>Github</span>
+      <h-checkbtn value="github" label="github1">
+        <span>Github1</span>
       </h-checkbtn>
-      <h-checkbtn value="snapchat" label="snapchat">
-        <span>Snapchat</span>
+      <h-checkbtn value="snapchat" label="snapchat1">
+        <span>Snapchat1</span>
       </h-checkbtn>
     </h-checkbox-group>
   <h-msg-box v-model="changeform" width="900">
@@ -23,8 +23,8 @@
   </h-msg-box>
   <Button @on-click="changeform1">显示隐藏</Button>
 		<h2>组合使用</h2>
-		<h-checkbox-group v-model="social" vertical>
-      <h-checkbox label="twitter">
+		<h-checkbox-group v-model="social" vertical @on-change="change" label-in-value>
+      <h-checkbox label="twitter" size="large">
         <h-Icon name="clock"></h-Icon>
         <span>Twitter</span>
       </h-checkbox>
@@ -32,7 +32,7 @@
         <h-Icon name="clock"></h-Icon>
         <span>Facebook</span>
       </h-checkbox>
-      <h-checkbox label="github">
+      <h-checkbox label="github" size="small">
         <h-Icon name="clock"></h-Icon>
         <span>Github</span>
       </h-checkbox>
@@ -41,7 +41,7 @@
         <span>Snapchat</span>
       </h-checkbox>
     </h-checkbox-group>
-    {{social}}
+    <!-- {{social}} -->
     <h-checkbox-group v-model="fruit">
       <h-checkbox label="香蕉"></h-checkbox>
       <h-checkbox label="苹果"></h-checkbox>
@@ -62,7 +62,7 @@
     <h-checkbox v-model="checked" :disabled="disabled">
         <span v-if="checked">选中</span>
         <span v-else>取消</span>
-         - 
+         -
         <span v-if="!disabled">可用</span>
         <span v-else>不可用</span>
     </h-checkbox>
@@ -146,6 +146,9 @@
       click(e,val){
         console.log(e);
         console.log(val);
+      },
+      change(data){
+        console.log(data)
       }
     },
     mounted(){

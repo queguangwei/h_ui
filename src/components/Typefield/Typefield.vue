@@ -82,6 +82,7 @@ export default {
       currentValue: String(this.value),
       prepend: true,
       append: true,
+      viewValue:''
     }
   },
   mixins: [ Emitter,Locale ],
@@ -156,6 +157,11 @@ export default {
     focusAllSelect:{
       type: Boolean,
       default: false,
+    },
+    // 非负数
+    nonNegative: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -192,12 +198,13 @@ export default {
     },
   },
   watch: {
-    value (val) {
+    value(val) {
       if(val!=null||val!=undefined){
         this.initValue(String(val));
       }
     },
     inputValue(val){
+      this.viewValue=this.changeTipsVal(val)
     }
   },
   mounted () {
@@ -208,7 +215,7 @@ export default {
     }
   },
   methods:{
-    //keyup,focus,blur
+    // keyup,focus,blur
     blurValue (e) {
       this.havefocused = false;
       if (this.type=='money') {
@@ -286,7 +293,12 @@ export default {
       let value = event.target.value.trim().replace(/,/g,'');
       // if (event.type == 'input' && value.match(/^\-?\.?$|\.$/)) return; // prevent fire early if decimal. If no more input the change event will fire later
       // if (event.type == 'change' && Number(value) == this.currentValue) return; // already fired change for input event
-      if (!isNaN(value) || value=='-') {
+      if (this.nonNegative) {
+        value = value.replace(/-/, '')
+        event.target.value = value
+      }
+
+      if (!isNaN(value) || value === '-') {
         this.currentValue = value;
       } else {
         event.target.value = this.currentValue;
@@ -373,6 +385,11 @@ export default {
           }
         }
       }
+
+      if (this.nonNegative) {
+        value = value.replace(/-/, '')
+      }
+
       return value
     },
     setBigData(value,arr){
@@ -677,7 +694,7 @@ export default {
       }
     },
     setNullStr(){
-      let str =this.suffixNum==0?'0':'0.';
+      let str = this.suffixNum === 0 ? '0' : '0.';
       for (var i = this.suffixNum - 1; i >= 0; i--) {
         str +='0';
       }

@@ -9,6 +9,7 @@ const prefixCls = 'h-modal-confirm';
 Modal.newInstance = properties => {
   const _props = properties || {};
   const Instance = new Vue({
+      name: 'Msgbox-js',
       mixins: [ Locale ],
       data: Object.assign({}, _props, {
           visible: false,
@@ -28,7 +29,16 @@ Modal.newInstance = properties => {
           height: undefined,
           isOkLeft: false,
           cancleIcon: '',
-          okIcon: ''
+          okIcon: '',
+          top: 100,
+          maskClosable: false,
+          maximize: false,
+          styles: {},
+          className: '',
+          transitionNames: ['ease', 'fade'],
+          disableTabEvent: false,
+          maskTop: null,
+          maskLeft: null
       }),
       render (h) {
           let footerVNodes = [];
@@ -110,7 +120,16 @@ Modal.newInstance = properties => {
                   width: this.width,
                   scrollable: this.scrollable,
                   closable: this.closable,
-                  zIndex:this.zIndex
+                  maskClosable: this.maskClosable,
+                  zIndex:this.zIndex,
+                  top: this.top,
+                  maximize: this.maximize,
+                  styles: this.styles,
+                  className: this.className,
+                  transitionNames: this.transitionNames,
+                  disableTabEvent: this.disableTabEvent,
+                  maskTop: this.maskTop,
+                  maskLeft: this.maskLeft
               }),
               domProps: {
                   value: this.visible
@@ -297,6 +316,37 @@ Modal.newInstance = properties => {
       if('okIcon' in props){
         modal.$parent.okIcon= props.okIcon;
       }
+      if ('closable' in props) {
+        modal.$parent.closable = props.closable;
+      }
+      if ('maskClosable' in props) {
+        modal.$parent.maskClosable = props.maskClosable;
+      }
+      if ('top' in props) {
+        modal.$parent.top = props.top;
+      }
+      if ('maximize' in props) {
+        modal.$parent.maximize = props.maximize;
+      }
+      if ('styles' in props) {
+        modal.$parent.styles = props.styles;
+      }
+      if ('className' in props) {
+        modal.$parent.className = props.className;
+      }
+      if ('transitionNames' in props) {
+        modal.$parent.transitionNames = props.transitionNames;
+      }
+      if ('disableTabEvent' in props) {
+        modal.$parent.disableTabEvent = props.disableTabEvent;
+      }
+      if ('maskTop' in props) {
+        modal.$parent.maskTop = props.maskTop;
+      }
+      if ('maskLeft' in props) {
+        modal.$parent.maskLeft = props.maskLeft;
+      }
+
       // notice when component destroy
       modal.$parent.onRemove = props.onRemove;
 
