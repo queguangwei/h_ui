@@ -377,7 +377,7 @@ export default {
         if (this.bodyHeight === 0) {
           width = this.tableWidth;
         } else {
-          if (this.bodyHeight > this.bodyRealHeight && this.data.length>0) {
+          if (this.bodyHeight > this.bodyRealHeight && this.data.length>0 && this.typeName !== 'groupTable') {
             width = this.tableWidth;
             // width = this.typeName!='groupTable'?this.tableWidth:this.tableWidth- this.scrollBarWidth;
           } else {
