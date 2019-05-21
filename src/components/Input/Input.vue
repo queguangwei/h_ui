@@ -446,13 +446,13 @@ export default {
       }
     },
     resizeTextarea() {
-      // 如果显示字符长度限制，则设置宽度为100%
-      if (this.showWordLimit) {
-        this.textareaStyles.minWidth = '100%'
-      }
-
       const autosize = this.autosize
       if (!autosize || this.type !== 'textarea') {
+        // 如果显示字符长度限制，则设置宽度为100%
+        if (this.showWordLimit) {
+          this.textareaStyles.minWidth = '100%'
+        }
+
         return false
       }
 
@@ -464,6 +464,10 @@ export default {
         minRows,
         maxRows
       )
+
+      if (this.showWordLimit) {
+        this.textareaStyles.minWidth = '100%'
+      }
     },
     focus() {
       if (this.type === 'textarea') {
