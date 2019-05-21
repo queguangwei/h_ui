@@ -26,6 +26,10 @@
         vertical: {
             type:Boolean,
             default:false,
+        },
+        labelInValue:{
+            type:Boolean,
+            default:false,
         }
     },
     data () {
@@ -34,6 +38,7 @@
             curValue:this.value,
             childrens: [],
             childrensBtn: [],
+            viewValue: null,
         };
     },
     computed: {
@@ -55,8 +60,7 @@
             const value = this.value;
             this.childrens = findComponentsDownward(this, 'Checkbox');
             this.childrensBtn = findComponentsDownward(this, 'Checkbtn');
-
-            if (this.childrens) {
+            if (this.childrens&&this.childrens.length>0) {
                 this.childrens.forEach(child => {
                     if(!child.notGroup){
                         child.model = value;
@@ -66,11 +70,32 @@
                         }
                     }
                 });
+                this.viewValue = value
             }
-            if(this.childrensBtn){
+            if(this.childrensBtn&&this.childrensBtn.length>0){
+                let arr = []
                 this.childrensBtn.forEach(child => {
                     child.isChecked = value.indexOf(child.value) >= 0;
+                    if(child.isChecked) arr.push(child.viewValue)
                 });
+                this.viewValue = arr
+            }
+        },
+        getCurdata(data,status){
+            if(this.labelInValue){
+                let curArr =  status?this.childrens:this.childrensBtn
+                let curData = []
+                curArr.forEach(child => {
+                    if(child.isChecked){
+                        curData.push({
+                            value:child.value,
+                            label:child.label?child.label:child.value
+                        })
+                    }
+                });
+                return curData
+            }else{
+                return data
             }
         },
         change (data) {
@@ -89,14 +114,25 @@
                 }
             }
             this.$emit('input', this.curValue);
-            this.$emit('on-change', this.curValue);
+            this.$emit('on-change', this.getCurdata(this.curValue,false));
             this.dispatch('FormItem', 'on-form-change', this.curValue);
         }
     },
     watch: {
         value () {
             this.updateModel(true);
-            this.curValue = this.value;
+        },
+        currentValue(val){
+            this.viewValue = val
+        },
+        curValue(val){
+            let curView = []
+            this.childrensBtn.forEach(child => {
+                if(child.isChecked){
+                    curView.push(child.viewValue)
+                }
+            });
+            this.viewValue = curView
         }
     }
   };

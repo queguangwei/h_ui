@@ -61,7 +61,11 @@ export default {
 		setWidthAdaption(){
 			let content = this.$refs.selectdrop.children[0]
 			if(this.$parent.$options.name ==='SimpleSelect'){
-				content=this.$parent.showBottom? content.children[1].children[0]:content.children[0].children[0]
+				if(this.$parent.showBottom || this.$parent.hideMult){
+					content = content.children[1].children[0]
+				}else{
+					content=content.children[0].children[0]
+				}
 			}
 			// 横向或者纵向滚动条导致的像素偏移的问题
 			// 是否有纵向滚动条

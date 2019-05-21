@@ -233,7 +233,8 @@
         tabIndex:0,
         lastquery: '',
         lastDataCopy: [],
-        fPlacement:this.placement
+        fPlacement:this.placement,
+        viewValue:null,
       }
     },
     computed:{
@@ -680,7 +681,8 @@
         }
         this.isFirst = true
       },
-      selectedMultiple (){
+      selectedMultiple (val){
+        this.viewValue = val
         this.$nextTick(()=>{
           this.offsetArrow();
         })
@@ -727,7 +729,10 @@
       },
       placement(val){
         this.fPlacement = val
-      }
+      },
+      selectedSingle(val){
+        this.viewValue = val
+      },
     },
     mounted(){
       if (this.data &&this.data.length!=0) {
