@@ -244,7 +244,7 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
                 // height: 32px;
                 // line-height: 32px;
                 padding: 0 5px;
-                border: 1px solid #D7DDE4; 
+                border: 1px solid #D7DDE4;
             }
             input:focus {
                 box-shadow: none;
@@ -261,7 +261,7 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
                 // padding: 0 10px;
                 .h-table:after {
                     width: 0;
-                } 
+                }
                 .h-table:before{
                     background-color:#fff;
                 }
@@ -270,7 +270,7 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
                     border-bottom: 0;
                     border-top: 1px solid #E8E9EB;
                 }
-                .h-table-row-highlight td, 
+                .h-table-row-highlight td,
                 .h-table-row-checked td {
                     background: #fff;
                     color: #3591E0;
@@ -283,6 +283,7 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
         .#{$selectTable-prefix-cls}-checkHead{
             .h-checkbox-wrapper{
                 margin-left:8px;
+                line-height: 29px;
             }
         }
     }
@@ -300,7 +301,7 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
                 border: 0;
                 padding: 0 5px;
                 border-radius: 0;
-                border-bottom: 1px solid #D7DDE4; 
+                border-bottom: 1px solid #D7DDE4;
             }
             input:focus {
                 box-shadow: none;
@@ -317,17 +318,17 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
                 // padding: 0 5px;
                 .h-table:after {
                     width: 0;
-                } 
+                }
                 .h-table:before{
                     background-color:#fff;
                 }
                 .h-table th {
                     border-bottom: 0;
-                } 
+                }
                 .h-table td {
                     border-bottom: 0;
                 }
-                .h-table-row-highlight td, 
+                .h-table-row-highlight td,
                 .h-table-row-checked td{
                     background: #fff;
                     color: #3591E0;
@@ -342,6 +343,7 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
             .h-checkbox-wrapper{
                 margin-left:12px;
                 margin-right:5px;
+                line-height: 29px;
             }
         }
     }
@@ -353,6 +355,27 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
     }
     &-right {
         text-align:right;
+    }
+    &-hideMultHead{
+        position: relative;
+        display: block;
+        font-size: $font-size-small;
+        padding: 7px 12px;
+    }
+    &-hideMultHead:hover{
+        cursor: pointer;
+    }
+    &-hideMultHead:after{
+        @include h-icon();
+        font-size: 22px;
+        content: '\E734';
+        color: $no-select-color;
+        position: absolute;
+        top: 8px;
+        right: 25px;
+    }
+    &-hideMultHead-select,&-hideMultHead-select:after{
+        color: $selected-color;
     }
 }
 .#{$selectTable-prefix-cls}-checkHead{
@@ -388,7 +411,6 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
     //     color: $selected-color;
     // }
 }
-
 .#{$select-group-prefix-cls} {
     list-style: none;
     margin: 0;
@@ -425,7 +447,7 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
             color:$changed-color;
         }
         .h-tag{
-            color:$changed-color !important; 
+            color:$changed-color !important;
         }
         &-input{
             color:$changed-color;

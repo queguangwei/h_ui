@@ -89,6 +89,13 @@ $input-prefix-cls: "#{$css-prefix}input";
   &-noresize{
     resize:none;
   }
+  &-word-limit {
+    position: absolute;
+    bottom: 1px;
+    right: 12px;
+    color: $input-hint;
+    background: $input-bg;
+  }
 }
 // Reset height for textarea
 textarea.#{$input-prefix-cls} {
@@ -97,7 +104,7 @@ textarea.#{$input-prefix-cls} {
   vertical-align: bottom;
   font-size: $font-size-small;
   overflow:auto;
-  white-space:normal; 
+  white-space:normal;
 }
 
 .#{$input-prefix-cls}-group{
