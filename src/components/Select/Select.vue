@@ -302,6 +302,11 @@
       collapseTags: {
         type: Boolean,
         default: false
+      },
+      /* 搜索时是否不将焦点放在第一搜索项 */
+      notAutoFocus:{
+        type: Boolean,
+        default: true
       }
     },
     data () {
@@ -937,15 +942,15 @@
         const createdOption = this.$refs.createdOption;
         let maxIndex = createdOption ? this.options.length + 1 : this.options.length;
           if (direction === 'next') {
-              const next = this.focusIndex + 1;
-              this.focusIndex = (this.focusIndex === maxIndex) ? 1 : next;
+            const next = this.focusIndex + 1;
+            this.focusIndex = (this.focusIndex === maxIndex) ? 1 : next;
           } else if (direction === 'prev') {
-              const prev = this.focusIndex - 1;
-              this.focusIndex = (this.focusIndex <= 1) ? maxIndex : prev;
+            const prev = this.focusIndex - 1;
+            this.focusIndex = (this.focusIndex <= 1) ? maxIndex : prev;
           }
           let child_status = {
-              disabled: false,
-              hidden: false
+            disabled: false,
+            hidden: false
           };
           let find_deep = false;
           if (createdOption && this.focusIndex === 1) {
@@ -959,16 +964,16 @@
             }
             this.findChild((child) => {
               if (child.index === this.focusIndex) {
-                  child_status.disabled = child.disabled;
-                  child_status.hidden = child.hidden;
-                  if (!child.disabled && !child.hidden) {
-                    child.isFocus = true;
-                  }
+                child_status.disabled = child.disabled;
+                child_status.hidden = child.hidden;
+                if (!child.disabled && !child.hidden) {
+                  child.isFocus = true;
+                }
               } else {
-                  child.isFocus = false;
+                child.isFocus = false;
               }
               if (!child.hidden && !child.disabled) {
-                  find_deep = true;
+                find_deep = true;
               }
             });
           }
@@ -1431,7 +1436,7 @@
           this.enableCreate && this.checkOptionSelected();
           this.enableCreate && this.reorderOptionIndex();
         })
-        if (this.filterable&&!this.remote&&!this.selectToChangeQuery) {
+        if (this.filterable&&!this.remote&&!this.selectToChangeQuery&&!this.notAutoFocus) {
           this.$nextTick(()=>{
             this.focusIndex = 1;
             if (typeof this.$refs.createdOption !== 'undefined') {
@@ -1469,7 +1474,7 @@
           this.model = val[0].value;
           this.isfirstSelect = false;
         }
-        if (this.remote) {
+        if (this.remote&&!this.notAutoFocus) {
           this.$nextTick(()=>{
             this.focusIndex = 1;
             const createdOption = this.$refs.createdOption;
