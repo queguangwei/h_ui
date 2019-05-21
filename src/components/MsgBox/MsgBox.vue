@@ -244,9 +244,15 @@ export default {
   },
   methods: {
     close () {
-      this.$emit('input', false);
+      // 如果是 js 调用的 msgbox 则调用 Msgbox-js 的 cancel
+      if (this.$parent && this.$parent.$options && this.$parent.$options.name === 'Msgbox-js') {
+        this.$parent.cancel()
+        return
+      }
+
       this.$emit('on-close');
       this.visible = false;
+      this.$emit('input', false);
     },
     headClick () {
 

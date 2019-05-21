@@ -9,6 +9,7 @@ const prefixCls = 'h-modal-confirm';
 Modal.newInstance = properties => {
   const _props = properties || {};
   const Instance = new Vue({
+      name: 'Msgbox-js',
       mixins: [ Locale ],
       data: Object.assign({}, _props, {
           visible: false,
