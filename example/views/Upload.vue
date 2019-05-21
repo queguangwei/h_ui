@@ -2,15 +2,15 @@
   <div>
     <h1>文件上传</h1>
     <h2>基本用法 自动上传 单选</h2>
-    <h-upload action="//jsonplaceholder.typicode.com/posts/">
+    <h-upload action="//jsonplaceholder.typicode.com/posts/" :on-remove="handleRemove" :beforeRemove="handleBeforeRemove">
       <h-button type="ghost" icon="activity">上传文件</h-button>
     </h-upload>
     <h2>多选</h2>
-    <h-upload multiple action="//jsonplaceholder.typicode.com/posts/">
+    <h-upload multiple action="//jsonplaceholder.typicode.com/posts/" :on-remove="handleRemove" :beforeRemove="handleBeforeRemove">
       <h-button type="ghost" icon="activity">上传文件</h-button>
     </h-upload>
     <h2>手动上传</h2>
-    <h-upload :before-upload="handleUpload" action="//jsonplaceholder.typicode.com/posts/">
+    <h-upload :before-upload="handleUpload" action="//jsonplaceholder.typicode.com/posts/" :on-remove="handleRemove" :beforeRemove="handleBeforeRemove">
       <h-button type="ghost" icon="activity">上传文件</h-button>
     </h-upload>
     <div v-if="file !== null">待上传文件：{{ file.name }} <h-button type="text" @click="upload" :loading="loadingStatus">{{ loadingStatus ? '上传中' : '点击上传' }}</h-button>
@@ -19,7 +19,9 @@
     <h-upload
       multiple
       type="drag"
-      action="//jsonplaceholder.typicode.com/posts/">
+      action="//jsonplaceholder.typicode.com/posts/"
+      :on-remove="handleRemove"
+      :beforeRemove="handleBeforeRemove">
       <div style="padding: 20px 0">
         <h-Icon name="activity" size="52" style="color: #3399ff"></h-Icon>
         <p>点击或将文件拖拽到这里上传</p>
@@ -29,7 +31,9 @@
     <div>
      <h-upload
             :before-upload="handleUpload"
-            action="//jsonplaceholder.typicode.com/posts/">
+            action="//jsonplaceholder.typicode.com/posts/"
+            :on-remove="handleRemove"
+            :beforeRemove="handleBeforeRemove">
             <h-button type="ghost" icon="ios-cloud-upload-outline">选择要上传文件的文件</h-button>
       </h-upload>
       <div v-if="file !== null">待上传文件：{{ file.name }} <h-button type="text" @click="upload" :loading="loadingStatus">{{ loadingStatus ? '上传中' : '点击上传' }}</h-button></div>
@@ -44,6 +48,8 @@
     <div>
     <h-upload
       action="//jsonplaceholder.typicode.com/posts/"
+      :on-remove="handleRemove"
+      :beforeRemove="handleBeforeRemove"
       selfConfig>
       <h-button type="ghost" icon="ios-cloud-upload-outline" slot="chooseFile">选择要上传文件的文件</h-button>
       <h-button type="ghost" icon="ios-cloud-upload-outline" slot="postFile">开始上传</h-button>
@@ -66,6 +72,19 @@ export default {
     }
   },
   methods: {
+    handleBeforeRemove(file, fileList) {
+      console.log('============ before-remove start =============');
+      console.log(file);
+      console.log(fileList);
+      console.log('============ before-remove end =============');
+      return confirm('是否继续删除');
+    },
+    handleRemove(file, fileList) {
+      console.log('============ on-remove start =============');
+      console.log(file);
+      console.log(fileList);
+      console.log('============ on-remove end =============');
+    },
     handleUpload (file) {
       this.file = file;
       return false;

@@ -15,7 +15,7 @@ export default {
 	props:{
 		type: {
       validator (value) {
-	        return oneOf(value, ['primary', 'ghost', 'dashed', 'text', 'danger', 'info', 'success', 'warning', 'error']);
+	        return oneOf(value, ['primary', 'ghost', 'dashed', 'text', 'danger', 'info', 'success', 'warning', 'error', 'transparent']);
 	      }
 	    },
 		btnWith: {
@@ -62,7 +62,7 @@ export default {
 			type: Boolean,
 			default: false
 		}
-	}, 
+	},
 	data() {
 		return {
 			showSlot: true,
@@ -70,7 +70,7 @@ export default {
 	},
 	computed: {
     classes () {
-      return [
+    return [
         `${prefixCls}`,
         {
             [`${prefixCls}-${this.type}`]: !!this.type,
@@ -95,7 +95,11 @@ export default {
 	    focus(){
 	    	if (!this.canFocus) return;
 	    	this.$refs.btn.focus();
-	    },
+			},
+			blur(){
+				if (!this.canFocus) return;
+	    	this.$refs.btn.blur();
+			},
 	    keyup(event){
 	    	if (!this.canFocus) return;
 	    	let code = event.keycode;

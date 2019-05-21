@@ -3,7 +3,7 @@
     <h2>基础</h2>
     <h3>单选分组组件</h3>
     <!-- :multiLevel="multiLevel2" -->
-    <h-group-table :columns="columns1" :height="300" :data="data1" size="large" :highlight-row="true" @on-current-change="click1" ref="groupTable" width="800" :loading="loading">
+    <h-group-table :columns="columns1" childHighlightRow :height="300" width="800" :data="data1" size="small"  @on-child-change="click1" ref="groupTable" :loading="loading">
       <P slot="loading">我是自定义de</P>
     </h-group-table>
     <Button @click="setLoad">切换loading</Button>
@@ -22,7 +22,7 @@ import TexpandRow from './Texpand-row.vue'
 var tData= [
   {
     title:'分组表格数据：group1【项目编号：45424451114】 共计：3项',
-    // expand:true,
+    expand:true,
     item:[
       {
         name: '王小明',
@@ -357,11 +357,13 @@ export default {
         {
           title: '金额',
           key: 'money',
+          width: 200
         },
         // {
         //   title: '卡号',
         //   width: 200,
         //   key: 'cardId',
+        //   hiddenCol: true
         // },
         // {
         //   title: '地区',
@@ -492,15 +494,7 @@ export default {
           {title:'123',cols:2,align:'center',className:'demo-table-info-column'},
           {title:'456',rows:2,align:'center'},
           {title:'789',align:'right'},
-        ],
-        [
-          {title:'123',cols:2,hiddenCol:true},
-          {title:'456'},
-        ],
-        [
-          {title:'234'},
-          {title:'678',cols:2},
-        ],
+        ]
       ],
     }
   },
@@ -514,7 +508,7 @@ export default {
     click1(s,j,i){
       console.log(s);
       console.log(j);
-      console.log(i);      
+      console.log(i);
     },
     allSelect (allSelection){
       console.log(allSelection);
@@ -527,7 +521,7 @@ export default {
       console.log(selection);
     },
     getDate(){
-      console.log(this.$refs.groupTable.cloneData); 
+      console.log(this.$refs.groupTable.cloneData);
     },
     addDate(){
       tData = this.data1.push({
@@ -541,8 +535,8 @@ export default {
         timing:'',
         tree:''
       });
-    }  
-  } 
+    }
+  }
 }
 </script>
 <style>

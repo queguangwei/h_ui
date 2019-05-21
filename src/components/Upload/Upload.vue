@@ -155,6 +155,11 @@ export default {
         return {};
       }
     },
+    // 文件移除前钩子函数
+    beforeRemove: {
+      type: Function,
+      default: () => true
+    },
     onRemove: {
       type: Function,
       default () {
@@ -214,7 +219,8 @@ export default {
       selfConfPostList: [], //手动上传时，保存真正的文件列表
       fileNoneStatus: '',// 全部上传时的待上传文件selfConfPostList清空时的状态 success/error/clear（成功/失败/清除后清空）
       isFirstChoose: true, //是否第一次选择文件
-      uploadAllAutoList: [] //uploadAll时，自动上传的list
+      uploadAllAutoList: [], //uploadAll时，自动上传的list
+      viewValue:[],
     };
   },
   computed: {
@@ -513,7 +519,12 @@ export default {
         this.onError(err, response, file);
       }
     },
-    handleRemove(file) {
+    /**
+     * 从文件列表移除文件
+     * 
+     * @param file 需要移除的文件对象
+     */
+    removeFile(file) {
       const fileList = this.fileList;
       fileList.splice(fileList.indexOf(file), 1);
       if (this.selfConfPostList.length > 0) {
@@ -523,14 +534,18 @@ export default {
           this.fileNoneStatus = 'clear'
         }
       }
-      this.onRemove(file, fileList)
+    },
+    handleRemove(file) {
+      if (!this.beforeRemove(file, this.fileList)) return;
+      this.removeFile(file);
+      this.onRemove(file, this.fileList);
     },
     handleUploadedRemove(file) {
       const uploadedList = this.uploadedFileList;
+      if (!this.beforeRemove(file, this.fileList)) return;
       uploadedList.splice(uploadedList.indexOf(file), 1);
-      this.handleRemove(file)
-      // bug64478 upload组件在配置了selfConfig后on-remove钩子会触发两次
-      // this.onRemove(file, uploadedList);
+      this.removeFile(file);
+      this.onRemove(file, uploadedList);
     },
     handlePreview(file) {
       if (file.status === 'finished') {
@@ -585,6 +600,9 @@ export default {
             this.$emit('on-file-none', this.fileNoneStatus) //待上传文件数组为空时返回状态--理财销售5.0
           }
         }
+    },
+    fileList(val){
+      this.viewValue = val
     }
   },
   mounted () {

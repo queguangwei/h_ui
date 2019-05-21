@@ -2,7 +2,7 @@
   <div>
     <Button @on-click="testClick(true)">获取焦点</Button>
     <Button @on-click="testClick(false)">失去焦点</Button>
-    <h-date-picker v-model="model1" @on-blur="dateBlur" :options="options5" @on-illegal-input="handleIllegalInput" clearOnIllegal @on-change="handleChange1" confirm showTwoPanel format="yyyy-MM-dd" :showFormat="true" style="width:180px" :disabled="changeable" ref="test"></h-date-picker>
+    <h-date-picker v-model="model1" @on-blur="dateBlur" iconVisible :options="options5" @on-illegal-input="handleIllegalInput" clearOnIllegal @on-change="handleChange1" confirm showTwoPanel format="yyyy-MM-dd" :showFormat="true" style="width:180px" :disabled="changeable" ref="test"></h-date-picker>
     <span>{{formItem.date}}</span>
     <Button @click = "changedis">改变状态</Button>
     <h-row>
@@ -14,7 +14,9 @@
       </h-col>
       <h-col span="12">
         {{model2}}
-        <h-date-picker v-model="model2" type="daterange" @on-change="handleChange1" format="yyyy-MM-dd" placement="bottom-end" placeholder="选择日期" showFormat></h-date-picker>
+        <h-date-picker v-model="model2" type="daterange" @on-change="handleChange1" format="yyyy-MM-dd" placement="bottom-end" placeholder="选择日期" showFormat>
+          <span slot="footer">123</span>
+        </h-date-picker>
       </h-col>
     </h-row>
     <!-- <h-row> -->

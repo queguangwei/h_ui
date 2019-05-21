@@ -93,6 +93,10 @@
       notDeepCopy:{
         type:Boolean,
         default:false
+      },
+      onlyUpdateDown:{
+        type:Boolean,
+        default:false
       }
     },
     data () {
@@ -177,7 +181,9 @@
             const parent = this.flatState[parentKey].node;
             const childHasCheckSetter = typeof node.checked != 'undefined' && node.checked;//选中为true
             if (childHasCheckSetter && parent.checked != node.checked && !this.checkStrictly) {//当前子节点选中且父组件为选中
-              this.updateTreeUp(node.nodeKey); // update tree upwards
+              if(!this.onlyUpdateDown){
+                this.updateTreeUp(node.nodeKey); // update tree upwards
+              }          
             }
         });
         autoLoadNodes.forEach(node =>  {
@@ -221,17 +227,19 @@
         if(!(this.isAlwaysSelect && node.selected)) {
           this.$set(node, 'selected', !node.selected);
         }
-        this.$emit('on-select-change', this.getSelectedNodes());
+        this.$emit('on-select-change', this.getSelectedNodes(),node);
       },
       handleCheck({ checked, nodeKey }) {
         const node = this.flatState[nodeKey].node;
         this.$set(node, 'checked', checked);
         this.$set(node, 'indeterminate', false);
         if (!this.checkStrictly) {
-          this.updateTreeUp(nodeKey); // propagate up
+          if(!this.onlyUpdateDown){
+            this.updateTreeUp(nodeKey); // propagate up
+          }  
           this.updateTreeDown(node, {checked, indeterminate: false}); // reset `indeterminate` when going down
         } 
-        this.$emit('on-check-change', this.getCheckedNodes());
+        this.$emit('on-check-change', this.getCheckedNodes(),node);
       },
       nodeSelect(key,value,status=true){
         let nodeIndex;
@@ -255,7 +263,6 @@
         this.$set(node, 'selected', status);
       },
       nodeCheck(){
-
       },
       filterHighlight(val,key='title'){
         this.flatState.forEach(item=>{

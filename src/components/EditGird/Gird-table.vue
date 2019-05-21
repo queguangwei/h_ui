@@ -30,6 +30,7 @@
           :checkStrictly="checkStrictly"
           :option="options"
           :treeOption="treeOptions"
+          :titleRender="titleRender"
           @on-select-change="selectChange"
           @on-editselect-change="editselectChange"
           @on-editinput-change="editinputChange"
@@ -198,6 +199,10 @@ export default {
       type: Boolean,
       default: false
     },
+    childHighlightRow:{
+      type: Boolean,
+      default: false
+    },
     rowClassName: {
       type: Function,
       default () {
@@ -249,6 +254,11 @@ export default {
       type:Array,
       default:null
     },
+    disableExpand:{
+      type: Boolean,
+      default: false
+    },
+    titleRender: Function,
   },
   data () {
     return {
@@ -538,7 +548,7 @@ export default {
               };
             }
             if(this.typeName=='groupTable'&&this.height){
-              this.tableWidth = this.tableWidth-this.scrollBarWidth;
+              this.tableWidth = this.tableWidth - this.scrollBarWidth;
             }
             this.columnsWidth = columnsWidth;
           }
@@ -615,9 +625,46 @@ export default {
       }else{
         this.$emit('on-row-click', [JSON.parse(JSON.stringify(this.cloneData[_index])),_index]);
       }
-      if ((!this.rowSelect || !this.selectType)&&this.highlightRow) {
-        this.highlightCurrentRow(_index);
+      if (!this.rowSelect || !this.selectType) {
+        if(this.highlightRow){
+          this.highlightCurrentRow(_index);
+        }
+        if(this.childHighlightRow){
+          this.childHighlightCurrentRow(_index);
+        }
       }
+    },
+    childHighlightCurrentRow(_index){
+      if (this.typeName=="groupTable" && String(_index).indexOf('.')!=-1) {
+        var k = String(_index).split('.')[0];
+        var m = Number(String(_index).split('.')[1])-1;
+        this.objData[k].item.forEach((col,j)=>{
+          if (col._isHighlight) {
+            col._isHighlight = false;
+          }
+        });          
+        this.$set(this.objData[k].item[m],'_isHighlight',true);
+        const currentData = this.getGroupData(k,m)
+        this.$nextTick(()=>{
+          this.$emit('on-child-change', this.getAllGroupData());
+        })
+      }
+    },
+    getAllGroupData(){
+      let arr = []
+      for(let i in this.objData){
+        let obj=null
+        this.objData[i].item.forEach((col,j)=>{
+          if (col._isHighlight) {
+            obj = deepCopy(this.cloneData[i])
+            obj.item = this.cloneData[i].item[j];
+          }
+        });
+        if(obj){
+          arr.push(obj)  
+        } 
+      }
+      return arr
     },
     getGroupData(k,m){
       let groupData={};
@@ -712,6 +759,9 @@ export default {
       }
     },
     toggleExpand (_index) {
+      if(this.disableExpand && this.typeName=='groupTable'){
+          return
+      }
       let _this = this;
       let data = {};
       for (let i in _this.objData) {

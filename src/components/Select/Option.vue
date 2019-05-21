@@ -84,6 +84,16 @@
       handleclick(){ 
       }
     },
+    watch: {
+      value(){
+        let obj = this.$parent.$parent;
+        //value变化更新下拉项
+        if (!hasClass(obj.$el,'h-select')) {
+          obj = this.$parent.$parent.$parent;
+        }
+        obj.updateOptions(true, true);
+      }
+    },
     mounted () {
       var str=this.$el.innerText
       this.searchLabel = str.replace('false','').replace('true','').trim();

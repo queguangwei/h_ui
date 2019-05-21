@@ -65,9 +65,9 @@
           <!-- <ul v-show="notFoundShow" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul> -->
           <span :class="searchClass"
                 ref='search'
-                v-if="filterable && showBottom">
+                v-if="filterable && showBottom&&!hideMult">
             <Checkbox v-model="selectHead"
-                      size="large"
+                      :size="checkboxSize"
                       @on-change="toggleSelect"
                       v-if="checkToHead&&multiple"></Checkbox>
             <input type="text"
@@ -83,6 +83,7 @@
                    ref="input">
             <!-- <input type="text" placeholder="请输入..." class="h-input h-input-left">  -->
           </span>
+          <span v-if="hideMult&&multiple" :class="hideMultHead" @click="toggleSelect(!isSelectAll)">全选</span>
           <div v-if="showHeader"
                :class="headerSlotCls">
             <slot name="header">
@@ -316,7 +317,17 @@ export default {
     isSelectFilter: {
       type: Boolean,
       default: false
-    }
+    },
+    checkboxSize: {
+      validator(value) {
+        return oneOf(value, ['small', 'large', 'default'])
+      },
+      default: 'large'
+    },
+    hideMult:{
+      type:Boolean,
+      default:false,
+    },
   },
   data() {
     return {
@@ -345,10 +356,18 @@ export default {
       selectHead: false,
       fPlacement: this.placement,
       isBlock: false,
-      allClick: false
+      allClick: false,
+      viewValue:null,
+      isSelectAll:false
     }
   },
   computed: {
+    hideMultHead(){
+      return {
+        [`${prefixCls}-hideMultHead`]:this.hideMult&&this.multiple,
+        [`${prefixCls}-hideMultHead-select`]:this.isSelectAll,
+      }
+    },
     searchClass() {
       return [
         `${prefixCls}-search`,
@@ -360,7 +379,7 @@ export default {
     },
     listStyle() {
       let style = {}
-      if (!this.showHeader) {
+      if (!this.showHeader&&!this.hideMult) {
         if (this.showBorder) {
           style.paddingTop = this.showBottom ? '52px' : '0'
         } else {
@@ -380,7 +399,7 @@ export default {
           [`${prefixCls}-multiple`]: this.multiple,
           [`${prefixCls}-single`]: !this.multiple,
           [`${prefixCls}-show-clear`]: this.showCloseIcon,
-          [`${prefixCls}-${this.size}`]: !!this.size
+          [`${prefixCls}-${this.size}`]: !!this.size,
         }
       ]
     },
@@ -538,6 +557,7 @@ export default {
       this.$emit('on-scroll', num)
     },
     toggleSelect(val) {
+      this.isSelectAll = !this.isSelectAll
       if (this.isBlock) {
         this.allClick = true
         let hybridValue = []
@@ -545,7 +565,7 @@ export default {
         this.findChild(child => {
           this.options.forEach((col, i) => {
             if(this.isSelectFilter && child.cloneData[i].hidden){
-              return false            
+              return false
             }
             this.$set(child.cloneData[i], 'selected', val)
             if (val) {
@@ -596,7 +616,7 @@ export default {
       }
       this.visible = !this.visible
       this.isInputFocus = true
-      if (this.visible && this.filterable && this.showBottom) {
+      if (this.visible && this.filterable && this.showBottom&&this.$refs.input) {
         this.$nextTick(() => {
           this.$refs.input.focus()
         })
@@ -604,7 +624,9 @@ export default {
     },
     hideMenu() {
       this.visible = false
-      this.focusIndex = 0
+      if(!window.isO45){
+        this.focusIndex = 0
+      }
 
       // 单选 恢复 query 值
       if (!this.multiple && this.query !== this.selectedSingle) {
@@ -692,10 +714,13 @@ export default {
           }
         }
 
-        if (curSingle) {
+        if (this.model === '') {
+          this.selectedSingle = ''
+        } else if(this.remote && curSingle) {
+          this.selectedSingle = curSingle
+        } else if(!this.remote) {
           this.selectedSingle = curSingle
         }
-        // this.selectedSingle = curSingle
 
         if (slot && !findModel) {
           this.model = ''
@@ -791,7 +816,6 @@ export default {
 
       this.broadcast('Drop', 'on-update-popper')
     },
-
     toggleSingleSelected(value, init = false) {
       // let _this = this
       if (!this.multiple) {
@@ -849,6 +873,7 @@ export default {
 
         this.findChild(child => {
           if (this.isBlock) {
+            let curSelect = true;
             _this.options.forEach((col, i) => {
               let index = value.indexOf(col.value)
               if (index > -1) {
@@ -856,8 +881,13 @@ export default {
                 hybridValue[index].label = col.label
               } else {
                 this.$set(child.cloneData[i], 'selected', false)
+                if(curSelect){
+                  curSelect=false;
+                }
               }
             })
+            if(_this.options.length==0) curSelect = false
+            this.isSelectAll = curSelect;
           } else {
             _this.options.forEach(col => {
               let index = value.indexOf(col.value)
@@ -902,6 +932,22 @@ export default {
           e.preventDefault()
           this.hideMenu()
         }
+        if(window.isO45){
+          // right
+          if (keyCode === 39) {
+            e.preventDefault();
+            this.navigateOptions('next');
+          }
+          // left
+          if (keyCode === 37) {
+            e.preventDefault();
+            this.navigateOptions('prev');
+          }
+          if(!this.multiple && (keyCode === 39||keyCode === 37)){
+            this.model = this.focusValue
+          }
+          return false;
+        }
         // next
         if (keyCode === 40) {
           e.preventDefault()
@@ -921,7 +967,11 @@ export default {
 
           if (this.isBlock) {
             if (!this.multiple) {
-              this.selectBlockSingle(this.focusValue)
+              if(window.IS_LICAI){
+                this.model = this.focusValue
+              }else{
+                this.selectBlockSingle(this.focusValue)
+              }
             } else {
               this.selectBlockMultiple(this.focusValue)
             }
@@ -1036,11 +1086,13 @@ export default {
             } else {
               this.query = child.value
             }
+            this.selectToChangeQuery = true
           }
         })
       }
     },
     broadcastQuery(val) {
+      this.focusIndex = 0
       if (this.isBlock) {
         this.broadcast('Block', 'on-query-change', val)
         if(this.isSelectFilter){
@@ -1052,7 +1104,7 @@ export default {
                 break
               }
             }
-            this.selectHead = isAll 
+            this.selectHead = isAll
           })
         }
       } else {
@@ -1114,7 +1166,7 @@ export default {
       return val.slice(0, val.length - 1)
     },
     searchStyle() {
-      if (this.filterable && this.showBottom) {
+      if (this.filterable && this.showBottom && !this.hideMult) {
         if (this.isBlock) {
           this.$refs.search.style.width = '100%'
           if (this.multiple && this.checkToHead) {
@@ -1145,6 +1197,13 @@ export default {
       })
     },
     blur() {
+      if (this.multiple) {
+        // 多选返回数组
+        this.dispatch('FormItem', 'on-form-blur', this.selectedMultiple)
+      } else {
+        // 单选返回字符串
+        this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
+      }
       this.isInputFocus = false
       this.visible = false
       if (this.filterable) {
@@ -1154,12 +1213,10 @@ export default {
       }
     },
     selectBlockSingle(value) {
-      // console.log('selectBlockSingle')
       this.availableOptions = this.options
       this.selectToChangeQuery = true
 
       if (this.model === value) {
-        this.hideMenu()
       } else {
         this.model = value
         // if (this.filterable && !this.showBorder) {
@@ -1172,9 +1229,8 @@ export default {
         //   }
         // });
         // }
-
-        this.hideMenu()
       }
+      this.hideMenu()
     },
     selectBlockMultiple(value) {
       const index = this.model.indexOf(value)
@@ -1228,7 +1284,7 @@ export default {
     // document.addEventListener('keydown', this.handleKeydown);
     this.$on('on-select-selected', (value, status) => {
       value = this.isBlock ? value : this.getFormatValue(value)
-      if (this.model === value) {
+      if (this.model === value && !window.isO45) {
         this.hideMenu()
       } else {
         if (this.multiple && !status) {
@@ -1272,6 +1328,7 @@ export default {
               }
             })
           }
+          this.hideMenu()
         }
       }
     })
@@ -1306,6 +1363,7 @@ export default {
           this.model = this.strtoArr(val)
         } else {
           this.model = val
+          // TODO
         }
         if (val === '') this.query = ''
       }
@@ -1357,7 +1415,9 @@ export default {
             if (this.showBottom || this.multiple) {
               this.query = ''
             }
-            this.broadcastQuery('')
+            if(!window.isO45){
+              this.broadcastQuery('')
+            }
           }, 300)
         }
         setTimeout(() => {
@@ -1367,8 +1427,6 @@ export default {
       }
     },
     query(val) {
-      this.focusIndex = 0
-
       if (this.remote && this.remoteMethod) {
         if (!this.selectToChangeQuery) {
           this.remoteMethod(val)
@@ -1382,7 +1440,6 @@ export default {
         if (!this.selectToChangeQuery) {
           this.$emit('on-query-change', val)
           this.broadcastQuery(val)
-
           this.availableOptions = this.options.filter(
             option => option.label.indexOf(val) !== -1
           )
@@ -1409,10 +1466,9 @@ export default {
     selectedSingle(val) {
       if (this.filterable && !this.showBottom) {
         this.query = val
-
         if (this.query !== '') this.selectToChangeQuery = true
       }
-      this.hideMenu()
+      this.viewValue = val
     },
     // options(val) {
     //   console.log('options', val)
@@ -1428,6 +1484,7 @@ export default {
       this.$nextTick(() => {
         this.offsetArrow()
       })
+      this.viewValue = val
     },
     selectHead(val) {
       // this.toggleSelect(val)

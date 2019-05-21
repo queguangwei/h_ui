@@ -4,16 +4,22 @@
       <span :class="innerClasses"></span>
       <input
         v-if="group"
+        ref="input"
         type="checkbox"
         :class="inputClasses"
         :disabled="disabled"
+        @focus="focus"
+        @blur="blur"
         :value="label"
         v-model="model"
         @change="change"
         @click="click($event)">
       <input
         v-if="!group"
+        ref="input"
         type="checkbox"
+        @focus="focus"
+        @blur="blur"
         :class="inputClasses"
         :disabled="disabled"
         :checked="currentValue"
@@ -72,7 +78,9 @@
         currentValue: this.value,
         group: false,
         showSlot: true,
-        parent: findComponentsUpward(this, 'CheckboxGroup')
+        parent: findComponentsUpward(this, 'CheckboxGroup'),
+        isFocus: false,
+        viewValue:this.value
       };
     },
     computed: {
@@ -98,7 +106,12 @@
         ];
       },
       innerClasses () {
-        return `${prefixCls}-inner`;
+        return  [
+          `${prefixCls}-inner`,
+          {
+            [`${prefixCls}-inner-focus`]: this.isFocus&&window.isO45,
+          }
+        ];
       },
       inputClasses () {
         return `${prefixCls}-input`;
@@ -120,17 +133,15 @@
           if (this.disabled) {
             return false;
           }
-
           const checked = event.target.checked;
           this.currentValue = checked;
-
           let value = checked ? this.trueValue : this.falseValue;
           this.$emit('input', value);
           if (this.group) {
-              this.parent.change(this.model);
+            this.parent.change(this.model);
           } else {
-              this.$emit('on-change', value,event);
-              this.dispatch('FormItem', 'on-form-change', value);
+            this.$emit('on-change', value,event);
+            this.dispatch('FormItem', 'on-form-change', value);
           }
       },
       updateModel () {
@@ -141,9 +152,11 @@
       },
       focus () {
         this.$refs.input.focus();
+        this.isFocus = true;
       },
       blur () {
         this.$refs.input.blur();
+        this.isFocus = false;
       }
     },
     watch: {
@@ -152,6 +165,9 @@
               throw 'Value should be trueValue or falseValue.';
           }
           this.updateModel();
+      },
+      currentValue(val){
+        this.viewValue = val
       }
     }
   };

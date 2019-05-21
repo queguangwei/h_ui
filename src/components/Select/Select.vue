@@ -10,11 +10,23 @@
       @keyup="keyup"
       @keydown="keydown">
       <!-- 多选时输入框内选中值模拟 -->
-      <div class="h-tag" v-for="(item, index) in selectedMultiple" :key="index">
-        <span class="h-tag-text">{{ item.label }}</span>
-        <Icon name="close" @click.native.stop="removeTag(index)"></Icon>
-      </div>
-        <!-- 下拉输入框模拟（非远程搜索时渲染）  -->
+      <template  v-if="multiple && !collapseTags">
+        <div class="h-tag" v-for="(item, index) in selectedMultiple" :key="index">
+          <span class="h-tag-text">{{ item.label }}</span>
+          <Icon name="close" @click.native.stop="removeTag(index)"></Icon>
+        </div>
+      </template>
+      <!-- 多选时输入框压缩展示个数 -->
+      <template v-if="multiple && collapseTags && selectedMultiple.length > 0">
+        <div class="h-tag">
+          <span class="h-tag-text">{{ selectedMultiple[0].label }}</span>
+          <Icon name="close" @click.native.stop="removeTag(index)"></Icon>
+        </div>
+        <div class="h-tag" v-if="multiple && collapseTags && selectedMultiple && selectedMultiple.length > 1">
+          <span class="h-tag-text">+{{ selectedMultiple.length - 1 }}</span>
+        </div>
+      </template>
+      <!-- 下拉输入框模拟（非远程搜索时渲染）  -->
       <span :class="[prefixCls + '-placeholder']" v-show="showPlaceholder && (!filterable || showBottom)">{{ localePlaceholder }}</span>
       <span :class="[prefixCls + '-selected-value']" v-show="!showPlaceholder && !multiple && !(filterable && !showBottom)">{{ selectedSingle }}</span>
       <!-- 下拉输入框(远程搜索时渲染) -->
@@ -285,6 +297,16 @@
       allowCreate: {
         type: Boolean,
         default: false
+      },
+      /* 多选时是否将选项压缩展示个数 */
+      collapseTags: {
+        type: Boolean,
+        default: false
+      },
+      /* 搜索时是否不将焦点放在第一搜索项 */
+      notAutoFocus:{
+        type: Boolean,
+        default: true
       }
     },
     data () {
@@ -313,7 +335,9 @@
         titleTip:'',
         fPlacement:this.placement,
         isSelectAll:false,
-        typeValue:'string'
+        typeValue:'string',
+        focusValue:'',
+        viewValue:null
       };
     },
     computed: {
@@ -503,6 +527,13 @@
         })
       },
       blur(){
+        if (this.multiple) {
+        // 多选返回数组
+        this.dispatch('FormItem', 'on-form-blur', this.selectedMultiple)
+        } else {
+        // 单选返回字符串
+        this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
+        }
         this.isInputFocus = false;
         this.visible = false;
         if (this.filterable) {
@@ -567,7 +598,9 @@
       },
       hideMenu () {
           this.visible = false;
-          this.focusIndex = 0;
+          if(!window.isO45){
+            this.focusIndex = 0;
+          }
           this.broadcast('Option', 'on-select-close');
       },
       findChild (cb) {
@@ -849,6 +882,23 @@
               e.preventDefault();
               this.hideMenu();
           }
+          if(window.isO45){
+            // right
+            if (keyCode === 39) {
+              e.preventDefault();
+              this.navigateOptions('next');
+            }
+            // left
+            if (keyCode === 37) {
+              e.preventDefault();
+              this.navigateOptions('prev');
+            }
+            if((keyCode === 39||keyCode === 37)&&!this.multiple){
+              this.model = this.focusValue
+              this.selectToChangeQuery = true
+            }
+            return false;
+          }
           // next
           if (keyCode === 40) {
               e.preventDefault();
@@ -870,11 +920,16 @@
                   createdOption.selected = !createdOption.selected;
                 }
               } else {
-                this.findChild((child) => {
+                if(!this.multiple&&window.IS_LICAI){
+                  this.model = this.focusValue
+                  this.selectToChangeQuery = true
+                }else{
+                  this.findChild((child) => {
                   if (child.isFocus) {
-                      child.select();
+                    child.select();
                   }
                 });
+                }
               }
           }
         }
@@ -887,15 +942,15 @@
         const createdOption = this.$refs.createdOption;
         let maxIndex = createdOption ? this.options.length + 1 : this.options.length;
           if (direction === 'next') {
-              const next = this.focusIndex + 1;
-              this.focusIndex = (this.focusIndex === maxIndex) ? 1 : next;
+            const next = this.focusIndex + 1;
+            this.focusIndex = (this.focusIndex === maxIndex) ? 1 : next;
           } else if (direction === 'prev') {
-              const prev = this.focusIndex - 1;
-              this.focusIndex = (this.focusIndex <= 1) ? maxIndex : prev;
+            const prev = this.focusIndex - 1;
+            this.focusIndex = (this.focusIndex <= 1) ? maxIndex : prev;
           }
           let child_status = {
-              disabled: false,
-              hidden: false
+            disabled: false,
+            hidden: false
           };
           let find_deep = false;
           if (createdOption && this.focusIndex === 1) {
@@ -909,21 +964,22 @@
             }
             this.findChild((child) => {
               if (child.index === this.focusIndex) {
-                  child_status.disabled = child.disabled;
-                  child_status.hidden = child.hidden;
-                  if (!child.disabled && !child.hidden) {
-                      child.isFocus = true;
-                  }
+                child_status.disabled = child.disabled;
+                child_status.hidden = child.hidden;
+                if (!child.disabled && !child.hidden) {
+                  child.isFocus = true;
+                }
               } else {
-                  child.isFocus = false;
+                child.isFocus = false;
               }
               if (!child.hidden && !child.disabled) {
-                  find_deep = true;
+                find_deep = true;
               }
             });
           }
           
-          let top = 32*(this.focusIndex-1);
+          this.focusValue = this.options[this.focusIndex - 1].value
+          let top = 30*(this.focusIndex-1);
           let contentHeight = 0
           let selectItemHeight = 1
           if (this.scrollFix) {
@@ -971,25 +1027,20 @@
             this.query = '';
           } else {
             if (model !== '') {
-              let found = false;
-              this.findChild((child) => {
-                if (child.value === model) {
-                  found = true;
-                  this.query = child.label === undefined ? child.searchLabel : child.label;
-                  this.query = this.query.trim();
+                let found = false;
+                this.findChild((child) => {
+                  if (child.value === model) {
+                    found = true;
+                    this.query = child.label === undefined ? child.searchLabel : child.label;
+                    this.query = this.query.trim();
+                  }
+                });
+                // 如果删除了搜索词，下拉列表也清空了，所以强制调用一次remoteMethod
+                if ((this.remote || this.enableCreate) && !found && this.query !== this.lastQuery) {
+                    this.$nextTick(() => {
+                        this.query = this.lastQuery.trim();
+                    });
                 }
-              });
-              if (!found && this.enableCreate) {
-                if (model !== this.query) {
-                  this.query = model;
-                }
-              }
-              // 如果删除了搜索词，下拉列表也清空了，所以强制调用一次remoteMethod
-              // if (this.remote && this.query !== this.lastQuery) {
-              // this.$nextTick(() => {
-              // this.query = this.lastQuery.trim();
-              // });
-              // }
             } else {
               this.query = '';
             }
@@ -1024,6 +1075,7 @@
                 } else {
                     this.query = child.value.trim();
                 }
+                this.selectToChangeQuery = true
             }
           });
         }
@@ -1211,12 +1263,17 @@
           } else {
             this.model = value;
             if (this.filterable && !this.showBottom) {
+              this.selectToChangeQuery = true;
+              let found = false;
               this.findChild((child) => {
                 if (child.value === value) {
-                  if (this.query !== '') this.selectToChangeQuery = true;
                   this.lastQuery = this.query = child.label === undefined ? child.searchLabel : child.label;
+                  found = true;
                 }
               });
+              if (!found && this.enableCreate && value !== '') {
+                this.lastQuery = this.query = value;
+              }
             }
             this.$nextTick(() => {
               this.hideMenu()
@@ -1276,6 +1333,7 @@
         }else{
           this.titleTip = '';
         }
+        this.viewValue = val
       },
       model () {
         let backModel = this.arrtoStr(this.model);
@@ -1293,11 +1351,11 @@
         } else {
           this.updateSingleSelected();
         }
-        if (!this.visible && this.filterable) {
-          this.$nextTick(() => {
-              this.broadcastQuery('');
-          });
-        }
+        // if (!this.visible && this.filterable) {
+        //   this.$nextTick(() => {
+        //       this.broadcastQuery('');
+        //   });
+        // }
       },
       visible (val) {
         if (val) {
@@ -1349,21 +1407,21 @@
             }
           }
           if (!this.selectToChangeQuery) {
-              this.$emit('on-query-change', val);
-              if(this.readonly || this.disabled) return false;
-              this.remoteMethod(val);
+            this.$emit('on-query-change', val);
+            if(this.readonly || this.disabled) return false;
+            this.remoteMethod(val);
+            this.focusIndex = 0;
+            this.findChild(child => {
+              child.isFocus = false;
+            });
           }
-          this.focusIndex = 0;
           typeof this.$refs.createdOption !== 'undefined' && (this.$refs.createdOption.isFocus = false);
-          this.findChild(child => {
-            child.isFocus = false;
-          });
         } else {
             if (!this.selectToChangeQuery) {
-                this.$emit('on-query-change', val);
+              this.$emit('on-query-change', val);
+              this.broadcastQuery(val);
             }
             // if(val.trim()) this.broadcastQuery(val);
-            this.broadcastQuery(val);
             let isHidden = true;
             this.$nextTick(() => {
               this.findChild((child) => {
@@ -1378,7 +1436,7 @@
           this.enableCreate && this.checkOptionSelected();
           this.enableCreate && this.reorderOptionIndex();
         })
-        if (this.filterable&&!this.remote) {
+        if (this.filterable&&!this.remote&&!this.selectToChangeQuery&&!this.notAutoFocus) {
           this.$nextTick(()=>{
             this.focusIndex = 1;
             if (typeof this.$refs.createdOption !== 'undefined') {
@@ -1403,17 +1461,20 @@
         this.broadcast('Drop', 'on-update-popper');
       },
       selectedSingle(val){
-        this.hideMenu();
+        // if(!window.isO45){
+        //   this.hideMenu();
+        // }
         if (val&&this.showTitle) {
           this.titleTip=val
         }
+        this.viewValue = val
       },
       options(val){
         if (val.length!=0 && this.isfirstSelect) {
           this.model = val[0].value;
           this.isfirstSelect = false;
         }
-        if (this.remote) {
+        if (this.remote&&!this.notAutoFocus) {
           this.$nextTick(()=>{
             this.focusIndex = 1;
             const createdOption = this.$refs.createdOption;

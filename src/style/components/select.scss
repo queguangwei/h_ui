@@ -275,6 +275,8 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
     &-dropdown &-dropdown-list {
         .#{$select-prefix-cls}-item {
             position: relative;
+            height: 30px;
+            line-height: 16px;
             & label {
                 // position: absolute;
                 // left: 8px;
