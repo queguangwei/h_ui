@@ -26,7 +26,7 @@
         @change="change"
         @click="click($event)">
     </span>
-    <slot><span v-if="showSlot">{{ label }}</span></slot>
+    <slot><span v-if="showSlot">{{ text||label }}</span></slot>
   </label>
 </template>
 <script>
@@ -70,7 +70,12 @@
       notGroup:{
         type: Boolean,
         default: false
-      }
+      },
+      //显示文字，层级高于label，低于slot
+      text:{
+        type: [String, Number, Boolean],
+        default:null
+      },
     },
     data () {
       return {
@@ -80,6 +85,7 @@
         showSlot: true,
         parent: findComponentsUpward(this, 'CheckboxGroup'),
         isFocus: false,
+        viewValue:this.value
       };
     },
     computed: {
@@ -132,17 +138,15 @@
           if (this.disabled) {
             return false;
           }
-
           const checked = event.target.checked;
           this.currentValue = checked;
-
           let value = checked ? this.trueValue : this.falseValue;
           this.$emit('input', value);
           if (this.group) {
-              this.parent.change(this.model);
+            this.parent.change(this.model);
           } else {
-              this.$emit('on-change', value,event);
-              this.dispatch('FormItem', 'on-form-change', value);
+            this.$emit('on-change', value,event);
+            this.dispatch('FormItem', 'on-form-change', value);
           }
       },
       updateModel () {
@@ -166,6 +170,9 @@
               throw 'Value should be trueValue or falseValue.';
           }
           this.updateModel();
+      },
+      currentValue(val){
+        this.viewValue = val
       }
     }
   };

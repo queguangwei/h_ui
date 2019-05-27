@@ -30,6 +30,7 @@
           :checkStrictly="checkStrictly"
           :option="options"
           :treeOption="treeOptions"
+          :titleRender="titleRender"
           @on-select-change="selectChange"
           @on-editselect-change="editselectChange"
           @on-editinput-change="editinputChange"
@@ -198,6 +199,10 @@ export default {
       type: Boolean,
       default: false
     },
+    childHighlightRow:{
+      type: Boolean,
+      default: false
+    },
     rowClassName: {
       type: Function,
       default () {
@@ -252,7 +257,8 @@ export default {
     disableExpand:{
       type: Boolean,
       default: false
-    }
+    },
+    titleRender: Function,
   },
   data () {
     return {
@@ -371,7 +377,7 @@ export default {
         if (this.bodyHeight === 0) {
           width = this.tableWidth;
         } else {
-          if (this.bodyHeight > this.bodyRealHeight && this.data.length>0) {
+          if (this.bodyHeight > this.bodyRealHeight && this.data.length>0 && this.typeName !== 'groupTable') {
             width = this.tableWidth;
             // width = this.typeName!='groupTable'?this.tableWidth:this.tableWidth- this.scrollBarWidth;
           } else {
@@ -474,15 +480,18 @@ export default {
     },
     isRightFixed () {
         return this.columns.some(col => col.fixed && col.fixed === 'right');
+    },
+    isHighlightRow () {
+      let isRadio = this.columns && this.columns[0] && this.columns[0].type === 'radio' || false
+      return this.highlightRow || isRadio
     }
-
   },
   methods: {
     rowClsName (index) {
       return this.rowClassName(this.data[index], index);
     },
     handleMouseLeave() {
-      
+
     },
     handleResize () {
       this.$nextTick(() => {
@@ -524,7 +533,7 @@ export default {
             if (!this.$refs.thead) return;
             const $th = this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0].querySelectorAll('th');
             for (let i = 0; i < $th.length; i++) {    // can not use forEach in Firefox
-              const column = this.cloneColumns[i]; 
+              const column = this.cloneColumns[i];
               let width = parseInt(getStyle($th[i], 'width'));
               if (i === autoWidthIndex) {
                 width = parseInt(getStyle($th[i], 'width')) - 1;
@@ -546,7 +555,7 @@ export default {
             }
             this.columnsWidth = columnsWidth;
           }
-          this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
+          this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0;
         });
         // get table real height,for fixed when set height prop,but height < table's height,show scrollBarWidth
         this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'));
@@ -587,7 +596,7 @@ export default {
               oldIndexJ=j;
               col._isHighlight = false;
             }
-          });          
+          });
         }
         this.$set(this.objData[k].item[m],'_isHighlight',true);
         // this.objData[k].item[m]._isHighlight = true;
@@ -596,7 +605,7 @@ export default {
         this.$emit('on-current-change', JSON.parse(JSON.stringify(currentData)),oldData,{k:Number(k),m:m,key:this.curKey
         });
       }else{
-        if (!this.highlightRow || this.objData[_index]._isHighlight) return;
+        if (!this.isHighlightRow || this.objData[_index]._isHighlight) return;
         let oldIndex = -1;
         for (let i in this.objData) {
           if (this.objData[i]._isHighlight) {
@@ -619,9 +628,46 @@ export default {
       }else{
         this.$emit('on-row-click', [JSON.parse(JSON.stringify(this.cloneData[_index])),_index]);
       }
-      if ((!this.rowSelect || !this.selectType)&&this.highlightRow) {
-        this.highlightCurrentRow(_index);
+      if (!this.rowSelect || !this.selectType) {
+        if(this.isHighlightRow){
+          this.highlightCurrentRow(_index);
+        }
+        if(this.childHighlightRow){
+          this.childHighlightCurrentRow(_index);
+        }
       }
+    },
+    childHighlightCurrentRow(_index){
+      if (this.typeName=="groupTable" && String(_index).indexOf('.')!=-1) {
+        var k = String(_index).split('.')[0];
+        var m = Number(String(_index).split('.')[1])-1;
+        this.objData[k].item.forEach((col,j)=>{
+          if (col._isHighlight) {
+            col._isHighlight = false;
+          }
+        });
+        this.$set(this.objData[k].item[m],'_isHighlight',true);
+        const currentData = this.getGroupData(k,m)
+        this.$nextTick(()=>{
+          this.$emit('on-child-change', this.getAllGroupData());
+        })
+      }
+    },
+    getAllGroupData(){
+      let arr = []
+      for(let i in this.objData){
+        let obj=null
+        this.objData[i].item.forEach((col,j)=>{
+          if (col._isHighlight) {
+            obj = deepCopy(this.cloneData[i])
+            obj.item = this.cloneData[i].item[j];
+          }
+        });
+        if(obj){
+          arr.push(obj)
+        }
+      }
+      return arr
     },
     getGroupData(k,m){
       let groupData={};
@@ -637,7 +683,7 @@ export default {
         let currentData = this.getGroupData(i,j);
         this.$emit('on-row-dblclick', JSON.parse(JSON.stringify(currentData)),{k:Number(i),m:j,key:this.curKey});
       }else{
-        if ((!this.rowSelect || !this.selectType)&&this.highlightRow) {
+        if ((!this.rowSelect || !this.selectType)&&this.isHighlightRow) {
           this.highlightCurrentRow (_index);
         }
         this.$emit('on-row-dblclick', JSON.parse(JSON.stringify(this.cloneData[_index])));
@@ -684,7 +730,7 @@ export default {
           _this.$emit(status ? 'on-select' : 'on-select-cancel', selection, JSON.parse(JSON.stringify(_this.getGroupData(k,m))));
           _this.$emit('on-selection-change', selection);
 
-        }else{        
+        }else{
           let data ={};
           for(let i in _this.objData){
             if(parseInt(i) === _index){
@@ -752,7 +798,7 @@ export default {
         //     }else{
         //         this.objData[data._index]._isChecked = status;
         //     }
-            
+
         // });
         for(const data of this.rebuildData){
           if(this.objData[data._index]._isDisabled){
@@ -813,7 +859,7 @@ export default {
             verifyTip.style.display = 'none';
           }else{
             verifyTip.style.display = 'block';
-          }        
+          }
         }
       }
     },
@@ -1017,7 +1063,7 @@ export default {
     },
     initResize(){
       this.$nextTick(() => {
-        this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
+        this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0;
       });
     },
     getSelectType(){;

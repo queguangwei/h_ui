@@ -17,10 +17,10 @@
             <tr class="cur-th">
               <th v-for="(column, index) in cloneColumns"
                 :key="index"
-                v-on:mousedown="mousedown($event,column,index)" 
-                v-on:mouseout="mouseout($event,column,index)" 
+                v-on:mousedown="mousedown($event,column,index)"
+                v-on:mouseout="mouseout($event,column,index)"
                 v-on:mousemove="mousemove($event,column,index)"
-                :class="alignCls(column)" 
+                :class="alignCls(column)"
                 >
                 <table-cell
                   :column="column"
@@ -59,7 +59,7 @@
                       <!-- &&!this.splitIndex -->
                       <template v-if="column.type === 'index'&&!splitIndex">{{row._index + 1}}</template>
                       <template v-if="column.type === 'selection'">
-                        <Checkbox size="large" :value="rowChecked(row._index)" @click.native.stop="handleClickTr($event,row._index,rowChecked(row._index))" @on-change="toggleSelect(row._index)" :disabled="rowDisabled(row._index)"></Checkbox>
+                        <Checkbox :size="calcCheckboxSize(column.checkboxSize)" :value="rowChecked(row._index)" @click.native.stop="handleClickTr($event,row._index,rowChecked(row._index))" @on-change="toggleSelect(row._index)" :disabled="rowDisabled(row._index)"></Checkbox>
                       </template>
                       <template v-if="!column.type&&!column.render"><span v-html="row[column.key]"></span></template>
                       <template v-if="column.render">
@@ -71,7 +71,7 @@
                         ></Cell>
                       </template>
                     </div>
-                  </td>                  
+                  </td>
                 </table-tr>
               </template>
             </tbody>
@@ -101,10 +101,10 @@
               <tr>
                 <th v-for="(column, index) in leftFixedColumns"
                   :key="index"
-                  v-on:mousedown="mousedown($event,column,index)" 
-                  v-on:mouseout="mouseout($event,column,index)" 
+                  v-on:mousedown="mousedown($event,column,index)"
+                  v-on:mouseout="mouseout($event,column,index)"
                   v-on:mousemove="mousemove($event,column,index)"
-                  :class="alignCls(column,{},'left')" 
+                  :class="alignCls(column,{},'left')"
                   >
                   <table-cell
                     :column="column"
@@ -141,7 +141,7 @@
                       <div :class="classesTd(column)">
                         <template v-if="column.type === 'index'&&!splitIndex">{{row._index+1}}</template>
                         <template v-if="column.type === 'selection'">
-                          <Checkbox size="large" :value="rowChecked(row._index)" @click.native.stop="handleClickTr($event,row._index,rowChecked(row._index))" @on-change="toggleSelect(row._index)" :disabled="rowDisabled(row._index)"></Checkbox>
+                          <Checkbox :size="calcCheckboxSize(column.checkboxSize)" :value="rowChecked(row._index)" @click.native.stop="handleClickTr($event,row._index,rowChecked(row._index))" @on-change="toggleSelect(row._index)" :disabled="rowDisabled(row._index)"></Checkbox>
                         </template>
                         <template v-if="!column.type&&!column.render"><span v-html="row[column.key]"></span></template>
                         <template v-if="column.render">
@@ -163,7 +163,7 @@
                         :checked="rowChecked(row._index)"
                         :disabled="rowDisabled(row._index)"
                       ></Cell> -->
-                    </td>                  
+                    </td>
                   </table-tr>
                 </template>
               </tbody>
@@ -173,25 +173,33 @@
       </div>
       <div :class="[prefixCls + '-summation']" :style="summationStyle" v-if="isSummation" ref="summation">
         <table cellspacing="0" cellpadding="0" border="0" :style="tableStyle" ref="tbody">
-            <colgroup>
-              <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, false)" :key="index">
-            </colgroup>
-            <tbody :class="[prefixCls + '-tbody']">
-              <template v-for="row in summationData">
-                <table-tr
-                  :row="row"
-                  :key="row._rowKey"
-                  :prefix-cls="prefixCls"
-                >
-                  <td v-for="column in cloneColumns" :class="alignCls(column, row)" :key="column._index">
-                    <div :class="classesTd(column)">      
-                      <span v-html="row[column.key]"></span>                     
-                    </div>
-                  </td>                  
-                </table-tr>
-              </template>
-            </tbody>
-          </table>
+          <colgroup>
+            <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, false)" :key="index">
+          </colgroup>
+          <tbody :class="[prefixCls + '-tbody']">
+            <template v-for="row in summationData">
+              <table-tr
+                :row="row"
+                :key="row._rowKey"
+                :prefix-cls="prefixCls"
+              >
+                <td v-for="column in cloneColumns" :class="alignCls(column, row)" :key="column._index">
+                  <div :class="classesTd(column)">
+                    <span v-if="(column.type==='index'||column.type==='selection')&&column._index==0">汇总</span>
+                    <Cell
+                      v-else-if="column.render"
+                      :row="row"
+                      :key="column._columnKey"
+                      :column="column"
+                      :index="row._index"
+                    ></Cell>
+                    <span v-else v-html="row[column.key]"></span>
+                  </div>
+                </td>
+              </table-tr>
+            </template>
+          </tbody>
+        </table>
       </div>
       <div class="h-table__column-resize-proxy" ref="resizeProxy" v-show="resizeProxyVisible"> </div>
       <div class="h-table__column-move-proxy h-table-cell" ref="moveProxy" v-show="moveProxyVisible"> </div>
@@ -362,7 +370,7 @@ export default {
       default () {
         return [];
       }
-    },
+    }
   },
   data () {
     return {
@@ -403,7 +411,7 @@ export default {
       movingColumn: null,
       isScrollX: false, //是否有横向滚动
       focusIndex: -1,
-      curPageFirstIndex: 0, 
+      curPageFirstIndex: 0,
       isFocusSelect: true,
       isCurrent: true,
       privateToScrollTop: false,
@@ -459,8 +467,8 @@ export default {
             isSelectAll = false;
             break;
           }
-        } 
-        return isSelectAll;      
+        }
+        return isSelectAll;
       }else{
         return isSelectAll;
       }
@@ -597,7 +605,7 @@ export default {
       let style = {};
       if (this.bodyHeight !== 0) {
         let height = this.bodyHeight- this.scrollBarHeight;
-        if (this.tableWidth < this.initWidth+1) {
+        if (this.tableWidth < this.initWidth - this.scrollBarWidth) {
           height = this.bodyHeight-1;
         }
         style.height = `${height}px`;
@@ -635,6 +643,9 @@ export default {
     }
   },
   methods: {
+    calcCheckboxSize(size) {
+      return size || 'large'
+    },
     makeSumData () {
       // 汇总数据只有一条，否则只获取第一条
       let data = this.summationData && this.summationData.length > 0 ? [deepCopy(this.summationData[0])] : []
@@ -732,9 +743,9 @@ export default {
       if (!this.canDrag && !this.canMove) return;
       let _this = this;
       if (this.draggingColumn) {
-        this.dragging = true;      
+        this.dragging = true;
         this.resizeProxyVisible = true;
-        const table = this; 
+        const table = this;
         const tableEl = table.$el;
         const tableLeft = tableEl.getBoundingClientRect().left;
         const columnEl = this.$el.querySelector(`th.h-ui-${column.key}`);
@@ -757,7 +768,7 @@ export default {
 
         document.onselectstart = function() { return false; };
         document.ondragstart = function() { return false; };
-        
+
         const handleMouseMove = (event) => {
           const deltaLeft = event.clientX - this.dragState.startMouseLeft;
           const proxyLeft = this.dragState.startLeft + deltaLeft;
@@ -812,7 +823,7 @@ export default {
       }
 
       if (this.movingColumn) {
-        this.moving = true;  
+        this.moving = true;
         addClass(document.body, 'useSelect');
         this.moveProxyVisible = true;
         let dom = this.findObj(event,'TH').cloneNode(true);
@@ -839,7 +850,7 @@ export default {
         const handleMouseMove = (event) => {
           this.resizeProxyVisible = true;
           const deltaLeft = event.clientX - _this.moveState.startMouseLeft;
-          const moveLeft = _this.moveState.startLeft + deltaLeft;  
+          const moveLeft = _this.moveState.startLeft + deltaLeft;
           if (deltaLeft > 0) {
             let changeRight = _this.cloumnsLeft[index]+deltaLeft;
             changeRight = changeRight+column._width;
@@ -941,7 +952,7 @@ export default {
       while(obj&&obj.tagName!=name){
         obj=obj.parentElement
       }
-      return obj;      
+      return obj;
     },
     handleResize () {
       this.$nextTick(() => {
@@ -995,7 +1006,7 @@ export default {
           }else{
             const $th = this.$refs.thead.querySelectorAll('thead .cur-th')[0].querySelectorAll('th');
             for (let i = 0; i < $th.length; i++) {    // can not use forEach in Firefox
-              const column = this.cloneColumns[i]; 
+              const column = this.cloneColumns[i];
               let width = parseInt(getStyle($th[i], 'width'));
               if (i === autoWidthIndex) {
                 width = parseInt(getStyle($th[i], 'width')) - 1;
@@ -1016,10 +1027,10 @@ export default {
             this.columnsWidth = columnsWidth;
           }
 
+          // get table real height,for fixed when set height prop,but height < table's height,show scrollBarWidth
+          this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
+          this.headerRealHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
         });
-        // get table real height,for fixed when set height prop,but height < table's height,show scrollBarWidth
-        this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
-        this.headerRealHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
       });
     },
     getshiftSelect(_index){
@@ -1112,7 +1123,7 @@ export default {
           this.$emit('on-selection-change',this.getSelection(),this.getSelection(true), _index);
         })
     },
-    clickCurrentRowTr (event,_index) { 
+    clickCurrentRowTr (event,_index) {
       if (!event.shiftKey && !event.ctrlKey || (this.highlightRow&&!this.selectType)) {
         if(this.rowSelect){
           // this.objData[_index]._isChecked=!this.objData[_index]._isChecked;
@@ -1131,7 +1142,7 @@ export default {
         }
       }else if(event.shiftKey){
         window.getSelection()?window.getSelection().removeAllRanges():document.selection.empty();
-        this.getshiftSelect(_index);  
+        this.getshiftSelect(_index);
       }else{
         this.getctrlSelect(_index);
       }
@@ -1143,7 +1154,7 @@ export default {
     },
     clickCurrentRow (_index) {
       if (!this.rowSelect) {
-        this.focusIndex = _index        
+        this.focusIndex = _index
         this.highlightCurrentRow(_index);
       }
       this.$nextTick(()=>{
@@ -1156,7 +1167,7 @@ export default {
     },
     dblclickCurrentRow (_index) {
       if (!this.rowSelect) {
-        this.focusIndex = _index        
+        this.focusIndex = _index
         this.highlightCurrentRow(_index);
       }
       this.$nextTick(()=>{
@@ -1237,7 +1248,7 @@ export default {
         this.$nextTick(()=>{
           const selection = this.getSelection();
           this.$emit('on-select-all', selection);
-          this.$emit('on-selection-change', selection,this.getSelection(true), null);          
+          this.$emit('on-selection-change', selection,this.getSelection(true), null);
         })
       }, 0);
     },
@@ -1337,8 +1348,9 @@ export default {
               if(this.$refs.leftF)this.$refs.leftF.style.marginTop=titleHeight+'px';
               if(this.$refs.rightF)this.$refs.rightF.style.marginTop=titleHeight+'px';
             }
-            // const headerHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
-            const headerHeight = this.headerRealHeight;
+
+            // 兼容 columns 异步生成
+            const headerHeight = this.headerRealHeight || parseInt(getStyle(this.$refs.header, 'height')) || 0;
             const footerHeight = parseInt(getStyle(this.$refs.footer, 'height')) || 0;
             this.bodyHeight = this.height - titleHeight - headerHeight - footerHeight;
         });
@@ -1583,7 +1595,7 @@ export default {
     },
     initResize(){
       this.$nextTick(() => {
-        this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
+        this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0;
       });
     },
     exportCsv (params={}) {
@@ -1639,13 +1651,13 @@ export default {
         if (this.objData[this.focusIndex].hasOwnProperty('_isChecked')) this.objData[this.focusIndex]._isChecked = false
         if (this.objData[this.focusIndex].hasOwnProperty('_isHighlight')) this.objData[this.focusIndex]._isHighlight = false;
         this.isFocusSelect = false
-      } 
+      }
       let curTop = this.$refs.body.scrollTop ? this.$refs.body.scrollTop : 0;
       let contentHeight = this.$refs.body.clientHeight
       // curPageFirstIndex当前屏第一条数据
       let top = this.itemHeight * this.focusIndex;
-      // let curPageCount = this.isScrollX ? this.visibleCount - 1 : this.visibleCount      
-      let curPageCount = this.isScrollX ? this.visibleCount - 2 : this.visibleCount - 1      
+      // let curPageCount = this.isScrollX ? this.visibleCount - 1 : this.visibleCount
+      let curPageCount = this.isScrollX ? this.visibleCount - 2 : this.visibleCount - 1
       // 焦点在当前屏，则进行+1或者-1
       if (this.focusIndex >= this.curPageFirstIndex && this.focusIndex <= this.curPageFirstIndex + curPageCount) {
         if (direction === 'next') {
@@ -1666,7 +1678,7 @@ export default {
             // 当前屏第一条索引更新
             this.curPageFirstIndex = this.focusIndex - curPageCount + 1
           } else if (direction === 'prev') {
-            this.curPageFirstIndex = this.focusIndex        
+            this.curPageFirstIndex = this.focusIndex
             top = this.itemHeight * this.focusIndex
           }
         }
@@ -1710,7 +1722,7 @@ export default {
     this.$nextTick(() => {
       this.ready = true;
       this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0;
-      this.visibleCount = Math.ceil(this.height / this.itemHeight) - (this.showHeader ? 0 : -1); 
+      this.visibleCount = Math.ceil(this.height / this.itemHeight) - (this.showHeader ? 0 : -1);
       this.updateVisibleData();
       // this.focusIndex = this.defaultFocusIndex
     });
@@ -1733,7 +1745,7 @@ export default {
       off(window, 'resize', this.getLeftWidth);
       off(document,'keydown',this.handleKeydown)
       off(document,'keyup', this.handleKeyup);
-      
+
   },
   watch: {
       toScrollTop () {
@@ -1840,7 +1852,7 @@ export default {
       this.handleResize();
       on(window, 'resize', this.handleResize);
     }
-    this.keepAliveFlag = true    
+    this.keepAliveFlag = true
   },
   deactivated() {
     if (this.keepAliveFlag) {

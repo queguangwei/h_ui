@@ -89,6 +89,13 @@ $input-prefix-cls: "#{$css-prefix}input";
   &-noresize{
     resize:none;
   }
+  &-word-limit {
+    position: absolute;
+    bottom: 1px;
+    right: 12px;
+    color: $input-hint;
+    background: $input-bg;
+  }
 }
 // Reset height for textarea
 textarea.#{$input-prefix-cls} {
@@ -97,7 +104,8 @@ textarea.#{$input-prefix-cls} {
   vertical-align: bottom;
   font-size: $font-size-small;
   overflow:auto;
-  white-space:normal; 
+  // 解决 ie 浏览器下 textarea 不换行问题
+  white-space: pre-line;
 }
 
 .#{$input-prefix-cls}-group{

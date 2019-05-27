@@ -13,6 +13,7 @@
       <Button @on-click="setNull">赋不存在值</Button>{{model34}}
       <h-select v-model="model34"
                 zeroToNull
+                filterable
                 style="width:80px"
                 @on-change="change"
                 @on-scroll="scroll"
@@ -52,6 +53,7 @@
                 multiple
                 style="width:320px"
                 isCheckall
+                hideMult
                 @on-change="change"
                 @on-scroll="scroll"
                 :isComputed="isComputed"
@@ -552,14 +554,14 @@ export default {
       model4: '',
       model5: 'beijing',
       model6: '',
-      model7: '',
+      model7: [],
       model8: '',
       model9: '',
       model10: '',
       model11: '',
       model13: 'hangzhou',
       model14: '',
-      model15: [],
+      model15: ['1'],
       model20:[],
       loading1: false,
       options1: [
@@ -719,7 +721,7 @@ export default {
       console.log(d);
     },
     setNull(){
-      this.model34 = "0"
+      this.model34 = '2'
       // this.model44 = ['124124']
     },
     cy_change_test(val) {
@@ -736,7 +738,7 @@ export default {
       }
     },
     fuzhi() {
-      this.cityList = data.slice(0, 2)
+      this.cityList = data.slice(0, 10)
     },
     qk() {
       this.cityList = []
@@ -805,16 +807,21 @@ export default {
                     this.options2 = list.filter(item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1);
                 }, 200);
             } else {
-                this.options2 = [];
+                this.options2 = this.list.map(item => {
+                        return {
+                            value: item,
+                            label: item
+                        };
+                    });
             }
      }
   },
   mounted() {
     var _this = this
     this.cityList = []
-    var timer = setTimeout(() => {
-      _this.cityList = data.slice(0, 10)
-    }, 10)
+    // var timer = setTimeout(() => {
+    //   _this.cityList = data.slice(0, 10)
+    // }, 10)
     this.uList = [
       { id: '1', name: '中国' },
       { id: '2', name: '美国' },

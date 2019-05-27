@@ -47,9 +47,9 @@
     {{val6}}
     <h-select-tree v-model="val71" style="width:200px" :data="baseData5" showCheckbox filterable showBottom></h-select-tree>
     {{val71}}
-    <h-msg-box v-model="showBox">
+    <!-- <h-msg-box v-model="showBox"> -->
       <h-select-tree v-model="val" format-value="id" :first-value="firstVal" :data="baseData2" size="large" @on-select-change="selectChange" @on-toggle-expand="selectChange"></h-select-tree>
-    </h-msg-box>
+    <!-- </h-msg-box> -->
 
   </div>
 </template>

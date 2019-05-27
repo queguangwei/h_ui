@@ -17,13 +17,17 @@ $selectBlock-prefix-cls:  "#{$css-prefix}select-block";
     z-index: -1;
 }
 .#{$selectBlock-prefix-cls}-item{
+    position: relative;
     height: 30px;
     line-height: 30px;
     padding: 0 14px;
     font-size: $font-size-small;
     white-space: nowrap;
     .itemcol{
-        margin: auto 20px;
+        padding: 0 0 0 30px;
+    }
+    .itemcol:last-child{
+        padding-right: 14px;
     }
 }
 .#{$selectBlock-prefix-cls}-item:hover{
@@ -44,4 +48,23 @@ $selectBlock-prefix-cls:  "#{$css-prefix}select-block";
 .#{$selectBlock-prefix-cls}-empty{
     line-height: 30px;
     text-align: center;
+}
+.#{$selectBlock-prefix-cls}-hideMult .#{$selectBlock-prefix-cls}-item {
+    &:after{
+        @include h-icon();
+        font-size: 22px;
+        content: '\E734';
+        color: #fff;
+        position: absolute;
+        top: 3px;
+        right: 8px;
+    }
+    &:hover:after{
+        color: $no-select-color;
+    }
+}
+.#{$selectBlock-prefix-cls}-hideMult .#{$selectBlock-prefix-cls}-selected{
+    &:after{
+        color: $selected-color !important;
+    }
 }
