@@ -1,5 +1,5 @@
 <template>
-	<div>	
+	<div>
     <h1>普通组件使用</h1>
     <h-button type="primary" @click="modal1 = true">显示对话框</h-button>
     <h-msg-box
@@ -13,6 +13,7 @@
       :scrollable="false"
       @on-visible-change="vChange"
       :escClose="true"
+      :beforeEscClose="() => false"
       top="0"
       maskTop="40"
       maskLeft="40"
@@ -24,7 +25,9 @@
       <p>对话框内容</p>
     </h-msg-box>
     <h-button @click="modal2 = true">自定义页头和页脚</h-button>
-    <h-msg-box v-model="modal2" width="360" left="10" scrollable isBeyond isOriginal>
+    <h-msg-box v-model="modal2" width="360" left="10" scrollable isBeyond isOriginal
+      :escClose="true"
+      :beforeEscClose="() => true">
       <p slot="header" style="color:#f60;text-align:center">
         <h-icon name="prompt"></h-icon>
         <span>删除确认</span>
@@ -61,7 +64,7 @@
         <p>自定义宽度，单位 px，默认 520px。</p>
         <p>对话框的宽度是响应式的，当屏幕尺寸小于 768px 时，宽度会变为自动<code>auto</code>。</p>
     </h-msg-box>
-    <h1>实例化使用方法</h1>	
+    <h1>实例化使用方法</h1>
     <h2>基本用法</h2>
 		<h-button @click="instance('info')">消息</h-button>
     <h-button @click="instance('success')">成功</h-button>
@@ -79,16 +82,16 @@
         <h-select v-model="mulmodel" :transfer="true" style="width:400px;" multiple ref="select">
           <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>
         </h-select>
-        <h-tabs style="height: 200px;overflow:auto">
-          <h-tab-pane label="演示">
+        <!-- <h-tabs style="height: 200px;overflow:auto"> -->
+          <!-- <h-tab-pane label="演示"> -->
           <Button @click="showSec">显示第二个弹框</Button>
          <!--  <h-table border :columns="columns6" :data="data5" no-filtered-data-text="筛选后结果为空123"></h-table> -->
             <h-select :transfer="true" style="width:400px;">
                 <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>
             </h-select>
             <h-select-tree :transfer="true" v-model="val3" style="width:200px" showCheckbox :data="baseData4" filterable></h-select-tree>
-          </h-tab-pane>
-          <h-tab-pane label="演示1">
+          <!-- </h-tab-pane> -->
+          <!-- <h-tab-pane label="演示1"> -->
       <!--     <h-table border :columns="columns6" :data="data5" no-filtered-data-text="筛选后结果为空123"></h-table> -->
             <h-select :transfer="true" style="width:400px;">
                 <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>
@@ -99,14 +102,23 @@
             <h-select :transfer="true" style="width:400px;">
                 <h-option v-for="item in options" :value="item.value" :key="item.value">{{ item.label }}</h-option>
             </h-select>
-          </h-tab-pane>
-        </h-tabs>
+            <h-select-tree :transfer="true" v-model="val3" style="width:200px" showCheckbox :data="baseData4" filterable></h-select-tree>
+
+          <!-- </h-tab-pane> -->
+        <!-- </h-tabs> -->
       </div>
     </h-msg-box>
-    <h-button @click="showModal2 = true">Modal无Tabs</h-button>
+    <h-msg-box
+      width="80"
+        height ="70"
+        v-model="modal6">
+       <iframe src="https://www.baidu.com/"></iframe>
+    </h-msg-box>
+    <h-button @click="showModal2 = true">弹窗</h-button>
+    <h-button @click="modal6 = true">iframe</h-button>
 	</div>
 </template>
-<script>	
+<script>
 	export default{
 		name:"MsgBoxs",
 		data(){
@@ -116,6 +128,7 @@
         modal_loading: false,
         modal3: false,
         val3:[],
+        modal6:false,
         modal4: false,
         modal5: false,
         mulmodel:[],
@@ -155,7 +168,7 @@
               {
                 title: 'child1',
                 id: '1-1',
-        
+
                 children: [
                   {
                     title: 'child1-1-1',
@@ -331,6 +344,7 @@
       },
       cancel () {
         this.$hNotice.info({title: '点击了取消'});
+        return false
       },
       del () {
         this.modal_loading = true;
@@ -361,7 +375,7 @@
                 title: title,
                 content: content,
                 zIndex:1200,
-                
+
             });
             break;
           case 'warning':
@@ -369,7 +383,7 @@
                 title: title,
                 content: content,
                 zIndex:1300,
-                
+
             });
             break;
           case 'error':

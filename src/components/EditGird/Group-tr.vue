@@ -2,7 +2,7 @@
   <tr :class="rowClasses(rowTitle._index)">
     <td v-show="columns[0].type=='selection'" :class="alignCls(columns[0])">
       <div :class="prefixCls+'-cell'">
-        <Checkbox :value="checked" @on-change="toggleSelect(rowTitle._index)"></Checkbox> 
+        <Checkbox :value="checked" @on-change="toggleSelect(rowTitle._index)"></Checkbox>
       </div>
     </td>
     <td :colspan="columns[0].type=='selection'?columns.length-1:columns.length">
@@ -10,7 +10,8 @@
         <span :class="groupCls">
           <Icon name="enter"></Icon>
         </span>
-        <span :class="prefixCls+'-cell-title'">{{rowTitle.title}}</span>
+        <!-- <span :class="prefixCls+'-cell-title'">{{rowTitle.title}}</span> -->
+        <group-title :prefixCls="prefixCls" :rowtitle="rowTitle.title" :titleRender="titleRender"></group-title>
       </div>
     </td>
   </tr>
@@ -19,16 +20,18 @@
 import Checkbox from '../Checkbox/Checkbox.vue'
 import Icon from '../Icon/Icon.vue'
 import Mixin from './mixin';
+import GroupTitle from './Group-title.vue'
   export default {
     name: 'GroupTr',
-    components:{Checkbox,Icon},
+    components:{Checkbox,Icon,GroupTitle},
     mixins: [ Mixin ],
     props: {
       columns: Array,
       prefixCls: String,
       rowTitle: Object,
       expanded: Boolean,
-      checked:Boolean
+      checked:Boolean,
+      titleRender: Function
     },
     computed: {
       groupCls () {

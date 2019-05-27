@@ -59,7 +59,8 @@
         currentValue: this.value,
         group: false,
         parent: findComponentsUpward(this, 'RadioGroup'),
-        isFocus:false,
+        isFocus: false,
+        viewValue: this.value,
       };
     },
     computed: {
@@ -125,7 +126,6 @@
 
         let value = checked ? this.trueValue : this.falseValue;
         this.$emit('input', value);
-
         if (this.group && this.label !== undefined) {
           this.parent.change({
             value: this.label,
@@ -158,6 +158,9 @@
           throw 'Value should be trueValue or falseValue.';
         }
         this.updateValue();
+      },
+      currentValue(val) {
+        this.viewValue = val
       }
     }
   };

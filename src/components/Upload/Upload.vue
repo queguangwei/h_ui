@@ -219,7 +219,8 @@ export default {
       selfConfPostList: [], //手动上传时，保存真正的文件列表
       fileNoneStatus: '',// 全部上传时的待上传文件selfConfPostList清空时的状态 success/error/clear（成功/失败/清除后清空）
       isFirstChoose: true, //是否第一次选择文件
-      uploadAllAutoList: [] //uploadAll时，自动上传的list
+      uploadAllAutoList: [], //uploadAll时，自动上传的list
+      viewValue:[],
     };
   },
   computed: {
@@ -599,6 +600,9 @@ export default {
             this.$emit('on-file-none', this.fileNoneStatus) //待上传文件数组为空时返回状态--理财销售5.0
           }
         }
+    },
+    fileList(val){
+      this.viewValue = val
     }
   },
   mounted () {

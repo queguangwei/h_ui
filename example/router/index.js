@@ -430,7 +430,7 @@ Vue.use(Router)
 // })
 const router = new Router({
     routes: [
-      // { path: '/cuiyang/test', component: Cuiyang },
+      // { name: 'cuiyang', path: '/cuiyang/test', component: Cuiyang },
       { path: '/', redirect: '/home' },
       { name: 'home', path: '/home', component:Home},
       { name: 'switchs', path: '/switchs', component:Switchs },

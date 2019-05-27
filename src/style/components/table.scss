@@ -176,6 +176,9 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
       padding: 0;
       text-align: center;
     }
+    &-with-drag i {
+      cursor: move;
+    }
     &-expand{
       cursor: pointer;
       transition: transform $transition-time $ease-in-out;
@@ -280,6 +283,11 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
     td{
       color: darken($error-color, 10%);
     }
+  }
+
+  & tr.#{$table-prefix-cls}-row-dragover td {
+    background-color: $primary-color;
+    color: #fff;
   }
   
   &-summation {
