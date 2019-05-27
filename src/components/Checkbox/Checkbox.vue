@@ -26,7 +26,7 @@
         @change="change"
         @click="click($event)">
     </span>
-    <slot><span v-if="showSlot">{{ label }}</span></slot>
+    <slot><span v-if="showSlot">{{ text||label }}</span></slot>
   </label>
 </template>
 <script>
@@ -70,7 +70,12 @@
       notGroup:{
         type: Boolean,
         default: false
-      }
+      },
+      //显示文字，层级高于label，低于slot
+      text:{
+        type: [String, Number, Boolean],
+        default:null
+      },
     },
     data () {
       return {
