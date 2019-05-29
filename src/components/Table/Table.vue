@@ -930,6 +930,9 @@ export default {
       // }
       this.$emit('on-row-click', [JSON.parse(JSON.stringify(this.cloneData[_index])),_index]);
     },
+    clickCurrentBtn (_index){
+      this.$emit('on-row-click', [JSON.parse(JSON.stringify(this.cloneData[_index])),_index]);
+    },
     dblclickCurrentRow (_index) {
       if (!this.rowSelect) {
         // this.highlightCurrentRow (_index);

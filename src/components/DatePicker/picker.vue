@@ -272,12 +272,13 @@
         this.visible = false;
         this.disableClickOutSide = false;
         if (this.isFocus) {
-            this.dispatch('FormItem', 'on-form-blur', this.currentValue);
-            this.isFocus = false
-            this.$emit('on-blur')
+          this.dispatch('FormItem', 'on-form-blur', this.currentValue);
+          this.isFocus = false
+          this.$emit('on-blur')
         }
       },
       handleFocus(){
+        this.isFocus = true
         if(this.iconVisible) return
         this.handleVisible()
       },
@@ -285,14 +286,15 @@
         if (this.readonly||this.disabled) return;
         this.visible = true;
         this.$refs.pickerPanel.onToggleVisibility(true);
-        this.isFocus = true
       },
       focus(){
         if (this.disabled) return false;
         // this.$nextTick(()=>{
         setTimeout(()=>{
-          this.visible = true;
-          this.$refs.pickerPanel.onToggleVisibility(true);
+          if(!this.iconVisible){
+            this.visible = true;
+            this.$refs.pickerPanel.onToggleVisibility(true);
+          }
           this.isFocus = true
           if(this.$refs.input) this.$refs.input.focus();
         },0)
@@ -381,6 +383,7 @@
         if (this.showClose) {
           this.handleClear();
         } else if (!this.disabled) {
+          this.isFocus = true
           this.handleVisible();
         }
       },
