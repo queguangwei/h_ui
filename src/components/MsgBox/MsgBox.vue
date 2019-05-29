@@ -6,7 +6,7 @@
     <div :class="wrapClasses" @click="handleWrapClick" :style="stylecls" ref="wrap">
       <transition :name="transitionNames[0]" @after-leave="animationFinish">
         <!-- <div :class="classes"> -->
-          <div :class="[prefixCls + '-content']" v-show="visible" :style="mainStyles" ref="content">
+          <div :class="[prefixCls + '-content']" v-show="visible" v-if="rendered || !lazyload" :style="mainStyles" ref="content">
             <a :class="[prefixCls + '-maximize']" v-if="maximize" @click="switchSize">
               <slot name="maximize">
                 <Icon :name="maxName"></Icon>
@@ -152,6 +152,11 @@ export default {
     beforeEscClose: {
       type: Function,
       default: () => true
+    },
+    /* 是否开启内容懒加载 */
+    lazyload: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -166,6 +171,8 @@ export default {
       curHeight:0,
       isMax:false,
       realClose: true, // esc时是否真正需要关闭弹出窗口
+      // 弹框内容渲染标识
+      rendered: false
     };
   },
   computed: {
@@ -326,6 +333,10 @@ export default {
   mounted () {
     if (this.visible) {
         this.wrapShow = true;
+        this.rendered = true;
+        this.$nextTick(() => {
+          this.$emit("on-open");
+        });
     }
     let showHead = true;
 
@@ -357,7 +368,16 @@ export default {
   watch: {
     value (val) {
       this.visible = val;
-      if(val&&this.isOriginal) this.backOrigin();
+      if(val&&this.isOriginal) {
+        // 开启了懒加载以后首次渲染时需要在nextTick中执行
+        if (!this.rendered && this.lazyload) {
+          this.$nextTick(() => {
+            this.backOrigin();
+          })
+          return;
+        }
+      }
+      this.backOrigin();
     },
     visible (val) {
       if (val === false) {
@@ -367,6 +387,10 @@ export default {
               this.removeScrollEffect();
           }, 300);
       } else {
+          this.rendered = true;
+          this.$nextTick(() => {
+            this.$emit("on-open");
+          });
           if (this.timer) clearTimeout(this.timer);
           this.wrapShow = true;
           if (!this.scrollable) {
