@@ -358,8 +358,8 @@
         const isValidDate = newDate.reduce((valid, date) => valid && date instanceof Date && this.checkLegality(newValue, date), true);
 
         if (newValue !== oldValue && !isDisabled && isValidDate) {
-            this.emitChange();
             this.internalValue = newDate;
+            this.emitChange();
         } else {
           if (this.clearOnIllegal && (!isValidDate || isDisabled)) {
             this.handleClear();
