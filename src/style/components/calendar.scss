@@ -106,9 +106,14 @@ $calendar-prefix-cls: "#{$css-prefix}calendar";
     background:#e9eaec;
     border-radius:2px 2px 0 0;
   }
-  &-handle {
+  &-wrapper {
+    position: relative;
+  }
+  &-context-menu {
     display: none;
-    position: fixed;
+    position: absolute;
+  }
+  &-handle {
     width: 100px;
     height: 70px;
     padding: 2px 0;
