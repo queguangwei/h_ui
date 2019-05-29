@@ -306,7 +306,7 @@
       /* 搜索时是否不将焦点放在第一搜索项 */
       notAutoFocus:{
         type: Boolean,
-        default: true
+        default: false
       }
     },
     data () {
