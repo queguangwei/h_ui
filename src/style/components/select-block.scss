@@ -68,3 +68,11 @@ $selectBlock-prefix-cls:  "#{$css-prefix}select-block";
         color: $selected-color !important;
     }
 }
+.#{$selectBlock-prefix-cls}-disabled {
+    color: $btn-disable-color;
+    cursor: not-allowed;
+    &:hover{
+        background: transparent;
+        cursor: not-allowed;
+    }
+}

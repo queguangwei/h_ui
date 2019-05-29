@@ -163,7 +163,7 @@ export default {
       visible: this.value,
       screenWidth:null,
       curWidth:this.width,
-      curHeight:this.height,
+      curHeight:0,
       isMax:false,
       realClose: true, // esc时是否真正需要关闭弹出窗口
     };
@@ -189,16 +189,13 @@ export default {
       let style = {};
       const width = parseInt(this.curWidth);
       let offsetWidth = width<= 100?this.screenWidth*width/100:width
-      let height = parseInt(this.curHeight)
-      if(height){
-        height = height <= 100 ? `${height}%` : `${height}px`
-      }else{
-        height = 'auto'
-      }
       const styleWidth = {
         width: width <= 100 ? `${width}%` : `${width}px`,
-        height:height
+        height:this.curHeight?this.curHeight+'px':'auto'
       };
+      if(this.height&&this.height<100 &&!this.curHeight){
+        styleWidth.height=`${this.height}%`
+      }
       style.top=this.isMax?'0':this.top+'px';
       style.left = this.left==undefined?(this.screenWidth-offsetWidth)/2+'px':this.left+'px';
       const customStyle = this.styles ? this.styles : {};
@@ -233,7 +230,7 @@ export default {
     contentStyle () {
       let style = {}
       if (this.height) {
-        style.height = this.height <= 100 ? `auto` : `${this.height}px`
+        style.height = this.height <= 100 ?  `auto` : `${this.height}px`
         style.overflowY = "auto"
       }
       return style
@@ -263,7 +260,7 @@ export default {
         this.curHeight = document.documentElement.clientHeight;
       }else{
         this.curWidth = this.width;
-        this.curHeight = this.height;
+        this.curHeight = 0;
       }
       this.isMax = !this.isMax;
       this.$emit('on-maximize', this.isMax);

@@ -24,7 +24,7 @@ import {oneOf,formatnumber} from '../../util/tools'
 import Emitter from '../../mixins/emitter';
 import Locale from '../../mixins/locale';
 
-Number.prototype.toFixed = function (n) {
+Number.prototype.toFixedSelf = function (n) {
   if (n > 20 || n < 0) {
       throw new RangeError('toFixed() digits argument must be between 0 and 20');
   }
@@ -63,7 +63,7 @@ Number.prototype.toFixed = function (n) {
   if (parseInt(last, 10) >= 5) {
       const x = Math.pow(10, n);
       result = (Math.round((parseFloat(result) * x)) + 1) / x;
-      result = result.toFixed(n);
+      result = result.toFixedSelf(n);
   }
   return result;
 };
@@ -333,7 +333,7 @@ export default {
       if(value.split(".")[1] && value.split(".")[1].length > 2){
         var isround = this.isround;
         if(isround&&isround==true){
-          value = parseFloat(value).toFixed(this.suffixNum);
+          value = parseFloat(value).toFixedSelf(this.suffixNum);
         }else{
           var suf = value.split(".")[1].substr(0,this.suffixNum);
           value = value.split(".")[0]+"."+suf;
@@ -367,7 +367,7 @@ export default {
           value = this.cutNum(value,this.integerNum);
           if (value=='') return;
           if (this.isround) {
-            value = Number(value).toFixed(suffixNum);
+            value = Number(value).toFixedSelf(suffixNum);
           }else {
             value = this.fillZero(value,Number(suffixNum))
           }
@@ -405,7 +405,7 @@ export default {
       val2 = curInt.slice(8);
       let curVal2 =curSuffix?val2+'.'+curSuffix:val2;
       if(this.isround){
-        curVal2 = Number(curVal2).toFixed(this.suffixNum);
+        curVal2 = Number(curVal2).toFixedSelf(this.suffixNum);
       }else{
         curVal2 = this.fillZero(curVal2,Number(this.suffixNum))
         if(this.suffixNum>0){
@@ -552,7 +552,7 @@ export default {
         if (part[1].length > 2) {
           //alert("小数点之后只能保留两位,系统将自动截段");
           var tempNum = parseFloat(Num);
-          Num = tempNum.toFixed(suffixNumber);
+          Num = tempNum.toFixedSelf(suffixNumber);
           part = String(Num).split(".");
         }
         for (i = 0; i < part[1].length; i++) {
