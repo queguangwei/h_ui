@@ -322,15 +322,23 @@
        * 检查输入值合法性
        * 
        * @param text 输入值
-       * @param date 输入值转换后的Date对象
+       * @param date 输入值转换后的Date对象(Array)
        */
       checkLegality(text, date) {
-        // clearOnIllagal暂只支持date类型
-        if (this.clearOnIllegal && this.type === 'date') {
-          const textFormat = ["yyyyMMdd", "yyyy-MM-dd", "yyyy/MM/dd"];
-          if (date instanceof Date) {
-            for (let format of textFormat) {
-              if (formatDate(date.toString(), format) === text) {
+        if (this.clearOnIllegal && ['date', 'daterange', 'datetime', 'datetimerange'].indexOf(this.type) > -1) {
+          const dateFormat = ["yyyyMMdd", "yyyy-MM-dd", "yyyy/MM/dd"];
+          const timeFormat = "HH:mm:ss";
+          const isRange = this.type.indexOf('range') > -1;
+
+          if (date[0] instanceof Date && (!isRange || date[1] instanceof Date)) {
+            for (let dFormat of dateFormat) {
+              let format = this.type.indexOf('time') > -1 ? dFormat + " " + timeFormat : dFormat;
+              if ((isRange 
+              ? (formatDate(date[0].toString(), format) + " - " + formatDate(date[1].toString(), format))
+              : formatDate(date[0].toString(), format)) === text) {
+                if (isRange) {
+                  return date[0] <= date[1];
+                }
                 return true;
               }
             }    
@@ -355,8 +363,7 @@
             this.options.disabledDate;
         const valueToTest = isArrayValue ? newDate : newDate[0];
         const isDisabled = disabledDateFn && disabledDateFn(valueToTest);
-        const isValidDate = newDate.reduce((valid, date) => valid && date instanceof Date && this.checkLegality(newValue, date), true);
-
+        const isValidDate = this.checkLegality(newValue, newDate);
         if (newValue !== oldValue && !isDisabled && isValidDate) {
             this.internalValue = newDate;
             this.emitChange();
