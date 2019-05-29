@@ -593,7 +593,7 @@ export default {
         return this.columns.some(col => col.fixed && col.fixed === 'right');
     },
     isSummation () {
-      return this.summationData.length > 0
+      return this.summationData.length > 0||this.cloneColumns.filter((data, index) => data.isSum&&data.isSum==true).length>0;
     },
     summationStyle () {
       return {
@@ -1309,6 +1309,14 @@ export default {
     makeSumData () {
       // 汇总数据只有一条，否则只获取第一条
       let data = this.summationData && this.summationData.length > 0 ? [deepCopy(this.summationData[0])] : []
+      if(data.length<1){
+      let sumCol= this.cloneColumns.filter((data, index) => data.isSum&&data.isSum==true);
+      let sumObj={};
+          sumCol.forEach((item,index)=>{
+             sumObj[item.key]=this.summary(item.key,item.sumType);
+          })
+          data.push(sumObj);
+      }
       data.forEach((row, index) => {
           row._index = index;
           row._rowKey = rowKey++;
@@ -1449,6 +1457,55 @@ export default {
         }
       }
       this.$emit('on-selection-change', this.getSelection(),this.getSelection(true));
+    },
+    summary(key,format){
+      let total=0;
+      let _key=key;
+        this.data.forEach((row, index) => {
+          let item=row[_key];
+          item=item.toString().replace(/,/g, '');
+          if(item){
+             total+=Number(item);
+          }
+        })
+        return this.formatdata(total,format);
+    },
+    formatdata(value,type){     
+      value  = value.toString().replace(/[^0-9\.-]/g,"")||'';
+      var firstChar = value.substring(0,1)||'';
+      if (type == "money") {
+        if (firstChar=='-') {
+          value = value.substring(1)||'';
+        }
+        var valArr = value.split(".");
+        var intLength = valArr.length>0?valArr[0].length:value;
+          value=value.replace("-", "")
+          if (value=='') return;
+            value = Number(value).toFixed(2);     
+          if (firstChar=='-') {
+            value = '-'+value;
+          }
+          if (value.substring(value.length-1,value.length)=='.') {
+            value = value.substring(0,value.length-1);
+          }
+          return this.divideNum(value);
+      }else{
+         return value;
+      }
+
+    },
+    divideNum(num){
+      let revalue="";
+      let array=String(num).split(".");
+      let pointStr = array[1]?'.'+array[1]:''
+      array[0] = array[0].replace(/-/g, "")
+      if(array[0].length>3){
+        while(array[0].length>3){
+          revalue=","+array[0].substring(array[0].length-3,array[0].length)+revalue;
+          array[0]=array[0].substring(0,array[0].length-3);
+        }
+      }
+      return num>=0?array[0]+revalue+pointStr:'-'+array[0]+revalue+pointStr;
     },
   },
   created () {
