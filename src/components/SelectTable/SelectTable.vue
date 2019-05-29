@@ -564,6 +564,7 @@ export default {
         let curValue = []
         this.findChild(child => {
           this.options.forEach((col, i) => {
+            if(child.cloneData[i].disabled) return
             if(this.isSelectFilter && child.cloneData[i].hidden){
               return false
             }
