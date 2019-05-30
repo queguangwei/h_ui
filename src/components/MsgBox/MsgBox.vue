@@ -368,7 +368,7 @@ export default {
   watch: {
     value (val) {
       this.visible = val;
-      if(val&&this.isOriginal) {
+      if(val && this.isOriginal) {
         // 开启了懒加载以后首次渲染时需要在nextTick中执行
         if (!this.rendered && this.lazyload) {
           this.$nextTick(() => {
@@ -376,8 +376,8 @@ export default {
           })
           return;
         }
+        this.backOrigin();
       }
-      this.backOrigin();
     },
     visible (val) {
       if (val === false) {
