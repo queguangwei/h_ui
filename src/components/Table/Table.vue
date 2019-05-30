@@ -710,21 +710,22 @@ export default {
           let columnsWidth = {};
           let tableWidth = '';
           let $td =null
+          let curTh = null
 
           if(this.autoHeadWidth||this.data.length==0 || !this.$refs.tbody){
             $td = this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0].querySelectorAll('th');
           }else{
             $td = this.$refs.tbody.$el.querySelectorAll('tbody tr')[0].querySelectorAll('td');
             if(this.$refs.thead){
-              $th = this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0].querySelectorAll('th');
+              curTh = this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0].querySelectorAll('th');
             }
           }
           for (let i = 0; i < $td.length; i++) {    // can not use forEach in Firefox
             const column = this.cloneColumns[i];
             let width = parseInt(getStyle($td[i], 'width'));
-            if($th&&$th[i]&&width){
-              let thW = parseInt(getStyle($th[i], 'width'));
-              width = thW>width?thw:width
+            if(curTh&&curTh[i]&&width){
+              let thW = parseInt(getStyle(curTh[i], 'width'));
+              width = thW>width?thW:width
             }
             if (column.width) {
                 width = column.width||width;

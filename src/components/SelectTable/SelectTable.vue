@@ -680,6 +680,7 @@ export default {
             options.push({
               value: col.value,
               label: col.label || col.value,
+              disabled: col.disabled || false,
               index: i
             })
           })
@@ -976,6 +977,7 @@ export default {
           if(!this.focusValue) {
             this.focusValue = this.availableOptions[this.focusIndex - 1].value
           }
+          if(this.availableOptions[this.focusIndex - 1].disabled) return
 
           if (this.isBlock) {
             if (!this.multiple) {
