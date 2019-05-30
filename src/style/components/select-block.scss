@@ -28,9 +28,6 @@ $selectBlock-prefix-cls:  "#{$css-prefix}select-block";
   font-size: $font-size-small;
   background: #f7f7f7;
   z-index: 1;
-  .item-header:first-child {
-    margin: 0 4px;
-  }
   .item-header {
     display: inline-block;
     overflow: hidden;
