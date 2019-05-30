@@ -6,6 +6,7 @@
       v-model="modal1"
       title="普通的Modal对话框标题"
       @on-ok="ok"
+      height="250"
       @on-cancel="cancel"
       :closable="false"
       :mask-closable="false"

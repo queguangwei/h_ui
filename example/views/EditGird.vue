@@ -474,7 +474,7 @@ export default {
       //   timing:'',
       //   tree:''
       // });
-      let cloneData = this.data2;
+      let cloneData = this.$refs.table.cloneData;
       cloneData.push({
         name: '1234',
         age: null,
