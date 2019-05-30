@@ -66,7 +66,7 @@ export default {
     handleCtxMenu(evt) {
       evt.preventDefault();
       if (this.isEmptyCell || this.data.disabled) return;
-      this.dispatch('Calendar', 'on-context-menu', event, this.data);
+      this.dispatch('Calendar', 'on-context-menu', evt, this.data);
     }
   },
   render(h) {
