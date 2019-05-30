@@ -1363,6 +1363,12 @@ export default {
         })
       }
     })
+
+    if (this.isBlock) {
+      this.$on('on-options-visible-change', arg => {
+        this.availableOptions = arg.data.filter(option => !option.hidden)
+      })
+    }
   },
   beforeDestroy() {
     off(document, 'keydown', this.handleKeydown)
@@ -1454,9 +1460,6 @@ export default {
         if (!this.selectToChangeQuery) {
           this.$emit('on-query-change', val)
           this.broadcastQuery(val)
-          this.availableOptions = this.options.filter(
-            option => option.label.indexOf(val) !== -1
-          )
         }
 
         if (!this.isBlock) {

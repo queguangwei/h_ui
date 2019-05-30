@@ -21,15 +21,18 @@
           :class="classes(item)"
           @click.stop="select(item)"
           @mouseout.stop="blur">
-        <checkbox v-show="multiple&&!hideMult"
-                  size="large"
-                  :value="item.selected"
-                  @click.native.stop="handleclick"
-                  :disabled="item.disabled"
-                  @on-change="checkChange($event,item)"></checkbox>
+
         <slot><span :style="showCol.length ? styleArr[0] : ''"
                 :class="showCol.length ? 'itemcol' : ''"
-                :title="showCol.length ? showLabel(item) : ''">{{showLabel(item)}}</span></slot>
+                :title="showCol.length ? showLabel(item) : ''">
+            <checkbox v-show="multiple&&!hideMult"
+                      size="large"
+                      :value="item.selected"
+                      @click.native.stop="handleclick"
+                      :disabled="item.disabled"
+                      @on-change="checkChange($event,item)"></checkbox>
+            {{showLabel(item)}}
+          </span></slot>
         <span class="itemcol"
               v-for="(col, index) in showCol"
               :key="col"
@@ -52,7 +55,6 @@ import {
   getBarBottom,
   getScrollBarSize
 } from '../../util/tools'
-import calcTextareaHeight from '../../util/calcTextareaHeight'
 const prefixCls = 'h-select-block'
 
 export default {
@@ -189,6 +191,8 @@ export default {
         }
       })
 
+      this.dispatch('SimpleSelect', 'on-options-visible-change', { data: this.cloneData })
+
       this.showEmpty = status
       if (val) {
         this.dispatch('Drop', 'on-update-popper')
@@ -235,7 +239,8 @@ export default {
         .filter(item => !item.hidden)
         .slice(this.start, this.end)
       this.$refs.content.style.transform = `translate3d(0, ${this.start *
-        itemHeight + offset}px, 0)`
+        itemHeight +
+        offset}px, 0)`
     },
     selectedTop() {
       this.cloneData.sort((a, b) => {
@@ -289,7 +294,9 @@ export default {
     if (this.showHeader.length) {
       this.styleArr = this.showHeader.map(item => this.calcStyle(item.width))
     } else if (this.showCol.length) {
-      this.styleArr = ['', ...new Array(this.showCol.length).fill('')].map(this.calcStyle)
+      this.styleArr = ['', ...new Array(this.showCol.length).fill('')].map(
+        this.calcStyle
+      )
     }
   },
   mounted() {

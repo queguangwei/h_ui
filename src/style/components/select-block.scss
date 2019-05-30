@@ -25,16 +25,14 @@ $selectBlock-prefix-cls:  "#{$css-prefix}select-block";
   padding: 0 14px;
   line-height: 30px;
   white-space: nowrap;
-  background: #f7f7f7;
   font-size: $font-size-small;
+  background: #f7f7f7;
   z-index: 1;
-  .item-header:first-child {
-    margin: 0 4px;
-  }
   .item-header {
     display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;
+    background: #f7f7f7;
   }
 }
 
