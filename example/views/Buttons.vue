@@ -24,10 +24,10 @@
 
     <h1>基础按钮</h1>
     <i class="icon iconfont icon-arrowdownb"></i>
-    <button ref="exp" >bbb</button>
+    <button ref="exp">bbb</button>
     <button @click="fclick">aaa</button>
 
-    <h-button title="123">Default</h-button>
+    <h-button title="123" @on-blur="btnClick">Default</h-button>
     <h-button ref="btn" type="primary" @click="btnClick" canFocus>Primary</h-button>
     <h-button type="ghost" canFocus>Ghost</h-button>
     <h-button type="dashed" canFocus>Dashed</h-button>
