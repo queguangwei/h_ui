@@ -328,6 +328,11 @@ export default {
       type:Boolean,
       default:false,
     },
+    // focusIndex 初始值
+    focusInit: {
+      type: Number,
+      default: 0
+    }
   },
   data() {
     return {
@@ -337,6 +342,7 @@ export default {
       optionInstances: [],
       selectedSingle: '',
       selectedMultiple: [],
+      // focusInit 不为 0 时触发 watch，这里不用 immediate 的原因是，一开始渲染就触发 on-focus-index-change block 不会有选中状态
       focusIndex: 0,
       focusValue: '', // simple select 用于选值
       query: '',
@@ -564,6 +570,7 @@ export default {
         let curValue = []
         this.findChild(child => {
           this.options.forEach((col, i) => {
+            if(child.cloneData[i].disabled) return
             if(this.isSelectFilter && child.cloneData[i].hidden){
               return false
             }
@@ -625,7 +632,7 @@ export default {
     hideMenu() {
       this.visible = false
       if(!window.isO45){
-        this.focusIndex = 0
+        this.focusIndex = this.focusInit
       }
 
       // 单选 恢复 query 值
@@ -673,6 +680,7 @@ export default {
             options.push({
               value: col.value,
               label: col.label || col.value,
+              disabled: col.disabled || false,
               index: i
             })
           })
@@ -965,6 +973,12 @@ export default {
           let index = this.focusIndex - 1
           if (index < 0) return false
 
+          // 设置 focusInit 后直接回车取不到 focusValue
+          if(!this.focusValue) {
+            this.focusValue = this.availableOptions[this.focusIndex - 1].value
+          }
+          if(this.availableOptions[this.focusIndex - 1].disabled) return
+
           if (this.isBlock) {
             if (!this.multiple) {
               if(window.IS_LICAI){
@@ -1092,7 +1106,7 @@ export default {
       }
     },
     broadcastQuery(val) {
-      this.focusIndex = 0
+      this.focusIndex = this.focusInit
       if (this.isBlock) {
         this.broadcast('Block', 'on-query-change', val)
         if(this.isSelectFilter){
@@ -1349,6 +1363,12 @@ export default {
         })
       }
     })
+
+    if (this.isBlock) {
+      this.$on('on-options-visible-change', arg => {
+        this.availableOptions = arg.data.filter(option => !option.hidden)
+      })
+    }
   },
   beforeDestroy() {
     off(document, 'keydown', this.handleKeydown)
@@ -1440,9 +1460,6 @@ export default {
         if (!this.selectToChangeQuery) {
           this.$emit('on-query-change', val)
           this.broadcastQuery(val)
-          this.availableOptions = this.options.filter(
-            option => option.label.indexOf(val) !== -1
-          )
         }
 
         if (!this.isBlock) {
@@ -1492,9 +1509,11 @@ export default {
     placement(val) {
       this.fPlacement = val
     },
-    focusIndex(nv) {
-      if (this.isBlock) {
-        this.broadcast('Block', 'on-focus-index-change', nv - 1)
+    focusIndex: {
+      handler(nv) {
+        if (this.isBlock) {
+          this.broadcast('Block', 'on-focus-index-change', nv - 1)
+        }
       }
     }
   }

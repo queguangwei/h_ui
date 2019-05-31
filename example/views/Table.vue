@@ -57,7 +57,7 @@
     <p>@on-select，选中某一项触发，返回值为 selection 和 row，分别为已选项和刚选择的项。</p>
     <p>@on-select-all，点击全选时触发，返回值为 selection，已选项。</p>
     <p>@on-selection-change，只要选中项发生变化时就会触发，返回值为 selection，已选项。</p>
-    <h-table border :columns="columns4" :data="data1" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading"></h-table>
+    <h-table border :columns="columns4" :data="data1" :rowSelect="true" @on-row-click="selsetChange" :loading="loading"></h-table>
     <h2>排序</h2>
     <p>通过给 columns 数据的项，设置 sortable: true，即可对该列数据进行排序。</p>
     <p>排序默认使用升序和降序，也可以通过设置属性 sortMethod 指定一个自定义排序函数，接收三个参数 a 、 b 和 type。</p>

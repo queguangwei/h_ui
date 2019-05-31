@@ -12,6 +12,7 @@
           :dataLenght="data.length"
           :headSelection ="headSelection"
           :canDrag="canDrag"
+          :canMove="canMove"
           ></gird-head>
       </div>
       <div :class="[prefixCls + '-body']" :style="bodyStyle" ref="body" @scroll="handleBodyScroll"
@@ -45,6 +46,7 @@
         </table>
       </div>
       <div class="h-table__column-resize-proxy" ref="resizeProxy" v-show="resizeProxyVisible"> </div>
+      <div class="h-table__column-move-proxy h-table-cell" ref="moveProxy" v-show="moveProxyVisible"></div>
     </div>
     <Spin fix size="large" v-if="loading">
       <slot name="loading">
@@ -164,6 +166,10 @@ export default {
       type:Boolean,
       default:false,
     },
+    canMove: {
+      type: Boolean,
+      default: false
+    }
     // highlightRow: {
     //   type:Boolean,
     //   default:false,
@@ -184,6 +190,7 @@ export default {
       bodyHeight: 0,
       bodyRealHeight: 0,
       resizeProxyVisible: false,
+      moveProxyVisible: false,
       scrollBarWidth: getScrollBarSize(),
       currentContext: this.context,
       showScroll:false,

@@ -78,6 +78,8 @@
         <h-select v-model="model1"
                   label-in-value
                   width="200"
+                  transfer
+                  autoPlacement
                   @on-change="change"
                   :setDefSelect="true"
                   showTitle>
