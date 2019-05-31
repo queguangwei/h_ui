@@ -102,9 +102,12 @@ export default {
       },
       toggleSelect (status,event) {
         this.$parent.$parent.$parent.toggleSelect(this.index,event);
+        this.$parent.$parent.$parent.clickCurrentBtn(this.index)
       },
       clickCurrentRow () {
         this.$parent.$parent.$parent.highlightCurrentRow(this.index);
+        this.$parent.$parent.$parent.clickCurrentBtn(this.index)
+        
       },
       toggleExpand () {
         this.$parent.$parent.$parent.toggleExpand(this.index);

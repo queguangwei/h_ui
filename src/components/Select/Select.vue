@@ -306,7 +306,7 @@
       /* 搜索时是否不将焦点放在第一搜索项 */
       notAutoFocus:{
         type: Boolean,
-        default: true
+        default: false
       }
     },
     data () {
@@ -585,6 +585,8 @@
         if (this.disabled || this.readonly||!this.editable) {
             return false;
         }
+        // 展开时计算是否足够空间展开
+        if (!this.dropVisible) this.setPlacement()
         // this.visible = !this.visible;
         // o45证券代码--点击时,若输入框值==当前选中value,则需要隐藏下拉列表
         if (this.model == this.query && this.model == this.value && typeof this.value == 'string' && this.remoteFocusNotShowList && !this.multiple) {
@@ -977,7 +979,7 @@
               }
             });
           }
-          
+
           this.focusValue = this.options[this.focusIndex - 1].value
           let top = 30*(this.focusIndex-1);
           let contentHeight = 0
@@ -1178,12 +1180,14 @@
       setPlacement(top = 0){
         if(this.autoPlacement){
             let obj = this.$refs.select;
-            let allWidth= document.body.clientWidth;
-            let allHeight= document.body.clientHeight;
-            let curbottom =allHeight-obj.offsetTop-obj.clientHeight-top;
-            let bottomNum = this.isCheckall?250:210;
-            if(curbottom<bottomNum){
+            let clientHeight = document.documentElement.clientHeight;
+            let scrollTop = document.body.scrollTop || document.documentElement.scrollTop
+            let curbottom = clientHeight + scrollTop - obj.offsetTop  - obj.clientHeight - top;
+            let bottomNum = this.isCheckall ? 250 : 210;
+            if(curbottom < bottomNum){
               this.fPlacement = 'top';
+            } else {
+              this.fPlacement = 'bottom';
             }
         }
       }
@@ -1287,7 +1291,7 @@
       if (this.disabled) {
         this.tabIndex = -1;
       }
-      this.setPlacement();
+      // this.setPlacement();
       this.$on('on-visible-change', (val,top) => {
         if(val){
           this.$nextTick(()=>{
@@ -1495,6 +1499,9 @@
       },
       placement(val){
         this.fPlacement = val;
+      },
+      fPlacement(val) {
+        this.$refs.dropdown.update()
       }
     }
   };

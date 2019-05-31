@@ -1,5 +1,5 @@
 <template>
-  <button ref="btn" :type="nativeType" :class="classes" :disabled="disabled" @click="handleClick" @keyup="keyup" :title="title">
+  <button ref="btn" :type="nativeType" :class="classes" :disabled="disabled" @click="handleClick" @keyup="keyup" :title="title" @blur="handleBlur">
   	<Icon name="load-c" v-if="loading" class='h-load-loop'></Icon>
     <Icon :name="icon" v-if="icon && !loading"></Icon>
     <span v-if="$slots.default"><slot></slot></span>
@@ -93,20 +93,23 @@ export default {
 	      this.$emit('on-click', event);
 	    },
 	    focus(){
-	    	if (!this.canFocus) return;
-	    	this.$refs.btn.focus();
-			},
-			blur(){
-				if (!this.canFocus) return;
-	    	this.$refs.btn.blur();
-			},
+		  if (!this.canFocus) return;
+		  this.$refs.btn.focus();
+		},
+		blur(){
+			if (!this.canFocus) return;
+		    this.$refs.btn.blur();
+		},
 	    keyup(event){
 	    	if (!this.canFocus) return;
 	    	let code = event.keycode;
 	    	if (code == 13) {
 	    		this.handleClick(event);
 	    	}
-	    }
+		},
+		handleBlur(event){
+			this.$emit('on-blur',event)
+		}
 	},
 	mounted () {
 	  this.showSlot = this.$slots.default !== undefined;

@@ -2,6 +2,15 @@
   <div ref="block"
        @scroll="handleBodyScroll"
        :class="blockCls">
+    <div v-if="showHeader.length"
+         :class="`${prefixCls}-item-header`">
+      <span v-for="(item, index) in showHeader"
+            :key="index"
+            class="item-header"
+            :style="styleArr[index]">
+        {{item.title ? item.title : item}}
+      </span>
+    </div>
     <div :class="[prefixCls+'-phantom']"
          :style="phantomStl"></div>
     <ul :class="[prefixCls+'block-content']"
@@ -12,16 +21,23 @@
           :class="classes(item)"
           @click.stop="select(item)"
           @mouseout.stop="blur">
-        <checkbox v-show="multiple&&!hideMult"
-          size="large"
-          :value="item.selected"
-          @click.native.stop="handleclick"
-          :disabled="item.disabled"
-          @on-change="checkChange($event,item)"></checkbox>
-        <slot>{{showLabel(item)}}</slot>
-        <span class="itemcol" v-if="showCol[0]">{{item[showCol[0]]}}</span>
-        <span class="itemcol" v-if="showCol[1]">{{item[showCol[1]]}}</span>
-        <span class="itemcol" v-if="showCol[2]">{{item[showCol[2]]}}</span>
+
+        <slot><span :style="showCol.length ? styleArr[0] : ''"
+                :class="showCol.length ? 'itemcol' : ''"
+                :title="showCol.length ? showLabel(item) : ''">
+            <checkbox v-show="multiple&&!hideMult"
+                      size="large"
+                      :value="item.selected"
+                      @click.native.stop="handleclick"
+                      :disabled="item.disabled"
+                      @on-change="checkChange($event,item)"></checkbox>
+            {{showLabel(item)}}
+          </span></slot>
+        <span class="itemcol"
+              v-for="(col, index) in showCol"
+              :key="col"
+              :style="styleArr[index + 1]"
+              :title="item[col]">{{item[col]}}</span>
       </li>
       <!-- <li v-if="showEmpty" :class="[prefixCls+'-empty']">{{localeNoMatch}}</li> -->
     </ul>
@@ -57,12 +73,18 @@ export default {
       type: [Number, String],
       default: 30
     },
-    showCol:{
+    // 显示多列
+    showCol: {
       type: Array,
       default: () => {
         return []
       }
     },
+    // 显示多列的表头，表头高度默认 30，宽度默认 100
+    showHeader: {
+      type: Array,
+      default: () => []
+    }
     // disabled: {
     //   type: Boolean,
     //   default: false
@@ -79,7 +101,7 @@ export default {
       lastScollTop: 0,
       showEmpty: false,
       showBottom: false,
-      focusIndex: 0,
+      focusIndex: 0
     }
   },
   computed: {
@@ -88,7 +110,11 @@ export default {
       let curData = this.cloneData.filter(col => {
         return !col.hidden
       })
+
       let height = curData.length * 30
+      if (this.offset && height < 210) {
+        height += 30
+      }
       style.height = height + 'px'
       return style
     },
@@ -98,7 +124,7 @@ export default {
         {
           [`${prefixCls}-multiple`]: this.multiple,
           [`${prefixCls}-show-bottom`]: this.showBottom,
-           [`${prefixCls}-hideMult`]:this.hideMult&&this.multiple
+          [`${prefixCls}-hideMult`]: this.hideMult && this.multiple
         }
       ]
     },
@@ -107,6 +133,10 @@ export default {
     },
     itemClasses() {
       return ''
+    },
+    offset() {
+      if (this.showHeader.length) return 30
+      return 0
     }
   },
   methods: {
@@ -145,13 +175,24 @@ export default {
         '\\$1'
       )
       let status = true
+
       this.cloneData.forEach(col => {
-        let hidden = !new RegExp(parsedQuery, 'i').test(col.label)
+        let targetLabel = col.label
+        // 如果存在多列，则匹配目标为多列所有列
+        if (this.showCol.length) {
+          targetLabel = targetLabel + ' ' + this.getTargetLabel(col).join(' ')
+        }
+
+        let hidden = !new RegExp(parsedQuery, 'i').test(targetLabel)
         this.$set(col, 'hidden', hidden)
+
         if (status && !hidden) {
           status = false
         }
       })
+
+      this.dispatch('SimpleSelect', 'on-options-visible-change', { data: this.cloneData })
+
       this.showEmpty = status
       if (val) {
         this.dispatch('Drop', 'on-update-popper')
@@ -178,6 +219,10 @@ export default {
       this.start = Math.floor(scrollTop / itemHeight)
       let i = 0
       let j = this.start
+      // 如果存在表头，添加初始偏移量
+      let offset = 0
+      if (this.start > 0) offset = -this.offset
+
       while (i < this.visibleCount) {
         if (!this.cloneData[j]) {
           i = this.visibleCount
@@ -194,7 +239,8 @@ export default {
         .filter(item => !item.hidden)
         .slice(this.start, this.end)
       this.$refs.content.style.transform = `translate3d(0, ${this.start *
-        itemHeight}px, 0)`
+        itemHeight +
+        offset}px, 0)`
     },
     selectedTop() {
       this.cloneData.sort((a, b) => {
@@ -207,6 +253,50 @@ export default {
       this.$refs.block.scrollTop = 0
       this.updateVisibleData(0)
       this.$parent.$parent.updateOptions()
+    },
+    /**
+     * @description showHeader / showCol = true 时计算宽度
+     */
+    calcStyle(w) {
+      this.calcStyle.cache || (this.calcStyle.cache = {})
+
+      if (this.calcStyle.cache[w]) return this.calcStyle.cache[w]
+
+      if (!this.showCol.length && !this.showHeader.length) {
+        this.calcStyle.cache[w] = ''
+        return this.calcStyle.cache[w]
+      }
+
+      let width = 'auto'
+      if (w) {
+        width = w + 'px'
+      } else {
+        width = '100px'
+      }
+
+      this.calcStyle.cache[w] = { width }
+      return this.calcStyle.cache[w]
+    },
+    /**
+     * @description 从 cloneData>item 中获取多列的 label 数组
+     */
+    getTargetLabel(option) {
+      let target = []
+      this.showCol.forEach(col => {
+        target.push(option[col])
+      })
+
+      return target
+    }
+  },
+  created() {
+    // showHeader / showCol 生成样式数组
+    if (this.showHeader.length) {
+      this.styleArr = this.showHeader.map(item => this.calcStyle(item.width))
+    } else if (this.showCol.length) {
+      this.styleArr = ['', ...new Array(this.showCol.length).fill('')].map(
+        this.calcStyle
+      )
     }
   },
   mounted() {
