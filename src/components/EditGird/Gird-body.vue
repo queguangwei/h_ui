@@ -47,16 +47,16 @@
           </td>
         </tr>
       </template>
-      <template v-if="typeName=='groupTable'" v-for="(rowTitle, index) in data">
+      <template v-if="typeName=='groupTable'" v-for="(rowTitle, titleIndex) in data">
         <group-tr
           :columns="columns"
           :prefix-cls="prefixCls"
           :rowTitle = "rowTitle"
           :expanded = "Boolean(rowTitle.expand)"
           :checked = "rowChecked(rowTitle._index)"
-          :titleRender="titleRender">         
+          :titleRender="titleRender">
         </group-tr>
-        <template v-if="rowTitle.expand" v-for="(row,index) in rowTitle.item">
+        <template v-if="rowTitle.expand" v-for="(row, index) in rowTitle.item">
           <table-tr
           :row="row"
           :key="row._rowKey"
@@ -78,6 +78,7 @@
               :index="row._index"
               :typeName="typeName"
               :checked="rowChecked(row._index)"
+              :radioChecked="objData[titleIndex].item[index]._isHighlight"
               :disabled="rowDisabled(row._index)"
               :expanded="rowExpandedChild(row._index)"
               :showEditInput="showEditInput"
@@ -119,7 +120,7 @@
             >
               <span v-if="columns.length>0 && inx==(columns[0].type=='index'?1:0)">
                 <Icon name = "play_fill" :class="iconClass(row._index)" v-if="(row.children && row.children.length!=0)||row.foldable" @on-click="toggleExpand(row._index,$event)"></Icon>
-                <Checkbox v-if="isCheckbox" :value="row.checked" :indeterminate="row.indeterminate" @on-click="changeSelect(row,$event)"></Checkbox> 
+                <Checkbox v-if="isCheckbox" :value="row.checked" :indeterminate="row.indeterminate" @on-click="changeSelect(row,$event)"></Checkbox>
               </span>
             </Cell>
           </td>
@@ -251,7 +252,7 @@
           this.$parent.curKey = key;
         },
         toggleExpand (index,e) {
-          e.stopPropagation(); 
+          e.stopPropagation();
           this.$parent.toggleExpand(index);
         },
         compileFlatState () { // so we have always a relation parent/children of each node
@@ -298,7 +299,7 @@
         },
         changeSelect (row,e) {
           let selectInx=[];
-          e.stopPropagation(); 
+          e.stopPropagation();
           let status = !row.checked;
           const node = this.flatState[row._index].node;
           this.$set(node, 'checked', status);

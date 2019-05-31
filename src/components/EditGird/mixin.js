@@ -31,6 +31,44 @@ export default {
             if (this.columns.length === index + 1 && top && this.$parent.bodyHeight !== 0&&this.$parent.data.length>0 && this.$parent.typeName!= 'groupTable') {
                 width += this.$parent.scrollBarWidth;
             }
+            if(this.columns.length === index + 1&&width&&!top&&this.$parent.typeName== 'groupTable'&&this.$parent.height>0){
+              const colWidth = this.columns.slice(0, this.columns.length - 1)
+                  .reduce((acc, col) => acc + (col._width || 0), 0) + width;
+              // 垂直滚动条的情况
+              if (this.$parent.bodyHeight < this.$parent.bodyRealHeight) {
+                // 剩余宽度小于滚动条宽度或列宽大于表格宽时需要将最后一列单元格宽度减去一定宽度
+                if (this.$parent.initWidth - colWidth <= this.$parent.scrollBarWidth) {
+                  if (colWidth >= this.$parent.initWidth) {
+                    width -= this.$parent.scrollBarWidth;
+                  } else if (this.$parent.initWidth - colWidth === this.$parent.scrollBarWidth) {
+                    width--;
+                  } else {
+                    width -= (1 + this.$parent.scrollBarWidth - Math.min((this.$parent.initWidth - colWidth), this.$parent.scrollBarWidth));
+                  }
+                }
+              } else {
+                let rest = this.$parent.bodyHeight - this.$parent.bodyRealHeight;
+                if (colWidth >= this.$parent.initWidth) {
+                  // 处理展开分组后剩余高度不足滚动条宽度的情况
+                  if (rest < this.$parent.scrollBarWidth && colWidth !== this.$parent.initWidth) {
+                    let temp = width - Math.min(Math.max(this.$parent.scrollBarWidth - colWidth + this.$parent.initWidth, 0), 17);
+                    if (colWidth - width + temp >= this.$parent.initWidth) {
+                      width = temp;
+                    }
+                  } else if (colWidth === this.$parent.initWidth) {
+                    width--;
+                  }
+                }
+              }
+            }
+            if (this.columns.length === index + 1&&width&&top&&this.$parent.typeName== 'groupTable'&&this.$parent.height>0) {
+              const colWidth = this.columns.slice(0, this.columns.length - 1)
+                  .reduce((acc, col) => acc + (col._width || 0), 0) + width;
+              if (colWidth >= this.$parent.initWidth
+                    && this.$parent.bodyHeight - this.$parent.bodyRealHeight < this.$parent.scrollBarWidth) {
+                width += this.$parent.scrollBarWidth;
+              }
+            }
             // when fixed type,reset first right fixed column's width
             if (this.fixed === 'right') {
                 // const firstFixedIndex = this.columns.findIndex((col) => col.fixed === 'right');

@@ -104,6 +104,9 @@ let bigData = []
 for (let i = 0; i < 160; i++) {
   let obj = {}
   obj.value = i + ''
+  if(i==0){
+    obj.disabled = true
+  }
   // obj.value = 'value' + i
   obj.label = 'lab' + i
   obj.label1 = 'lab12'

@@ -8,7 +8,7 @@
     <h-button @on-click="selectData(false)">不选择某行</h-button>
     <!-- isCheckbox checkStrictly -->
     <!-- selectRoot -->
-    <h-simple-tree-gird ref="treeGird" :columns="columns1" isCheckbox no-data-text="123" :data="treedata" canDrag :height="400" @on-select-root="selectChange" @on-expand="expand" @on-drag="expand" @on-row-click="selectChange" @on-scroll="selectChange">
+    <h-simple-tree-gird ref="treeGird" canMove :columns="columns1" isCheckbox no-data-text="123" :data="treedata" canDrag :height="400" @on-select-root="selectChange" @on-expand="expand" @on-drag="expand" @on-row-click="selectChange" @on-scroll="selectChange">
       <span slot="loading">1244</span>
     </h-simple-tree-gird>
   </div>
@@ -112,21 +112,21 @@ export default {
                 /* type: 'selectTree', */
                 title: '科目',
                 key: 'show_accountelement_fullname',
-                width: 400,
+                // width: 100,
                 align: 'left',
             },
             {
                 /* type: 'text', */
                 title: '科目方向',
-                width: 400,
+                // width: 200,
                 key: 'accountelement_dir',
                 align: 'left',
-                hiddenCol: true,
+                // hiddenCol: true,
             },
             {
                 /* type: 'text', */
                 title: '科目方向',
-                width: 400,
+                // width: 300,
                 key: 'show_dir',
                 align: 'center',
                 hiddenCol: false,

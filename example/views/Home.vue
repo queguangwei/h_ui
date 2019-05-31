@@ -13,7 +13,7 @@
             <h-col span="2" style="text-align: center">-</h-col>
             <h-col span="11">
               <h-form-item prop="time" required>
-                <h-timePicker type="time" placeholder="选择时间" v-model="formItem1.time"></h-timePicker>
+                <h-timePicker type="time" iconVisible placeholder="选择时间" v-model="formItem1.time"></h-timePicker>
               </h-form-item>
             </h-col>
           </h-row>
