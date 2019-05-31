@@ -6,7 +6,7 @@
     <div :class="wrapClasses" @click="handleWrapClick" :style="stylecls" ref="wrap">
       <transition :name="transitionNames[0]" @after-leave="animationFinish">
         <!-- <div :class="classes"> -->
-          <div :class="[prefixCls + '-content']" v-show="visible" :style="mainStyles" ref="content">
+          <div :class="[prefixCls + '-content']" v-show="visible" v-if="rendered || !lazyload" :style="mainStyles" ref="content">
             <a :class="[prefixCls + '-maximize']" v-if="maximize" @click="switchSize">
               <slot name="maximize">
                 <Icon :name="maxName"></Icon>
@@ -152,6 +152,11 @@ export default {
     beforeEscClose: {
       type: Function,
       default: () => true
+    },
+    /* 是否开启内容懒加载 */
+    lazyload: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -163,9 +168,11 @@ export default {
       visible: this.value,
       screenWidth:null,
       curWidth:this.width,
-      curHeight:this.height,
+      curHeight:0,
       isMax:false,
       realClose: true, // esc时是否真正需要关闭弹出窗口
+      // 弹框内容渲染标识
+      rendered: false
     };
   },
   computed: {
@@ -189,16 +196,13 @@ export default {
       let style = {};
       const width = parseInt(this.curWidth);
       let offsetWidth = width<= 100?this.screenWidth*width/100:width
-      let height = parseInt(this.curHeight)
-      if(height){
-        height = height <= 100 ? `${height}%` : `${height}px`
-      }else{
-        height = 'auto'
-      }
       const styleWidth = {
         width: width <= 100 ? `${width}%` : `${width}px`,
-        height:height
+        height:this.curHeight?this.curHeight+'px':'auto'
       };
+      if(this.height&&this.height<100 &&!this.curHeight){
+        styleWidth.height=`${this.height}%`
+      }
       style.top=this.isMax?'0':this.top+'px';
       style.left = this.left==undefined?(this.screenWidth-offsetWidth)/2+'px':this.left+'px';
       const customStyle = this.styles ? this.styles : {};
@@ -233,7 +237,7 @@ export default {
     contentStyle () {
       let style = {}
       if (this.height) {
-        style.height = this.height <= 100 ? `auto` : `${this.height}px`
+        style.height = this.height <= 100 ?  `auto` : `${this.height}px`
         style.overflowY = "auto"
       }
       return style
@@ -263,7 +267,7 @@ export default {
         this.curHeight = document.documentElement.clientHeight;
       }else{
         this.curWidth = this.width;
-        this.curHeight = this.height;
+        this.curHeight = 0;
       }
       this.isMax = !this.isMax;
       this.$emit('on-maximize', this.isMax);
@@ -329,6 +333,10 @@ export default {
   mounted () {
     if (this.visible) {
         this.wrapShow = true;
+        this.rendered = true;
+        this.$nextTick(() => {
+          this.$emit("on-open");
+        });
     }
     let showHead = true;
 
@@ -360,7 +368,16 @@ export default {
   watch: {
     value (val) {
       this.visible = val;
-      if(val&&this.isOriginal) this.backOrigin();
+      if(val && this.isOriginal) {
+        // 开启了懒加载以后首次渲染时需要在nextTick中执行
+        if (!this.rendered && this.lazyload) {
+          this.$nextTick(() => {
+            this.backOrigin();
+          })
+          return;
+        }
+        this.backOrigin();
+      }
     },
     visible (val) {
       if (val === false) {
@@ -370,6 +387,10 @@ export default {
               this.removeScrollEffect();
           }, 300);
       } else {
+          this.rendered = true;
+          this.$nextTick(() => {
+            this.$emit("on-open");
+          });
           if (this.timer) clearTimeout(this.timer);
           this.wrapShow = true;
           if (!this.scrollable) {

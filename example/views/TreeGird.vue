@@ -229,7 +229,7 @@
         columns1: [
           {
             type: 'selection',
-            width: 120,  
+            width: 120,
             align: 'center'
           },
           {
