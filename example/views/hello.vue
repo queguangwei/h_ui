@@ -1,5 +1,7 @@
 <template>
   <div>
+    <h-table :columns="columns1" :data="data3" border notSetWidth>
+    </h-table>
     <h-select
       filterable
       v-model="curItemLevel"
@@ -25,7 +27,41 @@ export default {
       curItemLevel: "1",
       itemLevelList: [],
       data1: [{val: "1", caption: "Dict1_11" }, {val: "2", caption: "Dict1_222" },],
-      data2: [{val: "1", caption: "Dict1_11" }, {val: "2", caption: "Dict1_222" }, {val: "3", caption: "Dict1_333" },]
+      data2: [{val: "1", caption: "Dict1_11" }, {val: "2", caption: "Dict1_222" }, {val: "3", caption: "Dict1_333" },],
+      columns1: [
+        {
+          type: 'index',
+          width: 60,
+          align: 'center'
+        },
+        {
+          title: '姓名11111',
+          key: 'name'
+        },
+        {
+          title: '年龄111111111111111111111',
+          key: 'age'
+        },
+        {
+          title: '地址11111111111',
+          key: 'address'
+        }
+      ],
+      data3:[ {
+          name: '王小明111111111111111111111111111111111',
+          age: 18,
+          address: '北京市朝阳\r区芍药居'
+        },
+        {
+          name: '张小刚',
+          age: 25,
+          address: '北京市海淀区西二旗'
+        },
+        {
+          name: '李小红',
+          age: 30,
+          address: '上海市浦东新区世纪大道'
+        }],    
     }
   },
   methods:{
