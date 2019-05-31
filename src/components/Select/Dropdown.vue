@@ -47,7 +47,7 @@ export default {
 						style.maxWidth = `${maxWidth}px`
 					}
 					if (this.width) style.width = `${this.width}px`;
-				} 
+				}
 			} else {
 				if (this.width) style.width = `${this.width}px`;
 			}
@@ -77,9 +77,11 @@ export default {
 			}
 		},
 		update () {
-			if (isServer) return;
+      if (isServer) return;
 			if (this.popper) {
 				this.$nextTick(() => {
+          // select 组件 placement 改变后同步改变 popper 实例
+          this.popper._options.placement = this.widthAdaption ? this.placement.indexOf('top') >= 0 ? 'top-start' : 'bottom-start' : this.placement
 					this.popper.update();
 					// 有滚动条时，下拉宽度为内容宽度
 					if (this.widthAdaption) {
@@ -88,7 +90,7 @@ export default {
 				});
 			} else {
 				this.$nextTick(() => {
-					let curPlacement = this.widthAdaption ? this.placement.indexOf('top') >= 0 ? 'top-start' : 'bottom-start' : this.placement			
+					let curPlacement = this.widthAdaption ? this.placement.indexOf('top') >= 0 ? 'top-start' : 'bottom-start' : this.placement
 					// let curPlacement = this.placement.indexOf('top') >= 0 ? 'top-start' : this.placement
 					this.popper = new Popper(this.$parent.$refs.reference, this.$el, {
 						gpuAcceleration: false,

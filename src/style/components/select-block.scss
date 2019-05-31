@@ -3,6 +3,7 @@ $selectBlock-prefix-cls:  "#{$css-prefix}select-block";
     position: relative;
     max-height: 210px;
     overflow: auto;
+    // transform: translate3d(0, 0, 0);
 }
 .#{$selectBlock-prefix-cls}-show-bottom{
     max-height: 170px;
@@ -16,18 +17,39 @@ $selectBlock-prefix-cls:  "#{$css-prefix}select-block";
 .#{$selectBlock-prefix-cls}-phantom{
     z-index: -1;
 }
+
+.#{$selectBlock-prefix-cls}-item-header {
+  // position: absolute;
+  // top: 0;
+  height: 30px;
+  padding: 0 14px;
+  line-height: 30px;
+  white-space: nowrap;
+  font-size: $font-size-small;
+  background: #f7f7f7;
+  z-index: 1;
+  .item-header {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: #f7f7f7;
+  }
+}
+
 .#{$selectBlock-prefix-cls}-item{
     position: relative;
     height: 30px;
     line-height: 30px;
     padding: 0 14px;
-    font-size: $font-size-small;
     white-space: nowrap;
-    .itemcol{
-        padding: 0 0 0 30px;
+    font-size: 0;
+    &>span {
+      font-size: $font-size-small;
     }
-    .itemcol:last-child{
-        padding-right: 14px;
+    .itemcol {
+      display: inline-block;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 }
 .#{$selectBlock-prefix-cls}-item:hover{
@@ -66,5 +88,13 @@ $selectBlock-prefix-cls:  "#{$css-prefix}select-block";
 .#{$selectBlock-prefix-cls}-hideMult .#{$selectBlock-prefix-cls}-selected{
     &:after{
         color: $selected-color !important;
+    }
+}
+.#{$selectBlock-prefix-cls}-disabled {
+    color: $btn-disable-color;
+    cursor: not-allowed;
+    &:hover{
+        background: transparent;
+        cursor: not-allowed;
     }
 }

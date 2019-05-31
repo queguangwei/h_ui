@@ -34,20 +34,24 @@
       :dateRender="dateCellRender"
     ></month-view>
     <transition name="slide-up">
-      <ul :class="[`${prefixCls}-handle`]" v-clickoutside="hideCtxMenu" :style="styles">
-        <li
-          :class="[`${prefixCls}-handle-item ${prefixCls}-handle-setWorkDay`]"
-          @click.stop.prevent="handleSetWorkDay(1)"
-        >
-          <span>设为工作日</span>
-        </li>
-        <li
-          :class="[`${prefixCls}-handle-item ${prefixCls}-handle-setRestDay`]"
-          @click.stop.prevent="handleSetWorkDay(0)"
-        >
-          <span>设为休息日</span>
-        </li>
-      </ul>
+      <div :class="[`${prefixCls}-context-menu`]" v-clickoutside="hideCtxMenu" :style="styles">
+        <slot name="menu">
+          <ul :class="[`${prefixCls}-handle`]">
+            <li
+              :class="[`${prefixCls}-handle-item ${prefixCls}-handle-setWorkDay`]"
+              @click.stop.prevent="handleSetWorkDay(1)"
+            >
+              <span>设为工作日</span>
+            </li>
+            <li
+              :class="[`${prefixCls}-handle-item ${prefixCls}-handle-setRestDay`]"
+              @click.stop.prevent="handleSetWorkDay(0)"
+            >
+              <span>设为休息日</span>
+            </li>
+          </ul>
+        </slot>
+      </div>
     </transition>
   </div>
 </template>
@@ -161,10 +165,14 @@ export default {
     },
     handleCtxMenu(event) {
       if (this.enableCtxMenu) {
+        //#141481 【TS:201905220071-经纪业委会（经纪）-田传洪-【需求类型】Calendar 组件用在tab组件中，如果Calendar 组件在第2个及后面的tab页上时，右键菜单无法显示，经排查是右键菜单样式定位错误导致
+        let target = event.currentTarget;
+        let top = target.offsetTop + target.scrollTop + 20;
+        let left = target.offsetLeft + target.scrollLeft + 20;
         this.styles = {
           display: 'block',
-          top: `${event.clientY}px`,
-          left: `${event.clientX}px`,
+          top: `${top}px`,
+          left: `${left}px`,
         }
       }
     },
@@ -180,6 +188,9 @@ export default {
       const date = dateObj.date;
       this.$emit('on-dblclick', date.getMonth() + 1, date.getDate());
     },
+    /**
+     * 隐藏右键菜单（开放外部调用）
+     */
     hideCtxMenu() {
       this.styles = {};
     },
