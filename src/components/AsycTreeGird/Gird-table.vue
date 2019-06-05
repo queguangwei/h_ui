@@ -13,6 +13,7 @@
           :data="rebuildData"
           :headSelection ="headSelection"
           :canDrag="canDrag"
+          :multiLevel="cloneMultiLevel"
           ></gird-head>
       </div>
       <div :class="[prefixCls + '-body']" :style="bodyStyle" ref="body" @scroll="handleBodyScroll"
@@ -69,7 +70,7 @@ import GirdHead from './Gird-head.vue';
 import GirdBody from './Gird-body.vue';
 import Spin from '../Spin/Spin.vue';
 import Mixin from './mixin';
-import { oneOf, getStyle, deepCopy, deepCopyEx, getScrollBarSize,getBarBottom,findInx} from '../../util/tools';
+import { oneOf, getStyle, deepCopy, deepCopyEx, getScrollBarSize,getBarBottom,findInx,typeOf} from '../../util/tools';
 import { on, off } from '../../util/dom';
 import Locale from '../../mixins/locale';
 // import Csv from '../../util/csv';
@@ -191,7 +192,11 @@ export default {
     disableEdit: {
       type: Boolean,
       default: false
-    }
+    },
+     multiLevel:{
+      type:Array,
+      default:null
+    },
   },
   data () {
     return {
@@ -311,6 +316,27 @@ export default {
       style.height = this.height?Number(height-this.scrollBarWidth)+'px':null;
       style.lineHeight = this.height?Number(height-this.scrollBarWidth)+'px':null;
       return style;
+    },
+    cloneMultiLevel () {
+      if (!this.multiLevel || this.multiLevel.length==0) return null;
+      let data = [];
+          data[0]=[];
+      this.multiLevel.forEach((cols,i)=>{
+        if(typeOf(cols)!='array'){
+          if(!cols.hiddenCol&&cols.hiddenCol!='false'){
+            data[0].push(cols);
+          }
+        }else{
+          let data2=[]
+          cols.forEach((item,inx)=>{
+            if(!item.hiddenCol&&item.hiddenCol!='false'){
+              data2.push(item);
+            }
+          })
+          data.push(data2);
+        }
+      })
+      return data.length>0?data:null;
     },
   },
   methods: {
