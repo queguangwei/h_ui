@@ -1,6 +1,14 @@
 <template>
   <div>
-   <h-tree-gird :columns="columns1" :data="data1" size="small" :highlight-row="true" @on-current-change="click1" @on-row-click="click2" ref="editGird" height="200" :loading="loading" :option="options1" :treeOption="treeOption"></h-tree-gird>
+   <h-tree-gird :columns="columns1" :data="data1" size="small" :highlight-row="true" ref="editGird" height="200" :loading="loading" :option="options1" :treeOption="treeOption"
+              @on-editinput-change="handler1"
+              @on-editinput-blur="handler2"
+              @on-editarea-change="handler3"
+              @on-editarea-blur="handler4"
+              @on-money-blur="handler5"
+              @on-money-change="handler6"
+              @on-editdate-change="handler7"
+              @on-editselect-change="handler8"></h-tree-gird>
    <Button @click="setLoad">切换loading</Button>
   </div>
 </template>
@@ -224,7 +232,7 @@
     data () {
       return {
         loading:false,
-        options1:[],
+        options1:[[],[],[],[],[],[],[{value:'Alabama',label:'Alabama'},{value:'beijing',label:'北京'},{value:'Delaware',label:'Delaware'}]],
         treeOption:[],
         columns1: [
           {
@@ -233,23 +241,18 @@
             align: 'center'
           },
           {
-            // type: 'text',
+            type: 'text',
             title: '姓名',
             key: 'name',
             width: 200,
             align: 'center',
-            headAlign: 'right',
-            hiddenOther:true,
-            render:(h, params)=>{
-              return h('span',params.row.name)
-            }
+            headAlign: 'right'
           },
           {
             type: 'number',
             title: '年龄',
             width: 200,
             key: 'age',
-            hiddenCol:false,
           },
           {
             type: 'textArea',
@@ -281,15 +284,7 @@
             title: '地区',
             width: 200,
             key: 'city',
-            multiple:false,
-            option: [
-                {value:"北京"},
-                {value:"上海"},
-                {value:"天津"},
-                {value:"沈阳"},
-                {value:"杭州"},
-                {value:"武汉"},
-            ],
+            multiple:false
           },
           {
             type: 'date',
@@ -338,22 +333,34 @@
             checkStrictly: false,
           }
         ],
-        data1:[ {
-          id: 1,
-          name: '王小明',
-          age: 18,
-          address: '北京市朝阳区芍药居',
-          money: '120.00',
-          cardId: '6223 5678 1234 5678',
-          city: '北京',
-          dating:'2018-03-07',
-          timing:'16:00:00.00',
-          tree:'leaf1'
-          // _highlight: true//默认选择当前项
-        }],
+        data1: tData,
       }
     },
     methods: {
+      handler1(val, i , j) {
+        console.log(`input-change: ${val}, pos: (${i}, ${j})`);
+      },
+      handler2(val, i , j) {
+        console.log(`input-blur: ${val}, pos: (${i}, ${j})`);
+      },
+      handler3(val, i , j) {
+        console.log(`area-change: ${val}, pos: (${i}, ${j})`);
+      },
+      handler4(val, i , j) {
+        console.log(`area-blur: ${val}, pos: (${i}, ${j})`);
+      },
+      handler5(val, i , j) {
+        console.log(`money-blur: ${val}, pos: (${i}, ${j})`);
+      },
+      handler6(val, i , j) {
+        console.log(`money-change: ${val}, pos: (${i}, ${j})`);
+      },
+      handler7(val, i , j) {
+        console.log(`date-change: ${val}, pos: (${i}, ${j})`);
+      },
+      handler8(val, i , j) {
+        console.log(`select-change: ${val}, pos: (${i}, ${j})`);
+      },
       setLoad(){
         this.data1 = tData;
         // this.loading = !this.loading;
