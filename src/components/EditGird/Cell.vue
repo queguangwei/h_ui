@@ -408,8 +408,8 @@ export default {
       }
     },
     getFilteredRule(trigger) {
-      const rules = []
-      rules.push(this.rule)
+      // rule 为对象或数组
+      const rules = [].concat(this.rule)
       return rules.filter(
         rule => !rule.trigger || rule.trigger.indexOf(trigger) !== -1
       )
@@ -661,6 +661,11 @@ export default {
     this.$on('close-visible', () => {
       this.setvisible()
     })
+    // 注册全局事件供 editGrid 调用
+    // this.$on('editGrid:validate')
+  },
+  destroyed() {
+
   }
 }
 </script>

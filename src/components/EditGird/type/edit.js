@@ -4,14 +4,17 @@ export default {
   props: {
     typeName:{
       default: 'editGird',
-    },
-
+    }
   },
   data () {
     return {
     };
   },
-  methods: {},
+  methods: {
+    validate() {
+      console.log('validate...')
+    }
+  },
   mounted () {
   },
   beforeDestroy () {
