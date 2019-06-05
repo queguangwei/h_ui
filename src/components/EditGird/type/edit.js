@@ -1,4 +1,5 @@
 import GirdTable from '../Gird-table.vue';
+
 export default {
   mixins: [GirdTable],
   props: {
@@ -12,7 +13,7 @@ export default {
   },
   methods: {
     validate() {
-      console.log('validate...')
+      this.broadcast('GirdCell', 'validate')
     }
   },
   mounted () {

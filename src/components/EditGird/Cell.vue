@@ -409,7 +409,14 @@ export default {
     },
     getFilteredRule(trigger) {
       // rule 为对象或数组
-      const rules = [].concat(this.rule)
+      let rules = [].concat(this.rule)
+      rules = rules.map(item => {
+        if (item.test) {
+          item.pattern = item.test
+        }
+        return item
+      })
+
       return rules.filter(
         rule => !rule.trigger || rule.trigger.indexOf(trigger) !== -1
       )
@@ -662,7 +669,9 @@ export default {
       this.setvisible()
     })
     // 注册全局事件供 editGrid 调用
-    // this.$on('editGrid:validate')
+    this.$on('validate', () => {
+      if (this.rule) this.validate('blur')
+    })
   },
   destroyed() {
 
