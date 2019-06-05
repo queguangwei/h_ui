@@ -111,12 +111,21 @@
               :column="column"
               :natural-index="index"
               :index="row._index"
+              :columnIndex = "inx"
               :checked="rowChecked(row._index)"
               :disabled="rowDisabled(row._index)"
               :expanded="rowExpanded(row._index)"
               :showEditInput="showEditInput"
               :option="selectOption[inx]"
               :treeOption="treeOption[inx]"
+              @on-editselect-change="editselectChange"
+              @on-editinput-change="editinputChange"
+              @on-editinput-blur="editinputBlur"
+              @on-editarea-change="editAreaChange"
+              @on-editarea-blur="editAreaBlur"
+              @on-typefield-blur="typefieldBlur"
+              @on-typefield-change="typefieldChange"
+              @on-editdate-change="editdateChange"
             >
               <span v-if="columns.length>0 && inx==(columns[0].type=='index'?1:0)">
                 <Icon name = "play_fill" :class="iconClass(row._index)" v-if="(row.children && row.children.length!=0)||row.foldable" @on-click="toggleExpand(row._index,$event)"></Icon>
@@ -138,7 +147,7 @@
             :columns = "columns"
             :columnsWidth="columnsWidth"
             :showEditInput="showEditInput"
-            :option="selectOption[index]"
+            :option="selectOption"
             :treeOption="treeOption[index]"
             :isCheckbox="isCheckbox">
           </Tree-table>
