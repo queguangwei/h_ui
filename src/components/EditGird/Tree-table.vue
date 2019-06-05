@@ -21,12 +21,21 @@
                   :column="column"
                   :natural-index="index"
                   :index="row._index"
+                  :columnIndex = "inx"
                   :checked="rowChecked(row._index)"
                   :disabled="rowDisabled(row._index)"
                   :expanded="rowExpanded(row._index)"
                   :showEditInput="showEditInput"
-                  :option="option"
+                  :option="option[inx]"
                   :treeOption="treeOption"
+                  @on-editselect-change="editselectChange"
+                  @on-editinput-change="editinputChange"
+                  @on-editinput-blur="editinputBlur"
+                  @on-editarea-change="editAreaChange"
+                  @on-editarea-blur="editAreaBlur"
+                  @on-typefield-blur="typefieldBlur"
+                  @on-typefield-change="typefieldChange"
+                  @on-editdate-change="editdateChange"
                 >
                   <span v-if="inx==(columns[0].type=='index'?1:0)" :style="indentCls" >
                     <Icon v-if="(row.children && row.children.length!=0)||row.foldable" :class="iconClass(row._index)" name = "play_fill" @on-click="toggleExpand(row._index,$event)"></Icon>
@@ -47,7 +56,8 @@
               :columns = "columns"
               :columnsWidth="columnsWidth"
               :showEditInput="showEditInput"
-              :isCheckbox="isCheckbox">
+              :isCheckbox="isCheckbox"
+              :option="option">
             </Tree-table>
             </collapse-transition>
           </template>
@@ -60,9 +70,10 @@
   import CollapseTransition from '../Notice/collapse-transition';
   import Cell from './Cell.vue'
   import Mixin from './mixin';
+  import Emitter from '../../mixins/emitter';
   export default {
     name:'TreeTable',
-    mixins: [ Mixin ],
+    mixins: [ Mixin, Emitter ],
     components: {CollapseTransition,Cell},
     props: {
       styleObject: Object,
@@ -92,6 +103,13 @@
         let style={};
         style.marginLeft = 20*this.indent+'px';
         return style;
+      },
+      body() {
+        let parent = this.$parent;
+        while (parent && parent.$options.name !== 'GirdBody') {
+          parent = parent.$parent;
+        }
+        return parent;
       }
     },
     methods: {
@@ -143,7 +161,31 @@
       },
       changeSelect(row,e){
         this.$parent.changeSelect(row,e);
-      }
+      },
+      editselectChange(val,i,j){
+          this.dispatch('GirdBody', 'on-editselect-change', [val, i, j]);
+        },
+        editinputChange(val,i,j){
+          this.dispatch('GirdBody', 'on-editinput-change', [val, i, j]);
+        },
+        editinputBlur(val,i,j){
+          this.dispatch('GirdBody', 'on-editinput-blur', [val, i, j]);
+        },
+        editAreaChange(val,i,j){
+          this.dispatch('GirdBody', 'on-editarea-change', [val, i, j]);
+        },
+        editAreaBlur(val,i,j){
+          this.dispatch('GirdBody', 'on-editarea-blur', [val, i, j]);
+        },
+        typefieldBlur(val,i,j){
+          this.body.typefieldBlur(val,i,j)
+        },
+        typefieldChange(val,i,j){
+          this.body.typefieldChange(val,i,j)
+        },
+        editdateChange(val,i,j){
+          this.body.editdateChange(val,i,j)
+        }
     }
   };
 </script>
