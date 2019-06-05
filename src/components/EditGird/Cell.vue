@@ -674,7 +674,7 @@ export default {
     })
   },
   destroyed() {
-
+    this.$off('validate')
   }
 }
 </script>
