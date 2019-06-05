@@ -55,7 +55,8 @@
   <h-asyc-tree-gird :columns="columns1" :data="data1" isCheckbox no-data-text='当前树表格为空' @on-select-change="click2" checkStrictly :loading = 'dataLoading'>
     <span slot = "loading">正在加载中 -----</span>
   </h-asyc-tree-gird>
-
+  <p>表格多级表头</p>
+  <h-asyc-tree-gird :columns="columns1" :data="data1" :multiLevel="multiTitle" isCheckbox no-data-text='当前树表格为空'></h-asyc-tree-gird>
 </div>
 </template>
 <script>
@@ -863,7 +864,12 @@
           data2: tDataSingle,
           data3: [],
           dataLoading: true,
-          current: []
+          current: [],
+          multiTitle:[
+            {title:'12333',cols:3,align:'center'},
+            {title:'1234',cols:1,align:'center'},
+            {title:'666',cols:3,align:'center'},
+          ]
         }
     },
     methods: {
