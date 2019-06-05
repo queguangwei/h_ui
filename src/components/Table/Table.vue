@@ -703,15 +703,14 @@ export default {
       // keep-alive时，页面改变大小会不断触发resize【非本组件页面】
       if(this.notSetWidth){
         if(!this.autoHeadWidth){
-          this.columnsWidth ={}
-          this.tableWidth = 0;
+          // this.columnsWidth ={}
+          // this.tableWidth = 0;
         }
         setTimeout(()=>{
           let columnsWidth = {};
           let tableWidth = '';
           let $td =null
           let curTh = null
-
           if(this.autoHeadWidth||this.data.length==0 || !this.$refs.tbody){
             $td = this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0].querySelectorAll('th');
           }else{
