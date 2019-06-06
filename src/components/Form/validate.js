@@ -16,7 +16,7 @@ const allCusRules = {
   },
   // 数字
   num: {
-    pattern: /^[0-9]\d*$/,
+    pattern: /^-?[1-9]\d*$|^0/,
     message: '只能输入数字格式'
   },
   // 非负整数

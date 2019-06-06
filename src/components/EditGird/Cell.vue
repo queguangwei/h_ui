@@ -175,11 +175,14 @@ import {
   getHMS,
   typeOf
 } from '../../util/tools.js'
+import Emitter from '../../mixins/emitter'
+
 const hOption = hSelect.Option
 const hOptionGroup = hSelect.OptionGroup
 
 export default {
   name: 'GirdCell',
+  mixins: [Emitter],
   directives: { clickoutside },
   components: {
     Icon,
@@ -408,8 +411,15 @@ export default {
       }
     },
     getFilteredRule(trigger) {
-      const rules = []
-      rules.push(this.rule)
+      // rule 为对象或数组
+      let rules = [].concat(this.rule)
+      rules = rules.map(item => {
+        if (item.test) {
+          item.pattern = item.test
+        }
+        return item
+      })
+
       return rules.filter(
         rule => !rule.trigger || rule.trigger.indexOf(trigger) !== -1
       )
@@ -643,11 +653,17 @@ export default {
         this.renderType = this.column.type
       }
     }
+
     if (this.column.type === 'selectTree') {
       this.baseData = deepCopy(this.treeOption)
     }
+
     this.render = this.column.render ? true : false
     this.hiddenOther = this.column.hiddenOther ? true : false
+
+    if (this.renderType !== 'normal' && this.column.rule) {
+      this.dispatch('EditGird', 'on-rule-cell-add', this)
+    }
   },
   mounted() {
     let index = this.index
@@ -661,6 +677,15 @@ export default {
     this.$on('close-visible', () => {
       this.setvisible()
     })
+    // 注册全局事件供 editGrid 调用
+    this.$on('validate', callback => {
+      if (this.rule) this.validate('blur', callback)
+    })
+  },
+  beforeDestroy() {
+    if (this.renderType !== 'normal' && this.column.rule) {
+      this.dispatch('EditGird', 'on-rule-cell-remove', this)
+    }
   }
 }
 </script>

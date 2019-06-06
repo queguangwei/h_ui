@@ -1179,12 +1179,10 @@
       },
       setPlacement(top = 0){
         if(this.autoPlacement){
-            let obj = this.$refs.select;
             let clientHeight = document.documentElement.clientHeight;
-            let scrollTop = document.body.scrollTop || document.documentElement.scrollTop
-            let curbottom = clientHeight + scrollTop - obj.offsetTop  - obj.clientHeight - top;
+            let rect = this.$refs.select.getBoundingClientRect()
             let bottomNum = this.isCheckall ? 250 : 210;
-            if(curbottom < bottomNum){
+            if (clientHeight - rect.top - rect.height < bottomNum){
               this.fPlacement = 'top';
             } else {
               this.fPlacement = 'bottom';
