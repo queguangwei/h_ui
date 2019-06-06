@@ -90,7 +90,15 @@
         this.updateValue();
       },
       currentValue(val){
-        this.viewValue = val
+        if (this.childrens) {
+          let label=''
+          this.childrens.forEach(child => {
+            if(val== child.label) label=child.text||child.label
+          }); 
+          this.viewValue = label
+        }else{
+          this.viewValue = val
+        }
       }
     }
   };
