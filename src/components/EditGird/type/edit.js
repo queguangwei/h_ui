@@ -9,15 +9,33 @@ export default {
   },
   data () {
     return {
+      ruleCells: []
     };
   },
   methods: {
-    validate() {
-      this.broadcast('GirdCell', 'validate')
+    validate(callback) {
+      let callbackExecuted = false
+      this.ruleCells.forEach(cell => {
+        cell.validate('blur', errMsg => {
+          if (errMsg && !callbackExecuted) {
+            callbackExecuted = true
+            callback(false, errMsg)
+          }
+        })
+      })
+
+      if (!callbackExecuted) {
+        callback(true)
+      }
     }
   },
-  mounted () {
-  },
-  beforeDestroy () {
+  created() {
+    this.$on('on-rule-cell-add', cell => {
+      this.ruleCells.push(cell)
+    })
+
+    this.$on('on-rule-cell-remove', cell => {
+      this.ruleCells.splice(this.ruleCells.indexOf(cell), 1)
+    })
   }
 };
