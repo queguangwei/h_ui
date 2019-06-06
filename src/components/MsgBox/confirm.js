@@ -27,6 +27,7 @@ Modal.newInstance = properties => {
           scrollable: false,
           closable: false,
           height: undefined,
+          maxHeight:undefined,
           isOkLeft: false,
           cancleIcon: '',
           okIcon: '',
@@ -97,7 +98,8 @@ Modal.newInstance = properties => {
                 },
                 style: {
                     height: this.height + 'px',
-                    overflowY: this.height ? 'auto' : ''
+                    overflowY: this.height|| this.maxHeight? 'auto' : '',
+                    maxHeight:this.maxHeight+'px'
                 }
               }, [
                 //   h('div', {
@@ -303,6 +305,9 @@ Modal.newInstance = properties => {
       }
       if ('height' in props) {
         modal.$parent.height = props.height;
+      }
+      if ('maxHeight' in props) {
+        modal.$parent.maxHeight = props.maxHeight;
       }
       if ('zIndex' in props) {
         modal.$parent.zIndex = props.zIndex;

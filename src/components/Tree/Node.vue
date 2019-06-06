@@ -266,7 +266,7 @@
         this.dispatch('Tree', 'mouse-over', this.data);
       },
       handleCheck () {
-        if (this.data.disabled) return;
+        if (this.data.disabled||this.data.disableCheckbox) return;
         var checked;
         if (!!this.checkStrictly || !!this.showIndeterminate) {
           checked = !this.data.checked;

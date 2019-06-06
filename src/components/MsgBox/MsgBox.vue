@@ -127,6 +127,7 @@ export default {
       default:false,
     },
     height: [String,Number],
+    maxHeight:[String,Number],
     maximize:{
       type:Boolean,
       default:false,
@@ -238,6 +239,10 @@ export default {
       let style = {}
       if (this.height) {
         style.height = this.height <= 100 ?  `auto` : `${this.height}px`
+        style.overflowY = "auto"
+      }
+      if(this.maxHeight){
+        style.maxHeight = `${this.maxHeight}px`
         style.overflowY = "auto"
       }
       return style
