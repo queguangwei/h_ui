@@ -982,8 +982,8 @@ export default {
       }
       const selection = this.getSelection();
       const selectionInx = this.getSelection(true);
-      this.baseInx = _index
-      this.offsetInx = _index
+      this.baseInx = curIndex
+      this.offsetInx = curIndex
       this.$emit(status ? 'on-select' : 'on-select-cancel', selection, JSON.parse(JSON.stringify(this.data[_index])));
       this.$emit('on-selection-change', selection,selectionInx);
     },
@@ -1538,10 +1538,11 @@ export default {
       }   
       for(var i=0;i<this.rebuildData.length;i++){
         if(this.objData[i]._isDisabled || (i==this.baseInx)) continue
+        let index = this.rebuildData[i]._index
         if(i>=min&&i<=max){
-          this.objData[i]._isChecked = true;
+          this.objData[index]._isChecked = true;
         }else{
-          this.objData[i]._isChecked = false;
+          this.objData[index]._isChecked = false;
         }
       }
       this.$emit('on-selection-change', this.getSelection(),this.getSelection(true));
