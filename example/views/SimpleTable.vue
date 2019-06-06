@@ -58,7 +58,7 @@ import TexpandRow from './Texpand-row.vue'
 let jsonData=[];
 let tData =require('../assets/aa.json');
 for (let i = 0; i < 1; i++) {
-      jsonData =tData.slice(0,500);
+      jsonData =tData.slice(0,5);
     }
 export default {
 
@@ -693,14 +693,14 @@ export default {
           align: 'center',
           width:200,
           sortable:true,
-          fixed:'left',
+          // fixed:'left',
         },
         {
           type: 'selection',
           align: 'center',
           key:'select',
           width:200,
-          fixed:'left'
+          // fixed:'left'
         },
         {
           title: '姓名',
