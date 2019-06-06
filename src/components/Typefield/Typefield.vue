@@ -24,7 +24,7 @@ import {oneOf,formatnumber} from '../../util/tools'
 import Emitter from '../../mixins/emitter';
 import Locale from '../../mixins/locale';
 
-Number.prototype.toFixedSelf = function (n) {
+Number.prototype.toFixed = function (n) {
   if (n > 20 || n < 0) {
       throw new RangeError('toFixed() digits argument must be between 0 and 20');
   }
@@ -63,7 +63,7 @@ Number.prototype.toFixedSelf = function (n) {
   if (parseInt(last, 10) >= 5) {
       const x = Math.pow(10, n);
       result = (Math.round((parseFloat(result) * x)) + 1) / x;
-      result = result.toFixedSelf(n);
+      result = result.toFixed(n);
   }
   return result;
 };
@@ -333,13 +333,67 @@ export default {
       if(value.split(".")[1] && value.split(".")[1].length > 2){
         var isround = this.isround;
         if(isround&&isround==true){
-          value = parseFloat(value).toFixedSelf(this.suffixNum);
+          value = parseFloat(value).toFixed(this.suffixNum);
         }else{
           var suf = value.split(".")[1].substr(0,this.suffixNum);
           value = value.split(".")[0]+"."+suf;
         }
       }
       return this.numtochinese(value + "",this.suffixNum);
+    },
+    // 转换科学技术法为数值---Number(val)会在小数点7位后以科学计数法返回，影响格式化
+    changeRexNum (val) {
+      let e = String(val)
+      let rex = /^([0-9])\.?([0-9]*)e-([0-9])/
+      if (!rex.test(e)) return val
+      let numArr = e.match(rex)
+      let n = Number('' + numArr[1] + (numArr[2] || ''))
+      let num = '0.' + String(Math.pow(10, Number(numArr[3]) - 1)).substr(1) + n
+      return num.replace(/0*$/, '') // 防止可能出现0.0001540000000的情况
+    },
+    // 修正val的小数位，val 为输入值，n为格式化位数【不用Number中的toFixed是因为超过7位小数Number会转换成科学计数法，格式化会报错，因此需要手动转换】
+    toFixed (val, n) {
+      if (n > 20 || n < 0) {
+          throw new RangeError('toFixed() digits argument must be between 0 and 20');
+      }
+      // const number = this;
+      if (isNaN(val) || val >= Math.pow(10, 21)) {
+          return val.toString();
+      }
+      if (typeof (n) == 'undefined' || n == 0) {
+          return (Math.round(val)).toString();
+      }
+      let result = val.toString();
+      const arr = result.split('.');
+      // 整数的情况
+      if (arr.length < 2) {
+          result += '.';
+          for (let i = 0; i < n; i += 1) {
+              result += '0';
+          }
+          return result;
+      }
+      const integer = arr[0];
+      const decimal = arr[1];
+      if (decimal.length == n) {
+          return result;
+      }
+      if (decimal.length < n) {
+          for (let i = 0; i < n - decimal.length; i += 1) {
+              result += '0';
+          }
+          return result;
+      }
+      result = integer + '.' + decimal.substr(0, n);
+      const last = decimal.substr(n, 1);
+
+      // 四舍五入，转换为整数再处理，避免浮点数精度的损失
+      if (parseInt(last, 10) >= 5) {
+          const x = Math.pow(10, n);
+          result = (Math.round((parseFloat(result) * x)) + 1) / x;
+          result = result.toFixed(n);
+      }
+      return result;
     },
     formatNum (value){
       value = value.trim().replace(/,/g, "");
@@ -367,7 +421,10 @@ export default {
           value = this.cutNum(value,this.integerNum);
           if (value=='') return;
           if (this.isround) {
-            value = Number(value).toFixedSelf(suffixNum);
+            // 7位小数Number会转成科学计数法
+            // value = Number(value).toFixed(suffixNum);
+            let result = this.changeRexNum(Number(value))
+            value = this.toFixed(result, suffixNum);
           }else {
             value = this.fillZero(value,Number(suffixNum))
           }
@@ -405,7 +462,7 @@ export default {
       val2 = curInt.slice(8);
       let curVal2 =curSuffix?val2+'.'+curSuffix:val2;
       if(this.isround){
-        curVal2 = Number(curVal2).toFixedSelf(this.suffixNum);
+        curVal2 = Number(curVal2).toFixed(this.suffixNum);
       }else{
         curVal2 = this.fillZero(curVal2,Number(this.suffixNum))
         if(this.suffixNum>0){
@@ -552,7 +609,7 @@ export default {
         if (part[1].length > 2) {
           //alert("小数点之后只能保留两位,系统将自动截段");
           var tempNum = parseFloat(Num);
-          Num = tempNum.toFixedSelf(suffixNumber);
+          Num = tempNum.toFixed(suffixNumber);
           part = String(Num).split(".");
         }
         for (i = 0; i < part[1].length; i++) {
