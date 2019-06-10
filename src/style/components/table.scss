@@ -15,6 +15,9 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
     border-bottom: 0;
     border-right: 0;
   }
+  &-wrapper:focus{
+    outline: none
+  }
   width: inherit;
   // height: 100%;
   max-width: 100%;

@@ -1,5 +1,5 @@
 <template>
-  <div :class="wrapClasses" :style="styles" ref="tableWrap">
+  <div :class="wrapClasses" :style="styles" ref="tableWrap" tabindex="1">
     <div :class="classes">
       <div :class="[prefixCls + '-header']" v-if="showHeader" ref="header" @mousewheel="handleMouseWheel">
         <table cellspacing="0" cellpadding="0" border="0" :style="headStyles" ref="thead">
@@ -44,14 +44,14 @@
               <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, false)" :key="index">
             </colgroup>
             <tbody :class="[prefixCls + '-tbody']">
-              <template v-for="row in visibleData">
+              <template v-for="(row, index) in visibleData">
                 <table-tr
                   :row="row"
                   :key="row._rowKey"
                   :prefix-cls="prefixCls"
                   @mouseenter.native.stop="handleMouseIn(row._index)"
                   @mouseleave.native.stop="handleMouseOut(row._index)"
-                  @click.native="clickCurrentRowTr($event,row._index)"
+                  @click.native="clickCurrentRowTr($event,row._index,index)"
                   @dblclick.native.stop="dblclickCurrentRowTr(row._index)"
                 >
                   <td v-for="column in cloneColumns" :class="alignCls(column, row)" :data-index="row._index+1" :key="column._index">
@@ -59,7 +59,7 @@
                       <!-- &&!this.splitIndex -->
                       <template v-if="column.type === 'index'&&!splitIndex">{{row._index + 1}}</template>
                       <template v-if="column.type === 'selection'">
-                        <Checkbox :size="calcCheckboxSize(column.checkboxSize)" :value="rowChecked(row._index)" @click.native.stop="handleClickTr($event,row._index,rowChecked(row._index))" @on-change="toggleSelect(row._index)" :disabled="rowDisabled(row._index)"></Checkbox>
+                        <Checkbox :size="calcCheckboxSize(column.checkboxSize)" :value="rowChecked(row._index)" @click.native.stop="handleClickTr($event,row._index,rowChecked(row._index),index)" @on-change="toggleSelect(row._index,index)" :disabled="rowDisabled(row._index)"></Checkbox>
                       </template>
                       <template v-if="!column.type&&!column.render"><span v-html="row[column.key]"></span></template>
                       <template v-if="column.render">
@@ -127,21 +127,21 @@
                 <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, false)" :key="index">
               </colgroup>
               <tbody :class="[prefixCls + '-tbody']">
-                <template v-for="row in visibleData" >
+                <template v-for="(row, index) in visibleData" >
                   <table-tr
                     :row="row"
                     :key="row._rowKey"
                     :prefix-cls="prefixCls"
                     @mouseenter.native.stop="handleMouseIn(row._index)"
                     @mouseleave.native.stop="handleMouseOut(row._index)"
-                    @click.native="clickCurrentRowTr($event,row._index)"
+                    @click.native="clickCurrentRowTr($event,row._index,index)"
                     @dblclick.native.stop="dblclickCurrentRowTr(row._index)"
                   >
                     <td v-for="column in cloneColumns" :class="alignCls(column, row,'left')" :data-index="row._index+1" :key="column._index">
                       <div :class="classesTd(column)">
                         <template v-if="column.type === 'index'&&!splitIndex">{{row._index+1}}</template>
                         <template v-if="column.type === 'selection'">
-                          <Checkbox :size="calcCheckboxSize(column.checkboxSize)" :value="rowChecked(row._index)" @click.native.stop="handleClickTr($event,row._index,rowChecked(row._index))" @on-change="toggleSelect(row._index)" :disabled="rowDisabled(row._index)"></Checkbox>
+                          <Checkbox :size="calcCheckboxSize(column.checkboxSize)" :value="rowChecked(row._index)" @click.native.stop="handleClickTr($event,row._index,rowChecked(row._index),index)" @on-change="toggleSelect(row._index,index)" :disabled="rowDisabled(row._index)"></Checkbox>
                         </template>
                         <template v-if="!column.type&&!column.render"><span v-html="row[column.key]"></span></template>
                         <template v-if="column.render">
@@ -370,6 +370,10 @@ export default {
       default () {
         return [];
       }
+    },
+    switchEmpty:{//上下键盘切换选项时清空选项
+      type:Boolean,
+      default:false
     }
   },
   data () {
@@ -419,6 +423,8 @@ export default {
       cloumnsLeft: [],
       curShiftIndex:null,
       sumMarginLeft: 0,
+      baseInx: null,
+      offsetInx: null,
     };
   },
   computed: {
@@ -1069,12 +1075,13 @@ export default {
     },
     handleClick(){
     },
-    handleClickTr (event,rowIndex,status) {
+    handleClickTr (event,rowIndex,status,curIndex) {
+      curIndex = curIndex+this.start
       if (event.shiftKey&&rowIndex) {
-        this.getshiftSelect(rowIndex);
+        this.getshiftSelect(curIndex);
       }else if(!status){
         this.shiftSelect=[]
-        this.shiftSelect[0] = rowIndex;
+        this.shiftSelect[0] = curIndex;
       }else{
         this.shiftSelect=[]
       }
@@ -1123,18 +1130,19 @@ export default {
           this.$emit('on-selection-change',this.getSelection(),this.getSelection(true), _index);
         })
     },
-    clickCurrentRowTr (event,_index) {
+    clickCurrentRowTr (event,_index,curIndex) {
+      curIndex = curIndex + this.start
       if (!event.shiftKey && !event.ctrlKey || (this.highlightRow&&!this.selectType)) {
         if(this.rowSelect){
           // this.objData[_index]._isChecked=!this.objData[_index]._isChecked;
-          this.toggleSelect(_index);
+          this.toggleSelect(_index,curIndex);
         }else{
           this.clickCurrentRow(_index);
         }
         if (this.objData[_index]._isHighlight) {
           this.shiftSelect = [];
           this.ctrlSelect = [];
-          this.shiftSelect[0]=_index
+          this.shiftSelect[0]=curIndex
           this.ctrlSelect.push(_index);
         }else{
           this.shiftSelect= [];
@@ -1142,7 +1150,7 @@ export default {
         }
       }else if(event.shiftKey){
         window.getSelection()?window.getSelection().removeAllRanges():document.selection.empty();
-        this.getshiftSelect(_index);
+        this.getshiftSelect(curIndex);
       }else{
         this.getctrlSelect(_index);
       }
@@ -1183,7 +1191,8 @@ export default {
       // 考虑addData模式
       return status?selectionIndexes:JSON.parse(JSON.stringify(this.cloneData.filter((data, index) => selectionIndexes.indexOf(index) > -1)));
     },
-    toggleSelect (_index) {
+    toggleSelect (_index,curIndex) {
+      curIndex = curIndex+this.start
       this.allclick = false;
       let data = {};
       for (let i in this.objData) {
@@ -1196,6 +1205,8 @@ export default {
       if (!status) {
         this.objData[_index]._isHighlight = false;
       }
+      this.baseInx = curIndex
+      this.offsetInx = curIndex
       this.$nextTick(()=>{
         const selection = this.getSelection();
         // this.$emit(status ? 'on-select' : 'on-select-cancel', selection, JSON.parse(JSON.stringify(this.data[_index])));
@@ -1330,15 +1341,18 @@ export default {
       return data;
     },
     selectRange(){
-      for (var i = this.shiftSelect[0]; i <= this.shiftSelect[1]; i++) {
-        this.objData[i]._isHighlight=false;
-        if(!this.objData[i]._isDisabled){
-          this.objData[i]._isChecked = true;
+      // this.$nextTick(()=>{
+      setTimeout(() => {
+        for (var i = this.shiftSelect[0]; i <= this.shiftSelect[1]; i++) {
+          let index = this.rebuildData[i]._index
+          this.objData[index]._isHighlight=false;
+          if(!this.objData[index]._isDisabled){
+            this.objData[index]._isChecked = true;
+          }
         }
-      }
-      this.$nextTick(()=>{
         this.$emit('on-selection-change', this.getSelection(),this.getSelection(true), this.curShiftIndex);
-      })
+      }, 0);
+      // })
     },
     fixedHeader () {
       if (this.height) {
@@ -1622,7 +1636,7 @@ export default {
       ExportCsv.download(params.filename, data,params.format);
     },
     handleKeydown (e) {
-      if (this.isCurrent) {
+      if (this.isCurrent && !e.shiftKey) {
         const keyCode = e.keyCode;
         // next
         if (keyCode === 40) {
@@ -1647,7 +1661,7 @@ export default {
       }
     },
     navigateOptions (direction) {
-      if (this.isFocusSelect && this.objData[this.focusIndex]) {
+      if (this.isFocusSelect && this.objData[this.focusIndex] && this.switchEmpty) {
         if (this.objData[this.focusIndex].hasOwnProperty('_isChecked')) this.objData[this.focusIndex]._isChecked = false
         if (this.objData[this.focusIndex].hasOwnProperty('_isHighlight')) this.objData[this.focusIndex]._isHighlight = false;
         this.isFocusSelect = false
@@ -1697,7 +1711,7 @@ export default {
       }
     },
     handleKeyup (e) {
-      if (this.isCurrent) {
+      if (this.isCurrent && !e.shiftKey) {
         this.isFocusSelect = true
         if (e.keyCode === 40 || e.keyCode === 38) {
           e.preventDefault();
@@ -1705,7 +1719,51 @@ export default {
           this.highlightCurrentRow(this.focusIndex)
         }
       }
-    }
+    },
+    keySelectRange(){
+      let max,min
+      if(this.baseInx<this.offsetInx){
+        min = this.baseInx+1
+        max = this.offsetInx
+      }
+      if(this.baseInx>this.offsetInx){
+        min = this.offsetInx
+        max = this.baseInx-1
+      }   
+      for(var i=0;i<this.rebuildData.length;i++){
+        if(this.objData[i]._isDisabled || (i==this.baseInx)) continue
+        let index = this.rebuildData[i]._index
+        if(i>=min&&i<=max){
+          this.objData[index]._isChecked = true;
+        }else{
+          this.objData[index]._isChecked = false;
+        }
+      }
+      this.$emit('on-selection-change', this.getSelection(),this.getSelection(true));
+    },
+    keySelect (e) {
+      if(e.shiftKey&&(this.baseInx||this.baseInx==0)){
+        console.log(222)
+        const keyCode = e.keyCode;
+        if (keyCode === 40) {
+          e.preventDefault();
+          e.stopPropagation();
+          if(this.offsetInx<this.rebuildData.length-1){
+            this.offsetInx++
+          }
+          this.keySelectRange()
+        }
+        // prev
+        if (keyCode === 38) {
+          e.preventDefault();
+          e.stopPropagation();
+          if(this.offsetInx>0){
+            this.offsetInx--
+          }
+          this.keySelectRange()
+        }
+      }
+    },
   },
   created () {
       if (!this.context) this.currentContext = this.$parent;
@@ -1737,6 +1795,7 @@ export default {
         this.getLeftWidth();
       }
     });
+    on(this.$refs.tableWrap,'keyup', this.keySelect);
   },
   beforeDestroy () {
       //window.removeEventListener('resize', this.handleResize, false);
@@ -1745,7 +1804,7 @@ export default {
       off(window, 'resize', this.getLeftWidth);
       off(document,'keydown',this.handleKeydown)
       off(document,'keyup', this.handleKeyup);
-
+      off(this.$refs.tableWrap,'keyup',this.keySelect)
   },
   watch: {
       toScrollTop () {

@@ -101,7 +101,7 @@ export default {
         this.$parent.table.dragEl = event.currentTarget;
       },
       toggleSelect (status,event) {
-        this.$parent.$parent.$parent.toggleSelect(this.index,event);
+        this.$parent.$parent.$parent.toggleSelect(this.index,event,this.naturalIndex);
         this.$parent.$parent.$parent.clickCurrentBtn(this.index)
       },
       clickCurrentRow () {
