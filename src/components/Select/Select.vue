@@ -651,10 +651,8 @@
             this.typeValue = typeOf(this.options[0].value);
           }
           if (init) {
-              if (!this.remote) {
-                  this.updateSingleSelected(true, slot);
-                  this.updateMultipleSelected(true, slot);
-              }
+            this.updateSingleSelected(true, slot);
+            this.updateMultipleSelected(true, slot);
           }
       },
       updateSingleSelected (init = false, slot = false) {
@@ -714,7 +712,7 @@
       },
       updateMultipleSelected (init = false, slot = false) {
         if (this.multiple && Array.isArray(this.model)) {
-            let selected = this.remote && this.model.length > 0 ? this.selectedMultiple : [];
+            let selected = [];
             for (let i = 0; i < this.model.length; i++) {
                 const model = this.model[i];
                 const options = this.options;
