@@ -408,7 +408,8 @@
       },
       emitChange () {
           this.$nextTick(() => {
-              this.$emit('on-change', this.publicStringValue);
+              // on-change事件触发移至watcher:publicVModelValue，用于v-model绑定值修改后触发on-change
+              // this.$emit('on-change', this.publicStringValue);
               this.dispatch('FormItem', 'on-form-change', this.publicStringValue);
           });
       },
@@ -570,6 +571,7 @@
         const strValue = this.showFormat==true?this.visualValue:now;
         if (shouldEmitInput){
           this.$emit('input', strValue); // to update v-model
+          this.$emit('on-change', this.publicStringValue);
           // this.$emit('input', now); // to update v-model
         } 
       },
