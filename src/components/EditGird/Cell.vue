@@ -219,7 +219,8 @@ export default {
     fixed: {
       type: [Boolean, String],
       default: false
-    }
+    },
+    height: Number
   },
   data() {
     return {
@@ -616,6 +617,10 @@ export default {
               this.parent.$el.querySelector('.h-editgird-body').scrollTop
             fyTip.style.left = left + 'px'
             fyTip.style.top = top + 'px'
+            // 初始校验不通过，提示显示表格外部问题
+            if (top >= this.height) {
+              fyTip.style.display = 'none'
+            }
           }
         })
       }

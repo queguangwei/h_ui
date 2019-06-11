@@ -30,6 +30,7 @@
               :showEditInput="showEditInput"
               :option="selectOption[inx]"
               :treeOption="treeOption[inx]"
+              :height="height"
               @on-editselect-change="editselectChange"
               @on-editinput-change="editinputChange"
               @on-editinput-blur="editinputBlur"
@@ -189,6 +190,7 @@
         option:Array,
         treeOption:Array,
         titleRender:Function,
+        height: Number
       },
       data(){
         return{
