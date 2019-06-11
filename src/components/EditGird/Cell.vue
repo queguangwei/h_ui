@@ -271,11 +271,11 @@ export default {
             !this.fixed &&
             this.column.fixed &&
             (this.column.fixed === 'left' || this.column.fixed === 'right'),
-          // [`${this.prefixCls}-cell-ellipsis`]: this.column.ellipsis || false,
           [`${this.prefixCls}-cell-error`]: this.validateState === 'error',
           [`${this.prefixCls}-cell-with-expand`]: this.renderType === 'expand',
           [`${this.prefixCls}-cell-with-render`]:
-            this.render && this.renderType != 'expand'
+            this.render && this.renderType != 'expand',
+          [`${this.prefixCls}-cell-ellipsis-with-render`]: this.ellipsisAndRender
         }
       ]
     },
@@ -300,6 +300,9 @@ export default {
           [`h-input-noresize`]: !this.column.canResize
         }
       ]
+    },
+    ellipsisAndRender() {
+      return this.column.ellipsis && this.render && this.renderType != 'expand'
     }
   },
   methods: {
