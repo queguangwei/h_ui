@@ -31,6 +31,7 @@
           :option="options"
           :treeOption="treeOptions"
           :titleRender="titleRender"
+          :height="Number(height)"
           @on-select-change="selectChange"
           @on-editselect-change="editselectChange"
           @on-editinput-change="editinputChange"
