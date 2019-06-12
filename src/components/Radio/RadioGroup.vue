@@ -71,7 +71,7 @@
           this.childrens.forEach(child => {
             child.currentValue = value === child.label;
             child.group = true;
-          }); 
+          });
         }
       },
       change (data) {
@@ -83,6 +83,26 @@
       },
       groupClick(){
         this.$emit('on-click');
+      },
+      focus() {
+        let targetRadio = this.$slots.default.filter(slot => {
+          let isRadio = slot.componentOptions && slot.componentOptions.tag
+          if (isRadio && slot.componentInstance.currentValue) {
+            return true
+          }
+          return false
+        })[0]
+        targetRadio.componentInstance.focus()
+      },
+      blur() {
+        let targetRadio = this.$slots.default.filter(slot => {
+          let isRadio = slot.componentOptions && slot.componentOptions.tag
+          if (isRadio && slot.componentInstance.currentValue) {
+            return true
+          }
+          return false
+        })[0]
+        targetRadio.componentInstance.blur()
       }
     },
     watch: {
@@ -94,7 +114,7 @@
           let label=''
           this.childrens.forEach(child => {
             if(val== child.label) label=child.text||child.label
-          }); 
+          });
           this.viewValue = label
         }else{
           this.viewValue = val
