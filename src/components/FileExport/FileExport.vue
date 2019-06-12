@@ -1,7 +1,7 @@
 <template>
   <div @click="exportFile">
     <slot>
-      <h-button type="ghost">导出文件</h-button>      
+      <h-button type="ghost">导出文件</h-button>
     </slot>
   </div>
 </template>
@@ -14,7 +14,7 @@
         rebuildData: []
       }
     },
-        
+
     /* 一个文件：
      * fileName: 文件名
      * fileType: 文件类型【xls/xlsx】
@@ -31,9 +31,9 @@
      *      key: 'col1',
      *      title: '列1',
      *      exportRender: FUNC
-     *    }, 
+     *    },
      *    {
-     *      key: 'col2',  
+     *      key: 'col2',
      *      title: '列2'
      *      exportRender: FUNC
      *    }
@@ -42,7 +42,7 @@
      * ]
      * sheetSelfData: [[[表头], [数据1], [数据2]...], []] // 表格数据完全由外部定义[也是所有导出时的最终数据格式]
      * sheetTableData: 单表数据集合[ // 按照表格解析
-     *  [    
+     *  [
      *    {
      *      'col1': '12312312',
      *      'col2': 'sfsdfsdf'
@@ -118,7 +118,7 @@
       },
       // 无导出数据提示
       noTipText: {
-        type: String, 
+        type: String,
         default: '暂无导出数据'
       },
       // 导出前判断是否继续导出
@@ -135,13 +135,13 @@
         handler (val) {
           this.rebuildData = this.makeData()
         },
-        deep: true        
+        deep: true
       },
       sheetSelfData: {
         handler (val) {
           this.rebuildData = this.makeData()
         },
-        deep: true 
+        deep: true
       }
     },
     methods: {
@@ -160,10 +160,10 @@
               sheetData = tableData.length > 0 ? sheetData.concat(tableData) : sheetData
               rebuildDataList.push(sheetData)
             }
-          } 
+          }
         } else if (this.sheetType == 'self' && this.sheetSelfData) {
           rebuildDataList = this.sheetSelfData
-        } 
+        }
         return rebuildDataList
       },
       // 返回当前sheet header list 对header数据进行转化
@@ -177,7 +177,7 @@
         }
         return curHeaderList
       },
-      // 对table 数据进行转化      
+      // 对table 数据进行转化
       makeSheetTableData (index) {
         let tableData = []
         // 数据
@@ -188,7 +188,7 @@
           if (tHeader.length > 0) {
             sheetTableData.forEach((row) => {
               row = tHeader.map((item, index) => {
-                let cellData 
+                let cellData
                 if (item.key && row[item.key] && item.exportRender) {
                   cellData = item.exportRender(row[item.key], row)
                 } else  {
@@ -213,15 +213,15 @@
         let isGotoExport = this.beforeExport ? this.beforeExport() : true
         if (isGotoExport) {
           if (this.rebuildData.length > 0) {
-            const wopts = { 
-              bookType: this.fileType, 
-              bookSST: false, 
-              type: 'binary' 
+            const wopts = {
+              bookType: this.fileType,
+              bookSST: false,
+              type: 'binary'
             }
-            const wb = { 
-              SheetNames: [], 
-              Sheets: {}, 
-              Props: {} 
+            const wb = {
+              SheetNames: [],
+              Sheets: {},
+              Props: {}
             }
             this.rebuildData.forEach((val, index) => {
               let data = {}
@@ -245,7 +245,7 @@
                 }]
               } else {
                 // 无标题时，不生成标题
-                // 将一个二维数组转成sheet              
+                // 将一个二维数组转成sheet
                 data = XLSX.utils.aoa_to_sheet(val)
               }
               let sheetName = this.sheetNames && this.sheetNames[index] ? this.sheetNames[index] : 'Sheet' + index
@@ -256,7 +256,7 @@
             this.saveAs(new Blob([this.s2ab(XLSX.write(wb, wopts))], { type: "application/octet-stream" }), fileName)
           } else {
             this.$hMessage.info(this.noTipText)
-          } 
+          }
         }
       },
       /**
@@ -283,6 +283,7 @@
         tmpa.download = fileName || "下载";
         tmpa.href = URL.createObjectURL(obj) //绑定a标签
         tmpa.click(); //模拟点击实现下载
+        console.log(tmpa)
         setTimeout(function () { //延时释放
             URL.revokeObjectURL(obj) //用URL.revokeObjectURL()来释放这个object URL
         }, 100)
@@ -292,4 +293,4 @@
       this.rebuildData = this.makeData()
     },
   }
-</script> 
+</script>
