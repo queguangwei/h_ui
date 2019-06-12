@@ -306,6 +306,10 @@ export default {
       type:Boolean,
       default:false,
     },
+    fixedAutoHeight: {
+      type:Boolean,
+      default:false,
+    },
     notSetWidth:{
       type:Boolean,
       default:false,
@@ -550,8 +554,13 @@ export default {
           height = height + this.scrollBarWidth-1;
         }
         // height不存在时bodyheight为0
-        if (this.height) style.height = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`;
-        if (this.maxHeight) style.maxHeight = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`
+        if (this.height){
+           style.height = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`;
+           if(this.fixedAutoHeight&&this.$refs.fixedRightBody.clientHeight<height){
+              style.height="auto";
+           }
+          }
+        if (this.maxHeight) style.maxHeight = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`       
       }
       return style;
     },
