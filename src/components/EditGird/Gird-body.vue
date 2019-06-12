@@ -308,10 +308,10 @@
           }
           this.updateCheckUp(parentKey);
         },
-        changeSelect (row,e) {
+        changeSelect (row, e, checked) {
           let selectInx=[];
-          e.stopPropagation();
-          let status = !row.checked;
+          if (e) e.stopPropagation();
+          let status = checked || !row.checked;
           const node = this.flatState[row._index].node;
           this.$set(node, 'checked', status);
           this.$parent.objData[node._index]._isChecked = status;
@@ -362,6 +362,20 @@
         if (this.typeName == 'treeGird') {
           this.treeData = this.data;
           this.flatState = this.compileFlatState();
+
+          // 设置默认选中
+          this.treeData.forEach(row => {
+            if (row.checked) {
+              this.changeSelect(row, null, row.checked)
+            } else {
+              let childrenStr = JSON.stringify(row.children)
+              let childrenHasChecked = /"checked":true/.test(childrenStr)
+
+              if (childrenHasChecked) {
+                row.indeterminate = true
+              }
+            }
+          })
         }
       },
       watch:{

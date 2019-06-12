@@ -909,7 +909,7 @@ export default {
           parentKeyField: '_parentId',
           expanded: 'expand',
           checked: 'checked',
-          checked: 'indeterminate',
+          indeterminate: 'indeterminate',
           rootKey: 'root'
         }
         data = this.convertTreeData(data, attributes);
@@ -980,6 +980,8 @@ export default {
           if (this.typeName == "treeGird") {
             if (newRow.checked) {
                 newRow.checked = newRow.checked;
+                // // 设置 checked 后显示高亮
+                // newRow._isChecked = newRow.checked;
             } else {
                 newRow.checked = false;
             }
