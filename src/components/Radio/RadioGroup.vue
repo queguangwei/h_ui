@@ -87,11 +87,26 @@
       focus() {
         let targetRadio = this.$slots.default.filter(slot => {
           let isRadio = slot.componentOptions && slot.componentOptions.tag
-          if (isRadio && slot.componentInstance.currentValue) {
+          if (isRadio && !slot.componentInstance.disabled && slot.componentInstance.currentValue) {
             return true
           }
           return false
         })[0]
+
+        // 选中状态在禁用状态的 radio 上的特殊处理
+        // 没有选中状态的特殊处理
+        if (!targetRadio) {
+          targetRadio = this.$slots.default.filter(slot => {
+            let isRadio = slot.componentOptions && slot.componentOptions.tag
+            if (isRadio && slot.componentInstance.disabled && slot.componentInstance.currentValue) {
+              slot.componentInstance.currentValue = false
+            }
+            return isRadio && !slot.componentInstance.disabled
+          })[0]
+
+          targetRadio.componentInstance.currentValue = true
+        }
+
         targetRadio.componentInstance.focus()
       },
       blur() {
