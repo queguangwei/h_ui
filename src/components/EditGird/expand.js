@@ -4,10 +4,10 @@ export default {
   props: {
     row: Object,
     render: Function,
-    index: [Number,String],
+    index: [Number, String],
     column: {
-        type: Object,
-        default: null
+      type: Object,
+      default: null
     }
   },
   render: (h, ctx) => {
