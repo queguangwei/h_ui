@@ -74,6 +74,10 @@ $selectBlock-prefix-cls:  "#{$css-prefix}select-block";
     line-height: 30px;
     text-align: center;
 }
+.#{$selectBlock-prefix-cls}-loading-placeholder {
+  visibility: hidden;
+  height: 30px;
+}
 .#{$selectBlock-prefix-cls}-hideMult .#{$selectBlock-prefix-cls}-item {
     &:after{
         @include h-icon();
