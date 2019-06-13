@@ -29,6 +29,7 @@
       :row="row"
       :column="column"
       :index="index"
+      :sum="sum"
       :render="column.render"></Cell>
   </div>
 </template>
