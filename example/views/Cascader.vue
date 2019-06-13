@@ -1,7 +1,8 @@
 <template>
 	<div>
     <h1>省市测试</h1>
-    <h-cascader :data="cityData" style="width:200px" setProviceCity></h-cascader>
+    {{ceshi}}
+    <h-cascader :data="cityData" style="width:200px" setProviceCity v-model="ceshi"></h-cascader>
 	  <h1>基本用法</h1>
     <p>级联选择对数据有较严格要求，请参照示例的格式使用data，每项数据至少包含 value、label 两项，子集为 children，以此类推。<br>
     value 为当前选择的数据的 value 值的数组，比如 ['beijing', 'gugong'] ，按照级联顺序依次排序，使用 v-model 进行双向绑定。</p>
@@ -51,6 +52,7 @@ export default{
 	name:'Cascader',
 	data () {
     return {
+      ceshi:[],
       text:'未选择',
       value1: [],
       value2:['jiangsu','nanjing','fuzimiao'],
