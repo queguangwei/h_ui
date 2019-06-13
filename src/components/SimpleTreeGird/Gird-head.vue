@@ -269,7 +269,6 @@ export default {
       }
     },
     mousemove(event,column,index){
-      if (!this.canDrag) return;
       if (!column ) return;
       if (column.children && column.children.length > 0) return;
       let target = this.findObj(event,"TH");

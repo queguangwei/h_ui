@@ -1,81 +1,89 @@
 <template>
   <div>
-    <h-calendar
-      ref="calendar"
-      :disableDate="disableDate"
-      @on-click="sClick"
-      @on-dblclick="dClick"
-      @on-mouseover="oClick"
-      @on-mouseout="mClick"
-      @on-context-menu="handleMenu"
-      :dateCellRender="dateRender1"
-      :enableCtxMenu="false"
-    >
-      <ul class="calendar-menu" slot="menu">
-        <li class="calendar-menu-item" @click.stop="setDate(0)">设为交割日</li>
-        <li class="calendar-menu-item" @click.stop="setDate(1)">设为开仓日</li>
+    <h-calendar ref="calendar"
+                :disableDate="disableDate"
+                @on-click="sClick"
+                @on-dblclick="dClick"
+                @on-mouseover="oClick"
+                @on-mouseout="mClick"
+                @on-context-menu="handleMenu"
+                @on-badge-click="handleBadgeClick"
+                :enableCtxMenu="false"
+                :dateCellRender="dateRender1">
+      <ul class="calendar-menu"
+          slot="menu">
+        <li class="calendar-menu-item"
+            @click.stop="setDate(0)">设为交割日</li>
+        <li class="calendar-menu-item"
+            @click.stop="setDate(1)">设为开仓日</li>
       </ul>
     </h-calendar>
-    <h-calendar :currentYear="2020"></h-calendar>
+    <h-calendar :currentYear="2020"
+                :badges="[{date: '2020-06-13', num: 3}, {date: '2020-06-15', num: 7}]"
+                @on-badge-click="handleBadgeClick"></h-calendar>
     <h-calendar :currentYear="2020">
       <p slot="header">123</p>
     </h-calendar>
     <p>单选且带有render特殊样式</p>
-    <h-calendar
-      :disableDate="disableDatelist"
-      :multiSelect="multi"
-      @on-select="oselect"
-      :dateCellRender="dateRender"
-    >
+    <h-calendar :disableDate="disableDatelist"
+                :multiSelect="multi"
+                @on-select="oselect"
+                :dateCellRender="dateRender">
     </h-calendar>
   </div>
 </template>
 
 <script>
 export default {
+  name: 'h123',
   data() {
     return {
       multi: false,
-      disableDatelist: ["2019-01-02", "2019-03-03", "2019-04-02", "2019-08-12"],
+      disableDatelist: ['2019-01-02', '2019-03-03', '2019-04-02', '2019-08-12'],
       date: null
-    };
+    }
   },
   methods: {
     setDate(flag) {
-      this.$set(this.date, "dateType", flag);
-      this.$refs.calendar.hideCtxMenu();
+      this.$set(this.date, 'dateType', flag)
+      this.$refs.calendar.hideCtxMenu()
     },
     handleMenu(e, date) {
-      console.log(e);
-      this.date = date;
+      console.log(e)
+      this.date = date
+    },
+    handleBadgeClick(badge) {
+      console.log(badge)
     },
     dateRender1(h, data) {
-      let color = "";
+      let color = ''
       if (data != null) {
         if (data.dateType === 1) {
-          color = "green";
+          color = 'green'
         } else if (data.dateType === 0) {
-          color = "blue";
+          color = 'blue'
         }
       }
-      return h("div", {style: {color: color}}, [data != null ? "" + data.date.getDate() : ""]);
+      return h('div', { style: { color: color } }, [
+        data != null ? '' + data.date.getDate() : ''
+      ])
     },
     dateRender(h, data) {
       if (data && data.date.getDate() == 15) {
         return h(
-          "div",
+          'div',
           {
             style: {
-              color: "blue"
+              color: 'blue'
             },
             class: {
               [`costum-style`]: true
             }
           },
-          [data != null ? "" + data.date.getDate() : ""]
-        );
+          [data != null ? '' + data.date.getDate() : '']
+        )
       } else {
-        return h("span", {}, [data != null ? "" + data.date.getDate() : ""]);
+        return h('span', {}, [data != null ? '' + data.date.getDate() : ''])
       }
     },
     sClick(i, j) {
@@ -103,14 +111,14 @@ export default {
         date &&
         date.valueOf() < Date.now() &&
         date.valueOf() >= Date.now() - 86400000
-      );
+      )
     },
     oselect(i, j) {
-      console.log("select");
-      console.log(j);
+      console.log('select')
+      console.log(j)
     }
   }
-};
+}
 </script>
 <style>
 .costum-style {
