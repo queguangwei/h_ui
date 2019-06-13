@@ -43,6 +43,9 @@ $selectBlock-prefix-cls:  "#{$css-prefix}select-block";
     padding: 0 14px;
     white-space: nowrap;
     font-size: 0;
+    div,p,i,b {
+      font-size: $font-size-small;
+    }
     &>span {
       font-size: $font-size-small;
     }
