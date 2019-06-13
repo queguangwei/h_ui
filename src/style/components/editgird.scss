@@ -169,6 +169,12 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
       //   padding-right:10px;
       // }
     }
+    &-ellipsis-with-render {
+      overflow: hidden;
+      word-break: keep-all;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
     &-group{
       width: 100%;
     }
@@ -334,7 +340,7 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
   &-can-hover {
     .not-child:hover td{
       background-color: $table-td-hover-bg;
-    }   
+    }
   }
   &-row-highlight:hover td{
     background-color: $table-td-highlight-bg !important;

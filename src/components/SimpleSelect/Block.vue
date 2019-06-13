@@ -41,8 +41,10 @@
       </li>
       <!-- <li v-if="showEmpty" :class="[prefixCls+'-empty']">{{localeNoMatch}}</li> -->
     </ul>
-    <div v-if="showEmpty"
+    <div v-if="showEmpty && !loading"
          :class="[prefixCls+'-empty']">{{localeNoMatch}}</div>
+    <!-- 用于撑开高度 -->
+    <div v-show="loading && visibleData.length === 0" :class="[prefixCls+'-loading-placeholder']">&nbsp</div>
   </div>
 </template>
 <script>
@@ -137,6 +139,9 @@ export default {
     offset() {
       if (this.showHeader.length) return 30
       return 0
+    },
+    loading() {
+      return this.$parent.$parent.loading;
     }
   },
   methods: {
