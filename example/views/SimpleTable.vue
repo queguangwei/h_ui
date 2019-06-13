@@ -58,7 +58,7 @@ import TexpandRow from './Texpand-row.vue'
 let jsonData=[];
 let tData =require('../assets/aa.json');
 for (let i = 0; i < 1; i++) {
-      jsonData =tData.slice(0,5);
+      jsonData =tData.slice(0,500);
     }
 export default {
 
