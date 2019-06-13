@@ -43,6 +43,9 @@ $selectBlock-prefix-cls:  "#{$css-prefix}select-block";
     padding: 0 14px;
     white-space: nowrap;
     font-size: 0;
+    div,p,i,b {
+      font-size: $font-size-small;
+    }
     &>span {
       font-size: $font-size-small;
     }
@@ -70,6 +73,10 @@ $selectBlock-prefix-cls:  "#{$css-prefix}select-block";
 .#{$selectBlock-prefix-cls}-empty{
     line-height: 30px;
     text-align: center;
+}
+.#{$selectBlock-prefix-cls}-loading-placeholder {
+  visibility: hidden;
+  height: 30px;
 }
 .#{$selectBlock-prefix-cls}-hideMult .#{$selectBlock-prefix-cls}-item {
     &:after{

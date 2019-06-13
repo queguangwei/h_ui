@@ -13,6 +13,7 @@
           :headSelection ="headSelection"
           :canDrag="canDrag"
           :canMove="canMove"
+          @on-move="move"
           ></gird-head>
       </div>
       <div :class="[prefixCls + '-body']" :style="bodyStyle" ref="body" @scroll="handleBodyScroll"
@@ -291,6 +292,9 @@ export default {
     },
   },
   methods: {
+    move(i,j){
+      this.$emit('on-move', i, j);
+    },
     changeCheckedObj(index,status,single){
       let item = single?'_isHighlight':'checked';
       if(status==null){
