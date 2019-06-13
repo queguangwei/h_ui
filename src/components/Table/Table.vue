@@ -322,6 +322,10 @@ export default {
       type:Boolean,
       default:false,
     },
+     dataCheckedProp:{
+      type:Boolean,
+      default:false,
+    },
     ctrSelection:{//仅开启highlight-row时支持ctrl多选
       type:Boolean,
       default:false,
@@ -966,6 +970,16 @@ export default {
       for (let i in this.objData) {
           if (this.objData[i]._isChecked) selectionIndexes.push(parseInt(i));
       }
+      if(this.dataCheckedProp){
+        for(var i=0;i<this.data.length;i++){
+          if(selectionIndexes.indexOf(i) > -1){
+                this.data[i]._checked=true;
+          }else{
+                this.data[i]._checked=false;
+          }
+        }
+      }
+
       return status?selectionIndexes:JSON.parse(JSON.stringify(this.data.filter((data, index) => selectionIndexes.indexOf(index) > -1)));
     },
     toggleSelect (_index,event,curIndex) {

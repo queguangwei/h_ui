@@ -374,6 +374,10 @@ export default {
     switchEmpty:{//上下键盘切换选项时清空选项
       type:Boolean,
       default:false
+    },
+     dataCheckedProp:{
+      type:Boolean,
+      default:false,
     }
   },
   data () {
@@ -1186,6 +1190,15 @@ export default {
       let selectionIndexes = [];
       for (let i in this.objData) {
           if (this.objData[i]._isChecked) selectionIndexes.push(parseInt(i));
+      }
+      if(this.dataCheckedProp){
+          for(var i=0;i<this.data.length;i++){
+            if(selectionIndexes.indexOf(i) > -1){
+                  this.data[i]._checked=true;
+            }else{
+                  this.data[i]._checked=false;
+            }
+          }
       }
       // return status?selectionIndexes:JSON.parse(JSON.stringify(this.data.filter((data, index) => selectionIndexes.indexOf(index) > -1)));
       // 考虑addData模式
