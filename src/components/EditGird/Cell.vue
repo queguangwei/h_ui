@@ -35,30 +35,34 @@
         <h-input v-model="columnText"
                  :placeholder="column.placeholder"
                  :icon="column.icon"
+                 :filterRE="column.filterRE"
                  class="canEdit"
                  @on-change="editinputChange"
                  @on-blur="editinputBlur"></h-input>
       </template>
       <template v-if="renderType === 'textArea'">
-        <textarea v-model="columnArea"
+        <textarea :value="columnArea"
                   :placeholder="column.placeholder"
                   rows="column.rows"
                   :class="areaClass"
                   @input="editAreaChange"
                   @blur="editAreaBlur"></textarea>
-        <!-- <h-input v-model="columnArea" type="textarea" :placeholder="column.placeholder" :rows="column.rows" class="canEdit" @on-change="editAreaChange" @on-blur="editAreaBlur"></h-input> -->
       </template>
       <template v-if="renderType === 'number'">
         <h-input v-model="columnNumber"
                  class="canEdit"></h-input>
       </template>
       <template v-if="renderType === 'money'">
-        <Typefield v-model="columnMoney"
+        <Typefield :value="columnMoney"
+                   ref="money"
                    :placeholder="column.placeholder"
                    :integerNum="column.integerNum || '10'"
                    :suffixNum="column.suffixNum"
                    :bigTips="column.bigTips || false"
                    :isround="column.isround || false"
+                   :nonNegative="column.nonNegative"
+                   :divided="column.divided"
+                   @input="typefieldChange"
                    @on-blur="typefieldBlur"
                    class="canEdit"></Typefield>
       </template>
@@ -475,7 +479,13 @@ export default {
         this.index
       )
     },
-    editAreaChange() {
+    editAreaChange(event) {
+      let value = event.target.value
+      if (this.column.filterRE) {
+        value = value.replace(this.column.filterRE, '')
+        event.target.value = value
+      }
+      this.columnArea = value
       this.$emit(
         'on-editarea-change',
         this.columnArea,
@@ -560,6 +570,14 @@ export default {
           this.selectedLabel.length == 0 && this.normalDate
             ? this.normalDate
             : this.arrtoStr(this.selectedLabel)
+      }
+    },
+    typefieldChange(val){
+      if(this.column.divided){
+        let value  = this.$refs.money.inputValue
+        this.columnMoney = value
+      }else{
+        this.columnMoney = val
       }
     },
     typefieldBlur() {
