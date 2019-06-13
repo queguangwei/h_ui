@@ -1449,6 +1449,8 @@ export default {
     query(val) {
       if (this.remote && this.remoteMethod) {
         if (!this.selectToChangeQuery) {
+          // 解决当通过表单方法firstNodeFocused定位到SimpleSelect时只能输入但不展示下拉选项的问题
+          if (!this.visible && val) this.visible = true;
           this.remoteMethod(val)
           this.$emit('on-query-change', val)
           this.broadcastQuery(val)
@@ -1458,6 +1460,7 @@ export default {
         })
       } else {
         if (!this.selectToChangeQuery) {
+          if (!this.visible && val) this.visible = true;
           this.$emit('on-query-change', val)
           this.broadcastQuery(val)
         }
