@@ -17,6 +17,7 @@
         @on-expand="expand" 
         :option="options1" 
         :treeOption="treeOption" 
+        @on-sort-change="sortChange"
         @on-editselect-change="selectchange"
         @on-editinput-change="selectchange"
         @on-editinput-blur="selectchange" 
@@ -275,6 +276,7 @@ export default {
           key: 'name',
           width: 200,
           filterRE:/[^\d]/g,
+          sortable:true,
           // typeWidth:100,
           // hiddenOther:true,
           rule: { required: true, message: '姓名不能为空'},
@@ -432,13 +434,18 @@ export default {
         },
       ],
       data1: [],
-      data2: [],
+      data2: tData,
       options1:[],
       list: ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New hampshire', 'New jersey', 'New mexico', 'New york', 'North carolina', 'North dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode island', 'South carolina', 'South dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West virginia', 'Wisconsin', 'Wyoming'],
       treeOption:[],
       }
   },
   methods: {
+    sortChange(i,j,k){
+      console.log(i);
+      console.log(j);
+      console.log(k);
+    },
     changeMsg(){
       this.showMsgBox = !this.showMsgBox;
     },

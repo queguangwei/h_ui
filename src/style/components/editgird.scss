@@ -350,6 +350,9 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
       background-color: $table-td-stripe-bg;
     }
   }
+  &-sort{
+    @include sortable();
+  }
 }
 .dbClass{
   min-height:18px;
