@@ -126,7 +126,7 @@
             :showTitle="showTitle"></table-body>
         </div>
       </div>
-      <div :class="[prefixCls + '-summation']" :style="summationStyle" v-if="isSummation" ref="summation">
+      <div :class="[prefixCls + '-summation']" :style="summationStyle" v-if="isSummation&&!(!data || data.length === 0)" ref="summation">
         <table-body
           ref='sumBody'
           :sum = 'isSummation'
@@ -306,6 +306,10 @@ export default {
       type:Boolean,
       default:false,
     },
+    fixedAutoHeight: {
+      type:Boolean,
+      default:false,
+    },
     notSetWidth:{
       type:Boolean,
       default:false,
@@ -420,7 +424,7 @@ export default {
         // style.height = this.patibleHeight?`${this.height}px`:`${height+2}px`;
         style.height = this.patibleHeigh ? this.height : this.height + 2
         this.$nextTick(() => {
-          if (this.isSummation) style.height += this.$refs.summation.clientHeight
+          if (this.isSummation&&!(!this.data || this.data.length === 0)) style.height += this.$refs.summation.clientHeight
         })
       }
       if (this.width) style.width = `${this.width}px`;
@@ -550,8 +554,13 @@ export default {
           height = height + this.scrollBarWidth-1;
         }
         // height不存在时bodyheight为0
-        if (this.height) style.height = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`;
-        if (this.maxHeight) style.maxHeight = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`
+        if (this.height){
+           style.height = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`;
+           if(this.fixedAutoHeight&&this.$refs.fixedRightBody.clientHeight<height){
+              style.height="auto";
+           }
+          }
+        if (this.maxHeight) style.maxHeight = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`       
       }
       return style;
     },
@@ -1482,8 +1491,11 @@ export default {
       let _key=key;
         this.data.forEach((row, index) => {
           let item=row[_key];
+          if(item===null||item===undefined){
+              item="";
+          }
           item=item.toString().replace(/,/g, '');
-          if(item){
+          if(item&&item!=""){
              total+=Number(item);
           }
         })

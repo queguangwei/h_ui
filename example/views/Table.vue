@@ -122,7 +122,7 @@
     <Button @on-click="resetSort">清除排序</Button>
     <Button @on-click="moveUp">上移</Button>
     <Button @on-click="moveDown">下移</Button>
-     <h-table height="300" :stripe="true" :columns="columns18" :data="data17" border size="small" ref="table" :loading="loading" :highlightRow="true" @on-selection-change="selsetChange">
+     <h-table height="300" :stripe="true" :columns="columns18" :data="data17" border size="small" ref="table" :loading="loading"  @on-selection-change="selsetChange">
         <span slot="header">证券日活数据表</span>
         <span slot="footer">恒生电子有限公司提供</span>
     </h-table> 

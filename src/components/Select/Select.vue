@@ -651,10 +651,10 @@
             this.typeValue = typeOf(this.options[0].value);
           }
           if (init) {
-              if (!this.remote) {
-                  this.updateSingleSelected(true, slot);
-                  this.updateMultipleSelected(true, slot);
-              }
+            if (!this.remote) {
+              this.updateSingleSelected(true, slot);
+              this.updateMultipleSelected(true, slot);
+            }
           }
       },
       updateSingleSelected (init = false, slot = false) {
@@ -714,7 +714,9 @@
       },
       updateMultipleSelected (init = false, slot = false) {
         if (this.multiple && Array.isArray(this.model)) {
-            let selected = this.remote && this.model.length > 0 ? this.selectedMultiple : [];
+            // let selected = this.remote && this.model.length > 0 ? this.selectedMultiple : [];
+            let selectedMultiple = this.selectedMultiple;
+            let selected = [];
             for (let i = 0; i < this.model.length; i++) {
                 const model = this.model[i];
                 const options = this.options;
@@ -723,6 +725,15 @@
                   if (op.value === model) {
                     option = op;
                     break;
+                  }
+                }
+                // 处理远程搜索已选中选项不在当前展示的选项列表中的情况
+                if (!option && this.remote) {
+                  for (let op of selectedMultiple) {
+                    if (op.value === model) {
+                      option = op;
+                      break;
+                    }
                   }
                 }
                 if (option) {

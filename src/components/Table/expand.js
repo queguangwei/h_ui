@@ -13,6 +13,10 @@ export default {
       type: [Boolean, String],
       default: false
     },
+    sum:{
+      type: [Boolean, String],
+      default: false
+    }
   },
   render: (h, ctx) => {
     const params = {
@@ -20,6 +24,7 @@ export default {
       index: ctx.props.index,
     };
     if (ctx.props.column) params.column = ctx.props.column;
+    if(ctx.props.sum) params.sum=true;
     return ctx.props.render(h, params);
   }
 };

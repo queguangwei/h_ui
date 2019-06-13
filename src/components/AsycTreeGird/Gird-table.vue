@@ -632,8 +632,13 @@ export default {
     },
     fixedHeader () {
         if (this.height) {
-            this.$nextTick(() => {
-                const headerHeight = this.headerRealHeight;
+            this.$nextTick(() => {       
+               let  headerHeight=0
+                if(this.multiLevel&&this.multiLevel.length>0){
+                     headerHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
+                }else{
+                     headerHeight = this.headerRealHeight;
+                }
                 this.bodyHeight = this.height - headerHeight;
             });
         } else {
