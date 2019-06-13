@@ -878,7 +878,7 @@ export default {
         }
     },
     makeData () {
-        let data = deepCopy(this.data);
+        let data = deepCopy(this.cloneData);
         data.forEach((row, index) => {
             row._index = index;
             row._rowKey = rowKey++;
@@ -892,6 +892,45 @@ export default {
             }
         });
         return data;
+    },
+    handleSort (_index, type) {
+      let index;
+      this.cloneColumns.forEach((col,i) => {
+        col._sortType = 'normal'
+        if (col._index == _index) {
+          index = i;
+        }
+      });//rightFixed index error
+      const key = this.cloneColumns[index].key;
+      if (this.cloneColumns[index].sortable !== 'custom') {    // custom is for remote sort
+          if (type === 'normal') {
+            this.rebuildData = this.makeDataWithFilter();
+          } else {
+            this.rebuildData = this.sortData(this.rebuildData, type, index);
+          }
+      }
+      this.cloneColumns[index]._sortType = type;
+
+      this.$emit('on-sort-change', {
+          column: JSON.parse(JSON.stringify(this.columns[this.cloneColumns[index]._index])),
+          key: key,
+          order: type
+      });
+    },
+    sortData (data, type, index) {
+      const key = this.cloneColumns[index].key;
+      data.sort((a, b) => {
+          if (this.cloneColumns[index].sortMethod) {
+              return this.cloneColumns[index].sortMethod(a[key], b[key], type);
+          } else {
+              if (type === 'asc') {
+                  return a[key] > b[key] ? 1 : -1;
+              } else if (type === 'desc') {
+                  return a[key] < b[key] ? 1 : -1;
+              }
+          }
+      });
+      return data;
     },
     makeDataWithSort () {
         let data = this.makeData();
