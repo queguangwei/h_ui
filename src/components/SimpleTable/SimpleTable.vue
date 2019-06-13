@@ -1858,8 +1858,12 @@ export default {
           // }
           // 处理从无数据到有数据或者有数据到无数据时，表头和统计行水平位置没有归零的问题
           if (oldDataLen === 0 || val.length === 0) {
-            this.$refs.header.scrollLeft = 0;
-            this.$refs.summation.style.marginLeft = 0;
+            if (this.$refs.header) {
+              this.$refs.header.scrollLeft = 0;
+            }
+            if (this.$refs.summation) {
+              this.$refs.summation.style.marginLeft = 0;
+            }
           }
           this.updateVisibleData();
           this.handleResize();
