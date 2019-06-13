@@ -100,13 +100,14 @@
                 :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>
           </div>
           <div v-if="isBlock"
-               v-show="(!notFound && !remote) || (remote && !loading && !notFound)"
+               v-show="(!notFound && !remote) || (remote && !notFound)"
                :class="[prefixCls + '-dropdown-list']"
                :style="listStyle"
                ref='blockWrapper'>
             <slot></slot>
           </div>
-          <ul v-show="loading"
+          <div v-show="loading && isBlock" :class="[prefixCls+'-block-loading']">{{localeLoadingText}}</div>
+          <ul v-show="loading && !isBlock"
               :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
         </div>
         <div v-if="showFooter"
