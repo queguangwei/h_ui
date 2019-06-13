@@ -105,6 +105,7 @@
           })[0]
 
           targetRadio.componentInstance.currentValue = true
+          this.$emit('input', targetRadio.componentInstance.label)
         }
 
         targetRadio.componentInstance.focus()
