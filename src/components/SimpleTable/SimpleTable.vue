@@ -1832,8 +1832,8 @@ export default {
         deep: true
       },
       data: {
-        handler () {
-          // const oldDataLen = this.rebuildData.length;
+        handler (val) {
+          const oldDataLen = this.rebuildData.length;
           this.rebuildData = this.makeDataWithSortAndFilter();
           this.objData = this.makeObjData();
           if (this.addData && this.addData.length > 0) { // 针对addData 模式
@@ -1843,6 +1843,11 @@ export default {
           // if (!oldDataLen) {
           //   this.fixedHeader();
           // }
+          // 处理从无数据到有数据或者有数据到无数据时，表头和统计行水平位置没有归零的问题
+          if (oldDataLen === 0 || val.length === 0) {
+            this.$refs.header.scrollLeft = 0;
+            this.$refs.summation.style.marginLeft = 0;
+          }
           this.updateVisibleData();
           this.handleResize();
           // here will trigger before clickCurrentRow, so use async
