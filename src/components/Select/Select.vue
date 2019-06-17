@@ -105,7 +105,7 @@
   import TransferDom from '../../directives/transfer-dom';
   import Checkbox from '../Checkbox/Checkbox.vue';
   import { on, off } from '../../util/dom';
-  import { oneOf, findComponentChildren, getScrollBarSize, getStyle,getBarBottom,scrollAnimate,typeOf} from '../../util/tools';
+  import { oneOf, findComponentChildren, getScrollBarSize, getStyle,getBarBottom,scrollAnimate,typeOf, findInx} from '../../util/tools';
   import Emitter from '../../mixins/emitter';
   import Locale from '../../mixins/locale';
   const prefixCls = 'h-select';
@@ -305,6 +305,11 @@
       },
       /* 搜索时是否不将焦点放在第一搜索项 */
       notAutoFocus:{
+        type: Boolean,
+        default: false
+      },
+      /* 全选和取消全选是否根据检索后展示选项 */
+      isSelectFilter: {
         type: Boolean,
         default: false
       }
@@ -549,15 +554,24 @@
       toggleSelect(val){
         this.isSelectAll = !this.isSelectAll
         const createdOption = this.$refs.createdOption;
+        const isSelectFilter = this.isSelectFilter;
         if (val) {
           if (this.specialIndex) {
             this.model=this.typeValue=='string'?['-1']:[-1];
           }else{
             let arr=[];
-            this.options.forEach((item)=>{
-              arr.push(item.value);
+            this.optionInstances.forEach((item)=>{
+              if (isSelectFilter) {
+                if (!item.hidden) {
+                  if (findInx(this.model, val => val == item.value) === -1) {
+                    this.model.push(item.value);
+                  } 
+                }
+              } else {
+                arr.push(item.value);
+              }
             })
-            this.model = arr;
+            if (!isSelectFilter) this.model = arr;
             if (createdOption) {
               createdOption.select();
               createdOption.selected = true;
@@ -566,8 +580,23 @@
         }else{
           if (createdOption) {
             createdOption.selected = false;
+            let index = findInx(this.model, val => val == createdOption.value);
+            if (index > -1) {
+              this.model.splice(index, 1);
+            }
           }
-          this.model=[];
+          if (isSelectFilter) {
+            this.optionInstances.forEach(item => {
+              if (!item.hidden) {
+                let index = findInx(this.model, val => val == item.value);
+                if (index > -1) {
+                  this.model.splice(index, 1);
+                }
+              }
+            })
+          } else {
+            this.model=[];
+          }
         }
       },
       offsetArrow(){
