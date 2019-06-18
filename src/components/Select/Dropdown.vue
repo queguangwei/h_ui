@@ -73,7 +73,7 @@ export default {
 			// 是否有横向滚动条
 			let isScrollX = parseInt(this.$refs.selectdrop.clientHeight) > parseInt(content.clientHeight) ? true : false
 			if (isScrollX) {
-				this.width = isScrollY ? parseInt(content.scrollWidth) + this.scrollBarWidth : content.scrollWidth
+        this.width = isScrollY ? parseInt(content.scrollWidth) + this.scrollBarWidth : content.scrollWidth
 			}
 		},
 		update () {
@@ -123,7 +123,7 @@ export default {
 				this.width = width
 				this.parentWidth = width
 			}
-		},
+    },
 		destroy () {
 			if (this.popper) {
 				this.resetTransformOrigin(this.popper);
