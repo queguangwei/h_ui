@@ -30,6 +30,7 @@
               :showEditInput="showEditInput"
               :option="selectOption[inx]"
               :treeOption="treeOption[inx]"
+              :height="height"
               @on-editselect-change="editselectChange"
               @on-editinput-change="editinputChange"
               @on-editinput-blur="editinputBlur"
@@ -47,16 +48,16 @@
           </td>
         </tr>
       </template>
-      <template v-if="typeName=='groupTable'" v-for="(rowTitle, index) in data">
+      <template v-if="typeName=='groupTable'" v-for="(rowTitle, titleIndex) in data">
         <group-tr
           :columns="columns"
           :prefix-cls="prefixCls"
           :rowTitle = "rowTitle"
           :expanded = "Boolean(rowTitle.expand)"
           :checked = "rowChecked(rowTitle._index)"
-          :titleRender="titleRender">         
+          :titleRender="titleRender">
         </group-tr>
-        <template v-if="rowTitle.expand" v-for="(row,index) in rowTitle.item">
+        <template v-if="rowTitle.expand" v-for="(row, index) in rowTitle.item">
           <table-tr
           :row="row"
           :key="row._rowKey"
@@ -78,6 +79,7 @@
               :index="row._index"
               :typeName="typeName"
               :checked="rowChecked(row._index)"
+              :radioChecked="objData[titleIndex].item[index]._isHighlight"
               :disabled="rowDisabled(row._index)"
               :expanded="rowExpandedChild(row._index)"
               :showEditInput="showEditInput"
@@ -110,16 +112,25 @@
               :column="column"
               :natural-index="index"
               :index="row._index"
+              :columnIndex = "inx"
               :checked="rowChecked(row._index)"
               :disabled="rowDisabled(row._index)"
               :expanded="rowExpanded(row._index)"
               :showEditInput="showEditInput"
               :option="selectOption[inx]"
               :treeOption="treeOption[inx]"
+              @on-editselect-change="editselectChange"
+              @on-editinput-change="editinputChange"
+              @on-editinput-blur="editinputBlur"
+              @on-editarea-change="editAreaChange"
+              @on-editarea-blur="editAreaBlur"
+              @on-typefield-blur="typefieldBlur"
+              @on-typefield-change="typefieldChange"
+              @on-editdate-change="editdateChange"
             >
               <span v-if="columns.length>0 && inx==(columns[0].type=='index'?1:0)">
                 <Icon name = "play_fill" :class="iconClass(row._index)" v-if="(row.children && row.children.length!=0)||row.foldable" @on-click="toggleExpand(row._index,$event)"></Icon>
-                <Checkbox v-if="isCheckbox" :value="row.checked" :indeterminate="row.indeterminate" @on-click="changeSelect(row,$event)"></Checkbox> 
+                <Checkbox v-if="isCheckbox" :value="row.checked" :indeterminate="row.indeterminate" @on-click="changeSelect(row,$event)"></Checkbox>
               </span>
             </Cell>
           </td>
@@ -137,7 +148,7 @@
             :columns = "columns"
             :columnsWidth="columnsWidth"
             :showEditInput="showEditInput"
-            :option="selectOption[index]"
+            :option="selectOption"
             :treeOption="treeOption[index]"
             :isCheckbox="isCheckbox">
           </Tree-table>
@@ -179,6 +190,7 @@
         option:Array,
         treeOption:Array,
         titleRender:Function,
+        height: Number
       },
       data(){
         return{
@@ -251,7 +263,7 @@
           this.$parent.curKey = key;
         },
         toggleExpand (index,e) {
-          e.stopPropagation(); 
+          e.stopPropagation();
           this.$parent.toggleExpand(index);
         },
         compileFlatState () { // so we have always a relation parent/children of each node
@@ -296,10 +308,10 @@
           }
           this.updateCheckUp(parentKey);
         },
-        changeSelect (row,e) {
+        changeSelect (row, e, checked) {
           let selectInx=[];
-          e.stopPropagation(); 
-          let status = !row.checked;
+          if (e) e.stopPropagation();
+          let status = checked || !row.checked;
           const node = this.flatState[row._index].node;
           this.$set(node, 'checked', status);
           this.$parent.objData[node._index]._isChecked = status;
@@ -350,6 +362,20 @@
         if (this.typeName == 'treeGird') {
           this.treeData = this.data;
           this.flatState = this.compileFlatState();
+
+          // 设置默认选中
+          this.treeData.forEach(row => {
+            if (row.checked) {
+              this.changeSelect(row, null, row.checked)
+            } else {
+              let childrenStr = JSON.stringify(row.children)
+              let childrenHasChecked = /"checked":true/.test(childrenStr)
+
+              if (childrenHasChecked) {
+                row.indeterminate = true
+              }
+            }
+          })
         }
       },
       watch:{

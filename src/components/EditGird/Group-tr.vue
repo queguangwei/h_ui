@@ -2,7 +2,7 @@
   <tr :class="rowClasses(rowTitle._index)">
     <td v-show="columns[0].type=='selection'" :class="alignCls(columns[0])">
       <div :class="prefixCls+'-cell'">
-        <Checkbox :value="checked" @on-change="toggleSelect(rowTitle._index)"></Checkbox> 
+        <Checkbox :value="checked" @on-change="toggleSelect(rowTitle._index)"></Checkbox>
       </div>
     </td>
     <td :colspan="columns[0].type=='selection'?columns.length-1:columns.length">

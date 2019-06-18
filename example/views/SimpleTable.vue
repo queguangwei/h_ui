@@ -693,14 +693,14 @@ export default {
           align: 'center',
           width:200,
           sortable:true,
-          fixed:'left',
+          // fixed:'left',
         },
         {
           type: 'selection',
           align: 'center',
           key:'select',
           width:200,
-          fixed:'left'
+          // fixed:'left'
         },
         {
           title: '姓名',

@@ -499,17 +499,31 @@
           this.findQuery(this.baseDate,val);
         }
       },
-      findQuery(data,val){
+      findQuery(data,val,parentKey){
         var that = this;
         data.forEach((col,i)=>{
           that.$set(col, 'filterable', false);
           if (val!=''&&!!col.title&& col.title.indexOf(val)!=-1) {
-            that.$set(col, 'filterable', true);
+             that.$set(col, 'filterable', true);
+             that.expandParent(that.baseDate,parentKey);
           }
           if (col.children && col.children.length>0) {
-            this.findQuery(col.children,val);
+            this.findQuery(col.children,val,col.nodeKey);
           }
         });
+      },
+      expandParent(data,nodekey,parentKey){
+         var that = this;
+         data.forEach((col,i)=>{
+          if (col.nodeKey==nodekey) {
+            that.$set(col, 'expand', true);
+            if(parentKey=="undefined") return;
+            that.expandParent(that.baseDate,parentKey);
+          }
+          if (col.children && col.children.length>0) {
+            that.expandParent(col.children,nodekey,col.nodeKey);
+          }
+        })
       },
       handleInputDelete () {
         if (this.multiple && this.model.length && this.query === '') {

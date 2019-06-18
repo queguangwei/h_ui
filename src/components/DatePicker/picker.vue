@@ -272,12 +272,13 @@
         this.visible = false;
         this.disableClickOutSide = false;
         if (this.isFocus) {
-            this.dispatch('FormItem', 'on-form-blur', this.currentValue);
-            this.isFocus = false
-            this.$emit('on-blur')
+          this.dispatch('FormItem', 'on-form-blur', this.currentValue);
+          this.isFocus = false
+          this.$emit('on-blur')
         }
       },
       handleFocus(){
+        this.isFocus = true
         if(this.iconVisible) return
         this.handleVisible()
       },
@@ -285,14 +286,15 @@
         if (this.readonly||this.disabled) return;
         this.visible = true;
         this.$refs.pickerPanel.onToggleVisibility(true);
-        this.isFocus = true
       },
       focus(){
         if (this.disabled) return false;
         // this.$nextTick(()=>{
         setTimeout(()=>{
-          this.visible = true;
-          this.$refs.pickerPanel.onToggleVisibility(true);
+          if(!this.iconVisible){
+            this.visible = true;
+            this.$refs.pickerPanel.onToggleVisibility(true);
+          }
           this.isFocus = true
           if(this.$refs.input) this.$refs.input.focus();
         },0)
@@ -322,15 +324,23 @@
        * 检查输入值合法性
        * 
        * @param text 输入值
-       * @param date 输入值转换后的Date对象
+       * @param date 输入值转换后的Date对象(Array)
        */
       checkLegality(text, date) {
-        // clearOnIllagal暂只支持date类型
-        if (this.clearOnIllegal && this.type === 'date') {
-          const textFormat = ["yyyyMMdd", "yyyy-MM-dd", "yyyy/MM/dd"];
-          if (date instanceof Date) {
-            for (let format of textFormat) {
-              if (formatDate(date.toString(), format) === text) {
+        if (this.clearOnIllegal && ['date', 'daterange', 'datetime', 'datetimerange'].indexOf(this.type) > -1) {
+          const dateFormat = ["yyyyMMdd", "yyyy-MM-dd", "yyyy/MM/dd"];
+          const timeFormat = "HH:mm:ss";
+          const isRange = this.type.indexOf('range') > -1;
+
+          if (date[0] instanceof Date && (!isRange || date[1] instanceof Date)) {
+            for (let dFormat of dateFormat) {
+              let format = this.type.indexOf('time') > -1 ? dFormat + " " + timeFormat : dFormat;
+              if ((isRange 
+              ? (formatDate(date[0].toString(), format) + " - " + formatDate(date[1].toString(), format))
+              : formatDate(date[0].toString(), format)) === text) {
+                if (isRange) {
+                  return date[0] <= date[1];
+                }
                 return true;
               }
             }    
@@ -355,11 +365,10 @@
             this.options.disabledDate;
         const valueToTest = isArrayValue ? newDate : newDate[0];
         const isDisabled = disabledDateFn && disabledDateFn(valueToTest);
-        const isValidDate = newDate.reduce((valid, date) => valid && date instanceof Date && this.checkLegality(newValue, date), true);
-
+        const isValidDate = this.checkLegality(newValue, newDate);
         if (newValue !== oldValue && !isDisabled && isValidDate) {
-            this.emitChange();
             this.internalValue = newDate;
+            this.emitChange();
         } else {
           if (this.clearOnIllegal && (!isValidDate || isDisabled)) {
             this.handleClear();
@@ -381,6 +390,7 @@
         if (this.showClose) {
           this.handleClear();
         } else if (!this.disabled) {
+          this.isFocus = true
           this.handleVisible();
         }
       },
@@ -398,7 +408,8 @@
       },
       emitChange () {
           this.$nextTick(() => {
-              this.$emit('on-change', this.publicStringValue);
+              // on-change事件触发移至watcher:publicVModelValue，用于v-model绑定值修改后触发on-change
+              // this.$emit('on-change', this.publicStringValue);
               this.dispatch('FormItem', 'on-form-change', this.publicStringValue);
           });
       },
@@ -560,6 +571,7 @@
         const strValue = this.showFormat==true?this.visualValue:now;
         if (shouldEmitInput){
           this.$emit('input', strValue); // to update v-model
+          this.$emit('on-change', this.publicStringValue);
           // this.$emit('input', now); // to update v-model
         } 
       },
