@@ -374,6 +374,10 @@ export default {
     switchEmpty:{//上下键盘切换选项时清空选项
       type:Boolean,
       default:false
+    },
+     dataCheckedProp:{
+      type:Boolean,
+      default:false,
     }
   },
   data () {
@@ -1187,6 +1191,15 @@ export default {
       for (let i in this.objData) {
           if (this.objData[i]._isChecked) selectionIndexes.push(parseInt(i));
       }
+      if(this.dataCheckedProp){
+          for(var i=0;i<this.data.length;i++){
+            if(selectionIndexes.indexOf(i) > -1){
+                  this.data[i]._checked=true;
+            }else{
+                  this.data[i]._checked=false;
+            }
+          }
+      }
       // return status?selectionIndexes:JSON.parse(JSON.stringify(this.data.filter((data, index) => selectionIndexes.indexOf(index) > -1)));
       // 考虑addData模式
       return status?selectionIndexes:JSON.parse(JSON.stringify(this.cloneData.filter((data, index) => selectionIndexes.indexOf(index) > -1)));
@@ -1845,8 +1858,12 @@ export default {
           // }
           // 处理从无数据到有数据或者有数据到无数据时，表头和统计行水平位置没有归零的问题
           if (oldDataLen === 0 || val.length === 0) {
-            this.$refs.header.scrollLeft = 0;
-            this.$refs.summation.style.marginLeft = 0;
+            if (this.$refs.header) {
+              this.$refs.header.scrollLeft = 0;
+            }
+            if (this.$refs.summation) {
+              this.$refs.summation.style.marginLeft = 0;
+            }
           }
           this.updateVisibleData();
           this.handleResize();
