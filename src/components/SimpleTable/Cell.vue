@@ -26,7 +26,7 @@ export default {
     fixed: {
       type: [Boolean, String],
       default: false
-    },
+    }
     // showTitle:Boolean,
     // sum: Boolean,
     // columnIdx: Number

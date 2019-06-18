@@ -322,7 +322,7 @@
       },
       /**
        * 检查输入值合法性
-       * 
+       *
        * @param text 输入值
        * @param date 输入值转换后的Date对象(Array)
        */
@@ -335,7 +335,7 @@
           if (date[0] instanceof Date && (!isRange || date[1] instanceof Date)) {
             for (let dFormat of dateFormat) {
               let format = this.type.indexOf('time') > -1 ? dFormat + " " + timeFormat : dFormat;
-              if ((isRange 
+              if ((isRange
               ? (formatDate(date[0].toString(), format) + " - " + formatDate(date[1].toString(), format))
               : formatDate(date[0].toString(), format)) === text) {
                 if (isRange) {
@@ -343,7 +343,7 @@
                 }
                 return true;
               }
-            }    
+            }
           }
           return false;
         }
@@ -489,22 +489,24 @@
         e.stopPropagation();
       },
       setPlacement(){
+        // 自动适配逻辑调整
         if(this.autoPlacement){
-            let obj = this.$refs.wrapper;
-            let allWidth= document.body.clientWidth;
-            let allHeight= document.body.clientHeight;
-            let curbottom =allHeight-obj.offsetTop-obj.clientHeight;
-            let curright = allWidth-obj.offsetLeft;
-            let bottomNum = this.confirm?300:250;
-            let rightNum = this.type.indexOf('range')>-1?436:220;
-            let isShortcuts =  this.options&&this.options.shortcuts&&this.options.shortcuts.length>0;
-            rightNum =isShortcuts?rightNum+95:rightNum;
-            if(curbottom<bottomNum&&curright<rightNum){
-                this.fPlacement = 'top-end';
-            }else if(curbottom<bottomNum){
-                this.fPlacement = 'top-start';
-            }else if(curright<rightNum){
-                this.fPlacement = 'bottom-end';
+            let clientHeight = document.documentElement.clientHeight
+            let rect = this.$refs.wrapper.getBoundingClientRect()
+            let curbottom = clientHeight - rect.top - rect.height
+            let bottomNum = this.confirm ? 300 : 250
+            let rightNum = this.type.indexOf('range') > -1 ? 436 : 220
+            let isShortcuts =  this.options && this.options.shortcuts && this.options.shortcuts.length > 0
+            rightNum = isShortcuts ? rightNum + 95 : rightNum
+
+            if(curbottom < bottomNum && rect.right < rightNum){
+                this.fPlacement = 'top-end'
+            }else if(curbottom < bottomNum){
+                this.fPlacement = 'top-start'
+            }else if(rect.right  < rightNum){
+                this.fPlacement = 'bottom-end'
+            } else {
+              this.fPlacement = 'bottom-start'
             }
         }
       },
@@ -516,7 +518,7 @@
                 e.preventDefault();
                 this.visible=false;
             }
-            
+
         }
       },
       handleLongDate(){
@@ -532,23 +534,26 @@
             this.$set(this.internalValue, 1, longtime[0]);
         }else{
           this.internalValue =longtime;
-        }      
+        }
         this.emitChange();
       }
     },
     watch: {
       visible (state) {
+        // 显示前才计算位置
+        this.setPlacement()
+
         if (state === false){
           //   this.$refs.drop.destroy();
           const input = this.$el.querySelector('input');
           if (input) input.blur();
           setTimeout(() => {
             this.dispatch('Msgbox', 'on-esc-real-close', true);
-          }, 0); 
+          }, 0);
         }else{
           setTimeout(() => {
             this.dispatch('Msgbox', 'on-esc-real-close', false);
-          }, 0);  
+          }, 0);
         }
         this.$refs.drop.update();
         this.$emit('on-open-change', state);
@@ -573,7 +578,7 @@
           this.$emit('input', strValue); // to update v-model
           this.$emit('on-change', this.publicStringValue);
           // this.$emit('input', now); // to update v-model
-        } 
+        }
       },
       placement(val){
           this.fPlacement = val;
@@ -597,7 +602,6 @@
           }
       }
       if (this.open !== null) this.visible = this.open;
-      this.setPlacement();
       on(document,'keydown', this.handleKeydown);
     }
   };
