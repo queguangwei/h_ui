@@ -23,22 +23,14 @@
   </h-msg-box>
   <Button @on-click="changeform1">显示隐藏</Button>
 		<h2>组合使用</h2>
-		<h-checkbox-group v-model="social" vertical @on-change="change" label-in-value>
-      <h-checkbox label="twitter" size="large">
-        <h-Icon name="clock"></h-Icon>
-        <span>Twitter</span>
+		<h-checkbox-group v-model="social" vertical @on-change="change">
+      <h-checkbox label="twitter" text="1" size="large">
       </h-checkbox>
-      <h-checkbox label="facebook">
-        <h-Icon name="clock"></h-Icon>
-        <span>Facebook</span>
+      <h-checkbox label="facebook" text="1">
       </h-checkbox>
-      <h-checkbox label="github" size="small">
-        <h-Icon name="clock"></h-Icon>
-        <span>Github</span>
+      <h-checkbox label="github" text="1" size="small">
       </h-checkbox>
-      <h-checkbox label="snapchat">
-        <h-Icon name="clockt"></h-Icon>
-        <span>Snapchat</span>
+      <h-checkbox label="snapchat" text="1">
       </h-checkbox>
     </h-checkbox-group>
     <!-- {{social}} -->

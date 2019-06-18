@@ -54,6 +54,15 @@ $calendar-prefix-cls: "#{$css-prefix}calendar";
     /* border:2px solid #fff; */
     border: 1px solid #fff;
     border-width: 0 1px 1px 0;
+
+    .h-badge {
+      width: 0;
+      height: 0;
+      .h-badge-count {
+        top: -25px;
+        right: -20px;
+      }
+    }
   }
   &-month-content-item:nth-child(7n + 1){
     border-width: 0 1px 1px 1px;
@@ -106,9 +115,14 @@ $calendar-prefix-cls: "#{$css-prefix}calendar";
     background:#e9eaec;
     border-radius:2px 2px 0 0;
   }
-  &-handle {
+  &-wrapper {
+    position: relative;
+  }
+  &-context-menu {
     display: none;
-    position: fixed;
+    position: absolute;
+  }
+  &-handle {
     width: 100px;
     height: 70px;
     padding: 2px 0;

@@ -78,6 +78,8 @@
         <h-select v-model="model1"
                   label-in-value
                   width="200"
+                  transfer
+                  autoPlacement
                   @on-change="change"
                   :setDefSelect="true"
                   showTitle>
@@ -95,14 +97,16 @@
         <span>小:</span>
         <h-select v-model="model2"
                   size="small"
-                  width="100">
+                  width="100"
+                  autoPlacement>
           <h-option v-for="(item, index) in uList"
                     :value="item.id"
                     :key="item.id">{{ item.name }}</h-option>
         </h-select>
         <span>正常:</span>
         <h-select v-model="model3"
-                  width="100">
+                  width="100"
+                  autoPlacement>
           <h-option v-for="(item, index) in uList"
                     :value="item.id"
                     :key="item.id">{{ item.name }}</h-option>
@@ -110,7 +114,8 @@
         <span>大:</span>
         <h-select v-model="model4"
                   size="large"
-                  width="100">
+                  width="100"
+                  autoPlacement>
           <h-option v-for="(item, index) in uList"
                     :value="item.id"
                     :key="item.id">{{ item.name }}</h-option>

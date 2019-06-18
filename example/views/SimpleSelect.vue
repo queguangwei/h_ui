@@ -37,6 +37,8 @@
                      placeholder="123"
                      style="width:200px"
                      transfer
+                     :loading="loading1"
+                     loadingText="拼命加载中..."
                      v-model="v20190321.value"
                      remote
                      :remote-method="remoteMethod"
@@ -69,6 +71,8 @@
                      filterable
                      remote
                      :remote-method="remoteMethod"
+                     :loading="loading1"
+                     loadingText="拼命加载中..."
                      ref="block">
       <h-select-block :data="remoteData"></h-select-block>
       <div slot="header">我是header</div>
@@ -104,6 +108,9 @@ let bigData = []
 for (let i = 0; i < 160; i++) {
   let obj = {}
   obj.value = i + ''
+  if(i==0){
+    obj.disabled = true
+  }
   // obj.value = 'value' + i
   obj.label = 'lab' + i
   obj.label1 = 'lab12'
@@ -114,6 +121,7 @@ for (let i = 0; i < 160; i++) {
 export default {
   data() {
     return {
+      loading1: false,
       showCol:['label1','label2','label3'],
       matchCol: ['name', 'age'],
       bigData: [],
@@ -213,8 +221,9 @@ export default {
           this.remoteData = bigData.filter(
             item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1
           )
-        }, 200)
+        }, 2000)
       } else {
+        this.loading1 = false;
         this.remoteData = bigData
       }
     },

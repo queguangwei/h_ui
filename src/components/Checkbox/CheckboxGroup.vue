@@ -1,12 +1,12 @@
 <template>
   <div :class="classes">
-      <slot></slot>
+    <slot></slot>
   </div>
 </template>
 <script>
   import { findComponentsDownward, oneOf,indexOf} from '../../util/tools';
   import Emitter from '../../mixins/emitter';
-  const prefixCls = 'h-checkbox-group';
+  const prefixCls = 'h-checkbox-group'; 
 
   export default {
     name: 'CheckboxGroup',
@@ -61,16 +61,18 @@
             this.childrens = findComponentsDownward(this, 'Checkbox');
             this.childrensBtn = findComponentsDownward(this, 'Checkbtn');
             if (this.childrens&&this.childrens.length>0) {
+                let arr = []
                 this.childrens.forEach(child => {
                     if(!child.notGroup){
                         child.model = value;
                         if (update) {
                             child.currentValue = value.indexOf(child.label) >= 0;
+                            if(value.indexOf(child.label) >= 0) arr.push(child.text||child.label)
                             child.group = true;
                         }
                     }
                 });
-                this.viewValue = value
+                this.viewValue = arr
             }
             if(this.childrensBtn&&this.childrensBtn.length>0){
                 let arr = []
@@ -79,6 +81,7 @@
                     if(child.isChecked) arr.push(child.viewValue)
                 });
                 this.viewValue = arr
+                this.curValue = this.value
             }
         },
         getCurdata(data,status){
@@ -86,11 +89,20 @@
                 let curArr =  status?this.childrens:this.childrensBtn
                 let curData = []
                 curArr.forEach(child => {
-                    if(child.isChecked){
-                        curData.push({
-                            value:child.value,
-                            label:child.label?child.label:child.value
-                        })
+                    if(status){
+                        if(data.indexOf(child.label) >= 0){
+                            curData.push({
+                                value:child.label,
+                                label:child.text?child.text:child.label
+                            })
+                        }
+                    }else{
+                        if(child.isChecked){
+                            curData.push({
+                                value:child.value,
+                                label:child.label?child.label:child.value
+                            })
+                        }
                     }
                 });
                 return curData
@@ -101,7 +113,7 @@
         change (data) {
             this.currentValue = data;
             this.$emit('input', data);
-            this.$emit('on-change', data);
+            this.$emit('on-change', this.getCurdata(data,true));
             this.dispatch('FormItem', 'on-form-change', data);
         },
         changeBtn(value,status){
@@ -119,11 +131,15 @@
         }
     },
     watch: {
-        value () {
+        value (val) {
             this.updateModel(true);
         },
         currentValue(val){
-            this.viewValue = val
+            let arr =[]
+            this.childrens.forEach(child => {
+                if(val.indexOf(child.label) >= 0) arr.push(child.text||child.label)
+            })
+            this.viewValue = arr
         },
         curValue(val){
             let curView = []

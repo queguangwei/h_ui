@@ -6,6 +6,10 @@
            v-show="slotReady">
         <slot name="prepend"></slot>
       </div>
+      <Icon name="close" :style="clearstyle"
+            :class="[prefixCls + '-icon',prefixCls + '-clear']"
+            v-if="clearable&&type!='textarea'"
+            @on-click="handleClear"></Icon>
       <Icon :name="icon"
             :class="[prefixCls + '-icon',prefixCls + '-icon-normal']"
             v-if="icon&&type!='textarea'"
@@ -37,7 +41,7 @@
              @blur="handleBlur"
              @input="handleInputValue"
              @change="handleChange">
-      <div :class="[prefixCls + '-group-append']"
+      <div :class="[prefixCls + '-group-append']" 
            v-if="append"
            v-show="slotReady">
         <slot name="append"></slot>
@@ -214,6 +218,10 @@ export default {
     showWordLimit: {
       type: Boolean,
       default: false
+    },
+    clearable:{
+      type:Boolean,
+      default:false
     }
   },
   data() {
@@ -224,7 +232,8 @@ export default {
       append: true,
       slotReady: false,
       textareaStyles: {},
-      viewValue:this.value
+      viewValue:this.value,
+      clearstyle:{},
     }
   },
   computed: {
@@ -323,6 +332,10 @@ export default {
     },
     handleIconClick(event) {
       this.$emit('on-click', event)
+    },
+    handleClear(event){
+     this.currentValue='';
+     this.$emit('on-clear',event)
     },
     handleFocus(event) {
       if (this.focusAllSelect && this.type === 'text') {
@@ -448,6 +461,11 @@ export default {
     resizeTextarea() {
       const autosize = this.autosize
       if (!autosize || this.type !== 'textarea') {
+        // 如果显示字符长度限制，则设置宽度为100%
+        if (this.showWordLimit) {
+          this.textareaStyles.minWidth = '100%'
+        }
+
         return false
       }
 
@@ -477,6 +495,12 @@ export default {
       } else {
         this.$refs.input.blur()
       }
+    },
+    showClear(){
+      let right=this.icon?20:0;
+       this.clearstyle= {
+         right:right+'px'
+       }
     }
   },
   watch: {
@@ -497,6 +521,7 @@ export default {
     }
     this.slotReady = true
     this.resizeTextarea()
+    this.showClear()
   }
 }
 </script>

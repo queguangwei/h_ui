@@ -3,7 +3,7 @@
     <h2>基础</h2>
     <h3>单选分组组件</h3>
     <!-- :multiLevel="multiLevel2" -->
-    <h-group-table :columns="columns1" childHighlightRow :height="300" width="800" :data="data1" size="small"  @on-child-change="click1" ref="groupTable" :loading="loading">
+    <h-group-table :columns="columns1" childHighlightRow :height="300" width="600" :data="data1" size="small"  @on-child-change="click1" ref="groupTable" :loading="loading">
       <P slot="loading">我是自定义de</P>
     </h-group-table>
     <Button @click="setLoad">切换loading</Button>
@@ -357,7 +357,7 @@ export default {
         {
           title: '金额',
           key: 'money',
-          width: 200
+          // width: 160
         },
         // {
         //   title: '卡号',

@@ -3,9 +3,11 @@
     <h1>普通组件使用</h1>
     <h-button type="primary" @click="modal1 = true">显示对话框</h-button>
     <h-msg-box
+      @on-open="handleOpen"
       v-model="modal1"
       title="普通的Modal对话框标题"
       @on-ok="ok"
+      height="250"
       @on-cancel="cancel"
       :closable="false"
       :mask-closable="false"
@@ -14,6 +16,7 @@
       @on-visible-change="vChange"
       :escClose="true"
       :beforeEscClose="() => false"
+      lazyload
       top="0"
       maskTop="40"
       maskLeft="40"
@@ -327,6 +330,9 @@
       }
 		},
 		methods: {
+      handleOpen() {
+        console.log("opened")
+      },
       canMax(e){
         console.log(e)
       },
@@ -400,10 +406,7 @@
           title: '确认对话框标题',
           content: '<p>一些对话框内容</p><p>一些对话框内容</p>',
           onOk: () => {
-            // this.$hMessage.info('点击了确认')
-            setTimeout(()=>{
-              this.$hMsgBox.info({title: '点击了确认',})
-            },300)
+            this.$hMsgBox.info({title: '点击了确认',})
           },
           onCancel: () => {
             console.log('点击了取消');

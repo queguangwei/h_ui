@@ -12,7 +12,7 @@
         :readonly = "readonly"
         :checked="currentValue"
         @change="change">
-    </span><slot>{{ label }}</slot>
+    </span><slot>{{ text||label }}</slot>
   </label>
 </template>
 <script>
@@ -39,6 +39,11 @@
       },
       label: {
         type: [String, Number]
+      },
+      //显示文字，层级高于label，低于slot
+      text:{
+        type: [String, Number, Boolean],
+        default:null
       },
       disabled: {
         type: Boolean,
@@ -160,7 +165,7 @@
         this.updateValue();
       },
       currentValue(val) {
-        this.viewValue = val
+        this.viewValue = this.text||val
       }
     }
   };
