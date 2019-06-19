@@ -66,6 +66,9 @@
         default: 'test'
       },
       // 文件类型
+      // .xls 最大允许条数 65536
+      // .xlsx 最大允许条数 1040000
+      // 条数大于限制将不会生成该 sheet
       fileType: {
         type: String,
         validator (value) {
