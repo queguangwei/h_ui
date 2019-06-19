@@ -74,6 +74,7 @@
               <template v-for="(row, index) in visibleData">
                 <table-tr :row="row"
                           :key="row._rowKey"
+                          :hoverIndex="hoverIndex"
                           :prefix-cls="prefixCls"
                           @mouseenter.native.stop="handleMouseIn(row._index)"
                           @mouseleave.native.stop="handleMouseOut(row._index)"
@@ -187,6 +188,7 @@
                 <template v-for="(row, index) in visibleData">
                   <table-tr :row="row"
                             :key="row._rowKey"
+                            :hoverIndex="hoverIndex"
                             :prefix-cls="prefixCls"
                             @mouseenter.native.stop="handleMouseIn(row._index)"
                             @mouseleave.native.stop="handleMouseOut(row._index)"
@@ -303,7 +305,8 @@ import {
   removeClass,
   typeOf,
   getScrollBarSizeHeight,
-  scrollAnimate
+  scrollAnimate,
+  debounce
 } from '../../util/tools'
 import { on, off } from '../../util/dom'
 import Locale from '../../mixins/locale'
@@ -522,7 +525,8 @@ export default {
       curShiftIndex: null,
       sumMarginLeft: 0,
       baseInx: null,
-      offsetInx: null
+      offsetInx: null,
+      hoverIndex:-1,
     }
   },
   computed: {
@@ -1257,11 +1261,13 @@ export default {
     handleMouseIn(_index) {
       if (this.disabledHover) return
       if (this.objData[_index]._isHover) return
-      this.objData[_index]._isHover = true
+      this.hoverIndex = _index
+      // this.objData[_index]._isHover = true
     },
     handleMouseOut(_index) {
       if (this.disabledHover) return
-      this.objData[_index]._isHover = false
+      this.hoverIndex = -1
+      // this.objData[_index]._isHover = false
     },
     highlightCurrentRow(_index) {
       if (!this.highlightRow) return
