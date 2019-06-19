@@ -1,6 +1,6 @@
 <template>
-  <label :class="wrapClasses" @click="radioClick">
-    <span :class="radioClasses">
+  <label :class="wrapClasses">
+    <span :class="radioClasses" @click="radioClick">
       <span :class="innerClasses"></span>
       <input
         ref="input"

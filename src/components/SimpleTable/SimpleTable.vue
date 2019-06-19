@@ -122,7 +122,7 @@
           <div :class="[prefixCls + '-phantom']" :style="{height: contentHeight + 'px'}">
           </div>
           <div class="h-simple-content" ref="leftContent">
-            <table cellspacing="0" cellpadding="0" border="0" :style="tableStyle" ref="tbody">
+            <table cellspacing="0" cellpadding="0" border="0" :style="tableStyle">
               <colgroup>
                 <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, false)" :key="index">
               </colgroup>
@@ -172,7 +172,7 @@
         </div>
       </div>
       <div :class="[prefixCls + '-summation']" :style="summationStyle" v-if="isSummation" ref="summation">
-        <table cellspacing="0" cellpadding="0" border="0" :style="tableStyle" ref="tbody">
+        <table cellspacing="0" cellpadding="0" border="0" :style="tableStyle">
           <colgroup>
             <col v-for="(column, index) in cloneColumns" :width="setCellWidth(column, index, false)" :key="index">
           </colgroup>
@@ -375,10 +375,10 @@ export default {
       type:Boolean,
       default:false
     },
-     dataCheckedProp:{
+    dataCheckedProp:{
       type:Boolean,
       default:false,
-    }
+    },
   },
   data () {
     return {
@@ -1717,6 +1717,9 @@ export default {
       if (curTop != top) {
         this.updateVisibleData(top)
         this.$refs.body.scrollTop = top
+        if(this.$refs.fixedBody){
+          this.$refs.fixedBody.scrollTop = top
+        }
         this.$refs.content.style.transform = `translate3d(0, ${top}px, 0)`;
         if (this.$refs.leftContent) {
           this.$refs.leftContent.style.transform = `translate3d(0, ${top}px, 0)`;
@@ -1826,6 +1829,9 @@ export default {
       privateToScrollTop (val) {
         if (val) {
           this.$refs.body.scrollTop = this.scrollTopSet
+          if(this.$refs.fixedBody){
+            this.$refs.fixedBody.scrollTop = this.scrollTopSet
+          }
           this.$nextTick(() => {
             this.clickCurrentRow(0)
           })
@@ -1851,6 +1857,9 @@ export default {
           this.objData = this.makeObjData();
           if (this.addData && this.addData.length > 0) { // 针对addData 模式
             this.$refs.body.scrollTop = 0
+            if(this.$refs.fixedBody){
+              this.$refs.fixedBody.scrollTop = 0
+            }
           }
           // this.rebuildData = this.data;
           // if (!oldDataLen) {
@@ -1930,6 +1939,9 @@ export default {
     if (this.keepAliveFlag) {
       let transform = this.$refs.content ? this.$refs.content.style.transform : ''
       this.$refs.body.scrollTop = transform.match(/translate3d\(\d+px,\s*(\d+)px,\s*(\d+)px\)/i)[1];
+      if(this.$refs.fixedBody){
+        this.$refs.fixedBody.scrollTop = transform.match(/translate3d\(\d+px,\s*(\d+)px,\s*(\d+)px\)/i)[1];
+      }
       this.handleResize();
       on(window, 'resize', this.handleResize);
     }
