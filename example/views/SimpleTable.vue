@@ -4,6 +4,7 @@
     <Button @click="changemsg">显示</Button>
     <h2>带边线 多选</h2>
     <Button @click="loadData">加载数据</Button>
+    <Button @click="changeData">切换数据</Button>
     <!-- <h-simple-table :columns="columnsBig" :data="bigData" border stripe @on-select="select" @on-select-cancel="select" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="300" @on-select-all='change' @on-scroll="change" @on-selection-change="change" width="1200" :canDrag="false">
       <span slot="loading">我是自定义加载！！！</span>
     </h-simple-table> -->
@@ -488,6 +489,9 @@ export default {
         this.bigData = jsonData;
       })
     },
+    changeData(){
+      this.bigData =tData.slice(500,600);
+    },
     changemsg(){
       this.msgbox = !this.msgbox;
     },
@@ -693,7 +697,7 @@ export default {
           align: 'center',
           width:200,
           sortable:true,
-          // fixed:'left',
+          fixed:'left',
         },
         {
           type: 'selection',

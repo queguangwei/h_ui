@@ -878,7 +878,23 @@ export default {
         }
     },
     makeData () {
-        let data = deepCopy(this.cloneData);
+        let data = deepCopy(this.data);
+        data.forEach((row, index) => {
+            row._index = index;
+            row._rowKey = rowKey++;
+            if (row.item && typeof(row.item)=='object') {
+              row.item.forEach((obj,i)=>{
+                i=i+1;
+                obj._index =index+'.'+i;
+                obj._rowKey = rowKey++;
+                obj.expand = obj.expand? true:false;
+              });
+            }
+        });
+        return data;
+    },
+    makeSortData () {
+      let data = deepCopy(this.cloneData);
         data.forEach((row, index) => {
             row._index = index;
             row._rowKey = rowKey++;
@@ -904,7 +920,7 @@ export default {
       const key = this.cloneColumns[index].key;
       if (this.cloneColumns[index].sortable !== 'custom') {    // custom is for remote sort
           if (type === 'normal') {
-            this.rebuildData = this.makeDataWithFilter();
+            this.rebuildData = this.makeSortData();
           } else {
             this.rebuildData = this.sortData(this.rebuildData, type, index);
           }
