@@ -1,5 +1,5 @@
 <template>
-  <div v-if="showSizer || showElevator||showCustom" :class="optsClasses">
+  <div v-if="showSizer || showElevator||showCustom||showReload" :class="optsClasses">
     <div v-if="showSizer && showSizerLabel" :class="sizerLabelClasses">{{ t('i.page.pageLabel') }}</div>
     <div v-if="showSizer" :class="sizerClasses">
       <h-select v-model="currentPageSize" :size="size" :placement="placement" @on-change="changeSize" :clearable="false">
@@ -15,6 +15,9 @@
       <input v-if="!isBlur" type="text" v-model="currentNo" @keyup.enter="changePage">
       <input v-if="isBlur" type="text" v-model="currentNo" @blur="changePage">
       {{ t('i.page.p') }}
+    </div>
+    <div v-if="showReload" :class="ReloadClasses">
+         <a @click="handleRefresh"><icon name="refresh"></icon></a>
     </div>
   </div>
 </template>
@@ -44,7 +47,8 @@
             placement: String,
             isBlur:Boolean,
             showCustom:Boolean,
-            showSizerLabel: Boolean
+            showSizerLabel: Boolean,
+            showReload:Boolean,
         },
         data () {
             return {
@@ -81,6 +85,11 @@
                 return [
                     `${prefixCls}-options-elevator`
                 ];
+            },
+            ReloadClasses(){
+                 return [
+                    `${prefixCls}-options-reload`
+                ];
             }
         },
         methods: {
@@ -116,6 +125,9 @@
                     this.$emit('on-page', page);
                     event.target.value = page;
                 }
+            },
+            handleRefresh(){
+                 this.$emit('on-reload');
             }
         }
     };
