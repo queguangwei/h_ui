@@ -312,6 +312,7 @@ export default {
       this.bigShow(this.type,value);
       this.$emit('input', value);
       this.$emit('on-keyup', value);
+      this.dispatch('FormItem', 'on-form-change', value);
     },
     divideNum(num){
       let revalue="";

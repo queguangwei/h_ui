@@ -218,7 +218,9 @@ export default {
       let num = getBarBottom(event.target, getScrollBarSize())
       this.$emit('on-scroll', num, this.lastScollTop)
       // 修复滚动后出现 x 滚动条问题
-      this.$parent.setWidthAdaption()
+      if (this.$parent.widthAdaption) {
+        this.$parent.setWidthAdaption()
+      }
     },
     updateVisibleData(scrollTop) {
       let itemHeight = Number(this.itemHeight)
