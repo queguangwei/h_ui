@@ -404,6 +404,20 @@
             :loading="loading1">
             <h-option v-for="option in options2" :value="option.value" :key="option.value">{{option.label}}</h-option>
         </h-select>
+        <p>设置isSelectFilter为true，只用于多选、开启filterable、启用checkAll</p>
+        <h-select v-model="model11"
+                  width="200"
+                  multiple
+                  filterable
+                  :isString="true"
+                  isCheckall
+                  label-in-value
+                  isSelectFilter
+                  showBottom>
+          <h-option v-for="(item, index) in uList"
+                    :value="item.id"
+                    :key="item.id">{{ item.name }}</h-option>
+        </h-select>
     </div>
   </div>
 </template>
