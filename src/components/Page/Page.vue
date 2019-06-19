@@ -1,5 +1,12 @@
 <template>
   <ul :class="simpleWrapClasses" :style="styles" v-if="simple">
+    <li
+      v-if="fastArrival"
+      :title="t('i.page.first')"
+      :class="prevClasses"
+      @click="toFirst">
+      <a><icon name="arrow-l"></icon></a>
+    </li>
     <span :class="[prefixCls + '-total']" v-if="showTotal">
       <slot>{{ t('i.page.total') }} {{ total }} <template v-if="total <= 1">{{ t('i.page.item') }}</template><template v-else>{{ t('i.page.items') }}</template></slot>
     </span>

@@ -1,4 +1,39 @@
 <template>
+    <div class="h-input-wrapper h-input-type h-input-group h-input-group-with-append h-input-hide-icon">
+        <h-input v-model="innerValue"></h-input>
+        <div class="h-input-group-append">
+            <slot name="append"/>
+        </div>
+    </div>
+</template>
+
+<script>
+export default {
+    props:{
+        value: String
+    },
+    data(){
+        return {
+            innerValue:''
+        }
+    },
+    watch:{
+        innerValue(newVal, oldVal){
+            this.$nextTick(()=>{
+                if(newVal != '' && isNaN(newVal)){
+                    this.innerValue = oldVal;
+                } else {
+                    this.$emit('input', newVal)
+                }
+            })
+        },
+        value(newVal){
+            this.innerValue = newVal
+        }
+    }
+}
+</script>
+<!--<template>
 <div>
         <h-table border :columns="columns4" :data="data1" rowSelect @on-select="selectOne" @on-select-all="selectAll" @on-selection-change="selectChange" @on-select-cancel="selectCancel"></h-table>
 </div>
@@ -72,6 +107,7 @@ methods: {
         }
     }
 </script>
+-->
 <!--<template>
 <div>
  <h-button type="primary" @click="ttt">Toggle</h-button>

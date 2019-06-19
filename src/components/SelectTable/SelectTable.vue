@@ -37,7 +37,6 @@
              @keydown.delete="handleInputDelete"
              tabindex="-1"
              ref="input">
-
       <Icon name="close"
             :class="[prefixCls + '-arrow']"
             v-show="showCloseIcon"
@@ -333,6 +332,14 @@ export default {
     focusInit: {
       type: Number,
       default: 0
+    },
+    specialIndex:{
+      type:Boolean,
+      default:false,
+    },
+    specialVal:{
+      type:[String,Number],
+      default:'-1'
     }
   },
   data() {
@@ -569,6 +576,9 @@ export default {
         this.allClick = true
         let hybridValue = []
         let curValue = []
+        if(this.specialIndex){
+          
+        }
         this.findChild(child => {
           this.options.forEach((col, i) => {
             if(child.cloneData[i].disabled) return
@@ -1248,6 +1258,12 @@ export default {
       this.hideMenu()
     },
     selectBlockMultiple(value) {
+      if(this.specialIndex&&value==this.specialVal){
+        let arr = []
+        arr.push(this.specialVal)
+        this.model=arr
+        return false
+      }
       const index = this.model.indexOf(value)
       if (index >= 0) {
         this.removeTag(index)
