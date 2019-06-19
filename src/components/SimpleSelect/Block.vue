@@ -249,14 +249,20 @@ export default {
         itemHeight +
         offset}px, 0)`
     },
-    selectedTop() {
-      this.cloneData.sort((a, b) => {
-        if (a.selected && !b.selected) {
-          return -1
-        } else {
-          return 0
-        }
-      })
+    selectedTop(status) {
+      if(status){
+        this.cloneData.sort((a, b) => {
+          if (a.selected && !b.selected) {
+            return -1
+          } else {
+            return 0
+          }
+        })
+      }else{
+        this.cloneData.sort((a, b) => {
+          return a._index<b._index?-1:0
+        })
+      }
       this.$refs.block.scrollTop = 0
       this.updateVisibleData(0)
       this.$parent.$parent.updateOptions()
@@ -320,8 +326,8 @@ export default {
     this.$on('on-query-change', val => {
       this.queryChange(val)
     })
-    this.$on('on-select-top', () => {
-      this.selectedTop()
+    this.$on('on-select-top', (status) => {
+      this.selectedTop(status)
     })
 
     // v20190321
@@ -340,7 +346,8 @@ export default {
     this.hideMult = this.$parent.$parent.hideMult
     this.cloneData = deepCopy(this.data)
     // v20190321 添加focus
-    this.cloneData.forEach(item => {
+    this.cloneData.forEach((item,i) => {
+      item._index = i
       this.$set(item, 'focus', false)
     })
     this.$nextTick(() => {
@@ -359,7 +366,8 @@ export default {
         }
         this.$nextTick(() => {
           this.cloneData = deepCopy(this.data)
-          this.cloneData.forEach(item => {
+          this.cloneData.forEach((item,i) => {
+            item._index = i
             this.$set(item, 'focus', false)
           })
           this.$parent.$parent.updateOptions(true)

@@ -1047,3 +1047,17 @@ export function dateFormat(date, fmt) {
 
   return fmt
 }
+/**
+ * @description simpletable 防抖函数
+ * @date 2019-06-19
+ * @param {fun} 方法
+ * @param {delay} 延时
+ * @auther 谭露阳
+ */
+export function debounce(fun,delay){
+  let timer = null 
+  return function(){
+    timer&&clearTimeout(timer)
+    timer = setTimeout(fun,delay)
+  }
+}

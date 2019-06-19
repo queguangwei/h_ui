@@ -743,27 +743,69 @@ export default {
           width:200,
           sortable:true,
         },
-        // {
-        //   title: '地址2',
-        //   key: 'securityId',
-        //   sortable:true,
-        // },
-        // {
-        //   title: '地址3',
-        //   key: 'tradeDir',
-        // },
-        // {
-        //   title: '地址4',
-        //   key: 'tradeSubtype',
-        // },
-        // {
-        //   title: '地址5',
-        //   key: 'marketNo',
-        // },
-        // {
-        //   title: '地址6',
-        //   key: 'tradeQuantity',
-        // }
+        {
+          title: '地址2',
+          key: 'securityId',
+          sortable:true,
+        },
+        {
+          title: '地址3',
+          key: 'tradeDir',
+        },
+        {
+          title: '地址4',
+          key: 'tradeSubtype',
+        },
+        {
+          title: '地址5',
+          key: 'marketNo',
+        },
+        {
+          title: '地址6',
+          key: 'tradeQuantity',
+        },
+         {
+          title: '地址2',
+          key: 'securityId',
+          sortable:true,
+        },
+        {
+          title: '地址3',
+          key: 'tradeDir',
+        },
+        {
+          title: '地址4',
+          key: 'tradeSubtype',
+        },
+        {
+          title: '地址5',
+          key: 'marketNo',
+        },
+        {
+          title: '地址6',
+          key: 'tradeQuantity',
+        },
+         {
+          title: '地址2',
+          key: 'securityId',
+          sortable:true,
+        },
+        {
+          title: '地址3',
+          key: 'tradeDir',
+        },
+        {
+          title: '地址4',
+          key: 'tradeSubtype',
+        },
+        {
+          title: '地址5',
+          key: 'marketNo',
+        },
+        {
+          title: '地址6',
+          key: 'tradeQuantity',
+        }
     ]
     // this.columnsBig1.push({
     //   title: '地址6',
