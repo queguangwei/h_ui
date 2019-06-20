@@ -25,6 +25,8 @@
                       @on-scroll="select"></h-select-block>
     </h-simple-select>
     <h-button @on-click="loaddata">加载数据</h-button>
+    <h-button @on-click="changValue(true)">选择数据</h-button>
+    <h-button @on-click="changValue(false)">选择数据1</h-button>
     <h-simple-select autoPlacement
                      specialIndex
                      isArrow="false"
@@ -191,6 +193,9 @@ export default {
     },
     selectTop(status){
       this.$refs.ceshi.selectedTop(status)
+    },
+    changValue(stae) {
+      this.value2 =stae? ['2', '3','4','5']:['3','4']
     },
     changValue2() {
       this.v20190321.value2 = ['2', '3']

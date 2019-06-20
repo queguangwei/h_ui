@@ -1530,16 +1530,15 @@ export default {
     // },
     // eslint-disable-next-line
     selectedMultiple(val) {
-      // console.log('selectedMultiple', val)
-      // if (val.length==0&&this.filterable && !this.showBottom) {
-      //   this.$nextTick(()=>{
-      //     this.$refs.input.focus();
-      //   });
-      // }
       this.$nextTick(() => {
         this.offsetArrow()
       })
       this.viewValue = val
+      if(this.showTotalNum&&this.multiple&&!this.isInputFocus&&val.length>2){
+        this.showTotal = true
+      }else{
+        this.showTotal = false
+      }
     },
     selectHead(val) {
       // this.toggleSelect(val)
