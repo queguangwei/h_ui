@@ -22,7 +22,6 @@
         <h-button @click="selectTop(false)">已选不置顶</h-button>
       </div>
       <h-select-block :data="bigData"
-                      :showCol="showCol"
                       @on-scroll="select"></h-select-block>
     </h-simple-select>
     <h-button @on-click="loaddata">加载数据</h-button>

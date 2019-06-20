@@ -749,6 +749,8 @@ export default {
           this.bigNum = this.changeTipsVal(value);
           this.tipShow = Boolean(this.bigNum);
         }
+      }else{
+        this.tipShow = false
       }
     },
     setNullStr(){
