@@ -1,37 +1,35 @@
 <template>
-    <div class="h-input-wrapper h-input-type h-input-group h-input-group-with-append h-input-hide-icon">
-        <h-input v-model="innerValue"></h-input>
-        <div class="h-input-group-append">
-            <slot name="append"/>
-        </div>
-    </div>
+  <div>
+    <h-simple-select v-model="value1" multiple ref="test" filterable>
+        <h-select-block :data="bigData"></h-select-block>
+    </h-simple-select>
+    <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br>  <br>
+     <h-button type="primary" @click="select1(true)" style="margin-top: 18px">置顶</h-button>
+     <h-button type="primary" @click="select1(false)" style="margin-top: 18px">不置顶</h-button>
+  </div>
 </template>
-
 <script>
-export default {
-    props:{
-        value: String
-    },
-    data(){
-        return {
-            innerValue:''
-        }
-    },
-    watch:{
-        innerValue(newVal, oldVal){
-            this.$nextTick(()=>{
-                if(newVal != '' && isNaN(newVal)){
-                    this.innerValue = oldVal;
-                } else {
-                    this.$emit('input', newVal)
-                }
-            })
-        },
-        value(newVal){
-            this.innerValue = newVal
-        }
-    }
+let bigData = [];
+for(let i=0;i<2000;i++){
+  let obj={};
+  obj.value="value"+i;
+  obj.label="label"+i;
+  bigData.push(obj);
 }
+    export default {
+        data () {
+            return {
+                bigData:bigData,
+                value:'value0',
+                value1:['value0'],
+                value2:'',
+            }
+        },
+        methods: {
+        select1(istop){
+         this.$refs.test.selectedTop(istop);
+        }}
+    }
 </script>
 <!--<template>
 <div>
