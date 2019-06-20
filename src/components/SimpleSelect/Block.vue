@@ -309,9 +309,10 @@ export default {
     if (this.showHeader.length) {
       this.styleArr = this.showHeader.map(item => this.calcStyle(item.width))
     } else if (this.showCol.length) {
-      this.styleArr = ['', ...new Array(this.showCol.length).fill('')].map(
-        this.calcStyle
-      )
+      this.styleArr = []
+      for(let i = 0; i < this.showCol.length + 1; i++) {
+        this.styleArr.push(this.calcStyle(''))
+      }
     }
   },
   mounted() {
