@@ -1183,7 +1183,8 @@ export default {
               if (column.width) {
                 width = column.width || ''
               } else {
-                if (width < 100) width = 100
+                let min = column.minWidth?column.minWidth:100
+                if (width < min) width = min
               }
               this.cloneColumns[i]._width = width || ''
               this.tableWidth = this.cloneColumns
