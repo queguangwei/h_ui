@@ -1152,8 +1152,13 @@ export default {
           this.lastQuery = this.currentLabel
           this.query = this.currentLabel
         } else if (this.multiple && this.model.length) {
-          if (this.currentLabel.length !== this.model.length)
-            this.currentLabel = new Array(this.model.length).fill('')
+          if (this.currentLabel.length !== this.model.length) {
+            let tmp = []
+            for (let i = 0; i < this.model.length; i++) {
+              tmp.push('')
+            }
+            this.currentLabel = tmp
+          }
 
           this.selectedMultiple = this.model.map((item, index) => {
             return {
