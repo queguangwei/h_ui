@@ -979,14 +979,14 @@ export default {
       data0:[],
       data1: [
         {
-          name: '王小明',
+          name: 0,
           age: 18,
           address: '北京市朝阳区\r芍药居',
           // _disabled:true,
           _checked:true,
         },
         {
-          name: '张小刚',
+          name: 0,
           age: 25,
           address: '北京市海淀区西二旗'
         },

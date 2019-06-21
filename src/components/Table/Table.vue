@@ -1595,6 +1595,19 @@ export default {
         }
       }
     },
+    /**
+     * 获取所有列选中的过滤条件
+     */
+    getFilters() {
+      const cloneColumns = this.cloneColumns;
+      const filters = {};
+      cloneColumns.forEach(col => {
+        if (col.filters && (col.filterMethod || col.filterRemote) && col.key) {
+          filters[col.key] = col._filterChecked;
+        }
+      })
+      return filters;
+    }
   },
   created () {
       if (!this.context) this.currentContext = this.$parent;

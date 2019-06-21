@@ -415,8 +415,8 @@ export default {
             parentFormItem.isRequired = this.isRequired
           }
         }
-        this.$on('on-form-blur', this.onFieldBlur)
-        this.$on('on-form-change', this.onFieldChange)
+        this.$off('on-form-blur').$on('on-form-blur', this.onFieldBlur)
+        this.$off('on-form-change').$on('on-form-change', this.onFieldChange)
       }
     }
   },
@@ -460,8 +460,8 @@ export default {
             return false
           }
         })
-        this.$on('on-form-blur', this.onFieldBlur)
-        this.$on('on-form-change', this.onFieldChange)
+          this.$off('on-form-blur').$on('on-form-blur', this.onFieldBlur)
+          this.$off('on-form-change').$on('on-form-change', this.onFieldChange)
       }
       // 组合formItem时，将自身requiredIcon隐藏，同时，将父元素的formItem的图标显示
       let parentFormItem = findComponentParent(this, 'FormItem')
