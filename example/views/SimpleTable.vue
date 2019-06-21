@@ -4,6 +4,7 @@
     <Button @click="changemsg">显示</Button>
     <h2>带边线 多选</h2>
     <Button @click="loadData">加载数据</Button>
+    <Button @click="changeData">切换数据</Button>
     <!-- <h-simple-table :columns="columnsBig" :data="bigData" border stripe @on-select="select" @on-select-cancel="select" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="300" @on-select-all='change' @on-scroll="change" @on-selection-change="change" width="1200" :canDrag="false">
       <span slot="loading">我是自定义加载！！！</span>
     </h-simple-table> -->
@@ -488,6 +489,9 @@ export default {
         this.bigData = jsonData;
       })
     },
+    changeData(){
+      this.bigData =tData.slice(500,600);
+    },
     changemsg(){
       this.msgbox = !this.msgbox;
     },
@@ -688,78 +692,57 @@ export default {
         }
     ]
     this.columnsBig1=[
-        {
-          type: 'index',
-          align: 'center',
-          width:200,
-          sortable:true,
-          // fixed:'left',
-        },
-        {
-          type: 'selection',
-          align: 'center',
-          key:'select',
-          width:200,
-          // fixed:'left'
-        },
-        {
-          title: '姓名',
-          key: 'fundId',
-          width:200,
-          sortable:true,
-          remote: true,
-          // fixed:'left',
-          renderHeader:(h, params)=>{
-            return h('span','123')
-          },
-          render:(h, params)=>{
-            return h('span',params.row.fundId+' 567')
-            // return params.row.fundId+' 123'
-          }
-          // hiddenCol:true,
-          // align: 'center',
-          // sortable:true,
-        },
+        // {
+        //   type: 'index',
+        //   align: 'center',
+        //   width:200,
+        //   sortable:true,
+        //   fixed:'left',
+        // },
+        // {
+        //   type: 'selection',
+        //   align: 'center',
+        //   key:'select',
+        //   width:200,
+        //   // fixed:'left'
+        // },
+        // {
+        //   title: '姓名',
+        //   key: 'fundId',
+        //   width:200,
+        //   sortable:true,
+        //   remote: true,
+        //   // fixed:'left',
+        //   renderHeader:(h, params)=>{
+        //     return h('span','123')
+        //   },
+        //   render:(h, params)=>{
+        //     return h('span',params.row.fundId+' 567')
+        //     // return params.row.fundId+' 123'
+        //   }
+        //   // hiddenCol:true,
+        //   // align: 'center',
+        //   // sortable:true,
+        // },
         {
           title: '年龄',
           key: 'tradeDate',
-          width:200,
+          minWidth:100,
           // sortable:true,
           // fixed:'left',
         },
         {
           title: '地址',
           ellipsis:true,
-          width:200,
+          minWidth:100,
           key: 'securityCode',
         },
         {
           title: '地址1',
           key: 'securityName',
-          width:200,
+          minWidth:200,
           sortable:true,
-        },
-        // {
-        //   title: '地址2',
-        //   key: 'securityId',
-        //   sortable:true,
-        // },
-        // {
-        //   title: '地址3',
-        //   key: 'tradeDir',
-        // },
-        // {
-        //   title: '地址4',
-        //   key: 'tradeSubtype',
-        // },
-        // {
-        //   title: '地址5',
-        //   key: 'marketNo',
-        // },
-        // {
-        //   title: '地址6',
-        //   key: 'tradeQuantity',
-        // }
+        }
     ]
     // this.columnsBig1.push({
     //   title: '地址6',

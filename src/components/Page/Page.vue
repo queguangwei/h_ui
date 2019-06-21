@@ -1,5 +1,12 @@
 <template>
   <ul :class="simpleWrapClasses" :style="styles" v-if="simple">
+    <li
+      v-if="fastArrival"
+      :title="t('i.page.first')"
+      :class="prevClasses"
+      @click="toFirst">
+      <a><icon name="arrow-l"></icon></a>
+    </li>
     <span :class="[prefixCls + '-total']" v-if="showTotal">
       <slot>{{ t('i.page.total') }} {{ total }} <template v-if="total <= 1">{{ t('i.page.item') }}</template><template v-else>{{ t('i.page.items') }}</template></slot>
     </span>
@@ -12,12 +19,14 @@
         :placement="placement"
         :show-elevator="showElevator"
         :show-custom="showCustom"
+        :show-reload="showReload"
         :current="currentPage"
         :all-pages="allPages"
         :is-small="isSmall"
         :is-blur = "isBlur"
         @on-size="onSize"
-        @on-page="onPage">
+        @on-page="onPage"
+        @on-reload="onReload">
     </Options>
     <li
       :title="t('i.page.prev')"
@@ -99,12 +108,14 @@
         :placement="placement"
         :show-elevator="showElevator"
         :show-custom="showCustom"
+        :show-reload="showReload"
         :current="currentPage"
         :all-pages="allPages"
         :is-small="isSmall"
         :is-blur = "isBlur"
         @on-size="onSize"
-        @on-page="onPage">
+        @on-page="onPage"
+        @on-reload="onReload">
       </Options>
   </ul>
 </template>
@@ -185,6 +196,10 @@
         default: false
       },
       showSizerLabel: {
+        type: Boolean,
+        default: false
+      },
+      showReload:{
         type: Boolean,
         default: false
       }
@@ -386,6 +401,9 @@
       },
       toLast(){
         this.changePage(this.allPages);
+      },
+      onReload(){
+         this.$emit('on-reload',this.currentPage);
       }
     },
     mounted(){
