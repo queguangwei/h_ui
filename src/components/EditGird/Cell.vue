@@ -87,6 +87,7 @@
                   :transfer="column.transfer"
                   :isString="column.multiple||false"
                   :label-in-value="column.multiple|| column.singleShowLabel || false"
+                  :autoPlacement="column.autoPlacement === undefined ? true : column.autoPlacement"
                   @on-change="editselectChange"
                   class="canEdit">
           <h-option v-for="(item,i) in option"
@@ -105,6 +106,7 @@
               :editable="column.editable"
               :showFormat="true"
               :transfer="column.transfer"
+              :autoPlacement="column.autoPlacement === undefined ? true : column.autoPlacement"
               @on-change="editdateChange"
               class="canEdit"></Date>
       </template>
@@ -279,7 +281,8 @@ export default {
           [`${this.prefixCls}-cell-with-expand`]: this.renderType === 'expand',
           [`${this.prefixCls}-cell-with-render`]:
             this.render && this.renderType != 'expand',
-          [`${this.prefixCls}-cell-ellipsis-with-render`]: this.ellipsisAndRender
+          [`${this.prefixCls}-cell-ellipsis-with-render`]: this
+            .ellipsisAndRender
         }
       ]
     },
@@ -576,11 +579,11 @@ export default {
             : this.arrtoStr(this.selectedLabel)
       }
     },
-    typefieldChange(val){
-      if(this.column.divided){
-        let value  = this.$refs.money.inputValue
+    typefieldChange(val) {
+      if (this.column.divided) {
+        let value = this.$refs.money.inputValue
         this.columnMoney = value
-      }else{
+      } else {
         this.columnMoney = val
       }
     },
