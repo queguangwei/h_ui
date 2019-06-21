@@ -751,7 +751,7 @@
                 const options = this.options;
                 let option;
                 for (let op of this.options) {
-                  if (op.value === model) {
+                  if (op.value == model) {
                     option = op;
                     break;
                   }
@@ -864,7 +864,7 @@
               });
           }
           this.findChild((child) => {
-              const index = value.indexOf(child.value);
+              const index = findInx(value, val => val == child.value);
               if (index >= 0) {
                   child.selected = true;
                   hybridValue[index].label  = (child.label === undefined) ? child.$el.innerText.replace(/\s*\w{4,5} /, '') : child.label;
@@ -1250,7 +1250,7 @@
           });
         } else {
           this.findChild(child => {
-              child.selected = this.multiple ? this.model.indexOf(child.value) > -1 : this.model === child.value;
+              child.selected = this.multiple ? findInx(this.model, v => v == child.value) > -1 : this.model === child.value;
           });
         }
         this.slotChange();
@@ -1264,7 +1264,7 @@
               });
           } else {
               this.findChild(child => {
-                  child.selected = this.multiple ? this.model.indexOf(child.value) > -1 : this.model === child.value;
+                  child.selected = this.multiple ? findInx(this.model, v => v == child.value) > -1 : this.model === child.value;
               });
           }
           this.slotChange();
@@ -1275,7 +1275,7 @@
           this.hideMenu();
         } else {
           if (this.multiple) {
-            const index = this.model.indexOf(value);
+            const index = findInx(this.model, v => v == value);
             if (index >= 0) {
               this.removeTag(index);
             } else {
@@ -1409,7 +1409,7 @@
             }
             if (this.remote) {
               this.findChild(child => {
-                  child.selected = this.multiple ? this.model.indexOf(child.value) > -1 : this.model === child.value;
+                  child.selected = this.multiple ? findInx(this.model, v => v == child.value) > -1 : this.model === child.value;
               });
               // remote下，设置了默认值，第一次打开时，搜索一次
               const options = this.$slots.default || [];
