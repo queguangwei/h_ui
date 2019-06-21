@@ -169,6 +169,26 @@ $page-prefix-cls: "#{$css-prefix}page";
         width: 50px;
       }
     }
+    &-reload{
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 10px;
+       a{
+        display: inline-block;
+        vertical-align: middle;
+        min-width: 32px;
+        height: 32px;
+        line-height: 30px;
+        list-style: none;
+        text-align: center;
+        cursor: pointer;
+        color: #495060;
+        font-family: Arial;
+        border: 1px solid #D7DDE4;
+        border-radius: 4px;
+        transition: all 0.2s ease-in-out;
+       }
+    }
   }
   &-total {
     display: inline-block;
@@ -265,6 +285,15 @@ $page-prefix-cls: "#{$css-prefix}page";
         @include input-small();
         width: 44px;
       } 
+    }
+    &-reload{
+      margin-left: 6px;
+      a{
+        border: 0;
+        min-width: btn-circle-size-small;
+        height: btn-circle-size-small;
+        line-height: btn-circle-size-small;
+      }
     }
   }
 }

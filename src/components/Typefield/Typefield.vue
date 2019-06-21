@@ -312,6 +312,7 @@ export default {
       this.bigShow(this.type,value);
       this.$emit('input', value);
       this.$emit('on-keyup', value);
+      this.dispatch('FormItem', 'on-form-change', value);
     },
     divideNum(num){
       let revalue="";
@@ -748,6 +749,8 @@ export default {
           this.bigNum = this.changeTipsVal(value);
           this.tipShow = Boolean(this.bigNum);
         }
+      }else{
+        this.tipShow = false
       }
     },
     setNullStr(){
