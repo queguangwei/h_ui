@@ -566,8 +566,8 @@ export default {
         if (this.height){
           style.height = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`;
            if(this.fixedAutoHeight){
-             if(this.$refs.fixedRightBody.firstChild.clientHeight<height){
-                style.height="auto";
+             if(this.bodyRealHeight<height){
+                style.height=`${this.bodyRealHeight}px`;
              }           
            }
           }
