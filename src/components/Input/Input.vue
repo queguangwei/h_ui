@@ -234,6 +234,8 @@ export default {
       textareaStyles: {},
       viewValue:this.value,
       clearstyle:{},
+      /* 是否按下按键 */
+      keyPressed: false
     }
   },
   computed: {
@@ -320,15 +322,17 @@ export default {
     },
     handleKeydown(event) {
       this.$emit('on-keydown', event)
+      this.keyPressed = true;
     },
     handleKeypress(event) {
       this.$emit('on-keypress', event)
     },
     handleKeyup(event) {
       this.$emit('on-keyup', event)
-      if (this.keyUpMode) {
+      if (this.keyUpMode && this.keyPressed) {
         this.handleInput(event)
       }
+      this.keyPressed = false;
     },
     handleIconClick(event) {
       this.$emit('on-click', event)
@@ -367,7 +371,7 @@ export default {
       }
     },
     handleInputValue(event) {
-      if (!this.keyUpMode) {
+      if (!this.keyUpMode || !this.keyPressed) {
         this.handleInput(event)
       }
     },
