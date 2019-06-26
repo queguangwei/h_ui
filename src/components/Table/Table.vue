@@ -755,7 +755,9 @@ export default {
             if (column.width) {
                 width = column.width||width;
             } else {
-                if (width < this.minWidth) width = this.minWidth;
+              let min = column.minWidth?column.minWidth:100
+              if (width < min) width = min
+                // if (width < this.minWidth) width = this.minWidth;
             }
             this.cloneColumns[i]._width =width||'';
             tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)||this.tableWidth;
@@ -816,7 +818,9 @@ export default {
               if (column.width) {
                   width = column.width||'';
               } else {
-                  if (width < this.minWidth) width = this.minWidth;
+                let min = column.minWidth?column.minWidth:100
+                if (width < min) width = min
+                  // if (width < this.minWidth) width = this.minWidth;
               }
               this.cloneColumns[i]._width = this.hasWidth?width:width||'';
               this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)||this.tableWidth;
@@ -838,7 +842,9 @@ export default {
               if (column.width) {
                   width = column.width||'';
               } else {
-                  if (width < this.minWidth) width = this.minWidth;
+                let min = column.minWidth?column.minWidth:100
+                if (width < min) width = min
+                  // if (width < this.minWidth) width = this.minWidth;
               }
               this.cloneColumns[i]._width = width||'';
               this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b);

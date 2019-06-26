@@ -727,14 +727,14 @@ export default {
         {
           title: '年龄',
           key: 'tradeDate',
-          minWidth:100,
+          minWidth:200,
           // sortable:true,
-          // fixed:'left',
+          fixed:'left',
         },
         {
           title: '地址',
           ellipsis:true,
-          minWidth:100,
+          minWidth:200,
           key: 'securityCode',
         },
         {
