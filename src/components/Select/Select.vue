@@ -458,7 +458,6 @@
         let status = true;
         const options = this.$slots.default || [];
         if (!this.loading && this.remote && this.query === '' && !options.length) status = false;
-        if(this.remote && this.showBottom) status =true;
         return this.visible && status;
       },
       selectInputStyles () {
