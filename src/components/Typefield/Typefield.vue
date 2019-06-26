@@ -236,9 +236,9 @@ export default {
           e.target.value = val;
         }
       }
-      this.$refs.input.blur();
+      // this.$refs.input.blur();
       this.$emit('input', this.cardFormatValue(val));
-      this.$emit('on-blur')
+      this.$emit('on-blur',e)
       this.dispatch('FormItem', 'on-form-blur', val)
     },
     cardFormatValue(val){
@@ -250,7 +250,7 @@ export default {
     blur () {
       this.havefocused = false;
       this.$refs.input.blur();
-      this.$emit('on-blur')
+      // this.$emit('on-blur')
       this.$emit('input', this.cardFormatValue(this.inputValue));
       this.dispatch('FormItem', 'on-form-blur', this.inputValue)
     },
