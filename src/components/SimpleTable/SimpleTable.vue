@@ -1104,6 +1104,9 @@ export default {
         let transformTop =
           Math.floor(this.$refs.body.scrollTop / this.itemHeight) *
           this.itemHeight
+        if(this.$refs.fixedBody){
+            this.$refs.fixedBody.scrollTop = transformTop
+          }
         if (this.scrollbarToZero) {
           transformTop = 0
           this.$refs.body.scrollTop = 0
@@ -1157,7 +1160,9 @@ export default {
               if (column.width) {
                 width = column.width || ''
               } else {
-                if (width < 100) width = 100
+                let min = column.minWidth?column.minWidth:100
+                if (width < min) width = min
+                // if (width < 100) width = 100
               }
               this.cloneColumns[i]._width = width || ''
               this.tableWidth = this.cloneColumns
