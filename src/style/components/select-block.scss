@@ -84,9 +84,8 @@ $selectBlock-prefix-cls:  "#{$css-prefix}select-block";
         font-size: 22px;
         content: '\E734';
         color: #fff;
-        position: absolute;
-        top: 3px;
-        right: 8px;
+        position: relative;
+        top: 2px;
     }
     &:hover:after{
         color: $no-select-color;
