@@ -1054,6 +1054,7 @@ export function dateFormat(date, fmt) {
 
   return fmt
 }
+
 /**
  * @description simpletable 防抖函数
  * @date 2019-06-19
@@ -1062,9 +1063,34 @@ export function dateFormat(date, fmt) {
  * @auther 谭露阳
  */
 export function debounce(fun,delay){
-  let timer = null 
+  let timer = null
   return function(){
     timer&&clearTimeout(timer)
     timer = setTimeout(fun,delay)
+  }
+}
+
+/**
+ * @description 带立即执行的防抖函数
+ * @date 2019-06-27
+ * @param {Function} fun 需要添加防抖的函数
+ * @param {Number} delay 延时时间，毫秒
+ * @param {Boolean} immediate 是否立即执行
+ */
+export function debounceWithImmediate(fun, delay = 100, immediate = false) {
+  let timer = 0
+
+  return function(...args) {
+    // 立即执行
+    if (immediate || delay === 0) {
+      fun.apply(this, args)
+      return
+    }
+
+    // 防抖
+    if (timer) clearTimeout(timer)
+    timer = setTimeout(() => {
+      fun.apply(this, args)
+    }, delay)
   }
 }
