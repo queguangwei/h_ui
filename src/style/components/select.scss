@@ -259,7 +259,7 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
         color: $no-select-color;
         position: absolute;
         top: 8px;
-        right: 8px;
+        right: 2px;
     }
     &-hideMultHead-select,&-hideMultHead-select:after{
         color: $selected-color;
@@ -317,13 +317,18 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
     }
 }
 .#{$select-prefix-cls}-hideMult .#{$select-item-prefix-cls} {
+    padding-right: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
     &:after{
         @include h-icon();
         font-size: 22px;
         content: '\E734';
         color: #fff;
-        position: relative;
-        top: 2px;
+        position: absolute;
+        top: 5px;
+        right: 2px;
     }
     &:hover:after{
         color: $no-select-color;
