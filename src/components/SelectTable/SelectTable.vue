@@ -847,6 +847,12 @@ export default {
       // let _this = this
       if (!this.multiple) {
         let label = value
+        if (this.options.length) {
+          let option = this.options.filter(opt => opt.value === value)[0]
+          if (option) {
+            label = option.label
+          }
+        }
         if (this.isBlock) {
           this.findChild(child => {
             this.options.forEach((col, i) => {

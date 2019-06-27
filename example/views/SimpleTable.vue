@@ -13,7 +13,7 @@
     <!-- :multiLevel="multiLevel1" -->
     <!-- <h-msg-box v-model="showmsg" :width="1000"> -->
       <!-- notAdaptive  -->
-    <h-simple-table ref="simTable" :summationData="summationData" :columns="columnsBig1" border :data="bigData" height="300" @on-selection-change="selsetChange" @on-sort-change="selsetChange">
+    <h-simple-table ref="simTable" :summationData="summationData" :columns="columnsBig1" border :data="bigData" height="300" @on-selection-change="selsetChange" @on-sort-change="selsetChange" highlightRow>
     </h-simple-table>
     <!-- </h-msg-box> -->
     <h-button type="primary" size="large" @click="exportData(1)"><h-icon type="ios-download-outline"></h-icon> 导出原始数据</h-button>
@@ -692,13 +692,13 @@ export default {
         }
     ]
     this.columnsBig1=[
-        // {
-        //   type: 'index',
-        //   align: 'center',
-        //   width:200,
-        //   sortable:true,
-        //   fixed:'left',
-        // },
+        {
+          type: 'index',
+          align: 'center',
+          width:200,
+          sortable:true,
+          // fixed:'left',
+        },
         // {
         //   type: 'selection',
         //   align: 'center',
@@ -706,30 +706,30 @@ export default {
         //   width:200,
         //   // fixed:'left'
         // },
-        // {
-        //   title: '姓名',
-        //   key: 'fundId',
-        //   width:200,
-        //   sortable:true,
-        //   remote: true,
-        //   // fixed:'left',
-        //   renderHeader:(h, params)=>{
-        //     return h('span','123')
-        //   },
-        //   render:(h, params)=>{
-        //     return h('span',params.row.fundId+' 567')
-        //     // return params.row.fundId+' 123'
-        //   }
-        //   // hiddenCol:true,
-        //   // align: 'center',
-        //   // sortable:true,
-        // },
+        {
+          title: '姓名',
+          key: 'fundId',
+          width:200,
+          sortable:true,
+          remote: true,
+          // fixed:'left',
+          renderHeader:(h, params)=>{
+            return h('span','123')
+          },
+          render:(h, params)=>{
+            return h('span',params.row.fundId+' 567')
+            // return params.row.fundId+' 123'
+          }
+          // hiddenCol:true,
+          // align: 'center',
+          // sortable:true,
+        },
         {
           title: '年龄',
           key: 'tradeDate',
           minWidth:200,
-          // sortable:true,
-          fixed:'left',
+          sortable:true,
+          // fixed:'left',
         },
         {
           title: '地址',
