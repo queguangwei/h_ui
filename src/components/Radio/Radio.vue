@@ -1,6 +1,6 @@
 <template>
-  <label :class="wrapClasses" @click="radioClick">
-    <span :class="radioClasses">
+  <label :class="wrapClasses">
+    <span :class="radioClasses" @click="radioClick">
       <span :class="innerClasses"></span>
       <input
         ref="input"
@@ -144,6 +144,7 @@
       },
       radioClick(){
         this.$emit('on-click')
+        this.dispatch('RadioGroup', 'on-group-click')
       },
       updateValue () {
         this.currentValue = this.value === this.trueValue;
