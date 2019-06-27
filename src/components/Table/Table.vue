@@ -445,7 +445,7 @@ export default {
           if ((this.bodyHeight > this.bodyRealHeight && this.data.length>0) || (this.data.length === 0)) {
             width = this.tableWidth;
           } else {
-            width = this.tableWidth - this.scrollBarWidth;
+            width = this.tableWidth - this.scrollBarWidth-1;
           }
         }
         style.width = `${width}px`;
@@ -568,10 +568,10 @@ export default {
            if(this.fixedAutoHeight){
              if(this.bodyRealHeight<height){
                 style.height=`${this.bodyRealHeight}px`;
-             }           
+             }
            }
           }
-        if (this.maxHeight) style.maxHeight = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`       
+        if (this.maxHeight) style.maxHeight = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`
       }
       return style;
     },
@@ -738,20 +738,13 @@ export default {
           let $td =null
           let curTh = null
           if(this.autoHeadWidth||this.data.length==0 || !this.$refs.tbody){
-            $td = this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0].querySelectorAll('th');
+            $td = this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0].querySelectorAll('.h-table-cell>span');
           }else{
             $td = this.$refs.tbody.$el.querySelectorAll('tbody tr')[0].querySelectorAll('td');
-            // if(this.$refs.thead){
-            //   curTh = this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0].querySelectorAll('th');
-            // }
           }
           for (let i = 0; i < $td.length; i++) {    // can not use forEach in Firefox
             const column = this.cloneColumns[i];
             let width = parseInt(getStyle($td[i], 'width'));
-            // if(curTh&&curTh[i]&&width){
-            //   let thW = parseInt(getStyle(curTh[i], 'width'));
-            //   width = thW>width?thW:width
-            // }
             if (column.width) {
                 width = column.width||width;
             } else {
@@ -778,7 +771,8 @@ export default {
           this.columnsWidth = columnsWidth;
           this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
           this.headerRealHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
-        },0)
+        }, 10)
+
         return;
       }
 
@@ -1528,7 +1522,7 @@ export default {
         })
         return this.formatdata(total,format);
     },
-    formatdata(value,type){     
+    formatdata(value,type){
       value  = value.toString().replace(/[^0-9\.-]/g,"")||'';
       var firstChar = value.substring(0,1)||'';
       if (type == "money") {
@@ -1539,7 +1533,7 @@ export default {
         var intLength = valArr.length>0?valArr[0].length:value;
           value=value.replace("-", "")
           if (value=='') return;
-            value = Number(value).toFixed(2);     
+            value = Number(value).toFixed(2);
           if (firstChar=='-') {
             value = '-'+value;
           }
@@ -1574,7 +1568,7 @@ export default {
       if(this.baseInx>this.offsetInx){
         min = this.offsetInx
         max = this.baseInx-1
-      }   
+      }
       for(var i=0;i<this.rebuildData.length;i++){
         if(this.objData[i]._isDisabled || (i==this.baseInx)) continue
         let index = this.rebuildData[i]._index
@@ -1687,7 +1681,7 @@ export default {
                 this.fixedBodyClientHeight=-1;
               }
           });
-          
+
         },
         deep: true
       },
