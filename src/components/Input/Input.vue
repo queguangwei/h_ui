@@ -11,12 +11,12 @@
             v-if="clearable&&type!='textarea'"
             @on-click="handleClear"></Icon>
       <Icon :name="icon"
-            :class="[prefixCls + '-icon',prefixCls + '-icon-normal']"
+            :class="[prefixCls + '-icon',prefixCls + '-icon-normal']" :style="iconStyle"
             v-if="icon&&type!='textarea'"
             @on-click="handleIconClick"></Icon>
       <transition name="fade">
         <Icon name="load-c"
-              class="h-icon h-load-loop"
+              class="h-icon h-load-loop" 
               :class="[prefixCls + '-icon', prefixCls + '-icon-validate']"
               v-if="!icon"></Icon>
       </transition>
@@ -33,6 +33,7 @@
              :autofocus="autofocus"
              :spellcheck="spellcheck"
              :autocomplete="autocomplete"
+             :style="inputStyle"
              @keyup.enter="handleEnter"
              @keyup="handleKeyup"
              @keypress="handleKeypress"
@@ -88,7 +89,7 @@
       </ul>
     </div>
     <div v-if="showWordLimit" :class="[prefixCls + '-word-limit']">
-     {{currentLength}}/{{maxlength}}{{limitTip}}
+     {{currentLength}}/{{maxlength}} {{limitTip}}
     </div>
   </div>
 </template>
@@ -318,6 +319,23 @@ export default {
       }
 
       return this.value.length
+    },
+    iconStyle(){
+      let style={};
+      if(this.clearable){
+        style.width=26+'px'
+      }
+      return style;
+    },
+    inputStyle(){
+      let  style={};
+      if(this.clearable){
+        style.paddingRight=30+'px';
+        if(this.icon){
+            style.paddingRight=42+'px';
+        }
+      }
+      return style;
     }
   },
   methods: {
@@ -342,7 +360,9 @@ export default {
       this.$emit('on-click', event)
     },
     handleClear(event){
-     this.currentValue='';
+    // this.currentValue='';
+     this.$emit('input', "")
+     this.$emit('on-input-change', event)
      this.$emit('on-clear',event)
     },
     handleFocus(event) {
@@ -505,9 +525,10 @@ export default {
       }
     },
     showClear(){
-      let right=this.icon?20:0;
+      let right=this.icon?22:10;
        this.clearstyle= {
-         right:right+'px'
+         right:right+'px',
+         width:'16px'
        }
     }
   },
