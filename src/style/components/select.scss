@@ -54,7 +54,7 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
             padding-left: 2px;
             margin-left:8px;
             background: #F5F5F5 !important;
-            border: 1px solid $border-color-split !important;  
+            border: 1px solid $border-color-split !important;
             &>.#{$css-prefix}icon {
               position: absolute;
               right: 0;
@@ -314,7 +314,7 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
     .#{$select-item-prefix-cls}-selected.#{$select-item-prefix-cls}-focus {
         color: shade($selected-color, 10%);
         background: #fff;
-    }   
+    }
 }
 .#{$select-prefix-cls}-hideMult .#{$select-item-prefix-cls} {
     &:after{
@@ -322,9 +322,8 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
         font-size: 22px;
         content: '\E734';
         color: #fff;
-        position: absolute;
-        top: 3px;
-        right: 8px;
+        position: relative;
+        top: 2px;
     }
     &:hover:after{
         color: $no-select-color;
