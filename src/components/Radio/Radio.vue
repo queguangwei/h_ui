@@ -1,6 +1,6 @@
 <template>
-  <label :class="wrapClasses" @click="radioClick">
-    <span :class="radioClasses">
+  <label :class="wrapClasses">
+    <span :class="radioClasses" @click="radioClick">
       <span :class="innerClasses"></span>
       <input
         ref="input"
@@ -12,7 +12,7 @@
         :readonly = "readonly"
         :checked="currentValue"
         @change="change">
-    </span><slot>{{ label }}</slot>
+    </span><slot>{{ text||label }}</slot>
   </label>
 </template>
 <script>
@@ -39,6 +39,11 @@
       },
       label: {
         type: [String, Number]
+      },
+      //显示文字，层级高于label，低于slot
+      text:{
+        type: [String, Number, Boolean],
+        default:null
       },
       disabled: {
         type: Boolean,
@@ -139,6 +144,7 @@
       },
       radioClick(){
         this.$emit('on-click')
+        this.dispatch('RadioGroup', 'on-group-click')
       },
       updateValue () {
         this.currentValue = this.value === this.trueValue;
@@ -160,7 +166,7 @@
         this.updateValue();
       },
       currentValue(val) {
-        this.viewValue = val
+        this.viewValue = this.text||val
       }
     }
   };

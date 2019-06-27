@@ -12,7 +12,7 @@
           :clickToSelect="clickToSelect"
           @mouseenter.native.stop="handleMouseIn(row._index)"
           @mouseleave.native.stop="handleMouseOut(row._index)"
-          @click.native="clickCurrentRow($event,row._index)"
+          @click.native="clickCurrentRow($event,row._index,index)"
           @dblclick.native.stop="dblclickCurrentRow(row._index)">
           <td v-for="(column, columnIdx) in columns" :class="alignCls(column, row)">
             <Cell
@@ -109,12 +109,12 @@
           if (this.sum) return           
           this.$parent.handleMouseOut(_index);
         },
-        clickCurrentRow (event,_index) {
+        clickCurrentRow (event,_index,curIndex) {
           if (this.sum||this.objData[_index]._isDisabled) return           
           if(this.rowSelect){
-            this.$parent.toggleSelect(_index,event);
+            this.$parent.toggleSelect(_index,event,curIndex);
           }
-          this.$parent.clickCurrentRow(event,_index);
+          this.$parent.clickCurrentRow(event,_index,curIndex);
         },
         dblclickCurrentRow (_index) {
           if (this.sum) return           

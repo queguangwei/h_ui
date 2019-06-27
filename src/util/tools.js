@@ -172,7 +172,7 @@ export function scrollTop(el, from = 0, to, duration = 500) {
       window.webkitRequestAnimationFrame ||
       window.mozRequestAnimationFrame ||
       window.msRequestAnimationFrame ||
-      function(callback) {
+      function (callback) {
         return window.setTimeout(callback, 1000 / 60)
       }
   }
@@ -210,7 +210,7 @@ const MOZ_HACK_REGEXP = /^moz([A-Z])/
 
 function camelCase(name) {
   return name
-    .replace(SPECIAL_CHARS_REGEXP, function(_, separator, letter, offset) {
+    .replace(SPECIAL_CHARS_REGEXP, function (_, separator, letter, offset) {
       return offset ? letter.toUpperCase() : letter
     })
     .replace(MOZ_HACK_REGEXP, 'Moz$1')
@@ -229,10 +229,10 @@ export function getStyle(element, styleName) {
     if (isIEOr && styleName == 'width') {
       return computed
         ? parseFloat(computed[styleName]) +
-            parseInt(computed['padding-left']) +
-            parseInt(computed['padding-right']) +
-            parseInt(computed['border-left-width']) +
-            parseInt(computed['border-right-width'])
+        parseInt(computed['padding-left']) +
+        parseInt(computed['padding-right']) +
+        parseInt(computed['border-left-width']) +
+        parseInt(computed['border-right-width'])
         : null
     } else {
       return element.style[styleName] || computed ? computed[styleName] : null
@@ -500,7 +500,7 @@ export function removeClass(el, cls) {
 export function findInx(arr, fun) {
   if (!Array.prototype.findIndex) {
     Object.defineProperty(Array.prototype, 'findIndex', {
-      value: function(predicate) {
+      value: function (predicate) {
         // 1. Let O be ? ToObject(this value).
         if (this == null) {
           throw new TypeError('"this" is null or not defined')
@@ -818,67 +818,67 @@ export function toFixedForString(str, num) {
 }
 
 // 获取当前节点
-function findCurNode(obj){
-  while(obj.parentElement.parentElement.className.indexOf('h-form-item-content')==-1){
+function findCurNode(obj) {
+  while (obj.parentElement.parentElement.className.indexOf('h-form-item-content') == -1) {
     obj = obj.parentNode;
   }
-  if(obj.className.indexOf('h-radio')!=-1 || obj.className.indexOf('h-checkbox')!=-1){
-    return [obj,true];
-  }else{
-    return [obj.parentNode,false];
+  if (obj.className.indexOf('h-radio') != -1 || obj.className.indexOf('h-checkbox') != -1) {
+    return [obj, true];
+  } else {
+    return [obj.parentNode, false];
   }
 }
-function isButtonOr(obj){
-  if(obj.nodeName.toLowerCase() === 'button'){
+function isButtonOr(obj) {
+  if (obj.nodeName.toLowerCase() === 'button') {
     return true;
-  }else{
+  } else {
     return false
   }
 }
 // 获取下一个对象
-function getNextElement(ele,field) {
-    var isButton = isButtonOr(field)
-    if(isButton){
-      return field.nextElementSibling?field.nextElementSibling:null;
+function getNextElement(ele, field) {
+  var isButton = isButtonOr(field)
+  if (isButton) {
+    return field.nextElementSibling ? field.nextElementSibling : null;
+  }
+  var curArr = findCurNode(field);
+  var curNode = curArr[0];
+  var isRadioOrCheck = curArr[1];
+  var nextNode = null;
+  curNode.__vue__.blur();
+  var form = ele;
+  var nodes = form.children;
+  var index = 0;
+  if (isRadioOrCheck && curNode.nextElementSibling) {
+    nextNode = curNode.nextElementSibling;
+  } else {
+    if (isRadioOrCheck && !curNode.nextElementSibling) {
+      curNode = curNode.parentNode;
     }
-    var curArr = findCurNode(field);
-    var curNode = curArr[0];
-    var isRadioOrCheck = curArr[1];
-    var nextNode = null;
-    curNode.__vue__.blur();
-    var form = ele;
-    var nodes = form.children;
-    var index = 0;
-    if(isRadioOrCheck && curNode.nextElementSibling){
-      nextNode = curNode.nextElementSibling;
-    }else{
-      if(isRadioOrCheck && !curNode.nextElementSibling){
-        curNode = curNode.parentNode;
-      }
-      for(var i=0;i<nodes.length;i++){
-        if (nodes[i].children&&curNode == nodes[i].children[1].children[0]){
-          index = i+1;
-          break;
-        }
-      }
-      isRadioOrCheck = nodes[index].children[1].children[0].className.indexOf('h-radio-group')!=-1 || nodes[index].children[1].children[0].className.indexOf('h-checkbox-group')!=-1;
-      if (index == 0) return;
-      if(isRadioOrCheck){
-        nextNode = nodes[index].children[1].children[0].children[0];
-      }else{
-        nextNode = nodes[index].children[1].children[0];
+    for (var i = 0; i < nodes.length; i++) {
+      if (nodes[i].children && curNode == nodes[i].children[1].children[0]) {
+        index = i + 1;
+        break;
       }
     }
-    return nextNode;
+    isRadioOrCheck = nodes[index].children[1].children[0].className.indexOf('h-radio-group') != -1 || nodes[index].children[1].children[0].className.indexOf('h-checkbox-group') != -1;
+    if (index == 0) return;
+    if (isRadioOrCheck) {
+      nextNode = nodes[index].children[1].children[0].children[0];
+    } else {
+      nextNode = nodes[index].children[1].children[0];
+    }
+  }
+  return nextNode;
 }
 //获取上一个对象
-function getPrevioueElement(ele,field){
+function getPrevioueElement(ele, field) {
   var isButton = isButtonOr(field)
   var curNode = null
   var isRadioOrCheck = false
-  if(isButton){
+  if (isButton) {
     curNode = field;
-  }else{
+  } else {
     var curArr = findCurNode(field);
     curNode = curArr[0];
     isRadioOrCheck = curArr[1];
@@ -888,31 +888,31 @@ function getPrevioueElement(ele,field){
   var index = 0;
   var previousNode = null;
   curNode.__vue__.blur();
-  if((isButton&&curNode.previousElementSibling)||isRadioOrCheck && curNode.previousElementSibling){
+  if ((isButton && curNode.previousElementSibling) || isRadioOrCheck && curNode.previousElementSibling) {
     return curNode.previousElementSibling;
-  }else{
-    if(isRadioOrCheck && !curNode.previousElementSibling){
+  } else {
+    if (isRadioOrCheck && !curNode.previousElementSibling) {
       curNode = curNode.parentNode;
     }
-    for(var i=nodes.length-1;i>-1;i--){
-      if (nodes[i].children&&curNode == nodes[i].children[1].children[0]){
-        index = i-1;
+    for (var i = nodes.length - 1; i > -1; i--) {
+      if (nodes[i].children && curNode == nodes[i].children[1].children[0]) {
+        index = i - 1;
         break;
       }
     }
     if (index == -1) index = 0;
-    isRadioOrCheck = nodes[index].children[1].children[0].className.indexOf('h-radio-group')!=-1 || nodes[index].children[1].children[0].className.indexOf('h-checkbox-group')!=-1;
-    if(isRadioOrCheck){
+    isRadioOrCheck = nodes[index].children[1].children[0].className.indexOf('h-radio-group') != -1 || nodes[index].children[1].children[0].className.indexOf('h-checkbox-group') != -1;
+    if (isRadioOrCheck) {
       let curObj = nodes[index].children[1].children[0];
-      previousNode = curObj.children[curObj.children.length-1];
-    }else{
+      previousNode = curObj.children[curObj.children.length - 1];
+    } else {
       previousNode = nodes[index].children[1].children[0];
     }
     return previousNode;
   }
   var form = ele;
   var nodes = form.children;
-  var index = form.children-1;
+  var index = form.children - 1;
 }
 
 /* 表单键盘Enter事件
@@ -922,28 +922,28 @@ function getPrevioueElement(ele,field){
 ele
 evt
 */
-export function enterHandler(ele,evt) {
+export function enterHandler(ele, evt) {
   ele = ele.$el
   var isie = (document.all) ? true : false;
   var key;
   var srcobj;
   if (isie) {
     key = event.keyCode;
-    srcobj=event.srcElement;
+    srcobj = event.srcElement;
   } else {
     key = evt.which;
-    srcobj=evt.target;
+    srcobj = evt.target;
   }
-  if(srcobj.type =='submit' ||srcobj.type=='reset' || srcobj.type=='textarea' || srcobj.type=='') return
+  if (srcobj.type == 'submit' || srcobj.type == 'reset' || srcobj.type == 'textarea' || srcobj.type == '') return
   //enter键盘 下键盘
-  if(evt.keyCode == 13) {
-    if(isie){
-      evt.keyCode=9;
+  if (evt.keyCode == 13) {
+    if (isie) {
+      evt.keyCode = 9;
     } else {
-      var el=getNextElement(ele,evt.target);
-      if(!el){
+      var el = getNextElement(ele, evt.target);
+      if (!el) {
         return false;
-      }else{
+      } else {
         el.__vue__.focus();
       }
     }
@@ -951,66 +951,146 @@ export function enterHandler(ele,evt) {
 }
 
 
-function getCurNode(obj){
-  while(obj.className.indexOf('curItemClass')==-1){
+function getCurNode(obj) {
+  while (obj.className.indexOf('curItemClass') == -1) {
     obj = obj.parentNode;
   }
   return obj
 }
-function getElement(ele,field,status){
+function getElement(ele, field, status) {
   var nodes = ele.querySelectorAll('.curItemClass');
   var index = 0;
   var curNode = getCurNode(field);
   curNode.__vue__.blur();
-  for(var i=0;i<nodes.length;i++){
-    if (nodes[i]&&curNode == nodes[i]){
+  nodes = Array.prototype.slice.call(nodes).sort((a,b)=>{
+    if(Number(a.dataset.index)>Number(b.dataset.index)){
+      return 0
+    }else{
+      return -1
+    }
+  })
+  for (var i = 0; i < nodes.length; i++) {
+    if (nodes[i] && curNode == nodes[i]) {
       index = i;
       break;
     }
   }
-  if(status){
-    index = index +1
-    index = index>=nodes.length?nodes.length-1:index
-  }else{
-    index = index -1
-    index = index<0?0:index
+  if (status) {
+    index = index + 1
+    index = index >= nodes.length ? nodes.length - 1 : index
+  } else {
+    index = index - 1
+    index = index < 0 ? 0 : index
   }
   return nodes[index];
 }
-export function enterHandler1(ele,evt) {
+export function enterHandler1(ele, evt) {
   ele = ele.$el
   var isie = (document.all) ? true : false;
   var key;
   var srcobj;
   if (isie) {
     key = event.keyCode;
-    srcobj=event.srcElement;
+    srcobj = event.srcElement;
   } else {
     key = evt.which;
-    srcobj=evt.target;
+    srcobj = evt.target;
   }
   //enter键盘 下键盘
-  if(evt.keyCode == 13 || evt.keyCode == 40) {
+  if (evt.keyCode == 13 || evt.keyCode == 40) {
     evt.preventDefault();
-    if(isie){
-      evt.keyCode=9;
+    if (isie) {
+      evt.keyCode = 9;
     } else {
-      var el=getElement(ele,evt.target,true);
-      if(!el){
+      var el = getElement(ele, evt.target, true);
+      if (!el) {
         return false;
-      }else{
+      } else {
         el.__vue__.focus();
       }
     }
   }
   // 上键盘
-  if(evt.keyCode == 38) {
+  if (evt.keyCode == 38) {
     evt.preventDefault();
-    var el=getElement(ele,evt.target,false);
-    if(!el){
+    var el = getElement(ele, evt.target, false);
+    if (!el) {
       return false;
-    }else{
+    } else {
       el.__vue__.focus();
     }
+  }
+}
+
+/**
+ * @description Date 对象格式化函数
+ * @date 2019-06-13
+ * @param {Date} date
+ * @param {String} fmt
+ * @auther 崔杨
+ */
+export function dateFormat(date, fmt) {
+  if (Object.prototype.toString.call(date) !== '[object Date]') return
+
+  let expMap = {
+    'q+': Math.floor((date.getMonth() + 3) / 3), // 季度
+    'M+': date.getMonth() + 1, // 月份
+    'd+': date.getDate(), // 日
+    'h+': date.getHours(), // 小时
+    'm+': date.getMinutes(), // 分
+    's+': date.getSeconds(), // 秒
+    'S': date.getMilliseconds() // 毫秒
+  }
+
+  if (/(y+)/.test(fmt)) {
+    fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
+  }
+
+  for (let k in expMap) {
+    if (new RegExp('(' + k + ')').test(fmt)) {
+      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (expMap[k]) : (('00' + expMap[k]).substr(('' + expMap[k]).length)))
+    }
+  }
+
+  return fmt
+}
+
+/**
+ * @description simpletable 防抖函数
+ * @date 2019-06-19
+ * @param {fun} 方法
+ * @param {delay} 延时
+ * @auther 谭露阳
+ */
+export function debounce(fun,delay){
+  let timer = null
+  return function(){
+    timer&&clearTimeout(timer)
+    timer = setTimeout(fun,delay)
+  }
+}
+
+/**
+ * @description 带立即执行的防抖函数
+ * @date 2019-06-27
+ * @param {Function} fun 需要添加防抖的函数
+ * @param {Number} delay 延时时间，毫秒
+ * @param {Boolean} immediate 是否立即执行
+ */
+export function debounceWithImmediate(fun, delay = 100, immediate = false) {
+  let timer = 0
+
+  return function(...args) {
+    // 立即执行
+    if (immediate || delay === 0) {
+      fun.apply(this, args)
+      return
+    }
+
+    // 防抖
+    if (timer) clearTimeout(timer)
+    timer = setTimeout(() => {
+      fun.apply(this, args)
+    }, delay)
   }
 }

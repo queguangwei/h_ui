@@ -29,6 +29,7 @@
       :row="row"
       :column="column"
       :index="index"
+      :sum="sum"
       :render="column.render"></Cell>
   </div>
 </template>
@@ -101,7 +102,7 @@ export default {
         this.$parent.table.dragEl = event.currentTarget;
       },
       toggleSelect (status,event) {
-        this.$parent.$parent.$parent.toggleSelect(this.index,event);
+        this.$parent.$parent.$parent.toggleSelect(this.index,event,this.naturalIndex);
         this.$parent.$parent.$parent.clickCurrentBtn(this.index)
       },
       clickCurrentRow () {

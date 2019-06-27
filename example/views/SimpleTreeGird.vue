@@ -8,7 +8,7 @@
     <h-button @on-click="selectData(false)">不选择某行</h-button>
     <!-- isCheckbox checkStrictly -->
     <!-- selectRoot -->
-    <h-simple-tree-gird ref="treeGird" canMove :columns="columns1" isCheckbox no-data-text="123" :data="treedata" canDrag :height="400" @on-select-root="selectChange" @on-expand="expand" @on-drag="expand" @on-row-click="selectChange" @on-scroll="selectChange">
+    <h-simple-tree-gird ref="treeGird" canMove @on-move="move" :columns="columns1" isCheckbox no-data-text="123" :data="treedata" canDrag :height="400" @on-select-root="selectChange" @on-expand="expand" @on-drag="expand" @on-row-click="selectChange" @on-scroll="selectChange">
       <span slot="loading">1244</span>
     </h-simple-tree-gird>
   </div>
@@ -135,6 +135,9 @@ export default {
     }
   },
   methods: {
+    move(i,j){
+      console.log(i,j)
+    },
     convertTreeData(rows, attributes) {
       var keyNodes = {}, parentKeyNodes = {};
         for (var i = 0; i < rows.length; i++) {

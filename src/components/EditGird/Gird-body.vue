@@ -30,6 +30,7 @@
               :showEditInput="showEditInput"
               :option="selectOption[inx]"
               :treeOption="treeOption[inx]"
+              :height="height"
               @on-editselect-change="editselectChange"
               @on-editinput-change="editinputChange"
               @on-editinput-blur="editinputBlur"
@@ -100,7 +101,8 @@
           :typeName = "typeName"
           @mouseenter.native.stop="handleMouseIn(row._index)"
           @mouseleave.native.stop="handleMouseOut(row._index)"
-          @click.native="clickCurrentRow(row._index)">
+          @click.native="clickCurrentRow(row._index)"
+          v-show="!row.hidden">
           <td v-for="(column,inx) in columns" :class="alignCls(column, row)" :key="inx">
             <Cell
               :prefix-cls="prefixCls"
@@ -111,12 +113,21 @@
               :column="column"
               :natural-index="index"
               :index="row._index"
+              :columnIndex = "inx"
               :checked="rowChecked(row._index)"
               :disabled="rowDisabled(row._index)"
               :expanded="rowExpanded(row._index)"
               :showEditInput="showEditInput"
               :option="selectOption[inx]"
               :treeOption="treeOption[inx]"
+              @on-editselect-change="editselectChange"
+              @on-editinput-change="editinputChange"
+              @on-editinput-blur="editinputBlur"
+              @on-editarea-change="editAreaChange"
+              @on-editarea-blur="editAreaBlur"
+              @on-typefield-blur="typefieldBlur"
+              @on-typefield-change="typefieldChange"
+              @on-editdate-change="editdateChange"
             >
               <span v-if="columns.length>0 && inx==(columns[0].type=='index'?1:0)">
                 <Icon name = "play_fill" :class="iconClass(row._index)" v-if="(row.children && row.children.length!=0)||row.foldable" @on-click="toggleExpand(row._index,$event)"></Icon>
@@ -138,7 +149,7 @@
             :columns = "columns"
             :columnsWidth="columnsWidth"
             :showEditInput="showEditInput"
-            :option="selectOption[index]"
+            :option="selectOption"
             :treeOption="treeOption[index]"
             :isCheckbox="isCheckbox">
           </Tree-table>
@@ -180,6 +191,7 @@
         option:Array,
         treeOption:Array,
         titleRender:Function,
+        height: Number
       },
       data(){
         return{
@@ -297,10 +309,10 @@
           }
           this.updateCheckUp(parentKey);
         },
-        changeSelect (row,e) {
+        changeSelect (row, e, checked) {
           let selectInx=[];
-          e.stopPropagation();
-          let status = !row.checked;
+          if (e) e.stopPropagation();
+          let status = checked || !row.checked;
           const node = this.flatState[row._index].node;
           this.$set(node, 'checked', status);
           this.$parent.objData[node._index]._isChecked = status;
@@ -351,6 +363,20 @@
         if (this.typeName == 'treeGird') {
           this.treeData = this.data;
           this.flatState = this.compileFlatState();
+
+          // 设置默认选中
+          this.treeData.forEach(row => {
+            if (row.checked) {
+              this.changeSelect(row, null, row.checked)
+            } else {
+              let childrenStr = JSON.stringify(row.children)
+              let childrenHasChecked = /"checked":true/.test(childrenStr)
+
+              if (childrenHasChecked) {
+                row.indeterminate = true
+              }
+            }
+          })
         }
       },
       watch:{

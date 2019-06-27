@@ -102,9 +102,12 @@
 
       </h-form>
     <!-- </h-msg-box> -->
+    {{valll}}
+    <Hello v-model="valll"></Hello>
   </div>
 </template>
 <script>
+import Hello from './hello.vue'
 import {enterHandler} from '../../src/util/tools.js'
 let bigData = [];
 for(let i=0;i<60;i++){
@@ -114,8 +117,10 @@ for(let i=0;i<60;i++){
   bigData.push(obj);
 }
 export default {
+  components:{Hello},
   data () {
     return {
+      valll:'',
       columns123:[
         {
           type:'selection',

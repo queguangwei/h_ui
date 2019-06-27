@@ -35,30 +35,34 @@
         <h-input v-model="columnText"
                  :placeholder="column.placeholder"
                  :icon="column.icon"
+                 :filterRE="column.filterRE"
                  class="canEdit"
                  @on-change="editinputChange"
                  @on-blur="editinputBlur"></h-input>
       </template>
       <template v-if="renderType === 'textArea'">
-        <textarea v-model="columnArea"
+        <textarea :value="columnArea"
                   :placeholder="column.placeholder"
                   rows="column.rows"
                   :class="areaClass"
                   @input="editAreaChange"
                   @blur="editAreaBlur"></textarea>
-        <!-- <h-input v-model="columnArea" type="textarea" :placeholder="column.placeholder" :rows="column.rows" class="canEdit" @on-change="editAreaChange" @on-blur="editAreaBlur"></h-input> -->
       </template>
       <template v-if="renderType === 'number'">
         <h-input v-model="columnNumber"
                  class="canEdit"></h-input>
       </template>
       <template v-if="renderType === 'money'">
-        <Typefield v-model="columnMoney"
+        <Typefield :value="columnMoney"
+                   ref="money"
                    :placeholder="column.placeholder"
                    :integerNum="column.integerNum || '10'"
                    :suffixNum="column.suffixNum"
                    :bigTips="column.bigTips || false"
                    :isround="column.isround || false"
+                   :nonNegative="column.nonNegative"
+                   :divided="column.divided"
+                   @input="typefieldChange"
                    @on-blur="typefieldBlur"
                    class="canEdit"></Typefield>
       </template>
@@ -83,6 +87,7 @@
                   :transfer="column.transfer"
                   :isString="column.multiple||false"
                   :label-in-value="column.multiple|| column.singleShowLabel || false"
+                  :autoPlacement="column.autoPlacement === undefined ? true : column.autoPlacement"
                   @on-change="editselectChange"
                   class="canEdit">
           <h-option v-for="(item,i) in option"
@@ -101,6 +106,7 @@
               :editable="column.editable"
               :showFormat="true"
               :transfer="column.transfer"
+              :autoPlacement="column.autoPlacement === undefined ? true : column.autoPlacement"
               @on-change="editdateChange"
               class="canEdit"></Date>
       </template>
@@ -175,11 +181,14 @@ import {
   getHMS,
   typeOf
 } from '../../util/tools.js'
+import Emitter from '../../mixins/emitter'
+
 const hOption = hSelect.Option
 const hOptionGroup = hSelect.OptionGroup
 
 export default {
   name: 'GirdCell',
+  mixins: [Emitter],
   directives: { clickoutside },
   components: {
     Icon,
@@ -216,7 +225,8 @@ export default {
     fixed: {
       type: [Boolean, String],
       default: false
-    }
+    },
+    height: Number
   },
   data() {
     return {
@@ -267,11 +277,12 @@ export default {
             !this.fixed &&
             this.column.fixed &&
             (this.column.fixed === 'left' || this.column.fixed === 'right'),
-          // [`${this.prefixCls}-cell-ellipsis`]: this.column.ellipsis || false,
           [`${this.prefixCls}-cell-error`]: this.validateState === 'error',
           [`${this.prefixCls}-cell-with-expand`]: this.renderType === 'expand',
           [`${this.prefixCls}-cell-with-render`]:
-            this.render && this.renderType != 'expand'
+            this.render && this.renderType != 'expand',
+          [`${this.prefixCls}-cell-ellipsis-with-render`]: this
+            .ellipsisAndRender
         }
       ]
     },
@@ -296,6 +307,9 @@ export default {
           [`h-input-noresize`]: !this.column.canResize
         }
       ]
+    },
+    ellipsisAndRender() {
+      return this.column.ellipsis && this.render && this.renderType != 'expand'
     }
   },
   methods: {
@@ -408,8 +422,15 @@ export default {
       }
     },
     getFilteredRule(trigger) {
-      const rules = []
-      rules.push(this.rule)
+      // rule 为对象或数组
+      let rules = [].concat(this.rule)
+      rules = rules.map(item => {
+        if (item.test) {
+          item.pattern = item.test
+        }
+        return item
+      })
+
       return rules.filter(
         rule => !rule.trigger || rule.trigger.indexOf(trigger) !== -1
       )
@@ -465,7 +486,13 @@ export default {
         this.index
       )
     },
-    editAreaChange() {
+    editAreaChange(event) {
+      let value = event.target.value
+      if (this.column.filterRE) {
+        value = value.replace(this.column.filterRE, '')
+        event.target.value = value
+      }
+      this.columnArea = value
       this.$emit(
         'on-editarea-change',
         this.columnArea,
@@ -552,6 +579,14 @@ export default {
             : this.arrtoStr(this.selectedLabel)
       }
     },
+    typefieldChange(val) {
+      if (this.column.divided) {
+        let value = this.$refs.money.inputValue
+        this.columnMoney = value
+      } else {
+        this.columnMoney = val
+      }
+    },
     typefieldBlur() {
       this.$emit(
         'on-typefield-blur',
@@ -606,6 +641,10 @@ export default {
               this.parent.$el.querySelector('.h-editgird-body').scrollTop
             fyTip.style.left = left + 'px'
             fyTip.style.top = top + 'px'
+            // 初始校验不通过，提示显示表格外部问题
+            if (top >= this.height) {
+              fyTip.style.display = 'none'
+            }
           }
         })
       }
@@ -643,11 +682,17 @@ export default {
         this.renderType = this.column.type
       }
     }
+
     if (this.column.type === 'selectTree') {
       this.baseData = deepCopy(this.treeOption)
     }
+
     this.render = this.column.render ? true : false
     this.hiddenOther = this.column.hiddenOther ? true : false
+
+    if (this.renderType !== 'normal' && this.column.rule) {
+      this.dispatch('EditGird', 'on-rule-cell-add', this)
+    }
   },
   mounted() {
     let index = this.index
@@ -661,6 +706,15 @@ export default {
     this.$on('close-visible', () => {
       this.setvisible()
     })
+    // 注册全局事件供 editGrid 调用
+    this.$on('validate', callback => {
+      if (this.rule) this.validate('blur', callback)
+    })
+  },
+  beforeDestroy() {
+    if (this.renderType !== 'normal' && this.column.rule) {
+      this.dispatch('EditGird', 'on-rule-cell-remove', this)
+    }
   }
 }
 </script>

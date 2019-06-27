@@ -236,9 +236,9 @@ export default {
           e.target.value = val;
         }
       }
-      this.$refs.input.blur();
+      // this.$refs.input.blur();
       this.$emit('input', this.cardFormatValue(val));
-      this.$emit('on-blur')
+      this.$emit('on-blur',e)
       this.dispatch('FormItem', 'on-form-blur', val)
     },
     cardFormatValue(val){
@@ -250,7 +250,7 @@ export default {
     blur () {
       this.havefocused = false;
       this.$refs.input.blur();
-      this.$emit('on-blur')
+      // this.$emit('on-blur')
       this.$emit('input', this.cardFormatValue(this.inputValue));
       this.dispatch('FormItem', 'on-form-blur', this.inputValue)
     },
@@ -312,6 +312,7 @@ export default {
       this.bigShow(this.type,value);
       this.$emit('input', value);
       this.$emit('on-keyup', value);
+      this.dispatch('FormItem', 'on-form-change', value);
     },
     divideNum(num){
       let revalue="";
@@ -341,6 +342,60 @@ export default {
       }
       return this.numtochinese(value + "",this.suffixNum);
     },
+    // 转换科学技术法为数值---Number(val)会在小数点7位后以科学计数法返回，影响格式化
+    changeRexNum (val) {
+      let e = String(val)
+      let rex = /^([0-9])\.?([0-9]*)e-([0-9])/
+      if (!rex.test(e)) return val
+      let numArr = e.match(rex)
+      let n = Number('' + numArr[1] + (numArr[2] || ''))
+      let num = '0.' + String(Math.pow(10, Number(numArr[3]) - 1)).substr(1) + n
+      return num.replace(/0*$/, '') // 防止可能出现0.0001540000000的情况
+    },
+    // 修正val的小数位，val 为输入值，n为格式化位数【不用Number中的toFixed是因为超过7位小数Number会转换成科学计数法，格式化会报错，因此需要手动转换】
+    toFixed (val, n) {
+      if (n > 20 || n < 0) {
+          throw new RangeError('toFixed() digits argument must be between 0 and 20');
+      }
+      // const number = this;
+      if (isNaN(val) || val >= Math.pow(10, 21)) {
+          return val.toString();
+      }
+      if (typeof (n) == 'undefined' || n == 0) {
+          return (Math.round(val)).toString();
+      }
+      let result = val.toString();
+      const arr = result.split('.');
+      // 整数的情况
+      if (arr.length < 2) {
+          result += '.';
+          for (let i = 0; i < n; i += 1) {
+              result += '0';
+          }
+          return result;
+      }
+      const integer = arr[0];
+      const decimal = arr[1];
+      if (decimal.length == n) {
+          return result;
+      }
+      if (decimal.length < n) {
+          for (let i = 0; i < n - decimal.length; i += 1) {
+              result += '0';
+          }
+          return result;
+      }
+      result = integer + '.' + decimal.substr(0, n);
+      const last = decimal.substr(n, 1);
+
+      // 四舍五入，转换为整数再处理，避免浮点数精度的损失
+      if (parseInt(last, 10) >= 5) {
+          const x = Math.pow(10, n);
+          result = (Math.round((parseFloat(result) * x)) + 1) / x;
+          result = result.toFixed(n);
+      }
+      return result;
+    },
     formatNum (value){
       value = value.trim().replace(/,/g, "");
       var suffixNum = this.suffixNum;
@@ -367,7 +422,10 @@ export default {
           value = this.cutNum(value,this.integerNum);
           if (value=='') return;
           if (this.isround) {
-            value = Number(value).toFixedSelf(suffixNum);
+            // 7位小数Number会转成科学计数法
+            // value = Number(value).toFixedSelf(suffixNum);
+            let result = this.changeRexNum(Number(value))
+            value = this.toFixed(result, suffixNum);
           }else {
             value = this.fillZero(value,Number(suffixNum))
           }
@@ -691,6 +749,8 @@ export default {
           this.bigNum = this.changeTipsVal(value);
           this.tipShow = Boolean(this.bigNum);
         }
+      }else{
+        this.tipShow = false
       }
     },
     setNullStr(){

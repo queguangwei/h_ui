@@ -20,7 +20,7 @@
     <h-page :total="40" size="small" show-elevator show-sizer></h-page>
     <h-page :total="40" size="small" show-total></h-page>
     <p>简洁版</p>
-    <h-page :current="2" :total="50" simple show-sizer showSizerLabel></h-page>
+    <h-page :current="2" :total="50" simple show-sizer showSizerLabel fastArrival></h-page>
     <h-page :current="2" :total="50" simple isBlur></h-page>
   	<h2>分页表格</h2>
     <p>结合表格组件和分页组件以及表单组件</p>

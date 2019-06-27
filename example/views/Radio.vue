@@ -7,7 +7,7 @@
         {{single1}}
 		{{single}}
 		<h2>组合使用</h2>
-		<h-radio-group v-model="phone" @on-click="click">
+	<h-radio-group v-model="phone" @on-click="click">
       <h-radio label="apple" size="large">
         <h-Icon name="clock"></h-Icon>
         <span>Apple</span>
@@ -22,11 +22,10 @@
       </h-radio>
     </h-radio-group><br>
     <h-radio-group v-model="animal">
-      <h-radio label="金斑蝶" :disabled="status"></h-radio>
-      <h-radio label="爪哇犀牛" :disabled="status"></h-radio>
-      <h-radio label="印度黑羚" :disabled="status"></h-radio>
+      <h-radio label="金斑蝶" text="金斑蝶1" :disabled="status" @on-click="ceshi"></h-radio>
+      <h-radio label="爪哇犀牛" text="金斑蝶2" :disabled="status"></h-radio>
+      <h-radio label="印度黑羚" text="金斑蝶3" :disabled="status"></h-radio>
     </h-radio-group>
-    {{animal}}
     <h-button @click="changeStatus">改变disabled状态</h-button>
     <h2>不可用</h2>
     <h-radio v-model="disabledSingle" disabled>h-radio</h-radio><br>
@@ -121,6 +120,8 @@
 			}
 		},
         methods:{
+            ceshi(){
+            },
             changeStatus(){
                 this.status = !this.status
             },

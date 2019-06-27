@@ -47,13 +47,12 @@
                   :value="item.value"
                   :key="item.value">{{ item.label }}</h-option>
       </h-select> -->
-      {{model44}}
+      <!-- {{model44}} -->
        <h-select v-model="model44"
                 isBackClear
                 multiple
                 style="width:320px"
                 isCheckall
-                hideMult
                 @on-change="change"
                 @on-scroll="scroll"
                 :isComputed="isComputed"
@@ -64,7 +63,7 @@
                 ref  = "iconclick"
                 algin="center">
         <h-option :value="-1"
-                  key="-1">-1 所有link121412111111111111111111</h-option>
+                  key="-1">-1 所有link1214121111111111111111111111111111111111111111</h-option>
         <h-option v-for="item in cityList"
                   multiple
                   :value="Number(item.value)"
@@ -97,14 +96,16 @@
         <span>小:</span>
         <h-select v-model="model2"
                   size="small"
-                  width="100">
+                  width="100"
+                  autoPlacement>
           <h-option v-for="(item, index) in uList"
                     :value="item.id"
                     :key="item.id">{{ item.name }}</h-option>
         </h-select>
         <span>正常:</span>
         <h-select v-model="model3"
-                  width="100">
+                  width="100"
+                  autoPlacement>
           <h-option v-for="(item, index) in uList"
                     :value="item.id"
                     :key="item.id">{{ item.name }}</h-option>
@@ -112,7 +113,8 @@
         <span>大:</span>
         <h-select v-model="model4"
                   size="large"
-                  width="100">
+                  width="100"
+                  autoPlacement>
           <h-option v-for="(item, index) in uList"
                     :value="item.id"
                     :key="item.id">{{ item.name }}</h-option>
@@ -221,7 +223,11 @@
                   width="260"
                   multiple
                   :isString="true"
+                  hideMult
                   showTitle>
+          <h-option value="wo"
+                    title="我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我"
+                    key="wo">我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我</h-option>
           <h-option v-for="(item, index) in uList"
                     :value="item.id"
                     :key="item.id">{{ item.name }}</h-option>
@@ -400,6 +406,20 @@
             :remote-method="remoteMethod2"
             :loading="loading1">
             <h-option v-for="option in options2" :value="option.value" :key="option.value">{{option.label}}</h-option>
+        </h-select>
+        <p>设置isSelectFilter为true，只用于多选、开启filterable、启用checkAll</p>
+        <h-select v-model="model11"
+                  width="200"
+                  multiple
+                  filterable
+                  :isString="true"
+                  isCheckall
+                  label-in-value
+                  isSelectFilter
+                  showBottom>
+          <h-option v-for="(item, index) in uList"
+                    :value="item.id"
+                    :key="item.id">{{ item.name }}</h-option>
         </h-select>
     </div>
   </div>
