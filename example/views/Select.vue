@@ -49,7 +49,6 @@
       </h-select> -->
       <!-- {{model44}} -->
        <h-select v-model="model44"
-                hideMult
                 isBackClear
                 multiple
                 style="width:320px"
@@ -65,8 +64,6 @@
                 algin="center">
         <h-option :value="-1"
                   key="-1">-1 所有link1214121111111111111111111111111111111111111111</h-option>
-        <h-option :value="wo"
-                  key="wo">我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我</h-option>
         <h-option v-for="item in cityList"
                   multiple
                   :value="Number(item.value)"
@@ -226,7 +223,10 @@
                   width="260"
                   multiple
                   :isString="true"
+                  hideMult
                   showTitle>
+          <h-option value="wo"
+                    key="wo">我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我</h-option>
           <h-option v-for="(item, index) in uList"
                     :value="item.id"
                     :key="item.id">{{ item.name }}</h-option>
