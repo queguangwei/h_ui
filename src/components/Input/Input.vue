@@ -88,7 +88,7 @@
       </ul>
     </div>
     <div v-if="showWordLimit" :class="[prefixCls + '-word-limit']">
-     {{currentLength}}/{{maxlength}}{{limitTip}}
+     {{currentLength}}/{{maxlength}} {{limitTip}}
     </div>
   </div>
 </template>

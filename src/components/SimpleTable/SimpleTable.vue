@@ -79,7 +79,7 @@
                           @mouseenter.native.stop="handleMouseIn(row._index)"
                           @mouseleave.native.stop="handleMouseOut(row._index)"
                           @click.native="clickCurrentRowTr($event,row._index,index)"
-                          @dblclick.native.stop="dblclickCurrentRowTr(row._index)">
+                          @dblclick.native.stop="dblclickCurrentRowTr(row._index,index)">
                   <td v-for="column in cloneColumns"
                       :class="alignCls(column, row)"
                       :data-index="row._index+1"
@@ -193,7 +193,7 @@
                             @mouseenter.native.stop="handleMouseIn(row._index)"
                             @mouseleave.native.stop="handleMouseOut(row._index)"
                             @click.native="clickCurrentRowTr($event,row._index,index)"
-                            @dblclick.native.stop="dblclickCurrentRowTr(row._index)">
+                            @dblclick.native.stop="dblclickCurrentRowTr(row._index,index)">
                     <td v-for="column in cloneColumns"
                         :class="alignCls(column, row,'left')"
                         :data-index="row._index+1"
@@ -732,7 +732,8 @@ export default {
     },
     textStyle() {
       let style = {}
-      style.width = this.initWidth != 0 ? this.initWidth + 'px' : '100%'
+      // style.width = this.initWidth != 0 ? this.initWidth + 'px' : '100%'
+      style.width ='100%'
       const height = this.bodyHeight
       style.height = this.height
         ? Number(height - this.scrollBarHeight) + 'px'
@@ -1347,7 +1348,7 @@ export default {
           // this.objData[_index]._isChecked=!this.objData[_index]._isChecked;
           this.toggleSelect(_index, curIndex)
         } else {
-          this.clickCurrentRow(_index)
+          this.clickCurrentRow(_index,curIndex)
         }
         if (this.objData[_index]._isHighlight) {
           this.shiftSelect = []
@@ -1367,14 +1368,15 @@ export default {
         this.getctrlSelect(_index)
       }
     },
-    dblclickCurrentRowTr(_index) {
+    dblclickCurrentRowTr(_index,curIndex) {
+      curIndex = curIndex + this.start
       if (!this.rowSelect) {
-        this.dblclickCurrentRow(_index)
+        this.dblclickCurrentRow(_index,curIndex)
       }
     },
-    clickCurrentRow(_index) {
+    clickCurrentRow(_index,curIndex) {
       if (!this.rowSelect) {
-        this.focusIndex = _index
+        this.focusIndex = curIndex
         this.highlightCurrentRow(_index)
       }
       this.$nextTick(() => {
@@ -1388,9 +1390,9 @@ export default {
         }
       })
     },
-    dblclickCurrentRow(_index) {
+    dblclickCurrentRow(_index,curIndex) {
       if (!this.rowSelect) {
-        this.focusIndex = _index
+        this.focusIndex = curIndex
         this.highlightCurrentRow(_index)
       }
       this.$nextTick(() => {
@@ -2009,7 +2011,8 @@ export default {
         if (e.keyCode === 40 || e.keyCode === 38) {
           e.preventDefault()
           e.stopPropagation()
-          this.highlightCurrentRow(this.focusIndex)
+          let _index = this.rebuildData[this.focusIndex]._index
+          this.highlightCurrentRow(_index)
         }
       }
     },
@@ -2112,7 +2115,7 @@ export default {
       if (val) {
         this.$refs.body.scrollTop = this.scrollTopSet
         this.$nextTick(() => {
-          this.clickCurrentRow(0)
+          // this.clickCurrentRow(0)
         })
       }
     },
