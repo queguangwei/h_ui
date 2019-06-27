@@ -728,23 +728,21 @@ export default {
     handleResize () {
       // keep-alive时，页面改变大小会不断触发resize【非本组件页面】
       if(this.notSetWidth){
-        if(!this.autoHeadWidth){
-          this.columnsWidth ={}
-          this.tableWidth = 0;
-        }
         setTimeout(()=>{
           let columnsWidth = {};
           let tableWidth = '';
           let $td =null
           let curTh = null
+          let num = 0
           if(this.autoHeadWidth||this.data.length==0 || !this.$refs.tbody){
+            num = 30
             $td = this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0].querySelectorAll('.h-table-cell>span');
           }else{
             $td = this.$refs.tbody.$el.querySelectorAll('tbody tr')[0].querySelectorAll('td');
           }
           for (let i = 0; i < $td.length; i++) {    // can not use forEach in Firefox
             const column = this.cloneColumns[i];
-            let width = parseInt(getStyle($td[i], 'width'));
+             let width = $td[i].offsetWidth + num
             if (column.width) {
                 width = column.width||width;
             } else {
@@ -759,20 +757,21 @@ export default {
             };
           }
           this.initWidth =parseInt(getStyle(this.$refs.tableInner, 'width')) || 0;
+          this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
+          this.headerRealHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
+
           let lastInx = this.cloneColumns[$td.length-1]._index;
+          let scrollWidth = (this.bodyHeight<this.bodyRealHeight)?this.scrollBarWidth:0
           if(tableWidth<this.initWidth){
             columnsWidth[lastInx]={
-              width: columnsWidth[lastInx].width+this.initWidth - tableWidth
+              width: columnsWidth[lastInx].width+this.initWidth - tableWidth-scrollWidth
             }
             this.tableWidth = this.initWidth;
           }else{
             this.tableWidth = tableWidth;
           }
           this.columnsWidth = columnsWidth;
-          this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
-          this.headerRealHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0;
-        }, 10)
-
+        }, 0)
         return;
       }
 
