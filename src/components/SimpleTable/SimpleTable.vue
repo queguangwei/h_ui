@@ -306,7 +306,7 @@ import {
   typeOf,
   getScrollBarSizeHeight,
   scrollAnimate,
-  debounce
+  debounceWithImmediate
 } from '../../util/tools'
 import { on, off } from '../../util/dom'
 import Locale from '../../mixins/locale'
@@ -1658,13 +1658,13 @@ export default {
       )
       let curtop = Math.floor(scrolltop / this.itemHeight) * this.itemHeight
 
-      this.updateVisibleData(scrolltop)
+      this.updateVisibleDataDebounce(false)(scrolltop)
       this.$refs.content.style.transform = `translate3d(0, ${curtop}px, 0)`
       if (this.$refs.leftContent) {
         this.$refs.leftContent.style.transform = `translate3d(0, ${curtop}px, 0)`
       }
       setTimeout(() => {
-        this.updateVisibleData(scrolltop)
+      this.updateVisibleDataDebounce(false)(scrolltop)
       }, 0)
     },
     handleFixedMousewheel(event) {
@@ -1715,6 +1715,13 @@ export default {
       // if(this.$refs.leftContent){
       //   this.$refs.leftContent.style.transform = `translate3d(0, ${curtop}px, 0)`;
       // }
+    },
+    /**
+     * @description 防抖更新，滚动时调用，防止滚动卡顿
+     */
+    updateVisibleDataDebounce(immediate = true) {
+      if (!this.updateVisibleDataDebounce.body) this.updateVisibleDataDebounce.body = debounceWithImmediate(this.updateVisibleData, 30, immediate)
+      return this.updateVisibleDataDebounce.body
     },
     handleMouseWheel(event) {
       const deltaX = event.deltaX
@@ -2043,7 +2050,6 @@ export default {
     },
     keySelect(e) {
       if (e.shiftKey && (this.baseInx || this.baseInx == 0)) {
-        console.log(222)
         const keyCode = e.keyCode
         if (keyCode === 40) {
           e.preventDefault()
