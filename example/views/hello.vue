@@ -1,7 +1,7 @@
 <template>
 <div>
     <Button @click="change"></Button>
-    <h-table width="850" height="300" border :columns="columns2" :data="data3" notSetWidth></h-table>
+    <h-table height="300" border :columns="columns2" :data="data3" notSetWidth></h-table>
 </div>
 </template>
 <script>
@@ -87,46 +87,46 @@
                         city: '浦东新区',
                         zip: 100000
                     },
-                    // {
-                    //     name: '周小伟',
-                    //     age: 26,
-                    //     address: '深圳市南山区深南大道',
-                    //     province: '广东',
-                    //     city: '南山区',
-                    //     zip: 100000
-                    // },
-                    //                     {
-                    //     name: '王小明',
-                    //     age: 18,
-                    //     address: '北京市朝阳区芍药居',
-                    //     province: '北京市',
-                    //     city: '朝阳区',
-                    //     zip: 100000
-                    // },
-                    // {
-                    //     name: '张小刚',
-                    //     age: 25,
-                    //     address: '北京市海淀区西二旗',
-                    //     province: '北京市',
-                    //     city: '海淀区',
-                    //     zip: 100000
-                    // },
-                    // {
-                    //     name: '李小红',
-                    //     age: 30,
-                    //     address: '上海市浦东新区世纪大道',
-                    //     province: '上海市',
-                    //     city: '浦东新区',
-                    //     zip: 100000
-                    // },
-                    // {
-                    //     name: '周小伟',
-                    //     age: 26,
-                    //     address: '深圳市南山区深南大道',
-                    //     province: '广东',
-                    //     city: '南山区',
-                    //     zip: 100000
-                    // }
+                    {
+                        name: '周小伟',
+                        age: 26,
+                        address: '深圳市南山区深南大道',
+                        province: '广东',
+                        city: '南山区',
+                        zip: 100000
+                    },
+                                        {
+                        name: '王小明',
+                        age: 18,
+                        address: '北京市朝阳区芍药居',
+                        province: '北京市',
+                        city: '朝阳区',
+                        zip: 100000
+                    },
+                    {
+                        name: '张小刚',
+                        age: 25,
+                        address: '北京市海淀区西二旗',
+                        province: '北京市',
+                        city: '海淀区',
+                        zip: 100000
+                    },
+                    {
+                        name: '李小红',
+                        age: 30,
+                        address: '上海市浦东新区世纪大道',
+                        province: '上海市',
+                        city: '浦东新区',
+                        zip: 100000
+                    },
+                    {
+                        name: '周小伟',
+                        age: 26,
+                        address: '深圳市南山区深南大道',
+                        province: '广东',
+                        city: '南山区',
+                        zip: 100000
+                    }
                 ]
             }
         },
