@@ -1,5 +1,5 @@
 <template>
-  <div :class="wrapClasses" :style="styles" @mouseleave="handleMouseLeave($event)" ref="tableWrap">
+  <div :class="wrapClasses" :style="styles" @mouseleave="handleMouseLeave($event)" ref="tableWrap" tabindex="1">
     <div :class="classes" ref="tableInner">
       <div :class="[prefixCls + '-title']" v-if="showSlotHeader" ref="title"><slot name="header"></slot></div>
       <div :class="[prefixCls + '-header']" v-if="showHeader" ref="header" @mousewheel="handleMouseWheel">
@@ -126,7 +126,7 @@
             :showTitle="showTitle"></table-body>
         </div>
       </div>
-      <div :class="[prefixCls + '-summation']" :style="summationStyle" v-if="isSummation" ref="summation">
+      <div :class="[prefixCls + '-summation']" :style="summationStyle" v-if="isSummation&&!(!data || data.length === 0)" ref="summation">
         <table-body
           ref='sumBody'
           :sum = 'isSummation'
@@ -306,6 +306,10 @@ export default {
       type:Boolean,
       default:false,
     },
+    fixedAutoHeight: {
+      type:Boolean,
+      default:false,
+    },
     notSetWidth:{
       type:Boolean,
       default:false,
@@ -315,6 +319,10 @@ export default {
       default:false,
     },
     clickToSelect:{
+      type:Boolean,
+      default:false,
+    },
+     dataCheckedProp:{
       type:Boolean,
       default:false,
     },
@@ -329,6 +337,10 @@ export default {
     disabledExpand:{//禁用展开功能
       type:Boolean,
       default:false,
+    },
+    minWidth:{
+      type:Number,
+      default:100
     }
   },
   data () {
@@ -353,6 +365,7 @@ export default {
       resizeProxyVisible: false,
       moveProxyVisible:false,
       showScroll:false,
+      fixedBodyClientHeight:0,
       headerRealHeight:0,
       selectType:false,
       buttomNum:null,
@@ -364,7 +377,9 @@ export default {
       /* 当前dragover行序号 */
       currDragOverIdx: null,
       /* 当前拖拽元素 */
-      dragEl: null
+      dragEl: null,
+      baseInx: null,
+      offsetInx: null,
     };
   },
   computed: {
@@ -414,7 +429,7 @@ export default {
         // style.height = this.patibleHeight?`${this.height}px`:`${height+2}px`;
         style.height = this.patibleHeigh ? this.height : this.height + 2
         this.$nextTick(() => {
-          if (this.isSummation) style.height += this.$refs.summation.clientHeight
+          if (this.isSummation&&!(!this.data || this.data.length === 0)) style.height += this.$refs.summation.clientHeight
         })
       }
       if (this.width) style.width = `${this.width}px`;
@@ -539,13 +554,24 @@ export default {
     fixedBodyStyle () {
       let style = {};
       if (this.bodyHeight !== 0 || this.maxHeight) {
-        let height =this.patibleHeight?this.bodyHeight-this.scrollBarWidth:this.bodyHeight;
+        //let fixedbodyheight=this.fixedBodyClientHeight<=0?this.$refs.fixedRightBody.clientHeight:this.fixedBodyClientHeight;
+        if(this.fixedBodyClientHeight<0){
+          this.fixedBodyClientHeight=0
+        }
+        let height =this.patibleHeight?this.bodyHeight-this.scrollBarWidth+this.fixedBodyClientHeight:this.bodyHeight+this.fixedBodyClientHeight;
         if (this.tableWidth < this.initWidth) {
           height = height + this.scrollBarWidth-1;
         }
         // height不存在时bodyheight为0
-        if (this.height) style.height = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`;
-        if (this.maxHeight) style.maxHeight = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`
+        if (this.height){
+          style.height = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`;
+           if(this.fixedAutoHeight){
+             if(this.bodyRealHeight<height){
+                style.height=`${this.bodyRealHeight}px`;
+             }           
+           }
+          }
+        if (this.maxHeight) style.maxHeight = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`       
       }
       return style;
     },
@@ -711,26 +737,27 @@ export default {
           let tableWidth = '';
           let $td =null
           let curTh = null
-
           if(this.autoHeadWidth||this.data.length==0 || !this.$refs.tbody){
             $td = this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0].querySelectorAll('th');
           }else{
             $td = this.$refs.tbody.$el.querySelectorAll('tbody tr')[0].querySelectorAll('td');
-            if(this.$refs.thead){
-              curTh = this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0].querySelectorAll('th');
-            }
+            // if(this.$refs.thead){
+            //   curTh = this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0].querySelectorAll('th');
+            // }
           }
           for (let i = 0; i < $td.length; i++) {    // can not use forEach in Firefox
             const column = this.cloneColumns[i];
             let width = parseInt(getStyle($td[i], 'width'));
-            if(curTh&&curTh[i]&&width){
-              let thW = parseInt(getStyle(curTh[i], 'width'));
-              width = thW>width?thW:width
-            }
+            // if(curTh&&curTh[i]&&width){
+            //   let thW = parseInt(getStyle(curTh[i], 'width'));
+            //   width = thW>width?thW:width
+            // }
             if (column.width) {
                 width = column.width||width;
             } else {
-                if (width < 100) width = 100;
+              let min = column.minWidth?column.minWidth:100
+              if (width < min) width = min
+                // if (width < this.minWidth) width = this.minWidth;
             }
             this.cloneColumns[i]._width =width||'';
             tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)||this.tableWidth;
@@ -791,7 +818,9 @@ export default {
               if (column.width) {
                   width = column.width||'';
               } else {
-                  if (width < 100) width = 100;
+                let min = column.minWidth?column.minWidth:100
+                if (width < min) width = min
+                  // if (width < this.minWidth) width = this.minWidth;
               }
               this.cloneColumns[i]._width = this.hasWidth?width:width||'';
               this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)||this.tableWidth;
@@ -813,7 +842,9 @@ export default {
               if (column.width) {
                   width = column.width||'';
               } else {
-                  if (width < 100) width = 100;
+                let min = column.minWidth?column.minWidth:100
+                if (width < min) width = min
+                  // if (width < this.minWidth) width = this.minWidth;
               }
               this.cloneColumns[i]._width = width||'';
               this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b);
@@ -901,7 +932,7 @@ export default {
           this.$emit('on-selection-change', selection,selectionInx);
         }
     },
-    clickCurrentRow (event,_index) {
+    clickCurrentRow (event,_index,curIndex) {
       if(this.clickToSelect){
         const curStatus = this.objData[_index]._isHighlight;
         for (let i in this.objData) {
@@ -920,7 +951,7 @@ export default {
         if (this.objData[_index]._isHighlight) {
           this.shiftSelect = [];
           this.ctrlSelect = [];
-          this.shiftSelect[0]=_index
+          this.shiftSelect[0]=curIndex
           this.ctrlSelect.push(_index);
         }else{
           this.shiftSelect= [];
@@ -928,7 +959,7 @@ export default {
         }
       }else if(event.shiftKey){
         window.getSelection()?window.getSelection().removeAllRanges():document.selection.empty();
-        this.getshiftSelect(_index);
+        this.getshiftSelect(curIndex);
       }else{
         this.getctrlSelect(_index);
       }
@@ -952,9 +983,19 @@ export default {
       for (let i in this.objData) {
           if (this.objData[i]._isChecked) selectionIndexes.push(parseInt(i));
       }
+      if(this.dataCheckedProp){
+        for(var i=0;i<this.data.length;i++){
+          if(selectionIndexes.indexOf(i) > -1){
+                this.data[i]._checked=true;
+          }else{
+                this.data[i]._checked=false;
+          }
+        }
+      }
+
       return status?selectionIndexes:JSON.parse(JSON.stringify(this.data.filter((data, index) => selectionIndexes.indexOf(index) > -1)));
     },
-    toggleSelect (_index,event) {
+    toggleSelect (_index,event,curIndex) {
       let data = {};
       for (let i in this.objData) {
         if (parseInt(i) === _index) {
@@ -968,15 +1009,17 @@ export default {
       }
       //shift
       if (event.shiftKey&&_index) {
-        this.getshiftSelect(_index);
+        this.getshiftSelect(curIndex);
       }else if(!status){
         this.shiftSelect=[]
-        this.shiftSelect[0] = _index;
+        this.shiftSelect[0] = curIndex;
       }else{
         this.shiftSelect=[]
       }
       const selection = this.getSelection();
       const selectionInx = this.getSelection(true);
+      this.baseInx = curIndex
+      this.offsetInx = curIndex
       this.$emit(status ? 'on-select' : 'on-select-cancel', selection, JSON.parse(JSON.stringify(this.data[_index])));
       this.$emit('on-selection-change', selection,selectionInx);
     },
@@ -1462,9 +1505,10 @@ export default {
     },
     selectRange(){
       for (var i = this.shiftSelect[0]; i <= this.shiftSelect[1]; i++) {
-        this.objData[i]._isHighlight=false;
-        if(!this.objData[i]._isDisabled){
-          this.objData[i]._isChecked = true;
+        let index = this.rebuildData[i]._index
+        this.objData[index]._isHighlight=false;
+        if(!this.objData[index]._isDisabled){
+          this.objData[index]._isChecked = true;
         }
       }
       this.$emit('on-selection-change', this.getSelection(),this.getSelection(true));
@@ -1474,8 +1518,11 @@ export default {
       let _key=key;
         this.data.forEach((row, index) => {
           let item=row[_key];
+          if(item===null||item===undefined){
+              item="";
+          }
           item=item.toString().replace(/,/g, '');
-          if(item){
+          if(item&&item!=""){
              total+=Number(item);
           }
         })
@@ -1518,6 +1565,62 @@ export default {
       }
       return num>=0?array[0]+revalue+pointStr:'-'+array[0]+revalue+pointStr;
     },
+    keySelectRange(){
+      let max,min
+      if(this.baseInx<this.offsetInx){
+        min = this.baseInx+1
+        max = this.offsetInx
+      }
+      if(this.baseInx>this.offsetInx){
+        min = this.offsetInx
+        max = this.baseInx-1
+      }   
+      for(var i=0;i<this.rebuildData.length;i++){
+        if(this.objData[i]._isDisabled || (i==this.baseInx)) continue
+        let index = this.rebuildData[i]._index
+        if(i>=min&&i<=max){
+          this.objData[index]._isChecked = true;
+        }else{
+          this.objData[index]._isChecked = false;
+        }
+      }
+      this.$emit('on-selection-change', this.getSelection(),this.getSelection(true));
+    },
+    keySelect (e) {
+      if(e.shiftKey&&(this.baseInx||this.baseInx==0)){
+        const keyCode = e.keyCode;
+        if (keyCode === 40) {
+          e.preventDefault();
+          e.stopPropagation();
+          if(this.offsetInx<this.cloneData.length-1){
+            this.offsetInx++
+          }
+          this.keySelectRange()
+        }
+        // prev
+        if (keyCode === 38) {
+          e.preventDefault();
+          e.stopPropagation();
+          if(this.offsetInx>0){
+            this.offsetInx--
+          }
+          this.keySelectRange()
+        }
+      }
+    },
+    /**
+     * 获取所有列选中的过滤条件
+     */
+    getFilters() {
+      const cloneColumns = this.cloneColumns;
+      const filters = {};
+      cloneColumns.forEach(col => {
+        if (col.filters && (col.filterMethod || col.filterRemote) && col.key) {
+          filters[col.key] = col._filterChecked;
+        }
+      })
+      return filters;
+    }
   },
   created () {
       if (!this.context) this.currentContext = this.$parent;
@@ -1547,6 +1650,7 @@ export default {
             this.fixedHeader();
         }
     });
+    on(this.$refs.tableWrap,'keyup', this.keySelect);
   },
   activated() {
     if (this.keepAliveFlag) {
@@ -1563,6 +1667,7 @@ export default {
   beforeDestroy () {
       //window.removeEventListener('resize', this.handleResize, false);
       off(window, 'resize', this.handleResize);
+      off(this.$refs.tableWrap,'keyup',this.keySelect)
   },
   watch: {
       data: {
@@ -1578,8 +1683,11 @@ export default {
           this.$nextTick(()=>{
             this.cloneData = deepCopy(this.data);
             this.buttomNum = null;
+              if(this.fixedAutoHeight){
+                this.fixedBodyClientHeight=-1;
+              }
           });
-
+          
         },
         deep: true
       },

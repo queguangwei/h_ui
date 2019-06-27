@@ -17,6 +17,7 @@
         @on-expand="expand" 
         :option="options1" 
         :treeOption="treeOption" 
+        @on-sort-change="sortChange"
         @on-editselect-change="selectchange"
         @on-editinput-change="selectchange"
         @on-editinput-blur="selectchange" 
@@ -274,27 +275,29 @@ export default {
           title: '姓名',
           key: 'name',
           width: 200,
+          filterRE:/[^\d]/g,
+          sortable:true,
           // typeWidth:100,
-          hiddenOther:true,
+          // hiddenOther:true,
           rule: { required: true, message: '姓名不能为空'},
-          render: (h, params) => {
-            return h('div', [
-              h('h-button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                style: {
-                  marginRight: '5px'
-                },
-                on: {
-                  'click': () => {
-                    this.show(params.index)
-                  }
-                }
-              }, '查看')
-            ]);
-          }
+          // render: (h, params) => {
+          //   return h('div', [
+          //     h('h-button', {
+          //       props: {
+          //         type: 'primary',
+          //         size: 'small'
+          //       },
+          //       style: {
+          //         marginRight: '5px'
+          //       },
+          //       on: {
+          //         'click': () => {
+          //           this.show(params.index)
+          //         }
+          //       }
+          //     }, '查看')
+          //   ]);
+          // }
         },
         {
           width:100,
@@ -331,19 +334,20 @@ export default {
           rule: { required: true, message: '年龄不能为空'},
         },
         {
-          // type: 'textArea',
+          type: 'textArea',
           // rows: 2,
           // width: 200,
           title: '地址',
           key: 'address',
+          filterRE:/[^\d]/g,
           ellipsis:true,
-          rearlabel:(index)=>{
-            if(index%2==0){
-              return '#';
-            }else{
-              return '%'
-            }
-          },
+          // rearlabel:(index)=>{
+          //   if(index%2==0){
+          //     return '#';
+          //   }else{
+          //     return '%'
+          //   }
+          // },
           rule: { required: true, message: '地址不能为空'},
         },
         {
@@ -355,6 +359,8 @@ export default {
           suffixNum: 0,
           bigTips: true,
           key: 'money',
+          // divided:true,
+          nonNegative:true,
           rule: { required: true, message: '金额不能为空'},
         },
         {
@@ -428,13 +434,18 @@ export default {
         },
       ],
       data1: [],
-      data2: [],
+      data2: tData,
       options1:[],
       list: ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New hampshire', 'New jersey', 'New mexico', 'New york', 'North carolina', 'North dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode island', 'South carolina', 'South dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West virginia', 'Wisconsin', 'Wyoming'],
       treeOption:[],
       }
   },
   methods: {
+    sortChange(i,j,k){
+      console.log(i);
+      console.log(j);
+      console.log(k);
+    },
     changeMsg(){
       this.showMsgBox = !this.showMsgBox;
     },

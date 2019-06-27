@@ -31,6 +31,7 @@
           :option="options"
           :treeOption="treeOptions"
           :titleRender="titleRender"
+          :height="Number(height)"
           @on-select-change="selectChange"
           @on-editselect-change="editselectChange"
           @on-editinput-change="editinputChange"
@@ -284,6 +285,8 @@ export default {
       treeOptions:this.treeOption,
       canVisible:true,
       curKey:null,
+      /* 保存垂直滚动距离，用于判断垂直滚动方向 */
+      scrollTop: 0
     };
   },
   computed: {
@@ -835,7 +838,11 @@ export default {
       }
       let _this = this;
       let buttomNum = getBarBottom(event.target,this.scrollBarWidth);
-      this.$emit('on-scroll',buttomNum)
+      // 发生垂直滚动时才触发on-scroll事件
+      if (this.scrollTop !== event.target.scrollTop) {
+        this.$emit('on-scroll', buttomNum)
+        this.scrollTop = event.target.scrollTop;
+      }
       if (this.showHeader) this.$refs.header.scrollLeft = event.target.scrollLeft;
       if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = event.target.scrollTop;
       if (this.isRightFixed) this.$refs.fixedRightBody.scrollTop = event.target.scrollTop;
@@ -892,6 +899,61 @@ export default {
         });
         return data;
     },
+    makeSortData () {
+      let data = deepCopy(this.cloneData);
+        data.forEach((row, index) => {
+            row._index = index;
+            row._rowKey = rowKey++;
+            if (row.item && typeof(row.item)=='object') {
+              row.item.forEach((obj,i)=>{
+                i=i+1;
+                obj._index =index+'.'+i;
+                obj._rowKey = rowKey++;
+                obj.expand = obj.expand? true:false;
+              });
+            }
+        });
+        return data;
+    },
+    handleSort (_index, type) {
+      let index;
+      this.cloneColumns.forEach((col,i) => {
+        col._sortType = 'normal'
+        if (col._index == _index) {
+          index = i;
+        }
+      });//rightFixed index error
+      const key = this.cloneColumns[index].key;
+      if (this.cloneColumns[index].sortable !== 'custom') {    // custom is for remote sort
+          if (type === 'normal') {
+            this.rebuildData = this.makeSortData();
+          } else {
+            this.rebuildData = this.sortData(this.rebuildData, type, index);
+          }
+      }
+      this.cloneColumns[index]._sortType = type;
+
+      this.$emit('on-sort-change', {
+          column: JSON.parse(JSON.stringify(this.columns[this.cloneColumns[index]._index])),
+          key: key,
+          order: type
+      });
+    },
+    sortData (data, type, index) {
+      const key = this.cloneColumns[index].key;
+      data.sort((a, b) => {
+          if (this.cloneColumns[index].sortMethod) {
+              return this.cloneColumns[index].sortMethod(a[key], b[key], type);
+          } else {
+              if (type === 'asc') {
+                  return a[key] > b[key] ? 1 : -1;
+              } else if (type === 'desc') {
+                  return a[key] < b[key] ? 1 : -1;
+              }
+          }
+      });
+      return data;
+    },
     makeDataWithSort () {
         let data = this.makeData();
         return data;
@@ -908,7 +970,7 @@ export default {
           parentKeyField: '_parentId',
           expanded: 'expand',
           checked: 'checked',
-          checked: 'indeterminate',
+          indeterminate: 'indeterminate',
           rootKey: 'root'
         }
         data = this.convertTreeData(data, attributes);
@@ -979,6 +1041,8 @@ export default {
           if (this.typeName == "treeGird") {
             if (newRow.checked) {
                 newRow.checked = newRow.checked;
+                // // 设置 checked 后显示高亮
+                // newRow._isChecked = newRow.checked;
             } else {
                 newRow.checked = false;
             }

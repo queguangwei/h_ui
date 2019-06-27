@@ -122,7 +122,7 @@
     <Button @on-click="resetSort">清除排序</Button>
     <Button @on-click="moveUp">上移</Button>
     <Button @on-click="moveDown">下移</Button>
-     <h-table height="300" :stripe="true" :columns="columns18" :data="data17" border size="small" ref="table" :loading="loading" :highlightRow="true" @on-selection-change="selsetChange">
+     <h-table height="300" :stripe="true" :columns="columns18" :data="data17" border size="small" ref="table" :loading="loading"  @on-selection-change="selsetChange">
         <span slot="header">证券日活数据表</span>
         <span slot="footer">恒生电子有限公司提供</span>
     </h-table> 
@@ -138,6 +138,8 @@
     </h-table>
       <br>
      <h-table border canMove :columns="columns6" :data="data5" no-filtered-data-text="找不到数据" :loading="loading"></h-table> 
+     <p>多级表头：</p>
+    <h-table :columns="columnsMulti" :data="dataMulti"  border :multiLevel="multiTitle" :loading="loading"></h-table>
   </div>
 </template>
 <script>
@@ -926,6 +928,24 @@ export default {
           key: 'address'
         }
       ],
+      columnsMulti: [
+        {
+          title: '姓名',
+          key: 'name'
+        },
+        {
+          title: '年龄',
+          key: 'age',
+        },
+        {
+          title: '地址',
+          key: 'address'
+        },
+         {
+          title: '备注',
+          key: 'status'
+        }
+      ],
       columns10: [
         {
           type: 'expand',
@@ -959,14 +979,14 @@ export default {
       data0:[],
       data1: [
         {
-          name: '王小明',
+          name: 0,
           age: 18,
           address: '北京市朝阳区\r芍药居',
           // _disabled:true,
           _checked:true,
         },
         {
-          name: '张小刚',
+          name: 0,
           age: 25,
           address: '北京市海淀区西二旗'
         },
@@ -1404,6 +1424,33 @@ export default {
         }
       ],
       aaa: '',
+      dataMulti: [
+        {
+          name: '王小明',
+          age: 18,
+          address: '北京市朝阳区\r芍药居',
+          // _disabled:true,
+          status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
+        },
+        {
+          name: '张小刚',
+          age: 25,
+          address: '北京市海淀区西二旗',
+           status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
+        },
+        {
+          name: '李小红',
+          age: 30,
+          address: '上海市浦东新区世纪大道',
+           status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
+        },
+        {
+          name: '周小伟',
+          age: 26,
+          address: '深圳市南山区深南大道',
+           status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
+        }
+      ],
       summationData: [{
         name: '12313',
         fav: 0,
@@ -1423,7 +1470,12 @@ export default {
         name: 'qeqweqw',
         age: 123123123,
         address: 'qqweqwe'
-      }]
+      }],
+       multiTitle:[
+         {title:'姓名信息',cols:1,rows:1,align:'center',hiddenCol:false},
+        {title:'基本信息',cols:2,align:'center'},
+        {title:'详情',cols:1,align:'center'},
+      ],
     }
   },
   methods:{
