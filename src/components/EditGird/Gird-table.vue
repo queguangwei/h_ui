@@ -285,6 +285,8 @@ export default {
       treeOptions:this.treeOption,
       canVisible:true,
       curKey:null,
+      /* 保存垂直滚动距离，用于判断垂直滚动方向 */
+      scrollTop: 0
     };
   },
   computed: {
@@ -836,7 +838,11 @@ export default {
       }
       let _this = this;
       let buttomNum = getBarBottom(event.target,this.scrollBarWidth);
-      this.$emit('on-scroll',buttomNum)
+      // 发生垂直滚动时才触发on-scroll事件
+      if (this.scrollTop !== event.target.scrollTop) {
+        this.$emit('on-scroll', buttomNum)
+        this.scrollTop = event.target.scrollTop;
+      }
       if (this.showHeader) this.$refs.header.scrollLeft = event.target.scrollLeft;
       if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = event.target.scrollTop;
       if (this.isRightFixed) this.$refs.fixedRightBody.scrollTop = event.target.scrollTop;
@@ -878,7 +884,23 @@ export default {
         }
     },
     makeData () {
-        let data = deepCopy(this.cloneData);
+        let data = deepCopy(this.data);
+        data.forEach((row, index) => {
+            row._index = index;
+            row._rowKey = rowKey++;
+            if (row.item && typeof(row.item)=='object') {
+              row.item.forEach((obj,i)=>{
+                i=i+1;
+                obj._index =index+'.'+i;
+                obj._rowKey = rowKey++;
+                obj.expand = obj.expand? true:false;
+              });
+            }
+        });
+        return data;
+    },
+    makeSortData () {
+      let data = deepCopy(this.cloneData);
         data.forEach((row, index) => {
             row._index = index;
             row._rowKey = rowKey++;
@@ -904,7 +926,7 @@ export default {
       const key = this.cloneColumns[index].key;
       if (this.cloneColumns[index].sortable !== 'custom') {    // custom is for remote sort
           if (type === 'normal') {
-            this.rebuildData = this.makeDataWithFilter();
+            this.rebuildData = this.makeSortData();
           } else {
             this.rebuildData = this.sortData(this.rebuildData, type, index);
           }
