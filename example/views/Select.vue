@@ -47,13 +47,13 @@
                   :value="item.value"
                   :key="item.value">{{ item.label }}</h-option>
       </h-select> -->
-      {{model44}}
+      <!-- {{model44}} -->
        <h-select v-model="model44"
+                hideMult
                 isBackClear
                 multiple
                 style="width:320px"
                 isCheckall
-                hideMult
                 @on-change="change"
                 @on-scroll="scroll"
                 :isComputed="isComputed"
@@ -64,7 +64,9 @@
                 ref  = "iconclick"
                 algin="center">
         <h-option :value="-1"
-                  key="-1">-1 所有link121412111111111111111111</h-option>
+                  key="-1">-1 所有link1214121111111111111111111111111111111111111111</h-option>
+        <h-option :value="wo"
+                  key="wo">我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我</h-option>
         <h-option v-for="item in cityList"
                   multiple
                   :value="Number(item.value)"
