@@ -226,6 +226,7 @@
                   hideMult
                   showTitle>
           <h-option value="wo"
+                    title="我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我"
                     key="wo">我我我我我我我我我我我我我我我我我我我我我我我我我我我我我我</h-option>
           <h-option v-for="(item, index) in uList"
                     :value="item.id"

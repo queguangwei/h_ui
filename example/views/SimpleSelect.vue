@@ -11,6 +11,7 @@
                      showBottom
                      specialIndex
                      multiple
+                     hideMult
                      isSelectFilter
                      placeholder="123"
                      showTotalNum
@@ -91,7 +92,7 @@
         <h-button @click="changeData">已选置顶</h-button>
       </div>
     </h-simple-select>
-    <h-simple-select 
+    <h-simple-select
       v-model="valueRemote"
       filterable
       show-bottom
