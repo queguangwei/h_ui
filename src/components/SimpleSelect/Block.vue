@@ -24,7 +24,7 @@
 
         <slot><span :style="showCol.length ? styleArr[0] : ''"
                 :class="showCol.length ? 'itemcol' : ''"
-                :title="showCol.length ? showLabel(item) : ''">
+                :title="showCol.length || hideMult ? showLabel(item) : ''">
             <checkbox v-show="multiple&&!hideMult"
                       size="large"
                       :value="item.selected"
