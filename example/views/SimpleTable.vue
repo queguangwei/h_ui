@@ -13,9 +13,10 @@
     <!-- :multiLevel="multiLevel1" -->
     <!-- <h-msg-box v-model="showmsg" :width="1000"> -->
       <!-- notAdaptive  -->
-    <h-simple-table ref="simTable" :summationData="summationData" :columns="columnsBig1" border :data="bigData" height="300" @on-selection-change="selsetChange" @on-sort-change="selsetChange" highlightRow>
+    <h-simple-table ref="simTable" :summationData="summationData" :columns="columnsBig1" border :data="bigData" height="300" @on-selection-change="selsetChange" @on-current-change="selsetChange1" highlightRow>
     </h-simple-table>
     <!-- </h-msg-box> -->
+    <h-button @click='changeClo'>改变冻结列</h-button>
     <h-button type="primary" size="large" @click="exportData(1)"><h-icon type="ios-download-outline"></h-icon> 导出原始数据</h-button>
     <h-button type="primary" size="large" @click="exportData(2)"><h-icon type="ios-download-outline"></h-icon> 导出排序和过滤后的数据</h-button>
     <h-button type="primary" size="large" @click="exportData(3)"><h-icon type="ios-download-outline"></h-icon> 导出自定义数据</h-button>
@@ -479,10 +480,14 @@ export default {
         name: 'qeqweqw',
         age: 123123123,
         address: 'qqweqwe'
-      }]
+      }],
     }
   },
   methods:{
+    changeClo(){
+
+      this.$set(this.columnsBig1[1],'fixed','left')
+    },
     loadData(){
       this.showmsg = true;
       this.$nextTick(()=>{
@@ -561,6 +566,11 @@ export default {
       console.log(selection);
       console.log(inx);
       console.log(i);
+    },
+    selsetChange1 (selection,inx,i){//选项发生变化时触发已选择的项
+      console.log("1  "+selection);
+      console.log("1  "+inx);
+      console.log("1  "+i);
     },
     show (index) {
       this.$hMsgBox.info({
@@ -696,16 +706,17 @@ export default {
           type: 'index',
           align: 'center',
           width:200,
+          ket:"index",
           sortable:true,
-          // fixed:'left',
+          fixed:'left',
         },
-        // {
-        //   type: 'selection',
-        //   align: 'center',
-        //   key:'select',
-        //   width:200,
-        //   // fixed:'left'
-        // },
+        {
+          type: 'selection',
+          align: 'center',
+          key:'select',
+          width:200,
+          // fixed:'left'
+        },
         {
           title: '姓名',
           key: 'fundId',
@@ -727,22 +738,39 @@ export default {
         {
           title: '年龄',
           key: 'tradeDate',
-          minWidth:200,
           sortable:true,
           // fixed:'left',
         },
         {
           title: '地址',
           ellipsis:true,
-          minWidth:200,
           key: 'securityCode',
         },
-        {
-          title: '地址1',
-          key: 'securityName',
-          minWidth:200,
-          sortable:true,
-        }
+        // {
+        //   title: '地址1',
+        //   key: 'securityName',
+        //   minWidth:200,
+        //   sortable:true,
+        // },
+        // {
+        //   title: '年龄',
+        //   key: 'tradeDate',
+        //   minWidth:200,
+        //   sortable:true,
+        //   // fixed:'left',
+        // },
+        // {
+        //   title: '地址',
+        //   ellipsis:true,
+        //   minWidth:200,
+        //   key: 'securityCode',
+        // },
+        // {
+        //   title: '地址1',
+        //   key: 'securityName',
+        //   minWidth:200,
+        //   sortable:true,
+        // }
     ]
     // this.columnsBig1.push({
     //   title: '地址6',
