@@ -10,7 +10,19 @@
       <br>
       <i>@on-change：当点击转移按钮时，组件本身并不会转移数据，而是触发事件，由用户来操作数据。</i>
     </p>
-    <h2>基本用法</h2>
+    <h2>noEdit</h2>
+    <h-transfer-table
+      :lColumns="columns"
+      :rColumns="columns"
+      :lData="data0"
+      :rData="data1"
+      :showTitle="false"
+      :beforeMove="sureMove"
+      not-data-text="123"
+      noEdit
+      @on-change="handleChange1"
+    ></h-transfer-table>
+    <!-- <h2>基本用法</h2>
     <h-transfer-table
       :lColumns="columns1"
       :rColumns="columns1"
@@ -53,7 +65,7 @@
       <div :style="{float: 'right', margin: '5px'}">
         <h-button type="ghost" size="small" @click="reloadMockData">刷新</h-button>
       </div>
-    </h-transfer-table>
+    </h-transfer-table> -->
   </div>
 </template>
 <script>
@@ -293,9 +305,63 @@ var column = [
     rule: { required: true, message: '请选择子节点', trigger: 'blur,change' }
   }
 ]
+var columns = [
+  {
+    type: 'selection',
+    width: 50,
+  },
+  {
+    type: 'text',
+    title: '姓名',
+    key: 'name'
+  },
+  {
+    width: 80,
+  },
+  {
+    title: '年龄',
+    width: 200,
+    key: 'age',
+
+  },
+  {
+    width: 200,
+    title: '地址',
+    key: 'address',
+  },
+  {
+    title: '金额',
+    width: 200,
+  },
+  {
+    title: '卡号',
+    key: 'cardId',
+  },
+  {
+    title: '地区',
+    width: 200,
+    key: 'city',
+  },
+  {
+    title: '日期',
+    width: 200,
+    key: 'dating',
+  },
+  {
+    title: '时间',
+    width: 200,
+    key: 'timing',
+  },
+  {
+    title: '下拉树',
+    width: 200,
+    key: 'tree',
+  }
+]
 export default {
   data() {
     return {
+      columns: columns,
       columns1: column,
       columns2: column,
       columns3: column,
@@ -308,6 +374,12 @@ export default {
     }
   },
   methods: {
+    sureMove(keys,dir,isAll){
+      if(keys.length>1){
+        return false
+      }
+      return true
+    },
     filter(data, query) {
       return data.name.indexOf(query) > -1;
     },

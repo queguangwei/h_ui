@@ -798,7 +798,7 @@
                 this.model = selectedModel;
             }
         }
-        this.toggleMultipleSelected(this.model, init);
+        this.toggleMultipleSelected(init && this.multiple && this.model === "" ? [] : this.model, init);
       },
       removeTag (index) {
         if (this.disabled || this.readonly || !this.editable) {
@@ -1541,6 +1541,9 @@
       },
       fPlacement(val) {
         this.$refs.dropdown.update()
+      },
+      dropVisible(val){
+        this.$emit('on-drop-change',val)
       }
     }
   };
