@@ -1230,7 +1230,7 @@ export default {
       const item = this.cloneColumns[curIndex];
       this.cloneColumns.splice(curIndex,1);
       this.cloneColumns.splice(insertIndex,0,item);
-      this.$emit('on-move',_index,insertIndex);
+      this.$emit('on-move',curIndex,insertIndex);
     },
     setMoveProxy(index){
       let el = this.$refs.moveProxy;
