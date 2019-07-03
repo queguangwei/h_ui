@@ -205,6 +205,11 @@ export default {
       type: Boolean,
       default: false
     },
+    /* 多选文件时，合并触发before-upload、on-format-error、on-exceeded-size等钩子 */
+    mergeHook: {
+      type: Boolean,
+      default: false
+    }
   },
   data () {
     return {
@@ -330,20 +335,26 @@ export default {
       this.uploadFiles(e.dataTransfer.files);
     },
     uploadFiles (files) {
-      this.uploadAllList = []
+      this.uploadAllAutoList = [];
       let postFiles = Array.prototype.slice.call(files);
       if (!this.multiple) postFiles = postFiles.slice(0, 1);
 
       if (postFiles.length === 0) return;
       // 全部上传(非自定义)
-      postFiles.forEach(file => {
-        this.upload(file);
-          
-      });
-      if (this.uploadAll && !this.selfConfig) {
+      if (this.mergeHook) {
+        this.upload(postFiles);
+      } else {
+        postFiles.forEach(file => {
+          this.upload(file);
+        });
+      }
+      if (this.uploadAll && !this.selfConfig && this.uploadAllAutoList.length > 0) {
         this.startPost(this.uploadAllAutoList)
       }
     },
+    /**
+     * @param file 文件或文件列表 v1.0.43
+     */
     upload (file) {
       if (!this.beforeUpload) {
           return this.post(file);
@@ -365,38 +376,63 @@ export default {
         // this.$emit('cancel', file);
       }
     },
+    /**
+     * @param file 文件或文件列表 v1.0.43
+     */
     post (file) {
-      // check format
-      if (this.format.length) {
-        const _file_format = file.name.split('.').pop().toLocaleLowerCase();
-        const checked = this.format.some(item => item.toLocaleLowerCase() === _file_format);
-        if (!checked) {
-          this.onFormatError(file, this.fileList);
-          return false;
-        }
-      }
-
-      // check maxSize
-      if (this.maxSize) {
-        if (file.size > this.maxSize * 1024) {
-          this.onExceededSize(file, this.fileList);
-          return false;
-        }
-      }
-      this.handleStart(file);
-      // 手动控制，校验完文件显示待上传列表
-      if(this.selfConfig) {
-        if (this.selfConfPostList.length > 0) this.isFirstChoose = false
-        if(this.showUploadedList) this.showUploadedList = false
-        if(file.status === "finished") {
-          file.isShow = false
+      const post = (fileItem) => {
+        this.handleStart(fileItem);
+        // 手动控制，校验完文件显示待上传列表
+        if(this.selfConfig) {
+          if (this.selfConfPostList.length > 0) this.isFirstChoose = false
+          if(this.showUploadedList) this.showUploadedList = false
+          if(fileItem.status === "finished") {
+            fileItem.isShow = false
+            return 
+          }
           return 
+        } else if (this.uploadAll) {
+          this.uploadAllAutoList.push(fileItem)
+        } else {
+          this.startPost(fileItem)
         }
-        return 
-      } else if (this.uploadAll) {
-        this.uploadAllAutoList.push(file)
+      }
+      let valid;
+      let invalidType;
+      let invalidFile;
+      // 当开启mergeHook属性时file为数组
+      if (Array.isArray(file)) {
+        // 只要有一个文件检查失败就无法完成提交
+        valid = file.every(item => {
+          let result = this.checkFile(item);
+          if (!result[0]) {
+            invalidFile = item;
+            invalidType = result[1];
+          }
+          return result[0];
+        })
       } else {
-        this.startPost(file)
+        let result = this.checkFile(file);
+        valid = result[0];
+        if (!valid) {
+          invalidType = result[1];
+          invalidFile = file;
+        }
+      }
+      switch(invalidType) {
+        case "format":
+          this.onFormatError(invalidFile, this.fileList);
+          break;
+        case "size":
+          this.onExceededSize(invalidFile, this.fileList);
+          break;
+      }
+      if (valid) {
+        if (Array.isArray(file)) {
+          file.forEach(item => post(item));
+        } else {
+          post(file);
+        }
       }
     },
     // 开始上传文件
@@ -560,6 +596,30 @@ export default {
       this.fileNoneStatus = 'clear'
       this.isFirstChoose = true      
       this.selfConfPostList = []
+    },
+    /**
+     * 检查文件格式、大小等
+     * 
+     * @param file File对象
+     * @return Array 第一个元素为检查结果，第二个元素为检查失败的类型
+     */
+    checkFile(file) {
+      // check format
+      if (this.format.length) {
+        const _file_format = file.name.split('.').pop().toLocaleLowerCase();
+        const checked = this.format.some(item => item.toLocaleLowerCase() === _file_format);
+        if (!checked) {
+          return [false, 'format'];
+        }
+      }
+
+      // check maxSize
+      if (this.maxSize) {
+        if (file.size > this.maxSize * 1024) {
+          return [false, 'size'];
+        }
+      }
+      return [true];
     }
   },
   watch: {
