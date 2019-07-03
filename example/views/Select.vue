@@ -15,6 +15,7 @@
                 zeroToNull
                 filterable
                 style="width:80px"
+                @on-drop-change="change"
                 @on-change="change"
                 @on-scroll="scroll"
                 algin="right"
@@ -576,7 +577,7 @@ export default {
       model4: '',
       model5: 'beijing',
       model6: '',
-      model7: [],
+      model7: undefined,
       model8: '',
       model9: '',
       model10: '',
@@ -839,6 +840,7 @@ export default {
      }
   },
   mounted() {
+    this.model7 = [];
     var _this = this
     this.cityList = []
     // var timer = setTimeout(() => {

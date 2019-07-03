@@ -59,13 +59,16 @@ export default {
 			this.$emit('click', event);
 		},
 		setWidthAdaption(){
-			let content = this.$refs.selectdrop.children[0]
+			let content = this.$refs.selectdrop
 			if(this.$parent.$options.name ==='SimpleSelect'){
-				if(this.$parent.showBottom || this.$parent.hideMult){
-					content = content.children[1].children[0]
-				}else{
-					content=content.children[0].children[0]
-				}
+				content = content.querySelectorAll('.h-selectTable-dropdown-list')[0].children[0]
+				// if(this.$parent.showBottom || this.$parent.hideMult){
+				// 	content = content.children[1].children[0]
+				// }else{
+				// 	content=content.children[0].children[0]
+				// }
+			}else{
+				content = content.children[0]
 			}
 			// 横向或者纵向滚动条导致的像素偏移的问题
 			// 是否有纵向滚动条
@@ -73,11 +76,11 @@ export default {
 			// 是否有横向滚动条
 			let isScrollX = parseInt(this.$refs.selectdrop.clientHeight) > parseInt(content.clientHeight) ? true : false
 			if (isScrollX) {
-        this.width = isScrollY ? parseInt(content.scrollWidth) + this.scrollBarWidth : content.scrollWidth
+                this.width = isScrollY ? parseInt(content.scrollWidth) + this.scrollBarWidth : content.scrollWidth
 			}
 		},
 		update () {
-      if (isServer) return;
+          if (isServer) return;
 			if (this.popper) {
 				this.$nextTick(() => {
           // select 组件 placement 改变后同步改变 popper 实例

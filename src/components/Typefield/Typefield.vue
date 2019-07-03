@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!hidden" :class="clazz">
+  <div v-if="!hidden" :class="clazz" @mouseover="hover" @mouseout="out">
     <div :class="[prefixCls + '-group-prepend']" v-if="prepend"><slot name="prepend"></slot></div>
     <input
       :class="classes"
@@ -162,6 +162,10 @@ export default {
     nonNegative: {
       type: Boolean,
       default: false
+    },
+    hoverTips:{
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -218,6 +222,7 @@ export default {
     // keyup,focus,blur
     blurValue (e) {
       this.havefocused = false;
+      this.focused = false;
       if (this.type=='money') {
         this.tipShow=false;
       }
@@ -278,7 +283,7 @@ export default {
       if (this.type == "cardNo") {
         this.inputValue = this.inputValue?String(this.inputValue).replace(/\s+/g,""):'';
       }
-      this.bigShow(this.type,this.bigTips,this.inputValue)
+      this.bigShow(this.type,this.inputValue)
       if(this.focusAllSelect && this.type==='money'){
         this.$nextTick(()=>{
           this.$refs.input.select();
@@ -778,6 +783,15 @@ export default {
       }
       // 失焦的时候才更新v-model绑定值，避免不能输入的问题
       !this.havefocused && this.$emit('input', this.cardFormatValue(formatVal));
+    },
+    hover(){
+      if(!this.hoverTips||!this.value||this.tipShow) return      
+      this.bigShow(this.type,this.value)
+    },
+    out(){
+      if(!this.focused){
+        this.tipShow = false
+      }
     }
   }
 }

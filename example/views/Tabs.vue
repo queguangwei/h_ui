@@ -57,7 +57,7 @@
       </h-tab-Pane>
     </h-tabs>
     <h2>禁用</h2>
-    <h-tabs>
+    <h-tabs :lazy="true" :animated="false">
       <h-tab-pane label="标签一" name="name1">
         <h-select-tree v-model="val1" style="width:200px" :data="baseData" showCheckbox size="large" @on-check-change="selectChange" :transfer="true"></h-select-tree>
       </h-tab-pane>
