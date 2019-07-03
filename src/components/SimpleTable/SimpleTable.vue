@@ -1106,7 +1106,7 @@ export default {
           Math.floor(this.$refs.body.scrollTop / this.itemHeight) *
           this.itemHeight
         if(this.$refs.fixedBody){
-            this.$refs.fixedBody.scrollTop = transformTop
+            this.$refs.fixedBody.scrollTop =this.$refs.body.scrollTop
           }
         if (this.scrollbarToZero) {
           transformTop = 0
@@ -1209,6 +1209,7 @@ export default {
             parseInt(getStyle(this.$refs.tbody.$el, 'height')) || 0
           this.headerRealHeight =
             parseInt(getStyle(this.$refs.header, 'height')) || 0
+          this.initWidth = parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0
         })
       })
     },
@@ -1340,10 +1341,8 @@ export default {
     },
     clickCurrentRowTr(event, _index, curIndex) {
       curIndex = curIndex + this.start
-      if (
-        (!event.shiftKey && !event.ctrlKey) ||
-        (this.highlightRow && !this.selectType)
-      ) {
+      if (!event.shiftKey && !event.ctrlKey) {
+        // (this.highlightRow && !this.selectType)//单选配置时支持shift贺ctrl多选
         if (this.rowSelect) {
           // this.objData[_index]._isChecked=!this.objData[_index]._isChecked;
           this.toggleSelect(_index, curIndex)

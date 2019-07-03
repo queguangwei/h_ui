@@ -5,13 +5,13 @@
     <h1>selectBlock测试用例</h1>
     {{value2}}
     <h-simple-select ref="ceshi"
+                     style="width:200px;"
                      label-in-value
                      autoPlacement
                      filterable
                      showBottom
                      specialIndex
                      multiple
-                     hideMult
                      isSelectFilter
                      placeholder="123"
                      showTotalNum
@@ -84,6 +84,7 @@
                      remote
                      :remote-method="remoteMethod"
                      :loading="loading1"
+                     showArrow
                      loadingText="拼命加载中..."
                      ref="block">
       <h-select-block :data="remoteData"></h-select-block>
@@ -98,6 +99,7 @@
       show-bottom
       remote
       multiple
+      showArrow
       :remote-method="remoteMethod">
       <h-select-block :data="remoteData" ref="block1"></h-select-block>
       <div slot="header">我是header</div>
@@ -124,7 +126,7 @@ for (let i = -1; i < 160; i++) {
     obj.disabled = true
   }
   // obj.value = 'value' + i
-  obj.label = 'lab' + i
+  obj.label =  i==2?'lab111111111111111111111111111111111' + i:'lab' + i
   obj.label1 = 'lab12'
   obj.label2 = 'lab13'
   obj.label3 = 'lab14'
