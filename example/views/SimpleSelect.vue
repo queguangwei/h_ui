@@ -5,15 +5,18 @@
     <h1>selectBlock测试用例</h1>
     {{value2}}
     <h-simple-select ref="ceshi"
+                     label-in-value
                      autoPlacement
                      filterable
                      showBottom
                      specialIndex
                      multiple
+                     hideMult
                      isSelectFilter
                      placeholder="123"
                      showTotalNum
                      v-model="value2"
+                     @on-change="change"
                      widthAdaption>
       <div slot="header">
         <h-button @click="selectAll(true)">全选</h-button>
@@ -89,7 +92,7 @@
         <h-button @click="changeData">已选置顶</h-button>
       </div>
     </h-simple-select>
-    <h-simple-select 
+    <h-simple-select
       v-model="valueRemote"
       filterable
       show-bottom
