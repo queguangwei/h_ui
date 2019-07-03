@@ -223,7 +223,9 @@ export default {
       }
     },
     updateVisibleData(scrollTop) {
-      let itemHeight = Number(this.itemHeight)
+      // o45 下拉最后一条时闪动问题处理 + 0.01 作为偏移值
+      // 目前仅能在 o45 系统中复现
+      let itemHeight = Number(this.itemHeight) + 0.01
       scrollTop = scrollTop == undefined ? this.lastScollTop : scrollTop
       this.start = Math.floor(scrollTop / itemHeight)
       let i = 0
@@ -362,11 +364,19 @@ export default {
     data: {
       deep: true,
       handler: function(val) {
+        // 资管需求 148437 特殊处理，在关闭时，空状态延迟 100ms 变更，避免出现动画闪动
         if (val.length == 0) {
-          this.showEmpty = true
+          if (!this.$parent.$parent.dropVisible) {
+            setTimeout(() => {
+              this.showEmpty = true
+            }, 100)
+          } else {
+            this.showEmpty = true
+          }
         } else {
           this.showEmpty = false
         }
+
         this.$nextTick(() => {
           this.cloneData = deepCopy(this.data)
           this.cloneData.forEach((item,i) => {
