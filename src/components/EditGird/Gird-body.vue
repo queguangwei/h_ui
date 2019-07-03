@@ -168,6 +168,7 @@
     import Mixin from './mixin';
     import Icon from '../Icon/Icon.vue'
     import CollapseTransition from '../Notice/collapse-transition';
+    import { findInx } from '../../util/tools';
     export default {
       name: 'GirdBody',
       mixins: [ Mixin ],
@@ -334,6 +335,40 @@
             });
           }
         },
+        /**
+         * 添加visibleKey属性（一个递增的数值，只有可见行才会被添加，收缩行不会被添加）
+         * 
+         * @param index 原始数据所在下标，非nodeKey
+         */
+        addVisibleKey(index = -1) {
+          if (this.typeName !== 'treeGird' || !this.$parent.stripe) return;
+          const treeData = this.flatState;
+          const objData = this.objData;
+          let startIndex = index > -1 ? findInx(treeData, d => d.node._index === index) : 0;
+          let dataView = treeData.slice(0, startIndex);
+          // 查找最大的visibleKey
+          let maxVisibleKeyData;
+          for (let i = dataView.length - 1; i >= 0; i--) {
+            if (dataView[i].node.hasOwnProperty('visibleKey')) {
+              maxVisibleKeyData = dataView[i].node;
+              break;
+            }
+          }
+          let visibleKey = maxVisibleKeyData ? maxVisibleKeyData.visibleKey + 1 : 0;
+          treeData.slice(startIndex).forEach(d => {
+            let node = d.node;
+            if (d.hasOwnProperty('parent')) {
+              let parent = treeData[d.parent];
+              if (parent.node.hasOwnProperty('visibleKey') && objData[parent.node._index]._isExpanded) {
+                node.visibleKey = visibleKey++;
+              } else {
+                delete node.visibleKey;
+              }
+            } else {
+              node.visibleKey = visibleKey++;
+            }
+          })
+        },
         editselectChange(val,i,j){
           this.$emit('on-editselect-change',val,i,j);
         },
@@ -363,7 +398,7 @@
         if (this.typeName == 'treeGird') {
           this.treeData = this.data;
           this.flatState = this.compileFlatState();
-
+          this.addVisibleKey();
           // 设置默认选中
           this.treeData.forEach(row => {
             if (row.checked) {
@@ -384,6 +419,7 @@
           if (this.typeName == 'treeGird') {
             this.treeData = this.data;
             this.flatState = this.compileFlatState();
+            this.addVisibleKey();
           }
         },
         option:{

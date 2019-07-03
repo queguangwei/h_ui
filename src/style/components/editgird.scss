@@ -219,10 +219,18 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
   &-stripe &-fixed-body
   {
     tr:nth-child(2n) {
-      td{
+      td {
           background-color: $table-td-stripe-bg;
       }
     }
+  }
+
+  &-stripe &-body tr td.#{$editgird-prefix-cls}-stripe-light {
+    background-color: #fff;
+  }
+
+  &-stripe &-body tr td.#{$editgird-prefix-cls}-stripe-dark {
+    background-color: $table-td-stripe-bg;
   }
 
   tr.#{$editgird-prefix-cls}-row-hover{

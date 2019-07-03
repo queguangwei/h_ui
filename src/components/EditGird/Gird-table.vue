@@ -780,6 +780,7 @@ export default {
       if (this.typeName!='treeGird') {
         this.$set(this.rebuildData[_index],'expand',status);
       }
+      this.$refs.tbody.addVisibleKey(_index);
       this.$emit('on-expand', JSON.parse(JSON.stringify(this.cloneData[_index])), status);
       // this.$emit('on-expand',status);
     },
