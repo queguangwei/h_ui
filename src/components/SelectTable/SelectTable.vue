@@ -44,7 +44,7 @@
             @click.native.stop="clearSingleSelect"></Icon>
       <Icon name="unfold"
             :class="[prefixCls + '-arrow']"
-            v-if="!remote"
+            v-if="!remote||showArrow"
             ref="arrowb"></Icon>
     </div>
     <transition :name="transitionName">
@@ -100,6 +100,7 @@
                 :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>
           </div>
           <div v-if="isBlock"
+               id="blockWrapper"
                v-show="(!notFound && !remote) || (remote && !notFound)"
                :class="[prefixCls + '-dropdown-list']"
                :style="listStyle"
@@ -344,6 +345,11 @@ export default {
     },
     // 多选时离开焦点显示选择多少项
     showTotalNum:{
+      type:Boolean,
+      default:false,
+    },
+    //一直显示arrow图标，包括远程搜索时
+    showArrow:{
       type:Boolean,
       default:false,
     }
@@ -1012,6 +1018,11 @@ export default {
               }
             } else {
               this.selectBlockMultiple(this.focusValue)
+            }
+            if(this.filterable){
+              this.$nextTick(()=>{
+                this.$refs.input.focus()
+              })
             }
             return
           }

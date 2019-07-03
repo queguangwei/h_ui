@@ -15,6 +15,7 @@
                 zeroToNull
                 filterable
                 style="width:80px"
+                @on-drop-change="change"
                 @on-change="change"
                 @on-scroll="scroll"
                 algin="right"

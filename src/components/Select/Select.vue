@@ -1541,6 +1541,9 @@
       },
       fPlacement(val) {
         this.$refs.dropdown.update()
+      },
+      dropVisible(val){
+        this.$emit('on-drop-change',val)
       }
     }
   };
