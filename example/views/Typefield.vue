@@ -110,8 +110,8 @@ export default {
     kChange(val){
       console.log('按钮事件已触发'+val);
     },
-    s(){
-      console.log(this.value);
+    s(e){
+      console.log(e);
     }
   }
 }
