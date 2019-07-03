@@ -17,7 +17,7 @@
              v-if="isShowError"
              :style="{left: `${msgOffset}px`}">
           <div class="verify-tip-arrow"></div>
-          <div class="verify-tip-inner">{{validateMessage}}</div>
+          <div class="verify-tip-inner" :style="verifyTipStyle" :title="validateMessage">{{validateMessage}}</div>
         </div>
       </transition>
     </div>
@@ -246,6 +246,11 @@ export default {
     },
     isNotChecked() {
       return this.form.isCheck ? false : true
+    },
+    verifyTipStyle(){
+       let style={}
+       style.maxWidth=(this.$children[0].$el.clientWidth-15)+"px"
+       return  style
     }
   },
   methods: {
