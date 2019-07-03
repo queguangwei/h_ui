@@ -736,6 +736,7 @@ export default {
           let num = 0
           if(this.autoHeadWidth||this.data.length==0 || !this.$refs.tbody){
             num = 30
+            if(!this.$refs.thead) return
             $td = this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0].querySelectorAll('.h-table-cell>span');
           }else{
             $td = this.$refs.tbody.$el.querySelectorAll('tbody tr')[0].querySelectorAll('td');
