@@ -1,7 +1,7 @@
 <template>
 <div>
     <Button @click="change"></Button>
-    <h-table height="300" border :columns="columns2" :data="data3" notSetWidth></h-table>
+    <h-table height="300" border :columns="columns2" :data="data3" notSetWidth @on-right-click="rightClick"></h-table>
     <input id="keyword"  @change="change" placeholder="input your keyword" />
     <div id="msg-list"></div>
 </div>
@@ -72,6 +72,9 @@
                     title:"111111111111111111111111111111111",
                     key:'city'
                 })
+            },
+            rightClick(e){
+                console.log(e)
             }
         },
         mounted(){

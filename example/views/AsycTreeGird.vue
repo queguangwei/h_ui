@@ -3,7 +3,7 @@
     <h1>基本用法(disableEdit)</h1>
   <p>data为树型结构</p>
    <h-button type="ghost" @click="exportCsv">导出表格数据</h-button>
-   <h-asyc-tree-gird stripe disableEdit :columns="columns1" :data="data2" :option='options1' :treeOption="treeOption" ref="asyctreegird1" border @on-drag="selectAll">
+   <h-asyc-tree-gird stripe canDrag :lastColWidth="120" isCheckbox :columns="columns1" :data="data2" :option='options1' :treeOption="treeOption" ref="asyctreegird1" border @on-drag="selectAll">
     <p slot="header">我是headerSLOT</p>
   </h-asyc-tree-gird>
     <p>外部可以在data中设置checked标识当前行节点是否选中(isCheckbox为true时设置)</p>

@@ -233,7 +233,8 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
     background-color: $table-td-stripe-bg;
   }
 
-  tr.#{$editgird-prefix-cls}-row-hover{
+  tr.#{$editgird-prefix-cls}-row-hover, 
+  &-wrapper &-stripe &-body tr.#{$editgird-prefix-cls}-row-hover {
     td{
       background-color: $table-td-hover-bg;
     }
@@ -275,10 +276,10 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
   &-row-highlight,&-row-checked,
   tr.#{$editgird-prefix-cls}-row-highlight.#{$editgird-prefix-cls}-row-hover,
   tr.#{$editgird-prefix-cls}-row-checked.#{$editgird-prefix-cls}-row-hover,
-  &-stripe &-body tr.#{$editgird-prefix-cls}-row-highlight:nth-child(2n),
-  &-stripe &-fixed-body tr.#{$editgird-prefix-cls}-row-highlight:nth-child(2n),
-  &-stripe &-body tr.#{$editgird-prefix-cls}-row-checked:nth-child(2n),
-  &-stripe &-fixed-body tr.#{$editgird-prefix-cls}-row-checked:nth-child(2n)
+  &-wrapper &-stripe &-body tr.#{$editgird-prefix-cls}-row-highlight,
+  &-wrapper &-stripe &-fixed-body tr.#{$editgird-prefix-cls}-row-highlight,
+  &-wrapper &-stripe &-body tr.#{$editgird-prefix-cls}-row-checked,
+  &-wrapper &-stripe &-fixed-body tr.#{$editgird-prefix-cls}-row-checked
   {
     td{
       background-color: $table-td-highlight-bg;
