@@ -1,7 +1,7 @@
 <template>
 <div>
     <Button @click="change"></Button>
-    <h-table height="300" border :columns="columns2" :data="data3" notSetWidth></h-table>
+    <h-table height="300" border :columns="columns2" :data="data3" notSetWidth @on-right-click="rightClick"></h-table>
     <input id="keyword"  @change="change" placeholder="input your keyword" />
     <div id="msg-list"></div>
 </div>
@@ -72,10 +72,14 @@
                     title:"111111111111111111111111111111111",
                     key:'city'
                 })
+            },
+            rightClick(e){
+                console.log(e)
             }
         },
         mounted(){
-            this.data3 = [
+            setTimeout(()=>{
+                 this.data3 = [
                     {
                         name: '王小明',
                         age: 18,
@@ -141,7 +145,9 @@
                         zip: 100000
                     }
                 ]
-        }
+        
+            },1000)
+           }
     }
 </script>
 
