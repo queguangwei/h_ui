@@ -76,6 +76,9 @@
               ref="input">
           </span>
           <span v-if="hideMult&&multiple" :class="hideMultHead" @click="toggleSelect(!isSelectAll)">全选</span>
+          <div v-if="showHeader">
+            <slot name="header"></slot>
+          </div>
           <ul v-show="notFoundShow && !enableCreate" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul>
           <ul v-show="(!notFound && !remote) || (remote && !loading && !notFound) || enableCreate" :class="[prefixCls + '-dropdown-list']">
             <!-- 多选、支持搜索和新建条目的情况下，如果检索词不匹配任何一个条目时，显示此项供用户选择 -->
@@ -346,6 +349,9 @@
       };
     },
     computed: {
+      showHeader() {
+        return this.$slots.header
+      },
       classes () {
         return [
           `${prefixCls}`,
