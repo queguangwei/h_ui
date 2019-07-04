@@ -16,7 +16,7 @@
                   :prefix-cls="prefixCls"
                   @mouseenter.native.stop="handleMouseIn(index)"
                   @mouseleave.native.stop="handleMouseOut(index)"
-                  @click.native="clickCurrentRow(index)"
+                  @click.native="clickCurrentRow(index,row,$event)"
                   @dblclick.native.stop="handleDblClick(row._index)"
                   v-show="show(row)"
                   :class="rowCls(row)">
@@ -153,10 +153,10 @@ export default {
     handleDblClick(index) {
       this.$parent.handleRowDblClick(index);
     },
-    clickCurrentRow(_index) {
+    clickCurrentRow(_index,row,e) {
       this.$parent.clickCurrentRow(_index)
       if (this.rowSelect) {
-        this.$parent.toggleSelect(_index)
+        this.changeSelect(row, _index, e)
       }
     },
     toggleExpand(index, row, e) {

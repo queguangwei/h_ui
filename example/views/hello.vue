@@ -1,3 +1,4 @@
+
 <template>
 <div>
     <Button @click="change"></Button>
@@ -14,6 +15,7 @@
                     {
                         title: '姓名1111111111',
                         key: 'name',
+                        sortable:true,
                         // width: 100,
                     },
                     {
@@ -24,6 +26,7 @@
                     {
                         title: '省份111111111111111111',
                         key: 'province',
+                        sortable:true,
                         // width: 100
                     },
                     {
@@ -32,7 +35,7 @@
                         // width: 100
                     },
                     {
-                        title: '地址1111111111111111111111',
+                        title: '地址11111111',
                         key: 'address',
                         // width: 200
                     },
@@ -147,7 +150,7 @@
                 ]
         
             },1000)
-           }
+        }
     }
 </script>
 
