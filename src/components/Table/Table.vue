@@ -1111,6 +1111,16 @@ export default {
         const status = !data._isExpanded;
         this.objData[_index]._isExpanded = status;
         this.$emit('on-expand', JSON.parse(JSON.stringify(this.cloneData[_index])), status);
+        this.$nextTick(() => { 
+            if(this.$refs.fixedRightBody){
+                let table=this.$refs.fixedRightBody.getElementsByClassName("h-table-tbody")[0];
+                let expandfixed= table.getElementsByClassName("h-table-expanded-cell");
+                for(let i=0;i<expandfixed.length;i++){
+                    expandfixed[i].children[0].style.visibility="hidden";
+                }
+            }
+                
+        });
     },
     itemSelect(i,status){
       let index = this.rebuildData[i]._index;
@@ -1666,6 +1676,14 @@ export default {
     this.$nextTick(() => {
       this.ready = true;
       this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0;
+      if(this.$refs.fixedRightBody){
+            let table=this.$refs.fixedRightBody.getElementsByClassName("h-table-tbody")[0];
+            let expandfixed= table.getElementsByClassName("h-table-expanded-cell");
+            for(let i=0;i<expandfixed.length;i++){
+                expandfixed[i].children[0].style.visibility="hidden";
+            }
+      }
+      
     });
     //window.addEventListener('resize', this.handleResize, false);
     on(window, 'resize', this.handleResize);
