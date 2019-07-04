@@ -115,6 +115,12 @@
       <h-select-block :data="ceshiData"></h-select-block>
     </h-simple-select> -->
     <br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+    <p>showValue为true，输入框显示value值，下拉框显示label+value、开启accuFilter完全匹配，并且搜到的结果自动勾选</p>
+        <span>#149105需求  select和SimpleSelect 控件多选时 如果搜索时输入的信息完全匹配到 value或者label的时候 自动勾上；</span>
+    <h-simple-select v-model="valuetest" ref="test" filterable  multiple showValue  accuFilter>
+        <h-select-block :data="bigDatatest"></h-select-block>
+    </h-simple-select>
   </div>
 </template>
 <script>
@@ -132,6 +138,15 @@ for (let i = -1; i < 160; i++) {
   obj.label3 = 'lab14'
   bigData.push(obj)
 }
+
+let bigDatatest = [];
+for(let i=0;i<20;i++){
+  let obj={};
+  obj.value=i+"";
+  obj.label=obj.value+" :label"+i;
+  bigDatatest.push(obj);
+}
+
 export default {
   data() {
     return {
@@ -139,7 +154,9 @@ export default {
       showCol:['label1','label2','label3'],
       matchCol: ['name', 'age'],
       bigData: [],
+      bigDatatest:bigDatatest,
       value: '',
+      valuetest:['12'],
       value1: [],
       value2: ['2'],
       v20190321: {

@@ -12,7 +12,8 @@
       <!-- 多选时输入框内选中值模拟 -->
       <template  v-if="multiple && !collapseTags">
         <div class="h-tag" v-for="(item, index) in selectedMultiple" :key="index">
-          <span class="h-tag-text">{{ item.label }}</span>
+          <span class="h-tag-text" v-if="showValue">{{ item.value }}</span>
+           <span class="h-tag-text" v-if="!showValue">{{ item.label }}</span>
           <Icon name="close" @click.native.stop="removeTag(index)"></Icon>
         </div>
       </template>
@@ -155,6 +156,10 @@
         type: String
       },
       filterable: {
+        type: Boolean,
+        default: false
+      },
+      accuFilter:{
         type: Boolean,
         default: false
       },
@@ -313,6 +318,10 @@
       },
       /* 全选和取消全选是否根据检索后展示选项 */
       isSelectFilter: {
+        type: Boolean,
+        default: false
+      },
+      showValue: {
         type: Boolean,
         default: false
       }

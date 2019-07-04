@@ -78,7 +78,13 @@
       queryChange (val) {
         if (!this.created) {
           const parsedQuery = val.replace(/(\^|\(|\)|\[|\]|\$|\*|\+|\.|\?|\\|\{|\}|\|)/g, '\\$1');
-          this.hidden = !new RegExp(parsedQuery, 'i').test(this.searchLabel);
+          if(!this.$parent.$parent.accuFilter){  //149105 【TS:201906280063-资管业委会（资管）_钱佳华-【需求类型】需求【需求描述】【需求类型】需求【需求描述】select和SimpleSelect 控件多选时 如果搜索时输入的信息完全匹配到 value或者label的时候 自动勾上；
+               this.hidden = !new RegExp(parsedQuery, 'i').test(this.searchLabel);
+          }else{
+            if((parsedQuery===this.value||parsedQuery===this.label)&&!this.selected){
+                   this.dispatch('Select', 'on-select-selected', this.value);
+            }
+          }
         }
       },
       handleclick(){
