@@ -31,6 +31,7 @@
           :data="rebuildData"
           :columns-width="columnsWidth"
           :rowSelect = "rowSelect"
+          :rowSelectOnly = "rowSelectOnly"
           :bodyAlgin ="bodyAlgin"
           :obj-data="objData"
           :notSetWidth="notSetWidth"
@@ -248,6 +249,10 @@ export default {
     },
     rowSelect:{
       type:Boolean,//多选时是否支持点击行选中
+      default:false
+    },
+    rowSelectOnly:{
+      type:Boolean,//多选时是否支持点击行只选中，再次点击不进行反选
       default:false
     },
     loading: {
@@ -991,10 +996,14 @@ export default {
     },
     toggleSelect (_index,event,curIndex) {
       let data = {};
+      let target=event.target;
       for (let i in this.objData) {
         if (parseInt(i) === _index) {
           data = this.objData[i];
         }
+      }
+      if(data._isChecked&&this.rowSelectOnly&&target.type!="checkbox"){  // #148487 【TS:201906250692-资管业委会（资管）_钱佳华-【需求类型】需求【需求描述】表格控件勾选：点击同一行记录时，第一次点击勾选，第二次点击不进行去除勾选操作，但是如果点击的是勾选框，则能够正常去除勾选。】
+          return;
       }
       const status = !data._isChecked;
       this.objData[_index]._isChecked = status;
