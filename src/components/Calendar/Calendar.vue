@@ -260,7 +260,7 @@ export default {
           Math.min(prevMonthLastDate, date)
         )
       }
-      this.$emit('on-preBtn-click', this.currentDate.getMonth());
+      this.$emit('on-preBtn-click', this.currentDate.getMonth()+1);
     },
     jumpToNextMonth() {
       const currentDate = this.currentDate
@@ -277,7 +277,7 @@ export default {
         ).getDate()
         this.currentDate = new Date(currentYear, currentMonth + 1, date)
       }
-      this.$emit('on-nextBtn-click', this.currentDate.getMonth());
+      this.$emit('on-nextBtn-click', this.currentDate.getMonth()+1);
     },
     handleToPrevYear() {
       const currentDate = this.currentDate
