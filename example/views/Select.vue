@@ -428,6 +428,24 @@
                     :value="item.id"
                     :key="item.id">{{ item.name }}</h-option>
         </h-select>
+
+        <p>showValue为true，输入框显示value值，下拉框显示label+value、开启accuFilter完全匹配，并且搜到的结果自动勾选</p>
+        <span>#149105需求  select和SimpleSelect 控件多选时 如果搜索时输入的信息完全匹配到 value或者label的时候 自动勾上；</span>
+        <div style="height:300px">
+          <h-select v-model="model1"
+                    width="320"
+                    multiple
+                    showValue
+                    filterable
+                    accuFilter
+                    autoPlacement
+                    @on-change="change">
+            <h-option v-for="(item,index) in cityList"
+                    :value="item.value"
+                    :key="index">{{ item.value }} : {{ item.label }}</h-option>
+          </h-select>
+        </div>
+
     </div>
   </div>
 </template>
@@ -577,7 +595,7 @@ export default {
       model34: '',
       model44: [1,2],
       mode224: '',
-      model1: '',
+      model1: ['beijing'],
       model2: '',
       model3: '',
       model4: '',
@@ -848,7 +866,34 @@ export default {
   mounted() {
     this.model7 = [];
     var _this = this
-    this.cityList = []
+    this.cityList = [
+                    {
+                        value: 'beijing',
+                        label: '北京市'
+                    },
+                    {
+                        value: 'shanghai',
+                        label: '上海市'
+                    },
+                    {
+                        value: 'shenzhen',
+                        label: '深圳市'
+                    },
+                    {
+                        value: 'hangzhou',
+                        label: '杭州市'
+                    },
+                    {
+                        value: "1",
+                        label: '南京市'
+                    },
+                    {
+                        value: "2",
+                        label: '重庆市'
+                    }
+
+
+    ]
     // var timer = setTimeout(() => {
     //   _this.cityList = data.slice(0, 10)
     // }, 10)
