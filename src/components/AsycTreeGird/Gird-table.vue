@@ -14,6 +14,7 @@
           :headSelection ="headSelection"
           :canDrag="canDrag"
           :multiLevel="cloneMultiLevel"
+          :lastColWidth="lastColWidth"
           ></gird-head>
       </div>
       <div :class="[prefixCls + '-body']" :style="bodyStyle" ref="body" @scroll="handleBodyScroll"
@@ -193,13 +194,17 @@ export default {
       type: Boolean,
       default: false
     },
-     multiLevel:{
+    multiLevel:{
       type:Array,
       default:null
     },
     rowClassName: {
       type: Function,
       default: () => ""
+    },
+    lastColWidth:{
+      type:[Number,String],
+      default:80
     }
   },
   data () {
