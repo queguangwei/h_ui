@@ -728,6 +728,10 @@ export default {
     handleResize () {
       // keep-alive时，页面改变大小会不断触发resize【非本组件页面】
       if(this.notSetWidth){
+        if(!this.autoHeadWidth){
+          this.columnsWidth={}
+          this.tableWidth = 0
+        }
         setTimeout(()=>{
           let columnsWidth = {};
           let tableWidth = '';

@@ -75,7 +75,8 @@
             }
         },
         mounted(){
-            this.data3 = [
+            setTimeout(()=>{
+                 this.data3 = [
                     {
                         name: '王小明',
                         age: 18,
@@ -141,7 +142,9 @@
                         zip: 100000
                     }
                 ]
-        }
+        
+            },1000)
+           }
     }
 </script>
 
