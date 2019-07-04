@@ -758,7 +758,6 @@
                 key: 'name',
                 width: 300,
                 ellipsis:true,
-                hiddenOther:true,
                 render:(h, params)=>{
                   return h('span',"你好")
                 }
