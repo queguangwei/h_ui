@@ -14,3 +14,11 @@
     border-right: 1px solid $border-color-base;
   }
 }
+.h-editgird-stripe .h-editgird-body {
+  tr.h-editgird-stripe-dark td {
+      background-color: $table-td-stripe-bg;
+  }
+  tr.h-editgird-stripe-light td {
+    background-color: #fff;
+  }
+}

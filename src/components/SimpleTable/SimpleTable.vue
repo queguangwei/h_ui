@@ -722,9 +722,9 @@ export default {
     fixedBodyStyle() {
       let style = {}
       if (this.bodyHeight !== 0) {
-        let height = this.bodyHeight - this.scrollBarHeight
-        if (this.tableWidth < this.initWidth - this.scrollBarWidth) {
-          height = this.bodyHeight - 1
+        let height = this.bodyHeight - 1
+        if (this.tableWidth > this.initWidth) {
+          height = this.bodyHeight - this.scrollBarHeight
         }
         style.height = `${height}px`
       }

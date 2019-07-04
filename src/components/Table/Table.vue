@@ -733,6 +733,10 @@ export default {
     handleResize () {
       // keep-alive时，页面改变大小会不断触发resize【非本组件页面】
       if(this.notSetWidth){
+        if(!this.autoHeadWidth){
+          this.columnsWidth={}
+          this.tableWidth = 0
+        }
         setTimeout(()=>{
           let columnsWidth = {};
           let tableWidth = '';
@@ -741,6 +745,7 @@ export default {
           let num = 0
           if(this.autoHeadWidth||this.data.length==0 || !this.$refs.tbody){
             num = 30
+            if(!this.$refs.thead) return
             $td = this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0].querySelectorAll('.h-table-cell>span');
           }else{
             $td = this.$refs.tbody.$el.querySelectorAll('tbody tr')[0].querySelectorAll('td');
@@ -1239,7 +1244,7 @@ export default {
       const item = this.cloneColumns[curIndex];
       this.cloneColumns.splice(curIndex,1);
       this.cloneColumns.splice(insertIndex,0,item);
-      this.$emit('on-move',_index,insertIndex);
+      this.$emit('on-move',curIndex,insertIndex);
     },
     setMoveProxy(index){
       let el = this.$refs.moveProxy;
