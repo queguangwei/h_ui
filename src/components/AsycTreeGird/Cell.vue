@@ -331,7 +331,6 @@ export default {
       })
     },
     dblclickCurrentCell(e) {
-      e.stopPropagation()
       if (this.disableEdit) return
 
       this.showSlot = false

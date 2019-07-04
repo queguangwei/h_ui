@@ -45,7 +45,7 @@ $form-item-prefix-cls: "#{$form-prefix-cls}-item";
                 }
             }
             &-content {
-                // height: 32px; 
+                // height: 32px;
                 line-height: $form-gird-row-content-line-height;
 
             }
@@ -61,8 +61,8 @@ $form-item-prefix-cls: "#{$form-prefix-cls}-item";
             }
         }
         @include make-form-grid(form);
-        @include make-form-grid(form,form-item);  
-          
+        @include make-form-grid(form,form-item);
+
         // @include make-form-grid('form', 'formItem');
     }
 }
@@ -79,9 +79,10 @@ $form-item-prefix-cls: "#{$form-prefix-cls}-item";
     & & {
         margin-bottom: 0;
     }
-    & & &-content {
-        margin-left: 0!important;
-    }
+    // 需求 148997 需要注释此处
+    // & & &-content {
+    //     margin-left: 0!important;
+    // }
 
     &-error-tip{
         position: absolute;
