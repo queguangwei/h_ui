@@ -197,6 +197,10 @@ export default {
       type:Array,
       default:null
     },
+    rowClassName: {
+      type: Function,
+      default: () => ""
+    }
   },
   data () {
     return {
