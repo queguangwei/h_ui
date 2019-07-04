@@ -899,6 +899,17 @@ export default {
       }
       this.$emit('on-selection-change', this.getSelection(),this.getSelection(true));
     },
+    /**
+      * @func
+      * @desc 行右键点击,返回当前行数据
+      * @param {object} event - 点击事件
+      * @param {string} rowIndex -objdata中索引
+      * @param {number} curIndex - 行索引
+      */
+    handleRightClick (event, _index) {
+      // this.$emit('on-right-click')
+      this.$emit('on-right-click', JSON.parse(JSON.stringify(this.cloneData[_index])), _index)
+    },
     handleMouseIn (_index) {
         if (this.disabledHover) return;
         if (this.objData[_index]._isHover) return;

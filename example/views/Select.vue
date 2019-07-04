@@ -22,6 +22,12 @@
                 setDefSelect
                 widthAdaption
                 >
+        <div slot="header">
+          <h-button @click="selectAll(true)">全选</h-button>
+          <h-button @click="selectAll(false)">全不选</h-button>
+          <h-button @click="selectTop(true)">已选置顶</h-button>
+          <h-button @click="selectTop(false)">已选不置顶</h-button>
+        </div>
         <h-option value="index">
           <a href=http://www.google.com/>link1214121111111111111111111111</a>
         </h-option>

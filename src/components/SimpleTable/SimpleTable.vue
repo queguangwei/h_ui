@@ -78,7 +78,8 @@
                           :prefix-cls="prefixCls"
                           @mouseenter.native.stop="handleMouseIn(row._index)"
                           @mouseleave.native.stop="handleMouseOut(row._index)"
-                          @click.native="clickCurrentRowTr($event,row._index,index)"
+                          @click.right.native.prevent.stop="handleRightClick($event,row._index,index)"
+                          @click.left.native="clickCurrentRowTr($event,row._index,index)"
                           @dblclick.native.stop="dblclickCurrentRowTr(row._index,index)">
                   <td v-for="column in cloneColumns"
                       :class="alignCls(column, row)"
@@ -192,7 +193,8 @@
                             :prefix-cls="prefixCls"
                             @mouseenter.native.stop="handleMouseIn(row._index)"
                             @mouseleave.native.stop="handleMouseOut(row._index)"
-                            @click.native="clickCurrentRowTr($event,row._index,index)"
+                            @click.right.native.prevent.stop="handleRightClick($event,row._index,index)"
+                            @click.left.native="clickCurrentRowTr($event,row._index,index)"
                             @dblclick.native.stop="dblclickCurrentRowTr(row._index,index)">
                     <td v-for="column in cloneColumns"
                         :class="alignCls(column, row,'left')"
@@ -527,6 +529,7 @@ export default {
       baseInx: null,
       offsetInx: null,
       hoverIndex:-1,
+      scheduledAnimationFrame: false // 是否进行动画帧更新visibledata
     }
   },
   computed: {
@@ -766,6 +769,23 @@ export default {
     }
   },
   methods: {
+    /**
+      * @func
+      * @desc 行右键点击
+      * @param {object} event - 点击事件
+      * @param {string} rowIndex -objdata中索引
+      * @param {number} curIndex - 行索引
+      */
+    handleRightClick (event, _index, curIndex) {
+      // this.$emit('on-right-click')
+      if (this.objData[_index]._isDisabled) return
+      if (this.cloneData[_index]) {
+        this.$emit('on-right-click', JSON.parse(JSON.stringify(this.cloneData[_index])), _index)
+      } else {
+        this.$emit('on-right-click', null, null)
+      }           
+
+    },
     calcCheckboxSize(size) {
       return size || 'large'
     },
@@ -1642,29 +1662,62 @@ export default {
       }
     },
     handleBodyScroll(event) {
-      this.privateToScrollTop = false
-      let scrolltop = event.target.scrollTop
-      this.curPageFirstIndex = Math.floor(scrolltop / this.itemHeight)
-      this.$refs.header.scrollLeft = event.target.scrollLeft
-      if (this.isSummation) this.sumMarginLeft = event.target.scrollLeft
-      if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = scrolltop
-      this.buttomNum = getBarBottomS(
-        event.target,
-        this.bodyHeight,
-        this.contentHeight,
-        this.scrollBarHeight,
-        this.isScrollX
-      )
-      let curtop = Math.floor(scrolltop / this.itemHeight) * this.itemHeight
+      if (window.requestAnimationFrame) { // 该特性有浏览器限制
+        this.updateVisibleAnimate(event)
+      } else {
+        this.privateToScrollTop = false
+        let scrolltop = event.target.scrollTop
+        this.curPageFirstIndex = Math.floor(scrolltop / this.itemHeight)
+        this.$refs.header.scrollLeft = event.target.scrollLeft
+        if (this.isSummation) this.sumMarginLeft = event.target.scrollLeft
+        if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = scrolltop
+        this.buttomNum = getBarBottomS(
+          event.target,
+          this.bodyHeight,
+          this.contentHeight,
+          this.scrollBarHeight,
+          this.isScrollX
+        )
+        let curtop = Math.floor(scrolltop / this.itemHeight) * this.itemHeight
 
-      this.updateVisibleDataDebounce(false)(scrolltop)
-      this.$refs.content.style.transform = `translate3d(0, ${curtop}px, 0)`
-      if (this.$refs.leftContent) {
-        this.$refs.leftContent.style.transform = `translate3d(0, ${curtop}px, 0)`
+        this.updateVisibleDataDebounce(false)(scrolltop)
+        this.$refs.content.style.transform = `translate3d(0, ${curtop}px, 0)`
+        if (this.$refs.leftContent) {
+          this.$refs.leftContent.style.transform = `translate3d(0, ${curtop}px, 0)`
+        }
       }
-      setTimeout(() => {
-      this.updateVisibleDataDebounce(false)(scrolltop)
-      }, 0)
+      // setTimeout(() => {
+      // this.updateVisibleDataDebounce(false)(scrolltop)
+      // }, 0)
+    },
+    /**
+    * @description 使用requestAnimationFrame根据动画帧更新visibleData，原理同setTimeout，更贴近浏览器重绘原理
+    */
+    updateVisibleAnimate (event) {
+      if (this.scheduledAnimationFrame) { return }
+      this.scheduledAnimationFrame = true
+      window.requestAnimationFrame((num) => {
+        this.scheduledAnimationFrame = false
+        this.privateToScrollTop = false
+        let scrolltop = event.target.scrollTop
+        this.curPageFirstIndex = Math.floor(scrolltop / this.itemHeight)
+        this.$refs.header.scrollLeft = event.target.scrollLeft
+        if (this.isSummation) this.sumMarginLeft = event.target.scrollLeft
+        if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = scrolltop
+        this.buttomNum = getBarBottomS(
+          event.target,
+          this.bodyHeight,
+          this.contentHeight,
+          this.scrollBarHeight,
+          this.isScrollX
+        )
+        let curtop = Math.floor(scrolltop / this.itemHeight) * this.itemHeight
+        this.updateVisibleData(scrolltop)
+        this.$refs.content.style.transform = `translate3d(0, ${curtop}px, 0)`
+        if (this.$refs.leftContent) {
+          this.$refs.leftContent.style.transform = `translate3d(0, ${curtop}px, 0)`
+        }
+      })
     },
     handleFixedMousewheel(event) {
       let deltaY = event.deltaY

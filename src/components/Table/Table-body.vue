@@ -12,7 +12,8 @@
           :clickToSelect="clickToSelect"
           @mouseenter.native.stop="handleMouseIn(row._index)"
           @mouseleave.native.stop="handleMouseOut(row._index)"
-          @click.native="clickCurrentRow($event,row._index,index)"
+          @click.left.native="clickCurrentRow($event,row._index,index)"
+          @click.right.native.prevent.stop="handleRightClick($event,row._index,index)"
           @dblclick.native.stop="dblclickCurrentRow(row._index)">
           <td v-for="(column, columnIdx) in columns" :class="alignCls(column, row)">
             <Cell
@@ -87,6 +88,18 @@
       },
 
       methods: {
+        /**
+          * @func
+          * @desc 行右键点击
+          * @param {object} event - 点击事件
+          * @param {string} rowIndex -objdata中索引
+          * @param {number} curIndex - 行索引
+          */
+        handleRightClick (event, _index, curIndex) {
+          // this.$emit('on-right-click')
+          if (this.objData[_index]._isDisabled) return 
+          this.$parent.handleRightClick(event, _index, curIndex);
+        },
         rowChecked (_index) {
           if (this.sum) return           
           return this.objData[_index] && this.objData[_index]._isChecked;
