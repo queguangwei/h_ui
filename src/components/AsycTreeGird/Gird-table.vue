@@ -197,6 +197,10 @@ export default {
       type:Array,
       default:null
     },
+    rowClassName: {
+      type: Function,
+      default: () => ""
+    }
   },
   data () {
     return {
@@ -683,6 +687,24 @@ export default {
         } else {
             $body.scrollLeft = $body.scrollLeft - 10;
         }
+    },
+    handleRowDblClick(index) {
+      let row = JSON.parse(JSON.stringify(this.objData[index]));
+      delete row._parent;
+      delete row._parentId;
+      delete row._level;
+      delete row._spaceHtml;
+      delete row._isShow;
+      delete row._loaded;
+      delete row._rowNodeKey;
+      delete row._index;
+      delete row._indeterminate;
+      delete row._isHover;
+      delete row._isDisabled;
+      delete row._isChecked;
+      delete row._isExpanded;
+      delete row._isHighlight;
+      this.$emit("on-row-dblclick", row);
     },
     makeData (items, _level, parent) {
       //-- 初始化数据
