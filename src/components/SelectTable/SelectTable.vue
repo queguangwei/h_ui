@@ -15,7 +15,8 @@
            v-for="(item, index) in selectedMultiple"
            v-show="item.label&&!showTotal"
            :key="index">
-        <span class="h-tag-text">{{ item.label }}</span>
+        <span class="h-tag-text" v-if="!showValue">{{ item.label }}</span>
+        <span class="h-tag-text" v-if="showValue">{{ item.value }}</span>
         <Icon name="close"
               @click.native.stop="removeTag(index)"></Icon>
       </div>
@@ -352,7 +353,15 @@ export default {
     showArrow:{
       type:Boolean,
       default:false,
-    }
+    },
+    showValue: {
+        type: Boolean,
+        default: false
+    },
+    accuFilter:{
+        type: Boolean,
+        default: false
+      }
   },
   data() {
     return {
