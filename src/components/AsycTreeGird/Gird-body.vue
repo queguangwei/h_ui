@@ -43,7 +43,7 @@
                   @on-editinput-blur="editinputBlur"
                   @on-editarea-change="editAreaChange"
                   @on-editarea-blur="editAreaBlur">
-              <span v-if="inx==(columns[0].type=='index'?1:0)">
+              <span v-if="column._treeNode">
                 <i v-html='row._spaceHtml'></i>
                 <Icon name="play_fill"
                       :class="iconClass(index)"

@@ -803,11 +803,19 @@ export default {
       var that = this;
       let columns = deepCopy(this.columns);
       let center = [];
+      // 设置treeNode属性为true的第一个列的下标
+      let treeNodeIndex = -1;
 
       columns.forEach((column, index) => {
         column._index = index;
         column._columnKey = columnKey++;
         column._width = column.width ? column.width : '';    // update in handleResize()
+        if (typeof column.treeNode === 'boolean' && column.treeNode && !column.hiddenCol && treeNodeIndex === -1) {
+          treeNodeIndex = index;
+          column._treeNode = true;
+        } else {
+          column._treeNode = false;
+        }
         if(!!column.hiddenCol){
           that.columns[index].width = 0;
           column.width = 0;
@@ -822,6 +830,13 @@ export default {
           center.push(column);
         }
       });
+      if (treeNodeIndex === -1 && center.length > 0) {
+        if (center[0].type === 'index' && center.length > 1) {
+          center[1]._treeNode = true;
+        } else {
+          center[0]._treeNode = true;
+        }
+      }
       return center;
     },
     getTreeSelection(){

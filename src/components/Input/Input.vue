@@ -8,7 +8,7 @@
       </div>
       <Icon name="close" :style="clearstyle"
             :class="[prefixCls + '-icon',prefixCls + '-clear']"
-            v-if="clearable&&type!='textarea'"
+            v-if="clearable&&type!='textarea'" v-show="hasvalue"
             @on-click="handleClear"></Icon>
       <Icon :name="icon"
             :class="[prefixCls + '-icon',prefixCls + '-icon-normal']" :style="iconStyle"
@@ -239,6 +239,7 @@ export default {
       textareaStyles: {},
       viewValue:this.value,
       clearstyle:{},
+      hasvalue:false,
       /* 是否按下按键 */
       keyPressed: false
     }
@@ -360,7 +361,7 @@ export default {
       this.$emit('on-click', event)
     },
     handleClear(event){
-    // this.currentValue='';
+     this.currentValue='';
      this.$emit('input', "")
      this.$emit('on-input-change', event)
      this.$emit('on-clear',event)
@@ -368,6 +369,9 @@ export default {
     handleFocus(event) {
       if (this.focusAllSelect && this.type === 'text') {
         this.$refs.input.select()
+      }
+      if(this.currentValue!=""&&this.clearable){
+            this.hasvalue=true;
       }
       this.$emit('on-focus', event)
     },
@@ -392,6 +396,11 @@ export default {
         ])
       ) {
         this.dispatch('FormItem', 'on-form-blur', this.currentValue)
+      }
+      if(this.clearable){
+         setTimeout(()=>{
+             this.hasvalue=false
+         }, 200);     
       }
     },
     handleInputValue(event) {
@@ -457,7 +466,14 @@ export default {
           }
         }
       }
-
+    if(this.clearable){
+       if(value!=''){
+         this.hasvalue=true
+       }else{
+         this.hasvalue=false
+       }
+    }
+    
       this.$emit('input', value)
       this.setCurrentValue(value)
       this.$emit('on-change', event)
