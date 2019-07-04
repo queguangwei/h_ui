@@ -17,6 +17,7 @@
                   @mouseenter.native.stop="handleMouseIn(index)"
                   @mouseleave.native.stop="handleMouseOut(index)"
                   @click.native="clickCurrentRow(index)"
+                  @dblclick.native.stop="handleDblClick(row._index)"
                   v-show="show(row)"
                   :class="rowCls(row)">
           <td v-for="(column,inx) in columns"
@@ -148,6 +149,9 @@ export default {
     },
     handleMouseOut(_index) {
       this.$parent.handleMouseOut(_index)
+    },
+    handleDblClick(index) {
+      this.$parent.handleRowDblClick(index);
     },
     clickCurrentRow(_index) {
       this.$parent.clickCurrentRow(_index)
