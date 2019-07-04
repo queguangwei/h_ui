@@ -26,7 +26,7 @@
           :columns="cloneColumns"
           :data="rebuildData"
           :columns-width="columnsWidth"
-          :rowSelect = "rowSelect && selectType"
+          :rowSelect = "rowSelect "
           :obj-data="objData"
           :showEditInput="showEditInput"
           :disableEdit="disableEdit"

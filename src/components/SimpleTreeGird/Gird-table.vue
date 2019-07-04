@@ -34,6 +34,7 @@
           :bodyRealHeight="bodyRealHeight"
           :tableWidth="tableWidth"
           :initWidth="initWidth"
+          :rowSelect="rowSelect"
           :scrollBarWidth="scrollBarWidth"
           :height="height">
         </Tree-table>
