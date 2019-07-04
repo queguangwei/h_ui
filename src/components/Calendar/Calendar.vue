@@ -260,6 +260,7 @@ export default {
           Math.min(prevMonthLastDate, date)
         )
       }
+      this.$emit('on-preBtn-click', this.currentDate.getMonth());
     },
     jumpToNextMonth() {
       const currentDate = this.currentDate
@@ -276,6 +277,7 @@ export default {
         ).getDate()
         this.currentDate = new Date(currentYear, currentMonth + 1, date)
       }
+      this.$emit('on-nextBtn-click', this.currentDate.getMonth());
     },
     handleToPrevYear() {
       const currentDate = this.currentDate
@@ -287,6 +289,7 @@ export default {
           currentDate.getDate()
         )
       }
+      this.$emit('on-preBtn-click', this.currentDate.getFullYear());
     },
     handleToNextYear() {
       const currentDate = this.currentDate
@@ -298,6 +301,7 @@ export default {
           currentDate.getDate()
         )
       }
+      this.$emit('on-nextBtn-click', this.currentDate.getFullYear());
     },
     getSelectDate() {
       let select = this.selectedDate
