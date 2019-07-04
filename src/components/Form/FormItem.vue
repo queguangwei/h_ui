@@ -320,7 +320,7 @@ export default {
         rule => !rule.trigger || rule.trigger.indexOf(trigger) !== -1
       )
     },
-    validate(trigger, callback = function() {}) {
+    validate(trigger, callback = function() {}, value) {
       if (this.isNotChecked) return
       const rules = this.getFilteredRule(trigger)
 
@@ -335,7 +335,8 @@ export default {
       const validator = new AsyncValidator(descriptor)
       let model = {}
 
-      model[this.prop] = this.fieldValue
+      // 允许由事件传值
+      model[this.prop] = value || this.fieldValue
       if (typeOf(this.fieldValue) == 'array' && this.fieldValue.length == 2) {
         if (this.fieldValue[0] == '' && this.fieldValue[1] == '')
           model[this.prop] = []
@@ -391,16 +392,16 @@ export default {
 
       if (cb) cb()
     },
-    onFieldBlur() {
-      this.validate('blur')
+    onFieldBlur(val = '') {
+      this.validate('blur', () => {}, val)
     },
-    onFieldChange() {
+    onFieldChange(val = '') {
       if (this.validateDisabled) {
         this.validateDisabled = false
         return
       }
       if (this.isOnlyBlurRequire) return
-      this.validate('change')
+      this.validate('change', () => {}, val)
     },
     commonRule(str) {
       let rules = this.getRules()

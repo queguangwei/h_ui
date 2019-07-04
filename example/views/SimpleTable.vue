@@ -710,13 +710,13 @@ export default {
           sortable:true,
           fixed:'left',
         },
-        {
-          type: 'selection',
-          align: 'center',
-          key:'select',
-          width:200,
-          // fixed:'left'
-        },
+        // {
+        //   type: 'selection',
+        //   align: 'center',
+        //   key:'select',
+        //   width:200,
+        //   // fixed:'left'
+        // },
         {
           title: '姓名',
           key: 'fundId',

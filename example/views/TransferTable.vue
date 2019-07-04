@@ -12,6 +12,8 @@
     </p>
     <h2>noEdit</h2>
     <h-transfer-table
+      filterable
+      :filterMethod="filter"
       :lColumns="columns"
       :rColumns="columns"
       :lData="data0"
@@ -22,7 +24,7 @@
       noEdit
       @on-change="handleChange1"
     ></h-transfer-table>
-    <!-- <h2>基本用法</h2>
+    <h2>基本用法</h2>
     <h-transfer-table
       :lColumns="columns1"
       :rColumns="columns1"
@@ -65,7 +67,7 @@
       <div :style="{float: 'right', margin: '5px'}">
         <h-button type="ghost" size="small" @click="reloadMockData">刷新</h-button>
       </div>
-    </h-transfer-table> -->
+    </h-transfer-table>
   </div>
 </template>
 <script>
