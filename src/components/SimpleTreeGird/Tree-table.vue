@@ -8,7 +8,7 @@
         <tr :key="row.id"
           class="not-child"
           :class="rowClasses(row.id)"
-          @click="clickCurrentRow(row)">
+          @click="clickCurrentRow(row,row.id,$event)">
           <td v-for="(column,inx) in columns" :class="alignCls(column, row)" :key="column.index">
             <span v-if="inx==(columns[0].type=='index'?1:0)" :style="indentCls" >
               <Icon v-if="row.children && row.children.length!=0" name = "play_fill" :class="iconClass(row.id,index)" @click.native.stop="toggleExpand(index,row,$event)"></Icon>
@@ -43,6 +43,7 @@
               :tableWidth="tableWidth"
               :initWidth="initWidth"
               :scrollBarWidth="scrollBarWidth"
+              :rowSelect="rowSelect"
               :height="height">
             </Tree-table>
           </td>
@@ -82,7 +83,8 @@
       height:[Number,String],
       tableWidth:[Number,String],
       initWidth:[Number,String],
-      scrollBarWidth:[Number,String]
+      scrollBarWidth:[Number,String],
+      rowSelect:Boolean,
     },
     computed: {
       objData () {
@@ -128,9 +130,10 @@
         // return this.$parent.$parent.rowClassName(this.objData[_index], _index);
       },
       handleclick () {},
-      clickCurrentRow (row) {
+      clickCurrentRow (row,id,e) {
         this._parent.clickCurrentRow(row);
         if(this.rowSelect){         
+          this.changeSelect(id,row,e)
         }
         if(this.selectRoot){
           let status = this.checkedObj[this.indexAndId[row.id]]._isHighlight;

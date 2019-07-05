@@ -1,6 +1,6 @@
 <template>
   <div>
-   <h-tree-gird :columns="columns1" :data="data1" size="small" :highlight-row="true" ref="editGird" height="200" :loading="loading" :option="options1" :treeOption="treeOption"
+   <h-tree-gird isCheckbox :columns="columns1" :data="data1" size="small" :highlight-row="true" ref="editGird" height="200" :loading="loading" :option="options1" :treeOption="treeOption"
               @on-editinput-change="handler1"
               @on-editinput-blur="handler2"
               @on-editarea-change="handler3"
@@ -253,6 +253,7 @@
             title: '年龄',
             width: 200,
             key: 'age',
+            treeNode: true
           },
           {
             type: 'textArea',
