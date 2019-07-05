@@ -54,7 +54,7 @@ $form-item-prefix-cls: "#{$form-prefix-cls}-item";
                 }
             }
             &-content {
-                // height: 32px; 
+                // height: 32px;
                 line-height: $form-component-height;
 
             }
@@ -70,8 +70,8 @@ $form-item-prefix-cls: "#{$form-prefix-cls}-item";
             }
         }
         @include make-form-grid(form);
-        @include make-form-grid(form,form-item);  
-          
+        @include make-form-grid(form,form-item);
+
         // @include make-form-grid('form', 'formItem');
     }
 }
@@ -131,11 +131,11 @@ $form-item-prefix-cls: "#{$form-prefix-cls}-item";
         // todo
     }
 }
-@media all and (-ms-high-contrast:none) { 
+@media all and (-ms-high-contrast:none) {
 .#{$form-item-prefix-cls} .h-input {
     padding: $form-item-h-input-padding;
 }
-} 
+}
 .#{$form-item-prefix-cls} .h-input {
     padding: $form-item-h-input-padding \0;
 }

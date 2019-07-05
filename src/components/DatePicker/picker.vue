@@ -493,9 +493,11 @@
         // 自动适配逻辑调整
         if(this.autoPlacement){
             let clientHeight = document.documentElement.clientHeight
+            let clienWidth = document.documentElement.clientWidth
             let rect = this.$refs.wrapper.getBoundingClientRect()
             let curbottom = clientHeight - rect.top - rect.height
             let bottomNum = this.confirm ? 300 : 250
+
             let rightNum = this.type.indexOf('range') > -1 ? 436 : 220
             let isShortcuts =  this.options && this.options.shortcuts && this.options.shortcuts.length > 0
             rightNum = isShortcuts ? rightNum + 95 : rightNum
@@ -504,7 +506,7 @@
                 this.fPlacement = 'top-end'
             }else if(curbottom < bottomNum){
                 this.fPlacement = 'top-start'
-            }else if(rect.right  < rightNum){
+            }else if(clienWidth - rect.left < rightNum){
                 this.fPlacement = 'bottom-end'
             } else {
               this.fPlacement = 'bottom-start'

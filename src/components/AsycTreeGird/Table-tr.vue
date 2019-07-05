@@ -12,7 +12,6 @@ export default {
   },
   computed: {
     objData() {
-      // debugger
       return this.$parent.objData
     }
   },

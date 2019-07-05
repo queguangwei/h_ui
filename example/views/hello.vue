@@ -1,7 +1,10 @@
+
 <template>
 <div>
     <Button @click="change"></Button>
-    <h-table height="300" border :columns="columns2" :data="data3" notSetWidth></h-table>
+    <h-table height="300" border :columns="columns2" :data="data3" notSetWidth @on-right-click="rightClick"></h-table>
+    <input id="keyword"  @change="change" placeholder="input your keyword" />
+    <div id="msg-list"></div>
 </div>
 </template>
 <script>
@@ -12,16 +15,18 @@
                     {
                         title: '姓名1111111111',
                         key: 'name',
+                        sortable:true,
                         // width: 100,
                     },
                     {
-                        title: '年龄111111111111111111111',
+                        title: '年龄111111111111111111111111111',
                         key: 'age',
                         // width: 100
                     },
                     {
                         title: '省份111111111111111111',
                         key: 'province',
+                        sortable:true,
                         // width: 100
                     },
                     {
@@ -30,7 +35,7 @@
                         // width: 100
                     },
                     {
-                        title: '地址1111111111111111111111',
+                        title: '地址11111111',
                         key: 'address',
                         // width: 200
                     },
@@ -61,12 +66,27 @@
                     //     }
                     // }
                 ],
-                // data3:[],
-                data3: [
+                data3:[]
+            }
+        },
+        methods:{
+            change(){
+                this.columns2.push({
+                    title:"111111111111111111111111111111111",
+                    key:'city'
+                })
+            },
+            rightClick(e){
+                console.log(e)
+            }
+        },
+        mounted(){
+            setTimeout(()=>{
+                 this.data3 = [
                     {
                         name: '王小明',
                         age: 18,
-                        address: '北京市朝阳区芍药居',
+                        address: '北京市朝阳区芍药居11111111111111111',
                         province: '北京市',
                         city: '朝阳区',
                         zip: 100000
@@ -128,15 +148,8 @@
                         zip: 100000
                     }
                 ]
-            }
-        },
-        methods:{
-            change(){
-                this.columns2.push({
-                    title:"111111111111111111111111111111111",
-                    key:'city'
-                })
-            }
+        
+            },1000)
         }
     }
 </script>

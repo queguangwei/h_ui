@@ -780,6 +780,7 @@ export default {
       if (this.typeName!='treeGird') {
         this.$set(this.rebuildData[_index],'expand',status);
       }
+      this.$refs.tbody.addVisibleKey(_index);
       this.$emit('on-expand', JSON.parse(JSON.stringify(this.cloneData[_index])), status);
       // this.$emit('on-expand',status);
     },
@@ -1063,10 +1064,20 @@ export default {
       let left = [];
       let right = [];
       let center = [];
+      // 设置treeNode属性为true的第一个列的下标
+      let treeNodeIndex = -1;
       columns.forEach((column, index) => {
         column._index = index;
         column._columnKey = columnKey++;
         column._width = column.width ? column.width : '';    // update in handleResize()
+        if (this.typeName === 'treeGird') {
+          if (typeof column.treeNode === 'boolean' && column.treeNode && !column.hiddenCol && treeNodeIndex === -1) {
+            treeNodeIndex = index;
+            column._treeNode = true;
+          } else {
+            column._treeNode = false;
+          }
+        }
         if(!!column.hiddenCol){
           that.columns[index].width = 0;
           column.width = 0;
@@ -1087,6 +1098,13 @@ export default {
           }
         }
       });
+      if (this.typeName === 'treeGird' && treeNodeIndex === -1 && center.length > 0) {
+        if (center[0].type === 'index' && center.length > 1) {
+          center[1]._treeNode = true;
+        } else {
+          center[0]._treeNode = true;
+        }
+      }
       return left.concat(center).concat(right);
     },
     getTreeSelection(){

@@ -16,6 +16,7 @@
       </div>
       <ul :class="prefixCls + '-content'">
         <h-edit-gird
+          v-if="!noEdit"
           ref="table"
           :data="filterData"
           :columns="columns"
@@ -32,6 +33,21 @@
           @on-row-click="rowClick"
           :no-data-text="notData"
         ></h-edit-gird>
+        <h-simple-table
+          v-if="noEdit"
+          ref="table"
+          :data="filterData"
+          :columns="columns"
+          :stripe="stripe"
+          :border="border"
+          :rowSelect="rowSelect"
+          :highlight-row="highlightRow"
+          :height="height"
+          @on-current-change="currentChange"
+          @on-selection-change="selectionChange"
+          @on-row-click="rowClick"
+          :no-data-text="notData"
+        ></h-simple-table>
       </ul>
     </div>
     <div :class="prefixCls + '-footer'" v-if="showFooter"><slot></slot></div>
@@ -63,7 +79,8 @@
       notData: String,
       filterable: Boolean,
       filterPlaceholder: String,
-      filterMethod: Function
+      filterMethod: Function,
+      noEdit:Boolean,
     },
     data () {
         return {
@@ -183,26 +200,3 @@
     }
   };
 </script>
-<style type="text/css">
-
-    .sortable-parent li:hover {
-        background: transparent;
-    }
-    .sortable-chosen {
-        background: #fff!important;
-    }
-    
-    .sortable-ghost {
-        background: #f3f3f3!important;
-    }
-    /*
-     .sortable-ghost {
-        border-bottom: solid 1px #ddd;
-        height: 0;
-        padding: 0!important;
-     }
-     .sortable-ghost label,
-     .sortable-ghost span {
-        display: none;
-     }*/
-</style>

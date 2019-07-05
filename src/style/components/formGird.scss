@@ -45,7 +45,7 @@ $form-item-prefix-cls: "#{$form-prefix-cls}-item";
                 }
             }
             &-content {
-                // height: 32px; 
+                // height: 32px;
                 line-height: $form-gird-row-content-line-height;
 
             }
@@ -61,8 +61,8 @@ $form-item-prefix-cls: "#{$form-prefix-cls}-item";
             }
         }
         @include make-form-grid(form);
-        @include make-form-grid(form,form-item);  
-          
+        @include make-form-grid(form,form-item);
+
         // @include make-form-grid('form', 'formItem');
     }
 }

@@ -42,7 +42,7 @@
                       @on-typefield-blur="typefieldBlur"
                       @on-typefield-change="typefieldChange"
                       @on-editdate-change="editdateChange">
-                  <span v-if="inx==(columns[0].type=='index'?1:0)"
+                  <span v-if="column._treeNode"
                         :style="indentCls">
                     <Icon v-if="(row.children && row.children.length!=0)||row.foldable"
                           :class="iconClass(row._index)"

@@ -15,7 +15,8 @@
            v-for="(item, index) in selectedMultiple"
            v-show="item.label&&!showTotal"
            :key="index">
-        <span class="h-tag-text">{{ item.label }}</span>
+        <span class="h-tag-text" v-if="!showValue">{{ item.label }}</span>
+        <span class="h-tag-text" v-if="showValue">{{ item.value }}</span>
         <Icon name="close"
               @click.native.stop="removeTag(index)"></Icon>
       </div>
@@ -44,7 +45,7 @@
             @click.native.stop="clearSingleSelect"></Icon>
       <Icon name="unfold"
             :class="[prefixCls + '-arrow']"
-            v-if="!remote"
+            v-if="!remote||showArrow"
             ref="arrowb"></Icon>
     </div>
     <transition :name="transitionName">
@@ -100,6 +101,7 @@
                 :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>
           </div>
           <div v-if="isBlock"
+               id="blockWrapper"
                v-show="(!notFound && !remote) || (remote && !notFound)"
                :class="[prefixCls + '-dropdown-list']"
                :style="listStyle"
@@ -346,7 +348,20 @@ export default {
     showTotalNum:{
       type:Boolean,
       default:false,
-    }
+    },
+    //一直显示arrow图标，包括远程搜索时
+    showArrow:{
+      type:Boolean,
+      default:false,
+    },
+    showValue: {
+        type: Boolean,
+        default: false
+    },
+    accuFilter:{
+        type: Boolean,
+        default: false
+      }
   },
   data() {
     return {
@@ -1012,6 +1027,11 @@ export default {
               }
             } else {
               this.selectBlockMultiple(this.focusValue)
+            }
+            if(this.filterable){
+              this.$nextTick(()=>{
+                this.$refs.input.focus()
+              })
             }
             return
           }
