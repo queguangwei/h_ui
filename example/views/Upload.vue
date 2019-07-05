@@ -57,6 +57,13 @@
       <h-button type="ghost" icon="ios-cloud-upload-outline" slot="showList" ref="showList">已上传列表
       </h-button>
     </h-upload>
+    <h2>开启mergeHook</h2>
+    <h-upload :format="['txt', 'jpeg', 'vue']" action="//jsonplaceholder.typicode.com/posts/" 
+              :on-self-success="handleSuccess"
+              :before-upload="handleBeforeUpload" :on-format-error="handleFormatError"
+              :max-size="210" :on-exceeded-size="handleMaxSize" multiple uploadAll mergeHook>
+      <h-button type="primary" icon="ios-cloud-upload-outline" class="mg-b-5">上传文件</h-button>
+    </h-upload>
     </div>
   </div>
 </template>
@@ -72,6 +79,34 @@ export default {
     }
   },
   methods: {
+    handleSuccess(file, filelist) {
+      console.log("=====================")
+      console.log("上传成功")
+      console.log(file)
+      console.log(filelist)
+      console.log("=====================")
+    },
+    handleFormatError(file, filelist) {
+      console.log("=====================")
+      console.log("文件格式不符")
+      console.log(file)
+      console.log(filelist)
+      console.log("=====================")
+    },
+    handleMaxSize(file, filelist) {
+      console.log("=====================")
+      console.log("文件大小不符")
+      console.log(file)
+      console.log(filelist)
+      console.log("=====================")
+    },
+    handleBeforeUpload(file) {
+      console.log("=====================")
+      console.log("beforeUpload")
+      console.log(file)
+      console.log("=====================")
+      return true;
+    },
     handleBeforeRemove(file, fileList) {
       console.log('============ before-remove start =============');
       console.log(file);

@@ -1,6 +1,6 @@
 <template>
   <div>
-   <h-tree-gird :columns="columns1" :data="data1" size="small" :highlight-row="true" ref="editGird" height="200" :loading="loading" :option="options1" :treeOption="treeOption"
+   <h-tree-gird isCheckbox :columns="columns1" :data="data1" size="small" :highlight-row="true" ref="editGird" height="200" :loading="loading" :option="options1" :treeOption="treeOption"
               @on-editinput-change="handler1"
               @on-editinput-blur="handler2"
               @on-editarea-change="handler3"
@@ -8,12 +8,51 @@
               @on-money-blur="handler5"
               @on-money-change="handler6"
               @on-editdate-change="handler7"
-              @on-editselect-change="handler8"></h-tree-gird>
+              @on-editselect-change="handler8" stripe></h-tree-gird>
    <Button @click="setLoad">切换loading</Button>
   </div>
 </template>
 <script>
   var tData= [
+    {
+          id: 2,
+          name: '王小明',
+          age: 21,
+          address: '北京市朝阳区芍药居',
+          money: '120.00',
+          cardId: '6223 5678 1234 5678',
+          city: '北京',
+          dating:'2018-03-07',
+          timing:'16:00:00.00',
+          tree:'leaf1',
+          // _highlight: true//默认选择当前项
+        },
+        {
+          id: 21,
+          name: '张小刚',
+          age: 25,
+          address: '北京市海淀区西二旗',
+          money: '130.00',
+          cardId: '6223 5678 1234 5678',
+          city: '北京',
+          dating:'2018-03-07',
+          timing:'16:00:00.00',
+          tree:'leaf1',
+          _parentId: 2,
+        },
+        {
+          id: 22,
+          name: '李小红',
+          age: 30,
+          address: '上海市浦东新区世纪大道',
+          money: '140.00',
+          cardId: '6223 5678 1234 5678',
+          city: '北京',
+          dating:'2018-03-07',
+          timing:'16:00:00.00',
+          tree:'leaf1',
+          _parentId: 2,
+        },
         {
           id: 1,
           name: '王小明',
@@ -57,7 +96,7 @@
           _parentId: 11,
         },
         {
-          id: 1111,
+          id: 1112,
           name: '张小刚',
           age: 25,
           address: '北京市海淀区西二旗',
@@ -71,7 +110,7 @@
           _parentId: 111,
         },
         {
-          id: 1112,
+          id: 1111,
           name: '张小刚',
           age: 25,
           address: '北京市海淀区西二旗',
@@ -122,45 +161,6 @@
           timing:'16:00:00.00',
           tree:'leaf1',
           _parentId: 1,
-        },
-        {
-          id: 2,
-          name: '王小明',
-          age: 21,
-          address: '北京市朝阳区芍药居',
-          money: '120.00',
-          cardId: '6223 5678 1234 5678',
-          city: '北京',
-          dating:'2018-03-07',
-          timing:'16:00:00.00',
-          tree:'leaf1',
-          // _highlight: true//默认选择当前项
-        },
-        {
-          id: 21,
-          name: '张小刚',
-          age: 25,
-          address: '北京市海淀区西二旗',
-          money: '130.00',
-          cardId: '6223 5678 1234 5678',
-          city: '北京',
-          dating:'2018-03-07',
-          timing:'16:00:00.00',
-          tree:'leaf1',
-          _parentId: 2,
-        },
-        {
-          id: 22,
-          name: '李小红',
-          age: 30,
-          address: '上海市浦东新区世纪大道',
-          money: '140.00',
-          cardId: '6223 5678 1234 5678',
-          city: '北京',
-          dating:'2018-03-07',
-          timing:'16:00:00.00',
-          tree:'leaf1',
-          _parentId: 2,
         },
         {
           id: 23,
@@ -253,6 +253,7 @@
             title: '年龄',
             width: 200,
             key: 'age',
+            treeNode: true
           },
           {
             type: 'textArea',

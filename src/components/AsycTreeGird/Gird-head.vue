@@ -55,6 +55,7 @@ export default {
     headSelection: Boolean,
     canDrag:Boolean,
     multiLevel:Array,
+    lastColWidth:[Number,String]
   },
   data(){
     return{
@@ -159,7 +160,7 @@ export default {
             const columnWidth = finalLeft - startColumnLeft;
             let dragWidth = finalLeft - startLeft;//>0为输入框增大，<0为减小
             if (dragWidth>=0) {
-              lastWidth = (lastWidth-dragWidth)>=80?(lastWidth-dragWidth):80;
+              lastWidth = (lastWidth-dragWidth)>=this.lastColWidth?(lastWidth-dragWidth):this.lastColWidth;
             }else{
               if (headWidth>=tableWidth) {//此时有滚动条
                 if (headWidth+dragWidth<=tableWidth) {

@@ -14,6 +14,7 @@
           :headSelection ="headSelection"
           :canDrag="canDrag"
           :multiLevel="cloneMultiLevel"
+          :lastColWidth="lastColWidth"
           ></gird-head>
       </div>
       <div :class="[prefixCls + '-body']" :style="bodyStyle" ref="body" @scroll="handleBodyScroll"
@@ -25,7 +26,7 @@
           :columns="cloneColumns"
           :data="rebuildData"
           :columns-width="columnsWidth"
-          :rowSelect = "rowSelect && selectType"
+          :rowSelect = "rowSelect "
           :obj-data="objData"
           :showEditInput="showEditInput"
           :disableEdit="disableEdit"
@@ -193,10 +194,18 @@ export default {
       type: Boolean,
       default: false
     },
-     multiLevel:{
+    multiLevel:{
       type:Array,
       default:null
     },
+    rowClassName: {
+      type: Function,
+      default: () => ""
+    },
+    lastColWidth:{
+      type:[Number,String],
+      default:80
+    }
   },
   data () {
     return {
@@ -684,6 +693,24 @@ export default {
             $body.scrollLeft = $body.scrollLeft - 10;
         }
     },
+    handleRowDblClick(index) {
+      let row = JSON.parse(JSON.stringify(this.objData[index]));
+      delete row._parent;
+      delete row._parentId;
+      delete row._level;
+      delete row._spaceHtml;
+      delete row._isShow;
+      delete row._loaded;
+      delete row._rowNodeKey;
+      delete row._index;
+      delete row._indeterminate;
+      delete row._isHover;
+      delete row._isDisabled;
+      delete row._isChecked;
+      delete row._isExpanded;
+      delete row._isHighlight;
+      this.$emit("on-row-dblclick", row);
+    },
     makeData (items, _level, parent) {
       //-- 初始化数据
         const flattTreeList = []
@@ -776,11 +803,19 @@ export default {
       var that = this;
       let columns = deepCopy(this.columns);
       let center = [];
+      // 设置treeNode属性为true的第一个列的下标
+      let treeNodeIndex = -1;
 
       columns.forEach((column, index) => {
         column._index = index;
         column._columnKey = columnKey++;
         column._width = column.width ? column.width : '';    // update in handleResize()
+        if (typeof column.treeNode === 'boolean' && column.treeNode && !column.hiddenCol && treeNodeIndex === -1) {
+          treeNodeIndex = index;
+          column._treeNode = true;
+        } else {
+          column._treeNode = false;
+        }
         if(!!column.hiddenCol){
           that.columns[index].width = 0;
           column.width = 0;
@@ -795,6 +830,13 @@ export default {
           center.push(column);
         }
       });
+      if (treeNodeIndex === -1 && center.length > 0) {
+        if (center[0].type === 'index' && center.length > 1) {
+          center[1]._treeNode = true;
+        } else {
+          center[0]._treeNode = true;
+        }
+      }
       return center;
     },
     getTreeSelection(){

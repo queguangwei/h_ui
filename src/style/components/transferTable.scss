@@ -144,6 +144,16 @@ $transfer-item-prefix-cls: "#{$css-prefix}transfer-table-list-content-item";
 .#{$transfer-item-prefix-cls}:hover {
     background: transparent;
 }
+.sortable-parent li:hover {
+  background: transparent;
+}
+.sortable-chosen {
+  background: #fff!important;
+}
+
+.sortable-ghost {
+  background: #f3f3f3!important;
+}
 
 
 
