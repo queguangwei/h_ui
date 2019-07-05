@@ -121,6 +121,11 @@ export default {
     strictly: {
       type: Boolean,
       default: false
+    },
+    // 设置 margin-left 使用 important
+    marginLeftForce: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -231,8 +236,11 @@ export default {
       let style = {}
       const labelWidth = this.labelWidth || this.form.labelWidth
       if (labelWidth) {
-        style.marginLeft = `${labelWidth}px`
+        let temp = `${labelWidth}px`
+        if (this.marginLeftForce) temp += '!important'
+        style.marginLeft = temp
       }
+
       return style
     },
     isShowError() {
