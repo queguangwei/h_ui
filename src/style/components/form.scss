@@ -88,10 +88,9 @@ $form-item-prefix-cls: "#{$form-prefix-cls}-item";
     & & {
         margin-bottom: 0;
     }
-    // 需求 148997 需要注释此处
-    // & & &-content {
-    //     margin-left: 0!important;
-    // }
+    & & &-content {
+        margin-left: 0!important;
+    }
 
     &-error-tip{
         position: absolute;
