@@ -122,7 +122,7 @@ export default {
       type: Boolean,
       default: false
     },
-    // 设置 margin-left 使用 important
+    // 设置 margin-left 使用 !important
     marginLeftForce: {
       type: Boolean,
       default: false
