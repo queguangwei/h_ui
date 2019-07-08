@@ -6,7 +6,8 @@
         <i class="iconfont icon-close"></i>
       </a> -->
       <template v-if="type === 'notice'">
-        <div :class="[baseClass + '-content']" ref="content" v-html="content"></div>
+        <content-render v-if="render !== null" :render="render"></content-render>
+        <div v-else :class="[baseClass + '-content']" ref="content" v-html="content"></div>
         <a :class="[baseClass + '-close']" @click="close" v-if="closable">
             <i class="iconfont icon-close"></i>
         </a>
@@ -23,7 +24,10 @@
   </transition>
 </template>
 <script>
+import ContentRender from '../render';
+
 export default {
+  components: { ContentRender },
   props: {
     prefixCls: {
       type: String,
@@ -64,7 +68,8 @@ export default {
     },
     transitionName: {
       type: String
-    }
+    },
+    render: [Function, Object]
   },
   data () {
     return {
@@ -113,7 +118,7 @@ export default {
 
     // check if with desc in Notice component
     if (this.prefixCls === 'h-notice') {
-      this.withDesc = this.$refs.content.querySelectorAll(`.${this.prefixCls}-desc`)[0].innerHTML !== '';
+      this.withDesc = this.$refs.content && this.$refs.content.querySelectorAll(`.${this.prefixCls}-desc`)[0].innerHTML !== '';
     }
   },
   beforeDestroy () {
