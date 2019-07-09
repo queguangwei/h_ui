@@ -132,9 +132,9 @@
         },
         dblclickCurrentRow (_index) {
           if (this.sum) return           
-          if (!this.rowSelect) {
+          // if (!this.rowSelect) {
             this.$parent.dblclickCurrentRow(_index);
-          }
+          // }
         }
       }
     };
