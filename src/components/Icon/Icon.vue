@@ -11,11 +11,20 @@
 				type:String,
 				default:''
 			},
-			size:[Number, String]
+      size:[Number, String],
+      fontClass: {
+        type: String,
+        default: 'iconfont'
+      }
 		},
 		computed:{
 			iconCls(){
-				return  `${prefixCls} iconfont icon-${this.name} ${prefixCls}-${this.name}`;
+				return [
+          `${prefixCls}`,
+          `${this.fontClass}`,
+          `icon-${this.name}`,
+          `${prefixCls}-${this.name}`
+        ];
 			},
 			styleCls(){
 				let style={}
