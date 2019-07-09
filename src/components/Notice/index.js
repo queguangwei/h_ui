@@ -35,6 +35,7 @@ function notice (type, options) {
     const onClose = options.onClose || function () {};
     // todo const btn = options.btn || null;
     const duration = (options.duration === 0) ? 0 : options.duration || defaultDuration;
+    const render = typeof options.render === 'function' ? options.render : null;
 
     name++;
 
@@ -74,6 +75,7 @@ function notice (type, options) {
         content: content,
         onClose: onClose,
         closable: true,
+        render: render,
         type: 'notice'
     });
 }
