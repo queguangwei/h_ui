@@ -20,6 +20,8 @@
     <h-button type="primary" @click="time">打开提醒</h-button>
     <h-button type="primary" @click="close">关闭name为key1的notice</h-button>
     <h-button type="primary" @click="destroy">全局销毁</h-button>
+    <h2>自定义通知提醒</h2>
+    <h-button @click="openRender">自定义通知提醒</h-button>
 	</div>
 </template>
 <script>	
@@ -36,6 +38,14 @@
           key:'key1',
           duration: 5,
         });
+      },
+      clickHandler1() {
+        this.$hNotice.close("custom")
+        this.$hMessage.info({content: "已读"});
+      },
+      clickHandler2() {
+        this.$hNotice.close("custom")
+        this.$hMessage.info({content: "消息已删除"});
       },
       info (nodesc) {
         this.$hNotice.info({
@@ -81,6 +91,54 @@
       },
       destroy(){
         this.$hNotice.destroy()
+      },
+      openRender() {
+        let self = this;
+        this.$hNotice.open({
+          name: "custom",
+          duration: 5,
+          render(h) {
+            return h('div', 
+            {
+              style: {
+                display: "flex",
+                "flex-flow": "row wrap"
+              }
+            }, [
+              h('p', {
+                style: {
+                  width: "100%",
+                  lineHeight: "30px"
+                }
+              }, ['通知标题']),
+              h('p', {
+                style: {
+                  width: "100%",
+                  fontSize: "13px",
+                  lineHeight: "15px",
+                  color: "#999",
+                  marginBottom: "15px"
+                }
+              }, ['通知描述这里,是通知描述这里,是通知描述这里是通知描述这里是通知描述' + Math.random()]),
+              h('h-button', {
+                attrs: {
+                  type: "primary"
+                },
+                style: {
+                  marginRight: "5px"
+                },
+                on: {
+                  click: self.clickHandler1
+                }
+              }, ['已读']),
+              h('h-button', {
+                on: {
+                  click: self.clickHandler2
+                }
+              },  ['删除'])
+            ])
+          }
+        });
       }
 
     },
