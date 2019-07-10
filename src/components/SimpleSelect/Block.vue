@@ -210,7 +210,7 @@ export default {
             }
             this.$refs.block.scrollTop = 0
           })
-      }else{         
+      }else{
         //149105 【TS:201906280063-资管业委会（资管）_钱佳华-【需求类型】需求【需求描述】select和SimpleSelect 控件多选时 如果搜索时输入的信息完全匹配到 value或者label的时候 自动勾上；对接开发：郑海华【事业部】资管业委会【项目名称】HUNDSUN投资交易管理系统软件V4.5【产品负责人】孔磊【需求提出人】钱佳华
             this.cloneData.forEach(col => {
               let targetLabel = col.label
@@ -377,15 +377,8 @@ export default {
     data: {
       deep: true,
       handler: function(val) {
- // 资管需求 148437 特殊处理，在关闭时，空状态延迟 100ms 变更，避免出现动画闪动
         if (val.length == 0) {
-          if (!this.$parent.$parent.dropVisible) {
-            setTimeout(() => {
-              this.showEmpty = true
-            }, 100)
-          } else {
-            this.showEmpty = true
-          }
+          this.showEmpty = true
         } else {
           this.showEmpty = false
         }
