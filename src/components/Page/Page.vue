@@ -41,7 +41,7 @@
         @keydown="keyDown"
         @keyup="keyUp"
         @change="keyUp"
-        @blur = "simpleBlur"
+        @blur="simpleBlur"
         :style = "{width: inputWidth + 'px'}" ref='simpleInput'>
       <span>/</span>
       <span :class="[prefixCls + '-allpage']" ref='allPage'>{{ allPages }}</span>
@@ -376,7 +376,7 @@
           } else if (val <= 0) {
               page = 1;
           } else {
-              page = val;
+              page = val||1;
           }
 
           e.target.value = page;
@@ -385,16 +385,17 @@
       },
       simpleBlur(e){
         const val = parseInt(e.target.value);
-        if (!this.isBlur) return false;
+        if(!this.isBlur) return false
         let page = 1;
         if (val > this.allPages) {
             page = this.allPages;
         } else if (val <= 0) {
             page = 1;
         } else {
-            page = val;
+            page = val||1;
         }
         e.target.value = page;
+        this.changePage(page)
       },
       toFirst(){
         this.changePage(1);

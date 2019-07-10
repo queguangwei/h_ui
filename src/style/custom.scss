@@ -245,7 +245,7 @@ $legend-color: #999;
 $input-height-base: 32px;
 $input-height-large: 36px;
 $input-height-small: 24px;
-$input-padding-horizontal: 12px;
+$input-padding-horizontal: 8px;
 $input-padding-vertical-base: 4px;
 $input-padding-vertical-small: 1px;
 $input-padding-vertical-large: 5px;
@@ -255,7 +255,7 @@ $input-readonly-color:#999;
 $input-border-color: $border-color-base;
 $input-bg: #fff;
 $input-hover-border-color: $primary-color;
-$input-focus-border-color: $primary-color;
+//$input-focus-border-color: $primary-color;
 $input-disabled-bg: #F7F7F7;
 $input-readonly-bg: #F7F7F7;
 $input-required-icon-color: #E8380C;
@@ -343,7 +343,7 @@ $max-height: 210px;
 //*******************************<UF3.0样式统一>**************************************
 //form
 $form-label-color: $text-color;
-$form-item-label-text-align:right;
+//$form-item-label-text-align:right;
 $form-item-label-background:transparent;
 $form-item-label-padding: 0 12px 0 0;
 $form-item-labelWrap-padding:0 12px 0 0;
@@ -540,7 +540,7 @@ $drawer-content-bottom:0;
 $drawer-content-background-color: #fff;
 $drawer-content-box-shadow:0 4px 12px rgba(0,0,0,.15);
 $drawer-body-padding: 16px;
-$drawer-body-font-size:12px;
+$drawer-body-font-size:$font-size-small;
 
 
 //editgrid
@@ -632,9 +632,7 @@ $inputnumber-readonly-opacity:0.5;
 
 //menu
 $menu-dark-active-bg: #313540;
-$menu-dark-title: #495060;
 $menu-dark-subsidiary-color: rgba(255, 255, 255, .7);
-$menu-dark-group-title-color: rgba(255, 255, 255, .36);
 $menu-horizontal-height:60px;
 $menu-horizontal-light-bottom:0;
 $menu-horizontal-light-left:0;
@@ -924,8 +922,8 @@ $radio-group-button-wrapper-margin:0;
 $radio-group-button-wrapper-padding:0 16px;
 $radio-group-button-wrapper-background:#fff;
 $radio-group-button-wrapper-checked-color:#fff;
-$radio-group-button-wrapper-disabled-color:#fff;
-$radio-group-button-wrapper-disabled-hover-color:#fff;
+$radio-group-button-wrapper-disabled-color:#ccc;
+$radio-group-button-wrapper-disabled-hover-color:#ccc;
 $radio-group-button-wrapper-disabled-wrapper-checked-color:#fff;
 $radio-group-button-wrapper-disabled-wrapper-checked-background-color:#e6e6e6;
 $radio-group-button-wrapper-btnIcon-width:18px;
@@ -1325,6 +1323,7 @@ $switch-disabled-inner-color:#ccc;
 //tabs
 $tabs-nav-tab-color:#495060;
 $tabs-tab-hover-color:lighten($link-color, 20%);
+$tabs-tab-nav-right-active-color:#fff;
 $tabs-tab-active-color:$primary-color;
 $tabs-bar-active-background:#fff;
 $tabs-bar-active-border-color:$border-color-base;
@@ -1496,7 +1495,6 @@ $tooltip-inner-padding:8px 12px;
 $tooltip-max-width: 250px;
 $tooltip-arrow-width: 5px;
 $tooltip-distance: $tooltip-arrow-width - 1 + 4;
-$tooltip-arrow-width:0;
 $tooltip-arrow-height:0;
 
 

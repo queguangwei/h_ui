@@ -43,7 +43,7 @@
       <template v-if="renderType === 'textArea'">
         <textarea :value="columnArea"
                   :placeholder="column.placeholder"
-                  rows="column.rows"
+                  :rows="column.rows"
                   :class="areaClass"
                   @input="editAreaChange"
                   @blur="editAreaBlur"></textarea>

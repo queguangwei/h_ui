@@ -361,7 +361,13 @@ export default {
     accuFilter:{
         type: Boolean,
         default: false
-      }
+      },
+    // 需求 148437 特殊属性
+    // 远程搜索不需要执行 query
+    remoteNoQuery: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -1514,7 +1520,9 @@ export default {
           if (!this.visible && val) this.visible = true;
           this.remoteMethod(val)
           this.$emit('on-query-change', val)
-          this.broadcastQuery(val)
+          if (!this.remoteNoQuery) {
+            this.broadcastQuery(val)
+          }
         }
         this.findChild(child => {
           child.isFocus = false

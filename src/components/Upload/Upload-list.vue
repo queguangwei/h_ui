@@ -78,7 +78,7 @@
           type = 'image';
         }
         if (['mp4','m3u8','rmvb','avi','swf','3gp','mkv','flv'].indexOf(format) > -1) {
-          type = 'ios-film';
+          type = 'android-film';
         }
         if (['mp3','wav','wma','ogg','aac','flac'].indexOf(format) > -1) {
           type = 'ios-musical-notes';
@@ -90,7 +90,7 @@
           type = 'stats-bars';
         }
         if (['keynote','ppt','pptx'].indexOf(format) > -1) {
-          type = 'ios-videocam';
+          type = 'videocamera';
         }
 
         return type;

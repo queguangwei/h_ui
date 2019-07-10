@@ -13,7 +13,7 @@
     <!-- :multiLevel="multiLevel1" -->
     <!-- <h-msg-box v-model="showmsg" :width="1000"> -->
       <!-- notAdaptive  -->
-    <h-simple-table ref="simTable" @on-right-click="rightClick" :summationData="summationData" :columns="columnsBig1" border :data="bigData" height="300" @on-selection-change="selsetChange" @on-current-change="selsetChange1" highlightRow>
+    <h-simple-table ref="simTable" @on-right-click="rightClick" :summationData="summationData" :columns="columnsBig1" border :data="bigData" height="300" @on-selection-change="selsetChange" @on-current-change="selsetChange1" @on-row-dblclick="dblclick" highlightRow>
     </h-simple-table>
     <!-- </h-msg-box> -->
     <h-button @click='changeClo'>改变冻结列</h-button>
@@ -529,8 +529,10 @@ export default {
     rowclick(){
       console.log('你点击了某一行');
     },
-    rowdblclick(e,i){
-      console.log('你双击了某一行');
+    dblclick(e,i,j){
+      console.log(e);
+      console.log(i);
+      console.log(j);
     },
     expand(row,status){
       console.log(status);
