@@ -262,7 +262,32 @@
         const node = this.flatState[nodeIndex].node;
         this.$set(node, 'selected', status);
       },
-      nodeCheck(){
+      nodeCheck(key,value,status=true){
+        let nodeIndex;
+        function findNode(node) {
+          if(node[key]&&node[key]==value){
+            nodeIndex = node.nodeKey;
+            return false;
+          }
+          if (node.children) {
+            node.children.forEach(child => {
+              if(!nodeIndex&&nodeIndex!=0){
+                findNode(child);
+              }
+            });
+          }
+        }
+        this.stateTree.forEach(rootNode => {
+          findNode(rootNode);
+        });
+        const node = this.flatState[nodeIndex].node;
+        this.$set(node, 'checked', status);
+        if (!this.checkStrictly) {
+          if(!this.onlyUpdateDown){
+            this.updateTreeUp(node.nodeKey); // propagate up
+          }  
+          this.updateTreeDown(node, {checked, indeterminate: false}); // reset `indeterminate` when going down
+        } 
       },
       filterHighlight(val,key='title'){
         this.flatState.forEach(item=>{

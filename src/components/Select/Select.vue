@@ -339,7 +339,6 @@
         query: '',
         lastQuery: '',
         selectToChangeQuery: false,
-        notFound: false,
         slotChangeDuration: false,
         model: null,
         currentLabel: this.label,
@@ -358,6 +357,9 @@
       };
     },
     computed: {
+      notFound() {
+        return this.optionInstances.every(op => op.hidden);
+      },
       showHeader() {
         return this.$slots.header
       },
@@ -1480,15 +1482,6 @@
               this.broadcastQuery(val);
             }
             // if(val.trim()) this.broadcastQuery(val);
-            let isHidden = true;
-            this.$nextTick(() => {
-              this.findChild((child) => {
-                  if (!child.hidden) {
-                      isHidden = false;
-                  }
-              });
-              if (!this.remote) this.notFound = isHidden;
-            })
         }
         this.$nextTick(() => {
           this.enableCreate && this.checkOptionSelected();
