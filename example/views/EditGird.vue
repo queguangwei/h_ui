@@ -349,7 +349,7 @@ export default {
         },
         {
           type: 'textArea',
-          // rows: 2,
+          rows: 5,
           // width: 200,
           title: '地址',
           key: 'address',
