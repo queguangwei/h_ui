@@ -301,7 +301,7 @@ $tabs-prefix-cls: "#{$css-prefix}tabs";
     }
     .h-tabs-tab-active{
       background:$primary-color;
-      color:$primary-color;
+      color:$tabs-tab-nav-right-active-color;
       font-weight:bold;
       i{
         color:$primary-color;
