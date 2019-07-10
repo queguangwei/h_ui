@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!hidden" :class="clazz" @mouseover="hover" @mouseout="out">
+  <div v-if="!hidden" :class="clazz" @mouseover="hover" @mouseout="out" ref="reference">
     <div :class="[prefixCls + '-group-prepend']" v-if="prepend"><slot name="prepend"></slot></div>
     <input
       :class="classes"
@@ -14,7 +14,14 @@
       @focus="focusValue($event)"
       ref="input">
     <transition name="label-fade">
-      <div v-show="tipShow" :class="tipzz">{{bigNum}}</div>
+      <!-- <template v-if="!transfer">
+        <div v-show="tipShow" :class="tipzz">{{bigNum}}</div>
+      </template>
+      <template v-if="transfer"> -->
+        <Drop v-show="tipShow" :data-transfer="true" v-transfer-dom ref="drop">
+          {{bigNum}}
+        </Drop>
+      <!-- </template> -->
     </transition>
     <div :class="[prefixCls + '-group-append']" v-if="append"><slot name="append"></slot></div>
   </div>
@@ -23,7 +30,8 @@
 import {oneOf,formatnumber} from '../../util/tools'
 import Emitter from '../../mixins/emitter';
 import Locale from '../../mixins/locale';
-
+import Drop from '../Select/Dropdown.vue'
+import TransferDom from '../../directives/transfer-dom';
 Number.prototype.toFixedSelf = function (n) {
   if (n > 20 || n < 0) {
       throw new RangeError('toFixed() digits argument must be between 0 and 20');
@@ -70,6 +78,8 @@ Number.prototype.toFixedSelf = function (n) {
 const prefixCls = 'h-typefield';
 export default {
   name: 'Typefield',
+  directives: { TransferDom },
+  components:{Drop},
   data(){
     return {
       prefixCls:prefixCls,
@@ -166,6 +176,10 @@ export default {
     hoverTips:{
       type: Boolean,
       default: false
+    },
+    transfer:{
+      type:Boolean,
+      default:true,
     }
   },
   computed: {
@@ -209,6 +223,13 @@ export default {
     },
     inputValue(val){
       this.viewValue=this.changeTipsVal(val)
+    },
+    tipShow(val){
+      if (val) {
+            this.$refs.drop.update();
+        } else {
+            this.$refs.drop.destroy();
+        }
     }
   },
   mounted () {

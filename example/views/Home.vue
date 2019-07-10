@@ -4,7 +4,7 @@
     <!-- <Button @on-click="changeSelect"></Button> -->
     <!-- </h-msg-box> -->
     <!-- {{valll}} -->
-    <Hello :column="test"></Hello>
+    <Hello :columns="test"></Hello>
   </div>
 </template>
 <script>
