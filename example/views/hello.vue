@@ -1,8 +1,94 @@
 
 <template>
 <div>
+    <h-table :columns="column" :data="data1"></h-table>
+    <h-page 
+      :total="total" 
+      show-sizer 
+      :page-size-opts="pageSizeOpts" 
+      @on-change="change" 
+      @on-page-size-change="sizeChange"
+      show-total></h-page>
+</div>
+</template>
+<script>
+let tData =require('../assets/aa.json');
+// 封装一个简单的业务组件，dataGird
+export default{
+    data () {
+        return{
+            data1:[],
+            pageSize:10,
+            total:tData.length,
+            pageSizeOpts:[5,10,20,40],
+            page:1
+        }
+    },
+    props:{
+        column:{
+            type:Array,
+            default:()=>{
+                return []
+            },
+        }
+    },
+    methods:{
+        change(num){
+            this.page = num
+            this.getData()
+        },
+        getData(){
+            let start = (this.page-1)*this.pageSize
+            let end = this.page*this.pageSize
+            this.data1=tData.slice(start,end)
+        },
+        sizeChange(num){
+            this.pageSize = num
+        }
+    },
+    mounted(){
+        this.getData()
+    },
+    watch:{
+       pageSize(){
+           this.page=1
+           this.getData()
+       } 
+    }
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<template>
+<div>
     <Button @click="change"></Button>
-    <h-table height="300" border :columns="columns2" :data="data3" notSetWidth @on-right-click="rightClick"></h-table>
+    <h-table height="300" border :columns="columns2" :data="data3" notSetWidth @on-right-click="rightClick" @on-row-dblclick="dblclick"></h-table>
     <input id="keyword"  @change="change" placeholder="input your keyword" />
     <div id="msg-list"></div>
 </div>
@@ -44,40 +130,49 @@
                         key: 'zip',
                         // width: 100
                     },
-                    // {
-                    //     title: '操作',
-                    //     key: 'action',
-                    //     width: 120,
-                    //     render: (h, params) => {
-                    //         return h('div', [
-                    //             h('Button', {
-                    //                 props: {
-                    //                     type: 'text',
-                    //                     size: 'small'
-                    //                 }
-                    //             }, '查看'),
-                    //             h('Button', {
-                    //                 props: {
-                    //                     type: 'text',
-                    //                     size: 'small'
-                    //                 }
-                    //             }, '编辑')
-                    //         ]);
-                    //     }
-                    // }
+                    {
+                        title:"111111111111111111111111111111111",
+                        key:'city',
+                    },
+                    {
+                        title: '操作',
+                        key: 'action',
+                        width: 120,
+                        render: (h, params) => {
+                            return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'text',
+                                        size: 'small'
+                                    }
+                                }, '查看'),
+                                h('Button', {
+                                    props: {
+                                        type: 'text',
+                                        size: 'small'
+                                    }
+                                }, '编辑')
+                            ]);
+                        }
+                    }
                 ],
                 data3:[]
             }
         },
         methods:{
             change(){
-                this.columns2.push({
-                    title:"111111111111111111111111111111111",
-                    key:'city'
-                })
+                this.$set(this.columns2[5],'fixed','left')
+                // this.columns2.push({
+                //     title:"111111111111111111111111111111111",
+                //     key:'city',
+                //     fixed:'left',
+                // })
             },
             rightClick(e){
                 console.log(e)
+            },
+            dblclick(){
+                console.log('dbl')
             }
         },
         mounted(){
@@ -153,7 +248,7 @@
         }
     }
 </script>
-
+-->
 <!--<template>
 <div>
     <h-table height="300" border :columns="columns2" :data="data4" fixedAutoHeight></h-table>

@@ -1415,9 +1415,14 @@ export default {
         this.highlightCurrentRow(_index)
       }
       this.$nextTick(() => {
+        debugger
         this.$emit(
           'on-row-dblclick',
-          JSON.parse(JSON.stringify(this.cloneData[_index]))
+          JSON.parse(JSON.stringify(this.cloneData[_index])),
+          JSON.parse(JSON.stringify({
+            index:_index,
+            status:this.objData[_index]._isChecked||this.objData[_index]._isHighlight
+          })),
         )
       })
     },
