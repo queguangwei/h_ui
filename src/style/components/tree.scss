@@ -83,4 +83,5 @@ $tree-prefix-cls: "#{$css-prefix}tree";
     }
   }
 }
+.#{$tree-prefix-cls}-item{white-space: nowrap;}
 .#{$tree-prefix-cls}-item:focus {outline: none;} 
