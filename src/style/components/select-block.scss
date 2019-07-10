@@ -54,6 +54,9 @@ $selectBlock-prefix-cls:  "#{$css-prefix}select-block";
       overflow: hidden;
       text-overflow: ellipsis;
     }
+    &>span:last-child{
+        padding-right: 14px;
+    }
 }
 .#{$selectBlock-prefix-cls}-item:hover{
     background: $background-color-select-hover;
