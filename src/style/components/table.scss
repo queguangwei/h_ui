@@ -134,7 +134,8 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
     }
   }
   th.#{$table-prefix-cls}-column,
-  td.#{$table-prefix-cls}-column,{
+  td.#{$table-prefix-cls}-column
+  {
     &-left{
         text-align: left;
     }

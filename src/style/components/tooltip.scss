@@ -30,7 +30,7 @@ $tooltip-arrow: "#{$tooltip-prefix-cls}-arrow";
 
   &-arrow{
     position: absolute;
-    width: $tooltip-arrow-width;
+    width: 0;
     height:$tooltip-arrow-height;
     border-color: transparent;
     border-style: solid;

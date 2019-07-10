@@ -8,6 +8,8 @@
                 @on-mouseout="mClick"
                 @on-context-menu="handleMenu"
                 @on-badge-click="handleBadgeClick"
+                @on-preBtn-click="yearchange"
+                @on-nextBtn-click="yearchange"
                 :enableCtxMenu="false"
                 :dateCellRender="dateRender1">
       <ul class="calendar-menu"
@@ -54,6 +56,9 @@ export default {
     },
     handleBadgeClick(badge) {
       console.log(badge)
+    },
+    yearchange(){
+      alert("change");
     },
     dateRender1(h, data) {
       let color = ''
