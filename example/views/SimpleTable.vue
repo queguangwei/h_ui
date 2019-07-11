@@ -530,6 +530,7 @@ export default {
       console.log('你点击了某一行');
     },
     dblclick(e,i,j){
+      debugger
       console.log(e);
       console.log(i);
       console.log(j);

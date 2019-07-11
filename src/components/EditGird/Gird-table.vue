@@ -260,6 +260,11 @@ export default {
       default: false
     },
     titleRender: Function,
+    /* 支持取消单选选中项 */
+    cancelSelection: {
+      type: Boolean,
+      default: false
+    }
   },
   data () {
     return {
@@ -590,6 +595,7 @@ export default {
       if (this.typeName=="groupTable" && String(_index).indexOf('.')!=-1) {
         var k = String(_index).split('.')[0];
         var m = Number(String(_index).split('.')[1])-1;
+        let highlight = this.objData[k].item[m]._isHighlight;
         let oldIndexI = -1;
         let oldIndexJ = -1;
         for(let i in this.objData){
@@ -600,9 +606,20 @@ export default {
               col._isHighlight = false;
             }
           });
+          // async cloneData
+          this.cloneData[i].item.forEach((col,j)=>{
+            if (col.hasOwnProperty('_highlight')) {
+              col._highlight = false;
+            }
+          });
         }
-        this.$set(this.objData[k].item[m],'_isHighlight',true);
-        // this.objData[k].item[m]._isHighlight = true;
+        if (this.cancelSelection && highlight === true) {
+          this.$set(this.objData[k].item[m], '_isHighlight', false);
+          this.$set(this.cloneData[k].item[m], '_highlight', false);
+        } else {
+          this.$set(this.objData[k].item[m], '_isHighlight', true);
+          this.$set(this.cloneData[k].item[m], '_highlight', true);
+        }
         const oldData = oldIndexJ<0?null:this.getGroupData(oldIndexI,oldIndexJ);
         const currentData = this.getGroupData(k,m)
         this.$emit('on-current-change', JSON.parse(JSON.stringify(currentData)),oldData,{k:Number(k),m:m,key:this.curKey
@@ -644,12 +661,26 @@ export default {
       if (this.typeName=="groupTable" && String(_index).indexOf('.')!=-1) {
         var k = String(_index).split('.')[0];
         var m = Number(String(_index).split('.')[1])-1;
-        this.objData[k].item.forEach((col,j)=>{
+        let objDataItem = this.objData[k];
+        let highlight = objDataItem.item[m]._isHighlight;
+        objDataItem.item.forEach((col,j)=>{
           if (col._isHighlight) {
             col._isHighlight = false;
           }
         });
-        this.$set(this.objData[k].item[m],'_isHighlight',true);
+        // async cloneData
+        this.cloneData[k].item.forEach(row => {
+          if (row.hasOwnProperty("_highlight")) {
+            row._highlight = false;
+          }
+        })
+        if (this.cancelSelection && highlight === true) {
+          this.$set(objDataItem.item[m], '_isHighlight', false);
+          this.$set(this.cloneData[k].item[m], '_highlight', false);
+        } else {
+          this.$set(objDataItem.item[m], '_isHighlight', true);
+          this.$set(this.cloneData[k].item[m], '_highlight', true);
+        }
         const currentData = this.getGroupData(k,m)
         this.$nextTick(()=>{
           this.$emit('on-child-change', this.getAllGroupData());
@@ -660,14 +691,17 @@ export default {
       let arr = []
       for(let i in this.objData){
         let obj=null
+        let k, m;
         this.objData[i].item.forEach((col,j)=>{
           if (col._isHighlight) {
             obj = deepCopy(this.cloneData[i])
             obj.item = this.cloneData[i].item[j];
+            k = Number(i);
+            m = Number(j);
           }
         });
         if(obj){
-          arr.push(obj)
+          arr.push(Object.assign({k, m}, obj));
         }
       }
       return arr

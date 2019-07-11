@@ -64,6 +64,7 @@
                    :divided="column.divided"
                    @input="typefieldChange"
                    @on-blur="typefieldBlur"
+                   transfer
                    class="canEdit"></Typefield>
       </template>
       <template v-if="renderType === 'card'">

@@ -259,7 +259,7 @@ const h_ui = {
     // FileExport: FileExport,
     // hFileExport: FileExport
 };
-const install = function(Vue, opts = {}) {
+const install = function(Vue, opts = {}) {//vue use()
     locale.use(opts.locale);
     locale.i18n(opts.i18n);
 
