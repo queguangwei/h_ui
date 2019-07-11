@@ -83,7 +83,6 @@ export default {
             if (isServer) return;
 			if (this.popper) {
 				this.$nextTick(() => {
-				// debugger
                 // select 组件 placement 改变后同步改变 popper 实例
                 this.popper._options.placement = this.widthAdaption ? this.placement.indexOf('top') >= 0 ? 'top-start' : 'bottom-start' : this.placement
 					this.popper.update();
@@ -94,7 +93,6 @@ export default {
 				});
 			} else {
 				this.$nextTick(() => {
-					// debugger
 					let curPlacement = this.widthAdaption ? this.placement.indexOf('top') >= 0 ? 'top-start' : 'bottom-start' : this.placement
 					// let curPlacement = this.placement.indexOf('top') >= 0 ? 'top-start' : this.placement
 					this.popper = new Popper(this.$parent.$refs.reference, this.$el, {

@@ -808,6 +808,7 @@ export default {
         {
           type: 'index',
           width: 60,
+          key:"index",
           align: 'center',
           fixed: "left"
         },
