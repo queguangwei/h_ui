@@ -13,17 +13,17 @@
       @change="valChange"
       @focus="focusValue($event)"
       ref="input">
+    <div :class="[prefixCls + '-group-append']" v-if="append"><slot name="append"></slot></div>
     <transition name="label-fade">
-      <!-- <template v-if="!transfer">
+      <template v-if="!transfer">
         <div v-show="tipShow" :class="tipzz">{{bigNum}}</div>
       </template>
-      <template v-if="transfer"> -->
-        <Drop v-show="tipShow" :data-transfer="true" v-transfer-dom ref="drop">
+      <template v-if="transfer">
+        <Drop v-show="tipShow" :data-transfer="true" v-transfer-dom ref="drop" :class="tipzz">
           {{bigNum}}
         </Drop>
-      <!-- </template> -->
+      </template>
     </transition>
-    <div :class="[prefixCls + '-group-append']" v-if="append"><slot name="append"></slot></div>
   </div>
 </template>
 <script>
@@ -179,7 +179,7 @@ export default {
     },
     transfer:{
       type:Boolean,
-      default:true,
+      default:false,
     }
   },
   computed: {
@@ -225,11 +225,12 @@ export default {
       this.viewValue=this.changeTipsVal(val)
     },
     tipShow(val){
-      if (val) {
-            this.$refs.drop.update();
-        } else {
-            this.$refs.drop.destroy();
-        }
+      if (val&&this.transfer) {
+          this.$refs.drop.update();
+      } 
+      // else {
+      //     this.$refs.drop.destroy();
+      // }
     }
   },
   mounted () {
@@ -813,6 +814,11 @@ export default {
       if(!this.focused){
         this.tipShow = false
       }
+    }
+  },
+  beforeDestroy(){
+    if(this.transfer){
+      this.$refs.drop.destroy();
     }
   }
 }
