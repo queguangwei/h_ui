@@ -286,7 +286,7 @@
           if(!this.onlyUpdateDown){
             this.updateTreeUp(node.nodeKey); // propagate up
           }  
-          this.updateTreeDown(node, {checked, indeterminate: false}); // reset `indeterminate` when going down
+          this.updateTreeDown(node, {status, indeterminate: false}); // reset `indeterminate` when going down
         } 
       },
       filterHighlight(val,key='title'){
