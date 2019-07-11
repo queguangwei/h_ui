@@ -62,6 +62,7 @@
                    :isround="column.isround || false"
                    :nonNegative="column.nonNegative"
                    :divided="column.divided"
+                   :immeDivided="column.immeDivided"
                    @input="typefieldChange"
                    @on-blur="typefieldBlur"
                    transfer
@@ -510,11 +511,14 @@ export default {
       )
     },
     setvisible() {
-      ;['select', 'date', 'time', 'tree'].forEach(item => {
+      ['select', 'date', 'time', 'tree'].forEach(item => {
         if (this.$refs[item] && this.$refs[item].visible) {
           this.$refs[item].visible = false
         }
       })
+      if(this.$refs.money&&this.$refs.money.tipShow){
+        this.$refs.money.tipShow = false
+      }
     },
     strtoArr(val) {
       if (val == '' || val == ' ' || val == null || val == undefined) {
