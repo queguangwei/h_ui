@@ -1,7 +1,93 @@
+
 <template>
 <div>
+    <h-table :columns="columns" :data="data1"></h-table>
+    <h-page :total="total" :page-size="pageSize" @on-change="change" show-sizer @on-page-size-change="pageChange"></h-page>
+</div>
+</template>
+<script>
+let tData =require('../assets/aa.json');
+// 快速封装简单的业务组件，dataGird
+export default{
+    data () {
+        return{
+            data1:[],
+            pageSize:10,
+            page:1,
+            total:tData.length,
+        }
+    },
+    props:{
+        columns:{
+            type:Array,
+            default:()=>{
+                return []
+            },
+        }
+    },
+    methods:{
+        change(num){
+            this.page = num
+        },
+        getData(){
+            let _this = this
+            setTimeout(()=>{
+                let end = this.page*this.pageSize
+                let start = end - this.pageSize
+               _this.data1 = tData.slice(start,end) 
+            },1000)
+        },
+        pageChange(num){
+            this.pageSize = num
+        }
+    },
+    mounted(){
+        this.getData()
+    },
+    watch:{
+        page(){
+            this.getData()
+        },
+        pageSize(){
+            this.getData()
+        }
+    }
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<template>
+<div>
     <Button @click="change"></Button>
-    <h-table height="300" border :columns="columns2" :data="data3" notSetWidth></h-table>
+    <h-table height="300" border :columns="columns2" :data="data3" notSetWidth @on-right-click="rightClick" @on-row-dblclick="dblclick"></h-table>
+    <input id="keyword"  @change="change" placeholder="input your keyword" />
+    <div id="msg-list"></div>
 </div>
 </template>
 <script>
@@ -12,16 +98,18 @@
                     {
                         title: '姓名1111111111',
                         key: 'name',
+                        sortable:true,
                         // width: 100,
                     },
                     {
-                        title: '年龄111111111111111111111',
+                        title: '年龄111111111111111111111111111',
                         key: 'age',
                         // width: 100
                     },
                     {
                         title: '省份111111111111111111',
                         key: 'province',
+                        sortable:true,
                         // width: 100
                     },
                     {
@@ -30,7 +118,7 @@
                         // width: 100
                     },
                     {
-                        title: '地址1111111111111111111111',
+                        title: '地址11111111',
                         key: 'address',
                         // width: 200
                     },
@@ -39,34 +127,58 @@
                         key: 'zip',
                         // width: 100
                     },
-                    // {
-                    //     title: '操作',
-                    //     key: 'action',
-                    //     width: 120,
-                    //     render: (h, params) => {
-                    //         return h('div', [
-                    //             h('Button', {
-                    //                 props: {
-                    //                     type: 'text',
-                    //                     size: 'small'
-                    //                 }
-                    //             }, '查看'),
-                    //             h('Button', {
-                    //                 props: {
-                    //                     type: 'text',
-                    //                     size: 'small'
-                    //                 }
-                    //             }, '编辑')
-                    //         ]);
-                    //     }
-                    // }
+                    {
+                        title:"111111111111111111111111111111111",
+                        key:'city',
+                    },
+                    {
+                        title: '操作',
+                        key: 'action',
+                        width: 120,
+                        render: (h, params) => {
+                            return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'text',
+                                        size: 'small'
+                                    }
+                                }, '查看'),
+                                h('Button', {
+                                    props: {
+                                        type: 'text',
+                                        size: 'small'
+                                    }
+                                }, '编辑')
+                            ]);
+                        }
+                    }
                 ],
-                // data3:[],
-                data3: [
+                data3:[]
+            }
+        },
+        methods:{
+            change(){
+                this.$set(this.columns2[5],'fixed','left')
+                // this.columns2.push({
+                //     title:"111111111111111111111111111111111",
+                //     key:'city',
+                //     fixed:'left',
+                // })
+            },
+            rightClick(e){
+                console.log(e)
+            },
+            dblclick(){
+                console.log('dbl')
+            }
+        },
+        mounted(){
+            setTimeout(()=>{
+                 this.data3 = [
                     {
                         name: '王小明',
                         age: 18,
-                        address: '北京市朝阳区芍药居',
+                        address: '北京市朝阳区芍药居11111111111111111',
                         province: '北京市',
                         city: '朝阳区',
                         zip: 100000
@@ -128,19 +240,12 @@
                         zip: 100000
                     }
                 ]
-            }
-        },
-        methods:{
-            change(){
-                this.columns2.push({
-                    title:"111111111111111111111111111111111",
-                    key:'city'
-                })
-            }
+        
+            },1000)
         }
     }
 </script>
-
+-->
 <!--<template>
 <div>
     <h-table height="300" border :columns="columns2" :data="data4" fixedAutoHeight></h-table>

@@ -180,36 +180,49 @@ export default {
         '\\$1'
       )
       let status = true
+      if(!this.$parent.$parent.accuFilter){   //149105 【TS:201906280063-资管业委会（资管）_钱佳华-【需求类型】需求【需求描述】select和SimpleSelect 控件多选时 如果搜索时输入的信息完全匹配到 value或者label的时候 自动勾上；对接开发：郑海华【事业部】资管业委会【项目名称】HUNDSUN投资交易管理系统软件V4.5【产品负责人】孔磊【需求提出人】钱佳华
+          this.cloneData.forEach(col => {
+            let targetLabel = col.label
+            // 如果存在多列，则匹配目标为多列所有列
+            if (this.showCol.length) {
+              targetLabel = targetLabel + ' ' + this.getTargetLabel(col).join(' ')
+            }
 
-      this.cloneData.forEach(col => {
-        let targetLabel = col.label
-        // 如果存在多列，则匹配目标为多列所有列
-        if (this.showCol.length) {
-          targetLabel = targetLabel + ' ' + this.getTargetLabel(col).join(' ')
-        }
+            let hidden = !new RegExp(parsedQuery, 'i').test(targetLabel)
+            this.$set(col, 'hidden', hidden)
 
-        let hidden = !new RegExp(parsedQuery, 'i').test(targetLabel)
-        this.$set(col, 'hidden', hidden)
+            if (status && !hidden) {
+              status = false
+            }
+          })
 
-        if (status && !hidden) {
-          status = false
-        }
-      })
+          this.dispatch('SimpleSelect', 'on-options-visible-change', { data: this.cloneData })
 
-      this.dispatch('SimpleSelect', 'on-options-visible-change', { data: this.cloneData })
+          this.showEmpty = status
+          if (val) {
+            this.dispatch('Drop', 'on-update-popper')
+          }
+          this.$nextTick(() => {
+            if (val) {
+              this.updateVisibleData(0)
+            } else {
+              this.updateVisibleData()
+            }
+            this.$refs.block.scrollTop = 0
+          })
+      }else{
+        //149105 【TS:201906280063-资管业委会（资管）_钱佳华-【需求类型】需求【需求描述】select和SimpleSelect 控件多选时 如果搜索时输入的信息完全匹配到 value或者label的时候 自动勾上；对接开发：郑海华【事业部】资管业委会【项目名称】HUNDSUN投资交易管理系统软件V4.5【产品负责人】孔磊【需求提出人】钱佳华
+            this.cloneData.forEach(col => {
+              let targetLabel = col.label
+              let targetValue =col.value
+              let selected=col.selected
+              // 如果存在多列，则匹配目标为多列所有列
+              if ((parsedQuery===targetValue||parsedQuery===targetLabel)&&!selected) {
+                    this.$parent.$parent.selectBlockMultiple(targetValue)
+              }
+           })
 
-      this.showEmpty = status
-      if (val) {
-        this.dispatch('Drop', 'on-update-popper')
       }
-      this.$nextTick(() => {
-        if (val) {
-          this.updateVisibleData(0)
-        } else {
-          this.updateVisibleData()
-        }
-        this.$refs.block.scrollTop = 0
-      })
     },
     handleclick() {},
     handleBodyScroll(event) {
@@ -223,7 +236,9 @@ export default {
       }
     },
     updateVisibleData(scrollTop) {
-      let itemHeight = Number(this.itemHeight)
+      // o45 下拉最后一条时闪动问题处理 + 0.01 作为偏移值
+      // 目前仅能在 o45 系统中复现
+      let itemHeight = Number(this.itemHeight) + 0.01
       scrollTop = scrollTop == undefined ? this.lastScollTop : scrollTop
       this.start = Math.floor(scrollTop / itemHeight)
       let i = 0
@@ -367,6 +382,7 @@ export default {
         } else {
           this.showEmpty = false
         }
+
         this.$nextTick(() => {
           this.cloneData = deepCopy(this.data)
           this.cloneData.forEach((item,i) => {

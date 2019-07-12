@@ -46,6 +46,19 @@
     <h-edit-gird :columns="columns1" ref="table1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" :showEditInput="true" height="200" :loading="loading"></h-edit-gird>
     <Button @click="setLoad">切换loading</Button>
     <Button @click="addDate">添加一行</Button>
+    <p>动态显示隐藏输入框</p>
+    <h-row style="margin-top: 10px;margin-bottom: 10px;">
+        <h-col span="24">
+          <span>
+            <h-button type="primary" style="margin-right: 5px;" @click="showInput">打开</h-button>
+          </span>
+          <span>
+            <h-button type="primary" style="margin-right: 5px;" @click="hideInput">关闭</h-button>
+          </span>
+        </h-col>
+      </h-row>
+
+      <h-edit-gird :columns="columnsA" :data="datainput" size="small" :showEditInput="showEditInput" stripe></h-edit-gird>
   </div>
 </template>
 
@@ -257,6 +270,7 @@ export default {
     return {
       loading:false,
       showMsgBox:false,
+      showEditInput:true,
       columns1: [
         // {
         //   type: 'expand',
@@ -335,7 +349,7 @@ export default {
         },
         {
           type: 'textArea',
-          // rows: 2,
+          rows: 5,
           // width: 200,
           title: '地址',
           key: 'address',
@@ -434,6 +448,57 @@ export default {
         },
       ],
       data1: [],
+       datainput: [{
+          image_name: '镜像1',
+          image_os: 'Windows',
+          image_bit: '64',
+          is_use: '是',
+          price: '888.00',
+          create_time: '2019-07-05 16:33:33'
+        }, {
+          image_name: '镜像1',
+          image_os: 'Windows',
+          image_bit: '64',
+          is_use: '是',
+          price: '888.00',
+          create_time: '2019-07-05 16:33:33'
+        }, {
+          image_name: '镜像1',
+          image_os: 'Windows',
+          image_bit: '64',
+          is_use: '是',
+          price: '888.00',
+          create_time: '2019-07-05 16:33:33'
+        }, {
+          image_name: '镜像1',
+          image_os: 'Windows',
+          image_bit: '64',
+          is_use: '是',
+          price: '888.00',
+          create_time: '2019-07-05 16:33:33'
+        }],
+        columnsA: [{
+          title: '镜像名称',
+          key: 'image_name'
+        }, {
+          title: '镜像操作系统',
+          key: 'image_os'
+        }, {
+          title: '镜像位数',
+          key: 'image_bit'
+        }, {
+          title: '是否可用',
+          key: 'is_use'
+        }, {
+          type: 'money',
+          suffixNum: 2,
+          placeholder: '请输入价格',
+          title: '价格(元)',
+          key: 'price'
+        }, {
+          title: '创建时间',
+          key: 'create_time'
+        }],
       data2: tData,
       options1:[],
       list: ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New hampshire', 'New jersey', 'New mexico', 'New york', 'North carolina', 'North dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode island', 'South carolina', 'South dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West virginia', 'Wisconsin', 'Wyoming'],
@@ -501,6 +566,14 @@ export default {
     },
     delDate(){
 
+    },
+    showInput(){
+         //  this.showEditInput=true;
+           this.columnsA[4].type='money';
+    },
+    hideInput(){
+         //this.showEditInput=false;
+         this.columnsA[4].type='';
     },
     remoteMethod1 (query) {
       if (query !== '') {

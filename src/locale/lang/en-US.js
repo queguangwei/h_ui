@@ -78,7 +78,7 @@ export default {
             notFoundText: 'Not Found',
             notFoundData: 'Not Found'
         },
-        transfer: {
+        transferTable: {
             lTitle: 'Source',
             rTitle: 'Target',
             filterPlaceholder: 'Search here',

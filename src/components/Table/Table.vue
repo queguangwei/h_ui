@@ -31,6 +31,7 @@
           :data="rebuildData"
           :columns-width="columnsWidth"
           :rowSelect = "rowSelect"
+          :rowSelectOnly = "rowSelectOnly"
           :bodyAlgin ="bodyAlgin"
           :obj-data="objData"
           :notSetWidth="notSetWidth"
@@ -248,6 +249,10 @@ export default {
     },
     rowSelect:{
       type:Boolean,//多选时是否支持点击行选中
+      default:false
+    },
+    rowSelectOnly:{
+      type:Boolean,//多选时是否支持点击行只选中，再次点击不进行反选
       default:false
     },
     loading: {
@@ -698,23 +703,22 @@ export default {
     rowClsName (index) {
       return this.rowClassName(this.data[index], index);
     },
-    changeWidth(width,key,lastWidth){
+    changeWidth(width,key,lastWidth,lastInx){
       var that = this;
-      var lastInx = this.cloneColumns.length-1;
       var totalWidth=0;
       this.cloneColumns.forEach((col,i)=>{
         if (col.key==key) {
           that.$set(col,"width",width);
           that.$set(col,"_width",width);
         }
-        if (i == lastInx && this.cloneColumns[lastInx].fixed!='right') {
+        if (i == lastInx) {
           that.$set(col,"width",lastWidth);
           that.$set(col,"_width",lastWidth);
         }
         var colWidth = col.width||col._width
         totalWidth = totalWidth+ colWidth;
       });
-      if (this.bodyHeight !== 0) {
+      if (this.bodyHeight !== 0 && lastInx==this.cloneColumns.length) {
         totalWidth = totalWidth + this.scrollBarWidth;
       }
       this.tableWidth=totalWidth+1;
@@ -728,21 +732,33 @@ export default {
     handleResize () {
       // keep-alive时，页面改变大小会不断触发resize【非本组件页面】
       if(this.notSetWidth){
+        if(!this.autoHeadWidth){
+          this.columnsWidth={}
+          this.tableWidth = 0
+        }
         setTimeout(()=>{
           let columnsWidth = {};
           let tableWidth = '';
           let $td =null
+          let $th = null
           let curTh = null
           let num = 0
           if(this.autoHeadWidth||this.data.length==0 || !this.$refs.tbody){
             num = 30
-            $td = this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0].querySelectorAll('.h-table-cell>span');
+            if(!this.$refs.thead) return
+            $td = this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0].querySelectorAll('.h-table-cell>.span-cell');
           }else{
+            if(this.$refs.thead){
+              $th =this.$refs.thead.$el.querySelectorAll('thead .cur-th')[0].querySelectorAll('.h-table-cell>.span-cell');
+            }
             $td = this.$refs.tbody.$el.querySelectorAll('tbody tr')[0].querySelectorAll('td');
           }
           for (let i = 0; i < $td.length; i++) {    // can not use forEach in Firefox
             const column = this.cloneColumns[i];
-             let width = $td[i].offsetWidth + num
+              let width = $td[i].offsetWidth + num
+              if($th && width<($th[i].offsetWidth +30)){
+                width = $th[i].offsetWidth +30
+              }
             if (column.width) {
                 width = column.width||width;
             } else {
@@ -889,6 +905,17 @@ export default {
       }
       this.$emit('on-selection-change', this.getSelection(),this.getSelection(true));
     },
+    /**
+      * @func
+      * @desc 行右键点击,返回当前行数据
+      * @param {object} event - 点击事件
+      * @param {string} rowIndex -objdata中索引
+      * @param {number} curIndex - 行索引
+      */
+    handleRightClick (event, _index) {
+      // this.$emit('on-right-click')
+      this.$emit('on-right-click', JSON.parse(JSON.stringify(this.cloneData[_index])), _index)
+    },
     handleMouseIn (_index) {
         if (this.disabledHover) return;
         if (this.objData[_index]._isHover) return;
@@ -990,10 +1017,14 @@ export default {
     },
     toggleSelect (_index,event,curIndex) {
       let data = {};
+      let target=event.target;
       for (let i in this.objData) {
         if (parseInt(i) === _index) {
           data = this.objData[i];
         }
+      }
+      if(data._isChecked&&this.rowSelectOnly&&target.type!="checkbox"){  // #148487 【TS:201906250692-资管业委会（资管）_钱佳华-【需求类型】需求【需求描述】表格控件勾选：点击同一行记录时，第一次点击勾选，第二次点击不进行去除勾选操作，但是如果点击的是勾选框，则能够正常去除勾选。】
+          return;
       }
       const status = !data._isChecked;
       this.objData[_index]._isChecked = status;
@@ -1079,6 +1110,16 @@ export default {
         const status = !data._isExpanded;
         this.objData[_index]._isExpanded = status;
         this.$emit('on-expand', JSON.parse(JSON.stringify(this.cloneData[_index])), status);
+        this.$nextTick(() => { 
+            if(this.$refs.fixedRightBody){
+                let table=this.$refs.fixedRightBody.getElementsByClassName("h-table-tbody")[0];
+                let expandfixed= table.getElementsByClassName("h-table-expanded-cell");
+                for(let i=0;i<expandfixed.length;i++){
+                    expandfixed[i].children[0].style.visibility="hidden";
+                }
+            }
+                
+        });
     },
     itemSelect(i,status){
       let index = this.rebuildData[i]._index;
@@ -1230,7 +1271,7 @@ export default {
       const item = this.cloneColumns[curIndex];
       this.cloneColumns.splice(curIndex,1);
       this.cloneColumns.splice(insertIndex,0,item);
-      this.$emit('on-move',_index,insertIndex);
+      this.$emit('on-move',curIndex,insertIndex);
     },
     setMoveProxy(index){
       let el = this.$refs.moveProxy;
@@ -1634,6 +1675,14 @@ export default {
     this.$nextTick(() => {
       this.ready = true;
       this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0;
+      if(this.$refs.fixedRightBody){
+            let table=this.$refs.fixedRightBody.getElementsByClassName("h-table-tbody")[0];
+            let expandfixed= table.getElementsByClassName("h-table-expanded-cell");
+            for(let i=0;i<expandfixed.length;i++){
+                expandfixed[i].children[0].style.visibility="hidden";
+            }
+      }
+      
     });
     //window.addEventListener('resize', this.handleResize, false);
     on(window, 'resize', this.handleResize);

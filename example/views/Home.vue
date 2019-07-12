@@ -2,108 +2,9 @@
   <div>
     <!-- <h-msg-box v-model="changeform" width="900" escClose left="10" closeDrop> -->
     <!-- <Button @on-click="changeSelect"></Button> -->
-      <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus onlyBlurRequire cols="3">
-        <h-form-item label="日期控件">
-          <h-row>
-            <h-col span="11">
-              <h-form-item prop="date" required>
-                <h-datePicker type="date" placeholder="选择日期" v-model="formItem1.date"></h-datePicker>
-              </h-form-item>
-            </h-col>
-            <h-col span="2" style="text-align: center">-</h-col>
-            <h-col span="11">
-              <h-form-item prop="time" required>
-                <h-timePicker type="time" iconVisible placeholder="选择时间" v-model="formItem1.time"></h-timePicker>
-              </h-form-item>
-            </h-col>
-          </h-row>
-        </h-form-item>
-        <h-form-item label="金额框" prop="money" required>
-          <h-typefield v-model="formItem1.money">
-            <h-select v-model="select2" placeholder="" slot="append" style="width: 45px" :isArrow="false" :clearable="false" :tranfer="true">
-            <h-option value="com">.com</h-option>
-            <h-option value="org">.org</h-option>
-            <h-option value="io">.io</h-option>
-          </h-select>
-          </h-typefield>
-        </h-form-item>
-        <h-form-item label="金额框" prop="moneyrange" required>
-          {{formItem1.moneyrange}}
-          <h-input v-model="formItem1.moneyrange">
-          </h-input>
-        </h-form-item>
-        <h-form-item label="单选框" prop="radio" required>
-          <h-radio-group v-model="formItem1.radio">
-            <h-radio label="male">男</h-radio>
-            <h-radio label="female">女</h-radio>
-          </h-radio-group>
-        </h-form-item>
-        <h-form-item label="多选框" prop="checkbox" required>
-          <h-checkbox-group v-model="formItem1.checkbox">
-              <h-checkbox label="吃饭"></h-checkbox>
-              <h-checkbox label="睡觉"></h-checkbox>
-              <h-checkbox label="跑步"></h-checkbox>
-              <h-checkbox label="看电影"></h-checkbox>
-          </h-checkbox-group>
-        </h-form-item>
-        <!-- <h-form-item label="特殊日期" prop="fatdate" required >
-          <h-fast-date v-model="formItem1.fatdate" clearable></h-fast-date>
-        </h-form-item> -->
-        <h-form-item label="下拉多选" prop="select1" required>
-          <h-select v-model="formItem1.select1"
-            multiple
-            size="large"
-            showTitle
-            >
-            <h-option v-for="item in cy.options1"
-              :value="item.value"
-              :key="item.value">{{ item.label }} {{item.value}}
-            </h-option>
-          </h-select>
-        </h-form-item>
-        <h-form-item label="下拉单选" prop="select2" required>
-          <h-select v-model="formItem1.select2"
-            filterable
-            showTitle
-            on-change="cy_change_test">
-            <h-option v-for="item in cy.options1"
-              :value="item.value"
-              :key="item.value">{{ item.label }}</h-option>
-          </h-select>
-        </h-form-item>
-        <h-form-item label="下拉表" prop='slider' required>
-          <h-select-table v-model="formItem1.slider" >
-            <h-table-option border :columns="columns1" :data="data1"></h-table-option>
-          </h-select-table>
-        </h-form-item>
-        <h-form-item label="下拉树" prop='tree' required>
-          <h-select-tree v-model="formItem1.tree" style="width:200px" :data="baseData1" placement="top" placeholder="你好"></h-select-tree>
-        </h-form-item>
-        <!-- <h-form-item label="文本域" prop="textarea" required>
-          <h-input v-model="formItem1.textarea" type="textarea" :canResize="false" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></h-input>
-        </h-form-item> -->
-        <h-form-item label="文本域" prop="cascader" required>
-          <h-cascader v-model="formItem1.cascader" :data="data2" trigger="hover" style="width:200px"></h-cascader>
-        </h-form-item>
-        <h-form-item label="简单选择框" prop="simpleSelect" required>
-          <h-simple-select v-model="formItem1.simpleSelect" transfer multiple >
-            <h-select-block :data="bigData" ></h-select-block>
-          </h-simple-select>
-        </h-form-item>
-        <h-form-item label="简单选择框单选" prop="simpleSelect1" required>
-          <h-simple-select v-model="formItem1.simpleSelect1" placement="top-start" filterable>
-            <h-select-block :data="bigData" ></h-select-block>
-          </h-simple-select>
-        </h-form-item>
-        <h-form-item>
-            <h-button type="primary" @click="handleSubmit('formItem1')">提交</h-button>
-            <h-button type="ghost" style="margin-left: 8px" @click="handleReset('formItem1')">取消</h-button>
-        </h-form-item>
-
-      </h-form>
     <!-- </h-msg-box> -->
-    {{valll}}
-    <Hello v-model="valll"></Hello>
+    <!-- {{valll}} -->
+    <Hello :columns="test"></Hello>
   </div>
 </template>
 <script>
@@ -121,6 +22,28 @@ export default {
   data () {
     return {
       valll:'',
+      test:[
+        {
+          type:'index',
+          key:'index'
+        },
+        {
+          title: '姓名',
+          key: 'fundId',
+          width:200,
+          sortable:true,
+        },
+        {
+          title: '年龄',
+          key: 'tradeDate',
+          sortable:true,
+        },
+        {
+          title: '地址',
+          ellipsis:true,
+          key: 'securityCode',
+        },
+      ],
       columns123:[
         {
           type:'selection',
@@ -452,7 +375,6 @@ export default {
   }
 }
 </script>
-
 
 <!-- <template>
 <div> -->
