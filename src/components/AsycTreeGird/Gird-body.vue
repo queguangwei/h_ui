@@ -16,9 +16,10 @@
                   :prefix-cls="prefixCls"
                   @mouseenter.native.stop="handleMouseIn(index)"
                   @mouseleave.native.stop="handleMouseOut(index)"
-                  @click.native="clickCurrentRow(index)"
+                  @click.native="clickCurrentRow(index,row,$event)"
+                  @dblclick.native.stop="handleDblClick(row._index)"
                   v-show="show(row)"
-                  :class="{'child-tr':row._parent}">
+                  :class="rowCls(row)">
           <td v-for="(column,inx) in columns"
               :key="inx"
               :class="alignCls(column, row)">
@@ -42,7 +43,7 @@
                   @on-editinput-blur="editinputBlur"
                   @on-editarea-change="editAreaChange"
                   @on-editarea-blur="editAreaBlur">
-              <span v-if="inx==(columns[0].type=='index'?1:0)">
+              <span v-if="column._treeNode">
                 <i v-html='row._spaceHtml'></i>
                 <Icon name="play_fill"
                       :class="iconClass(index)"
@@ -73,6 +74,7 @@ import Expand from './expand.js'
 import Mixin from './mixin'
 import Icon from '../Icon/Icon.vue'
 import CollapseTransition from '../Notice/collapse-transition'
+import {findInx} from '../../util/tools';
 export default {
   name: 'TableBody',
   mixins: [Mixin],
@@ -97,7 +99,8 @@ export default {
     return {
       treeData: this.data,
       parent: this.$parent,
-      flatState: []
+      flatState: [],
+      visibleData: []
     }
   },
   computed: {
@@ -115,6 +118,14 @@ export default {
     }
   },
   methods: {
+    rowCls(row) {
+      let index = Array.isArray(this.visibleData) ? findInx(this.visibleData, d => d._index === row._index) : -1;
+      return {
+        'child-tr': row._parent,
+        [`${this.prefixCls}-stripe-light`]: index > -1 && index % 2 === 0,
+        [`${this.prefixCls}-stripe-dark`]: index > -1 && index % 2 === 1
+      }
+    },
     iconClass(_index) {
       return [
         `${this.prefixCls}-icon-click`,
@@ -139,10 +150,13 @@ export default {
     handleMouseOut(_index) {
       this.$parent.handleMouseOut(_index)
     },
-    clickCurrentRow(_index) {
+    handleDblClick(index) {
+      this.$parent.handleRowDblClick(index);
+    },
+    clickCurrentRow(_index,row,e) {
       this.$parent.clickCurrentRow(_index)
       if (this.rowSelect) {
-        this.$parent.toggleSelect(_index)
+        this.changeSelect(row, _index, e)
       }
     },
     toggleExpand(index, row, e) {
@@ -253,12 +267,14 @@ export default {
   mounted() {
     this.treeData = this.data
     this.flatState = this.data
+    this.visibleData = this.treeData.filter(d => this.show(d));
   },
   watch: {
     data: {
       handler() {
         this.treeData = this.data
         this.flatState = this.data
+        this.visibleData = this.treeData.filter(d => this.show(d));
       },
       deep: true
     }

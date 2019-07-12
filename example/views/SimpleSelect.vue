@@ -5,13 +5,13 @@
     <h1>selectBlock测试用例</h1>
     {{value2}}
     <h-simple-select ref="ceshi"
+                     style="width:200px;"
                      label-in-value
                      autoPlacement
                      filterable
                      showBottom
                      specialIndex
                      multiple
-                     hideMult
                      isSelectFilter
                      placeholder="123"
                      showTotalNum
@@ -84,6 +84,7 @@
                      remote
                      :remote-method="remoteMethod"
                      :loading="loading1"
+                     showArrow
                      loadingText="拼命加载中..."
                      ref="block">
       <h-select-block :data="remoteData"></h-select-block>
@@ -98,6 +99,7 @@
       show-bottom
       remote
       multiple
+      showArrow
       :remote-method="remoteMethod">
       <h-select-block :data="remoteData" ref="block1"></h-select-block>
       <div slot="header">我是header</div>
@@ -113,6 +115,12 @@
       <h-select-block :data="ceshiData"></h-select-block>
     </h-simple-select> -->
     <br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+    <p>showValue为true，输入框显示value值，下拉框显示label+value、开启accuFilter完全匹配，并且搜到的结果自动勾选</p>
+        <span>#149105需求  select和SimpleSelect 控件多选时 如果搜索时输入的信息完全匹配到 value或者label的时候 自动勾上；</span>
+    <h-simple-select v-model="valuetest" ref="test" filterable  multiple showValue  accuFilter>
+        <h-select-block :data="bigDatatest"></h-select-block>
+    </h-simple-select>
   </div>
 </template>
 <script>
@@ -124,12 +132,21 @@ for (let i = -1; i < 160; i++) {
     obj.disabled = true
   }
   // obj.value = 'value' + i
-  obj.label = 'lab' + i
+  obj.label =  i==2?'lab111111111111111111111111111111111' + i:'lab' + i
   obj.label1 = 'lab12'
   obj.label2 = 'lab13'
   obj.label3 = 'lab14'
   bigData.push(obj)
 }
+
+let bigDatatest = [];
+for(let i=0;i<20;i++){
+  let obj={};
+  obj.value=i+"";
+  obj.label=obj.value+" :label"+i;
+  bigDatatest.push(obj);
+}
+
 export default {
   data() {
     return {
@@ -137,7 +154,9 @@ export default {
       showCol:['label1','label2','label3'],
       matchCol: ['name', 'age'],
       bigData: [],
+      bigDatatest:bigDatatest,
       value: '',
+      valuetest:['12'],
       value1: [],
       value2: ['2'],
       v20190321: {

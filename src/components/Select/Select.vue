@@ -12,7 +12,8 @@
       <!-- 多选时输入框内选中值模拟 -->
       <template  v-if="multiple && !collapseTags">
         <div class="h-tag" v-for="(item, index) in selectedMultiple" :key="index">
-          <span class="h-tag-text">{{ item.label }}</span>
+          <span class="h-tag-text" v-if="showValue">{{ item.value }}</span>
+           <span class="h-tag-text" v-if="!showValue">{{ item.label }}</span>
           <Icon name="close" @click.native.stop="removeTag(index)"></Icon>
         </div>
       </template>
@@ -76,6 +77,9 @@
               ref="input">
           </span>
           <span v-if="hideMult&&multiple" :class="hideMultHead" @click="toggleSelect(!isSelectAll)">全选</span>
+          <div v-if="showHeader">
+            <slot name="header"></slot>
+          </div>
           <ul v-show="notFoundShow && !enableCreate" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul>
           <ul v-show="(!notFound && !remote) || (remote && !loading && !notFound) || enableCreate" :class="[prefixCls + '-dropdown-list']">
             <!-- 多选、支持搜索和新建条目的情况下，如果检索词不匹配任何一个条目时，显示此项供用户选择 -->
@@ -152,6 +156,10 @@
         type: String
       },
       filterable: {
+        type: Boolean,
+        default: false
+      },
+      accuFilter:{
         type: Boolean,
         default: false
       },
@@ -312,6 +320,10 @@
       isSelectFilter: {
         type: Boolean,
         default: false
+      },
+      showValue: {
+        type: Boolean,
+        default: false
       }
     },
     data () {
@@ -327,7 +339,6 @@
         query: '',
         lastQuery: '',
         selectToChangeQuery: false,
-        notFound: false,
         slotChangeDuration: false,
         model: null,
         currentLabel: this.label,
@@ -346,6 +357,12 @@
       };
     },
     computed: {
+      notFound() {
+        return this.optionInstances.every(op => op.hidden);
+      },
+      showHeader() {
+        return this.$slots.header
+      },
       classes () {
         return [
           `${prefixCls}`,
@@ -798,7 +815,7 @@
                 this.model = selectedModel;
             }
         }
-        this.toggleMultipleSelected(this.model, init);
+        this.toggleMultipleSelected(init && this.multiple && this.model === "" ? [] : this.model, init);
       },
       removeTag (index) {
         if (this.disabled || this.readonly || !this.editable) {
@@ -1465,15 +1482,6 @@
               this.broadcastQuery(val);
             }
             // if(val.trim()) this.broadcastQuery(val);
-            let isHidden = true;
-            this.$nextTick(() => {
-              this.findChild((child) => {
-                  if (!child.hidden) {
-                      isHidden = false;
-                  }
-              });
-              if (!this.remote) this.notFound = isHidden;
-            })
         }
         this.$nextTick(() => {
           this.enableCreate && this.checkOptionSelected();
@@ -1481,7 +1489,8 @@
         })
         if (this.filterable&&!this.remote&&!this.selectToChangeQuery&&!this.notAutoFocus) {
           this.$nextTick(()=>{
-            this.focusIndex = 1;
+            // 当没有选项的时候focusIndex应为0
+            this.focusIndex = this.options.length > 0 || this.$refs.createdOption ? 1 : 0;
             if (typeof this.$refs.createdOption !== 'undefined') {
               this.$refs.createdOption.isFocus = true;
               this.findChild(child => {
@@ -1541,6 +1550,9 @@
       },
       fPlacement(val) {
         this.$refs.dropdown.update()
+      },
+      dropVisible(val){
+        this.$emit('on-drop-change',val)
       }
     }
   };

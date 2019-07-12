@@ -53,7 +53,8 @@
             showTitle:this.showTitle,
             filterable: this.filterable,
             filterMethod: this.filterMethod,
-            filterPlaceholder: this.localeFilterPlaceholder
+            filterPlaceholder: this.localeFilterPlaceholder,
+            noEdit:this.noEdit,
           },
           on: {
             // 'on-checked-keys-change': this.handleLeftCheckedKeysChange
@@ -90,7 +91,8 @@
             showTitle:this.showTitle,
             filterable: this.filterable,
             filterMethod: this.filterMethod,
-            filterPlaceholder: this.localeFilterPlaceholder
+            filterPlaceholder: this.localeFilterPlaceholder,
+            noEdit:this.noEdit,
           },
           on: {
             // 'on-checked-keys-change': this.handleRightCheckedKeysChange
@@ -184,6 +186,16 @@
         default (data, query) {
           return true;
         }
+      },
+      noEdit:{
+        type: Boolean,
+        default: false
+      },
+      beforeMove:{
+        type: Function,
+        default (keys, dire, isAll) {
+          return true;
+        }
       }
     },
     data () {
@@ -251,6 +263,7 @@
         const opposite = direction === 'left' ? 'right' : 'left';
         const moveKeys = this.$refs[opposite].$refs.table.getSelection(); 
         const moveIndex = moveKeys.map(m => m._hkey_);
+        if(this.beforeMove&&!this.beforeMove(moveKeys,direction,false)) return//提供移动前钩子函数
         if (direction === 'right') {
           this.rightData = moveKeys.concat(rData)
           this.leftData = lData.filter((col,i)=>!moveIndex.some(index => col._hkey_ == index));
@@ -272,6 +285,7 @@
         const rData = this.getList('right');
         const opposite = direction === 'left' ? 'right' : 'left';
         const moveKeys = this.getAllKeys(opposite);
+        if(this.beforeMove&&!this.beforeMove(moveKeys,direction,true)) return//提供移动前钩子函数
         if (direction === 'right') {
           this.rightData = moveKeys.concat(rData)
           this.leftData = [];

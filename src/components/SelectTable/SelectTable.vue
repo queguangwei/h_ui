@@ -15,7 +15,8 @@
            v-for="(item, index) in selectedMultiple"
            v-show="item.label&&!showTotal"
            :key="index">
-        <span class="h-tag-text">{{ item.label }}</span>
+        <span class="h-tag-text" v-if="!showValue">{{ item.label }}</span>
+        <span class="h-tag-text" v-if="showValue">{{ item.value }}</span>
         <Icon name="close"
               @click.native.stop="removeTag(index)"></Icon>
       </div>
@@ -44,7 +45,7 @@
             @click.native.stop="clearSingleSelect"></Icon>
       <Icon name="unfold"
             :class="[prefixCls + '-arrow']"
-            v-if="!remote"
+            v-if="!remote||showArrow"
             ref="arrowb"></Icon>
     </div>
     <transition :name="transitionName">
@@ -100,6 +101,7 @@
                 :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>
           </div>
           <div v-if="isBlock"
+               id="blockWrapper"
                v-show="(!notFound && !remote) || (remote && !notFound)"
                :class="[prefixCls + '-dropdown-list']"
                :style="listStyle"
@@ -346,6 +348,25 @@ export default {
     showTotalNum:{
       type:Boolean,
       default:false,
+    },
+    //一直显示arrow图标，包括远程搜索时
+    showArrow:{
+      type:Boolean,
+      default:false,
+    },
+    showValue: {
+        type: Boolean,
+        default: false
+    },
+    accuFilter:{
+        type: Boolean,
+        default: false
+      },
+    // 需求 148437 特殊属性
+    // 远程搜索不需要执行 query
+    remoteNoQuery: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -651,6 +672,10 @@ export default {
     hideMenu() {
       this.visible = false
       if(!window.isO45){
+        if (this.optionInstances.length > 0) {
+          this.$refs.list && (this.$refs.list.scrollTop = 0);
+          this.optionInstances[0].$refs.table.changeHover(this.focusIndex - 1, false)
+        }
         this.focusIndex = this.focusInit
       }
 
@@ -1012,6 +1037,11 @@ export default {
               }
             } else {
               this.selectBlockMultiple(this.focusValue)
+            }
+            if(this.filterable){
+              this.$nextTick(()=>{
+                this.$refs.input.focus()
+              })
             }
             return
           }
@@ -1494,29 +1524,30 @@ export default {
           if (!this.visible && val) this.visible = true;
           this.remoteMethod(val)
           this.$emit('on-query-change', val)
-          this.broadcastQuery(val)
+          if (!this.remoteNoQuery) {
+            this.broadcastQuery(val)
+          }
         }
         this.findChild(child => {
           child.isFocus = false
         })
       } else {
+        if (!this.isBlock) {
+          if (this.filterable && val) {
+            let focusIndex = this.focusIndex
+            this.$nextTick(() => {
+              this.findChild(child => {
+                if (focusIndex > 0)
+                  child.$refs.table.changeHover(focusIndex - 1, false)
+                this.focusIndex = this.focusInit
+              })
+            })
+          }
+        }
         if (!this.selectToChangeQuery) {
           if (!this.visible && val) this.visible = true;
           this.$emit('on-query-change', val)
           this.broadcastQuery(val)
-        }
-
-        if (!this.isBlock) {
-          if (this.filterable && val) {
-            this.$nextTick(() => {
-              this.findChild(child => {
-                if (this.focusIndex > 0)
-                  child.$refs.table.changeHover(this.focusIndex - 1, false)
-                this.focusIndex = 1
-                child.$refs.table.changeHover(this.focusIndex - 1, true)
-              })
-            })
-          }
         }
       }
 

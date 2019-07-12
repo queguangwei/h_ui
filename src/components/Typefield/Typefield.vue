@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!hidden" :class="clazz">
+  <div v-if="!hidden" :class="clazz" @mouseover="hover" @mouseout="out" ref="reference">
     <div :class="[prefixCls + '-group-prepend']" v-if="prepend"><slot name="prepend"></slot></div>
     <input
       :class="classes"
@@ -13,17 +13,25 @@
       @change="valChange"
       @focus="focusValue($event)"
       ref="input">
-    <transition name="label-fade">
-      <div v-show="tipShow" :class="tipzz">{{bigNum}}</div>
-    </transition>
     <div :class="[prefixCls + '-group-append']" v-if="append"><slot name="append"></slot></div>
+    <transition name="label-fade">
+      <template v-if="!transfer">
+        <div v-show="tipShow" :class="tipzz">{{bigNum}}</div>
+      </template>
+      <template v-if="transfer">
+        <Drop v-show="tipShow" :data-transfer="true" v-transfer-dom ref="drop" :class="tipzz">
+          {{bigNum}}
+        </Drop>
+      </template>
+    </transition>
   </div>
 </template>
 <script>
 import {oneOf,formatnumber} from '../../util/tools'
 import Emitter from '../../mixins/emitter';
 import Locale from '../../mixins/locale';
-
+import Drop from '../Select/Dropdown.vue'
+import TransferDom from '../../directives/transfer-dom';
 Number.prototype.toFixedSelf = function (n) {
   if (n > 20 || n < 0) {
       throw new RangeError('toFixed() digits argument must be between 0 and 20');
@@ -70,6 +78,8 @@ Number.prototype.toFixedSelf = function (n) {
 const prefixCls = 'h-typefield';
 export default {
   name: 'Typefield',
+  directives: { TransferDom },
+  components:{Drop},
   data(){
     return {
       prefixCls:prefixCls,
@@ -162,6 +172,14 @@ export default {
     nonNegative: {
       type: Boolean,
       default: false
+    },
+    hoverTips:{
+      type: Boolean,
+      default: false
+    },
+    transfer:{
+      type:Boolean,
+      default:false,
     }
   },
   computed: {
@@ -205,6 +223,14 @@ export default {
     },
     inputValue(val){
       this.viewValue=this.changeTipsVal(val)
+    },
+    tipShow(val){
+      if (val&&this.transfer) {
+          this.$refs.drop.update();
+      } 
+      // else {
+      //     this.$refs.drop.destroy();
+      // }
     }
   },
   mounted () {
@@ -218,6 +244,7 @@ export default {
     // keyup,focus,blur
     blurValue (e) {
       this.havefocused = false;
+      this.focused = false;
       if (this.type=='money') {
         this.tipShow=false;
       }
@@ -278,7 +305,7 @@ export default {
       if (this.type == "cardNo") {
         this.inputValue = this.inputValue?String(this.inputValue).replace(/\s+/g,""):'';
       }
-      this.bigShow(this.type,this.bigTips,this.inputValue)
+      this.bigShow(this.type,this.inputValue)
       if(this.focusAllSelect && this.type==='money'){
         this.$nextTick(()=>{
           this.$refs.input.select();
@@ -778,6 +805,20 @@ export default {
       }
       // 失焦的时候才更新v-model绑定值，避免不能输入的问题
       !this.havefocused && this.$emit('input', this.cardFormatValue(formatVal));
+    },
+    hover(){
+      if(!this.hoverTips||!this.value||this.tipShow) return      
+      this.bigShow(this.type,this.value)
+    },
+    out(){
+      if(!this.focused){
+        this.tipShow = false
+      }
+    }
+  },
+  beforeDestroy(){
+    if(this.transfer){
+      this.$refs.drop.destroy();
     }
   }
 }

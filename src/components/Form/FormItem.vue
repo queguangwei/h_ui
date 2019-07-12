@@ -17,7 +17,7 @@
              v-if="isShowError"
              :style="{left: `${msgOffset}px`}">
           <div class="verify-tip-arrow"></div>
-          <div class="verify-tip-inner">{{validateMessage}}</div>
+          <div class="verify-tip-inner" :style="verifyTipStyle" :title="validateMessage">{{validateMessage}}</div>
         </div>
       </transition>
     </div>
@@ -116,6 +116,16 @@ export default {
     msgOffset: {
       type: [Number, String],
       default: 0
+    },
+    // 父子 require 是否不联动
+    strictly: {
+      type: Boolean,
+      default: false
+    },
+    // 设置 margin-left 使用 !important
+    marginLeftForce: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -226,8 +236,11 @@ export default {
       let style = {}
       const labelWidth = this.labelWidth || this.form.labelWidth
       if (labelWidth) {
-        style.marginLeft = `${labelWidth}px`
+        let temp = `${labelWidth}px`
+        if (this.marginLeftForce) temp += '!important'
+        style.marginLeft = temp
       }
+
       return style
     },
     isShowError() {
@@ -246,6 +259,11 @@ export default {
     },
     isNotChecked() {
       return this.form.isCheck ? false : true
+    },
+    verifyTipStyle(){
+       let style={}
+       style.maxWidth=(this.$children[0].$el.clientWidth-15)+"px"
+       return  style
     }
   },
   methods: {
@@ -315,7 +333,7 @@ export default {
         rule => !rule.trigger || rule.trigger.indexOf(trigger) !== -1
       )
     },
-    validate(trigger, callback = function() {}) {
+    validate(trigger, callback = function() {}, value) {
       if (this.isNotChecked) return
       const rules = this.getFilteredRule(trigger)
 
@@ -330,7 +348,8 @@ export default {
       const validator = new AsyncValidator(descriptor)
       let model = {}
 
-      model[this.prop] = this.fieldValue
+      // 允许由事件传值
+      model[this.prop] = value || this.fieldValue
       if (typeOf(this.fieldValue) == 'array' && this.fieldValue.length == 2) {
         if (this.fieldValue[0] == '' && this.fieldValue[1] == '')
           model[this.prop] = []
@@ -386,16 +405,16 @@ export default {
 
       if (cb) cb()
     },
-    onFieldBlur() {
-      this.validate('blur')
+    onFieldBlur(val = '') {
+      this.validate('blur', () => {}, val)
     },
-    onFieldChange() {
+    onFieldChange(val = '') {
       if (this.validateDisabled) {
         this.validateDisabled = false
         return
       }
       if (this.isOnlyBlurRequire) return
-      this.validate('change')
+      this.validate('change', () => {}, val)
     },
     commonRule(str) {
       let rules = this.getRules()
@@ -411,7 +430,7 @@ export default {
         if (str === 'ruleChange' && !this.isRequired) {
           this.validateState = ''
           let parentFormItem = findComponentParent(this, 'FormItem')
-          if (parentFormItem) {
+          if (parentFormItem && !parentFormItem.strictly) {
             parentFormItem.isRequired = this.isRequired
           }
         }
@@ -465,7 +484,7 @@ export default {
       }
       // 组合formItem时，将自身requiredIcon隐藏，同时，将父元素的formItem的图标显示
       let parentFormItem = findComponentParent(this, 'FormItem')
-      if (parentFormItem && this.isRequired) {
+      if (parentFormItem && this.isRequired && !parentFormItem.strictly) {
         parentFormItem.isRequired = true
         this.isRequired = false
       }

@@ -2,7 +2,7 @@
   <div>
     <h2>基本用法</h2>
     <p>需要配合 DropdownMenu 和 DropdownItem 两个组件来使用，并且给列表设置具名 slot 为 list</p>
-    <h-dropdown @on-click="click" @on-visible-change="tog">
+    <h-dropdown @on-click="click" @on-visible-change="tog" transfer>
       <a href="javascript:void(0)">
         下拉菜单
         <h-icon name="unfold"></h-icon>
@@ -15,7 +15,7 @@
           <h-dropdown-item divided>北京烤鸭</h-dropdown-item>
       </h-dropdown-menu>
     </h-dropdown>
-    <h-dropdown style="margin-left: 20px">
+    <!-- <h-dropdown style="margin-left: 20px">
       <h-button type="primary">
           下拉菜单
           <h-icon name="unfold"></h-icon>
@@ -134,7 +134,7 @@
         <h-dropdown-item>冰糖葫芦</h-dropdown-item>
       </h-dropdown-menu>
     </h-dropdown>
-    <br>
+    <br> -->
     <br>
     <br>
     <br>

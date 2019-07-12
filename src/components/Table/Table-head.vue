@@ -22,11 +22,11 @@
             <template v-if="column.type === 'expand'"></template>
             <template v-else-if="column.type === 'selection'">
               <render-header v-if="column.renderHeader" :render="column.renderHeader" :column="column" :index="index"></render-header>
-              <Checkbox v-else-if="!column.title" size="large" @mousedown.native.stop="handleClick" :value="isSelectAll" @on-change="selectAll"></Checkbox>
-              <span v-else>{{column.title}}</span>
+              <Checkbox class="span-cell" v-else-if="!column.title" size="large" @mousedown.native.stop="handleClick" :value="isSelectAll" @on-change="selectAll"></Checkbox>
+              <span v-else class="span-cell">{{column.title}}</span>
             </template>
             <template v-else>
-              <span v-if="!column.renderHeader" @click="handleSortByHead(index)" :title="column.headerTooltip ? column.title : ''">{{ column.title || '#' }}</span>
+              <span class="span-cell" v-if="!column.renderHeader" @click="handleSortByHead(index)" :title="column.headerTooltip ? column.title : ''">{{ column.title || '#' }}</span>
               <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
             </template>
             <template>
@@ -239,8 +239,14 @@ export default {
         const columnEl = this.$el.querySelector(`th.h-ui-${column.key}`);
         const columnRect = columnEl.getBoundingClientRect();
         const minLeft = columnRect.left - tableLeft + this.minDragWidth;
-
-        let lastWidth =this.findObj(event,"TR").lastChild.offsetWidth;
+        let lastInx = null
+        for(var i = this.columns.length-1;i>=0;i--){
+          if(this.columns[i].fixed!='right'){
+            lastInx = i
+            break;
+          }
+        }
+        let lastWidth =this.findObj(event,"TR").children[lastInx].offsetWidth;
         let tableWidth = this.$el.parentElement.offsetWidth-1;
         let headWidth = this.$el.offsetWidth;
         addClass(columnEl, 'noclick');
@@ -285,10 +291,10 @@ export default {
                 lastWidth = lastWidth-dragWidth;
               }
             }
-            if (table.bodyHeight !== 0) {
+            if (table.bodyHeight !== 0 && lastInx==this.columns.length) {
               lastWidth = lastWidth - getScrollBarSize();
             }
-            _this.$emit('on-change-width', columnWidth, column.key,lastWidth);
+            _this.$emit('on-change-width', columnWidth, column.key,lastWidth,lastInx);
 
             document.body.style.cursor = '';
             _this.dragging = false;
