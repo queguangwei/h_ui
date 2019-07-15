@@ -8,7 +8,8 @@
               :enableCtxMenu="false"
               @on-click="handleCellClick"
               @on-dblclick="handleCellDblClick"
-              @on-select="handleCellSelect">
+              @on-select="handleCellSelect"
+              @on-panel-change="handlePanelChange">
       <slot slot="header"
             name="header">
         <div :class="[`${prefixCls}-header`]">
@@ -136,6 +137,10 @@ export default {
     }
   },
   methods: {
+    /******************** 提供对外调用：开始 ********************/
+    /**
+     * 跳转到今日所在年月
+     */
     jumpToday() {
       this.curYear = new Date().getFullYear()
       this.curMonth = new Date().getMonth() + 1
@@ -162,6 +167,7 @@ export default {
     nextYear() {
       this.curYear++
     },
+    /******************** 提供对外调用：结束 ********************/
     dateStr(date) {
       return date
         ? `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`
@@ -289,6 +295,9 @@ export default {
     },
     handleCellSelect(month, date) {
       this.$emit('on-select', month, date)
+    },
+    handlePanelChange(newDate, oldDate) {
+      this.$emit('on-panel-change', newDate, oldDate);
     },
     calcPopoverLength(events) {
       return  events.filter(e => !e.hidden).length
