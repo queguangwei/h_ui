@@ -34,6 +34,16 @@ $selecttree-prefix-cls:  "#{$css-prefix}selectTree";
           display: inline-block;
       }
     }
+    .#{$css-prefix}tag {
+      position: relative;
+      white-space: nowrap;
+      max-width: 80%;
+      text-overflow: ellipsis;
+      padding-left: $select-tag-padding-left;
+      margin-left:$select-tag-margin-left;
+      background: $select-tag-background !important;
+      border: 1px solid $border-color-split !important;  
+    }
   }
   &-show-clear &-selection:hover .#{$selecttree-prefix-cls}-arrow:nth-of-type(2) {
     display: none;
