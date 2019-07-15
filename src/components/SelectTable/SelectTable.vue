@@ -672,6 +672,10 @@ export default {
     hideMenu() {
       this.visible = false
       if(!window.isO45){
+        if (this.optionInstances.length > 0) {
+          this.$refs.list && (this.$refs.list.scrollTop = 0);
+          this.optionInstances[0].$refs.table.changeHover(this.focusIndex - 1, false)
+        }
         this.focusIndex = this.focusInit
       }
 
@@ -1528,23 +1532,22 @@ export default {
           child.isFocus = false
         })
       } else {
+        if (!this.isBlock) {
+          if (this.filterable && val) {
+            let focusIndex = this.focusIndex
+            this.$nextTick(() => {
+              this.findChild(child => {
+                if (focusIndex > 0)
+                  child.$refs.table.changeHover(focusIndex - 1, false)
+                this.focusIndex = this.focusInit
+              })
+            })
+          }
+        }
         if (!this.selectToChangeQuery) {
           if (!this.visible && val) this.visible = true;
           this.$emit('on-query-change', val)
           this.broadcastQuery(val)
-        }
-
-        if (!this.isBlock) {
-          if (this.filterable && val) {
-            this.$nextTick(() => {
-              this.findChild(child => {
-                if (this.focusIndex > 0)
-                  child.$refs.table.changeHover(this.focusIndex - 1, false)
-                this.focusIndex = 1
-                child.$refs.table.changeHover(this.focusIndex - 1, true)
-              })
-            })
-          }
         }
       }
 
