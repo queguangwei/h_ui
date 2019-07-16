@@ -150,6 +150,16 @@ export default {
           Math.min(currentDate.getDate(), lastDate)
         )
       }
+    },
+    currentDate(newDate, oldDate) {
+      let newYear = newDate.getFullYear();
+      let newMonth = newDate.getMonth();
+      let oldYear = oldDate.getFullYear();
+      let oldMonth = oldDate.getMonth();
+
+      if (newYear !== oldYear || newMonth !== oldMonth) {
+        this.$emit("on-panel-change", new Date(newYear, newMonth, 1), new Date(oldYear, oldMonth, 1));
+      }
     }
   },
   methods: {
