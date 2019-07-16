@@ -1,5 +1,6 @@
 <template>
   <div :class="classes">
+    {{viewValue}}
     <slot></slot>
   </div>
 </template>
@@ -129,6 +130,7 @@
         this.updateValue();
       },
       currentValue(val){
+        // debugger
         if (this.childrens) {
           let label=''
           this.childrens.forEach(child => {
