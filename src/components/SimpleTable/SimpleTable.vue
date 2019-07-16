@@ -131,9 +131,9 @@
           </tbody>
         </table>
       </div>
-      <div :class="[prefixCls + '-fixed']"
+      <div v-if="isLeftFixed||isRightFixed"
+           :class="fixedCls"
            :style="fixedTableStyle"
-           v-if="isLeftFixed"
            ref="leftF">
         <div :class="fixedHeaderClasses">
           <table cellspacing="0"
@@ -150,9 +150,9 @@
               <tr>
                 <th v-for="(column, index) in leftFixedColumns"
                     :key="index"
-                    v-on:mousedown="mousedown($event,column,index)"
-                    v-on:mouseout="mouseout($event,column,index)"
-                    v-on:mousemove="mousemove($event,column,index)"
+                    v-on:mousedown="mousedown($event,column,index,'left')"
+                    v-on:mouseout="mouseout($event,column,index,'left')"
+                    v-on:mousemove="mousemove($event,column,index,'left')"
                     :class="alignCls(column,{},'left')">
                   <table-cell :column="column"
                               :index="index"
@@ -178,10 +178,9 @@
             <table cellspacing="0"
                    cellpadding="0"
                    border="0"
-                   :style="tableStyle"
-                   ref="tbody">
+                   :style="tableStyle">
               <colgroup>
-                <col v-for="(column, index) in cloneColumns"
+                <col v-for="(column, index) in leftFixedColumns"
                      :width="setCellWidth(column, index, false)"
                      :key="index">
               </colgroup>
@@ -196,7 +195,7 @@
                             @click.right.native.prevent.stop="handleRightClick($event,row._index,index)"
                             @click.left.native="clickCurrentRowTr($event,row._index,index)"
                             @dblclick.native.stop="dblclickCurrentRowTr(row._index,index)">
-                    <td v-for="column in cloneColumns"
+                    <td v-for="column in leftFixedColumns"
                         :class="alignCls(column, row,'left')"
                         :data-index="row._index+1"
                         :key="column._index">
@@ -242,8 +241,7 @@
         <table cellspacing="0"
                cellpadding="0"
                border="0"
-               :style="tableStyle"
-               ref="tbody">
+               :style="tableStyle">
           <colgroup>
             <col v-for="(column, index) in cloneColumns"
                  :width="setCellWidth(column, index, false)"
@@ -255,7 +253,7 @@
                         :key="row._rowKey"
                         :prefix-cls="prefixCls">
                 <td v-for="column in cloneColumns"
-                    :class="alignCls(column, row)"
+                    :class="alignCls(column, row,'',true)"
                     :key="column._index">
                   <div :class="classesTd(column)">
                     <span v-if="(column.type==='index'||column.type==='selection')&&column._index==0">汇总</span>
@@ -279,6 +277,7 @@
       <div class="h-table__column-move-proxy h-table-cell"
            ref="moveProxy"
            v-show="moveProxyVisible"> </div>
+      <div :class="[prefixCls + '-fixed-right-patch']" :style="fixedRightPatchStyle" v-if="isRightFixed&&showScroll" ref="rightPatch"></div>
     </div>
     <Spin fix
           size="large"
@@ -533,6 +532,12 @@ export default {
     }
   },
   computed: {
+    fixedCls(){
+      return {
+        [prefixCls + '-fixed']:this.isLeftFixed,
+        [prefixCls + '-fixed-right']:this.isRightFixed,
+      }
+    },
     summationStyle() {
       return {
         marginLeft: `${0 - this.sumMarginLeft}px`
@@ -681,29 +686,30 @@ export default {
       return style
     },
     fixedTableStyle() {
-      let style = {}
-      let width = 0
-      this.leftFixedColumns.forEach(col => {
-        if (col.fixed && col.fixed === 'left') width += col._width
-      })
-      style.width = `${width}px`
-      return style
-    },
-    fixedRightTableStyle() {
-      let style = {}
-      let width = 0
-      this.rightFixedColumns.forEach(col => {
-        if (col.fixed && col.fixed === 'right') width += col._width
-      })
-      if (!!this.height && this.height < this.bodyRealHeight) {
-        style.marginRight = `${this.scrollBarWidth}px`
-        this.showScroll = true
-      } else {
-        width = width == 0 ? 0 : width + this.scrollBarWidth
+      if(this.isLeftFixed){
+        let style = {}
+        let width = 0
+        this.leftFixedColumns.forEach(col => {
+          if (col.fixed && col.fixed === 'left') width += col._width
+        })
+        style.width = `${width}px`
+        return style
       }
-      style.width = `${width}px`
-
-      return style
+      if(this.isRightFixed){
+        let style = {}
+        let width = 0
+        this.leftFixedColumns.forEach(col => {
+          if (col.fixed && col.fixed === 'right') width += col._width
+        })
+        if (!!this.height && this.height < this.data.length*this.itemHeight+this.headerRealHeight) {
+          style.marginRight = `${this.scrollBarWidth}px`
+          this.showScroll = true
+        } else {
+          width = width==0?0:width;
+        }
+        style.width = `${width}px`
+        return style
+      }
     },
     fixedRightPatchStyle() {
       let style = {}
@@ -747,22 +753,36 @@ export default {
       return style
     },
     leftFixedColumns() {
-      let left = []
-      let other = []
-      this.cloneColumns.forEach(col => {
-        if (col.fixed && col.fixed === 'left') {
-          left.push(col)
-        } else {
-          other.push(col)
-        }
-      })
-      return left.concat(other)
+      if(this.isLeftFixed){
+        let left = []
+        let other = []
+        this.cloneColumns.forEach(col => {
+          if (col.fixed && col.fixed === 'left') {
+            left.push(col)
+          } else {
+            other.push(col)
+          }
+        })
+        return left.concat(other)
+      }
+      if(this.isRightFixed){
+        let right = [];
+        let other = [];
+        this.cloneColumns.forEach((col) => {
+          if (col.fixed && col.fixed === 'right') {
+            right.push(col);
+          } else {
+            other.push(col);
+          }
+        });
+        return right.concat(other);
+      }
     },
     isLeftFixed() {
       return this.columns.some(col => col.fixed && col.fixed === 'left')
     },
     isRightFixed() {
-      return this.columns.some(col => col.fixed && col.fixed === 'right')
+      return this.columns.some(col => col.fixed && col.fixed === 'right')&&!this.isLeftFixed
     },
     contentHeight() {
       return this.rebuildData.length * this.itemHeight
@@ -882,8 +902,8 @@ export default {
         }
       })
     },
-    mousedown(event, column, index) {
-      if (this.$isServer) return
+    mousedown(event, column, index,isLeft) {
+      if (this.$isServer||(isLeft&&this.isRightFixed)) return
       if (!column) return
       if (!this.canDrag && !this.canMove) return
       let _this = this
@@ -946,7 +966,7 @@ export default {
                 lastWidth = lastWidth - dragWidth
               }
             }
-            if (table.bodyHeight !== 0) {
+            if (table.bodyHeight !== 0&&!this.isRightFixed) {
               lastWidth = lastWidth - getScrollBarSize()
             }
             _this.changeWidth(columnWidth, column.key, lastWidth)
@@ -1057,8 +1077,8 @@ export default {
         document.addEventListener('mouseup', handleMouseUp)
       }
     },
-    mousemove(event, column, index) {
-      if (!this.canDrag || !column) return
+    mousemove(event, column, index,isLeft) {
+      if (!this.canDrag || !column||(isLeft&&this.isRightFixed)) return
       if (this.splitIndex && column.type == 'index') return
       if (column.children && column.children.length > 0) return
       let target = this.findObj(event, 'TH')
@@ -1070,8 +1090,8 @@ export default {
         this.moveMove(event, target, column)
       }
     },
-    moveDrag(event, target, column) {
-      if (!this.dragging) {
+    moveDrag(event, target, column,isLeft) {
+      if (!this.dragging||(isLeft&&this.isRightFixed)) {
         let rect = target.getBoundingClientRect()
         const bodyStyle = document.body.style
         if (rect.width > 12 && rect.right - event.pageX < 8) {
@@ -1226,7 +1246,7 @@ export default {
 
           // get table real height,for fixed when set height prop,but height < table's height,show scrollBarWidth
           this.bodyRealHeight =
-            parseInt(getStyle(this.$refs.tbody.$el, 'height')) || 0
+            parseInt(getStyle(this.$refs.tbody, 'height')) || 0
           this.headerRealHeight =
             parseInt(getStyle(this.$refs.header, 'height')) || 0
           this.initWidth = parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0
@@ -1674,7 +1694,7 @@ export default {
         this.curPageFirstIndex = Math.floor(scrolltop / this.itemHeight)
         this.$refs.header.scrollLeft = event.target.scrollLeft
         if (this.isSummation) this.sumMarginLeft = event.target.scrollLeft
-        if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = scrolltop
+        if (this.$refs.fixedBody) this.$refs.fixedBody.scrollTop = scrolltop
         this.buttomNum = getBarBottomS(
           event.target,
           this.bodyHeight,
@@ -1707,7 +1727,7 @@ export default {
         this.curPageFirstIndex = Math.floor(scrolltop / this.itemHeight)
         this.$refs.header.scrollLeft = event.target.scrollLeft
         if (this.isSummation) this.sumMarginLeft = event.target.scrollLeft
-        if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = scrolltop
+        if (this.$refs.fixedBody) this.$refs.fixedBody.scrollTop = scrolltop
         this.buttomNum = getBarBottomS(
           event.target,
           this.bodyHeight,
@@ -1765,7 +1785,6 @@ export default {
       this.start = Math.floor(scrollTop / this.itemHeight)
       this.end = this.start + this.visibleCount
       this.visibleData = this.rebuildData.slice(this.start, this.end)
-
       // let curtop =  this.start*this.itemHeight;
       // this.$refs.content.style.transform = `translate3d(0, ${curtop}px, 0)`;
       // if(this.$refs.leftContent){
@@ -2215,6 +2234,9 @@ export default {
           if (this.$refs.summation) {
             this.$refs.summation.style.marginLeft = 0
           }
+        }
+        if(this.$refs.body.scrollTop > val.length*this.itemHeight){
+          this.$refs.body.scrollTop = val.length*this.itemHeight-this.height
         }
         this.updateVisibleData()
         this.handleResize()
