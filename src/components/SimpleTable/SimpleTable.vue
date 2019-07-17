@@ -1414,6 +1414,8 @@ export default {
       }
     },
     clickCurrentRow(_index,curIndex) {
+      this.baseInx = curIndex
+      this.offsetInx = curIndex
       if (!this.rowSelect) {
         this.focusIndex = curIndex
         this.highlightCurrentRow(_index)
