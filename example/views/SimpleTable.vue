@@ -60,10 +60,9 @@ import TexpandRow from './Texpand-row.vue'
 let jsonData=[];
 let tData =require('../assets/aa.json');
 for (let i = 0; i < 1; i++) {
-      jsonData =tData.slice(0,500);
+      jsonData =tData.slice(0,5);
     }
 export default {
-
   components:{TexpandRow},
   data () {
     return {
@@ -530,6 +529,7 @@ export default {
       console.log('你点击了某一行');
     },
     dblclick(e,i,j){
+      debugger
       console.log(e);
       console.log(i);
       console.log(j);
@@ -710,27 +710,26 @@ export default {
           type: 'index',
           align: 'center',
           width:200,
-          ket:"index",
+          key:"index",
           sortable:true,
-          fixed:'left',
+          fixed:'right',
         },
-        // {
-        //   type: 'selection',
-        //   align: 'center',
-        //   key:'select',
-        //   width:200,
-        //   // fixed:'left'
-        // },
+        {
+          type: 'selection',
+          align: 'center',
+          key:'select',
+          width:200,
+          fixed:'right'
+        },
         {
           title: '姓名',
           key: 'fundId',
           width:200,
           sortable:true,
           remote: true,
-          // fixed:'left',
-          renderHeader:(h, params)=>{
-            return h('span','123')
-          },
+          // renderHeader:(h, params)=>{
+          //   return h('span','123')
+          // },
           render:(h, params)=>{
             return h('span',params.row.fundId+' 567')
             // return params.row.fundId+' 123'
@@ -745,11 +744,11 @@ export default {
           sortable:true,
           // fixed:'left',
         },
-        {
-          title: '地址',
-          ellipsis:true,
-          key: 'securityCode',
-        },
+        // {
+        //   title: '地址',
+        //   ellipsis:true,
+        //   key: 'securityCode',
+        // },
         // {
         //   title: '地址1',
         //   key: 'securityName',
@@ -758,17 +757,17 @@ export default {
         // },
         // {
         //   title: '年龄',
-        //   key: 'tradeDate',
+        //   key: 'tradeDate1',
         //   minWidth:200,
         //   sortable:true,
         //   // fixed:'left',
         // },
-        // {
-        //   title: '地址',
-        //   ellipsis:true,
-        //   minWidth:200,
-        //   key: 'securityCode',
-        // },
+        {
+          title: '地址',
+          ellipsis:true,
+          minWidth:200,
+          key: 'securityCode1',
+        },
         // {
         //   title: '地址1',
         //   key: 'securityName',

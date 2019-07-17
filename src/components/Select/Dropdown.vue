@@ -80,11 +80,11 @@ export default {
 			}
 		},
 		update () {
-          if (isServer) return;
+            if (isServer) return;
 			if (this.popper) {
 				this.$nextTick(() => {
-          // select 组件 placement 改变后同步改变 popper 实例
-          this.popper._options.placement = this.widthAdaption ? this.placement.indexOf('top') >= 0 ? 'top-start' : 'bottom-start' : this.placement
+                // select 组件 placement 改变后同步改变 popper 实例
+                this.popper._options.placement = this.widthAdaption ? this.placement.indexOf('top') >= 0 ? 'top-start' : 'bottom-start' : this.placement
 					this.popper.update();
 					// 有滚动条时，下拉宽度为内容宽度
 					if (this.widthAdaption) {
@@ -126,7 +126,7 @@ export default {
 				this.width = width
 				this.parentWidth = width
 			}
-    },
+        },
 		destroy () {
 			if (this.popper) {
 				this.resetTransformOrigin(this.popper);
@@ -141,12 +141,12 @@ export default {
 			let placement = popper._popper.getAttribute('x-placement').split('-')[0];
 			let origin = placementMap[placement];
 			popper._popper.style.transformOrigin = `center ${ origin }`;
-    },
-    handleMouseDown() {
-      // TS201903110540
-      // prevent mousedown event from bubbling up and being caught by handlers on document
-      // which were added in directive v-clickoutside
-    }
+		},
+		handleMouseDown() {
+		// TS201903110540
+		// prevent mousedown event from bubbling up and being caught by handlers on document
+		// which were added in directive v-clickoutside
+		}
 	},
 	created () {
 		this.$on('on-update-popper', this.update);

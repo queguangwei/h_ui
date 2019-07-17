@@ -1,31 +1,24 @@
 
 <template>
 <div>
-    <h-table :columns="column" :data="data1"></h-table>
-    <h-page 
-      :total="total" 
-      show-sizer 
-      :page-size-opts="pageSizeOpts" 
-      @on-change="change" 
-      @on-page-size-change="sizeChange"
-      show-total></h-page>
+    <h-simple-table :columns="columns" :data="data1"></h-simple-table>
+    <h-page :total="total" :page-size="pageSize" @on-change="change" show-sizer @on-page-size-change="pageChange"></h-page>
 </div>
 </template>
 <script>
 let tData =require('../assets/aa.json');
-// 封装一个简单的业务组件，dataGird
+// 快速封装简单的业务组件，dataGird
 export default{
     data () {
         return{
             data1:[],
-            pageSize:10,
+            pageSize:40,
+            page:1,
             total:tData.length,
-            pageSizeOpts:[5,10,20,40],
-            page:1
         }
     },
     props:{
-        column:{
+        columns:{
             type:Array,
             default:()=>{
                 return []
@@ -35,14 +28,16 @@ export default{
     methods:{
         change(num){
             this.page = num
-            this.getData()
         },
         getData(){
-            let start = (this.page-1)*this.pageSize
-            let end = this.page*this.pageSize
-            this.data1=tData.slice(start,end)
+            let _this = this
+            setTimeout(()=>{
+                let end = this.page*this.pageSize
+                let start = end - this.pageSize
+               _this.data1 = tData.slice(start,end) 
+            },1000)
         },
-        sizeChange(num){
+        pageChange(num){
             this.pageSize = num
         }
     },
@@ -50,10 +45,12 @@ export default{
         this.getData()
     },
     watch:{
-       pageSize(){
-           this.page=1
-           this.getData()
-       } 
+        page(){
+            this.getData()
+        },
+        pageSize(){
+            this.getData()
+        }
     }
 }
 </script>
