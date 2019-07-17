@@ -496,8 +496,11 @@ export default {
       realRebuildData: [],
       hideData: {},
       scrollLeft: 0,
-      cellCheckObj: [],
-      curCellCheck: []
+      cellCheckObj: {},
+      curCellCheck: [],
+      hoverIndex:-1,
+      scheduledAnimationFrame: false, // 是否进行动画帧更新visibledata
+      animationFrame: null
     }
   },
   computed: {
@@ -788,19 +791,6 @@ export default {
       return {
         [`${this.prefixCls}-title-stripe`]: _title,
         [`${this.prefixCls}-title-expand`]: row.expand
-      }
-    },
-    // 创建单元格点击的状态保存
-    initCellClickStatus () {
-      if (this.data && this.data.length > 0 && this.columns && this.columns.length > 0) {
-        let cellObj = {}
-        this.columns.forEach(item => {
-          if (item.key) this.$set(cellObj, item.key, false)
-        })
-        // 生成长度为data.length,每项均为cellConstructor对象的数组
-        this.cellCheckObj = Array.apply(null, new Array(this.rebuildData.length)).map(() => {
-          return Object.assign({}, cellObj)
-        })
       }
     },
     // 单元格点击
@@ -1514,23 +1504,57 @@ export default {
       }
     },
     handleBodyScroll (event) {
-      this.privateToScrollTop = false
-      let scrolltop = event.target.scrollTop;
-      this.curPageFirstIndex = Math.floor(scrolltop / this.itemHeight)
-      this.$refs.header.scrollLeft = event.target.scrollLeft
-      this.scrollLeft = this.isLeftFixed ? event.target.scrollLeft : 0
-      if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = scrolltop
-      this.buttomNum = getBarBottomS(event.target, this.bodyHeight, this.contentHeight,this.scrollBarHeight, this.isScrollX);
-      let curtop = Math.floor(scrolltop / this.itemHeight)*this.itemHeight;
+      if (window.requestAnimationFrame) { // 该特性有浏览器限制
+        this.updateVisibleAnimate(event)
+      } else {
+        this.privateToScrollTop = false
+        let scrolltop = event.target.scrollTop;
+        this.curPageFirstIndex = Math.floor(scrolltop / this.itemHeight)
+        this.$refs.header.scrollLeft = event.target.scrollLeft
+        this.scrollLeft = this.isLeftFixed ? event.target.scrollLeft : 0
+        if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = scrolltop
+        this.buttomNum = getBarBottomS(event.target, this.bodyHeight, this.contentHeight,this.scrollBarHeight, this.isScrollX);
+        let curtop = Math.floor(scrolltop / this.itemHeight)*this.itemHeight;
 
-      this.updateVisibleDataDebounce(false)(scrolltop)
-      this.$refs.content.style.transform = `translate3d(0, ${curtop}px, 0)`;
-      if(this.$refs.leftContent){
-        this.$refs.leftContent.style.transform = `translate3d(0, ${curtop}px, 0)`;
+        this.updateVisibleDataDebounce(false)(scrolltop)
+        this.$refs.content.style.transform = `translate3d(0, ${curtop}px, 0)`;
+        if(this.$refs.leftContent){
+          this.$refs.leftContent.style.transform = `translate3d(0, ${curtop}px, 0)`;
+        }
       }
       // setTimeout(()=>{
       //   this.updateVisibleDataDebounce(false)(scrolltop)
       // },0);
+    },
+    /**
+    * @description 使用requestAnimationFrame根据动画帧更新visibleData，原理同setTimeout，更贴近浏览器重绘原理
+    */
+    updateVisibleAnimate (event) {
+      if (this.scheduledAnimationFrame) { return }
+      this.scheduledAnimationFrame = true
+      this.animationFrame = window.requestAnimationFrame((num) => {
+        this.scheduledAnimationFrame = false
+        this.privateToScrollTop = false
+        let scrolltop = event.target.scrollTop
+        this.curPageFirstIndex = Math.floor(scrolltop / this.itemHeight)
+        this.$refs.header.scrollLeft = event.target.scrollLeft
+        if (this.isSummation) this.sumMarginLeft = event.target.scrollLeft
+        if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = scrolltop
+        this.buttomNum = getBarBottomS(
+          event.target,
+          this.bodyHeight,
+          this.contentHeight,
+          this.scrollBarHeight,
+          this.isScrollX
+        )
+        let curtop = Math.floor(scrolltop / this.itemHeight) * this.itemHeight
+        this.updateVisibleData(scrolltop)
+        this.$refs.content.style.transform = `translate3d(0, ${curtop}px, 0)`
+        if (this.$refs.leftContent) {
+          this.$refs.leftContent.style.transform = `translate3d(0, ${curtop}px, 0)`
+        }
+      })
+      
     },
     /**
      * @description 防抖更新，滚动时调用，防止滚动卡顿
@@ -1656,54 +1680,14 @@ export default {
     },
     makeObjData () {
       let data = {}
-      // this.data.forEach((row, index) => {
-      //   const newRow = deepCopy(row);// todo 直接替换
-      //   newRow._isHover = false;
-      //   if (newRow._disabled) {
-      //       newRow._isDisabled = newRow._disabled;
-      //   } else {
-      //       newRow._isDisabled = false;
-      //   }
-      //   if (newRow._checked) {
-      //       newRow._isChecked = newRow._checked;
-      //   } else {
-      //       newRow._isChecked = false;
-      //   }
-      //   if (newRow._highlight) {
-      //       newRow._isHighlight = newRow._highlight;
-      //   } else {
-      //       newRow._isHighlight = false;
-      //   }
-      //   if (newRow.expand) {
-      //       newRow._isExpanded = newRow.expand;
-      //   } else {
-      //       newRow._isExpanded = false;
-      //   }
-      //    // 是否主表
-      //   newRow._isGroup = true
-      //   // 每个子表的序号，主表为0
-      //   newRow._rowIndex = 0 
-      //   newRow.childNum = newRow.item && newRow.item.length > 0 ? newRow.item.length : 0
-      //   data[index] = newRow;
-      //   // 遍历子表
-      //   if (newRow.item && newRow.item.length > 0) {
-      //     newRow.item.forEach((rowItem, itemIndex) => {
-      //       let newRowItem = deepCopy(rowItem)
-      //       newRowItem._isGroup = false
-      //       newRowItem._rowIndex = itemIndex + 1 
-      //       // newRowItem._isExpand = false
-      //       if (newRowItem.expand) {
-      //         newRowItem._isExpanded = newRowItem.expand;
-      //       } else {
-      //         newRowItem._isExpanded = false;
-      //       }
-      //       newRowItem.childNum = null
-      //       data[index] = newRowItem
-      //     })
-      //   }
-      // })
-      // let cellCheckObj = {}
+      let cellObj = {} // 单元格点击状态
+      if (this.columns && this.columns.length > 0 && this.cellClick) {
+        this.columns.forEach(item => {
+          if (item.key) this.$set(cellObj, item.key, false)
+        })
+      }
       if (this.rebuildData && this.rebuildData.length > 0) {
+        let newCellObj = {}
         this.rebuildData.forEach((row, index) => {
           const newRow = deepCopy(row);// todo 直接替换
           newRow._isHover = false;
@@ -1722,8 +1706,10 @@ export default {
           } else {
               newRow._isHighlight = false;
           }
-          data[index] = newRow;
+          data[index] = newRow
+          if (this.cellClick) newCellObj[index] = JSON.parse(JSON.stringify(cellObj))
         })
+        this.cellCheckObj = newCellObj
       }
       return data
     },
@@ -1922,6 +1908,7 @@ export default {
       off(window, 'resize', this.getLeftWidth);
       off(document,'keydown',this.handleKeydown)
       off(document,'keyup', this.handleKeyup);
+      window.cancelAnimationFrame(this.animationFrame)
 
   },
   watch: {
@@ -1948,7 +1935,7 @@ export default {
         handler () {
           // const oldDataLen = this.rebuildData.length;
           this.rebuildData = this.makeData();
-          this.initCellClickStatus()                     
+          // this.initCellClickStatus()                     
           this.objData = this.makeObjData();
           this.updateVisibleData(0);
           this.handleResize();
@@ -1962,7 +1949,7 @@ export default {
       },
       columns: {
         handler () {
-          this.initCellClickStatus()                     
+          // this.initCellClickStatus()                     
           // todo 这里有性能问题，可能是左右固定计算属性影响的
           this.cloneColumns = this.makeColumns();
           // this.rebuildData = this.makeData();
