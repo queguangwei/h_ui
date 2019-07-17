@@ -5,19 +5,13 @@
       <span v-else>{{column.title}}</span>
     </template>
     <template v-else>
-      <span v-if="!column.renderHeader">{{ column.title || '#' }}</span>
+      <span v-if="!column.renderHeader">{{ column.title || column.title == '' ? column.title : '#' }}</span>
       <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
     </template>
-    <span :class="[prefixCls + '-sort']" v-if="column.sortable&&!useNewSort">
+    <span :class="[prefixCls + '-sort']" v-if="column.sortable">
       <Icon name="android-arrow-dropup" :class="{on: column._sortType === 'asc'}" @on-click="handleSort(index, 'asc')" @mousedown.native.stop="handleClick"></Icon>
       <Icon name="android-arrow-dropdo" :class="{on: column._sortType === 'desc'}" @on-click="handleSort(index, 'desc')" @mousedown.native.stop="handleClick"></Icon>
-    </span> 
-    <div v-if="column.sortable&&useNewSort"  :class="newsortWrapClass" @click="handleSortByHead(index)">
-      <span :class="[prefixCls + '-sortnew']" >
-        <Icon name="android-arrow-dropup" :class="{on: column._sortType === 'asc'}"  ></Icon>
-        <Icon name="android-arrow-dropdo" :class="{on: column._sortType === 'desc'}" ></Icon>
-      </span>
-    </div>
+    </span>
   </div>
 </template>
 <script>
@@ -40,14 +34,6 @@ import renderHeader from './header';
           `${this.prefixCls}-cell`,
         ];
       },
-      useNewSort(){
-         return this.$parent.newSort
-      },
-      newsortWrapClass(){
-         return [
-          `${this.prefixCls}-newsort-wrap`,
-        ];
-      },
       checkboxSize() {
         return this.column.checkboxSize ? this.column.checkboxSize : 'large'
       }
@@ -60,9 +46,6 @@ import renderHeader from './header';
       },
       handleSort(index,type){
         this.$parent.handleSort(index,type);
-      },
-      handleSortByHead(index){
-        this.$parent.handleSortByHead(index);
       }
     },
   };
