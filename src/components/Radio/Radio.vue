@@ -65,7 +65,7 @@
         group: false,
         parent: findComponentsUpward(this, 'RadioGroup'),
         isFocus: false,
-        viewValue: this.value,
+        viewValue: this.text||this.value,
       };
     },
     computed: {
