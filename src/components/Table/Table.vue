@@ -568,11 +568,11 @@ export default {
           height = height + this.scrollBarWidth-1;
         }
         // height不存在时bodyheight为0
-        if (this.height){
+        if (this.height&&(this.$refs.body.clientWidth!=0&&this.$refs.body.clientHeight!=0)){
           style.height = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`;
            if(this.fixedAutoHeight){
              if(this.bodyRealHeight<height){
-                style.height=`${this.bodyRealHeight}px`;
+                  style.height=`${this.bodyRealHeight}px`;
              }
            }
           }
@@ -724,8 +724,12 @@ export default {
       this.tableWidth=totalWidth+1;
       if (this.cloneColumns[lastInx].fixed!='right' && this.tableWidth<this.initWidth) {
         this.tableWidth = this.initWidth-1;
-      }
+      }   
       this.$emit('on-drag', width, key);
+      this.$nextTick(()=>{
+         this.fixedBodyClientHeight=-1;
+         this.bodyRealHeight=parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
+      })
     },
     handleMouseLeave() {
     },

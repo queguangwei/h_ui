@@ -38,7 +38,7 @@
                   v-on:mousedown="mousedown($event,column,index)"
                   v-on:mouseout="mouseout($event,column,index)"
                   v-on:mousemove="mousemove($event,column,index)"
-                  :class="alignCls(column)">
+                  :class="alignCls(column)"   style="position:relative">
                 <table-cell :column="column"
                             :index="index"
                             :checked="isSelectAll"
@@ -131,7 +131,7 @@
           </tbody>
         </table>
       </div>
-      <div v-if="isLeftFixed||isRightFixed"
+     <div v-if="isLeftFixed||isRightFixed"
            :class="fixedCls"
            :style="fixedTableStyle"
            ref="leftF">
@@ -253,7 +253,7 @@
                         :key="row._rowKey"
                         :prefix-cls="prefixCls">
                 <td v-for="column in cloneColumns"
-                    :class="alignCls(column, row,'',true)"
+                     :class="alignCls(column, row,'',true)"
                     :key="column._index">
                   <div :class="classesTd(column)">
                     <span v-if="(column.type==='index'||column.type==='selection')&&column._index==0">汇总</span>
@@ -277,7 +277,7 @@
       <div class="h-table__column-move-proxy h-table-cell"
            ref="moveProxy"
            v-show="moveProxyVisible"> </div>
-      <div :class="[prefixCls + '-fixed-right-patch']" :style="fixedRightPatchStyle" v-if="isRightFixed&&showScroll" ref="rightPatch"></div>
+           <div :class="[prefixCls + '-fixed-right-patch']" :style="fixedRightPatchStyle" v-if="isRightFixed&&showScroll" ref="rightPatch"></div>
     </div>
     <Spin fix
           size="large"
@@ -476,6 +476,10 @@ export default {
     scrollbarToZero: {
       type: Boolean,
       default: false
+    },
+    newSort:{
+      type:Boolean,
+      default:false
     }
   },
   data() {
@@ -685,7 +689,7 @@ export default {
       style.width = `${width}px`
       return style
     },
-    fixedTableStyle() {
+        fixedTableStyle() {
       if(this.isLeftFixed){
         let style = {}
         let width = 0
@@ -966,7 +970,7 @@ export default {
                 lastWidth = lastWidth - dragWidth
               }
             }
-            if (table.bodyHeight !== 0&&!this.isRightFixed) {
+             if (table.bodyHeight !== 0&&!this.isRightFixed) {
               lastWidth = lastWidth - getScrollBarSize()
             }
             _this.changeWidth(columnWidth, column.key, lastWidth)
@@ -1414,7 +1418,7 @@ export default {
       }
     },
     clickCurrentRow(_index,curIndex) {
-      this.baseInx = curIndex
+       this.baseInx = curIndex
       this.offsetInx = curIndex
       if (!this.rowSelect) {
         this.focusIndex = curIndex
@@ -1696,7 +1700,7 @@ export default {
         this.curPageFirstIndex = Math.floor(scrolltop / this.itemHeight)
         this.$refs.header.scrollLeft = event.target.scrollLeft
         if (this.isSummation) this.sumMarginLeft = event.target.scrollLeft
-        if (this.$refs.fixedBody) this.$refs.fixedBody.scrollTop = scrolltop
+         if (this.$refs.fixedBody) this.$refs.fixedBody.scrollTop = scrolltop
         this.buttomNum = getBarBottomS(
           event.target,
           this.bodyHeight,
@@ -1786,7 +1790,7 @@ export default {
       scrollTop = scrollTop || this.$refs.body.scrollTop
       this.start = Math.floor(scrollTop / this.itemHeight)
       this.end = this.start + this.visibleCount
-      this.visibleData = this.rebuildData.slice(this.start, this.end)
+      this.visibleData = this.rebuildData.slice(this.start, this.end) 
       // let curtop =  this.start*this.itemHeight;
       // this.$refs.content.style.transform = `translate3d(0, ${curtop}px, 0)`;
       // if(this.$refs.leftContent){
@@ -2237,7 +2241,7 @@ export default {
             this.$refs.summation.style.marginLeft = 0
           }
         }
-        if(this.$refs.body.scrollTop > val.length*this.itemHeight){
+         if(this.$refs.body.scrollTop > val.length*this.itemHeight){
           this.$refs.body.scrollTop = val.length*this.itemHeight-this.height
         }
         this.updateVisibleData()
