@@ -147,7 +147,6 @@
             },
             handleClick (type, cell) {
                 if (cell.disabled) return;
-                debugger
                 const data = {};
                 data[type] = cell.text;
                 this.$emit('on-change', data);

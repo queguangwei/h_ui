@@ -703,23 +703,22 @@ export default {
     rowClsName (index) {
       return this.rowClassName(this.data[index], index);
     },
-    changeWidth(width,key,lastWidth){
+    changeWidth(width,key,lastWidth,lastInx){
       var that = this;
-      var lastInx = this.cloneColumns.length-1;
       var totalWidth=0;
       this.cloneColumns.forEach((col,i)=>{
         if (col.key==key) {
           that.$set(col,"width",width);
           that.$set(col,"_width",width);
         }
-        if (i == lastInx && this.cloneColumns[lastInx].fixed!='right') {
+        if (i == lastInx) {
           that.$set(col,"width",lastWidth);
           that.$set(col,"_width",lastWidth);
         }
         var colWidth = col.width||col._width
         totalWidth = totalWidth+ colWidth;
       });
-      if (this.bodyHeight !== 0) {
+      if (this.bodyHeight !== 0 && lastInx==this.cloneColumns.length) {
         totalWidth = totalWidth + this.scrollBarWidth;
       }
       this.tableWidth=totalWidth+1;

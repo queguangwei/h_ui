@@ -186,8 +186,6 @@ export default {
                   h('checkbox', {
                       on: {
                           'on-change': (value) => {
-
-                              // this.$refs.table.selectAll(true)
                           }
                       }
                   }),
@@ -206,7 +204,7 @@ export default {
                   })
               ])
             },
-             fixed: "left",
+            fixed: "left",
             //  filters: [
             //    {
             //        label: '大于4000',
@@ -808,6 +806,7 @@ export default {
         {
           type: 'index',
           width: 60,
+          key:"index",
           align: 'center',
           fixed: "left"
         },

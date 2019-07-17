@@ -1489,7 +1489,8 @@
         })
         if (this.filterable&&!this.remote&&!this.selectToChangeQuery&&!this.notAutoFocus) {
           this.$nextTick(()=>{
-            this.focusIndex = 1;
+            // 当没有选项的时候focusIndex应为0
+            this.focusIndex = this.options.length > 0 || this.$refs.createdOption ? 1 : 0;
             if (typeof this.$refs.createdOption !== 'undefined') {
               this.$refs.createdOption.isFocus = true;
               this.findChild(child => {
