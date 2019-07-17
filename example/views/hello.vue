@@ -1,7 +1,7 @@
 
 <template>
 <div>
-    <h-table :columns="columns" :data="data1"></h-table>
+    <h-simple-table :columns="columns" :data="data1"></h-simple-table>
     <h-page :total="total" :page-size="pageSize" @on-change="change" show-sizer @on-page-size-change="pageChange"></h-page>
 </div>
 </template>
@@ -12,7 +12,7 @@ export default{
     data () {
         return{
             data1:[],
-            pageSize:10,
+            pageSize:40,
             page:1,
             total:tData.length,
         }

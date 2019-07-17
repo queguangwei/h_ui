@@ -1,10 +1,7 @@
 import {findInx} from '../../util/tools';
 export default {
     methods: {
-        alignCls (column, row = {},fixed,isSum) {
-            if(fixed=='left'){
-                fixed = this.isRightFixed?'right':fixed
-            }
+        alignCls (column, row = {},fixed) {
             let cellClassName = '';
             if (row.cellClassName && column.key && row.cellClassName[column.key]) {
                 cellClassName = row.cellClassName[column.key];
@@ -18,30 +15,25 @@ export default {
                     [`${this.prefixCls}-head-column-${this.headAlgin}`]: this.headAlgin,
                     [`${this.prefixCls}-body-column-${this.bodyAlgin}`]: this.bodyAlgin,
                     [`${this.prefixCls}-split-index`]: this.splitIndex && column.type=='index',
-                    // [`${this.prefixCls}-hidden`]: !this.isSummation&&((fixed === 'left' && column.fixed !== 'left') || (fixed === 'right' && column.fixed !== 'right') || (!fixed && column.fixed && (column.fixed === 'left' || column.fixed === 'right')))
-                    [`${this.prefixCls}-hidden`]: !isSum&&((fixed === 'left' && column.fixed !== 'left') || (fixed === 'right' && column.fixed !== 'right') || (!fixed && column.fixed && (column.fixed === 'left' || column.fixed === 'right')))
+                    [`${this.prefixCls}-cell-check`]: this.cellClick && !row._isGroup && this.cellCheckObj[row._index] && this.cellCheckObj[row._index][column.key] ? true : false
                 }
             ];
         
         },
         setCellWidth (column, index, top) {
             let width = '';
-            let lastInx = this.cloneColumns.length-1;
-            while(this.cloneColumns[lastInx].fixed=='right'){
-                lastInx--
-            }
             if (column.width) {
                 width = column.width;
             } else if (this.columnsWidth[column._index]) {
                 width = this.columnsWidth[column._index].width;
             }
             // when browser has scrollBar,set a width to resolve scroll position bug
-            if (lastInx === index&& this.bodyHeight !== 0&& width!='') {
-                if(this.tableWidth+1>=this.initWidth-this.scrollBarWidth&&top){
-                    width += this.scrollBarWidth;
-                }else if(this.contentHeight<this.height){
-                    width += this.scrollBarWidth;
-                }
+            if (this.cloneColumns.length === index + 1&& this.bodyHeight !== 0&& width!='') {
+              if(this.tableWidth+1>=this.initWidth-this.scrollBarWidth&&top){
+                  width += this.scrollBarWidth;
+              }else if(this.contentHeight<this.height){
+                  width += this.scrollBarWidth;
+              }
             }
             if (width === '0') width = '';
             return width;
