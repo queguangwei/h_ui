@@ -8,6 +8,37 @@
       @on-dblclick="handleCellDblClick"
       @on-select="handleCellSelect"
     ></h-schedule>
+    <h2>自定义头部</h2>
+    <h-schedule
+      ref="schedule"
+      :events="events"
+      @on-panel-change="handlePanelChange"
+    >
+      <div class="schedule-header" slot="header">
+          <h-button-group>
+            <h-button type="primary"
+                      icon="arrow-l"
+                      title="上一年"
+                      @click="prevYear"></h-button>
+            <h-button type="primary"
+                      icon="return"
+                      title="上一个月"
+                      @click="prevMonth"></h-button>
+            <h-button type="primary"
+                      icon="enter"
+                      title="下一个月"
+                      @click="nextMonth"></h-button>
+            <h-button type="primary"
+                      icon="arrow-r"
+                      title="下一年"
+                      @click="nextYear"></h-button>
+          </h-button-group>
+          <h-button type="primary"
+                    class="schedule-today-btn"
+                    @click="jumpToday">今天</h-button>
+          <h1 class="schedule-date-text">{{curYear}}年 {{curMonth}}月</h1>
+        </div>
+    </h-schedule>
   </div>
 </template>
 
@@ -15,6 +46,8 @@
 export default {
   data() {
     return {
+      curYear: new Date().getFullYear(),
+      curMonth: new Date().getMonth() + 1,
       events: [
         {
           startDate: '2019-03-30',
@@ -72,6 +105,21 @@ export default {
     }
   },
   methods: {
+    prevYear() {
+      this.$refs.schedule.prevYear();
+    },
+    prevMonth() {
+      this.$refs.schedule.prevMonth();
+    },
+    nextMonth() {
+      this.$refs.schedule.nextMonth();
+    },
+    nextYear() {
+      this.$refs.schedule.nextYear();
+    },
+    jumpToday() {
+      this.$refs.schedule.jumpToday();
+    },
     handleEvtClick(evt) {
       console.log(evt);
       if (evt.title === '看电影') {
@@ -96,6 +144,11 @@ export default {
     },
     handleCellSelect(month, date) {
       console.log(`select: ${month}月${date}日`);
+    },
+    handlePanelChange(newDate, oldDate) {
+      this.curYear = newDate.getFullYear();
+      this.curMonth = newDate.getMonth() + 1;
+      console.log(newDate.toDateString(), ", ", oldDate.toDateString())
     }
   },
   mounted() {
@@ -107,5 +160,29 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+.schedule-header {
+  position: relative;
+  text-align: center;
+  .h-btn-group, .schedule-today-btn {
+    position: absolute;
+    top: 1px;
+  }
+  .h-btn-group {
+    left: 1.5%;
+    button {
+      width: 35px;
+      padding-left: 10px;
+      padding-right: 10px;
+      height: 34px;
+    }
+  }
+  .schedule-today-btn {
+    right: 1.5%;
+    height: 34px;
+  }
+  .schedule-date-text {
+    display: inline-block;
+  }
+}
 </style>

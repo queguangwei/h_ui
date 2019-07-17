@@ -8,6 +8,7 @@
     		  12124
     		  <h-input></h-input>
     		  <h-select></h-select>
+					<h-table></h-table>
     		  <h-field-panel iconAlgin='left'>
     		    <span slot="title">提示标题文案</span>
     		    12124

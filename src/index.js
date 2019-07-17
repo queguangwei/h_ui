@@ -60,6 +60,7 @@ import FastDate from './components/FastDate';
 import SplicePanel from './components/SplicePanel';
 import FieldPanel from './components/FieldPanel';
 import SimpleTable from './components/SimpleTable';
+import SimpleGroupTable from './components/SimpleGroupTable';
 import TransferTable from './components/TransferTable';
 import FormGird from './components/FormGird';
 import Rate from './components/Rate';
@@ -253,7 +254,9 @@ const h_ui = {
     SimpleTreeGird:SimpleTreeGird,
     hSimpleTreeGird:SimpleTreeGird,
     Calendar:Calendar,
-    hCalendar:Calendar
+    hCalendar:Calendar,
+    SimpleGroupTable,
+    hSimpleGroupTable: SimpleGroupTable
     // FileImport:FileImport,
     // hFileImport:FileImport,
     // FileExport: FileExport,
