@@ -12,6 +12,7 @@
                      showBottom
                      specialIndex
                      multiple
+                     isBackClear
                      isSelectFilter
                      placeholder="123"
                      showTotalNum
@@ -118,25 +119,37 @@
 
     <p>showValue为true，输入框显示value值，下拉框显示label+value、开启accuFilter完全匹配，并且搜到的结果自动勾选</p>
         <span>#149105需求  select和SimpleSelect 控件多选时 如果搜索时输入的信息完全匹配到 value或者label的时候 自动勾上；</span>
-    <h-simple-select v-model="valuetest" ref="test" filterable  multiple showValue  accuFilter>
+    <h-simple-select v-model="valuetest" ref="test" filterable   multiple  valueToString @on-change="change1"> 
         <h-select-block :data="bigDatatest"></h-select-block>
     </h-simple-select>
+
+    <h-simple-select   v-model="valueRemote"  multiple  filterBy="label"   filterable   remote :remote-method="remoteMethod"  widthAdaption maxDropWidth="200" width="200">
+       <!-- <h-select-block :data="bigData" :showCol="showCol1"></h-select-block> -->
+        <h-select-block :data="remoteData" :showCol="showCol1"></h-select-block>
+    </h-simple-select>
+      {{valueRemote}}
+    <h3>资管o45产品专用</h3>
+    <h-simple-select   v-model="valueRemote"  newSearchModel  multiple accuFilter  filterBy="label" 
+     remote 
+     :remote-method="remoteMethod" 
+     widthAdaption
+      maxDropWidth="200"
+      width="200">
+       <!-- <h-select-block :data="bigData" :showCol="showCol1"></h-select-block> -->
+        <h-select-block :data="remoteData" :showCol="showCol1"></h-select-block>
+    </h-simple-select>
+
+    <br><br><br><br><br><br><br><br><br><br><br><br><br>
   </div>
 </template>
 <script>
-let bigData = []
-for (let i = -1; i < 160; i++) {
-  let obj = {}
-  obj.value = i + ''
-  if(i==0){
-    obj.disabled = true
-  }
-  // obj.value = 'value' + i
-  obj.label =  i==2?'lab111111111111111111111111111111111' + i:'lab' + i
-  obj.label1 = 'lab12'
-  obj.label2 = 'lab13'
-  obj.label3 = 'lab14'
-  bigData.push(obj)
+let bigData = [];
+for(let i=0;i<20;i++){
+  let obj={};
+  obj.value="value"+i;
+  obj.label="label"+i;
+  obj.label1="name"+i;
+  bigData.push(obj);
 }
 
 let bigDatatest = [];
@@ -152,6 +165,7 @@ export default {
     return {
       loading1: false,
       showCol:['label1','label2','label3'],
+      showCol1:['label1'],
       matchCol: ['name', 'age'],
       bigData: [],
       bigDatatest:bigDatatest,
@@ -255,14 +269,22 @@ export default {
     remoteMethod(query) {
       clearTimeout(this.timer)
       if (query !== '') {
-        this.loading1 = true
-        this.timer = setTimeout(() => {
-          this.loading1 = false
-          this.remoteData = bigData.filter(
-            item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1
-          )
-        }, 2000)
-      } else {
+           if(query== ','){
+            this.timer = setTimeout(() => {
+            this.loading1 = false
+            this.remoteData = bigData;         
+          }, 100) }else{
+              this.loading1 = true
+              this.timer = setTimeout(() => {
+              this.loading1 = false
+              this.remoteData = bigData.filter(
+                item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1
+              )
+            }, 100)
+          }
+
+         
+        }else {
         this.loading1 = false;
         this.remoteData = bigData
       }
@@ -270,6 +292,10 @@ export default {
     changeData() {
       this.$refs.block.selectedTop()
       this.$refs.block1.selectedTop()
+    },
+    change1(val){
+      console.log(val);
+
     }
   },
   mounted() {
