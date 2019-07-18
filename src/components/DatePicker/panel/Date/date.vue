@@ -161,7 +161,7 @@
             },
             changeYear(dir){
                 if (this.selectionMode === 'year' || this.pickerTable === 'year-table'){
-                    this.panelDate = new Date(this.panelDate.getFullYear() + dir * 10, 0, 1);
+                    this.panelDate = new Date(this.panelDate.getFullYear() + dir * 12, 0, 1);
                 } else {
                     this.panelDate = siblingMonth(this.panelDate, dir * 12);
                 }
