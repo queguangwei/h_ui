@@ -959,6 +959,24 @@
               this.model = this.focusValue
               this.selectToChangeQuery = true
             }
+            if(this.multiple&&keyCode === 32){//空格键
+              e.preventDefault();
+              const createdOption = this.$refs.createdOption;
+              if (createdOption && createdOption.isFocus) {
+                createdOption.select();
+                // 单选时，enter不需要取消选择
+                if (this.multiple || !createdOption.selected) {
+                  createdOption.selected = !createdOption.selected;
+                }
+              } else {
+                this.findChild((child) => {
+                  if (child.isFocus) {
+                    child.select();
+                  }
+                });
+
+              }
+            }
             return false;
           }
           // next
