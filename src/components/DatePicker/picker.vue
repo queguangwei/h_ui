@@ -393,10 +393,20 @@ export default {
 
       // console.log('sectionIndex', sectionIndex)
       if (sectionIndex < 3) {
-        let tmp = new Date(this.internalValue[0]).getTime() + append * Math.pow(60, 2 - sectionIndex)
+        let tmp;
+        if (this.internalValue[0] !== null) {
+          tmp = new Date(this.internalValue[0]).getTime() + append * Math.pow(60, 2 - sectionIndex);
+        } else {
+          tmp = new Date(1970, 1, 1, 0, 0, 0);
+        }
         this.$set(this.internalValue, 0, new Date(tmp))
       } else {
-        let tmp = new Date(this.internalValue[1]).getTime() + append * Math.pow(60, 5 - sectionIndex)
+        let tmp;
+        if (this.internalValue[1] !== null) {
+          tmp = new Date(this.internalValue[1]).getTime() + append * Math.pow(60, 5 - sectionIndex)
+        } else {
+          tmp = new Date(1970, 1, 1, 0, 0, 0);
+        }
         this.$set(this.internalValue, 1, new Date(tmp))
       }
 
