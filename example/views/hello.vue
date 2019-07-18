@@ -79,10 +79,10 @@ export default {
 
 <template>
   <div>
-    <h-simple-select v-model="value" ref="test">
+    <h-simple-select v-model="value" ref="test" isBackClear @on-change="test">
       <h-select-block :data="bigData"></h-select-block>
     </h-simple-select>
-    <button @click="tt">shuj</button>
+    {{value}}
   </div>
 </template>
 <script>
@@ -93,28 +93,24 @@ for(let i=0;i<2000;i++){
   obj.label="label"+i;
   bigData.push(obj);
 }
-export default {
-    data () {
-        return {
-            bigData:[],
-            value:'value0',
-
+    export default {
+        data () {
+            return {
+                bigData:bigData,
+                value:'value0',
+                value1:['value0'],
+                value2:'',
+            }
+        },methods:{
+        test(a){
+            debugger
+        console.log("------------");
+        console.log(a);
+        console.log("------------");
         }
-    },
-    methods:{
-        tt(){
-            this.bigData=bigData;
-            // setTimeout(()=>{
-                // debugger
-                this.$nextTick(()=>{
-                    console.log(this.$refs.test.viewValue)
-                })
-            // },0)
         }
     }
-}
 </script>
-
 
 
 
