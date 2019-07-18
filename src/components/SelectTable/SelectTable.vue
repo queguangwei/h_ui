@@ -1210,6 +1210,11 @@ export default {
     // handleSearchDelete(){
     //   this.isSearchDelete=true;
     // },
+    newSearchUpdate(){
+      setTimeout(()=> {
+          this.$refs.dropdown.setWidthAdaption();
+        },0);
+    },
     newModelSearchDelete(multipleAry){
     if (this.multiple && this.selectedMultiple.length>0) {
         let searchAry=this.selectedResult.split(',');
@@ -1232,7 +1237,9 @@ export default {
              setTimeout(()=> {
                 this.$emit('on-query-change', searchkey)
                 this.broadcastQuery(searchkey)
-             }, 300);
+                this.newSearchUpdate();
+                //this.$refs.dropdown.setWidthAdaption(true);
+              }, 300);
           }
           //this.$emit('on-query-change', searchkey)
          // this.broadcastQuery(searchkey)
