@@ -405,10 +405,14 @@ export default {
 
       if (cb) cb()
     },
-    onFieldBlur(val = '') {
+    onFieldBlur(val = '', validate = true) {
+      if (!validate) return
+
       this.validate('blur', () => {}, val)
     },
-    onFieldChange(val = '') {
+    onFieldChange(val = '', validate = true) {
+      if (!validate) return
+
       if (this.validateDisabled) {
         this.validateDisabled = false
         return
