@@ -92,7 +92,7 @@
                         <Checkbox :size="calcCheckboxSize(column.checkboxSize)"
                                   :value="rowChecked(row._index)"
                                   @click.native.stop="handleClickTr($event,row._index,rowChecked(row._index),index)"
-                                  @on-change="toggleSelect(row._index,index)"
+                                  @on-change="toggleSelect(row._index,index+start)"
                                   :disabled="rowDisabled(row._index)"></Checkbox>
                       </template>
                       <template v-if="!column.type&&!column.render"><span v-html="row[column.key]"></span></template>
@@ -205,7 +205,7 @@
                           <Checkbox :size="calcCheckboxSize(column.checkboxSize)"
                                     :value="rowChecked(row._index)"
                                     @click.native.stop="handleClickTr($event,row._index,rowChecked(row._index),index)"
-                                    @on-change="toggleSelect(row._index,index)"
+                                    @on-change="toggleSelect(row._index,index+start)"
                                     :disabled="rowDisabled(row._index)"></Checkbox>
                         </template>
                         <template v-if="!column.type&&!column.render"><span v-html="row[column.key]"></span></template>
@@ -1478,7 +1478,7 @@ export default {
           )
     },
     toggleSelect(_index, curIndex) {
-      curIndex = curIndex + this.start
+      // curIndex = curIndex + this.start
       this.allclick = false
       let data = {}
       for (let i in this.objData) {
@@ -2245,8 +2245,8 @@ export default {
         // }
         // 处理从无数据到有数据或者有数据到无数据时，表头和统计行水平位置没有归零的问题
         if (oldDataLen === 0 || val.length === 0) {
-          if (this.$refs.header) {
-            this.$refs.header.scrollLeft = 0
+          if (this.$refs.body) {
+            this.$refs.body.scrollLeft = 0
           }
           if (this.$refs.summation) {
             this.$refs.summation.style.marginLeft = 0

@@ -77,7 +77,43 @@ export default {
 </script>
 -->
 
+<template>
+  <div>
+    <h-simple-select v-model="value" ref="test">
+      <h-select-block :data="bigData"></h-select-block>
+    </h-simple-select>
+    <button @click="tt">shuj</button>
+  </div>
+</template>
+<script>
+let bigData = [];
+for(let i=0;i<2000;i++){
+  let obj={};
+  obj.value="value"+i;
+  obj.label="label"+i;
+  bigData.push(obj);
+}
+export default {
+    data () {
+        return {
+            bigData:[],
+            value:'value0',
 
+        }
+    },
+    methods:{
+        tt(){
+            this.bigData=bigData;
+            // setTimeout(()=>{
+                // debugger
+                this.$nextTick(()=>{
+                    console.log(this.$refs.test.viewValue)
+                })
+            // },0)
+        }
+    }
+}
+</script>
 
 
 
@@ -433,7 +469,7 @@ export default {
 
 </script>
 -->
- <template>
+<!--<template>
 <div>
     <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
         <h-form-item label="input" prop="name">
@@ -528,7 +564,7 @@ export default {
   }
 };
 </script>
-
+-->
 <!--<template>
 <div>
         <h-table border :columns="columns4" :data="data1" rowSelect @on-select="selectOne" @on-select-all="selectAll" @on-selection-change="selectChange" @on-select-cancel="selectCancel"></h-table>

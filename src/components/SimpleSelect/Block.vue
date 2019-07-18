@@ -378,7 +378,7 @@ export default {
           this.showEmpty = false
         }
 
-        this.$nextTick(() => {
+        // this.$nextTick(() => {//viewValue获取时机
           this.cloneData = deepCopy(this.data)
           this.cloneData.forEach((item,i) => {
             item._index = i
@@ -386,7 +386,7 @@ export default {
           })
           this.$parent.$parent.updateOptions(true)
           this.updateVisibleData()
-        })
+        // })
       }
     },
     cloneData: {
