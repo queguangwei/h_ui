@@ -12,6 +12,7 @@
       <span v-if="showTotal" :class="[prefixCls + '-selected-num']">共选择 {{selectedMultiple.length}} 项</span>
       <!-- 多选时输入框内选中值模拟 -->
       <div class="h-tag"
+           v-if="!newSearchModel"
            v-for="(item, index) in selectedMultiple"
            v-show="item.label&&!showTotal"
            :key="index">
@@ -22,12 +23,26 @@
       </div>
       <!-- 下拉输入框模拟（非远程搜索时渲染）  -->
       <span :class="[prefixCls + '-placeholder']"
-            v-show="showPlaceholder && (!filterable ||showBottom)">{{ localePlaceholder }}</span>
+            v-show="showPlaceholder && (!filterable&&!newSearchModel||showBottom)">{{ localePlaceholder }}</span>
       <span :class="[prefixCls + '-selected-value']"
             v-show="!showPlaceholder && !multiple && !(filterable && !showBottom)">{{ selectedSingle }}</span>
+      <!--搜索框开启newSearchModel时渲染-->
+          <input type="text"
+             v-if="newSearchModel&&multiple"
+             v-model="selectedResult"
+             :disabled="disabled"
+             :readonly="!editable||readonly"
+             :class="[prefixCls + '-input']"
+             style="width:100%"
+             :placeholder="showPlaceholder?localePlaceholder:''"
+             @focus="handleFocus"
+             @blur="handkeSearchBlur"
+             @keydown="resetInputState"
+             tabindex="-1"
+             ref="input">
       <!-- 下拉输入框(远程搜索时渲染) -->
       <input type="text"
-             v-if="filterable && !showBottom"
+             v-if="filterable && !showBottom &&!newSearchModel"
              v-model="query"
              :disabled="disabled"
              :readonly="!editable||readonly"
@@ -372,6 +387,18 @@ export default {
       type: Boolean,
       default: false,
     },
+    newSearchModel:{
+      type:Boolean,
+      dafault:false,
+    },
+    filterBy:{
+      type:String,
+      dafault:'label',
+    },
+    valueToString:{
+      type:Boolean,
+      dafault:false,
+    },
   },
   data() {
     return {
@@ -405,6 +432,9 @@ export default {
       viewValue:null,
       isSelectAll:false,
       showTotal:false,
+      selectedResult:'',
+      isSearchDelete:false,
+      newSearchModelselectItem:{},
     }
   },
   computed: {
@@ -966,8 +996,12 @@ export default {
             this.$emit('on-change', hybridValue)
             this.dispatch('FormItem', 'on-form-change', hybridValue)
           } else {
-            this.$emit('on-change', value)
-            this.dispatch('FormItem', 'on-form-change', value)
+            let changeItem=value
+            if(this.valueToString){
+              changeItem=changeItem.join(",");
+            }
+            this.$emit('on-change', changeItem)
+            this.dispatch('FormItem', 'on-form-change', changeItem)
           }
         }
       }
@@ -1142,6 +1176,17 @@ export default {
       e.target.selectionEnd = this.query.length
     },
     handleBlur() {},
+    handkeSearchBlur(){
+       let multipleAry=[];
+      this.selectedMultiple.forEach(item=>{
+            multipleAry.push(item[this.filterBy]);
+      })
+      let modelstr=multipleAry.join(",");
+      if(modelstr!=this.selectedResult){
+        this.selectedResult=modelstr;
+      }
+
+    },
     resetInputState() {
       this.inputLength = this.$refs.input.value.length * 12 + 56
     },
@@ -1149,6 +1194,74 @@ export default {
       if (this.multiple && this.model.length && this.query === '') {
         this.removeTag(this.model.length - 1)
       }
+    },
+    handleNewSearchSelect(changeitem){
+      if(!changeitem) return;
+       let label=changeitem.label;
+       let selectAry=this.selectedResult.trim().split(",");
+       let index=selectAry.indexOf(label);
+       if(index>=0){
+           selectAry.splice(index,1);
+       }else{
+           selectAry.push(label);
+       }
+       this.selectedResult=selectAry.join(",")
+    },
+    // handleSearchDelete(){
+    //   this.isSearchDelete=true;
+    // },
+    newModelSearchDelete(multipleAry){
+      debugger;
+    if (this.multiple && this.selectedMultiple.length>0) {
+        let searchAry=this.selectedResult.split(',');
+            for(let i=0;i<multipleAry.length;i++){
+              if(searchAry.indexOf(multipleAry[i])<0){
+                  this.selectedMultiple.splice(i,1);
+                  this.model.splice(i,1);
+              }
+          }
+      }
+      // this.isSearchDelete=false;
+    },
+    newModelhandleSearch(searchkey){
+       if (this.remote && this.remoteMethod) {
+        if (!this.selectToChangeQuery) {
+          // 解决当通过表单方法firstNodeFocused定位到SimpleSelect时只能输入但不展示下拉选项的问题
+          if (!this.visible && searchkey) this.visible = true;
+          this.remoteMethod(searchkey)
+          if(searchkey!=","){
+             setTimeout(()=> {
+                this.$emit('on-query-change', searchkey)
+                this.broadcastQuery(searchkey)
+             }, 300);
+          }
+          //this.$emit('on-query-change', searchkey)
+         // this.broadcastQuery(searchkey)
+        }
+        this.findChild(child => {
+          child.isFocus = false
+        })
+      } else {
+        if (!this.selectToChangeQuery) {
+          if (!this.visible && searchkey) this.visible = true;
+          this.$emit('on-query-change', searchkey)
+          this.broadcastQuery(searchkey)
+        }
+
+        if (!this.isBlock) {
+          if (this.filterable && searchkey) {
+            this.$nextTick(() => {
+              this.findChild(child => {
+                if (this.focusIndex > 0)
+                  child.$refs.table.changeHover(this.focusIndex - 1, false)
+                this.focusIndex = 1
+                child.$refs.table.changeHover(this.focusIndex - 1, true)
+              })
+            })
+          }
+        }
+      }
+
     },
     // use when slot changed
     slotChange() {
@@ -1337,10 +1450,18 @@ export default {
       }
       this.hideMenu()
     },
-    selectBlockMultiple(value) {
+    selectBlockMultiple(value,changeitem) {
       const index = this.model.indexOf(value)
+      if(this.newSearchModel){
+        this.newSearchModelselectItem=false;
+        this.newSearchModelselectItem=changeitem;
+      }
       if (index >= 0) {
         this.removeTag(index)
+        if(this.newSearchModel){
+          let searchAry=this.selectedResult.split(",");
+          //let itemidx=searchAry.indexOf()
+        }
       } else {
         if(this.specialIndex){
           if(value==this.specialVal){
@@ -1630,6 +1751,56 @@ export default {
           this.showTotal = false
         }
       }
+    },
+     selectedResult(val, oldVal){
+      let  searchkey="";
+      let selectAry=val.split(",");
+     // let oldselectAry=oldVal.split(",");
+      let multipleAry=[];
+      if(oldVal!=""&&val==""&&this.model.length>0){
+           this.model=[]
+           return;
+      }
+      if(oldVal+","==val){
+         searchkey=",";
+         this.newModelhandleSearch(searchkey);
+         return;
+      }
+      this.selectedMultiple.forEach(item=>{
+            multipleAry.push(item[this.filterBy]);
+      })
+      //if(this.isSearchDelete){
+          this.newModelSearchDelete(multipleAry);
+     // }
+      for(let i=0;i<selectAry.length;i++){
+         if(multipleAry.indexOf(selectAry[i])<0){
+             searchkey=selectAry[i];
+         }
+      }
+      if(searchkey==""&&multipleAry.length<selectAry.length){
+         searchkey=selectAry[selectAry.length-1];
+      }
+      if(searchkey==""){
+        return;
+      }
+       this.newModelhandleSearch(searchkey);
+
+    },
+    newSearchModelselectItem(changeitem){
+      if(!changeitem) return;
+       let label=changeitem[this.filterBy];
+       let selectAry=this.selectedResult.trim().split(",");
+       let index=selectAry.indexOf(label);
+       if(index>=0){
+           selectAry.splice(index,1);
+       }else{
+           selectAry.push(label);
+       }
+       let str=selectAry.join(",");
+       if(str.substr(0,1)==","){
+          str=str.substr(1);
+       }
+       this.selectedResult=str
     }
   }
 }
