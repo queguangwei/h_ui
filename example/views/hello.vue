@@ -77,42 +77,6 @@ export default {
 </script>
 -->
 
-<template>
-  <div>
-    <h-simple-select v-model="value" ref="test" isBackClear @on-change="test">
-      <h-select-block :data="bigData"></h-select-block>
-    </h-simple-select>
-    {{value}}
-  </div>
-</template>
-<script>
-let bigData = [];
-for(let i=0;i<2000;i++){
-  let obj={};
-  obj.value="value"+i;
-  obj.label="label"+i;
-  bigData.push(obj);
-}
-    export default {
-        data () {
-            return {
-                bigData:bigData,
-                value:'value0',
-                value1:['value0'],
-                value2:'',
-            }
-        },methods:{
-        test(a){
-            debugger
-        console.log("------------");
-        console.log(a);
-        console.log("------------");
-        }
-        }
-    }
-</script>
-
-
 
 
 
@@ -465,7 +429,7 @@ for(let i=0;i<2000;i++){
 
 </script>
 -->
-<!--<template>
+<template>
 <div>
     <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
         <h-form-item label="input" prop="name">
@@ -475,7 +439,7 @@ for(let i=0;i<2000;i++){
             <h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" data-index="2"></h-typefield >
         </h-form-item>
         <h-form-item label="select" prop="city">
-            <h-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass" data-index="1">
+            <h-select v-model="formValidate.city"  multiple placeholder="请选择所在地" class="curItemClass" data-index="1">
                 <h-option value="beijing">北京市</h-option>
                 <h-option value="shanghai">上海市</h-option>
                 <h-option value="shenzhen">深圳市</h-option>
@@ -560,7 +524,7 @@ export default {
   }
 };
 </script>
--->
+
 <!--<template>
 <div>
         <h-table border :columns="columns4" :data="data1" rowSelect @on-select="selectOne" @on-select-all="selectAll" @on-selection-change="selectChange" @on-select-cancel="selectCancel"></h-table>
