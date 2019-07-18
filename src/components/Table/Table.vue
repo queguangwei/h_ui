@@ -564,11 +564,11 @@ export default {
           this.fixedBodyClientHeight=0
         }
         let height =this.patibleHeight?this.bodyHeight-this.scrollBarWidth+this.fixedBodyClientHeight:this.bodyHeight+this.fixedBodyClientHeight;
-        if (this.tableWidth < this.initWidth) {
-          height = height + this.scrollBarWidth-1;
-        }
+         if (this.tableWidth < this.initWidth) {
+             height = height + this.scrollBarWidth-1;
+         }
         // height不存在时bodyheight为0
-        if (this.height&&(this.$refs.body.clientWidth!=0&&this.$refs.body.clientHeight!=0)){
+        if (this.height){
           style.height = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`;
            if(this.fixedAutoHeight){
              if(this.bodyRealHeight<height){
@@ -1730,9 +1730,9 @@ export default {
           this.$nextTick(()=>{
             this.cloneData = deepCopy(this.data);
             this.buttomNum = null;
-              if(this.fixedAutoHeight){
+            // if(this.fixedAutoHeight){
                 this.fixedBodyClientHeight=-1;
-              }
+              //}
           });
 
         },
