@@ -222,7 +222,8 @@ export default {
           'click',
           'move'
         ])
-      }
+      },
+      default: 'click'
     }
   },
   data() {
