@@ -324,6 +324,11 @@
       showValue: {
         type: Boolean,
         default: false
+      },
+      // 是否触发校验
+      validate: {
+        type: Boolean,
+        default: true
       }
     },
     data () {
@@ -552,10 +557,10 @@
       blur(){
         if (this.multiple) {
         // 多选返回数组
-        this.dispatch('FormItem', 'on-form-blur', this.selectedMultiple)
+        this.dispatch('FormItem', 'on-form-blur', this.selectedMultiple, this.validate)
         } else {
         // 单选返回字符串
-        this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
+        this.dispatch('FormItem', 'on-form-blur', this.selectedSingle, this.validate)
         }
         this.isInputFocus = false;
         this.visible = false;
@@ -583,7 +588,7 @@
                 if (!item.hidden) {
                   if (findInx(this.model, val => val == item.value) === -1) {
                     this.model.push(item.value);
-                  } 
+                  }
                 }
               } else {
                 arr.push(item.value);
@@ -861,14 +866,11 @@
                       value: value,
                       label: label ? label : value
                   });
-                  this.dispatch('FormItem', 'on-form-change', {
-                      value: value,
-                      label: label ? label : value
-                  });
               } else {
                   this.$emit('on-change', value);
-                  this.dispatch('FormItem', 'on-form-change', value);
               }
+
+              this.dispatch('FormItem', 'on-form-change', value, this.validate);
           }
         }
       },
@@ -913,10 +915,10 @@
           if (!init) {
               if (this.labelInValue) {
                   this.$emit('on-change', hybridValue);
-                  this.dispatch('FormItem', 'on-form-change', hybridValue);
+                  this.dispatch('FormItem', 'on-form-change', hybridValue, this.validate);
               } else {
                   this.$emit('on-change', value);
-                  this.dispatch('FormItem', 'on-form-change', value);
+                  this.dispatch('FormItem', 'on-form-change', value, this.validate);
               }
           }
         }
@@ -926,10 +928,10 @@
           if (this.isInputFocus) {
             if (this.multiple) {
             // 多选返回数组
-            this.dispatch('FormItem', 'on-form-blur', this.selectedMultiple)
+            this.dispatch('FormItem', 'on-form-blur', this.selectedMultiple, this.validate)
             } else {
             // 单选返回字符串
-            this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
+            this.dispatch('FormItem', 'on-form-blur', this.selectedSingle, this.validate)
             }
             this.isInputFocus = false
           }
