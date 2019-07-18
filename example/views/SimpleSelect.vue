@@ -12,6 +12,7 @@
                      showBottom
                      specialIndex
                      multiple
+                     isBackClear
                      isSelectFilter
                      placeholder="123"
                      showTotalNum

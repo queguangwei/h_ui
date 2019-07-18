@@ -359,15 +359,19 @@ export default {
         default: false
     },
     accuFilter:{
-        type: Boolean,
-        default: false
-      },
+      type: Boolean,
+      default: false
+    },
     // 需求 148437 特殊属性
     // 远程搜索不需要执行 query
     remoteNoQuery: {
       type: Boolean,
       default: false
-    }
+    },
+    isBackClear: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -1003,6 +1007,15 @@ export default {
           if(!this.multiple && (keyCode === 39||keyCode === 37)){
             this.model = this.focusValue
           }
+          if(this.multiple&&keyCode === 32){
+            let index = this.focusIndex - 1
+            if (index < 0) return false
+            if(!this.focusValue) {
+              this.focusValue = this.availableOptions[this.focusIndex - 1].value
+            }
+            if(this.availableOptions[this.focusIndex - 1].disabled) return
+            this.selectBlockMultiple(this.focusValue)
+          }
           return false;
         }
         // next
@@ -1054,6 +1067,9 @@ export default {
             }
           })
         }
+      }
+      if (this.visible || this.isInputFocus) {
+        this.handleBack(e);
       }
     },
     navigateOptions(direction) {
@@ -1228,6 +1244,22 @@ export default {
       } else {
         return val
       }
+    },
+    handleBack(e){
+      if(!this.isBackClear) return;
+      if (e.keyCode == 8) {
+        if(this.multiple){
+          this.clearMultipleSelect();
+        }else{
+          this.clearSingleSelect();
+        }
+      }
+    },
+    clearMultipleSelect(){
+      if (this.disabled || !this.editable || this.readonly) {
+        return false
+      }
+      this.model=[]
     },
     getFormatValue(value) {
       let val = ''

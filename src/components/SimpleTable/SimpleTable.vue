@@ -1621,11 +1621,22 @@ export default {
       }) //rightFixed index error
       const key = this.cloneColumns[index].key
       if (this.cloneColumns[index].sortable !== 'custom') {
+        let selectInx = -1
+        if(this.focusIndex!=-1){
+          selectInx = this.rebuildData[this.focusIndex]._index
+        }
         // custom is for remote sort
         if (type === 'normal') {
           this.rebuildData = this.makeDataWithFilter()
         } else {
           this.rebuildData = this.sortData(this.rebuildData, type, index)
+        }
+        if(this.focusIndex!=-1&&selectInx!=-1){
+          this.rebuildData.forEach((col,i)=>{
+            if (col._index == selectInx) {
+              this.focusIndex = i
+            }
+          })
         }
       }
       this.cloneColumns[index]._sortType = type
@@ -2008,7 +2019,7 @@ export default {
     },
     handleKeydown(e) {
       if (this.isCurrent && !e.shiftKey) {
-        const keyCode = e.keyCode
+        const keyCode = e.keyCode    
         // next
         if (keyCode === 40) {
           e.preventDefault()

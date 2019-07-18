@@ -60,7 +60,7 @@ import TexpandRow from './Texpand-row.vue'
 let jsonData=[];
 let tData =require('../assets/aa.json');
 for (let i = 0; i < 1; i++) {
-      jsonData =tData.slice(0,5);
+      jsonData =tData.slice(0,10);
     }
 export default {
   components:{TexpandRow},
@@ -711,7 +711,6 @@ export default {
           align: 'center',
           width:200,
           key:"index",
-          sortable:true,
           fixed:'right',
         },
         {
@@ -726,7 +725,7 @@ export default {
           key: 'fundId',
           width:200,
           sortable:true,
-          remote: true,
+          // remote: true,
           // renderHeader:(h, params)=>{
           //   return h('span','123')
           // },
