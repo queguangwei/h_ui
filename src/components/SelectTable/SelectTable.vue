@@ -936,7 +936,7 @@ export default {
             })
           })
         }
-        if (!init) {
+        if (!init) {      
           if (this.labelInValue) {
             this.$emit('on-change', {
               value: value,
@@ -1211,7 +1211,6 @@ export default {
     //   this.isSearchDelete=true;
     // },
     newModelSearchDelete(multipleAry){
-      debugger;
     if (this.multiple && this.selectedMultiple.length>0) {
         let searchAry=this.selectedResult.split(',');
             for(let i=0;i<multipleAry.length;i++){
@@ -1359,12 +1358,12 @@ export default {
       }
     },
     handleBack(e){
-      if(!this.isBackClear) return;
+      if(!this.isBackClear ||this.readonly||this.disable) return;
       if (e.keyCode == 8) {
         if(this.multiple){
           this.clearMultipleSelect();
         }else{
-          this.clearSingleSelect();
+          this.model=''
         }
       }
     },
