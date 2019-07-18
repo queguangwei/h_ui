@@ -92,7 +92,7 @@
                         <Checkbox :size="calcCheckboxSize(column.checkboxSize)"
                                   :value="rowChecked(row._index)"
                                   @click.native.stop="handleClickTr($event,row._index,rowChecked(row._index),index)"
-                                  @on-change="toggleSelect(row._index,index)"
+                                  @on-change="toggleSelect(row._index,index+start)"
                                   :disabled="rowDisabled(row._index)"></Checkbox>
                       </template>
                       <template v-if="!column.type&&!column.render"><span v-html="row[column.key]"></span></template>
@@ -205,7 +205,7 @@
                           <Checkbox :size="calcCheckboxSize(column.checkboxSize)"
                                     :value="rowChecked(row._index)"
                                     @click.native.stop="handleClickTr($event,row._index,rowChecked(row._index),index)"
-                                    @on-change="toggleSelect(row._index,index)"
+                                    @on-change="toggleSelect(row._index,index+start)"
                                     :disabled="rowDisabled(row._index)"></Checkbox>
                         </template>
                         <template v-if="!column.type&&!column.render"><span v-html="row[column.key]"></span></template>
@@ -1478,7 +1478,7 @@ export default {
           )
     },
     toggleSelect(_index, curIndex) {
-      curIndex = curIndex + this.start
+      // curIndex = curIndex + this.start
       this.allclick = false
       let data = {}
       for (let i in this.objData) {
