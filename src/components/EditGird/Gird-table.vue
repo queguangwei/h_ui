@@ -30,6 +30,7 @@
           :checkStrictly="checkStrictly"
           :option="options"
           :treeOption="treeOptions"
+          :cascaderOption="cascaderOption"
           :titleRender="titleRender"
           :height="Number(height)"
           @on-select-change="selectChange"
@@ -82,6 +83,7 @@
             :checkStrictly="checkStrictly"
             :option="options"
             :treeOption="treeOptions"
+            :cascaderOption="cascaderOption"
             @on-select-change="selectChange"
             @on-editselect-change="editselectChange"
             @on-editinput-change="editinputChange"
@@ -119,6 +121,7 @@
             :checkStrictly="checkStrictly"
             :option="options"
             :treeOption="treeOptions"
+            :cascaderOption="cascaderOption"
             @on-select-change="selectChange"
             @on-editselect-change="editselectChange"
             @on-editinput-change="editinputChange"
@@ -246,6 +249,12 @@ export default {
       }
     },
     treeOption:{
+      type: Array,
+      default () {
+        return [];
+      }
+    },
+    cascaderOption: {
       type: Array,
       default () {
         return [];
@@ -1196,6 +1205,9 @@ export default {
         }
       });
       return changeData;
+    },
+    updatePopper() {
+      this.broadcast('Drop', 'on-update-popper');
     }
   },
   created () {
@@ -1229,11 +1241,17 @@ export default {
           this.fixedHeader();
       }
     });
+    if (this.$refs.body) {
+      this.$refs.body.addEventListener('scroll', this.updatePopper)
+    }
   },
   beforeDestroy () {
       //window.removeEventListener('resize', this.handleResize, false);
       off(window, 'resize', this.handleResize);
       off(window, 'resize', this.initResize);
+      if (this.$refs.body) {
+        this.$refs.body.$el.removeEventListener('scroll', this.updatePopper)
+      }
   },
   watch: {
       data: {
