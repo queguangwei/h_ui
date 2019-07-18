@@ -1668,6 +1668,7 @@ export default {
   },
   mounted () {
     this.$on('on-expand',()=>{
+      // debugger
       if(this.closeExpandResize) return false;
       this.$nextTick(()=>{//会引起render多次执行
         this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))||0;
