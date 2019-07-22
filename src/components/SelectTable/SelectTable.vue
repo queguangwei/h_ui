@@ -936,7 +936,7 @@ export default {
             })
           })
         }
-        if (!init) {
+        if (!init) {      
           if (this.labelInValue) {
             this.$emit('on-change', {
               value: value,
@@ -1365,12 +1365,12 @@ export default {
       }
     },
     handleBack(e){
-      if(!this.isBackClear) return;
+      if(!this.isBackClear ||this.readonly||this.disable) return;
       if (e.keyCode == 8) {
         if(this.multiple){
           this.clearMultipleSelect();
         }else{
-          this.clearSingleSelect();
+          this.model=''
         }
       }
     },
