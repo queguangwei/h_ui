@@ -652,7 +652,9 @@
         handler(val){
           if (val && val != ' ' && val != []) {
             this.$nextTick(()=>{
-              this.setInit(this.baseDate,val);
+              if(this.baseDate.length>0){
+                 this.setInit(this.baseDate,val);
+              }
             });
           }
         }
@@ -731,13 +733,18 @@
           // this.broadcast('Drop', 'on-destroy-popper');
         }
       },
-      data : {
+     data : {
         deep: true,
         handler: function (cur) {
           if (cur&&cur.length!=0) {
             this.baseDate = this.expandLevels(deepCopy(cur));
           }else{
             this.baseDate =deepCopy(cur);
+          }
+          if (this.model===this.firstValue) {
+            this.$nextTick(()=>{
+              this.setInit(this.baseDate,this.firstValue);
+            });
           }
         }
       },
