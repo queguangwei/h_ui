@@ -469,7 +469,7 @@ export default {
       return [
         `${prefixCls}`,
         {
-          [`${prefixCls}-visible`]: this.visible,
+          [`${prefixCls}-visible`]: this.visible||this.isInputFocus,
           [`${prefixCls}-disabled`]: this.disabled,
           [`${prefixCls}-readonly`]: this.readonly,
           [`${prefixCls}-editable`]: !this.editable,
