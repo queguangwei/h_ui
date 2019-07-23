@@ -56,12 +56,16 @@
              ref="input">
       <Icon name="close"
             :class="[prefixCls + '-arrow']"
-            v-show="showCloseIcon"
+            v-if="showCloseIcon"
             @click.native.stop="clearSingleSelect"></Icon>
       <Icon name="unfold"
             :class="[prefixCls + '-arrow']"
-            v-if="!remote||showArrow"
+            v-if="!searchIcon && (!remote || showArrow)"
             ref="arrowb"></Icon>
+      <Icon ref="searchIcon"
+            :name="searchIcon"
+            :class="[prefixCls + '-arrow']"
+            v-if="filterable && searchIcon && !showArrow"></Icon>
     </div>
     <transition :name="transitionName">
       <Drop :class="dropdownCls"
@@ -399,6 +403,10 @@ export default {
       type:Boolean,
       dafault:false,
     },
+    searchIcon: {
+      type: [Boolean, String],
+      default: false
+    }
   },
   data() {
     return {
@@ -691,8 +699,10 @@ export default {
       let el = this.$refs.reference
       if (el.scrollHeight > el.clientHeight) {
         if (this.$refs.arrowb) this.$refs.arrowb.$el.style.right = '22px'
+        if (this.$refs.searchIcon) this.$refs.searchIcon.$el.style.right = '22px'
       } else {
         if (this.$refs.arrowb) this.$refs.arrowb.$el.style.right = '8px'
+        if (this.$refs.searchIcon) this.$refs.searchIcon.$el.style.right = '8px'
       }
     },
     toggleMenu() {
