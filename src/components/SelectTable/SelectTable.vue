@@ -5,7 +5,7 @@
        ref="select">
     <div :class="selectionCls"
          ref="reference"
-         :tabindex="tabIndex"
+         :tabindex="selectTabindex"
          @keyup="keyup"
          @keydown="keydown"
          @click="toggleMenu">
@@ -435,6 +435,7 @@ export default {
       selectedResult:'',
       isSearchDelete:false,
       newSearchModelselectItem:{},
+      isCopy:false,
     }
   },
   computed: {
@@ -587,6 +588,9 @@ export default {
     },
     checkAll() {
       return 'h-select-checkall'
+    },
+    selectTabindex(){
+        return this.disabled?-1:0
     },
     notFoundShow() {
       let options = this.options
@@ -1187,13 +1191,19 @@ export default {
       }
 
     },
-    resetInputState() {
+    resetInputState(e) {
       this.inputLength = this.$refs.input.value.length * 12 + 56
+      if(this.newSearchModel&&e.keyCode=="86"&&e.ctrlKey){
+         this.handleNewSearchCopy(e);
+      }
     },
     handleInputDelete() {
       if (this.multiple && this.model.length && this.query === '') {
         this.removeTag(this.model.length - 1)
       }
+    },
+    handleNewSearchCopy(e){
+      this.isCopy=true;
     },
     handleNewSearchSelect(changeitem){
       if(!changeitem) return;
@@ -1582,9 +1592,9 @@ export default {
       this.offsetArrow()
       this.searchStyle()
     })
-    if (this.disabled) {
-      this.tabIndex = -1
-    }
+    // if (this.disabled) {
+    //   this.tabIndex = -1
+    // }
     this.setPlacement()
     this.$on('on-visible-change', (val, top) => {
       if (val) {
@@ -1757,12 +1767,21 @@ export default {
           this.showTotal = false
         }
       }
+      if(this.newSearchModel&&val){
+        this.$emit("on-input-focus");
+      }
     },
      selectedResult(val, oldVal){
       let  searchkey="";
       let selectAry=val.split(",");
      // let oldselectAry=oldVal.split(",");
       let multipleAry=[];
+      if(this.isCopy){
+        this.$emit("on-paste",{oldval:oldVal,newval:val});
+        this.isCopy=false;
+        return
+      }
+      
       if(oldVal!=""&&val==""&&this.model.length>0){
            this.model=[]
            return;
