@@ -5,11 +5,12 @@
           <h-input v-model="formItem1.input" placeholder="请输入"></h-input>
         </h-form-item> -->
         <h-form-item label="选择器" prop="select" required>
-          <h-select v-model="formItem1.select" filterable>
+          <h-simple-select v-model="formItem1.select" filterable>
+            <h-select-block></h-select-block>
             <!-- <h-option value="beijing">北京市</h-option>
             <h-option value="shanghai">上海市</h-option>
             <h-option value="shenzhen">深圳市</h-option> -->
-          </h-select>
+          </h-simple-select>
         </h-form-item>        
         <h-form-item label="日期控件">
           <h-row>
@@ -270,6 +271,9 @@
       focus(){
         this.$refs.formItem1.firstNodeFocused()
       }
+    },
+    mounted(){
+      // window.isO45 = true
     }
   }
 </script>
