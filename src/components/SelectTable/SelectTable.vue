@@ -694,7 +694,7 @@ export default {
         }
       }
     },
-    offsetArrow() {
+     offsetArrow() {
       if (!this.multiple) return
       let el = this.$refs.reference
       if (el.scrollHeight > el.clientHeight) {
@@ -1193,7 +1193,7 @@ export default {
     handkeSearchBlur(){
        let multipleAry=[];
       this.selectedMultiple.forEach(item=>{
-            multipleAry.push(item[this.filterBy]);
+            multipleAry.push(item["label"]);
       })
       let modelstr=multipleAry.join(",");
       if(modelstr!=this.selectedResult){
@@ -1203,6 +1203,10 @@ export default {
     },
     resetInputState(e) {
       this.inputLength = this.$refs.input.value.length * 12 + 56
+      if(this.visible &&this.showBottom&&e.keyCode==9){ //153789 【TS:201907180097-资管业委会（资管）_贺文能-【需求类型】需求【需求描述】simple-select tab切换时失去焦点，不会将下拉框收起， 详见附件】
+        this.hideMenu();
+         this.isInputFocus = false
+      }
       if(this.newSearchModel&&e.keyCode=="86"&&e.ctrlKey){
          this.handleNewSearchCopy(e);
       }
@@ -1802,7 +1806,7 @@ export default {
          return;
       }
       this.selectedMultiple.forEach(item=>{
-            multipleAry.push(item[this.filterBy]);
+            multipleAry.push(item["label"]);
       })
       //if(this.isSearchDelete){
           this.newModelSearchDelete(multipleAry);
@@ -1823,7 +1827,7 @@ export default {
     },
     newSearchModelselectItem(changeitem){
       if(!changeitem) return;
-       let label=changeitem[this.filterBy];
+       let label=changeitem["label"];
        let selectAry=this.selectedResult.trim().split(",");
        let index=selectAry.indexOf(label);
        if(index>=0){
