@@ -1217,7 +1217,6 @@ export default {
     handleMouseWheel (event) {
         const deltaX = event.deltaX;
         const $body = this.$refs.body;
-
         if (deltaX > 0) {
             $body.scrollLeft = $body.scrollLeft + 10;
         } else {
