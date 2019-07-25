@@ -1,3 +1,59 @@
+<template>
+<div>
+	<h-button @click="click"></h-button>
+	<h-simple-select 
+        v-model="value" 
+        filterable
+        transfer
+		remoteNoQuery
+        :remote="true"
+        :remote-method='remoteMethodDeal'
+        widthAdaption
+        :clearable=true>
+        <h-select-block :data="secList" @on-scroll='onScroll'></h-select-block>
+    </h-simple-select>
+</div>
+</template>
+<script>
+export default {
+	data(){
+		return{
+			secList:[
+			],
+			value:"",
+			
+		}
+	},
+	methods:{
+		click(){
+			this.secList = []
+		},
+		onScroll(num){
+			if(num > 10) {
+				return
+			}
+			for(let i=30;i<60;i++) {
+				let obj = {value:i,label:i}
+				this.secList.push(obj)
+			}
+		},
+		remoteMethodDeal(){
+			
+		}
+	},
+	mounted(){
+		this.secList = []
+		for(let i=0;i<30;i++) {
+			let obj = {value:i,label:i}
+			this.secList.push(obj)
+		}
+	}
+}
+</script>
+
+
+
+
 <!--<template>
   <h-edit-gird ref="editGrid"
     style="border-left:1px solid #dce1e7;"
@@ -76,28 +132,6 @@ export default {
 }
 </script>
 -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <!--<template>
 <div>
