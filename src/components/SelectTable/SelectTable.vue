@@ -710,9 +710,10 @@ export default {
         return false
       }
       this.visible = !this.visible
-      this.isInputFocus = true
+      this.isInputFocus = false
       if (this.visible && this.filterable && this.showBottom&&this.$refs.input) {
         this.$nextTick(() => {
+          this.isInputFocus = true
           this.$refs.input.focus()
         })
       }
