@@ -136,7 +136,7 @@ export default {
     },
     showCloseIcon:{
       type: Boolean,
-      default: true
+      default: false
     }
   },
   data() {
