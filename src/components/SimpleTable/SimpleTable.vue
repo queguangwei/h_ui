@@ -536,7 +536,8 @@ export default {
       baseInx: null,
       offsetInx: null,
       hoverIndex:-1,
-      scheduledAnimationFrame: false // 是否进行动画帧更新visibledata
+      scheduledAnimationFrame: false, // 是否进行动画帧更新visibledata,
+      isHorizontal:false,
     }
   },
   computed: {
@@ -740,7 +741,10 @@ export default {
       let style = {}
       if (this.bodyHeight !== 0) {
         let height = this.bodyHeight - 1
-        if (this.tableWidth > this.initWidth) {
+        // if (this.tableWidth > this.initWidth) {
+        //   height = this.bodyHeight - this.scrollBarHeight
+        // }
+        if (this.isHorizontal) {
           height = this.bodyHeight - this.scrollBarHeight
         }
         style.height = `${height}px`
@@ -896,6 +900,9 @@ export default {
       }
       this.$nextTick(() => {
         this.$emit('on-drag', width, key)
+        if(this.$refs.content){
+          this.isHorizontal = this.$refs.content.scrollWidth > this.$refs.content.clientWidth?true:false
+        }
       })
     },
     getLeftWidth() {
@@ -1258,6 +1265,11 @@ export default {
           this.headerRealHeight =
             parseInt(getStyle(this.$refs.header, 'height')) || 0
           this.initWidth = parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0
+          if(this.$refs.content){
+            this.$nextTick(()=>{
+              this.isHorizontal = this.$refs.content.scrollWidth > this.$refs.content.clientWidth?true:false
+            })
+          }
         })
       })
     },

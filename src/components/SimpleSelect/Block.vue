@@ -101,6 +101,7 @@ export default {
       visibleCount: 20,
       cloneData: [],
       lastScollTop: 0,
+      lastScollBottom:null,
       showEmpty: false,
       showBottom: false,
       focusIndex: 0
@@ -223,8 +224,7 @@ export default {
     handleBodyScroll(event) {
       this.lastScollTop = event.target.scrollTop
       this.updateVisibleData(event.target.scrollTop)
-      let num = getBarBottom(event.target, getScrollBarSize())
-      this.$emit('on-scroll', num, this.lastScollTop)
+      this.lastScollBottom = getBarBottom(event.target, getScrollBarSize())
       // 修复滚动后出现 x 滚动条问题
       if (this.$parent.widthAdaption) {
         this.$parent.setWidthAdaption()
@@ -396,7 +396,11 @@ export default {
         //   this.updateVisibleData();
         // })
       }
-    }
+    },
+    lastScollBottom(val){
+      if(val==null||this.data.length==0) return
+      this.$emit('on-scroll', val, this.lastScollTop)
+    },
   },
   destroyed() {
     this.dispatch('Select', 'remove')
