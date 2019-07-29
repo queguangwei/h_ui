@@ -36,6 +36,7 @@
           :initWidth="initWidth"
           :rowSelect="rowSelect"
           :scrollBarWidth="scrollBarWidth"
+          :headSelection="headSelection"
           :height="height">
         </Tree-table>
       </div>
@@ -171,11 +172,11 @@ export default {
     canMove: {
       type: Boolean,
       default: false
-    }
-    // highlightRow: {
-    //   type:Boolean,
-    //   default:false,
-    // },
+    },
+    headSelection: {
+      type:Boolean,
+      default:false,
+    },
     
   },
   data () {
@@ -451,7 +452,7 @@ export default {
         this.$emit('on-select-change',this.getSelection(),this.getSelection(true));
       })
     },
-    clearSelected(){
+    clearSelected () {
       this.selection ={}
       for(let i in this.checkedObj){
         this.checkedObj[i].checked = false
@@ -470,6 +471,10 @@ export default {
       return status?selectIndex:arr;
     },
     selectAll (status) {
+      if(!this.rebuildData ||this.rebuildData.length==0) return
+      this.checkedObj.forEach((col,inx)=>{
+        this.$set(col,'checked',status)
+      })
       this.$emit('on-select-all', status);
     },
     fixedHeader () {
@@ -549,7 +554,45 @@ export default {
       }else{
         this.$set(this.checkedObj[index],'_isHighlight',status)
       }
-    }
+    },
+    checkedRow(id,status=true){
+      if(!this.data || this.data.length==0) return;
+      if(!this.checkStrictly){
+        let index = this.indexAndId[id];
+        if(!this.checkedObj[index]) return
+        let row = this.checkedDown(this.rebuildData,id,status)
+        this.linkageChecked(row,status)
+      }else{
+        let index = this.indexAndId[id];
+        if(!this.checkedObj[index]){
+          this.deepTraversal(this.rebuildData, id, status,'highlight')
+        }else{
+          this.$set(this.checkedObj[index],'_isHighlight',status)
+        }
+      }
+    },
+    linkageChecked(row,status){
+      this.changeCheckedObj(this.indexAndId[row.id],status);
+      if(row.children&&row.children.length>0){
+        row.children.forEach((col,inx)=>{
+          this.linkageChecked(col,status)
+        })
+      }
+    },
+    checkedDown(data,id,status){
+      let result = null
+      for(let i=0;i<data.length; i++){
+        if(data[i].id == id){
+          result = data[i]
+          break;
+        } 
+        if(data[i].children&&data[i].children.length>0){
+          this.checkedDown(data[i].children,id,status)
+        }
+      }
+      return result
+    },
+
   },
   created () {
     if (!this.context) this.currentContext = this.$parent;
