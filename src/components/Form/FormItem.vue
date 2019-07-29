@@ -14,10 +14,13 @@
       <slot></slot>
       <transition name="fade">
         <div class="verify-tip verify-bottom"
-             v-if="isShowError"
+             v-if="isShowError&&showModal"
              :style="{left: `${msgOffset}px`}">
           <div class="verify-tip-arrow"></div>
-          <div class="verify-tip-inner" :style="verifyTipStyle" :title="validateMessage">{{validateMessage}}</div>
+          <div class="verify-tip-inner" :style="verifyTipStyle" :title="validateMessage">
+            <h-icon v-if="showCloseIcon" :name="closeName" @on-click="closeTip" :size="12"></h-icon>
+            {{validateMessage}}
+          </div>
         </div>
       </transition>
     </div>
@@ -126,6 +129,14 @@ export default {
     marginLeftForce: {
       type: Boolean,
       default: false
+    },
+    closeName: {
+      type: String,
+      default: 'close'
+    },
+    showCloseIcon:{
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -141,7 +152,8 @@ export default {
       curCols: this.cols,
       mustShowError: false,
       mustShowErrorList: [],
-      modeChanged: false
+      modeChanged: false,
+      showModal:true,
     }
   },
   watch: {
@@ -334,6 +346,7 @@ export default {
       )
     },
     validate(trigger, callback = function() {}, value) {
+      this.showModal = true
       if (this.isNotChecked) return
       const rules = this.getFilteredRule(trigger)
 
@@ -437,6 +450,9 @@ export default {
         this.$off('on-form-blur').$on('on-form-blur', this.onFieldBlur)
         this.$off('on-form-change').$on('on-form-change', this.onFieldChange)
       }
+    },
+    closeTip(){
+      this.showModal = false
     }
   },
   mounted() {
