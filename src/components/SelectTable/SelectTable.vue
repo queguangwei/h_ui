@@ -710,9 +710,10 @@ export default {
         return false
       }
       this.visible = !this.visible
-      this.isInputFocus = true
+      this.isInputFocus = false
       if (this.visible && this.filterable && this.showBottom&&this.$refs.input) {
         this.$nextTick(() => {
+          this.isInputFocus = true
           this.$refs.input.focus()
         })
       }
@@ -793,11 +794,18 @@ export default {
 
       this.options = options
       this.availableOptions = options
-
+      
       if (init) {
         if (!this.remote || this.isBlock) {
           this.updateSingleSelected(true, slot)
           this.updateMultipleSelected(true, slot)
+            if(this.newSearchModel&&this.selectedMultiple.length>0&&!this.isInputFocus){
+              let multipleAry=[];
+                this.selectedMultiple.forEach(item=>{
+                    multipleAry.push(item["label"]);
+              })
+              this.selectedResult=multipleAry.join(',');
+           }
         }
       }
     },
@@ -1535,7 +1543,7 @@ export default {
     this.$nextTick(() => {
       this.broadcastQuery('')
     })
-    this.updateOptions(true)
+    this.updateOptions(true) 
     this.$on('append', () => {
       this.slotChange()
       this.updateOptions(true, true)
