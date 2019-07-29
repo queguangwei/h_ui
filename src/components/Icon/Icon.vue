@@ -22,7 +22,7 @@
 				return [
           `${prefixCls}`,
           `${this.fontClass}`,
-          `${this.fontClass === 'iconfong' ? 'icon' : this.fontClass}-${this.name}`,
+          `${this.fontClass === 'iconfont' ? 'icon' : this.fontClass}-${this.name}`,
           `${prefixCls}-${this.name}`
         ];
 			},
