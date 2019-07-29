@@ -14,7 +14,7 @@
           :class="alignCls(column)" 
           >
           <div :class="[`${prefixCls}-cell`]">
-            <!-- <Checkbox v-if="headSelection&&!index" @on-change="selectAll" class="asyc-check"></Checkbox> -->
+            <Checkbox v-if="headSelection&&!index" @click.native.stop="selectAll" :value="isSelectAll" class="asyc-check"></Checkbox>
             <template>
               <span v-if="!column.renderHeader" @click="handleSortByHead(index)">{{ column.title || '#' }}</span>
               <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
@@ -49,7 +49,7 @@ export default {
     columnsWidth: Object,
     headSelection: Boolean,
     canDrag:Boolean,
-    canMove: Boolean
+    canMove: Boolean,
   },
   data(){
     return{
@@ -58,11 +58,12 @@ export default {
       dragState: {},
       moving: false,
       movingColumn: null,
-      cloumnsLeft: []
+      cloumnsLeft: [],
+      isSelectAll:false
     }
   },
   computed: {
-    isSelectAll () {
+    // isSelectAll () {
       // let isSelectAll = true;
       // if (!this.data.length) isSelectAll = false;
       // for (let i = 0; i < this.data.length; i++) {
@@ -72,7 +73,7 @@ export default {
         // }
       // }
       // return isSelectAll;
-    }
+    // }
   },
   watch: {
     columns: {
@@ -91,7 +92,8 @@ export default {
   },
   methods: {
     selectAll (status) {
-      this.$parent.selectAll(status);
+      this.isSelectAll = !this.isSelectAll
+      this.$parent.selectAll(this.isSelectAll);
     },
     handleSortByHead (index) {
     },
