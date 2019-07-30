@@ -1,54 +1,42 @@
 <template>
-<div>
-	<h-button @click="click"></h-button>
-	<h-simple-select 
-        v-model="value" 
-        filterable
-        transfer
-		remoteNoQuery
-        :remote="true"
-        :remote-method='remoteMethodDeal'
-        widthAdaption
-        :clearable=true>
-        <h-select-block :data="secList" @on-scroll='onScroll'></h-select-block>
-    </h-simple-select>
-</div>
+  <div>
+    <h-form :model="formItem" :label-width="80">
+      <h-form-item label="输入框" prop="text" :rules="rule">
+        <h-date-picker v-model="formItem.text" type="daterange"></h-date-picker>
+      </h-form-item>
+      <h-form-item label="输入框" prop="text2" required>
+        <h-select v-model="formItem.text2" multiple>
+            <h-option value="1">1</h-option>
+            <h-option value="2">2</h-option>
+        </h-select>
+      </h-form-item>
+    </h-form>
+  </div>
 </template>
 <script>
-export default {
-	data(){
-		return{
-			secList:[
-			],
-			value:"",
-			
-		}
-	},
-	methods:{
-		click(){
-			this.secList = []
-		},
-		onScroll(num){
-			if(num > 10) {
-				return
-			}
-			for(let i=30;i<60;i++) {
-				let obj = {value:i,label:i}
-				this.secList.push(obj)
-			}
-		},
-		remoteMethodDeal(){
-			
-		}
-	},
-	mounted(){
-		this.secList = []
-		for(let i=0;i<30;i++) {
-			let obj = {value:i,label:i}
-			this.secList.push(obj)
-		}
-	}
-}
+  export default {
+    data() {
+      return {
+        formItem: {
+          text: [],
+          text2:[]
+        },
+        rule: [
+          {
+            validator: (rule, value, callback) => {
+              debugger
+              console.log(value)
+              if (value.length < 12) {
+                callback(new Error());
+              } else {
+                callback();
+              }
+            }, message: "长度需大于12", trigger: 'change',type:'array'
+          }
+        ]
+      }
+    }
+  }
 </script>
 
 

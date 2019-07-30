@@ -244,7 +244,7 @@
             _isExpand:col.expand||false,
             _collectionState: this.collectionState[inx],
             _parentId:col._parentId,
-            _isHighlight:col.highlight
+            _isHighlight:col.highlight||false,
           })
         }
         if((!this.checkStrictly||this.headSelection)&&this.indent==0&&col.children&&col.children.length>0){

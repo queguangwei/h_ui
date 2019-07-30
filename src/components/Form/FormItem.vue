@@ -345,7 +345,7 @@ export default {
         rule => !rule.trigger || rule.trigger.indexOf(trigger) !== -1
       )
     },
-    validate(trigger, callback = function() {}, value) {
+    validate(trigger, callback = function() {}) {
       this.showModal = true
       if (this.isNotChecked) return
       const rules = this.getFilteredRule(trigger)
@@ -362,7 +362,7 @@ export default {
       let model = {}
 
       // 允许由事件传值
-      model[this.prop] = value || this.fieldValue
+      model[this.prop] = this.fieldValue
       if (typeOf(this.fieldValue) == 'array' && this.fieldValue.length == 2) {
         if (this.fieldValue[0] == '' && this.fieldValue[1] == '')
           model[this.prop] = []
@@ -418,16 +418,16 @@ export default {
 
       if (cb) cb()
     },
-    onFieldBlur(val = '') {
-      this.validate('blur', () => {}, val)
+    onFieldBlur(val) {
+      this.validate('blur', () => {})
     },
-    onFieldChange(val = '') {
+    onFieldChange(val) {
       if (this.validateDisabled) {
         this.validateDisabled = false
         return
       }
       if (this.isOnlyBlurRequire) return
-      this.validate('change', () => {}, val)
+      this.validate('change', () => {})
     },
     commonRule(str) {
       let rules = this.getRules()
