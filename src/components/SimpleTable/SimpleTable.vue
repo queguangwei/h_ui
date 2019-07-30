@@ -261,6 +261,7 @@
                           :row="row"
                           :key="column._columnKey"
                           :column="column"
+                          :sum="summationRender"
                           :index="row._index"></Cell>
                     <span v-else
                           v-html="row[column.key]"></span>
