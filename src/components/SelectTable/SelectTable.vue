@@ -711,6 +711,9 @@ export default {
       }
       this.visible = !this.visible
       this.isInputFocus = false
+      if(this.newSearchModel){
+        this.isInputFocus = this.visible
+      }
       if (this.visible && this.filterable && this.showBottom&&this.$refs.input) {
         this.$nextTick(() => {
           this.isInputFocus = true
@@ -1207,7 +1210,7 @@ export default {
       if(modelstr!=this.selectedResult){
         this.selectedResult=modelstr;
       }
-      this.isInputFocus = false
+       this.isInputFocus = false
 
     },
     resetInputState(e) {
