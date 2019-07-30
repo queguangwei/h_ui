@@ -936,6 +936,9 @@ export default {
     highlightCurrentRow (_index) {
         if (!this.highlightRow) return;
         const curStatus = this.objData[_index]._isHighlight;
+        if(this.objData[_index]._isChecked&&this.rowSelectOnly){
+          return;
+        }
         let oldIndex = -1;
         for (let i in this.objData) {
           this.objData[i]._isChecked = false;//单选时取消多选项，估值6.0专用
@@ -1031,11 +1034,12 @@ export default {
           data = this.objData[i];
         }
       }
-      if(data._isChecked&&this.rowSelectOnly&&target.type!="checkbox"){  // #148487 【TS:201906250692-资管业委会（资管）_钱佳华-【需求类型】需求【需求描述】表格控件勾选：点击同一行记录时，第一次点击勾选，第二次点击不进行去除勾选操作，但是如果点击的是勾选框，则能够正常去除勾选。】
-          return;
-      }
+      // if(data._isChecked&&this.rowSelectOnly&&target.type!="checkbox"){  // #148487 【TS:201906250692-资管业委会（资管）_钱佳华-【需求类型】需求【需求描述】表格控件勾选：点击同一行记录时，第一次点击勾选，第二次点击不进行去除勾选操作，但是如果点击的是勾选框，则能够正常去除勾选。】
+      //     return;
+      // }
       const status = !data._isChecked;
       this.objData[_index]._isChecked = status;
+       this.objData[_index]._isHighlight = status;
       if (!status && !this.clickCurrentRow) {
         this.objData[_index]._isHighlight = false;
       }

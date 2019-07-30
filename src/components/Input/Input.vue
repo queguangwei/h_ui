@@ -242,7 +242,6 @@ export default {
       slotReady: false,
       textareaStyles: {},
       viewValue:this.value,
-      clearstyle:{},
       hasvalue:false,
       /* 是否按下按键 */
       keyPressed: false
@@ -341,6 +340,13 @@ export default {
         }
       }
       return style;
+    },
+    clearstyle(){
+        let style={}
+        let right=this.icon?22:10
+        style.right=right+'px'
+        style.width='16px'
+        return style
     }
   },
   methods: {
@@ -544,13 +550,6 @@ export default {
         this.$refs.input.blur()
       }
     },
-    showClear(){
-      let right=this.icon?22:10;
-       this.clearstyle= {
-         right:right+'px',
-         width:'16px'
-       }
-    }
   },
   watch: {
     value(val) {
@@ -570,7 +569,6 @@ export default {
     }
     this.slotReady = true
     this.resizeTextarea()
-    this.showClear()
   }
 }
 </script>
