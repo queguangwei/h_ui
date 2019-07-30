@@ -346,6 +346,10 @@ export default {
     minWidth:{
       type:Number,
       default:100
+    },
+    isMulitSort:{//多列排序
+      type:Boolean,
+      default:false,
     }
   },
   data () {
@@ -1238,6 +1242,19 @@ export default {
         });
         return data;
     },
+    /**
+     * 获取所有列选中的排序件
+     */
+    getSorts() {
+      const cloneColumns = this.cloneColumns;
+      const filters = {};
+      cloneColumns.forEach(col => {
+        if (col.sortable&&col._sortType!='normal') {
+          filters[col.key] = col._sortType;
+        }
+      })
+      return filters;
+    },
     handleSort (_index, type) {
       if(_index=='all'){
         this.rebuildData = this.makeDataWithFilter();
@@ -1247,27 +1264,33 @@ export default {
         return;
       }
       let index;
-        this.cloneColumns.forEach((col,i) => {
+      this.cloneColumns.forEach((col,i) => {
+        if(!this.isMulitSort){
           col._sortType = 'normal'
-          if (col._index == _index) {
-            index = i;
-          }
-        });//rightFixed index error
-        const key = this.cloneColumns[index].key;
-        if (this.cloneColumns[index].sortable !== 'custom') {    // custom is for remote sort
-            if (type === 'normal') {
-                this.rebuildData = this.makeDataWithFilter();
-            } else {
-                this.rebuildData = this.sortData(this.rebuildData, type, index);
-            }
         }
-        this.cloneColumns[index]._sortType = type;
+        if (col._index == _index) {
+          index = i;
+        }
+      });//rightFixed index error
+      this.cloneColumns[index]._sortType = type;
+      if(this.isMulitSort){
+        this.$emit('on-sort-change',JSON.parse(JSON.stringify(this.getSorts())))
+        return
+      }
+      const key = this.cloneColumns[index].key;
+      if (this.cloneColumns[index].sortable !== 'custom') {    // custom is for remote sort
+        if (type === 'normal') {
+          this.rebuildData = this.makeDataWithFilter();
+        } else {
+          this.rebuildData = this.sortData(this.rebuildData, type, index);
+        }
+      }
 
-        this.$emit('on-sort-change', {
-            column: JSON.parse(JSON.stringify(this.columns[this.cloneColumns[index]._index])),
-            key: key,
-            order: type
-        });
+      this.$emit('on-sort-change', {
+        column: JSON.parse(JSON.stringify(this.columns[this.cloneColumns[index]._index])),
+        key: key,
+        order: type
+      });
     },
     sortCloumn (curIndex,insertIndex,_index){
       if (this.cloneColumns[insertIndex].fixed) return;
@@ -1657,7 +1680,7 @@ export default {
         }
       })
       return filters;
-    }
+    },
   },
   created () {
       if (!this.context) this.currentContext = this.$parent;

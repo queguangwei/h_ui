@@ -581,15 +581,19 @@ export default {
     },
     checkedDown(data,id,status){
       let result = null
-      for(let i=0;i<data.length; i++){
-        if(data[i].id == id){
-          result = data[i]
-          break;
-        } 
-        if(data[i].children&&data[i].children.length>0){
-          this.checkedDown(data[i].children,id,status)
+      function findRow(data,id){
+        for(let i=0;i<data.length; i++){
+          if(result){break}
+          if(data[i].id == id){
+            result = data[i]
+            break
+          } 
+          if(data[i].children&&data[i].children.length>0){
+            findRow(data[i].children,id,status)
+          }
         }
       }
+      findRow(data,id)
       return result
     },
 

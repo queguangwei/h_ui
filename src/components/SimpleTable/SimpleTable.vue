@@ -1434,7 +1434,7 @@ export default {
       }
     },
     clickCurrentRow(_index,curIndex) {
-       this.baseInx = curIndex
+      this.baseInx = curIndex
       this.offsetInx = curIndex
       if (!this.rowSelect) {
         this.focusIndex = curIndex
@@ -1494,7 +1494,9 @@ export default {
           )
     },
     toggleSelect(_index, curIndex) {
-      // curIndex = curIndex + this.start
+      if(this.highlightRow){
+        this.focusIndex = curIndex
+      }
       this.allclick = false
       let data = {}
       for (let i in this.objData) {
@@ -2111,6 +2113,8 @@ export default {
         this.focusIndex = this.curPageFirstIndex
         top = curTop
       }
+      this.baseInx = this.focusIndex
+      this.offsetInx = this.focusIndex
       if (curTop != top) {
         this.updateVisibleData(top)
         this.$refs.body.scrollTop = top
@@ -2150,6 +2154,7 @@ export default {
           this.objData[index]._isChecked = false
         }
       }
+      this.focusIndex = this.offsetInx
       this.$emit(
         'on-selection-change',
         this.getSelection(),
@@ -2210,7 +2215,7 @@ export default {
         this.getLeftWidth()
       }
     })
-    on(this.$refs.tableWrap, 'keyup', this.keySelect)
+    on(document, 'keyup', this.keySelect)
   },
   beforeDestroy() {
     //window.removeEventListener('resize', this.handleResize, false);
@@ -2219,7 +2224,7 @@ export default {
     off(window, 'resize', this.getLeftWidth)
     off(document, 'keydown', this.handleKeydown)
     off(document, 'keyup', this.handleKeyup)
-    off(this.$refs.tableWrap, 'keyup', this.keySelect)
+    off(document, 'keyup', this.keySelect)
   },
   watch: {
     toScrollTop() {
