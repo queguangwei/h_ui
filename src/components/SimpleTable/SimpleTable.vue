@@ -261,6 +261,7 @@
                           :row="row"
                           :key="column._columnKey"
                           :column="column"
+                          :sum="summationRender"
                           :index="row._index"></Cell>
                     <span v-else
                           v-html="row[column.key]"></span>
@@ -484,7 +485,11 @@ export default {
     summationRender:{
       type:Boolean,
       default:true
-    }
+    },
+    rowSelectOnly:{
+      type:Boolean,//多选时是否支持点击行只选中，再次点击不进行反选
+      default:false
+    },
   },
   data() {
     return {
@@ -1345,6 +1350,9 @@ export default {
           ? this.objData[_index]._isHighlight
           : false
       let oldIndex = -1
+      if(this.objData[_index]._isChecked&&this.rowSelectOnly){
+          return;
+        }
       for (let i in this.objData) {
         this.objData[i]._isChecked = false //单选时取消多选项，估值6.0专用
         if (
