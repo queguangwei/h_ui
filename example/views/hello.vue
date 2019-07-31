@@ -1,3 +1,47 @@
+<template>
+  <div>
+    <h-form :model="formItem" :label-width="80">
+      <h-form-item label="输入框" prop="text" :rules="rule">
+        <h-date-picker v-model="formItem.text" type="daterange"></h-date-picker>
+      </h-form-item>
+      <h-form-item label="输入框" prop="text2" required>
+        <h-select v-model="formItem.text2" multiple>
+            <h-option value="1">1</h-option>
+            <h-option value="2">2</h-option>
+        </h-select>
+      </h-form-item>
+    </h-form>
+  </div>
+</template>
+<script>
+  export default {
+    data() {
+      return {
+        formItem: {
+          text: [],
+          text2:[]
+        },
+        rule: [
+          {
+            validator: (rule, value, callback) => {
+              debugger
+              console.log(value)
+              if (value.length < 12) {
+                callback(new Error());
+              } else {
+                callback();
+              }
+            }, message: "长度需大于12", trigger: 'change',type:'array'
+          }
+        ]
+      }
+    }
+  }
+</script>
+
+
+
+
 <!--<template>
   <h-edit-gird ref="editGrid"
     style="border-left:1px solid #dce1e7;"
@@ -76,28 +120,6 @@ export default {
 }
 </script>
 -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <!--<template>
 <div>

@@ -131,7 +131,7 @@
           </tbody>
         </table>
       </div>
-     <div v-if="isLeftFixed||isRightFixed"
+      <div v-if="isLeftFixed||isRightFixed"
            :class="fixedCls"
            :style="fixedTableStyle"
            ref="leftF">
@@ -257,10 +257,11 @@
                     :key="column._index">
                   <div :class="classesTd(column)">
                     <span v-if="(column.type==='index'||column.type==='selection')&&column._index==0">汇总</span>
-                    <Cell v-else-if="column.render"
+                    <Cell v-else-if="column.render&&summationRender"
                           :row="row"
                           :key="column._columnKey"
                           :column="column"
+                          :sum="summationRender"
                           :index="row._index"></Cell>
                     <span v-else
                           v-text="row[column.key]"></span>
@@ -480,7 +481,15 @@ export default {
     newSort:{
       type:Boolean,
       default:false
-    }
+    },
+    summationRender:{
+      type:Boolean,
+      default:true
+    },
+    rowSelectOnly:{
+      type:Boolean,//多选时是否支持点击行只选中，再次点击不进行反选
+      default:false
+    },
   },
   data() {
     return {
@@ -532,7 +541,8 @@ export default {
       baseInx: null,
       offsetInx: null,
       hoverIndex:-1,
-      scheduledAnimationFrame: false // 是否进行动画帧更新visibledata
+      scheduledAnimationFrame: false, // 是否进行动画帧更新visibledata,
+      isHorizontal:false,
     }
   },
   computed: {
@@ -689,7 +699,7 @@ export default {
       style.width = `${width}px`
       return style
     },
-        fixedTableStyle() {
+    fixedTableStyle() {
       if(this.isLeftFixed){
         let style = {}
         let width = 0
@@ -736,7 +746,10 @@ export default {
       let style = {}
       if (this.bodyHeight !== 0) {
         let height = this.bodyHeight - 1
-        if (this.tableWidth > this.initWidth) {
+        // if (this.tableWidth > this.initWidth) {
+        //   height = this.bodyHeight - this.scrollBarHeight
+        // }
+        if (this.isHorizontal) {
           height = this.bodyHeight - this.scrollBarHeight
         }
         style.height = `${height}px`
@@ -892,6 +905,9 @@ export default {
       }
       this.$nextTick(() => {
         this.$emit('on-drag', width, key)
+        if(this.$refs.content){
+          this.isHorizontal = this.$refs.content.scrollWidth > this.$refs.content.clientWidth?true:false
+        }
       })
     },
     getLeftWidth() {
@@ -1254,6 +1270,11 @@ export default {
           this.headerRealHeight =
             parseInt(getStyle(this.$refs.header, 'height')) || 0
           this.initWidth = parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0
+          if(this.$refs.content){
+            this.$nextTick(()=>{
+              this.isHorizontal = this.$refs.content.scrollWidth > this.$refs.content.clientWidth?true:false
+            })
+          }
         })
       })
     },
@@ -1329,6 +1350,9 @@ export default {
           ? this.objData[_index]._isHighlight
           : false
       let oldIndex = -1
+      if(this.objData[_index]._isChecked&&this.rowSelectOnly){
+          return;
+        }
       for (let i in this.objData) {
         this.objData[i]._isChecked = false //单选时取消多选项，估值6.0专用
         if (
@@ -1418,7 +1442,7 @@ export default {
       }
     },
     clickCurrentRow(_index,curIndex) {
-       this.baseInx = curIndex
+      this.baseInx = curIndex
       this.offsetInx = curIndex
       if (!this.rowSelect) {
         this.focusIndex = curIndex
@@ -1478,7 +1502,9 @@ export default {
           )
     },
     toggleSelect(_index, curIndex) {
-      // curIndex = curIndex + this.start
+      if(this.highlightRow){
+        this.focusIndex = curIndex
+      }
       this.allclick = false
       let data = {}
       for (let i in this.objData) {
@@ -2115,6 +2141,8 @@ export default {
         this.focusIndex = this.curPageFirstIndex
         top = curTop
       }
+      this.baseInx = this.focusIndex
+      this.offsetInx = this.focusIndex
       if (curTop != top) {
         this.updateVisibleData(top)
         this.$refs.body.scrollTop = top
@@ -2163,6 +2191,7 @@ export default {
           this.objData[index]._isChecked = false
         }
       }
+      this.focusIndex = this.offsetInx
       this.$emit(
         'on-selection-change',
         this.getSelection(),
@@ -2223,7 +2252,7 @@ export default {
         this.getLeftWidth()
       }
     })
-    on(this.$refs.tableWrap, 'keyup', this.keySelect)
+    on(document, 'keyup', this.keySelect)
   },
   beforeDestroy() {
     //window.removeEventListener('resize', this.handleResize, false);
@@ -2232,7 +2261,7 @@ export default {
     off(window, 'resize', this.getLeftWidth)
     off(document, 'keydown', this.handleKeydown)
     off(document, 'keyup', this.handleKeyup)
-    off(this.$refs.tableWrap, 'keyup', this.keySelect)
+    off(document, 'keyup', this.keySelect)
   },
   watch: {
     toScrollTop() {

@@ -87,7 +87,7 @@
                      showArrow
                      loadingText="拼命加载中..."
                      ref="block">
-      <h-select-block :data="remoteData"></h-select-block>
+      <h-select-block :data="remoteData" @on-scroll="scroll"></h-select-block>
       <div slot="header">我是header</div>
       <div slot="footer">
         <h-button @click="changeData">已选置顶</h-button>
@@ -287,8 +287,12 @@ export default {
 
       } else {
         this.loading1 = false;
-        this.remoteData = bigData
+        // this.remoteData = bigData
+        this.remoteData = []
       }
+    },
+    scroll(num){
+      console.log('on-scroll'+num)
     },
 changeData() {
       this.$refs.block.selectedTop()
