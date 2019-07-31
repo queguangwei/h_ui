@@ -273,7 +273,7 @@
       }
     },
     mounted(){
-      // window.isO45 = true
+      // window.isO45 = true 
     }
   }
 </script>

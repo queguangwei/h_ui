@@ -367,7 +367,7 @@
         return [
           `${prefixCls}`,
           {
-              [`${prefixCls}-visible`]: this.visible||this.isInputFocus,
+              [`${prefixCls}-visible`]: this.visible,
               [`${prefixCls}-disabled`]: this.disabled,
               [`${prefixCls}-editable`]: !this.editable,
               [`${prefixCls}-readonly`]: this.readonly,
@@ -1095,6 +1095,7 @@
       },
       handleBlur () {
         if (this.multiple && this.filterable) this.$refs.reference.scrollTop = 0
+        this.isInputFocus = false
         this.$emit('on-blur');
         if (this.showBottom) return false;
         // this.isInputFocus = false

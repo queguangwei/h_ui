@@ -346,6 +346,10 @@ export default {
     minWidth:{
       type:Number,
       default:100
+    },
+    isMulitSort:{//多列排序
+      type:Boolean,
+      default:false,
     }
   },
   data () {
@@ -932,6 +936,9 @@ export default {
     highlightCurrentRow (_index) {
         if (!this.highlightRow) return;
         const curStatus = this.objData[_index]._isHighlight;
+        if(this.objData[_index]._isChecked&&this.rowSelectOnly){
+          return;
+        }
         let oldIndex = -1;
         for (let i in this.objData) {
           this.objData[i]._isChecked = false;//单选时取消多选项，估值6.0专用
@@ -1027,11 +1034,12 @@ export default {
           data = this.objData[i];
         }
       }
-      if(data._isChecked&&this.rowSelectOnly&&target.type!="checkbox"){  // #148487 【TS:201906250692-资管业委会（资管）_钱佳华-【需求类型】需求【需求描述】表格控件勾选：点击同一行记录时，第一次点击勾选，第二次点击不进行去除勾选操作，但是如果点击的是勾选框，则能够正常去除勾选。】
-          return;
-      }
+      // if(data._isChecked&&this.rowSelectOnly&&target.type!="checkbox"){  // #148487 【TS:201906250692-资管业委会（资管）_钱佳华-【需求类型】需求【需求描述】表格控件勾选：点击同一行记录时，第一次点击勾选，第二次点击不进行去除勾选操作，但是如果点击的是勾选框，则能够正常去除勾选。】
+      //     return;
+      // }
       const status = !data._isChecked;
       this.objData[_index]._isChecked = status;
+       this.objData[_index]._isHighlight = status;
       if (!status && !this.clickCurrentRow) {
         this.objData[_index]._isHighlight = false;
       }
@@ -1217,7 +1225,6 @@ export default {
     handleMouseWheel (event) {
         const deltaX = event.deltaX;
         const $body = this.$refs.body;
-
         if (deltaX > 0) {
             $body.scrollLeft = $body.scrollLeft + 10;
         } else {
@@ -1239,6 +1246,19 @@ export default {
         });
         return data;
     },
+    /**
+     * 获取所有列选中的排序件
+     */
+    getSorts() {
+      const cloneColumns = this.cloneColumns;
+      const filters = {};
+      cloneColumns.forEach(col => {
+        if (col.sortable&&col._sortType!='normal') {
+          filters[col.key] = col._sortType;
+        }
+      })
+      return filters;
+    },
     handleSort (_index, type) {
       if(_index=='all'){
         this.rebuildData = this.makeDataWithFilter();
@@ -1248,27 +1268,33 @@ export default {
         return;
       }
       let index;
-        this.cloneColumns.forEach((col,i) => {
+      this.cloneColumns.forEach((col,i) => {
+        if(!this.isMulitSort){
           col._sortType = 'normal'
-          if (col._index == _index) {
-            index = i;
-          }
-        });//rightFixed index error
-        const key = this.cloneColumns[index].key;
-        if (this.cloneColumns[index].sortable !== 'custom') {    // custom is for remote sort
-            if (type === 'normal') {
-                this.rebuildData = this.makeDataWithFilter();
-            } else {
-                this.rebuildData = this.sortData(this.rebuildData, type, index);
-            }
         }
-        this.cloneColumns[index]._sortType = type;
+        if (col._index == _index) {
+          index = i;
+        }
+      });//rightFixed index error
+      this.cloneColumns[index]._sortType = type;
+      if(this.isMulitSort){
+        this.$emit('on-sort-change',JSON.parse(JSON.stringify(this.getSorts())))
+        return
+      }
+      const key = this.cloneColumns[index].key;
+      if (this.cloneColumns[index].sortable !== 'custom') {    // custom is for remote sort
+        if (type === 'normal') {
+          this.rebuildData = this.makeDataWithFilter();
+        } else {
+          this.rebuildData = this.sortData(this.rebuildData, type, index);
+        }
+      }
 
-        this.$emit('on-sort-change', {
-            column: JSON.parse(JSON.stringify(this.columns[this.cloneColumns[index]._index])),
-            key: key,
-            order: type
-        });
+      this.$emit('on-sort-change', {
+        column: JSON.parse(JSON.stringify(this.columns[this.cloneColumns[index]._index])),
+        key: key,
+        order: type
+      });
     },
     sortCloumn (curIndex,insertIndex,_index){
       if (this.cloneColumns[insertIndex].fixed) return;
@@ -1658,7 +1684,7 @@ export default {
         }
       })
       return filters;
-    }
+    },
   },
   created () {
       if (!this.context) this.currentContext = this.$parent;

@@ -8,7 +8,8 @@
         <tr :key="row.id"
           class="not-child"
           :class="rowClasses(row.id)"
-          @click="clickCurrentRow(row,row.id,$event)">
+          @click="clickCurrentRow(row,row.id,$event)"
+          @dblclick="dblclickCurrentRow(row,row.id,$event)">
           <td v-for="(column,inx) in columns" :class="alignCls(column, row)" :key="column.index">
             <span v-if="inx==(columns[0].type=='index'?1:0)" :style="indentCls" >
               <Icon v-if="row.children && row.children.length!=0" name = "play_fill" :class="iconClass(row.id,index)" @click.native.stop="toggleExpand(index,row,$event)"></Icon>
@@ -85,6 +86,7 @@
       initWidth:[Number,String],
       scrollBarWidth:[Number,String],
       rowSelect:Boolean,
+      headSelection: Boolean,
     },
     computed: {
       objData () {
@@ -148,6 +150,13 @@
           if(row.children&&row.children.length>0){
             this.updateTreeDown(row.children,status,'_isHighlight');
           }
+        }
+      },
+      dblclickCurrentRow (row,id,e) {
+        this._parent.dblclickCurrentRow(row);
+        this._parent.clickCurrentRow(row)
+        if(this.rowSelect){
+          this.changeSelect(id,row,e)
         }
       },
       selectRootUp(id,status){
@@ -235,7 +244,12 @@
             _isExpand:col.expand||false,
             _collectionState: this.collectionState[inx],
             _parentId:col._parentId,
-            _isHighlight:col.highlight
+            _isHighlight:col.highlight||false,
+          })
+        }
+        if((!this.checkStrictly||this.headSelection)&&this.indent==0&&col.children&&col.children.length>0){
+          col.children.forEach((item,inx)=>{
+            this.setStatus(item,inx)
           })
         }
       },
@@ -260,7 +274,7 @@
             this.setStatus(col,inx);
           }
         })  
-      }
+      },
     },
     mounted(){
       this.getStatus();   
@@ -269,7 +283,7 @@
       data:{
         deep:true,
         handler () {
-          this.getStatus();    
+          this.getStatus();
         }
       },
     }

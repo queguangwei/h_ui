@@ -64,7 +64,6 @@
           </div>
           <div class="h-selectTree-dropdown-list" ref="list" :style="listStyle">
             <Tree ref="tree" :data="baseDate" :show-checkbox="showCheckbox" :multiple="multiple" :isAlwaysSelect="isAlwaysSelect" :checkStrictly="checkStrictly" :showIndeterminate="!checkIndeter" @on-select-change="selectChange" @on-check-change="checkChange" @on-toggle-expand="toggleExpand" v-show="remote && !loading || !remote" isFormSelect>
-
             </Tree>
           </div>
           <!-- 远程搜索loading -->
