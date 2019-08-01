@@ -77,7 +77,7 @@
             return !!this.parent.btnIcon && this.parent.type == 'button'
           }
         } else {
-          return false 
+          return false
         }
       },
       wrapClasses () {
@@ -149,13 +149,15 @@
       updateValue () {
         this.currentValue = this.value === this.trueValue;
       },
-      focus () {
+      focus(event) {
         this.$refs.input.focus();
         this.isFocus = true;
+        this.$emit('on-focus', event)
       },
-      blur () {
+      blur(event) {
         this.$refs.input.blur();
         this.isFocus = false;
+        this.$emit('on-blur', event)
       }
     },
     watch: {

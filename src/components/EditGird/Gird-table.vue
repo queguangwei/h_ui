@@ -44,7 +44,7 @@
       <div :class="[prefixCls + '-tip']"
         v-show="((!!localeNoDataText && (!data || data.length === 0)) || (!rebuildData || rebuildData.length === 0))" @scroll="handleBodyScroll" :style="bodyStyle">
         <div class="h-table-tiptext" :style="textStyle" >
-          <span v-html="localeNoDataText" v-if="!data || data.length === 0"></span>
+          <span v-text="localeNoDataText" v-if="!data || data.length === 0"></span>
         </div>
         <table cellspacing="0" cellpadding="0" border="0" :style="tipStyle">
           <tbody>
@@ -136,7 +136,7 @@
     <Spin fix size="large" v-if="loading">
       <slot name="loading">
         <h-icon name="load-c" size=18 class='h-load-loop'></h-icon>
-        <div v-html="loadingText"></div>
+        <div v-text="loadingText"></div>
       </slot>
     </Spin>
   </div>

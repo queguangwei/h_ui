@@ -16,7 +16,7 @@
             @on-click="handleIconClick"></Icon>
       <transition name="fade">
         <Icon name="load-c"
-              class="h-icon h-load-loop" 
+              class="h-icon h-load-loop"
               :class="[prefixCls + '-icon', prefixCls + '-icon-validate']"
               v-if="!icon"></Icon>
       </transition>
@@ -42,7 +42,7 @@
              @blur="handleBlur"
              @input="handleInputValue"
              @change="handleChange">
-      <div :class="[prefixCls + '-group-append']" 
+      <div :class="[prefixCls + '-group-append']"
            v-if="append"
            v-show="slotReady">
         <slot name="append"></slot>
@@ -99,6 +99,7 @@ import calcTextareaHeight from '../../util/calcTextareaHeight'
 import Emitter from '../../mixins/emitter'
 import Locale from '../../mixins/locale'
 import Icon from '../Icon/Icon.vue'
+import { on } from '../../util/dom';
 
 const prefixCls = 'h-input'
 
@@ -336,17 +337,17 @@ export default {
       if(this.clearable){
         style.paddingRight=30+'px';
         if(this.icon){
-            style.paddingRight=42+'px';
+          style.paddingRight=42+'px';
         }
       }
       return style;
     },
     clearstyle(){
-        let style={}
-        let right=this.icon?22:10
-        style.right=right+'px'
-        style.width='16px'
-        return style
+      let style={}
+      let right=this.icon?22:10
+      style.right=right+'px'
+      style.width='16px'
+      return style
     }
   },
   methods: {
@@ -410,10 +411,11 @@ export default {
       if(this.clearable){
          setTimeout(()=>{
              this.hasvalue=false
-         }, 200);     
+         }, 200);
       }
     },
     handleInputValue(event) {
+      console.log(event)
       if (!this.keyUpMode || !this.keyPressed) {
         this.handleInput(event)
       }
@@ -476,14 +478,14 @@ export default {
           }
         }
       }
-    if(this.clearable){
-       if(value!=''){
-         this.hasvalue=true
-       }else{
-         this.hasvalue=false
-       }
-    }
-    
+      if(this.clearable){
+        if(value!=''){
+          this.hasvalue=true
+        }else{
+          this.hasvalue=false
+        }
+      }
+
       this.$emit('input', value)
       this.setCurrentValue(value)
       this.$emit('on-change', event)
@@ -550,6 +552,17 @@ export default {
         this.$refs.input.blur()
       }
     },
+    handleKeyboard(e) {
+      if (!e.shiftKey) {
+        const keyCode = e.keyCode
+        // tab
+        if (keyCode === 9) {
+          e.preventDefault()
+          e.stopPropagation()
+          console.log('tab')
+        }
+      }
+    }
   },
   watch: {
     value(val) {
@@ -569,6 +582,8 @@ export default {
     }
     this.slotReady = true
     this.resizeTextarea()
+
+    on(document, 'keyup', this.handleKeyboard)
   }
 }
 </script>
