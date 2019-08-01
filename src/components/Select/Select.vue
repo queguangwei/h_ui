@@ -346,14 +346,15 @@
         isLi:true,
         scrollBarWidth: getScrollBarSize(),
         isfirstSelect: false,
-        tabIndex:0,
+        tabIndex: 0,
         selectHead:false,
         titleTip:'',
         fPlacement:this.placement,
         isSelectAll:false,
         typeValue:'string',
         focusValue:'',
-        viewValue:null
+        viewValue:null,
+        lastScrollTop: 0
       };
     },
     computed: {
@@ -567,7 +568,8 @@
       },
       handleSelectScroll(event){
         let num = getBarBottom(event.target,this.scrollBarWidth);
-        this.$emit('on-scroll',num)
+        this.$emit('on-scroll', num, this.lastScrollTop !== event.target.scrollTop ? "y" : "x");
+        this.lastScrollTop = event.target.scrollTop;
       },
       toggleSelect(val){
         this.isSelectAll = !this.isSelectAll
