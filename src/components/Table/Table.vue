@@ -389,6 +389,7 @@ export default {
       dragEl: null,
       baseInx: null,
       offsetInx: null,
+      lastScrollTop: 0
     };
   },
   computed: {
@@ -1184,8 +1185,13 @@ export default {
         if (this.isRightFixed) this.$refs.fixedRightBody.scrollTop = event.target.scrollTop;
         this.hideColumnFilter();
         if (this.isSummation) this.sumMarginLeft = event.target.scrollLeft
+        let oldBottomNum = this.buttomNum;
         this.buttomNum = getBarBottom(event.target,this.scrollBarWidth);
         this.topNum = event.target.scrollTop
+        if (oldBottomNum !== null && this.buttomNum !== null) {
+          this.$emit('on-scroll', this.buttomNum, this.topNum, this.lastScrollTop !== event.target.scrollTop ? "y" : "x");
+        }
+        this.lastScrollTop = event.target.scrollTop;
     },
     handleFixedMousewheel(event) {
       let deltaY = event.deltaY;
@@ -1781,10 +1787,6 @@ export default {
       },
       hasWidth(){
         this.handleResize();
-      },
-      buttomNum(val,oldvalue){
-        if (val==null || oldvalue==null) return;
-        this.$emit('on-scroll',this.buttomNum,this.topNum);
       },
       shiftSelect(val){
         if (val.length==2) {
