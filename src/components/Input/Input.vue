@@ -99,7 +99,6 @@ import calcTextareaHeight from '../../util/calcTextareaHeight'
 import Emitter from '../../mixins/emitter'
 import Locale from '../../mixins/locale'
 import Icon from '../Icon/Icon.vue'
-import { on } from '../../util/dom';
 
 const prefixCls = 'h-input'
 
@@ -382,7 +381,7 @@ export default {
         this.$refs.input.select()
       }
       if(this.currentValue!=""&&this.clearable){
-            this.hasvalue=true;
+        this.hasvalue=true;
       }
       this.$emit('on-focus', event)
     },
@@ -409,13 +408,12 @@ export default {
         this.dispatch('FormItem', 'on-form-blur', this.currentValue)
       }
       if(this.clearable){
-         setTimeout(()=>{
-             this.hasvalue=false
-         }, 200);
+        setTimeout(()=>{
+          this.hasvalue=false
+        }, 200);
       }
     },
     handleInputValue(event) {
-      console.log(event)
       if (!this.keyUpMode || !this.keyPressed) {
         this.handleInput(event)
       }
@@ -551,17 +549,6 @@ export default {
       } else {
         this.$refs.input.blur()
       }
-    },
-    handleKeyboard(e) {
-      if (!e.shiftKey) {
-        const keyCode = e.keyCode
-        // tab
-        if (keyCode === 9) {
-          e.preventDefault()
-          e.stopPropagation()
-          console.log('tab')
-        }
-      }
     }
   },
   watch: {
@@ -582,8 +569,6 @@ export default {
     }
     this.slotReady = true
     this.resizeTextarea()
-
-    on(document, 'keyup', this.handleKeyboard)
   }
 }
 </script>
