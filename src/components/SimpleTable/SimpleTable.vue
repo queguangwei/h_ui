@@ -543,6 +543,7 @@ export default {
       hoverIndex:-1,
       scheduledAnimationFrame: false, // 是否进行动画帧更新visibledata,
       isHorizontal:false,
+      lastScrollTop: 0
     }
   },
   computed: {
@@ -1757,7 +1758,8 @@ export default {
         this.curPageFirstIndex = Math.floor(scrolltop / this.itemHeight)
         this.$refs.header.scrollLeft = event.target.scrollLeft
         if (this.isSummation) this.sumMarginLeft = event.target.scrollLeft
-         if (this.$refs.fixedBody) this.$refs.fixedBody.scrollTop = scrolltop
+        if (this.$refs.fixedBody) this.$refs.fixedBody.scrollTop = scrolltop
+        let oldBottomNum = this.buttomNum;
         this.buttomNum = getBarBottomS(
           event.target,
           this.bodyHeight,
@@ -1765,6 +1767,10 @@ export default {
           this.scrollBarHeight,
           this.isScrollX
         )
+        if (oldBottomNum !== null && this.buttomNum !== null) {
+          this.$emit('on-scroll', this.buttomNum, scrolltop !== this.lastScrollTop ? "y" : "x");
+        }
+        this.lastScrollTop = scrolltop;
         let curtop = Math.floor(scrolltop / this.itemHeight) * this.itemHeight
 
         this.updateVisibleDataDebounce(false)(scrolltop)
@@ -1791,6 +1797,7 @@ export default {
         this.$refs.header.scrollLeft = event.target.scrollLeft
         if (this.isSummation) this.sumMarginLeft = event.target.scrollLeft
         if (this.$refs.fixedBody) this.$refs.fixedBody.scrollTop = scrolltop
+        let oldBottomNum = this.buttomNum;
         this.buttomNum = getBarBottomS(
           event.target,
           this.bodyHeight,
@@ -1798,6 +1805,10 @@ export default {
           this.scrollBarHeight,
           this.isScrollX
         )
+        if (oldBottomNum !== null && this.buttomNum !== null) {
+          this.$emit('on-scroll', this.buttomNum, scrolltop !== this.lastScrollTop ? "y" : "x");
+        }
+        this.lastScrollTop = scrolltop;
         let curtop = Math.floor(scrolltop / this.itemHeight) * this.itemHeight
         this.updateVisibleData(scrolltop)
         this.$refs.content.style.transform = `translate3d(0, ${curtop}px, 0)`
@@ -2348,12 +2359,6 @@ export default {
         this.visibleCount =
           Math.ceil(this.height / this.itemHeight) - (this.showHeader ? 0 : -1)
         this.updateVisibleData()
-      })
-    },
-    buttomNum(val, oldvalue) {
-      if (val == null || oldvalue == null) return
-      this.$nextTick(() => {
-        this.$emit('on-scroll', this.buttomNum)
       })
     },
     shiftSelect(val) {
