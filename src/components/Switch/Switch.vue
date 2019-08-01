@@ -1,5 +1,5 @@
 <template>
-  <span :class="wrapClasses" :style="styles" @click="toggle" ref="core">
+  <span :class="wrapClasses" :style="styles" @click="toggle" tabindex=0 ref="core" @focus="focus" @blur="blur">
     <span :class="slideClasses" :style="styleSlide"></span>
     <span :class="innerClasses">
       <slot name="open" v-if="currentValue"></slot>
@@ -9,6 +9,7 @@
 </template>
 <script>
   import { oneOf } from '../../util/tools';
+  import { on } from '../../util/dom';
   import Emitter from '../../mixins/emitter';
 
   const prefixCls = 'h-switch';
@@ -49,7 +50,8 @@
         currentValue: this.value,
         slideWidth: this.height-4,
         slideHeight: this.height-4,
-        slideLeft: this.width-this.height+1
+        slideLeft: this.width-this.height+1,
+        isSwitchFocus: false
       };
     },
     computed: {
@@ -60,7 +62,8 @@
             [`${prefixCls}-checked`]: this.currentValue,
             [`${prefixCls}-disabled`]: this.disabled,
             [`${prefixCls}-${this.size}`]: !!this.size,
-            [`${prefixCls}-${this.type}`]: !!this.type
+            [`${prefixCls}-${this.type}`]: !!this.type,
+            [`${prefixCls}-focused`]: this.isSwitchFocus
           }
         ];
       },
@@ -84,17 +87,39 @@
         }
       }
     },
+    mounted() {
+      on(document, 'keyup', this.handleKeyup);
+    },
     methods: {
       toggle () {
         if (this.disabled) {
             return false;
         }
-
         const checked = !this.currentValue;
         this.currentValue = checked;
         this.$emit('input', checked);
         this.$emit('on-change', checked);
         this.dispatch('FormItem', 'on-form-change', checked);
+      },
+      focus(event) {
+        this.$refs.core.focus()
+        this.isSwitchFocus = true
+        this.$emit('on-focus', event)
+      },
+      blur(event) {
+        this.isSwitchFocus = false
+        this.$emit('on-blur', event)
+      },
+      handleKeyup(e) {
+        if (!e.shiftKey) {
+          const keyCode = e.keyCode
+          // space
+          if (keyCode === 32) {
+            e.preventDefault()
+            e.stopPropagation()
+            this.toggle()
+          }
+        }
       }
     },
     watch: {

@@ -33,7 +33,11 @@
       created: {
         type: Boolean,
         default: false
-      }
+      },
+//      hideMultiple: {
+//        type: Boolean,
+//        default: false
+//      }
     },
     data () {
       return {
@@ -98,7 +102,10 @@
           obj = this.$parent.$parent.$parent;
         }
         obj.updateOptions(true, true);
-      }
+      },
+//      hideMultiple(val) {
+//        this.hideMult=val
+//      }
     },
     mounted () {
       var str=this.$el.innerText
