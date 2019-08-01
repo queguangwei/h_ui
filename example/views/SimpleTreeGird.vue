@@ -191,11 +191,11 @@ export default {
       this.$refs.treeGird.clearSelected();
     },
     selectData(status){
-      this.$refs.treeGird.selectRow(51,status);
+      this.$refs.treeGird.selectRow(0,status);
       console.log(this.$refs.treeGird.getSelection())
     },
     checkedData(status){
-      this.$refs.treeGird.checkedRow(51,status);
+      this.$refs.treeGird.checkedRow(0,status);
       console.log(this.$refs.treeGird.getSelection())
     },
   },
