@@ -122,9 +122,6 @@
 			}
 		},
     methods:{
-      testClick(){
-        this.$refs.test.focus()
-      },
       fo(){
         console.log('focused')
       },

@@ -149,15 +149,14 @@
       updateValue () {
         this.currentValue = this.value === this.trueValue;
       },
-      focus(event) {
+      focus () {
+        consolello
         this.$refs.input.focus();
         this.isFocus = true;
-        this.$emit('on-focus', event)
       },
-      blur(event) {
+      blur () {
         this.$refs.input.blur();
         this.isFocus = false;
-        this.$emit('on-blur', event)
       }
     },
     watch: {
