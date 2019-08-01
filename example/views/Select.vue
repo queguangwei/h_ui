@@ -21,6 +21,7 @@
                 algin="right"
                 setDefSelect
                 widthAdaption
+                ref="test"
                 >
         <div slot="header">
           <h-button @click="selectAll(true)">全选</h-button>
@@ -259,7 +260,7 @@
         <span>多选可搜索:</span>
         <h-select v-model="model11"
                   width="200"
-                  multiple
+                  :multiple="multiple"
                   @on-blur="blurH"
                   filterable
                   :isString="true"
@@ -589,6 +590,7 @@ for(let i=0;i<1000;i++){
 export default {
   data() {
     return {
+      multiple: true,
       canPage: true,
       isComputed: false,
       cityList: [],

@@ -1,8 +1,9 @@
 <template>
   <div id="switch" class="wrapper">
     <h2>Switch基本示例</h2>
-    <h-switch v-model="switch1" @on-change="change"></h-switch>
+    <h-switch v-model="switch1" @on-change="change" ref="test" @on-focus="fo" @on-blur="bl"></h-switch>
     <h-switch disabled></h-switch>
+    <Button @on-click="testClick">获取焦点</Button>
     <br><br>
     <h-switch v-model="switch2" @on-change="change"></h-switch>
     <h-switch v-model="switch3" type="info" @on-change="change"></h-switch>
@@ -11,7 +12,7 @@
     <h-switch v-model="switch6" type="error" @on-change="change"></h-switch>
     <h2>尺寸</h2>
     <h-switch size="large"></h-switch>
-    <h-switch></h-switch>  
+    <h-switch></h-switch>
     <h-switch size="small"></h-switch>
     <h1>文字和图标</h1>
     <h-switch>
@@ -37,7 +38,7 @@
     <h2>不可用</h2>
     <h-switch :disabled="disabled"></h-switch>
     <h-button type="primary" @click="disabled = !disabled">Toggle Disabled</h-button>
-  </div>  
+  </div>
 </template>
 
 <script>
@@ -58,8 +59,17 @@ export default {
   methods:{
     change(status){
       console.log(status);
+    },
+    testClick() {
+      this.$refs.test.focus()
+    },
+    fo() {
+      console.log("focus")
+    },
+    bl() {
+      console.log("blur")
     }
-  } 
+  }
 }
 </script>
 <style type="text/css">
