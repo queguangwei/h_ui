@@ -42,8 +42,8 @@
         v-show="((!!localeNoDataText && (!data || data.length === 0)) || (!!localeNoFilteredDataText && (!rebuildData || rebuildData.length === 0)))" @scroll="handleBodyScroll" :style="bodyStyle">
         <div :class="[prefixCls+'-tiptext']" :style="textStyle" >
           <slot name="nodata">
-            <span v-html="localeNoDataText" v-if="!data || data.length === 0"></span>
-            <span v-html="localeNoFilteredDataText" v-else></span>
+            <span v-text="localeNoDataText" v-if="!data || data.length === 0"></span>
+            <span v-text="localeNoFilteredDataText" v-else></span>
           </slot>
         </div>
         <table cellspacing="0" cellpadding="0" border="0" :style="tipStyle">
@@ -153,7 +153,7 @@
     <Spin fix size="large" v-if="loading">
       <slot name="loading">
         <h-icon name="load-c" size=18 class='h-load-loop'></h-icon>
-        <div v-html="loadingText"></div>
+        <div v-text="loadingText"></div>
       </slot>
     </Spin>
   </div>
@@ -728,7 +728,7 @@ export default {
       this.tableWidth=totalWidth+1;
       if (this.cloneColumns[lastInx].fixed!='right' && this.tableWidth<this.initWidth) {
         this.tableWidth = this.initWidth-1;
-      }   
+      }
       this.$emit('on-drag', width, key);
       this.$nextTick(()=>{
          this.fixedBodyClientHeight=-1;
@@ -1122,7 +1122,7 @@ export default {
         const status = !data._isExpanded;
         this.objData[_index]._isExpanded = status;
         this.$emit('on-expand', JSON.parse(JSON.stringify(this.cloneData[_index])), status);
-        this.$nextTick(() => { 
+        this.$nextTick(() => {
             if(this.$refs.fixedRightBody){
                 let table=this.$refs.fixedRightBody.getElementsByClassName("h-table-tbody")[0];
                 let expandfixed= table.getElementsByClassName("h-table-expanded-cell");
@@ -1130,7 +1130,7 @@ export default {
                     expandfixed[i].children[0].style.visibility="hidden";
                 }
             }
-                
+
         });
     },
     itemSelect(i,status){
@@ -1713,7 +1713,7 @@ export default {
                 expandfixed[i].children[0].style.visibility="hidden";
             }
       }
-      
+
     });
     //window.addEventListener('resize', this.handleResize, false);
     on(window, 'resize', this.handleResize);
