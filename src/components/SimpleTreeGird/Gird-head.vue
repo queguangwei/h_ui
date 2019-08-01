@@ -64,15 +64,15 @@ export default {
   },
   computed: {
     // isSelectAll () {
-      // let isSelectAll = true;
-      // if (!this.data.length) isSelectAll = false;
-      // for (let i = 0; i < this.data.length; i++) {
-        // if (!this.objData[this.data[i]._index]._isChecked && !this.objData[this.data[i]._index]._isDisabled) {
-        //   isSelectAll = false;
-        //   break;
-        // }
-      // }
-      // return isSelectAll;
+    //   let isSelectAll = true;
+    //   if (!this.data.length) isSelectAll = false;
+    //   for (let i = 0; i < this.data.length; i++) {
+    //     if (!this.objData[this.data[i]._index]._isChecked && !this.objData[this.data[i]._index]._isDisabled) {
+    //       isSelectAll = false;
+    //       break;
+    //     }
+    //   }
+    //   return isSelectAll;
     // }
   },
   watch: {
@@ -93,7 +93,8 @@ export default {
   methods: {
     selectAll (status) {
       this.isSelectAll = !this.isSelectAll
-      this.$parent.selectAll(this.isSelectAll);
+      this.$parent.isSelectAll = this.isSelectAll
+      // this.$parent.selectAll(this.isSelectAll);
     },
     handleSortByHead (index) {
     },
