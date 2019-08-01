@@ -38,7 +38,7 @@
              @focus="handleFocus"
              @blur="handkeSearchBlur"
              @keydown="resetInputState"
-             tabindex="-1"
+             :tabindex="tabindex"
              ref="input">
       <!-- 下拉输入框(远程搜索时渲染) -->
       <input type="text"
@@ -52,7 +52,7 @@
              @blur="handleBlur"
              @keydown="resetInputState"
              @keydown.delete="handleInputDelete"
-             tabindex="-1"
+             :tabindex="tabindex"
              ref="input">
       <Icon name="close"
             :class="[prefixCls + '-arrow']"
@@ -99,7 +99,7 @@
                    @blur="handleBlur"
                    @keydown="resetInputState"
                    @keydown.delete="handleInputDelete"
-                   tabindex="-1"
+                   :tabindex="tabindex"
                    ref="input">
             <!-- <input type="text" placeholder="请输入..." class="h-input h-input-left">  -->
           </span>
@@ -406,6 +406,14 @@ export default {
     searchIcon: {
       type: [Boolean, String],
       default: false
+    },
+    tabindex: {
+      type: [String, Number],
+      default: "-1",
+      validator(value) {
+        let num = parseInt(value);
+        return num <= 32767 && num >= -1;
+      }
     }
   },
   data() {
@@ -597,8 +605,8 @@ export default {
     checkAll() {
       return 'h-select-checkall'
     },
-    selectTabindex(){
-        return this.disabled?-1:0
+    selectTabindex() { 
+      return this.disabled ? -1 : ((this.tabindex + "") !== "-1" ? this.tabindex : 0);
     },
     notFoundShow() {
       let options = this.options
