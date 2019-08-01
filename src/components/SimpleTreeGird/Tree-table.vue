@@ -201,7 +201,7 @@
       changeSelect(id,row,event){
         this._parent.changeCheckedObj(this.indexAndId[id],null);
         let status = this.checkedObj[this.indexAndId[id]].checked;
-        this._parent.changeSelect(row,status);
+        this._parent.changeSelect(row);
         if(!this.checkStrictly){
           if(row._parentId!=undefined){
             this.updateTreeUp(row._parentId);
@@ -245,21 +245,15 @@
             _collectionState: this.collectionState[inx],
             _parentId:col._parentId,
             _isHighlight:col.highlight||false,
+            row:col,
           })
         }
-        if((!this.checkStrictly||this.headSelection)&&this.indent==0&&col.children&&col.children.length>0){
-          col.children.forEach((item,inx)=>{
-            this.setStatus(item,inx)
-          })
-        }
-      },
-      getPathIndex(col,inx){
-        if(col._parentId){
-          let index = this.indexAndId[col._parentId]
-          return this.checkedObj[index].parentIndex+';'+inx;
-        }else{
-          return inx;
-        }
+        //此处引起性能问题，目的是为了兼容外部选中
+        // if(this.isCheckbox&&(!this.checkStrictly||this.headSelection)&&this.indent==0&&col.children&&col.children.length>0){
+        //   col.children.forEach((item,inx)=>{
+        //     this.setStatus(item,inx)
+        //   })
+        // }
       },
       getStatus(){
         this._parent = this.findParent();

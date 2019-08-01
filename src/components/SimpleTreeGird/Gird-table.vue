@@ -113,7 +113,7 @@ export default {
     },
     highlightRow: {
       type: Boolean,
-      default: false
+      default: true
     },
     rowClassName: {
       type: Function,
@@ -205,6 +205,7 @@ export default {
       selection:{},
       buttomNum:null,
       rebuildData:[],
+      isSelectAll:null
     };
   },
   computed: {
@@ -398,14 +399,19 @@ export default {
       });
     },
     clickCurrentRow (row) {
+      this.isSelectAll = null
       let inx = this.indexAndId[row.id];
-      let status = this.checkedObj[inx]._isHighlight?false:true
-      for(var i=0;i<this.checkedObj.length;i++){
-        if(this.checkedObj[i]._isHighlight){
-          this.checkedObj[i]._isHighlight = false;
+      if(this.highlightRow){
+        let status = this.checkedObj[inx]._isHighlight?false:true
+        for(var i=0;i<this.checkedObj.length;i++){
+          if(this.checkedObj[i]._isHighlight||this.checkedObj[i].checked){
+            this.checkedObj[i]._isHighlight = false;
+            this.checkedObj[i].checked = false;
+          }
         }
+        this.$set(this.checkedObj[inx],'_isHighlight',status)
+        this.$set(this.checkedObj[inx],'checked',status)
       }
-      this.$set(this.checkedObj[inx],'_isHighlight',status)
       this.$nextTick(()=>{
         this.$emit('on-row-click', row);
         if(this.highlightRow){
@@ -441,6 +447,12 @@ export default {
       })
     },
     changeSelect (row,status) {
+      this.isSelectAll = null
+      this.$nextTick(()=>{
+        this.$emit('on-select-change',this.getSelection(),this.getSelection(true));
+      })
+    },
+    changeSelection (row,status){
       if(status){
         this.selection[row.id] = row;
       }else{
@@ -448,9 +460,6 @@ export default {
           delete this.selection[row.id];
         }        
       }
-      this.$nextTick(()=>{
-        this.$emit('on-select-change',this.getSelection(),this.getSelection(true));
-      })
     },
     clearSelected () {
       this.selection ={}
@@ -464,9 +473,11 @@ export default {
     getSelection(status){
       let arr = [];
       let selectIndex=[];
-      for(let i in this.selection){
-        arr.push(this.selection[i]); 
-        selectIndex.push(parseInt(i));
+      for(let i in this.checkedObj){
+        if(this.checkedObj[i].checked){
+          arr.push(this.checkedObj[i].row); 
+          selectIndex.push(this.checkedObj[i].id);
+        }
       }
       return status?selectIndex:arr;
     },
@@ -475,7 +486,6 @@ export default {
       this.checkedObj.forEach((col,inx)=>{
         this.$set(col,'checked',status)
       })
-      this.$emit('on-select-all', status);
     },
     fixedHeader () {
       if (this.height) {
@@ -527,11 +537,26 @@ export default {
       for(let i=0;i<data.length; i++){
         if(data[i].id == id){
           this.$set(data[i],str,status)
+          this.setStatus(data[i],i)
           break;
         } 
         if(data[i].children&&data[i].children.length>0){
           this.deepTraversal(data[i].children,id,status,str)
         }
+      }
+    },
+    setStatus(col,inx){
+      if(!this.indexAndId[col.id]){
+        this.indexAndId[col.id]= this.checkedObj.length;          
+        this.checkedObj.push({
+          id:col.id,
+          checked:col.checked||false,
+          _isExpand:col.expand||false,
+          _collectionState: col.expand||false,
+          _parentId:col._parentId,
+          _isHighlight:col.highlight||false,
+          row:col,
+        })
       }
     },
     expandRow(id,status){
@@ -559,20 +584,30 @@ export default {
       if(!this.data || this.data.length==0) return;
       if(!this.checkStrictly){
         let index = this.indexAndId[id];
-        if(!this.checkedObj[index]) return
-        let row = this.checkedDown(this.rebuildData,id,status)
+        let row = null
+        if(!this.checkedObj[index]){
+          row = this.checkedDown(this.rebuildData,id,status)
+        }else{
+          row = this.checkedObj[index].row
+        }
         this.linkageChecked(row,status)
       }else{
         let index = this.indexAndId[id];
         if(!this.checkedObj[index]){
-          this.deepTraversal(this.rebuildData, id, status,'highlight')
+          this.deepTraversal(this.rebuildData, id, status,'checked')
         }else{
-          this.$set(this.checkedObj[index],'_isHighlight',status)
+          this.$set(this.checkedObj[index],'checked',status)
         }
       }
     },
     linkageChecked(row,status){
-      this.changeCheckedObj(this.indexAndId[row.id],status);
+      let index = this.indexAndId[row.id];
+      if(!this.checkedObj[index]){
+        this.$set(row,'checked',status)
+        this.setStatus(row)
+      }else{
+        this.$set(this.checkedObj[index],'checked',status)
+      }
       if(row.children&&row.children.length>0){
         row.children.forEach((col,inx)=>{
           this.linkageChecked(col,status)
@@ -655,6 +690,17 @@ export default {
     },
     buttomNum (val) {
       this.$emit('on-scroll',val);
+    },
+    isSelectAll(val){
+      if(val != null){
+        this.selectAll(val)
+        this.$emit('on-select-all', val);
+      }
+    },
+    checkedObj(val,oldval){
+      if(this.isCheckbox&&this.isSelectAll != null){
+        this.selectAll(this.isSelectAll)
+      }
     }
   }
 };
