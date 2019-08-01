@@ -9,7 +9,7 @@
 </template>
 <script>
   import { oneOf } from '../../util/tools';
-  import { on } from '../../util/dom';
+  import { on, off } from '../../util/dom';
   import Emitter from '../../mixins/emitter';
 
   const prefixCls = 'h-switch';
@@ -90,6 +90,9 @@
     mounted() {
       on(document, 'keyup', this.handleKeyup);
     },
+    beforeDestroy() {
+      off(document, 'keyup', this.handleKeyup)
+    },
     methods: {
       toggle () {
         if (this.disabled) {
@@ -103,21 +106,29 @@
       },
       focus(event) {
         this.$refs.core.focus()
+        this.$refs.core.isFocus = true
         this.isSwitchFocus = true
         this.$emit('on-focus', event)
       },
       blur(event) {
+        this.$refs.core.isFocus = false
         this.isSwitchFocus = false
         this.$emit('on-blur', event)
       },
       handleKeyup(e) {
+        if (this.disabled) {
+          return false
+        }
         if (!e.shiftKey) {
           const keyCode = e.keyCode
           // space
           if (keyCode === 32) {
             e.preventDefault()
             e.stopPropagation()
-            this.toggle()
+            const swi = this.$refs.core.isFocus
+            if (swi) {
+              this.toggle()
+            }
           }
         }
       }

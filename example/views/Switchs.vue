@@ -5,15 +5,17 @@
     <h-switch disabled></h-switch>
     <Button @on-click="testClick">获取焦点</Button>
     <br><br>
+    <h2>尺寸</h2>
+    <h-switch size="large" @on-focus="fo"></h-switch>
+    <h-switch @on-focus="fo"></h-switch>
+    <h-switch size="small" @on-focus="fo"></h-switch>
+    <br><br>
     <h-switch v-model="switch2" @on-change="change"></h-switch>
     <h-switch v-model="switch3" type="info" @on-change="change"></h-switch>
     <h-switch v-model="switch4" type="success" @on-change="change"></h-switch>
     <h-switch v-model="switch5" type="warning" @on-change="change"></h-switch>
     <h-switch v-model="switch6" type="error" @on-change="change"></h-switch>
-    <h2>尺寸</h2>
-    <h-switch size="large"></h-switch>
-    <h-switch></h-switch>
-    <h-switch size="small"></h-switch>
+    <br><br>
     <h1>文字和图标</h1>
     <h-switch>
       <span slot="open">开</span>
@@ -63,8 +65,8 @@ export default {
     testClick() {
       this.$refs.test.focus()
     },
-    fo() {
-      console.log("focus")
+    fo(e) {
+      console.log("focus", e.target)
     },
     bl() {
       console.log("blur")

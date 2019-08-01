@@ -797,7 +797,7 @@ export default {
 
       this.options = options
       this.availableOptions = options
-      
+
       if (init) {
         if (!this.remote || this.isBlock) {
           this.updateSingleSelected(true, slot)
@@ -961,7 +961,7 @@ export default {
             })
           })
         }
-        if (!init) {      
+        if (!init) {
           if (this.labelInValue) {
             this.$emit('on-change', {
               value: value,
@@ -1547,7 +1547,7 @@ export default {
     this.$nextTick(() => {
       this.broadcastQuery('')
     })
-    this.updateOptions(true) 
+    this.updateOptions(true)
     this.$on('append', () => {
       this.slotChange()
       this.updateOptions(true, true)
@@ -1807,7 +1807,7 @@ export default {
         this.isCopy=false;
         return
       }
-      
+
       if(oldVal!=""&&val==""&&this.model.length>0){
            this.model=[]
            return;
