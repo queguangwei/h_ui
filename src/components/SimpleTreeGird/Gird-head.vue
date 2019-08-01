@@ -14,7 +14,7 @@
           :class="alignCls(column)" 
           >
           <div :class="[`${prefixCls}-cell`]">
-            <Checkbox v-if="headSelection&&!index" @click.native.stop="selectAll" :value="isSelectAll" class="asyc-check"></Checkbox>
+            <Checkbox v-if="headSelection&&!index" @mousedown.native.stop="handleClick" @click.native.stop="selectAll" :value="isSelectAll" class="asyc-check"></Checkbox>
             <template>
               <span v-if="!column.renderHeader" @click="handleSortByHead(index)">{{ column.title || '#' }}</span>
               <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
@@ -91,7 +91,8 @@ export default {
     off(window, 'resize', this.getLeftWidth);
   },
   methods: {
-    selectAll (status) {
+    selectAll (event) {
+      event.stopPropagation();
       this.isSelectAll = !this.isSelectAll
       this.$parent.isSelectAll = this.isSelectAll
       // this.$parent.selectAll(this.isSelectAll);
@@ -326,7 +327,10 @@ export default {
       columns.splice(curIndex,1);
       columns.splice(insertIndex,0,item);
       this.$emit('on-move', _index, insertIndex);
-    }
+    },
+    handleClick (event) {
+      event.stopPropagation();
+    },
   }
 };
 </script>
