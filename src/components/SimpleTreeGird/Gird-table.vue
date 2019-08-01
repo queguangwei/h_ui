@@ -545,20 +545,6 @@ export default {
         }
       }
     },
-    setStatus(col,inx){
-      if(!this.indexAndId[col.id]){
-        this.indexAndId[col.id]= this.checkedObj.length;          
-        this.checkedObj.push({
-          id:col.id,
-          checked:col.checked||false,
-          _isExpand:col.expand||false,
-          _collectionState: col.expand||false,
-          _parentId:col._parentId,
-          _isHighlight:col.highlight||false,
-          row:col,
-        })
-      }
-    },
     expandRow(id,status){
       if(!this.data || this.data.length==0) return;
       let index = this.indexAndId[id];
@@ -603,14 +589,28 @@ export default {
     linkageChecked(row,status){
       let index = this.indexAndId[row.id];
       if(!this.checkedObj[index]){
-        this.$set(row,'checked',status)
-        this.setStatus(row)
+        // this.$set(row,'checked',status)
+        this.setStatus(row,status)
       }else{
         this.$set(this.checkedObj[index],'checked',status)
       }
       if(row.children&&row.children.length>0){
         row.children.forEach((col,inx)=>{
           this.linkageChecked(col,status)
+        })
+      }
+    },
+    setStatus(col,status){
+      if(!this.indexAndId[col.id]){
+        this.indexAndId[col.id]= this.checkedObj.length;          
+        this.checkedObj.push({
+          id:col.id,
+          checked:status,
+          _isExpand:col.expand||false,
+          _collectionState: col.expand||false,
+          _parentId:col._parentId,
+          _isHighlight:col.highlight||false,
+          row:col,
         })
       }
     },
