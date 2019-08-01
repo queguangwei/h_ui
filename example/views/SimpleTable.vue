@@ -5,10 +5,11 @@
     <h2>带边线 多选</h2>
     <Button @click="loadData">加载数据</Button>
     <Button @click="changeData">切换数据</Button>
-    <!-- <h-simple-table :columns="columnsBig" :data="bigData" border stripe @on-select="select" @on-select-cancel="select" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="300" @on-select-all='change' @on-scroll="change" @on-selection-change="change" width="1200" :canDrag="false">
-      <span slot="loading">我是自定义加载！！！</span>
-    </h-simple-table> -->
+    <!--<h-simple-table :columns="columnsBig" :data="bigData" border stripe @on-select="select" @on-select-cancel="select" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="300" @on-select-all='change' @on-scroll="change" @on-selection-change="change" width="1200" :canDrag="false">-->
+      <!--<span slot="loading">我是自定义加载！！！</span>-->
+    <!--</h-simple-table>-->
     <h-button @click="setLoading">切换状态</h-button>
+    <h-button @click="clearData">清除数据</h-button>
     <h2>不带边线 单选 on-current-change</h2>
     <!-- :multiLevel="multiLevel1" -->
     <!-- <h-msg-box v-model="showmsg" :width="1000"> -->
@@ -217,6 +218,7 @@ export default {
         title:'测试',
         key:'ceshi',
         algin:'center',
+
        }
       ],
       columnsBig1:[
@@ -486,11 +488,24 @@ export default {
     rightClick(e){
       console.log('right'+e)
     },
+    clearData() {
+      this.columnsBig1.shift()
+      this.$nextTick(()=> {
+        this.bigData = []
+      })
+    },
     changeClo(){
       this.$set(this.columnsBig1[1],'fixed','left')
     },
     loadData(){
       this.showmsg = true;
+      this.columnsBig1.unshift({
+        title: '地址1',
+        key: 'securityName',
+        minWidth:200,
+        sortable:true,
+      })
+
       this.$nextTick(()=>{
         this.bigData = jsonData;
       })
@@ -659,6 +674,7 @@ export default {
         {
           type: 'selection',
           align: 'center',
+          sortable: true
         },
         {
           type: 'index',
@@ -767,12 +783,12 @@ export default {
           minWidth:200,
           key: 'securityCode1',
         },
-        // {
-        //   title: '地址1',
-        //   key: 'securityName',
-        //   minWidth:200,
-        //   sortable:true,
-        // }
+//         {
+//           title: '地址1',
+//           key: 'securityName',
+//           minWidth:200,
+//           sortable:true,
+//         }
     ]
     // this.columnsBig1.push({
     //   title: '地址6',

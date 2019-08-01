@@ -9,7 +9,9 @@
              ref="test"
              :specialDecimal="0"
              :maxlength="20"
-             focusAllSelect></h-input>
+             focusAllSelect
+             @on-focus="fo"
+             @on-blur="bl"></h-input>
     <Button @on-click="testClick(true)">获取焦点</Button>
     <Button @on-click="testClick(false)">失去焦点</Button>
     <h-input algin="center"
@@ -229,6 +231,12 @@ export default {
       } else {
         this.$refs.test.blur()
       }
+    },
+    fo() {
+      console.log('focused')
+    },
+    bl() {
+      console.log('blur')
     },
     click() {
       console.log(this.$refs.input)
