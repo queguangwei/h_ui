@@ -42,7 +42,7 @@
         autocomplete="off"
         @blur="handleBlur"
         @keydown.delete="handleInputDelete"
-        tabindex="-1"
+        :tabindex="tabindex"
         ref="input">
       <!-- 单选时清空按钮 -->
       <Icon name="close" :class="[prefixCls + '-arrow']" v-if="showCloseIcon" @click.native.stop="handleIconClose" ref="close"></Icon>
@@ -73,7 +73,7 @@
               autocomplete="off"
               @blur="handleBlur"
               @keydown.delete="handleInputDelete"
-              tabindex="-1"
+              :tabindex="tabindex"
               ref="input">
           </span>
           <span v-if="hideMult&&multiple" :class="hideMultHead" @click="toggleSelect(!isSelectAll)">全选</span>
@@ -324,6 +324,14 @@
       showValue: {
         type: Boolean,
         default: false
+      },
+      tabindex: {
+        type: [String, Number],
+        default: "-1",
+        validator(value) {
+          let num = parseInt(value);
+          return num <= 32767 && num >= -1;
+        }
       }
     },
     data () {
@@ -1364,6 +1372,10 @@
       });
       if (this.disabled) {
         this.tabIndex = -1;
+      } else {
+        if (("" + this.tabindex) !== '-1') {
+          this.tabIndex = this.tabindex;
+        }
       }
       // this.setPlacement();
       this.$on('on-visible-change', (val,top) => {
