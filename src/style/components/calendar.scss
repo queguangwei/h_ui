@@ -1,7 +1,9 @@
 $calendar-prefix-cls: "#{$css-prefix}calendar";
 .#{$calendar-prefix-cls} {
+  
   &-top-change &-top-icon,
   &-top-change &-top-text {
+    
     display: inline-block;
     vertical-align: middle;
     font-size: $calendar-top-text-font-size;
@@ -24,10 +26,12 @@ $calendar-prefix-cls: "#{$css-prefix}calendar";
     text-align: center;
     position: relative;
   }
+
+ 
   &-month-content {
     display: flex;
     flex-wrap: wrap;
-    width: 100%;
+
   }
   &-top-icon {
     cursor: pointer;
@@ -42,10 +46,10 @@ $calendar-prefix-cls: "#{$css-prefix}calendar";
   &-month-content-item {
     font-size: $calendar-month-content-item-font-size;
     width: 14.28%;
+    height: $calendar-month-content-item-height;
     text-align: center;
     color: $calendar-month-content-item-color;
-    position: relative;
-    height: $calendar-month-content-item-height;
+    position: relative; 
     line-height: $calendar-month-content-item-height;
     padding: auto;
     display: flex;
@@ -66,16 +70,19 @@ $calendar-prefix-cls: "#{$css-prefix}calendar";
   }
   &-month-content-item:nth-child(7n + 1){
     border-width: $calendar-month-content-item-nth-child-border-width;
+  
   }
   &-month-week {
     background: $calendar-month-content-background;
   }
   &-month-week &-month-content-item {
     border-top-width: 1px;
+    border-width: $calendar-month-header-border-width;
   }
   &-month-content.#{$calendar-prefix-cls}-month-day &-month-content-item {
     cursor: pointer;
-    background: $date-picker-cell-hover-bg;
+    background: $calendar-month-content-item-bg;
+    
   }
   &-month-content.#{$calendar-prefix-cls}-month-day &-month-content-item.#{$calendar-prefix-cls}-month-item-empty {
     background: none;
@@ -90,17 +97,20 @@ $calendar-prefix-cls: "#{$css-prefix}calendar";
   }
   &-month-content.#{$calendar-prefix-cls}-month-day &-month-content-item.#{$calendar-prefix-cls}-month-day-active {
     background:$calendar-month-day-selected-background;
-    border-radius:4px;
+    border-radius:2px;
     color:$calendar-month-day-active-color;
   }
   &-month-content.#{$calendar-prefix-cls}-month-day {
-    border: $calendar-month-day-border;
+    border: 0;
   }
   &-month {
     width: 22%;
+    max-width: $calendar-month-max-width;
     margin: 1.5%;
     float: left;
     flex: 0 0 auto;
+    border-radius: 2px;
+    
     // height: 330px;
     & > div {
       box-shadow: $calendar-month-div-box-shadow;
@@ -114,8 +124,10 @@ $calendar-prefix-cls: "#{$css-prefix}calendar";
     text-align: center;
     background:$calendar-month-content-background;
     border-radius:$calendar-month-title-border-radius;
+ 
   }
   &-wrapper {
+
     position: relative;
   }
   &-context-menu {
