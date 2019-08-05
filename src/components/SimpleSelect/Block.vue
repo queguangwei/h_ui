@@ -222,9 +222,13 @@ export default {
     },
     handleclick() {},
     handleBodyScroll(event) {
+      let direction = this.lastScollTop !== event.target.scrollTop ? "y" : "x";
       this.lastScollTop = event.target.scrollTop
       this.updateVisibleData(event.target.scrollTop)
       this.lastScollBottom = getBarBottom(event.target, getScrollBarSize())
+      if (this.lastScollBottom !== null && this.data.length > 0) {
+        this.$emit('on-scroll', this.lastScollBottom, this.lastScollTop, direction)
+      }
       // 修复滚动后出现 x 滚动条问题
       if (this.$parent.widthAdaption) {
         this.$parent.setWidthAdaption()
@@ -396,10 +400,6 @@ export default {
         //   this.updateVisibleData();
         // })
       }
-    },
-    lastScollBottom(val){
-      if(val==null||this.data.length==0) return
-      this.$emit('on-scroll', val, this.lastScollTop)
     },
   },
   destroyed() {

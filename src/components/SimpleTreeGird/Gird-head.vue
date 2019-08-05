@@ -14,7 +14,7 @@
           :class="alignCls(column)" 
           >
           <div :class="[`${prefixCls}-cell`]">
-            <Checkbox v-if="headSelection&&!index" @click.native.stop="selectAll" :value="isSelectAll" class="asyc-check"></Checkbox>
+            <Checkbox v-if="headSelection&&!index" @mousedown.native.stop="handleClick" @click.native.stop="selectAll" :value="isSelectAll" class="asyc-check"></Checkbox>
             <template>
               <span v-if="!column.renderHeader" @click="handleSortByHead(index)">{{ column.title || '#' }}</span>
               <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
@@ -64,15 +64,15 @@ export default {
   },
   computed: {
     // isSelectAll () {
-      // let isSelectAll = true;
-      // if (!this.data.length) isSelectAll = false;
-      // for (let i = 0; i < this.data.length; i++) {
-        // if (!this.objData[this.data[i]._index]._isChecked && !this.objData[this.data[i]._index]._isDisabled) {
-        //   isSelectAll = false;
-        //   break;
-        // }
-      // }
-      // return isSelectAll;
+    //   let isSelectAll = true;
+    //   if (!this.data.length) isSelectAll = false;
+    //   for (let i = 0; i < this.data.length; i++) {
+    //     if (!this.objData[this.data[i]._index]._isChecked && !this.objData[this.data[i]._index]._isDisabled) {
+    //       isSelectAll = false;
+    //       break;
+    //     }
+    //   }
+    //   return isSelectAll;
     // }
   },
   watch: {
@@ -91,9 +91,11 @@ export default {
     off(window, 'resize', this.getLeftWidth);
   },
   methods: {
-    selectAll (status) {
+    selectAll (event) {
+      event.stopPropagation();
       this.isSelectAll = !this.isSelectAll
-      this.$parent.selectAll(this.isSelectAll);
+      this.$parent.isSelectAll = this.isSelectAll
+      // this.$parent.selectAll(this.isSelectAll);
     },
     handleSortByHead (index) {
     },
@@ -325,7 +327,10 @@ export default {
       columns.splice(curIndex,1);
       columns.splice(insertIndex,0,item);
       this.$emit('on-move', _index, insertIndex);
-    }
+    },
+    handleClick (event) {
+      event.stopPropagation();
+    },
   }
 };
 </script>

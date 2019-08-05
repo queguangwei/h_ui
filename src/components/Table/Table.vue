@@ -42,8 +42,8 @@
         v-show="((!!localeNoDataText && (!data || data.length === 0)) || (!!localeNoFilteredDataText && (!rebuildData || rebuildData.length === 0)))" @scroll="handleBodyScroll" :style="bodyStyle">
         <div :class="[prefixCls+'-tiptext']" :style="textStyle" >
           <slot name="nodata">
-            <span v-html="localeNoDataText" v-if="!data || data.length === 0"></span>
-            <span v-html="localeNoFilteredDataText" v-else></span>
+            <span v-text="localeNoDataText" v-if="!data || data.length === 0"></span>
+            <span v-text="localeNoFilteredDataText" v-else></span>
           </slot>
         </div>
         <table cellspacing="0" cellpadding="0" border="0" :style="tipStyle">
@@ -153,7 +153,7 @@
     <Spin fix size="large" v-if="loading">
       <slot name="loading">
         <h-icon name="load-c" size=18 class='h-load-loop'></h-icon>
-        <div v-html="loadingText"></div>
+        <div v-text="loadingText"></div>
       </slot>
     </Spin>
   </div>
@@ -346,6 +346,10 @@ export default {
     minWidth:{
       type:Number,
       default:100
+    },
+    isMulitSort:{//多列排序
+      type:Boolean,
+      default:false,
     }
   },
   data () {
@@ -385,6 +389,7 @@ export default {
       dragEl: null,
       baseInx: null,
       offsetInx: null,
+      lastScrollTop: 0
     };
   },
   computed: {
@@ -724,7 +729,7 @@ export default {
       this.tableWidth=totalWidth+1;
       if (this.cloneColumns[lastInx].fixed!='right' && this.tableWidth<this.initWidth) {
         this.tableWidth = this.initWidth-1;
-      }   
+      }
       this.$emit('on-drag', width, key);
       this.$nextTick(()=>{
          this.fixedBodyClientHeight=-1;
@@ -1118,7 +1123,7 @@ export default {
         const status = !data._isExpanded;
         this.objData[_index]._isExpanded = status;
         this.$emit('on-expand', JSON.parse(JSON.stringify(this.cloneData[_index])), status);
-        this.$nextTick(() => { 
+        this.$nextTick(() => {
             if(this.$refs.fixedRightBody){
                 let table=this.$refs.fixedRightBody.getElementsByClassName("h-table-tbody")[0];
                 let expandfixed= table.getElementsByClassName("h-table-expanded-cell");
@@ -1126,7 +1131,7 @@ export default {
                     expandfixed[i].children[0].style.visibility="hidden";
                 }
             }
-                
+
         });
     },
     itemSelect(i,status){
@@ -1180,8 +1185,13 @@ export default {
         if (this.isRightFixed) this.$refs.fixedRightBody.scrollTop = event.target.scrollTop;
         this.hideColumnFilter();
         if (this.isSummation) this.sumMarginLeft = event.target.scrollLeft
+        let oldBottomNum = this.buttomNum;
         this.buttomNum = getBarBottom(event.target,this.scrollBarWidth);
         this.topNum = event.target.scrollTop
+        if (oldBottomNum !== null && this.buttomNum !== null) {
+          this.$emit('on-scroll', this.buttomNum, this.topNum, this.lastScrollTop !== event.target.scrollTop ? "y" : "x");
+        }
+        this.lastScrollTop = event.target.scrollTop;
     },
     handleFixedMousewheel(event) {
       let deltaY = event.deltaY;
@@ -1242,6 +1252,19 @@ export default {
         });
         return data;
     },
+    /**
+     * 获取所有列选中的排序件
+     */
+    getSorts() {
+      const cloneColumns = this.cloneColumns;
+      const filters = {};
+      cloneColumns.forEach(col => {
+        if (col.sortable&&col._sortType!='normal') {
+          filters[col.key] = col._sortType;
+        }
+      })
+      return filters;
+    },
     handleSort (_index, type) {
       if(_index=='all'){
         this.rebuildData = this.makeDataWithFilter();
@@ -1251,27 +1274,33 @@ export default {
         return;
       }
       let index;
-        this.cloneColumns.forEach((col,i) => {
+      this.cloneColumns.forEach((col,i) => {
+        if(!this.isMulitSort){
           col._sortType = 'normal'
-          if (col._index == _index) {
-            index = i;
-          }
-        });//rightFixed index error
-        const key = this.cloneColumns[index].key;
-        if (this.cloneColumns[index].sortable !== 'custom') {    // custom is for remote sort
-            if (type === 'normal') {
-                this.rebuildData = this.makeDataWithFilter();
-            } else {
-                this.rebuildData = this.sortData(this.rebuildData, type, index);
-            }
         }
-        this.cloneColumns[index]._sortType = type;
+        if (col._index == _index) {
+          index = i;
+        }
+      });//rightFixed index error
+      this.cloneColumns[index]._sortType = type;
+      if(this.isMulitSort){
+        this.$emit('on-sort-change',JSON.parse(JSON.stringify(this.getSorts())))
+        return
+      }
+      const key = this.cloneColumns[index].key;
+      if (this.cloneColumns[index].sortable !== 'custom') {    // custom is for remote sort
+        if (type === 'normal') {
+          this.rebuildData = this.makeDataWithFilter();
+        } else {
+          this.rebuildData = this.sortData(this.rebuildData, type, index);
+        }
+      }
 
-        this.$emit('on-sort-change', {
-            column: JSON.parse(JSON.stringify(this.columns[this.cloneColumns[index]._index])),
-            key: key,
-            order: type
-        });
+      this.$emit('on-sort-change', {
+        column: JSON.parse(JSON.stringify(this.columns[this.cloneColumns[index]._index])),
+        key: key,
+        order: type
+      });
     },
     sortCloumn (curIndex,insertIndex,_index){
       if (this.cloneColumns[insertIndex].fixed) return;
@@ -1661,7 +1690,7 @@ export default {
         }
       })
       return filters;
-    }
+    },
   },
   created () {
       if (!this.context) this.currentContext = this.$parent;
@@ -1690,7 +1719,7 @@ export default {
                 expandfixed[i].children[0].style.visibility="hidden";
             }
       }
-      
+
     });
     //window.addEventListener('resize', this.handleResize, false);
     on(window, 'resize', this.handleResize);
@@ -1758,10 +1787,6 @@ export default {
       },
       hasWidth(){
         this.handleResize();
-      },
-      buttomNum(val,oldvalue){
-        if (val==null || oldvalue==null) return;
-        this.$emit('on-scroll',this.buttomNum,this.topNum);
       },
       shiftSelect(val){
         if (val.length==2) {
