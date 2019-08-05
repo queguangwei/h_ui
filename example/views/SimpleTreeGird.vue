@@ -10,7 +10,7 @@
     <h-button @on-click="checkedData(false)">多选不选择某行</h-button>
     <!-- isCheckbox checkStrictly -->
     <!-- selectRoot -->
-    <h-simple-tree-gird ref="treeGird" headSelection :columns="columns1" isCheckbox no-data-text="123" rowSelect :data="treedata" canDrag :height="400" @on-select-root="selectChange" @on-expand="expand" @on-drag="expand" @on-row-click="selectChange" @on-scroll="selectChange">
+    <h-simple-tree-gird ref="treeGird" headSelection canMove :columns="columns1" no-data-text="123" isCheckbox :data="treedata" :height="400" @on-row-dblclick="selectChange" @on-expand="expand" @on-drag="expand" >
       <span slot="loading">1244</span>
     </h-simple-tree-gird>
   </div>
@@ -18,10 +18,10 @@
 <script>
 let tData =require('../assets/simpleTreeGird.json'); 
 let bigData = [];
-for(var i=0;i<2;i++){
+for(var i=0;i<5;i++){
   let obj =  {
     id: i,
-    expand:i==0?true:false,
+    // expand:i==0?true:false,
     name: '王小明'+i,
     age: 18,
     address: '北京市朝阳区芍药居',
@@ -34,7 +34,7 @@ for(var i=0;i<2;i++){
   }
   bigData.push(obj)
 }
-for(var i=50;i<1000;i++){
+for(var i=50;i<100;i++){
   let obj =  {
     id: i,
     name: '王小明'+i,
@@ -45,25 +45,25 @@ for(var i=50;i<1000;i++){
     city: '北京',
     dating:'2018',
     timing:'16',
-    _parentId:parseInt(Math.random()*50,10)
+    _parentId:parseInt(Math.random()*5,10)
   }
   bigData.push(obj)
 }
-// for(var i=1000;i<10000;i++){
-//   let obj =  {
-//     id: i,
-//     name: '王小明'+i,
-//     age: 18,
-//     address: '北京市朝阳区芍药居',
-//     money: '120.00',
-//     cardId: '6223 ',
-//     city: '北京',
-//     dating:'2018',
-//     timing:'16',
-//     _parentId:Math.ceil(Math.random()*1000),
-//   }
-//   bigData.push(obj)
-// }
+for(var i=100;i<200;i++){
+  let obj =  {
+    id: i,
+    name: '王小明'+i,
+    age: 18,
+    address: '北京市朝阳区芍药居',
+    money: '120.00',
+    cardId: '6223 ',
+    city: '北京',
+    dating:'2018',
+    timing:'16',
+    _parentId:Math.ceil(Math.random()*100),
+  }
+  bigData.push(obj)
+}
 let bigData1 = [{
   id:0,
   expand:true,
@@ -169,6 +169,10 @@ export default {
         let newDate = new Date().getTime() - old
         console.log(newDate)
       })
+      // setTimeout(() => {
+      //   // this.$refs.treeGird.selectRow(51, true)
+      //   this.$refs.treeGird.checkedRow(3, true)
+      // }, 1000)
     },
     selectChange(data) {
       console.log(data);
@@ -187,10 +191,12 @@ export default {
       this.$refs.treeGird.clearSelected();
     },
     selectData(status){
-      this.$refs.treeGird.selectRow(1,status);
+      this.$refs.treeGird.selectRow(0,status);
+      console.log(this.$refs.treeGird.getSelection())
     },
     checkedData(status){
-      this.$refs.treeGird.checkedRow(1,status);
+      this.$refs.treeGird.checkedRow(0,status);
+      console.log(this.$refs.treeGird.getSelection())
     },
   },
   mounted () {
