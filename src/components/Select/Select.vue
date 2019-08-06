@@ -556,6 +556,7 @@
           }else{
             this.$refs.reference.focus();
           }
+          this.$emit('on-focus')
         })
       },
       blur(){

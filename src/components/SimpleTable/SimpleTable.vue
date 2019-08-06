@@ -987,7 +987,7 @@ export default {
                 lastWidth = lastWidth - dragWidth
               }
             }
-             if (table.bodyHeight !== 0&&!this.isRightFixed) {
+            if (table.bodyHeight !== 0&&!this.isRightFixed) {
               lastWidth = lastWidth - getScrollBarSize()
             }
             _this.changeWidth(columnWidth, column.key, lastWidth)
@@ -2230,7 +2230,11 @@ export default {
           this.keySelectRange()
         }
       }
-    }
+    },
+    //勾选排序在上
+    selectedTop(status=true) {
+      this.broadcast('Block', 'on-select-top',status)
+    },
   },
   created() {
     if (!this.context) this.currentContext = this.$parent
@@ -2321,7 +2325,7 @@ export default {
             this.$refs.summation.style.marginLeft = 0
           }
         }
-         if(this.$refs.body.scrollTop > val.length*this.itemHeight){
+        if(this.$refs.body.scrollTop > val.length*this.itemHeight){
           this.$refs.body.scrollTop = val.length*this.itemHeight-this.height
         }
         this.updateVisibleData()

@@ -16,7 +16,7 @@
             @on-click="handleIconClick"></Icon>
       <transition name="fade">
         <Icon name="load-c"
-              class="h-icon h-load-loop" 
+              class="h-icon h-load-loop"
               :class="[prefixCls + '-icon', prefixCls + '-icon-validate']"
               v-if="!icon"></Icon>
       </transition>
@@ -43,7 +43,7 @@
              @blur="handleBlur"
              @input="handleInputValue"
              @change="handleChange">
-      <div :class="[prefixCls + '-group-append']" 
+      <div :class="[prefixCls + '-group-append']"
            v-if="append"
            v-show="slotReady">
         <slot name="append"></slot>
@@ -346,17 +346,17 @@ export default {
       if(this.clearable){
         style.paddingRight=30+'px';
         if(this.icon){
-            style.paddingRight=42+'px';
+          style.paddingRight=42+'px';
         }
       }
       return style;
     },
     clearstyle(){
-        let style={}
-        let right=this.icon?22:10
-        style.right=right+'px'
-        style.width='16px'
-        return style
+      let style={}
+      let right=this.icon?22:10
+      style.right=right+'px'
+      style.width='16px'
+      return style
     }
   },
   methods: {
@@ -390,8 +390,11 @@ export default {
       if (this.focusAllSelect && this.type === 'text') {
         this.$refs.input.select()
       }
+      if (this.focusAllSelect && this.type === 'textarea') {
+        this.$refs.textarea.select()
+      }
       if(this.currentValue!=""&&this.clearable){
-            this.hasvalue=true;
+        this.hasvalue=true;
       }
       this.$emit('on-focus', event)
     },
@@ -418,9 +421,9 @@ export default {
         this.dispatch('FormItem', 'on-form-blur', this.currentValue)
       }
       if(this.clearable){
-         setTimeout(()=>{
-             this.hasvalue=false
-         }, 200);     
+        setTimeout(()=>{
+          this.hasvalue=false
+        }, 200);
       }
     },
     handleInputValue(event) {
@@ -486,20 +489,23 @@ export default {
           }
         }
       }
-    if(this.clearable){
-       if(value!=''){
-         this.hasvalue=true
-       }else{
-         this.hasvalue=false
-       }
-    }
-    
+      if(this.clearable){
+        if(value!=''){
+          this.hasvalue=true
+        }else{
+          this.hasvalue=false
+        }
+      }
+
       this.$emit('input', value)
       this.setCurrentValue(value)
       this.$emit('on-change', event)
     },
     handleChange(event) {
       this.$emit('on-input-change', event)
+    },
+    handleSelect(event) {
+      console.log('sel')
     },
     setCurrentValue(value) {
       if (value === this.currentValue) return
@@ -560,6 +566,9 @@ export default {
         this.$refs.input.blur()
       }
     },
+    select() {
+      this.$refs.input.select()
+    }
   },
   watch: {
     value(val) {

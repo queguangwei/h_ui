@@ -5,15 +5,16 @@
     <h2>带边线 多选</h2>
     <Button @click="loadData">加载数据</Button>
     <Button @click="changeData">切换数据</Button>
-    <!-- <h-simple-table :columns="columnsBig" :data="bigData" border stripe @on-select="select" @on-select-cancel="select" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="300" @on-select-all='change' @on-scroll="change" @on-selection-change="change" width="1200" :canDrag="false">
-      <span slot="loading">我是自定义加载！！！</span>
-    </h-simple-table> -->
+    <!--<h-simple-table :columns="columnsBig" :data="bigData" border stripe @on-select="select" @on-select-cancel="select" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="300" @on-select-all='change' @on-scroll="change" @on-selection-change="change" width="1200" :canDrag="false">-->
+      <!--<span slot="loading">我是自定义加载！！！</span>-->
+    <!--</h-simple-table>-->
     <h-button @click="setLoading">切换状态</h-button>
+    <h-button @click="clearData">清除数据</h-button>
     <h2>不带边线 单选 on-current-change</h2>
     <!-- :multiLevel="multiLevel1" -->
     <!-- <h-msg-box v-model="showmsg" :width="1000"> -->
       <!-- notAdaptive  -->
-    <h-simple-table ref="simTable" :summationRender="false" @on-right-click="rightClick" :summationData="summationData" :columns="columnsBig1" border :data="bigData" height="300" @on-selection-change="selsetChange" @on-current-change="selsetChange1" @on-row-dblclick="dblclick" highlight-row>
+    <h-simple-table ref="simTable" canMove :summationRender="false" @on-right-click="rightClick" :summationData="summationData" :columns="columnsBig1" border :data="bigData" height="300" @on-selection-change="selsetChange" @on-current-change="selsetChange1" @on-row-dblclick="dblclick" highlight-row>
     </h-simple-table>
     <!-- </h-msg-box> -->
     <h-button @click='changeClo'>改变冻结列</h-button>
@@ -60,8 +61,8 @@ import TexpandRow from './Texpand-row.vue'
 let jsonData=[];
 let tData =require('../assets/aa.json');
 for (let i = 0; i < 1; i++) {
-      jsonData =tData.slice(0,500);
-    }
+  jsonData =tData.slice(0,500);
+}
 export default {
   components:{TexpandRow},
   data () {
@@ -217,6 +218,7 @@ export default {
         title:'测试',
         key:'ceshi',
         algin:'center',
+
        }
       ],
       columnsBig1:[
@@ -486,11 +488,33 @@ export default {
     rightClick(e){
       console.log('right'+e)
     },
+    clearData() {
+//      this.columnsBig1.shift()
+      this.columnsBig1.splice(2, 1)
+      this.columnsBig1.pop()
+      this.$nextTick(()=> {
+        this.bigData = []
+      })
+    },
     changeClo(){
       this.$set(this.columnsBig1[1],'fixed','left')
     },
     loadData(){
       this.showmsg = true;
+      this.columnsBig1.splice(2, 0, {
+        title: '地址1',
+        key: 'securityName',
+      })
+      this.columnsBig1.push({
+        title: '年龄1',
+        key: 'tradeDate'
+      })
+//      this.columnsBig1.unshift({
+//        title: '地址1',
+//        key: 'securityName',
+//        minWidth:200,
+//      })
+
       this.$nextTick(()=>{
         this.bigData = jsonData;
       })
@@ -659,6 +683,7 @@ export default {
         {
           type: 'selection',
           align: 'center',
+          sortable: true
         },
         {
           type: 'index',
@@ -743,36 +768,36 @@ export default {
           sortable:true,
           // fixed:'left',
         },
-        // {
-        //   title: '地址',
-        //   ellipsis:true,
-        //   key: 'securityCode',
-        // },
-        // {
-        //   title: '地址1',
-        //   key: 'securityName',
-        //   minWidth:200,
-        //   sortable:true,
-        // },
-        // {
-        //   title: '年龄',
-        //   key: 'tradeDate1',
-        //   minWidth:200,
-        //   sortable:true,
-        //   // fixed:'left',
-        // },
+         {
+           title: '地址',
+           ellipsis:true,
+           key: 'securityCode',
+         },
+         {
+           title: '地址1',
+           key: 'securityName',
+           minWidth:200,
+           sortable:true,
+         },
+         {
+           title: '年龄',
+           key: 'tradeDate1',
+           minWidth:200,
+           sortable:true,
+           // fixed:'left',
+         },
         {
           title: '地址',
           ellipsis:true,
           minWidth:200,
           key: 'securityCode1',
         },
-        // {
-        //   title: '地址1',
-        //   key: 'securityName',
-        //   minWidth:200,
-        //   sortable:true,
-        // }
+//         {
+//           title: '地址1',
+//           key: 'securityName',
+//           minWidth:200,
+//           sortable:true,
+//         }
     ]
     // this.columnsBig1.push({
     //   title: '地址6',

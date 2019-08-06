@@ -71,9 +71,10 @@ import Tag from '../views/Tag.vue'
 import SimpleTreeGird from '../views/SimpleTreeGird.vue'
 import Calendar from '../views/Calendar.vue'
 // import Cuiyang from '../views/cuiyang/main'
-import Schedule from '../views/Schedule.vue';
+import Schedule from '../views/Schedule.vue'
 
 import DownLoad from '../views/DownLoad.vue'
+
 // const hyh = resolve=>{
 //     import(xxx.js).then(module=>{//import 实现异步加载
 //         resolve(module)

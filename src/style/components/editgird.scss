@@ -346,11 +346,11 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
       }
     }
   }
-  &-can-hover {
-    .not-child:hover td{
-      background-color: $table-td-hover-bg;
-    }
-  }
+  // &-can-hover {
+  //   .not-child:hover td{
+  //     background-color: $table-td-hover-bg;
+  //   }
+  // }
   &-row-highlight:hover td{
     background-color: $table-td-highlight-bg !important;
   }
@@ -371,4 +371,8 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
     width: 15px;
     height: 15px;
   }
+}
+.expand-icon{
+  width:16px;
+  display:inline-block;
 }

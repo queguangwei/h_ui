@@ -187,7 +187,7 @@ $date-picker-cells-width-with-weeknumbers: 226px;
     height: $date-picker-header-height;
     line-height: $date-picker-header-height;
     text-align: center;
-    border-bottom: 1px solid $border-color-split;
+    border-bottom: 1px solid $date-picker-boder-color;
     &-label{
       cursor: pointer;
       transition: color $transition-time $ease-in-out;
@@ -265,21 +265,24 @@ $date-picker-cells-width-with-weeknumbers: 226px;
     }
 
     &-with-sidebar{
-      padding-left: 92px;
+      padding-left: $date-picker-sidebar-width;
     }
     &-sidebar{
       width: $date-picker-sidebar-width;
       float: left;
-      margin-left: $date-picker-sidebar-margin-left;
+      margin-left: -$date-picker-sidebar-width;
       position: absolute;
       top: 0;
       bottom: 0;
-      background: $table-thead-bg;
-      border-right: 1px solid $border-color-split;
+      background:$date-picker-sidebar-bg; 
+      border-right: 1px solid $date-picker-boder-color;
       border-radius: $border-radius-small 0 0 $border-radius-small;
       overflow: auto;
     }
     &-shortcut{
+      height: $date-picker-panel-shortcut-height;
+      line-height:$date-picker-panel-shortcut-height;
+
       padding: $btn-padding-large;
       transition: all $transition-time $ease-in-out;
       cursor: pointer;
