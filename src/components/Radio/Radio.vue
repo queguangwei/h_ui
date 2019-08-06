@@ -114,7 +114,7 @@
           return [
             `${prefixCls}-inner`,
             {
-              [`${prefixCls}-inner-focus`]: this.isFocus&&window.isO45,
+              [`${prefixCls}-inner-focus`]: this.isFocus,
             }
           ];
       },
@@ -158,14 +158,15 @@
       updateValue () {
         this.currentValue = this.value === this.trueValue;
       },
-      focus () {
-        consolello
+      focus(event) {
         this.$refs.input.focus();
         this.isFocus = true;
+        this.$emit('on-focus', event)
       },
-      blur () {
+      blur(event) {
         this.$refs.input.blur();
         this.isFocus = false;
+        this.$emit('on-blur', event)
       },
       getTabIndex() {
         let tabindex = this.tabindex;

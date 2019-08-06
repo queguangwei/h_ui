@@ -2,11 +2,11 @@
 	<div>
 		<h2>单独使用</h2>
       <h-radio @on-click="click" v-model="single1" size="large" true-value="1" false-value="0">Radio</h-radio>
-      <h-radio @on-click="click" v-model="single" @on-focus="fo" @on-blur="bl">Radio</h-radio>
+      <h-radio @on-click="click" v-model="single" @on-focus="fo" @on-blur="bl" ref="test">Radio</h-radio>
       <h-radio @on-click="click" v-model="single" size="small">Radio</h-radio>
       {{single1}}
       {{single}}
-
+    <Button @on-click="testClick">获取焦点</Button>
 	<h2>组合使用</h2>
 	<h-radio-group v-model="phone" @on-click="click">
       <h-radio label="apple" text="apple1" size="large">
@@ -21,7 +21,7 @@
         <h-Icon name="clock"></h-Icon>
         <span>Windows</span>
       </h-radio>
-    </h-radio-group><br>
+    </h-radio-group>
     <h-radio-group v-model="animal">
       <h-radio label="金斑蝶" text="金斑蝶1" :disabled="status" @on-click="ceshi"></h-radio>
       <h-radio label="爪哇犀牛" text="金斑蝶2" :disabled="status"></h-radio>
@@ -54,14 +54,14 @@
     </h-radio-group>
     <h2>按钮样式</h2>
     <p>通过设置属性size为large或small将按钮样式设置为大和小尺寸，不设置为默认(中)尺寸。</p>
-    <h-radio-group v-model="button1" type="button" ref="test" >
+    <h-radio-group v-model="button1" type="button">
         <h-radio label="北京"></h-radio>
         <h-radio label="上海"></h-radio>
         <h-radio label="深圳"></h-radio>
         <h-radio label="杭州"></h-radio>
     </h-radio-group>
     {{button1}}
-    <Button @on-click="testClick">获取焦点</Button>
+
     <h-radio-group v-model="button2" type="button">
         <h-radio label="北京"></h-radio>
         <h-radio label="上海" disabled></h-radio>
@@ -128,6 +128,9 @@
       bl() {
         console.log('blur')
       },
+      foc() {
+        console.log(1)
+      },
       ceshi(){
       },
       changeStatus(){
@@ -135,6 +138,9 @@
       },
       click(){
           console.log('我被点击了')
+      },
+      testClick() {
+        this.$refs.test.focus()
       }
     }
 	}

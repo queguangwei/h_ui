@@ -82,12 +82,20 @@
 						[`${prefixCls}-warn`]:item.type=='w'?true:false,
 						[`${prefixCls}-error`]:item.type=='e'?true:false,
 						[`${prefixCls}-debugger`]:item.type=='d'?true:false,
+            [`${prefixCls}-custom`]:item.type==='c'
 					}
 				]
 			},
 			itemContent(item){
 				let pre = null;
+				let custom = '';
+				if(item.custom) {
+				  custom = '【'+item.custom+'】'
+        }
 				switch (item.type) {
+          case 'i':
+            pre='【INFO】';
+            break;
 					case 'w':
 					  pre='【WARN】';
 					  break;
@@ -98,7 +106,7 @@
 					  pre='【DEBUGGER】';
 					  break;
 					default:
-					  pre='【INFO】';
+					  pre = custom;
 				}
 				return pre+' '+item.str;
 			}

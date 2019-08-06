@@ -55,7 +55,7 @@
           {
             [`${prefixCls}-wrapper-selected`]: this.isChecked,
             [`${prefixCls}-wrapper-disabled`]: this.disabled,
-            [`${prefixCls}-${this.size}`]: !!this.size
+            [`${prefixCls}-${this.size}`]: !!this.size,
           }
         ];
       },

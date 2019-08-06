@@ -11,7 +11,7 @@
 	</div>
 </template>
 <script>
-let timer;	
+let timer;
 	export default{
 		name:"Log",
 		data(){
@@ -27,14 +27,15 @@ let timer;
 				// 	{str:'xxx22222222',type:"i"},
 				// 	{str:'xxx3333333333',type:"w"},
 				// 	{str:'xxx44444444444',type:"d"}];
-				let item = ['e','d','w','i'];
+				let item = ['e','d','w','i','c'];
 				let obj={};
 				obj.str = this.index;
-				obj.type = item[Math.floor(Math.random()*item.length)];;
+				obj.type = item[Math.floor(Math.random()*item.length)];
+				obj.custom = '自定义'
 				this.data = [];
 				this.data.push(obj);
 				this.index++;
-				if(this.index>1100){
+				if(this.index>800){
 					clearInterval(timer);
 				}
 			},

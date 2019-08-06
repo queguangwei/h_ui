@@ -22,6 +22,8 @@
                 setDefSelect
                 widthAdaption
                 ref="test"
+                @on-focus="fo"
+                @on-blur="bl"
                 >
         <div slot="header">
           <h-button @click="selectAll(true)">全选</h-button>
@@ -105,6 +107,7 @@
         <h-select v-model="model2"
                   size="small"
                   width="100"
+                  filterable
                   autoPlacement>
           <h-option v-for="(item, index) in uList"
                     :value="item.id"
@@ -230,6 +233,7 @@
         <h-select v-model="model9"
                   width="260"
                   multiple
+                  isBackClear
                   :isString="true"
                   hideMult
                   showTitle>
@@ -785,6 +789,12 @@ export default {
       } else {
         this.$refs.test.blur()
       }
+    },
+    fo() {
+      console.log('focus')
+    },
+    bl() {
+      console.log('blur')
     },
     fuzhi() {
       this.cityList = data.slice(0, 10)

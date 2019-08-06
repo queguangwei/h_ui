@@ -63,7 +63,7 @@
             [`${prefixCls}-disabled`]: this.disabled,
             [`${prefixCls}-${this.size}`]: !!this.size,
             [`${prefixCls}-${this.type}`]: !!this.type,
-            [`${prefixCls}-focused`]: this.isSwitchFocus
+            [`${prefixCls}-focused`]: this.isSwitchFocus&&window.isO45
           }
         ];
       },

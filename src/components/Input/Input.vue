@@ -390,6 +390,9 @@ export default {
       if (this.focusAllSelect && this.type === 'text') {
         this.$refs.input.select()
       }
+      if (this.focusAllSelect && this.type === 'textarea') {
+        this.$refs.textarea.select()
+      }
       if(this.currentValue!=""&&this.clearable){
         this.hasvalue=true;
       }
@@ -501,6 +504,9 @@ export default {
     handleChange(event) {
       this.$emit('on-input-change', event)
     },
+    handleSelect(event) {
+      console.log('sel')
+    },
     setCurrentValue(value) {
       if (value === this.currentValue) return
       this.$nextTick(() => {
@@ -559,6 +565,9 @@ export default {
       } else {
         this.$refs.input.blur()
       }
+    },
+    select() {
+      this.$refs.input.select()
     }
   },
   watch: {
