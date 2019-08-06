@@ -46,7 +46,7 @@
     <h-simple-select autoPlacement
                      filterable
                      isArrow="false"
-                     placeholder="123"
+                     placeholder="placeholder..."
                      style="width:200px"
                      transfer
                      :loading="loading1"
@@ -54,11 +54,17 @@
                      v-model="v20190321.value"
                      remote
                      :remote-method="remoteMethod"
-                     widthAdaption>
+                     widthAdaption
+                     @on-blur="handleBlur"
+                     @on-drop-change="handleChange"
+                     ref="simSel">
       <h-select-block :data="remoteData"></h-select-block>
       <!-- <h-select-block :data="v20190321.options2"></h-select-block> -->
     </h-simple-select>
     {{v20190321.value}}
+    <Button @on-click="simSel(true)">获取焦点</Button>
+    <Button @on-click="simSel(false)">失去焦点</Button>
+
     <h-simple-select filterable
                      isArrow="false"
                      placeholder="123"
@@ -214,7 +220,20 @@ export default {
     }
   },
   methods: {
- selectAll(status){
+    handleBlur() {
+      console.log('blur')
+    },
+    handleChange(e) {
+      console.log(e)
+    },
+    simSel(val) {
+      if (val) {
+        this.$refs.simSel.focus()
+      } else {
+        this.$refs.simSel.blur()
+      }
+    },
+    selectAll(status){
       this.$refs.ceshi.toggleSelect(status)
     },
     selectTop(status){

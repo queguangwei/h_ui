@@ -50,7 +50,8 @@
     <!-- <h-msg-box v-model="showBox"> -->
       <h-select-tree v-model="val" format-value="id" :first-value="firstVal" :data="baseData2" size="large" @on-select-change="selectChange" @on-toggle-expand="selectChange"></h-select-tree>
     <!-- </h-msg-box> -->
-
+    <br><br>
+    <h-select-tree v-model="val" style="width:200px" :data="baseData" isAlwaysSelect></h-select-tree>
   </div>
 </template>
 <script>
@@ -84,7 +85,7 @@
               {
                 title: 'child1',
                 id: '1-1',
-  
+
                 children: [
                   {
                     title: 'child1-1-1',
@@ -145,7 +146,7 @@
               {
                 title: 'child1',
                 id: 2,
-  
+
                 children: [
                   {
                     title: 'child1-1-1',

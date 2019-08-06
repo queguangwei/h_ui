@@ -155,13 +155,15 @@
       click(e){
         this.$emit('on-click',e);
       },
-      focus () {
+      focus(e) {
         this.$refs.input.focus();
         this.isFocus = true;
+        this.$emit('on-focus', e)
       },
-      blur () {
+      blur(e) {
         this.$refs.input.blur();
         this.isFocus = false;
+        this.$emit('on-blur', e)
       }
     },
     watch: {

@@ -207,6 +207,10 @@ export default {
       type: Boolean,
       default: false
     },
+    focusSelect: {
+      type: Boolean,
+      default: true,
+    },
     matchable: {
       type: Boolean,
       default: false
@@ -374,8 +378,8 @@ export default {
       default:false,
     },
     showValue: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false
     },
     accuFilter:{
       type: Boolean,
@@ -605,7 +609,7 @@ export default {
     checkAll() {
       return 'h-select-checkall'
     },
-    selectTabindex() { 
+    selectTabindex() {
       return this.disabled ? -1 : ((this.tabindex + "") !== "-1" ? this.tabindex : 0);
     },
     notFoundShow() {
@@ -702,7 +706,7 @@ export default {
         }
       }
     },
-     offsetArrow() {
+    offsetArrow() {
       if (!this.multiple) return
       let el = this.$refs.reference
       if (el.scrollHeight > el.clientHeight) {
@@ -805,18 +809,18 @@ export default {
 
       this.options = options
       this.availableOptions = options
-      
+
       if (init) {
         if (!this.remote || this.isBlock) {
           this.updateSingleSelected(true, slot)
           this.updateMultipleSelected(true, slot)
-            if(this.newSearchModel&&this.selectedMultiple.length>0&&!this.isInputFocus){
-              let multipleAry=[];
-                this.selectedMultiple.forEach(item=>{
-                    multipleAry.push(item["label"]);
-              })
-              this.selectedResult=multipleAry.join(',');
-           }
+          if(this.newSearchModel&&this.selectedMultiple.length>0&&!this.isInputFocus){
+            let multipleAry=[];
+              this.selectedMultiple.forEach(item=>{
+                  multipleAry.push(item["label"]);
+            })
+            this.selectedResult=multipleAry.join(',');
+         }
         }
       }
     },
@@ -969,7 +973,7 @@ export default {
             })
           })
         }
-        if (!init) {      
+        if (!init) {
           if (this.labelInValue) {
             this.$emit('on-change', {
               value: value,
@@ -1208,17 +1212,19 @@ export default {
       e.target.selectionStart = 0
       e.target.selectionEnd = this.query.length
     },
-    handleBlur() {},
+    handleBlur() {
+      this.$emit('on-blur')
+    },
     handkeSearchBlur(){
-       let multipleAry=[];
+      let multipleAry=[];
       this.selectedMultiple.forEach(item=>{
-            multipleAry.push(item["label"]);
+        multipleAry.push(item["label"]);
       })
       let modelstr=multipleAry.join(",");
       if(modelstr!=this.selectedResult){
         this.selectedResult=modelstr;
       }
-       this.isInputFocus = false
+      this.isInputFocus = false
 
     },
     resetInputState(e) {
@@ -1555,7 +1561,7 @@ export default {
     this.$nextTick(() => {
       this.broadcastQuery('')
     })
-    this.updateOptions(true) 
+    this.updateOptions(true)
     this.$on('append', () => {
       this.slotChange()
       this.updateOptions(true, true)
@@ -1695,6 +1701,17 @@ export default {
             })
           }
         })
+//        if (window.isO45) {
+//          if (this.filterable) {
+//            if (this.multiple) {
+//              this.$refs.input.focus()
+//            }else {
+//              if (this.focusSelect) {
+//                this.$refs.input.select()
+//              }
+//            }
+//          }
+//        }
         setTimeout(() => {
           this.dispatch('Msgbox', 'on-esc-real-close', false)
         }, 0)
@@ -1704,6 +1721,7 @@ export default {
           if (this.$refs.input) {
             this.$refs.input.blur()
           }
+
           setTimeout(() => {
             if (this.remote && this.remoteMethod) return
             if (this.showBottom || this.multiple) {
@@ -1719,6 +1737,7 @@ export default {
         }, 0)
         // this.broadcast('Drop', 'on-destroy-popper');
       }
+      this.$emit('on-drop-change', val)
     },
     query(val) {
       if (this.remote && this.remoteMethod) {
@@ -1815,7 +1834,7 @@ export default {
         this.isCopy=false;
         return
       }
-      
+
       if(oldVal!=""&&val==""&&this.model.length>0){
            this.model=[]
            return;
