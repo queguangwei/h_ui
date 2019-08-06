@@ -126,10 +126,10 @@ export default {
         const columnRect = columnEl.getBoundingClientRect();
         const minLeft = columnRect.left - tableLeft + 30;
         let lastWidth =this.findObj(event,"TR").lastChild.offsetWidth;
-        if(this.$parent.tableWidth<this.$parent.initWidth-this.$parent.scrollBarWidth){
-          lastWidth = lastWidth+this.$parent.initWidth-this.$parent.tableWidth-this.$parent.scrollBarWidth;
-        }
-        let tableWidth = this.$el.parentElement.offsetWidth;
+        // if(this.$parent.tableWidth<this.$parent.initWidth-this.$parent.scrollBarWidth){
+        //   lastWidth = lastWidth+this.$parent.initWidth-this.$parent.tableWidth-this.$parent.scrollBarWidth;
+        // }
+        let tableWidth = this.$parent.initWidth;
         let headWidth = this.$el.offsetWidth;
         addClass(columnEl, 'noclick');
         this.dragState = {
@@ -172,11 +172,10 @@ export default {
                 lastWidth = lastWidth-dragWidth;
               }
             }
-            if (this.$parent.bodyHeight!=0&&!this.$parent.notAdaptive) {
-              lastWidth = lastWidth - getScrollBarSize();
-            }
+            // if (this.$parent.bodyHeight!=0&&!this.$parent.notAdaptive) {
+            //   lastWidth = lastWidth - getScrollBarSize();
+            // }
             table.changeWidth(columnWidth, column.key,lastWidth)
-            // _this.changeWidth(columnWidth, column.key,lastWidth);
 
             document.body.style.cursor = '';
             _this.dragging = false;
@@ -322,8 +321,9 @@ export default {
       document.body.style.cursor = '';
     },
     sortCloumn (curIndex, insertIndex, _index){
+      if (this.columns[insertIndex].fixed) return
       const columns = this.columns;
-      const item = columns[curIndex];
+      const item = columns[curIndex];;
       columns.splice(curIndex,1);
       columns.splice(insertIndex,0,item);
       this.$emit('on-move', _index, insertIndex);

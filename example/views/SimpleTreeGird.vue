@@ -10,7 +10,7 @@
     <h-button @on-click="checkedData(false)">多选不选择某行</h-button>
     <!-- isCheckbox checkStrictly -->
     <!-- selectRoot -->
-    <h-simple-tree-gird ref="treeGird" headSelection canMove :columns="columns1" no-data-text="123" isCheckbox :data="treedata" :height="400" @on-row-dblclick="selectChange" @on-expand="expand" @on-drag="expand" >
+    <h-simple-tree-gird ref="treeGird" headSelection canDrag canMove :columns="columns1" no-data-text="123" isCheckbox :data="treedata" :height="400" @on-row-dblclick="selectChange" @on-expand="expand" @on-drag="expand" >
       <span slot="loading">1244</span>
     </h-simple-tree-gird>
   </div>
@@ -114,6 +114,7 @@ export default {
                 /* type: 'selectTree', */
                 title: 'name',
                 key: 'name',
+                // fixed: 'left',
                 // width: 100,
                 align: 'left',
             },
@@ -122,6 +123,7 @@ export default {
                 title: 'age',
                 // width: 200,
                 key: 'age',
+                fixed: 'left',
                 align: 'left',
                 // hiddenCol: true,
             },
@@ -129,6 +131,7 @@ export default {
                 /* type: 'text', */
                 title: 'address',
                 // width: 300,
+                // fixed: 'left',
                 key: 'address',
                 align: 'center',
                 hiddenCol: false,
