@@ -5,7 +5,7 @@ $transfer-item-prefix-cls: "#{$css-prefix}transfer-list-content-item";
   position: relative;
   line-height: $line-height-base;
 
-  &-list{
+  &-list {
     display: inline-block;
     width: $transfer-list-width;
     // height: $max-height;
@@ -14,17 +14,17 @@ $transfer-item-prefix-cls: "#{$css-prefix}transfer-list-content-item";
     position: relative;
     padding-top: $transfer-list-padding-top;
 
-    &-with-footer{
+    &-with-footer {
       // padding-bottom: 35px;
     }
 
     &-header {
       padding: $transfer-list-header-padding;
-      background: $head-bg;
+      background: $transfer-header-bg;
       color: $text-color;
       border: 1px solid $border-color-base;
       border-bottom: 1px solid $border-color-split;
-      border-radius: $border-radius-base $border-radius-base 0 0;
+      border-radius: $transfer-border-radius $transfer-border-radius 0 0;
       overflow: hidden;
       position: absolute;
       top: $transfer-list-header-top;
@@ -32,11 +32,11 @@ $transfer-item-prefix-cls: "#{$css-prefix}transfer-list-content-item";
       width: 100%;
       z-index: 1;
 
-      &-title{
+      &-title {
         cursor: pointer;
       }
 
-      & > span{
+      & > span {
         padding-left: $transfer-list-header-span-padding-left;
       }
 
@@ -44,60 +44,60 @@ $transfer-item-prefix-cls: "#{$css-prefix}transfer-list-content-item";
         margin: 0 !important;
         float: right;
       }
-      .head-clear{
+      .head-clear {
         cursor: pointer;
       }
     }
 
-    &-body{
+    &-body {
       // height: 100%;
       height: $max-height;
       border: 1px solid $border-color-base;
       border-top: none;
-      border-radius: 0 0 $border-radius-base $border-radius-base;
+      border-radius: 0 0 $transfer-border-radius $transfer-border-radius;
       position: relative;
       overflow: hidden;
       z-index: 0;
 
-      &-with-search{
-          padding-top: $transfer-list-body-with-search-padding-top;
+      &-with-search {
+        padding-top: $transfer-list-body-with-search-padding-top;
       }
-      &-with-footer{
-          border-radius: 0;
+      &-with-footer {
+        border-radius: 0;
       }
     }
 
-    &-content{
+    &-content {
       height: 100%;
       padding: $transfer-list-content-padding;
       overflow: auto;
 
-      &-item{
+      &-item {
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
 
-        & > span{
+        & > span {
           //padding-left: 4px;
         }
-        &>.delete-icon{
+        & > .delete-icon {
           display: none;
           float: right;
         }
       }
-      &-item:hover{
+      &-item:hover {
         background: $transfer-list-content-item-hover-color;
-        &>.delete-icon{
+        & > .delete-icon {
           display: block;
         }
       }
 
-      &-not-found{
+      &-not-found {
         display: none;
         text-align: center;
         color: $btn-disable-color;
       }
-      &-not-found:only-child{
+      &-not-found:only-child {
         display: block;
       }
     }
@@ -105,30 +105,30 @@ $transfer-item-prefix-cls: "#{$css-prefix}transfer-list-content-item";
       text-align: center;
       color: $btn-disable-color;
     }
-    &-body-with-search &-content{
-        padding: $transfer-body-with-search-padding;
+    &-body-with-search &-content {
+      padding: $transfer-body-with-search-padding;
     }
 
-    &-body-search-wrapper{
-      padding:$transfer-body-search-wrapper-padding;
+    &-body-search-wrapper {
+      padding: $transfer-body-search-wrapper-padding;
       position: absolute;
       top: $transfer-body-search-wrapper-top;
       left: $transfer-body-search-wrapper-left;
       right: $transfer-body-search-wrapper-right;
     }
 
-    &-search{
+    &-search {
       position: relative;
     }
 
-    &-footer{
+    &-footer {
       border: 1px solid $border-color-base;
       padding: $transfer-footer-padding;
       border-top: none;
       border-radius: 0 0 $border-radius-base $border-radius-base;
-      bottom:$transfer-footer-bottom;
+      bottom: $transfer-footer-bottom;
       left: $transfer-footer-left;
-      right:$transfer-footer-right;
+      right: $transfer-footer-right;
       // min-height: 35px;
       @include clearfix();
     }
@@ -136,7 +136,7 @@ $transfer-item-prefix-cls: "#{$css-prefix}transfer-list-content-item";
   &-operation {
     display: inline-block;
     overflow: hidden;
-    margin:$transfer-operation-margin;
+    margin: $transfer-operation-margin;
     vertical-align: middle;
 
     .#{$btn-prefix-cls} {
@@ -155,19 +155,16 @@ $transfer-item-prefix-cls: "#{$css-prefix}transfer-list-content-item";
 @include select-item($transfer-prefix-cls, $transfer-item-prefix-cls);
 .#{$transfer-item-prefix-cls} {
   &-disabled {
-  color: $transfer-list-content-item-disabled-color;
-  cursor: $cursor-disabled;
+    color: $transfer-list-content-item-disabled-color;
+    cursor: $cursor-disabled;
 
-  &:hover {
+    &:hover {
       color: $transfer-list-content-item-disabled-hover-color;
       background-color: $transfer-item-hover-background-color;
       cursor: $cursor-disabled;
+    }
   }
 }
-}
 .#{$transfer-item-prefix-cls}:hover {
-    background: $transfer-list-content-item-hover-color;
+  background: $transfer-list-content-item-hover-color;
 }
-
-
-
