@@ -17,7 +17,7 @@
         :notFillin="notFillin"
         :notFormat="notFormat"
         :setNull="setNull"
-        @on-blur="rangeBlur"     
+        @on-blur="rangeBlur"
       ></Typefield>
     </div>
     <div :class="`${prefixCls}-inner split`">{{this.split}}</div>
@@ -187,7 +187,7 @@ export default {
             status = true;
           }
         }
-      } 
+      }
       return status;
     },
     getStatus(){
@@ -197,7 +197,7 @@ export default {
         let maxfirstChar = this.maxValue.substring(0,1)||'';
         let minNum = this.minValue.replace(/-/g,'').replace(/,/,'');
         let maxNum = this.maxValue.replace(/-/g,'').replace(/,/,'');
-        let maxIsmax = this.getMax(minNum,maxNum);        
+        let maxIsmax = this.getMax(minNum,maxNum);
         if(maxfirstChar=='-'&& minfirstChar!='-') status = true;
         if(maxfirstChar=='-'&& minfirstChar=='-'&&maxIsmax)status = true;
         if(maxfirstChar!='-'&& minfirstChar!='-'&&!maxIsmax)status = true;

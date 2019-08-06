@@ -161,6 +161,16 @@ $btn-font-size-large: 14px;
 $btn-font-size-small:12px;
 $btn-border-radius: 4px;
 $btn-border-radius-small: 3px;
+
+
+$btn-height-small:22px;
+$btn-height-normal:28px;
+$btn-height-large:32px;
+
+$btn-min-width-small :20px;
+$btn-min-width-normal :30px;
+$btn-min-width-large :40px;
+
 $btn-group-border: shade($primary-color, 5%);
 $btn-disable-color: #c3cbd6;
 $btn-disable-bg: $background-color-base;
@@ -220,9 +230,17 @@ $date-picker-panel-line-height:26px;
 $date-picker-panel-margin-top:4px;
 $date-picker-sidebar-width:92px;
 $date-picker-sidebar-margin-left:-92px;
+$date-picker-sidebar-bg:$table-thead-bg;
+$date-picker-boder-color: $border-color-split;
+
+
+$date-picker-panel-shortcut-height:28px;
+
 $date-picker-confirm-border-top:1px solid #DCE1E7;
 $datepicker-cells-header-color:$btn-disable-color;
 $datepicker-cells-prev-month-color:$btn-disable-color;
+
+
 
 
 // Shadow
@@ -354,9 +372,11 @@ $form-row-form-item-padding:5px;
 $form-row-form-item-margin:0;
 $form-row-required-left:-3px;
 $form-row-required-requiredIcon-left:-9px;
+
 $form-error-tip-left:0;
 $form-error-tip-line-height:1;
 $form-error-tip-padding-top:6px;
+
 $form-required-label-before-margin-right:2px;
 $form-required-item-requiredIcon-left:-9px;
 $form-item-h-input-padding:0 12px;
@@ -452,7 +472,9 @@ $calendar-handle-item-font-size:13px;
 $calendar-handle-item-hover-background:#4A94FA;
 $calendar-handle-item-hover-color:#fff;
 
-
+$calendar-month-max-width:100%;
+$calendar-month-header-border-width:1px;
+$calendar-month-content-item-bg:$date-picker-cell-hover-bg;
 
 //card
 $card-background:#fff;
@@ -715,8 +737,8 @@ $msgbox-body-icon-font-size:36px;
 $msgbox-footer-margin-top:40px;
 
 
-
-
+$msgbox-title-font-size:$font-size-base;
+$msgbox-border-radius :$border-radius-base;
 //notice
 
 $notice-width: 335px;
@@ -1527,6 +1549,8 @@ $transfer-operation-btn-margin-bottom:12px;
 $transfer-operation-btn-last-child-margin-bottom:0;
 $transfer-item-hover-background-color:#fff;
 
+$transfer-header-bg:$head-bg;
+$transfer-border-radius: $border-radius-base ;
 
 
 //transfer-table
@@ -1550,6 +1574,8 @@ $transferTable-list-title-padding-top:35px;
 $transferTable-list-operation-margin:0 16px;
 $transferTable-list-operation-margin-bottom:12px;
 
+$transfer-table-header-bg:$head-bg;
+$transfer-table-border-radius: $border-radius-base ;
 
 
 //typefield
@@ -1574,7 +1600,7 @@ $typefield-h-select-selection-margin:0;
 $typefield-h-select-selection-border-bottom-left-radius:0;
 $typefield-h-select-selection-border-top-left-radius:0;
 
-
+$typefield-tip-font-family:'Microsoft YaHei';
 
 //typefield-range
 
@@ -1584,7 +1610,7 @@ $typefield-range-width:100%;
 $typefield-range-inner-width:calc(50% - 10px);
 $typefield-range-inner-split-width:20px;
 
-
+$typefield-tip-border-radius:$border-radius-small;
 
 
 

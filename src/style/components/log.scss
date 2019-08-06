@@ -24,6 +24,9 @@ $split-prefix-cls: "#{$css-prefix}log";
     &-debugger{
         color: $success-color;
     }
+    &-custom {
+      color: $primary-color;
+    }
     &-footer{
         padding: $log-footer-padding;
         border-top: solid 1px $border-color-base;

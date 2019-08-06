@@ -193,7 +193,7 @@ export default {
     tipShow(val){
       if (val&&this.transfer) {
           this.$refs.drop.update();
-      } 
+      }
       // else {
       //     this.$refs.drop.destroy();
       // }
@@ -511,7 +511,7 @@ export default {
       !this.havefocused && this.$emit('input', this.cardFormatValue(formatVal));
     },
     hover(){
-      if(!this.hoverTips||!this.value||this.tipShow) return      
+      if(!this.hoverTips||!this.value||this.tipShow) return
       this.bigShow(this.type,this.value)
     },
     out(){

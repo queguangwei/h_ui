@@ -6,13 +6,17 @@
     <tbody :class="[prefixCls + '-tbody']">
       <template v-for="(row,index) in data">
         <tr :key="row.id"
+          @mouseenter.stop="handleMouseIn(row.id)"
+          @mouseleave.stop="handleMouseOut(row.id)"
           class="not-child"
           :class="rowClasses(row.id)"
           @click="clickCurrentRow(row,row.id,$event)"
           @dblclick="dblclickCurrentRow(row,row.id,$event)">
           <td v-for="(column,inx) in columns" :class="alignCls(column, row)" :key="column.index">
             <span v-if="inx==(columns[0].type=='index'?1:0)" :style="indentCls" >
-              <Icon v-if="row.children && row.children.length!=0" name = "play_fill" :class="iconClass(row.id,index)" @click.native.stop="toggleExpand(index,row,$event)"></Icon>
+              <span class="expand-icon">
+                <Icon v-if="row.children && row.children.length!=0" name = "play_fill" :class="iconClass(row.id,index)" @click.native.stop="toggleExpand(index,row,$event)"></Icon>
+              </span>
               <!-- :indeterminate="row.indeterminate" -->
               <Checkbox v-if="isCheckbox" :value="checkValue(row.id)"  @on-click="changeSelect(row.id,row,$event)" @click.native.stop="handleclick"></Checkbox> 
             </span>
@@ -26,7 +30,9 @@
             <span v-else>{{row[column.key]}}</span>
           </td>
         </tr>
-        <tr v-if="collectionState[index]&&row.children&&row.children.length>0" :key="row.id+'child'" :style="expandStl(row.id,index,row)">
+        <tr v-if="isExpanded(row.id,index,row)"
+          :key="row.id+'child'" 
+          :style="expandStl(row.id,index,row)">
           <td :colspan="columns.length" style="border:0">   
             <Tree-table
               :styleObject = "styleObject"
@@ -103,7 +109,12 @@
         let index = this.indexAndId[id];
         return{
           [`${this.prefixCls}-row-highlight`]: this.checkedObj[index]&&this.checkedObj[index]._isHighlight,
+          [`${this.prefixCls}-row-hover`]: this.checkedObj[index]&&this.checkedObj[index]._isHover,
         }
+      },
+      isExpanded(id,inx,row){
+        let index = this.indexAndId[id];
+        return this.checkedObj[index]&&this.checkedObj[index]._isExpand!=null&&row.children&&row.children.length>0
       },
       expandStl(id,inx,row){
         let index = this.indexAndId[id];
@@ -163,10 +174,9 @@
         this._parent.changeCheckedObj(this.indexAndId[id],status,'_isHighlight')   
       },
       toggleExpand (index,row,event) {
+        let inx = this.indexAndId[row.id];
         let curStatus;
-        if(!this.collectionState[index]){
-          this.$set(this.collectionState,index,true)
-          this._parent.changeCollection(this.indexAndId[row.id],true)
+        if(this.checkedObj[inx]._isExpand==null){
           row.children.forEach((col,inx)=>{
             this.setStatus(col,inx);
           })
@@ -241,10 +251,11 @@
           this._parent.checkedObj.push({
             id:col.id,
             checked:col.checked||false,
-            _isExpand:col.expand||false,
+            _isExpand:col.expand||null,
             _collectionState: this.collectionState[inx],
             _parentId:col._parentId,
             _isHighlight:col.highlight||false,
+            _isHover:false,
             row:col,
           })
         }
@@ -258,16 +269,22 @@
       getStatus(){
         this._parent = this.findParent();
         this.data.forEach((col,inx)=>{
-          if(this.collectionState[inx]){           
-          }else{
-            if(col.expand&&col.expand!='false'){
-              this.collectionState[inx] = true
-            }else{
-              this.collectionState[inx] =false
-            }
+          // if(this.collectionState[inx]){           
+          // }else{
+          //   if(col.expand&&col.expand!='false'){
+          //     this.collectionState[inx] = true
+          //   }else{
+          //     this.collectionState[inx] =false
+          //   }
             this.setStatus(col,inx);
-          }
+          // }
         })  
+      },
+      handleMouseIn (_index) {
+        this._parent.handleMouseIn(_index);
+      },
+      handleMouseOut (_index) {          
+        this._parent.handleMouseOut(_index);
       },
     },
     mounted(){

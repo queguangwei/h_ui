@@ -17,11 +17,11 @@ $transfer-item-prefix-cls: "#{$css-prefix}transfer-table-list-content-item";
     }
     &-header {
       padding:$transferTable-list-header-padding;
-      background: $head-bg;
+      background: $transfer-table-header-bg;
       color: $text-color;
       border: 1px solid $border-color-base;
       border-bottom: 1px solid $border-color-split;
-      border-radius: $border-radius-base $border-radius-base 0 0;
+      border-radius:$transfer-table-border-radius $transfer-table-border-radius 0 0;
       overflow: hidden;
       position: absolute;
       top: $transferTable-list-header-top;
@@ -45,7 +45,7 @@ $transfer-item-prefix-cls: "#{$css-prefix}transfer-table-list-content-item";
 
     &-body{
       border-top: none;
-      border-radius: 0 0 $border-radius-base $border-radius-base;
+      border-radius: 0 0 $transfer-table-border-radius $transfer-table-border-radius;
       position: relative;
       overflow: hidden;
       z-index: 0;
