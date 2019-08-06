@@ -489,7 +489,9 @@ export default {
       console.log('right'+e)
     },
     clearData() {
-      this.columnsBig1.shift()
+//      this.columnsBig1.shift()
+      this.columnsBig1.splice(2, 1)
+      this.columnsBig1.pop()
       this.$nextTick(()=> {
         this.bigData = []
       })
@@ -499,12 +501,19 @@ export default {
     },
     loadData(){
       this.showmsg = true;
-      this.columnsBig1.unshift({
+      this.columnsBig1.splice(2, 0, {
         title: '地址1',
         key: 'securityName',
-        minWidth:200,
-        sortable:true,
       })
+      this.columnsBig1.push({
+        title: '年龄1',
+        key: 'tradeDate'
+      })
+//      this.columnsBig1.unshift({
+//        title: '地址1',
+//        key: 'securityName',
+//        minWidth:200,
+//      })
 
       this.$nextTick(()=>{
         this.bigData = jsonData;
@@ -759,24 +768,24 @@ export default {
           sortable:true,
           // fixed:'left',
         },
-        // {
-        //   title: '地址',
-        //   ellipsis:true,
-        //   key: 'securityCode',
-        // },
-        // {
-        //   title: '地址1',
-        //   key: 'securityName',
-        //   minWidth:200,
-        //   sortable:true,
-        // },
-        // {
-        //   title: '年龄',
-        //   key: 'tradeDate1',
-        //   minWidth:200,
-        //   sortable:true,
-        //   // fixed:'left',
-        // },
+         {
+           title: '地址',
+           ellipsis:true,
+           key: 'securityCode',
+         },
+         {
+           title: '地址1',
+           key: 'securityName',
+           minWidth:200,
+           sortable:true,
+         },
+         {
+           title: '年龄',
+           key: 'tradeDate1',
+           minWidth:200,
+           sortable:true,
+           // fixed:'left',
+         },
         {
           title: '地址',
           ellipsis:true,

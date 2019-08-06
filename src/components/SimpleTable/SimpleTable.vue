@@ -2230,7 +2230,11 @@ export default {
           this.keySelectRange()
         }
       }
-    }
+    },
+    //勾选排序在上
+    selectedTop(status=true) {
+      this.broadcast('Block', 'on-select-top',status)
+    },
   },
   created() {
     if (!this.context) this.currentContext = this.$parent

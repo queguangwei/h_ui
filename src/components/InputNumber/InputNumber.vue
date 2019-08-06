@@ -128,7 +128,11 @@ export default {
         let num = parseInt(value);
         return num <= 32767 && num >= -1;
       }
-    }
+    },
+    focusAllSelect: {
+      type: Boolean,
+      default: false
+    },
   },
   data() {
     return {
@@ -259,7 +263,7 @@ export default {
       if (!isNaN(this.precision)&&val!==null) {
         val = Number(Number(val).toFixed(this.precision))
         isNaN(val) && (val = 0)
-      }     
+      }
       this.$nextTick(() => {
         this.currentValue = val
         this.$emit('input', val)
@@ -267,35 +271,39 @@ export default {
         this.dispatch('FormItem', 'on-form-change', val)
       })
     },
-    focus() {
+    focus(event) {
+      if(this.focusAllSelect) {
+        this.$refs.input.select()
+      }
       this.focused = true
       if (this.$refs.input) {
         this.$refs.input.focus()
       }
+      this.$emit('on-focus', event)
     },
-    blur(event) {     
+    blur(event) {
       if (event == undefined) {
         this.focused = false
         return
-      }   
-      if(event.target.value.trim()==""&&!this.setzero){
-         this.setValue(null)
-         this.focused = false
-         this.viewValue=null;
-         return;
       }
-       let val = Number(event.target.value.trim())
-       this.focused = false    
-       const { min, max } = this
-        if (val!==null) {
-            if (val > max) {
-              this.setValue(max)
-            } else if (val < min) {
-              this.setValue(min)
-            } else {
-              this.setValue(val)
-            }
-       }
+      if(event.target.value.trim()==""&&!this.setzero){
+        this.setValue(null)
+        this.focused = false
+        this.viewValue=null;
+        return;
+      }
+      let val = Number(event.target.value.trim())
+      this.focused = false
+      const { min, max } = this
+      if (val!==null) {
+        if (val > max) {
+          this.setValue(max)
+        } else if (val < min) {
+          this.setValue(min)
+        } else {
+          this.setValue(val)
+        }
+      }
     },
     keyDown(e) {
       if (e.keyCode === 38) {
@@ -353,7 +361,7 @@ export default {
     /**
      * @description 计算显示值
      */
-    calcViewValue() {   
+    calcViewValue() {
       if (this.notScientificNotation) {
         let s = scientificNotationToString(this.currentValue)
         this.viewValue = this.precision

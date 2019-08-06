@@ -12,6 +12,8 @@
                     :min="1"
                     :step="1.2"
                     v-model="value2"
+                    focusAllSelect
+                    @on-focus="focusEvent"
                     ref="input"></h-input-number>
     <Button @click="testClick()">获取焦点</Button>
     <br>

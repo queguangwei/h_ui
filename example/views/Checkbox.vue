@@ -16,6 +16,7 @@
         <span>Snapchat1</span>
       </h-checkbtn>
     </h-checkbox-group>
+
   <h-msg-box v-model="changeform" width="900">
     <h-checkbox v-model="single1" size="large" true-value="1" false-value="0">checkbox</h-checkbox><br>{{single1}}
     <h-checkbox v-model="single">checkbox</h-checkbox><br>{{single}}
@@ -24,7 +25,7 @@
   <Button @on-click="changeform1">显示隐藏</Button>
 		<h2>组合使用</h2>
 		<h-checkbox-group v-model="social" vertical @on-change="change">
-      <h-checkbox label="twitter" text="1" size="large">
+      <h-checkbox label="twitter" text="1" size="large" ref="test" @on-focus="fo" @on-blur="bl">
       </h-checkbox>
       <h-checkbox label="facebook" text="1">
       </h-checkbox>
@@ -33,6 +34,7 @@
       <h-checkbox label="snapchat" text="1">
       </h-checkbox>
     </h-checkbox-group>
+    <Button @on-click="testClick">获取焦点</Button>
     <!-- {{social}} -->
     <h-checkbox-group v-model="fruit">
       <h-checkbox label="香蕉"></h-checkbox>
@@ -103,6 +105,15 @@
 			}
 		},
 		methods:{
+      testClick() {
+        this.$refs.test.focus()
+      },
+      fo(e) {
+        console.log(e)
+      },
+      bl(e) {
+        console.log(e)
+      },
       changeform1(){
         this.changeform = !this.changeform;
       },

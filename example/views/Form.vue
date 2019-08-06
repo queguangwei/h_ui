@@ -1,20 +1,29 @@
 <template>
   <div>
     <h1>异步测试</h1>
+    <Button @on-click="testClick">获取焦点</Button>
     <h-form ref="formCustom"
             :model="formCustom"
             :rules="ruleCustom"
             :label-width="80">
+      <h-form-item label="用户名"
+                   prop="username">
+        <h-input type="text"
+                 :tabindex="0"
+                 v-model="formCustom.username"></h-input>
+      </h-form-item>
       <h-form-item label="密码"
                    prop="passwd"
                    labelTitle="123">
         <h-input type="password"
+                 :tabindex="0"
                  v-model="formCustom.passwd"></h-input>
       </h-form-item>
       <h-form-item label="年龄"
                    prop="age">
         <h-input type="text"
                  v-model="formCustom.age"
+                 :tabindex="0"
                  number></h-input>
       </h-form-item>
       <h-form-item label="确认密码"
@@ -1172,6 +1181,7 @@ export default {
         password: ''
       },
       formCustom: {
+        username: 'admin',
         passwd: '',
         passwdCheck: '',
         age: ''
@@ -1324,6 +1334,9 @@ export default {
     }
   },
   methods: {
+    testClick() {
+      this.$refs.formCustom.firstNodeFocused()
+    },
     changeRequire() {
       this.ruleValidate.name[0].required = !this.ruleValidate.name[0].required
     },

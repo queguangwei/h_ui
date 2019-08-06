@@ -873,7 +873,7 @@ export default {
     },
     toggleExpand (_index) {
       if(this.disableExpand && this.typeName=='groupTable'){
-          return
+        return
       }
       let _this = this;
       let data = {};
