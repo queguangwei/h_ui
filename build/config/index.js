@@ -19,14 +19,13 @@ module.exports={
 		// npm install --save-dev compression-webpack-plugin
 		// 默认不打开开启gzip模式
 		productionGzip: false,
-		// gzip模式下需要压缩的文件的扩展名	
+		// gzip模式下需要压缩的文件的扩展名
 		productionGzipExtensions: ['js', 'css'],
 		// Run the build command with an extra argument to
 		// View the bundle analyzer report after build finishes:
 		// `npm run build --report`
 		// Set to `true` or `false` to always turn it on or off
-		bundleAnalyzerReport: false
-
+    bundleAnalyzerReport: false
 	},
 	dev:{
 		env: require('./dev.env'),

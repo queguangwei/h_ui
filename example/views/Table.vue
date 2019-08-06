@@ -6,7 +6,7 @@
       <h-table :columns="columns1" :data="data1" headAlgin="center" border :highlight-row="true" @on-current-change="click1" :loading="loading" bodyAlgin="left" @on-drag="onDrag">
         <span slot="loading">我是自定义加载！！！</span>
       </h-table>
-    </h-msg-box> 
+    </h-msg-box>
     <!-- <Button @click="refresh">显示</Button>
     <Button @click="getData">重新赋值</Button>
     <h-input v-model="aaa"></h-input> -->
@@ -81,7 +81,7 @@
     <h2>设置大小</h2>
     <p>通过设置属性 size 为 large 或 small 可以调整表格尺寸为大或小，默认不填或填写 default 为中。</p>
     <h-table size="large" :columns="columns1" :data="data1" :loading="loading"></h-table>
-    <h-table size="small" :columns="columns1" :data="data1" :loading="loading"></h-table> 
+    <h-table size="small" :columns="columns1" :data="data1" :loading="loading"></h-table>
     <h2>导出csv </h2>
     <p>通过在column中设置hiddenCol表示该列是否隐藏</p>
     <p>通过调用 exportCsv() 方法，可以将数据导出为 .csv 的表格文件，详见 API。</p>
@@ -100,20 +100,20 @@
       <span slot="footer">恒生电子有限公司提供</span>
     </h-table>
     <br>
-    
+
     <h-table border :columns="columns4" :data="data1" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading" :summationData="summationData1" large></h-table>
     <br>
-    
+
     <h-table border :columns="columns4" :data="data1" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading" :summationData="summationData1" small></h-table>
      <h-table height="300" width="550" border :columns="columns2" :data="[]" :loading="loading" @on-scroll="scroll"></h-table>
-     <p>设置maxheight300</p> 
-     <h-table maxHeight="300" width="550" border :columns="columns2" :data="[]" :loading="loading" @on-scroll="scroll"></h-table> 
-     <h-table height="300" width="550" border :columns="columns2" :data="data4" :loading="loading" @on-scroll="scroll"></h-table> 
-     <p>设置maxheight300</p> 
-     <h-table maxHeight="300" width="550" border :columns="columns2" :data="data4" :loading="loading" @on-scroll="scroll"></h-table> 
-     <h-table height="800" width="550" border :columns="columns2" :data="data4" :loading="loading" @on-scroll="scroll"></h-table> 
-     <p>设置maxheight800</p> 
-     <h-table maxHeight="800" width="550" border :columns="columns2" :data="data4" :loading="loading" @on-scroll="scroll"></h-table> 
+     <p>设置maxheight300</p>
+     <h-table maxHeight="300" width="550" border :columns="columns2" :data="[]" :loading="loading" @on-scroll="scroll"></h-table>
+     <h-table height="300" width="550" border :columns="columns2" :data="data4" :loading="loading" @on-scroll="scroll"></h-table>
+     <p>设置maxheight300</p>
+     <h-table maxHeight="300" width="550" border :columns="columns2" :data="data4" :loading="loading" @on-scroll="scroll"></h-table>
+     <h-table height="800" width="550" border :columns="columns2" :data="data4" :loading="loading" @on-scroll="scroll"></h-table>
+     <p>设置maxheight800</p>
+     <h-table maxHeight="800" width="550" border :columns="columns2" :data="data4" :loading="loading" @on-scroll="scroll"></h-table>
     <br>
     <h-button type="primary" size="large" @click="exportData(1)"><h-icon name="document"></h-icon> 导出原始数据</h-button>
     <h-button type="primary" size="large" @click="exportData(2)"><h-icon name="document"></h-icon> 导出排序和过滤后的数据</h-button>
@@ -125,26 +125,26 @@
      <h-table height="300" :stripe="true" :columns="columns18" :data="data17" border size="small" ref="table" :loading="loading"  @on-selection-change="selsetChange">
         <span slot="header">证券日活数据表</span>
         <span slot="footer">恒生电子有限公司提供</span>
-    </h-table> 
-    <p>设置maxheight6200</p> 
+    </h-table>
+    <p>设置maxheight6200</p>
     <h-table maxHeight="6200" :stripe="true" :columns="columns18" :data="data17" border size="small" :loading="loading" :highlightRow="true" @on-selection-change="selsetChange">
         <span slot="header">证券日活数据表</span>
         <span slot="footer">恒生电子有限公司提供</span>
-    </h-table> 
+    </h-table>
     <br>
     <h-table height="300" :stripe="true" :columns="columns18" :data="[]" border size="small" :loading="loading" :highlightRow="true" @on-selection-change="selsetChange">
         <span slot="header">证券日活数据表</span>
         <span slot="footer">恒生电子有限公司提供</span>
     </h-table>
       <br>
-     <h-table border canMove :columns="columns6" :data="data5" no-filtered-data-text="找不到数据" :loading="loading"></h-table> 
+     <h-table border canMove :columns="columns6" :data="data5" no-filtered-data-text="找不到数据" :loading="loading"></h-table>
      <p>多级表头：</p>
     <h-table :columns="columnsMulti" :data="dataMulti"  border :multiLevel="multiTitle" :loading="loading"></h-table>
   </div>
 </template>
 <script>
 // import printJS from 'print-js/src/index'
-let jsonData =require('../assets/aa.json'); 
+let jsonData =require('../assets/aa.json');
 import TexpandRow from './Texpand-row.vue'
 export default {
   name: 'tableq',
@@ -339,7 +339,7 @@ export default {
              title: "月活跃",
              key: "month",
              fixed: "right",
-             width: 150,             
+             width: 150,
              sortable: true,
              filters: [
                {
@@ -606,6 +606,7 @@ export default {
         {
           title: '年龄',
           key: 'age',
+          sortable: true,
           filters: [
             {
               label: '大于50岁',
@@ -694,10 +695,10 @@ export default {
                   value:params.row.age,
                 },
                 on:{
-                   'on-change': (event)=>{ 
+                   'on-change': (event)=>{
                       // params.row.numLots = event.target.value;
                       // this.data[params.index] = params.row;
-                  } 
+                  }
                  }
               })
             ])
@@ -749,13 +750,14 @@ export default {
           key: 'name',
           width: 100,
           fixed: 'left',
-          ellipsis:true
+          ellipsis:true,
+          type: 'html'
         },
         {
           title: '年龄',
           key: 'age',
           width: 100,
-          ellipsis:true
+          ellipsis:true,
         },
         {
           title: '省份',
@@ -819,7 +821,7 @@ export default {
           width: 60,
           align: 'center',
         },
-        
+
         {
           title: "名称",
           key: "name",
@@ -1131,7 +1133,7 @@ export default {
       ],
       data4: [
         {
-          name: '王小明',
+          name: '<a href="javascript:alert(1);">王小明</a>',
           age: 18,
           address: '北京市朝阳区芍药居',
           province: '北京市',
@@ -1711,16 +1713,16 @@ export default {
         // this.$store.dispatch('refreshCurPage', 'table')
           // this.$route.meta.comName = ''
           this.$parent.page = ''
-        
+
         this.$nextTick(() => {
        this.$parent.isKeepAlive = true
-          
+
           // this.$route.meta.isKeepAlive = true
           // this.$route.meta.isDestroy = false
           // this.$route.meta.comName = 'table'
           this.$parent.page = 'tableq'
-          
-          
+
+
           // this.$store.dispatch('addRouteKeepAlive', 'table')
         })
     },
@@ -1824,16 +1826,16 @@ export default {
 
     },
     moveDown(){
-      
+
     },
     sortChnage(obj){
       debugger
       console.log(obj)
-    }      
+    }
   },
   mounted(){
     this.columns1=[
-        { 
+        {
           type: 'radio',
           width:60,
           align:'center',

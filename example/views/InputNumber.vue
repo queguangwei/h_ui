@@ -8,10 +8,15 @@
                     :precision="2">
       <span slot="append">px</span>
     </h-input-number>
-    <h-input-number :max="10"
-                    :min="3"
+    <h-input-number :max="20"
+                    :min="1"
                     :step="1.2"
-                    v-model="value2"></h-input-number><br>
+                    v-model="value2"
+                    focusAllSelect
+                    @on-focus="focusEvent"
+                    ref="input"></h-input-number>
+    <Button @click="testClick()">获取焦点</Button>
+    <br>
     <br>
     <h-input-number :max="10"
                     :min="1"
@@ -61,6 +66,11 @@ export default {
       value6: 1,
       value7: 0,
       value8: 0.0000007
+    }
+  },
+  methods: {
+    testClick() {
+      this.$refs.input.focus();
     }
   },
   watch: {
