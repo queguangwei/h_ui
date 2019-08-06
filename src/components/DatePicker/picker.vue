@@ -16,6 +16,7 @@
                  :placeholder="localePlaceholder"
                  :value="visualValue"
                  :name="name"
+                 :tabindex="tabindex"
                  @click.native="clickHandler"
                  @on-keyup.prevent="keyUpHandler"
                  @on-input-change="handleInputChange"
@@ -224,6 +225,14 @@ export default {
         ])
       },
       default: 'click'
+    },
+    tabindex: {
+      type: [String, Number],
+      default: "-1",
+      validator(value) {
+        let num = parseInt(value);
+        return num <= 32767 && num >= -1;
+      }
     }
   },
   data() {
@@ -695,9 +704,9 @@ export default {
           this.options.shortcuts.length > 0
         rightNum = isShortcuts ? rightNum + 95 : rightNum
 
-        if (curbottom < bottomNum && rect.right < rightNum) {
+        if (curbottom < bottomNum && rect.right < rightNum && rect.top > bottomNum ) {
           this.fPlacement = 'top-end'
-        } else if (curbottom < bottomNum) {
+        } else if (curbottom < bottomNum && rect.top > bottomNum) {
           this.fPlacement = 'top-start'
         } else if (clienWidth - rect.left < rightNum) {
           this.fPlacement = 'bottom-end'
