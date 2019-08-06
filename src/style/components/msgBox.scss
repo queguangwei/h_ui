@@ -39,7 +39,7 @@ $confirm-prefix-cls: "#{$css-prefix}modal-confirm";
       position: relative;
       background-color:$msgbox-content-background-color;
       border: 0;
-      border-radius: $border-radius-base;
+      border-radius: $msgbox-border-radius ;
       background-clip: padding-box;
   }
 
@@ -119,7 +119,7 @@ $confirm-prefix-cls: "#{$css-prefix}modal-confirm";
 
     &-title {
       display: inline-block;
-      font-size: $font-size-base;
+      font-size: $msgbox-title-font-size;
       color: $msgbox-title-color;
       font-weight: $msgbox-title-font-weight;
       margin-left: $msgbox-title-margin-left;
@@ -133,6 +133,7 @@ $confirm-prefix-cls: "#{$css-prefix}modal-confirm";
     text-align: left;
     line-height: $msgbox-body-line-height;
     padding-left: $msgbox-body-padding-left;
+
     padding-top:$msgbox-body-padding-top;
     position: relative;
 
@@ -173,10 +174,10 @@ $confirm-prefix-cls: "#{$css-prefix}modal-confirm";
   &-footer{
     margin-top: $msgbox-footer-margin-top;
     text-align: right;
-
+ 
     button + button {
       margin-left: 8px;
-      margin-bottom: 0;
+      margin-bottom: 0; 
     }
   }
 }

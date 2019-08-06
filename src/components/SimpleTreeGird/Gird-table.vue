@@ -7,7 +7,6 @@
           :prefix-cls="prefixCls"
           :styleObject="tableStyle"
           :columns="cloneColumns"
-          :obj-data="objData"
           :columns-width="columnsWidth"
           :dataLenght="data.length"
           :headSelection ="headSelection"
@@ -39,6 +38,42 @@
           :headSelection="headSelection"
           :height="height">
         </Tree-table>
+      </div>
+      <div :class="[prefixCls + '-fixed']" :style="fixedTableStyle" v-if="isLeftFixed" ref="leftF">
+        <div :class="fixedHeaderClasses" v-if="showHeader">
+          <gird-head
+            :prefix-cls="prefixCls"
+            :styleObject="tableStyle"
+            :columns="leftFixedColumns"
+            :columns-width="columnsWidth"
+            :dataLenght="data.length"
+            :headSelection ="headSelection"
+            :canDrag="canDrag"
+          ></gird-head>
+        </div>
+        <div :class="[prefixCls + '-fixed-body']" :style="fixedBodyStyle" ref="fixedBody" v-show="!(!!localeNoDataText && (!data || data.length === 0))" @mousewheel="handleFixedMousewheel" @DOMMouseScroll="handleFixedMousewheel">
+          <Tree-table
+            ref="tbody"
+            :styleObject ="tableBodyStyle"
+            :indent ="Number(0)"
+            :data="rebuildData"
+            :prefix-cls="prefixCls"
+            :columns="cloneColumns"
+            :columnsWidth="columnsWidth" 
+            :checkStrictly="checkStrictly" 
+            :checkedObj="checkedObj"
+            :indexAndId="indexAndId"
+            :selectRoot="selectRoot"
+            :isCheckbox="isCheckbox"
+            :bodyRealHeight="bodyRealHeight"
+            :tableWidth="tableWidth"
+            :initWidth="initWidth"
+            :rowSelect="rowSelect"
+            :scrollBarWidth="scrollBarWidth"
+            :headSelection="headSelection"
+            :height="height">
+          </Tree-table>
+        </div>
       </div>
       <div :class="[prefixCls + '-tip']"
         v-show="((!!localeNoDataText && (!data || data.length === 0)))" :style="bodyStyle" @scroll="handleBodyScroll">
@@ -177,7 +212,10 @@ export default {
       type:Boolean,
       default:false,
     },
-    
+    disabledHover: {
+      type:Boolean,
+      default:false,
+    },
   },
   data () {
     return {
@@ -187,7 +225,6 @@ export default {
       tipWidth:0,
       columnsWidth: {},
       prefixCls: prefixCls,
-      objData: {},     // checkbox or highlight-row
       cloneColumns: this.makeColumns(),
       showSlotHeader: true,
       bodyHeight: 0,
@@ -209,6 +246,41 @@ export default {
     };
   },
   computed: {
+    fixedBodyStyle () {
+      let style = {};
+      if (this.bodyHeight !== 0) {
+        let height =this.bodyHeight-this.scrollBarWidth;
+        if (this.tableWidth < this.initWidth+1) {
+          height = height + this.scrollBarWidth-1;
+        }
+        style.height = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`;
+      }
+      return style;
+    },
+    fixedTableStyle () {
+      let style = {};
+      let width = 0;
+      this.leftFixedColumns.forEach((col) => {
+        if (col.fixed && col.fixed === 'left') width += col._width;
+      });
+      style.width = `${width}px`;
+      return style;
+    },
+    leftFixedColumns () {
+        let left = [];
+        let other = [];
+        this.cloneColumns.forEach((col) => {
+            if (col.fixed && col.fixed === 'left') {
+                left.push(col);
+            } else {
+                other.push(col);
+            }
+        });
+        return left.concat(other);
+    },
+    isLeftFixed () {
+      return this.columns.some(col => col.fixed && col.fixed === 'left');
+    },
     loadingText(){
       return this.t('i.table.loadingText');
     },
@@ -295,6 +367,53 @@ export default {
     },
   },
   methods: {
+    handleMouseIn (id) {
+      if (this.disabledHover) return;
+      let inx = this.indexAndId[id]
+      if (!this.checkedObj[inx]) return;
+      this.checkedObj[inx]._isHover = true;
+    },
+    handleMouseOut (id) {
+      if (this.disabledHover) return;
+      let inx = this.indexAndId[id]
+      if (!this.checkedObj[inx]) return;
+      this.checkedObj[inx]._isHover = false;
+    },
+    handleFixedMousewheel(event) {
+      let deltaY = event.deltaY;
+      if(!deltaY && event.detail){
+        deltaY = event.detail * 40;
+      }
+      if(!deltaY && event.wheelDeltaY){
+        deltaY = -event.wheelDeltaY;
+      }
+      if(!deltaY && event.wheelDelta){
+        deltaY = -event.wheelDelta;
+      }
+      if(!deltaY) return;
+      const body = this.$refs.body;
+      const currentScrollTop = body.scrollTop;
+      if (deltaY < 0 && currentScrollTop !== 0) {
+        event.preventDefault();
+      }
+      if (deltaY > 0 && body.scrollHeight - body.clientHeight > currentScrollTop) {
+        event.preventDefault();
+      }
+      //body.scrollTop += deltaY;
+      let step = 0;
+      let timeId = setInterval(()=>{
+        step += 10;
+        if(deltaY>0){
+            body.scrollTop += 5;
+        }
+        else{
+            body.scrollTop -= 5;
+        }
+        if(step >= Math.abs(deltaY)){
+            clearInterval(timeId);
+        }
+      }, 1);
+    },
     move(i,j){
       this.$emit('on-move', i, j);
     },
@@ -305,9 +424,6 @@ export default {
       }else{
         this.$set(this.checkedObj[index],item,status);
       }
-    },
-    changeCollection(index,status){
-      this.checkedObj[index]._collectionState = status;
     },
     changeWidth(width,key,lastWidth){
       var that = this;
@@ -501,32 +617,45 @@ export default {
       let _this = this;
       this.buttomNum = getBarBottom(event.target,this.scrollBarWidth);
       if (this.showHeader) this.$refs.header.scrollLeft = event.target.scrollLeft;
+      if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = event.target.scrollTop;
     },
     // 将数据转换成objData,同时rebuild 
     makeColumns () {
       var that = this;
       let columns = deepCopy(this.columns);
+      let left = []
+      let right = []
       let center = [];
 
       columns.forEach((column, index) => {
         column._index = index;
         column._columnKey = columnKey++;
         column._width = column.width ? column.width : '';    // update in handleResize()
-        if(!!column.hiddenCol){
-          that.columns[index].width = 0;
-          column.width = 0;
-          column._width = 0;
-        }
+        // if(!!column.hiddenCol){
+        //   that.columns[index].width = 0;
+        //   column.width = 0;
+        //   column._width = 0;
+        // }
         column._sortType = 'normal';
         column._filterVisible = false;
         column._isFiltered = false;
         column._filterChecked = [];
 
-        if (!column.hiddenCol) {
-          center.push(column);
+        if (!column.hiddenCol || column.hiddenCol == 'false') {
+          if (column.fixed && column.fixed === 'left') {
+            left.push(column)
+          } else if (column.fixed && column.fixed === 'right') {
+            right.push(column)
+          } else {
+            center.push(column)
+          }
         }
+
+        // if (!column.hiddenCol) {
+        //   center.push(column);
+        // }
       });
-      return center;
+      return left.concat(center).concat(right)
     },
     initResize(){
       this.$nextTick(() => {
@@ -606,10 +735,11 @@ export default {
         this.checkedObj.push({
           id:col.id,
           checked:status,
-          _isExpand:col.expand||false,
+          _isExpand:col.expand||null,
           _collectionState: col.expand||false,
           _parentId:col._parentId,
           _isHighlight:col.highlight||false,
+           _isHover:false,
           row:col,
         })
       }
