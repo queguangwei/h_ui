@@ -704,9 +704,9 @@ export default {
           this.options.shortcuts.length > 0
         rightNum = isShortcuts ? rightNum + 95 : rightNum
 
-        if (curbottom < bottomNum && rect.right < rightNum) {
+        if (curbottom < bottomNum && rect.right < rightNum && rect.top > bottomNum ) {
           this.fPlacement = 'top-end'
-        } else if (curbottom < bottomNum) {
+        } else if (curbottom < bottomNum && rect.top > bottomNum) {
           this.fPlacement = 'top-start'
         } else if (clienWidth - rect.left < rightNum) {
           this.fPlacement = 'bottom-end'
