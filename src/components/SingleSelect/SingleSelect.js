@@ -14,6 +14,10 @@ export default {
       type: Boolean,
       default: true
     },
+    accuFilter: {
+      type: Boolean,
+      default: true
+    }
   },
   data() {
     return {
