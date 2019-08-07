@@ -4,7 +4,7 @@ $selecttree-prefix-cls:  "#{$css-prefix}selectTree";
   display: inline-block;
   width: 100%;
   box-sizing: border-box;
-  vertical-align: middle;
+  vertical-align: $selectTree-vertical-align;
   color: $text-color;
   font-size: $font-size-base;
   line-height: normal;
