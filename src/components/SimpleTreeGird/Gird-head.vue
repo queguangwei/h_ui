@@ -50,6 +50,7 @@ export default {
     headSelection: Boolean,
     canDrag:Boolean,
     canMove: Boolean,
+    fixed:String,
   },
   data(){
     return{
@@ -59,7 +60,7 @@ export default {
       moving: false,
       movingColumn: null,
       cloumnsLeft: [],
-      isSelectAll:false
+      isSelectAll:false,
     }
   },
   computed: {

@@ -236,7 +236,7 @@ export default {
     },
     tabindex: {
       type: [String, Number],
-      default: "-1",
+      default: "0",
       validator(value) {
         let num = parseInt(value);
         return num <= 32767 && num >= -1;
@@ -567,7 +567,11 @@ export default {
       }
     },
     select() {
-      this.$refs.input.select()
+      if(this.type !== 'textarea') {
+        this.$refs.input.select()
+      }else {
+        this.$refs.textarea.select()
+      }
     }
   },
   watch: {

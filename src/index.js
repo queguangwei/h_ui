@@ -71,6 +71,7 @@ import Drawer from './components/Drawer'
 import Log from './components/Log'
 import SimpleTreeGird from './components/SimpleTreeGird'
 import Calendar from './components/Calendar'
+import SingleSelect from './components/SingleSelect';
 // import FileImport from './components/FileImport';
 // import FileExport from './components/FileExport';
 import Tag from './components/Tag'
@@ -187,7 +188,6 @@ const h_ui = {
   hSteps: Steps,
   Step: Steps.Step,
   hStep: Steps.Step,
-  // Switch,
   hSwitch: Switch,
   Schedule,
   hSchedule: Schedule,
@@ -259,6 +259,7 @@ const h_ui = {
   hSimpleGroupTable: SimpleGroupTable,
   hMultiSelect:SimpleMultiSelect,
   hMultiBlock:SimpleMultiSelect.Block,
+  hSingleSelect:SingleSelect
   // FileImport:FileImport,
   // hFileImport:FileImport,
   // FileExport: FileExport,
