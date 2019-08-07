@@ -768,7 +768,7 @@ export default {
       console.log(d);
     },
     setNull(){
-      this.model34 = '2'
+      this.model34 = null
       // this.model44 = ['124124']
     },
     cy_change_test(val) {

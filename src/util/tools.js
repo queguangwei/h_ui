@@ -1009,13 +1009,13 @@ function getElement(ele, field, status) {
   var index = 0;
   var curNode = getCurNode(field);
   curNode.__vue__.blur();
-  nodes = Array.prototype.slice.call(nodes).sort((a,b)=>{
-    if(Number(a.dataset.index)>Number(b.dataset.index)){
-      return 0
-    }else{
-      return -1
-    }
-  })
+  // nodes = Array.prototype.slice.call(nodes).sort((a,b)=>{
+  //   if(Number(a.dataset.index)>Number(b.dataset.index)){
+  //     return 0
+  //   }else{
+  //     return -1
+  //   }
+  // })
   for (var i = 0; i < nodes.length; i++) {
     if (nodes[i] && curNode == nodes[i]) {
       index = i;
