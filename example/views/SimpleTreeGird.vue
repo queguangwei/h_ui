@@ -121,7 +121,7 @@ export default {
             {
                 /* type: 'text', */
                 title: 'age',
-                // width: 200,
+                width: 200,
                 key: 'age',
                 fixed: 'left',
                 align: 'left',
@@ -130,7 +130,41 @@ export default {
             {
                 /* type: 'text', */
                 title: 'address',
-                // width: 300,
+                width: 300,
+                // fixed: 'left',
+                key: 'address',
+                align: 'center',
+                hiddenCol: false,
+            },
+            {
+                /* type: 'text', */
+                title: 'age',
+                width: 200,
+                key: 'age',
+                align: 'left',
+                // hiddenCol: true,
+            },
+            {
+                /* type: 'text', */
+                title: 'address',
+                width: 300,
+                // fixed: 'left',
+                key: 'address',
+                align: 'center',
+                hiddenCol: false,
+            },
+            {
+                /* type: 'text', */
+                title: 'age',
+                width: 200,
+                key: 'age',
+                align: 'left',
+                // hiddenCol: true,
+            },
+            {
+                /* type: 'text', */
+                title: 'address',
+                width: 300,
                 // fixed: 'left',
                 key: 'address',
                 align: 'center',
