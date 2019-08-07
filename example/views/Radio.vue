@@ -1,11 +1,12 @@
 <template>
 	<div>
 		<h2>单独使用</h2>
-        <h-radio @on-click="click" v-model="single1" size="large" true-value="1" false-value="0">Radio</h-radio>s
-        <h-radio @on-click="click" v-model="single">Radio</h-radio>
-		<h-radio @on-click="click" v-model="single" size="small">Radio</h-radio>
-        {{single1}}
-		{{single}}
+      <h-radio @on-click="click" v-model="single1" size="large" true-value="1" false-value="0">Radio</h-radio>
+      <h-radio @on-click="click" v-model="single" @on-focus="fo" @on-blur="bl" ref="test">Radio</h-radio>
+      <h-radio @on-click="click" v-model="single" size="small">Radio</h-radio>
+      {{single1}}
+      {{single}}
+    <Button @on-click="testClick">获取焦点</Button>
 	<h2>组合使用</h2>
 	<h-radio-group v-model="phone" @on-click="click">
       <h-radio label="apple" text="apple1" size="large">
@@ -20,7 +21,7 @@
         <h-Icon name="clock"></h-Icon>
         <span>Windows</span>
       </h-radio>
-    </h-radio-group><br>
+    </h-radio-group>
     <h-radio-group v-model="animal">
       <h-radio label="金斑蝶" text="金斑蝶1" :disabled="status" @on-click="ceshi"></h-radio>
       <h-radio label="爪哇犀牛" text="金斑蝶2" :disabled="status"></h-radio>
@@ -60,6 +61,7 @@
         <h-radio label="杭州"></h-radio>
     </h-radio-group>
     {{button1}}
+
     <h-radio-group v-model="button2" type="button">
         <h-radio label="北京"></h-radio>
         <h-radio label="上海" disabled></h-radio>
@@ -103,34 +105,46 @@
 		name:'radio',
 		data(){
 			return {
-                status:true,
-                single1: 0,
-				single: false,
-				phone: 'apple',
-                animal: '爪哇犀牛',
-                disabledSingle: true,
-                disabledGroup: '爪哇犀牛',	
-                vertical: '',
-                button1: '北京',
-                button2: '北京',
-                button3: '北京',
-                button4: '北京',
-                button5: '北京',
-                button6: '北京'
+        status:true,
+        single1: 0,
+        single: false,
+        phone: 'apple',
+        animal: '爪哇犀牛',
+        disabledSingle: true,
+        disabledGroup: '爪哇犀牛',
+        vertical: '',
+        button1: '北京',
+        button2: '北京',
+        button3: '北京',
+        button4: '北京',
+        button5: '北京',
+        button6: '北京'
 			}
 		},
-        methods:{
-            ceshi(){
-            },
-            changeStatus(){
-                this.status = !this.status
-            },
-            click(){
-                console.log('我被点击了')
-            }
-        }
+    methods:{
+      fo(){
+        console.log('focused')
+      },
+      bl() {
+        console.log('blur')
+      },
+      foc() {
+        console.log(1)
+      },
+      ceshi(){
+      },
+      changeStatus(){
+          this.status = !this.status
+      },
+      click(){
+          console.log('我被点击了')
+      },
+      testClick() {
+        this.$refs.test.focus()
+      }
+    }
 	}
 </script>
 <style>
-	
+
 </style>

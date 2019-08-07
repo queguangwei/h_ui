@@ -5,7 +5,7 @@
       :type="type"
       :open="opened"
       :confirm="confirm"
-      :readonly="readonly" 
+      :readonly="readonly"
       :disabled="disabled"
       :editable="editable"
       :transfer="transfer"
@@ -142,7 +142,7 @@ export default {
     },
     tabindex: {
       type: [String, Number],
-      default: "-1",
+      default: "0",
       validator(value) {
         let num = parseInt(value);
         return num <= 32767 && num >= -1;
@@ -302,7 +302,7 @@ export default {
           break;
         case 4:
           //value = Number(val)>1950? val:getCurrentYear();   //需求#147171 【TS:201906190498-资管业委会（资管）_沈佳伟-【需求类型】需求【需求描述】HUI的h-fast-date控件，给 赋值19000101，即1900年1月1日，焦点进入h-fast-date，再移出焦点，日期变成了2019-01-01，数据错误，需要修复
-          value = Number(val)>1000? val:getCurrentYear(); 
+          value = Number(val)>1000? val:getCurrentYear();
           break;
         default:
           value = getCurrentYear();
@@ -344,9 +344,9 @@ export default {
         case 1:
           value = '0'+val;
           break;
-        case 2:  
-          if (!isrange) {value = isdate(this.year,this.months,val)? val:'01';} 
-          else{value = isdate(this.year1,this.months1,val)? val:'01';}    
+        case 2:
+          if (!isrange) {value = isdate(this.year,this.months,val)? val:'01';}
+          else{value = isdate(this.year1,this.months1,val)? val:'01';}
           break;
         default:
           value = getCurrentDay();
@@ -363,7 +363,7 @@ export default {
           this.months = getCurrentMonth();
           this.day = getCurrentDay();
           this.months1 = getCurrentMonth();
-          this.day1 = getCurrentDay();  
+          this.day1 = getCurrentDay();
       }
     },
     closeClick(){
@@ -379,7 +379,7 @@ export default {
     changeFocus(event,isrange){
       let code = event.keyCode
       let inputList =isrange?this.$refs.range.querySelectorAll('input'):this.$refs.single.querySelectorAll('input');
-      let activeInx; 
+      let activeInx;
       let nextInx;
       for (var i = inputList.length - 1; i >= 0; i--) {
         if(inputList[i]== document.activeElement){
@@ -402,7 +402,7 @@ export default {
       if (nextInx || nextInx==0) {
         inputList[nextInx].focus();
       }
-    },  
+    },
     change(inx){
       let inputList = this.$refs.inner.querySelectorAll('input');
       if(inx==3&&inputList.length<4) return;

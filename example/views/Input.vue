@@ -9,21 +9,25 @@
              ref="test"
              :specialDecimal="0"
              :maxlength="20"
+             :tabindex="1"
              focusAllSelect></h-input>
     <Button @on-click="testClick(true)">获取焦点</Button>
     <Button @on-click="testClick(false)">失去焦点</Button>
     <h-input algin="center"
              :filterRE=/[^\d]/g
              placeholder="请输入..."
+             :tabindex="1"
              @on-change="onChange"></h-input>
     <h-input algin="right"
              placeholder="请输入..."
+             :tabindex="1"
              @mousedown.native="onChange"></h-input>
     <h2>基础用法</h2>
     <p>可以直接设置 style 来改变输入框的宽度</p>
     <h-input v-model="formData.value"
              placeholder="请输入..."
              style="width: 300px"
+             focusAllSelect
              @on-change="keypress"></h-input>
     <h-input placeholder="请输入..."
              icon="unfold"
@@ -64,6 +68,8 @@
                 limitTip="字"
                  type="textarea"
                  placeholder="请输入..."
+                 focusAllSelect
+                 :tabindex="1"
                  :disabled="disabled"
                  :canResize="false"></h-input>
       </h-col>
@@ -71,6 +77,7 @@
         <h-input v-model="value6"
                  type="textarea"
                  :rows="4"
+                 :tabindex="1"
                  placeholder="请输入..."
                  :disabled="disabled"></h-input>
       </h-col>

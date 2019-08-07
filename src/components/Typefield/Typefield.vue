@@ -141,7 +141,7 @@ export default {
     },
     tabindex: {
       type: [String, Number],
-      default: "-1",
+      default: "0",
       validator(value) {
         let num = parseInt(value);
         return num <= 32767 && num >= -1;
@@ -193,7 +193,7 @@ export default {
     tipShow(val){
       if (val&&this.transfer) {
           this.$refs.drop.update();
-      } 
+      }
       // else {
       //     this.$refs.drop.destroy();
       // }
@@ -281,6 +281,9 @@ export default {
     },
     focus(){
       this.$refs.input.focus()
+    },
+    select() {
+      this.$refs.input.select()
     },
     valChange (event) {
       let value = event.target.value.trim().replace(/,/g,'');
@@ -511,7 +514,7 @@ export default {
       !this.havefocused && this.$emit('input', this.cardFormatValue(formatVal));
     },
     hover(){
-      if(!this.hoverTips||!this.value||this.tipShow) return      
+      if(!this.hoverTips||!this.value||this.tipShow) return
       this.bigShow(this.type,this.value)
     },
     out(){
