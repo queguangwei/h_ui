@@ -35,8 +35,9 @@
           :style="expandStl(row.id,index,row)">
           <td :colspan="columns.length" style="border:0">   
             <Tree-table
-              :styleObject = "styleObject"
-              :indent = "indent+1"
+              :fixed="fixed"
+              :styleObject ="styleObject"
+              :indent ="indent+1"
               :data="row.children"
               :prefix-cls="prefixCls"
               :columns ="columns"
@@ -93,6 +94,7 @@
       scrollBarWidth:[Number,String],
       rowSelect:Boolean,
       headSelection: Boolean,
+      fixed:String,
     },
     computed: {
       objData () {

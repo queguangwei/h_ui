@@ -42,6 +42,7 @@
       <div :class="[prefixCls + '-fixed']" :style="fixedTableStyle" v-if="isLeftFixed" ref="leftF">
         <div :class="fixedHeaderClasses" v-if="showHeader">
           <gird-head
+            fixed="left"
             :prefix-cls="prefixCls"
             :styleObject="tableStyle"
             :columns="leftFixedColumns"
@@ -54,7 +55,8 @@
         <div :class="[prefixCls + '-fixed-body']" :style="fixedBodyStyle" ref="fixedBody" v-show="!(!!localeNoDataText && (!data || data.length === 0))" @mousewheel="handleFixedMousewheel" @DOMMouseScroll="handleFixedMousewheel">
           <Tree-table
             ref="tbody"
-            :styleObject ="tableBodyStyle"
+            fixed="left"
+            :styleObject ="tableStyle"
             :indent ="Number(0)"
             :data="rebuildData"
             :prefix-cls="prefixCls"
@@ -352,7 +354,8 @@ export default {
       let style = {};
       if (this.bodyHeight !== 0) {
         // add a height to resolve scroll bug when browser has a scrollBar in fixed type and height prop
-        const height = (this.isLeftFixed || this.isRightFixed) ? this.bodyHeight + this.scrollBarWidth : this.bodyHeight;
+        // const height = (this.isLeftFixed || this.isRightFixed) ? this.bodyHeight + this.scrollBarWidth : this.bodyHeight;
+        const height = this.bodyHeight;
         style.height = `${height}px`;
       }
       return style;
@@ -360,7 +363,8 @@ export default {
     textStyle(){
       let style = {};
       style.width = this.initWidth!=0?this.initWidth+'px':'100%';
-      const height = (this.isLeftFixed || this.isRightFixed) ? this.bodyHeight + this.scrollBarWidth : this.bodyHeight;
+      // const height = (this.isLeftFixed || this.isRightFixed) ? this.bodyHeight + this.scrollBarWidth : this.bodyHeight;
+      const height = this.bodyHeight;
       style.height = this.height?Number(height-this.scrollBarWidth)+'px':null;
       style.lineHeight = this.height?Number(height-this.scrollBarWidth)+'px':null;
       return style;
@@ -480,7 +484,7 @@ export default {
                   if (width < 100) width = 100
               }
               this.cloneColumns[i]._width = width||'';
-
+              this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b);
               columnsWidth[column._index] = {
                   width: width
               };
