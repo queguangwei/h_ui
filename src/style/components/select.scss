@@ -6,7 +6,7 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
     display: inline-block;
     width: 100%;
     box-sizing: border-box;
-    vertical-align: middle;
+    vertical-align: $select-vertical-align;
     color: $text-color;
     font-size: $font-size-base;
     // line-height: normal;

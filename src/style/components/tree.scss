@@ -26,7 +26,7 @@ $tree-prefix-cls: "#{$css-prefix}tree";
     padding: $tree-title-padding;
     border-radius: $btn-border-radius-small;
     cursor: pointer;
-    vertical-align: center;
+    vertical-align: $tree-title-vertical-align;
     color: $text-color;
     font-size:$tree-title-font-size;
     transition: all $transition-time $ease-in-out;
