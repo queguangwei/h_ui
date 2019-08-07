@@ -288,6 +288,8 @@ $input-tips-ul-li-div-margin-bottom:2px;
 $input-word-limit-bottom:1px;
 $input-word-limit-right:12px;
 $input-icon-validate-padding-right:32px;
+$input-wrapper-vertical-align:middle;
+
 
 // Media queries breakpoints
 // Extra small screen / phone
@@ -1076,6 +1078,7 @@ $select-group-title-height:30px;
 $select-group-title-line-height:30px;
 $select-checkall-border-top:1px solid #e1e1e1;
 $select-checkall-padding:8px;
+$select-vertical-align:middle;
 
 
 
@@ -1182,6 +1185,8 @@ $selectTree-multiple-tag-margin:3px 4px 2px 0;
 $selectTree-content-padding:5px 0;
 $selectTree-content-h-tree-margin-left:10px;
 $selectTree-multiple-selected-background:#fff;
+$selectTree-vertical-align:middle;
+
 
 
 // Slider
@@ -1633,6 +1638,7 @@ $tree-arrow-min-width:16px;
 $tree-arrow-i-font-size:14px;
 $tree-empty-padding:5px 0;
 $tree-isBoxRight-checkbox-margin-top:2px;
+$tree-title-vertical-align:middle;
 
 
 //upload
@@ -1692,6 +1698,8 @@ $mixin-input-border-readonly-color: mix(#fff,$input-hover-border-color, 20%);
 $mixin-input-active-box-shadow: 0 0 0 2px rgba($input-hover-border-color, 0.2);
 $mixin-input-active-error-box-shadow: 0 0 0 2px rgba($error-color, 0.2);
 $mixin-select-item-font-size:$font-size-small;
+$mixin-content-header-padding:14px 16px;
+$mixin-button-btn-vertical-align:middle;
 
 //button
 $btn-info-color: #fff;
@@ -1748,5 +1756,29 @@ $btn-error-press-color: $btn-primary-color;
 $btn-error-press-bgcolor:darken($error-color, 5%);
 $btn-error-press-border-color:darken($error-color, 5%);
 
+//button primary
+$btn-primary-border:$btn-primary-bg;
+$btn-primary-hover-color: $btn-primary-color;
+$btn-primary-hover-bgcolor:darken($btn-primary-bg, 15%);
+$btn-primary-hover-border-color:darken($btn-primary-bg, 15%);
+$btn-primary-press-color: $btn-primary-color;
+$btn-primary-press-bgcolor:darken($btn-primary-bg, 5%);
+$btn-primary-press-border-color:darken($btn-primary-bg, 5%);
 
+
+//button default
+$btn-default-hover-color:  darken($primary-color, 10%);
+$btn-default-hover-bgcolor:#fff;
+$btn-default-hover-border-color:darken($primary-color, 10%);
+$btn-default-press-color:darken($primary-color, 5%);
+$btn-default-press-bgcolor:#fff;
+$btn-default-press-border-color:darken($primary-color, 5%);
+
+//button ghost
+$btn-ghost-hover-color: lighten($primary-color, 10%);
+$btn-ghost-hover-bgcolor:$btn-ghost-bg;
+$btn-ghost-hover-border-color:lighten($primary-color, 10%);
+$btn-ghost-press-color:darken($primary-color, 5%);
+$btn-ghost-press-bgcolor:$btn-ghost-bg;
+$btn-ghost-press-border-color:darken($primary-color, 5%);
 

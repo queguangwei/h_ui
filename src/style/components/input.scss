@@ -10,7 +10,7 @@ $input-prefix-cls: "#{$css-prefix}input";
     width: 100%;
     position: relative;
     // vertical-align: top;
-    vertical-align: middle;
+    vertical-align: $input-wrapper-vertical-align;
   }
   &-icon {
     width: $input-icon-width;
