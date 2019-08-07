@@ -198,31 +198,31 @@ export default {
                           marginLeft:'5px'
                       },on: {
                           'on-click': (value) => {
-                              // console.log("click")
+                               console.log("click")
                           }
                       }
                   })
               ])
             },
             fixed: "left",
-            //  filters: [
-            //    {
-            //        label: '大于4000',
-            //        value: 1
-            //    },
-            //    {
-            //        label: '小于4000',
-            //        value: 2
-            //    }
-            //  ],
-            //  filterMultiple: false,
-            //  filterMethod (value, row) {
-            //      if (value === 1) {
-            //         return row.show > 4000;
-            //      } else if (value === 2) {
-            //         return row.show < 4000;
-            //      }
-            //  }
+              filters: [
+                {
+                    label: '大于4000',
+                    value: 1
+                },
+                {
+                    label: '小于4000',
+                    value: 2
+                }
+              ],
+              filterMultiple: false,
+              filterMethod (value, row) {
+                  if (value === 1) {
+                     return row.show > 4000;
+                  } else if (value === 2) {
+                     return row.show < 4000;
+                  }
+              }
          },
          {
              title: "名称",
@@ -957,7 +957,6 @@ export default {
           type: 'expand',
           width: 50,
           render: (h, params) => {
-            console.log(1);
             return h(TexpandRow, {
               props: {
                   row: params.row
@@ -1829,7 +1828,6 @@ export default {
 
     },
     sortChnage(obj){
-      debugger
       console.log(obj)
     }
   },

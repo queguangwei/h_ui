@@ -575,6 +575,13 @@
           this.$refs.reference.blur();
         }
       },
+      select() {
+        this.toggleMenu()
+        if (this.filterable) {
+          this.$refs.input.focus()
+          this.$refs.input.select()
+        }
+      },
       handleSelectScroll(event){
         let num = getBarBottom(event.target,this.scrollBarWidth);
         this.$emit('on-scroll', num, this.lastScrollTop !== event.target.scrollTop ? "y" : "x");

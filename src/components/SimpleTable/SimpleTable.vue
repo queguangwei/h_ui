@@ -1097,6 +1097,16 @@ export default {
         document.addEventListener('mousemove', handleMouseMove)
         document.addEventListener('mouseup', handleMouseUp)
       }
+      if(column.sortable) {
+        const type = column._sortType
+        if (type === 'normal') {
+          this.handleSort(index, 'asc')
+        } else if (type === 'asc') {
+          this.handleSort(index, 'desc')
+        } else {
+          this.handleSort(index, 'normal')
+        }
+      }
     },
     mousemove(event, column, index,isLeft) {
       if (!this.canDrag || !column||(isLeft&&this.isRightFixed)) return
@@ -1624,19 +1634,6 @@ export default {
         }
       }
     },
-    handleSortByClickHead(index) {
-      const column = this.cloneColumns[index]
-      if (column.sortable) {
-        const type = column._sortType
-        if (type === 'normal') {
-          this.handleSort(index, 'asc')
-        } else if (type === 'asc') {
-          this.handleSort(index, 'desc')
-        } else {
-          this.handleSort(index, 'normal')
-        }
-      }
-    },
     sortData(data, type, index) {
       const key = this.cloneColumns[index].key
       data.sort((a, b) => {
@@ -1653,11 +1650,10 @@ export default {
       return data
     },
     handleSortT(_index, type) {
-      const columnType = this.cloneColumns[_index].type
-      if(columnType === 'selection') {
-        console.log(_index, columnType)
-
-      }
+//      const columnType = this.cloneColumns[_index].type
+//      if(columnType === 'selection') {
+//
+//      }
 
       let index
       this.cloneColumns.forEach((col, i) => {
