@@ -84,7 +84,7 @@ const directive = (el, binding, v) => {
   addHandler(el,'mouseleave', _ => waves.hide(el),)
   // el.addEventListener('mouseup', _ => waves.hide(el), false)
   // el.addEventListener('mouseleave', _ => waves.hide(el), false)
-  
+
 
 }
 

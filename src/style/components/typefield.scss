@@ -25,7 +25,7 @@ $typefield-prefix-cls: "#{$css-prefix}typefield" ;
     background-color: $typefield-input-background-color;
     background-image: none;
     border: 1px solid $border-color-base;
-    border-radius: $border-radius-small;
+    border-radius:$typefield-tip-border-radius;
     vertical-align: top;
     @include placeholder();
     &:hover{
@@ -56,7 +56,7 @@ $typefield-prefix-cls: "#{$css-prefix}typefield" ;
   &-tip {
     position: absolute;
     display: block;
-    font-family: 'Microsoft YaHei';
+    font-family:$typefield-tip-font-family;
     text-align: left;
     line-height:$typefield-tip-line-height;
     top: $typefield-tip-top;
@@ -64,7 +64,7 @@ $typefield-prefix-cls: "#{$css-prefix}typefield" ;
     padding: $typefield-tip-padding;
     z-index: $zindex-tooltip ;
     font-size: $typefield-tip-font-size;
-    border-radius: $border-radius-small;
+    border-radius: $typefield-tip-border-radius;
     border:$typefield-tip-border;
     background: $typefield-tip-background;
     color: $typefield-tip-color;

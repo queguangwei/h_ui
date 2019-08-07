@@ -1,173 +1,4 @@
-<!--<template>
-<div>
-  <h-button @on-click="selectRow1('0',true)">高亮选中</h-button>
-  <h-button @on-click="selectRow1('1',true)">高亮选中</h-button>
-  <h-button @on-click="checkRow1('0',true)">复选框选中</h-button>
-  <h-button @on-click="checkRow1('1',true)">复选框选中</h-button>
-  <h-button @on-click="checkRow1('1',false)">不复选框选中</h-button>
-  <h-button @on-click="selectRow1('0',false)">不高亮选中</h-button>
-  <h-button @on-click="clearselected1('select11')">清空</h-button>
- <h-button @on-click="loadData">加载数据</h-button>
-  <h-simple-tree-gird ref="select11" :columns="columns1" :data="treedata" isCheckbox canDrag :height="400" @on-select-change="selectChange1" @on-expand="expand" @on-drag="expand" @on-row-click="selectChange" @on-scroll="selectChange"></h-simple-tree-gird>
-</div>
-</template>
-<script>
-let bigData = [];
-for(var i=0;i<50;i++){
-  let obj =  {
-    id: i,
-    name: '王小明'+i,
-    age: 18,
-    address: '北京市朝阳区芍药居',
-    money: '120.00',
-    cardId: '6223 ',
-    city: '北京',
-    dating:'2018',
-    timing:'16',
-    tree: '345',
-  }
-  bigData.push(obj)
-}
-for(var i=50;i<1000;i++){
-  let obj =  {
-    id: i,
-    name: '王小明'+i,
-    age: 18,
-    address: '北京市朝阳区芍药居',
-    money: '120.00',
-    cardId: '6223 ',
-    city: '北京',
-    dating:'2018',
-    timing:'16',
-    _parentId:parseInt(Math.random()*50,10)
-  }
-  bigData.push(obj)
-}
-// for(var i=1000;i<10000;i++){
-//   let obj =  {
-//     id: i,
-//     name: '王小明'+i,
-//     age: 18,
-//     address: '北京市朝阳区芍药居',
-//     money: '120.00',
-//     cardId: '6223 ',
-//     city: '北京',
-//     dating:'2018',
-//     timing:'16',
-//     _parentId:Math.ceil(Math.random()*1000),
-//   }
-//   bigData.push(obj)
-// }   
-export default {
-  data () {
-    return {
-      baseData: [],
-      treedata: [],
-      columns1: [
-        {
-          title: '姓名',
-          key: 'name',
-          width: 300,
-          ellipsis:true,
-          // hiddenCol:true,
-        },
-        {
-          title: '年龄',
-          width: 200,
-          key: 'age',
-          align: 'center',
-        },
-        {
-          width: 100,
-          title: '地址',
-          ellipsis: true,
-          key: 'address',
-          align: 'right',
-        },
-        {
-          title: '金额',
-          width: 200,
-          key: 'money',
-        },
-        {
-          title: '卡号',
-          width: 200,
-          key: 'cardId',
-        },
-        {
-          title: '地区',
-          width: 200,
-          key: 'city',
-          multiple:false,
-        },
-        {
-          title: '下拉树',
-          width: 200,
-          key: 'tree',
-        }
-      ],
-    }
-  },
 
-  methods: {
-    convertTreeData(rows, attributes) {
-      var keyNodes = {}, parentKeyNodes = {};
-        for (var i = 0; i < rows.length; i++) {
-          var row = rows[i];
-          row.id = row[attributes.keyField];
-          row.parentId = row[attributes.parentKeyField];
-          row.children = [];
-          keyNodes[row.id] = row;
-          if (parentKeyNodes[row.parentId]) { parentKeyNodes[row.parentId].push(row); }
-          else { parentKeyNodes[row.parentId] = [row]; }
-          var children = parentKeyNodes[row.id];
-          if (children) { row.children = children; }
-          var pNode = keyNodes[row.parentId];
-          if (pNode) { pNode.children.push(row); }
-        }
-      return parentKeyNodes[attributes.rootParentId];
-    },
-    loadData(){
-      this.treedata=this.baseData;
-    },
-    clearselected1(name) {
-      this.$refs[name].clearSelected();
-    },
-    selectRow1(a,b){
-    this.$refs['select11'].selectRow(a,b);
-    },
-    checkRow1(a,b){
-    this.$refs['select11'].checkedRow(a,b);
-    setTimeout(() => {
-        console.log(this.$refs['select11'].getSelection())
-    }, 1000);
-    },
-    selectChange1(data) {
-      console.log("获取选中项改变");
-      console.log(data);
-    },
-    selectChange(data) {
-      console.log(data);
-    },
-    expand(data,status){
-      console.log(data)
-      console.log(status)
-    }
-  },
-  mounted(){
-    let attributes = {
-      keyField: 'id',
-      parentKeyField: '_parentId',
-      expanded: 'expand',
-      checked: 'checked',
-      checked: 'indeterminate',
-      rootKey: 'root'
-    }
-    this.baseData = this.convertTreeData(bigData, attributes);
-  }
-};
-</script>
--->
 
 
 <!--<template>
@@ -203,376 +34,40 @@ export default {
             }
             return h('span', '');
           },
+          title: '地址',
+          ellipsis:true,
+          minWidth:200,
+          key: 'c',
         },
         {
-          type: 'money',
-          title: '年利率',
-          key: 'yearRate',
-          suffixNum: 6,
+          title: '地址',
+          ellipsis:true,
+          minWidth:200,
+          key: 'd',
         },
         {
-          type: 'money',
-          title: '月利率',
-          key: 'monthRate',
-          suffixNum: 6,
+          title: '地址',
+          ellipsis:true,
+          minWidth:200,
+          key: 'e',
         },
         {
-          title: '调整日期',
-          type: 'date',
-          key: 'adjustDate',
-          hiddenCol: true,
+          title: '地址',
+          ellipsis:true,
+          minWidth:200,
+          key: 'f',
         },
         {
-          title: '币种',
-          key: 'currencyNo',
-          hiddenCol: true,
+          title: '地址',
+          ellipsis:true,
+          minWidth:200,
+          key: 'g',
         },
         {
-          title: '基准利率分类',
-          key: 'baseRateTypeClass',
-          hiddenCol: true,
-        },
-      ],
-      gridData:[{basisRateType:'1',yearRate:1}],
-    }
-  },
-  created () {
-    this.msg = 'bye!'
-  },
-  computed:{
-    helloclass(){
-      return `${prefixCls}-hello`
-    }
-  }
-
-}
-</script>
--->
-
-<!--<template>
-<div>
-    <Button @click="change"></Button>
-    <h-table height="300" border :columns="columns2" :data="data3" notSetWidth @on-right-click="rightClick" @on-row-dblclick="dblclick"></h-table>
-    <input id="keyword"  @change="change" placeholder="input your keyword" />
-    <div id="msg-list"></div>
-</div>
-</template>
-<script>
-    export default {
-        data () {
-            return {
-                columns2: [
-                    {
-                        title: '姓名1111111111',
-                        key: 'name',
-                        sortable:true,
-                        // width: 100,
-                    },
-                    {
-                        title: '年龄111111111111111111111111111',
-                        key: 'age',
-                        // width: 100
-                    },
-                    {
-                        title: '省份111111111111111111',
-                        key: 'province',
-                        sortable:true,
-                        // width: 100
-                    },
-                    {
-                        title: '市区11111111111111',
-                        key: 'city',
-                        // width: 100
-                    },
-                    {
-                        title: '地址11111111',
-                        key: 'address',
-                        // width: 200
-                    },
-                    {
-                        title: '邮编111111111111111111111111',
-                        key: 'zip',
-                        // width: 100
-                    },
-                    {
-                        title:"111111111111111111111111111111111",
-                        key:'city',
-                    },
-                    {
-                        title: '操作',
-                        key: 'action',
-                        width: 120,
-                        render: (h, params) => {
-                            return h('div', [
-                                h('Button', {
-                                    props: {
-                                        type: 'text',
-                                        size: 'small'
-                                    }
-                                }, '查看'),
-                                h('Button', {
-                                    props: {
-                                        type: 'text',
-                                        size: 'small'
-                                    }
-                                }, '编辑')
-                            ]);
-                        }
-                    }
-                ],
-                data3:[]
-            }
-        },
-        methods:{
-            change(){
-                this.$set(this.columns2[5],'fixed','left')
-                // this.columns2.push({
-                //     title:"111111111111111111111111111111111",
-                //     key:'city',
-                //     fixed:'left',
-                // })
-            },
-            rightClick(e){
-                console.log(e)
-            },
-            dblclick(){
-                console.log('dbl')
-            }
-        },
-        mounted(){
-            setTimeout(()=>{
-                 this.data3 = [
-                    {
-                        name: '王小明',
-                        age: 18,
-                        address: '北京市朝阳区芍药居11111111111111111',
-                        province: '北京市',
-                        city: '朝阳区',
-                        zip: 100000
-                    },
-                    {
-                        name: '张小刚',
-                        age: 25,
-                        address: '北京市海淀区西二旗',
-                        province: '北京市',
-                        city: '海淀区',
-                        zip: 100000
-                    },
-                    {
-                        name: '李小红',
-                        age: 30,
-                        address: '上海市浦东新区世纪大道',
-                        province: '上海市',
-                        city: '浦东新区',
-                        zip: 100000
-                    },
-                    {
-                        name: '周小伟',
-                        age: 26,
-                        address: '深圳市南山区深南大道',
-                        province: '广东',
-                        city: '南山区',
-                        zip: 100000
-                    },
-                                        {
-                        name: '王小明',
-                        age: 18,
-                        address: '北京市朝阳区芍药居',
-                        province: '北京市',
-                        city: '朝阳区',
-                        zip: 100000
-                    },
-                    {
-                        name: '张小刚',
-                        age: 25,
-                        address: '北京市海淀区西二旗',
-                        province: '北京市',
-                        city: '海淀区',
-                        zip: 100000
-                    },
-                    {
-                        name: '李小红',
-                        age: 30,
-                        address: '上海市浦东新区世纪大道',
-                        province: '上海市',
-                        city: '浦东新区',
-                        zip: 100000
-                    },
-                    {
-                        name: '周小伟',
-                        age: 26,
-                        address: '深圳市南山区深南大道',
-                        province: '广东',
-                        city: '南山区',
-                        zip: 100000
-                    }
-                ]
-        
-            },1000)
-        }
-    }
-</script>
--->
-<!--<template>
-<div>
-    <h-table height="300" border :columns="columns2" :data="data4" fixedAutoHeight></h-table>
-    <button @click="ttt">gengxinshuju</button>
-</div>
-</template>
-<script>
-    export default {
-        data () {
-            return {
-                columns2: [
-                    {
-                        title: '姓名',
-                        key: 'name',
-                        width: 100,
-                        fixed: 'left'
-                    },
-                    {
-                        title: '年龄',
-                        key: 'age',
-                        width: 100
-                    },
-                    {
-                        title: '省份',
-                        key: 'province',
-                        width: 100
-                    },
-                    {
-                        title: '市区',
-                        key: 'city',
-                        width: 100
-                    },
-                    {
-                        title: '地址',
-                        key: 'address',
-                        // minwidth: 100
-                    },
-                    {
-                        title: '邮编',
-                        key: 'zip'
-                    },
-                    {
-                        title: '操作',
-                        key: 'action',
-                        fixed: 'right',
-                        width: 120,
-                        render: (h, params) => {
-                            return h('div', [
-                                h('Button', {
-                                    props: {
-                                        type: 'text',
-                                        size: 'small'
-                                    }
-                                }, '查看'),
-                                h('Button', {
-                                    props: {
-                                        type: 'text',
-                                        size: 'small'
-                                    }
-                                }, '编辑')
-                            ]);
-                        }
-                    }
-                ],
-                data4: [
-                    {
-                        name: '王小明',
-                        age: 18,
-                        address: '北京市朝阳区芍药居',
-                        province: '北京市',
-                        city: '朝阳区',
-                        zip: 100000
-                    },
-                    {
-                        name: '张小刚',
-                        age: 25,
-                        address: '北京市海淀区西二旗',
-                        province: '北京市',
-                        city: '海淀区',
-                        zip: 100000
-                    },
-                    {
-                        name: '李小红',
-                        age: 30,
-                        address: '上海市浦东新区世纪大道',
-                        province: '上海市',
-                        city: '浦东新区',
-                        zip: 100000
-                    },
-                    {
-                        name: '周小伟',
-                        age: 26,
-                        address: '深圳市南山区深南大道',
-                        province: '广东',
-                        city: '南山区',
-                        zip: 100000
-                    },
-                    {
-                        name: '王小明',
-                        age: 18,
-                        address: '北京市朝阳区芍药居',
-                        province: '北京市',
-                        city: '朝阳区',
-                        zip: 100000
-                    },
-                    {
-                        name: '张小刚',
-                        age: 25,
-                        address: '北京市海淀区西二旗',
-                        province: '北京市',
-                        city: '海淀区',
-                        zip: 100000
-                    },
-                    {
-                        name: '李小红',
-                        age: 30,
-                        address: '上海市浦东新区世纪大道',
-                        province: '上海市',
-                        city: '浦东新区',
-                        zip: 100000
-                    },
-                    {
-                        name: '周小伟',
-                        age: 26,
-                        address: '深圳市南山区深南大道',
-                        province: '广东',
-                        city: '南山区',
-                        zip: 100000
-                    }
-                ]
-            }
-        },methods:{
-        ttt(){
-         this.data4=[
-                    {
-                        name: '王小明',
-                        age: 18,
-                        address: '北京市朝阳区芍药居',
-                        province: '北京市',
-                        city: '朝阳区',
-                        zip: 100000
-                    },
-                    {
-                        name: '张小刚',
-                        age: 25,
-                        address: '北京市海淀区西二旗',
-                        province: '北京市',
-                        city: '海淀区',
-                        zip: 100000
-                    },
-                    {
-                        name: '李小红',
-                        age: 30,
-                        address: '上海市浦东新区世纪大道',
-                        province: '上海市',
-                        city: '浦东新区',
-                        zip: 100000
-                    }
-                ];
-        }
+          title: '地址',
+          ellipsis:true,
+          minWidth:200,
+          key: 'h',
         }
     }
 </script>
@@ -650,20 +145,6 @@ export default {
         { value: "value5", label: "label5" },
         { value: "value6", label: "label6" }
       ]
-    };
-  },
-  methods: {
-    handleSubmit(name) {
-    //   this.$refs[name].validate(valid => {
-    //     if (valid) {
-    //       this.$Message.success("提交成功!");
-    //     } else {
-    //       this.$Message.error("表单验证失败!");
-    //     }
-    //   });
-    },
-    handleReset(name) {
-    //   this.$refs[name].resetFields();
     }
   },
   mounted() {
@@ -1004,5 +485,7 @@ methods: {
   },
   methods: {}
 };
+=======
+  }
+>>>>>>> 5328f9c667550fdfa9042c5dd650d15c56573b68
 </script>
-

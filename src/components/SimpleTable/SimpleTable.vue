@@ -987,7 +987,7 @@ export default {
                 lastWidth = lastWidth - dragWidth
               }
             }
-             if (table.bodyHeight !== 0&&!this.isRightFixed) {
+            if (table.bodyHeight !== 0&&!this.isRightFixed) {
               lastWidth = lastWidth - getScrollBarSize()
             }
             _this.changeWidth(columnWidth, column.key, lastWidth)
@@ -1096,6 +1096,16 @@ export default {
         }
         document.addEventListener('mousemove', handleMouseMove)
         document.addEventListener('mouseup', handleMouseUp)
+      }
+      if(column.sortable) {
+        const type = column._sortType
+        if (type === 'normal') {
+          this.handleSort(index, 'asc')
+        } else if (type === 'asc') {
+          this.handleSort(index, 'desc')
+        } else {
+          this.handleSort(index, 'normal')
+        }
       }
     },
     mousemove(event, column, index,isLeft) {
@@ -1624,19 +1634,6 @@ export default {
         }
       }
     },
-    handleSortByClickHead(index) {
-      const column = this.cloneColumns[index]
-      if (column.sortable) {
-        const type = column._sortType
-        if (type === 'normal') {
-          this.handleSort(index, 'asc')
-        } else if (type === 'asc') {
-          this.handleSort(index, 'desc')
-        } else {
-          this.handleSort(index, 'normal')
-        }
-      }
-    },
     sortData(data, type, index) {
       const key = this.cloneColumns[index].key
       data.sort((a, b) => {
@@ -1653,11 +1650,10 @@ export default {
       return data
     },
     handleSortT(_index, type) {
-      const columnType = this.cloneColumns[_index].type
-      if(columnType === 'selection') {
-        console.log(_index, columnType)
-
-      }
+//      const columnType = this.cloneColumns[_index].type
+//      if(columnType === 'selection') {
+//
+//      }
 
       let index
       this.cloneColumns.forEach((col, i) => {
@@ -2230,7 +2226,11 @@ export default {
           this.keySelectRange()
         }
       }
-    }
+    },
+    //勾选排序在上
+    selectedTop(status=true) {
+      this.broadcast('Block', 'on-select-top',status)
+    },
   },
   created() {
     if (!this.context) this.currentContext = this.$parent
@@ -2321,7 +2321,7 @@ export default {
             this.$refs.summation.style.marginLeft = 0
           }
         }
-         if(this.$refs.body.scrollTop > val.length*this.itemHeight){
+        if(this.$refs.body.scrollTop > val.length*this.itemHeight){
           this.$refs.body.scrollTop = val.length*this.itemHeight-this.height
         }
         this.updateVisibleData()
