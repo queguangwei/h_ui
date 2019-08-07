@@ -1,5 +1,5 @@
 <template>
-  <div :class="cellClasses" @mousedown="handleSortByClickHead(index)">
+  <div :class="cellClasses">
     <template v-if="column.type === 'selection'">
       <Checkbox v-if="!column.title" :size="checkboxSize" @mousedown.native.stop="handleClick" :value="checked" @on-change="selectAll"></Checkbox>
       <span v-else>{{column.title}}</span>
@@ -63,9 +63,6 @@ import renderHeader from './header';
       },
       handleSortByHead(index){
         this.$parent.handleSortByHead(index);
-      },
-      handleSortByClickHead(index) {
-        this.$parent.handleSortByClickHead(index)
       }
     },
   };

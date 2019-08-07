@@ -6,8 +6,6 @@
       <h1>基础用法</h1>
       <p>使用v-model双向绑定数据,默认为单选</p>
       <p>单选时，value只接受字符串和数字类型，多选时，value只接受数组类型</p>
-      <Button @on-click="testClick(true)">获取焦点</Button>
-      <Button @on-click="testClick(false)">失去焦点</Button>
       <!-- <h-select ref="test" placement="bottom-start" :dropWidth="400" @on-blur="blurH"></h-select> -->
        <!-- placement="top-start" -->
       <Button @on-click="setNull">赋不存在值</Button>{{model34}}
@@ -21,7 +19,6 @@
                 algin="right"
                 setDefSelect
                 widthAdaption
-                ref="test"
                 @on-focus="fo"
                 @on-blur="bl"
                 >
@@ -245,6 +242,7 @@
                     :key="item.id">{{ item.name }}</h-option>
         </h-select>
         {{model9}}
+
       </div>
       <h1>
         filterable:可搜索（可直接配置 filterable，或配置 filterable属性为true），多选模式下可以使用键盘delete键删除最后一个选项
@@ -254,13 +252,14 @@
         <h-select v-model="model10"
                   placement="top"
                   width="200"
-                  @on-blur="blurH"
-                  filterable>
+                  filterable ref="test">
           <h-option :value="3">{{'<你>'}}</h-option>
           <h-option v-for="(item, index) in uList"
                     :value="item.id"
                     :key="item.id">{{ item.name }}</h-option>
         </h-select>
+        <Button @on-click="testClick(true)">获取焦点</Button>
+        <Button @on-click="testClick(false)">失去焦点</Button>
         <span>多选可搜索:</span>
         <h-select v-model="model11"
                   width="200"
@@ -822,7 +821,7 @@ export default {
       console.log('失去焦点了')
     },
     change(e) {
-      console.log(e)
+//      console.log(e)
     },
     clear() {
       this.d = []

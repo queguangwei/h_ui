@@ -18,7 +18,7 @@
           :key="index"
           :class="alignCls(column)"
           >
-          <div :class="cellClasses(column)" @mousedown="handleSortByClickHead(index)">
+          <div :class="cellClasses(column)">
             <template v-if="column.type === 'expand'"></template>
             <template v-else-if="column.type === 'selection'">
               <render-header v-if="column.renderHeader" :render="column.renderHeader" :column="column" :index="index"></render-header>
@@ -201,24 +201,10 @@ export default {
       this.$parent.handleSort(_index, type);
       this.sortIndex = index
     },
-    handleSortByHead (index) {
+    handleSortByHead(index) {
       const column = this.columns[index];
       if (column.sortable) {
         const type = column._sortType;
-        if (type === 'normal') {
-            this.handleSort(index, 'asc');
-        } else if (type === 'asc') {
-            this.handleSort(index, 'desc');
-        } else {
-            this.handleSort(index, 'normal');
-        }
-      }
-    },
-    handleSortByClickHead(index) {
-      const column = this.columns[index]
-      if (column.sortable) {
-        const type = column._sortType;
-        console.log(column)
         if (type === 'normal') {
           this.handleSort(index, 'asc');
         } else if (type === 'asc') {
@@ -422,9 +408,21 @@ export default {
         };
         document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('mouseup', handleMouseUp);
-
       }
-
+      /**
+       * 【TS:201907290049-财富业委会_占美强-【需求类型】缺陷【需求描述】目前列表查询，可以支持点击名字排】
+       * 【TS:201907290145-资管业委会（资管）_孔磊-【需求类型】需求【需求描述】表格2、点击列头时就可以进行排序】
+       * */
+      if(column.sortable) {
+        const type = column._sortType;
+        if (type === 'normal') {
+          this.handleSort(index, 'asc');
+        } else if (type === 'asc') {
+          this.handleSort(index, 'desc');
+        } else {
+          this.handleSort(index, 'normal');
+        }
+      }
     },
     mousemove(event,column,index){
       // if (!this.canDrag || !column ) return;
