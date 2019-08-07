@@ -141,7 +141,7 @@ export default {
     },
     tabindex: {
       type: [String, Number],
-      default: "-1",
+      default: "0",
       validator(value) {
         let num = parseInt(value);
         return num <= 32767 && num >= -1;
@@ -281,6 +281,9 @@ export default {
     },
     focus(){
       this.$refs.input.focus()
+    },
+    select() {
+      this.$refs.input.select()
     },
     valChange (event) {
       let value = event.target.value.trim().replace(/,/g,'');

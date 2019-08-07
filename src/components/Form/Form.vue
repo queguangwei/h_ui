@@ -225,17 +225,19 @@ export default {
             break
           }
         }
-        this.fields[i].$children[0].focus()
-        if(this.fields[i].$children[0].value) {
+        if(this.fields[i].$children[0].focus) {
+          this.fields[i].$children[0].focus()
+        }
+        if(this.fields[i].$children[0].value && this.fields[i].$children[0].select) {
           this.fields[i].$children[0].select()
         }
         if(window.isO45) return false
-        if (this.fields[i].$children[0].opened)
-          this.fields[i].$children[0].opened = false
-        this.$nextTick(() => {
-          if (this.fields[i].$children[0].visible)
-            this.fields[i].$children[0].visible = false
-        })
+//        if (this.fields[i].$children[0].opened)
+//          this.fields[i].$children[0].opened = false
+//        this.$nextTick(() => {
+//          if (this.fields[i].$children[0].visible)
+//            this.fields[i].$children[0].visible = false
+//        })
       })
     }
   },
