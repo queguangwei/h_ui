@@ -8,7 +8,7 @@
          :tabindex="selectTabindex"
          @keyup="keyup"
          @keydown="keydown"
-         @click="toggleMenu">
+         @click="showdrop">
       <span v-if="showTotal" :class="[prefixCls + '-selected-num']">共选择 {{selectedMultiple.length}} 项</span>
       <!-- 多选时输入框内选中值模拟 -->
       <div class="h-tag"
@@ -378,8 +378,8 @@ export default {
       default:false,
     },
     showValue: {
-      type: Boolean,
-      default: false
+        type: Boolean,
+        default: false
     },
     accuFilter:{
       type: Boolean,
@@ -398,10 +398,6 @@ export default {
     newSearchModel:{
       type:Boolean,
       dafault:false,
-    },
-    filterBy:{
-      type:String,
-      dafault:'label',
     },
     valueToString:{
       type:Boolean,
@@ -452,10 +448,12 @@ export default {
       viewValue:null,
       isSelectAll:false,
       showTotal:false,
-      selectedResult:'',
-      isSearchDelete:false,
-      newSearchModelselectItem:{},
-      isCopy:false,
+      // selectedResult:'',
+       isSearchDelete:false,
+      // newSearchModelselectItem:{},
+      // isCopy:false,
+      // newSearchCheckAll:false,
+      // newSearchUnCheckAll:false,
     }
   },
   computed: {
@@ -609,7 +607,7 @@ export default {
     checkAll() {
       return 'h-select-checkall'
     },
-    selectTabindex() {
+    selectTabindex() { 
       return this.disabled ? -1 : ((this.tabindex + "") !== "-1" ? this.tabindex : 0);
     },
     notFoundShow() {
@@ -706,7 +704,10 @@ export default {
         }
       }
     },
-    offsetArrow() {
+    showdrop(){
+        this.toggleMenu();  
+    },
+     offsetArrow() {
       if (!this.multiple) return
       let el = this.$refs.reference
       if (el.scrollHeight > el.clientHeight) {
@@ -724,7 +725,7 @@ export default {
       this.visible = !this.visible
       this.isInputFocus = false
       if(this.newSearchModel){
-        this.isInputFocus = this.visible
+        this.isInputFocus = true
       }
       if (this.visible && this.filterable && this.showBottom&&this.$refs.input) {
         this.$nextTick(() => {
@@ -809,18 +810,18 @@ export default {
 
       this.options = options
       this.availableOptions = options
-
+      
       if (init) {
         if (!this.remote || this.isBlock) {
           this.updateSingleSelected(true, slot)
           this.updateMultipleSelected(true, slot)
-          if(this.newSearchModel&&this.selectedMultiple.length>0&&!this.isInputFocus){
-            let multipleAry=[];
-              this.selectedMultiple.forEach(item=>{
-                  multipleAry.push(item["label"]);
-            })
-            this.selectedResult=multipleAry.join(',');
-         }
+            if(this.newSearchModel&&this.selectedMultiple.length>0&&!this.isInputFocus){
+              let multipleAry=[];
+                this.selectedMultiple.forEach(item=>{
+                    multipleAry.push(item["label"]);
+              })
+              this.selectedResult=multipleAry.join(',');
+           }
         }
       }
     },
@@ -973,7 +974,7 @@ export default {
             })
           })
         }
-        if (!init) {
+        if (!init) {      
           if (this.labelInValue) {
             this.$emit('on-change', {
               value: value,
@@ -1100,7 +1101,7 @@ export default {
           this.navigateOptions('prev')
         }
         // enter
-        if (keyCode === 13) {
+        if (keyCode === 13||(this.newSearchModel&&keyCode==32)) {
           e.preventDefault()
 
           let index = this.focusIndex - 1
@@ -1212,19 +1213,19 @@ export default {
       e.target.selectionStart = 0
       e.target.selectionEnd = this.query.length
     },
-    handleBlur() {
+     handleBlur() {
       this.$emit('on-blur')
     },
     handkeSearchBlur(){
-      let multipleAry=[];
+       let multipleAry=[];
       this.selectedMultiple.forEach(item=>{
-        multipleAry.push(item["label"]);
+            multipleAry.push(item["label"]);
       })
       let modelstr=multipleAry.join(",");
       if(modelstr!=this.selectedResult){
         this.selectedResult=modelstr;
       }
-      this.isInputFocus = false
+       this.isInputFocus = false
 
     },
     resetInputState(e) {
@@ -1233,8 +1234,31 @@ export default {
         this.hideMenu();
          this.isInputFocus = false
       }
+      if(this.newSearchModel&&!this.isInputFocus){
+        this.isInputFocus=true;
+      }
       if(this.newSearchModel&&e.keyCode=="86"&&e.ctrlKey){
          this.handleNewSearchCopy(e);
+      }
+      if(this.newSearchModel&&e.keyCode=="65"&&e.ctrlKey){
+         this.handleNewSearchCheckAll(e);
+         this.toggleSelect(true);
+         let multipleAry=[];
+          this.selectedMultiple.forEach(item=>{
+                multipleAry.push(item["label"]);
+          })
+          let modelstr=multipleAry.join(",");
+          if(modelstr!=this.selectedResult){
+            this.selectedResult=modelstr;
+          }
+          e.preventDefault();
+      }
+      if(this.newSearchModel&&e.keyCode=="68"&&e.ctrlKey){
+          this.handleNewSearchUnCheckAll(e);
+          this.toggleSelect(false)
+          this.selectedResult=''
+          e.preventDefault();
+          
       }
     },
     handleInputDelete() {
@@ -1244,6 +1268,12 @@ export default {
     },
     handleNewSearchCopy(e){
       this.isCopy=true;
+    },
+    handleNewSearchCheckAll(e){
+      this.newSearchCheckAll=true;
+    },
+    handleNewSearchUnCheckAll(){
+      this.newSearchUnCheckAll=true;
     },
     handleNewSearchSelect(changeitem){
       if(!changeitem) return;
@@ -1318,6 +1348,10 @@ export default {
         }
       }
 
+    },
+    getLabel(val){
+     let item=  this.options.filter(item=>item.value==val)
+      return item?item[0].label:'';
     },
     // use when slot changed
     slotChange() {
@@ -1512,10 +1546,11 @@ export default {
         this.newSearchModelselectItem=false;
         this.newSearchModelselectItem=changeitem;
       }
+      let searchAry=this.selectedResult.split(",");
       if (index >= 0) {
         this.removeTag(index)
         if(this.newSearchModel){
-          let searchAry=this.selectedResult.split(",");
+          
           //let itemidx=searchAry.indexOf()
         }
       } else {
@@ -1524,10 +1559,18 @@ export default {
             let arr = []
             arr.push(this.specialVal)
             this.model=arr
+            if(!changeitem){ this.selectedResult=this.getLabel(this.specialVal);}
+           
             return false
           }
           if (value!=this.specialVal && this.model.indexOf(this.specialVal)>=0) {
             const index = this.model.indexOf(this.specialVal);
+            const specialItem = this.selectedMultiple.filter(item=>item["value"]==this.specialVal)
+            if(searchAry.indexOf(specialItem[0].label)>-1){
+                let idx=searchAry.indexOf(specialItem[0].label)
+                searchAry.splice(idx,1);
+                this.selectedResult=searchAry.join(',');
+            }
             this.removeTag(index);
           }
         }
@@ -1561,7 +1604,7 @@ export default {
     this.$nextTick(() => {
       this.broadcastQuery('')
     })
-    this.updateOptions(true)
+    this.updateOptions(true) 
     this.$on('append', () => {
       this.slotChange()
       this.updateOptions(true, true)
@@ -1701,7 +1744,7 @@ export default {
             })
           }
         })
-//        if (window.isO45) {
+        //        if (window.isO45) {
 //          if (this.filterable) {
 //            if (this.multiple) {
 //              this.$refs.input.focus()
@@ -1824,62 +1867,6 @@ export default {
         this.$emit("on-input-focus");
       }
     },
-     selectedResult(val, oldVal){
-      let  searchkey="";
-      let selectAry=val.split(",");
-     // let oldselectAry=oldVal.split(",");
-      let multipleAry=[];
-      if(this.isCopy){
-        this.$emit("on-paste",{oldval:oldVal,newval:val});
-        this.isCopy=false;
-        return
-      }
-
-      if(oldVal!=""&&val==""&&this.model.length>0){
-           this.model=[]
-           return;
-      }
-      if(oldVal+","==val){
-         searchkey=",";
-         this.newModelhandleSearch(searchkey);
-         return;
-      }
-      this.selectedMultiple.forEach(item=>{
-            multipleAry.push(item["label"]);
-      })
-      //if(this.isSearchDelete){
-          this.newModelSearchDelete(multipleAry);
-     // }
-      for(let i=0;i<selectAry.length;i++){
-         if(multipleAry.indexOf(selectAry[i])<0){
-             searchkey=selectAry[i];
-         }
-      }
-      if(searchkey==""&&multipleAry.length<selectAry.length){
-         searchkey=selectAry[selectAry.length-1];
-      }
-      if(searchkey==""){
-        return;
-      }
-       this.newModelhandleSearch(searchkey);
-
-    },
-    newSearchModelselectItem(changeitem){
-      if(!changeitem) return;
-       let label=changeitem["label"];
-       let selectAry=this.selectedResult.trim().split(",");
-       let index=selectAry.indexOf(label);
-       if(index>=0){
-           selectAry.splice(index,1);
-       }else{
-           selectAry.push(label);
-       }
-       let str=selectAry.join(",");
-       if(str.substr(0,1)==","){
-          str=str.substr(1);
-       }
-       this.selectedResult=str
-    }
   }
 }
 </script>
