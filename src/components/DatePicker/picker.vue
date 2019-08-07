@@ -16,7 +16,6 @@
                  :placeholder="localePlaceholder"
                  :value="visualValue"
                  :name="name"
-                 :tabindex="tabindex"
                  @click.native="clickHandler"
                  @on-keyup.prevent="keyUpHandler"
                  @on-input-change="handleInputChange"
@@ -55,6 +54,7 @@
                      :showTwoPanel="this.showTwoPanel"
                      :range-num="controlRange?selectRange:0"
                      :pickMode="pickMode"
+                     :tabindex="tabindex"
                      v-bind="ownPickerProps"
                      @on-pick="onPick"
                      @on-pick-clear="handleClear"
@@ -228,7 +228,7 @@ export default {
     },
     tabindex: {
       type: [String, Number],
-      default: "-1",
+      default: "0",
       validator(value) {
         let num = parseInt(value);
         return num <= 32767 && num >= -1;
@@ -481,6 +481,9 @@ export default {
       this.$refs.pickerPanel.onToggleVisibility(false)
       this.isFocus = false
       if (this.$refs.input) this.$refs.input.blur()
+    },
+    select() {
+      this.$refs.input.select()
     },
     handleBlur() {
       this.visible = false
