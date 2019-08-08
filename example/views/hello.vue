@@ -76,6 +76,7 @@ export default {
 -->
 <template>
 <div>
+    <Button @on-click="changeData">改变数值</Button>
     <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
         <h-form-item label="input" prop="name">
             <h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>
@@ -145,7 +146,12 @@ export default {
         { value: "value3", label: "label3" },
         { value: "value4", label: "label4" },
         { value: "value5", label: "label5" },
-        { value: "value6", label: "label6" }
+        { value: "value6", label: "label6" },
+        { value: "value7", label: "label7" },
+        { value: "value8", label: "label8" },
+        { value: "value9", label: "label9" },
+        { value: "value10", label: "label10" },
+        { value: "value11", label: "label11" },
       ]
     }
   },
@@ -154,6 +160,11 @@ export default {
     document.addEventListener("keydown", event => {
       enterHandler1(this.$refs.formValidate, event);
     });
+  },
+  methods:{
+    changeData(){
+        this.bigData = this.bigData.slice(0,2)
+    }
   }
 };
 </script>

@@ -1774,17 +1774,6 @@ export default {
             })
           }
         })
-        //        if (window.isO45) {
-//          if (this.filterable) {
-//            if (this.multiple) {
-//              this.$refs.input.focus()
-//            }else {
-//              if (this.focusSelect) {
-//                this.$refs.input.select()
-//              }
-//            }
-//          }
-//        }
         setTimeout(() => {
           this.dispatch('Msgbox', 'on-esc-real-close', false)
         }, 0)

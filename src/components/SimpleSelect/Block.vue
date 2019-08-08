@@ -397,7 +397,11 @@ export default {
             this.$set(item, 'focus', false)
           })
           this.$parent.$parent.updateOptions(true)
+          if(this.lastScollTop > val.length*this.itemHeight){
+            this.lastScollTop = val.length*this.itemHeight-210;
+          }
           this.updateVisibleData()
+
         // })
       }
     },
