@@ -449,7 +449,8 @@ export default {
       isSelectAll:false,
       showTotal:false,
       // selectedResult:'',
-       isSearchDelete:false,
+      isSearchDelete:false,
+      isQuerySelect:false,
       // newSearchModelselectItem:{},
       // isCopy:false,
       // newSearchCheckAll:false,
@@ -1056,6 +1057,9 @@ export default {
           this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
         }
         this.isInputFocus = false
+        if(this.isSingleSelect&&this.model==''){
+          this.query=''
+        }
       }
     },
     handleKeydown(e) {
@@ -1077,7 +1081,7 @@ export default {
             this.navigateOptions('prev');
           }
           if(keyCode === 39||keyCode === 37){
-            this.model = this.focusValue
+            this.selectBlockSingle(this.focusValue)
           }
           return false
         }
@@ -1512,7 +1516,9 @@ export default {
       if (this.disabled || this.readonly) return
       this.$nextTick(() => {
         this.isInputFocus = true
-        this.visible = true
+        if(!this.isSingleSelect){
+          this.visible = true
+        }
         if (this.filterable) {
           this.$refs.input.focus()
         } else {
@@ -1535,8 +1541,12 @@ export default {
       } else {
         this.$refs.reference.blur()
       }
+      if(this.isSingleSelect&&this.model==''){
+        this.query=''
+      }
     },
-    selectBlockSingle(value) {
+    selectBlockSingle(value,status=false) {
+      this.isQuerySelect = status
       this.availableOptions = this.options
       this.selectToChangeQuery = true
 
@@ -1554,7 +1564,9 @@ export default {
         // });
         // }
       }
-      this.hideMenu()
+      if(!this.isSingleSelect){
+        this.hideMenu()
+      }
     },
     selectBlockMultiple(value,changeitem) {
       const index = this.model.indexOf(value)
@@ -1725,7 +1737,7 @@ export default {
           this.model = val
           // TODO
         }
-        if (val === '') this.query = ''
+        if (val === ''&&!this.visible) this.query = ''
       }
     },
     label(val) {
@@ -1831,6 +1843,8 @@ export default {
           if (!this.visible && val) this.visible = true;
           this.$emit('on-query-change', val)
           this.broadcastQuery(val)
+        }else if(this.isQuerySelect){
+          this.broadcastQuery(val)
         }
       }
 
@@ -1839,7 +1853,7 @@ export default {
       // this.broadcast('Drop', 'on-update-popper');
     },
     selectedSingle(val) {
-      if (this.filterable && !this.showBottom) {
+      if (this.filterable && !this.showBottom && !this.isQuerySelect) {
         this.query = val
         if (this.query !== '') this.selectToChangeQuery = true
       }

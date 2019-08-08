@@ -1044,7 +1044,7 @@ export function enterHandler1(ele, evt) {
     srcobj = evt.target;
   }
   //enter键盘 下键盘
-  if (evt.keyCode == 13 || evt.keyCode == 40) {
+  if (evt.keyCode == 13 || evt.keyCode == 40 || evt.keyCode==9) {
     evt.preventDefault();
     if (isie) {
       evt.keyCode = 9;
