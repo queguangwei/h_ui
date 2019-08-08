@@ -449,7 +449,7 @@ export default {
       viewValue:null,
       isSelectAll:false,
       showTotal:false,
-      // selectedResult:'',
+      selectedResult:'',
        isSearchDelete:false,
        isQuerySelect:false,
       // newSearchModelselectItem:{},
