@@ -15,7 +15,7 @@
     <Button @click="removeData">删除数据</Button>
      <!-- :multiLevel="multiLevel1" -->
      <!-- :multiLevel="multiLevel2"  -->
-    <h-table :columns="columns" :data="data0" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="300" canMove @on-move="onMove" :lastColWidth="150">
+    <h-table :columns="columns" :data="data0" :summationData="summationData1" border :highlight-row="true" isMulitSort @on-sort-change="sortchange" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="300" canMove @on-move="onMove" :lastColWidth="150">
       <span slot="loading">我是自定义加载！！！</span>
     </h-table>
     <h-button @click="setLoading">切换状态</h-button>
@@ -195,17 +195,20 @@ export default {
           key: 'age',
           width: 100,
           ellipsis:true,
+          sortable: true
         },
         {
           title: '年龄1',
           key: 'age',
           ellipsis:true,
+          sortable: true
         },
         {
           title: '省份',
           key: 'province',
           width: 100,
-          ellipsis:true
+          ellipsis:true,
+          sortable: true
         },{
           title: '省份1',
           key: 'province',
@@ -215,7 +218,8 @@ export default {
           title: '市区',
           key: 'city',
           width: 100,
-          ellipsis:true
+          ellipsis:true,
+          sortable: true
         },{
           title: '市区1',
           key: 'city',
@@ -1856,6 +1860,9 @@ export default {
     },
     expand(row,status){
       console.log(status);
+    },
+    sortchange(e) {
+      console.log(e)
     },
     sortChange(obj){
       if (obj.order == 'asc') {

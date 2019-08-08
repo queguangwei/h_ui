@@ -490,6 +490,10 @@ export default {
       type:Boolean,//多选时是否支持点击行只选中，再次点击不进行反选
       default:false
     },
+    isMulitSort:{//多列排序
+      type:Boolean,
+      default:false,
+    }
   },
   data() {
     return {
@@ -1602,6 +1606,19 @@ export default {
         })
       }, 0)
     },
+    /**
+     * 获取所有列选中的排序件
+     */
+    getSorts() {
+      const cloneColumns = this.cloneColumns;
+      const filters = {};
+      cloneColumns.forEach(col => {
+        if (col.sortable&&col._sortType!='normal') {
+          filters[col.key] = col._sortType;
+        }
+      })
+      return filters;
+    },
     handleSort(index, type) {
       if (this.cloneColumns[index]._sortType === type) {
         type = 'normal'
@@ -1657,11 +1674,19 @@ export default {
 
       let index
       this.cloneColumns.forEach((col, i) => {
-        col._sortType = 'normal'
+        if(!this.isMulitSort) {
+          col._sortType = 'normal'
+        }
         if (col._index == _index) {
           index = i
         }
-      }) //rightFixed index error
+      })
+      //rightFixed index error
+      this.cloneColumns[index]._sortType = type
+      if(this.isMulitSort){
+        this.$emit('on-sort-change',JSON.parse(JSON.stringify(this.getSorts())))
+        return
+      }
       const key = this.cloneColumns[index].key
       if (this.cloneColumns[index].sortable !== 'custom') {
         let selectInx = -1
@@ -1682,8 +1707,6 @@ export default {
           })
         }
       }
-      this.cloneColumns[index]._sortType = type
-
       this.$nextTick(() => {
         this.$emit('on-sort-change', {
           column: JSON.parse(
