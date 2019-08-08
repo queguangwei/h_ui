@@ -607,7 +607,7 @@ export default {
     checkAll() {
       return 'h-select-checkall'
     },
-    selectTabindex() { 
+    selectTabindex() {
       return this.disabled ? -1 : ((this.tabindex + "") !== "-1" ? this.tabindex : 0);
     },
     notFoundShow() {
@@ -705,7 +705,7 @@ export default {
       }
     },
     showdrop(){
-        this.toggleMenu();  
+        this.toggleMenu();
     },
      offsetArrow() {
       if (!this.multiple) return
@@ -811,7 +811,7 @@ export default {
 
       this.options = options
       this.availableOptions = options
-      
+
       if (init) {
         if (!this.remote || this.isBlock) {
           this.updateSingleSelected(true, slot)
@@ -975,7 +975,7 @@ export default {
             })
           })
         }
-        if (!init) {      
+        if (!init) {
           if (this.labelInValue) {
             this.$emit('on-change', {
               value: value,
@@ -1274,7 +1274,7 @@ export default {
           this.toggleSelect(false)
           this.selectedResult=''
           e.preventDefault();
-          
+
       }
     },
     handleInputDelete() {
@@ -1536,6 +1536,11 @@ export default {
         this.$refs.reference.blur()
       }
     },
+    select() {
+      if (this.filterable) {
+        this.$refs.input.select()
+      }
+    },
     selectBlockSingle(value) {
       this.availableOptions = this.options
       this.selectToChangeQuery = true
@@ -1566,7 +1571,7 @@ export default {
       if (index >= 0) {
         this.removeTag(index)
         if(this.newSearchModel){
-          
+
           //let itemidx=searchAry.indexOf()
         }
       } else {
@@ -1576,7 +1581,7 @@ export default {
             arr.push(this.specialVal)
             this.model=arr
             if(!changeitem){ this.selectedResult=this.getLabel(this.specialVal);}
-           
+
             return false
           }
           if (value!=this.specialVal && this.model.indexOf(this.specialVal)>=0) {
@@ -1620,7 +1625,7 @@ export default {
     this.$nextTick(() => {
       this.broadcastQuery('')
     })
-    this.updateOptions(true) 
+    this.updateOptions(true)
     this.$on('append', () => {
       this.slotChange()
       this.updateOptions(true, true)
