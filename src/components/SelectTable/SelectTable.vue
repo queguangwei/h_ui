@@ -34,6 +34,7 @@
              :readonly="!editable||readonly"
              :class="[prefixCls + '-input']"
              style="width:100%"
+             search="multiSelect"
              :placeholder="showPlaceholder?localePlaceholder:''"
              @focus="handleFocus"
              @blur="handkeSearchBlur"
@@ -449,8 +450,8 @@ export default {
       isSelectAll:false,
       showTotal:false,
       // selectedResult:'',
-      isSearchDelete:false,
-      isQuerySelect:false,
+       isSearchDelete:false,
+       isQuerySelect:false,
       // newSearchModelselectItem:{},
       // isCopy:false,
       // newSearchCheckAll:false,
@@ -817,7 +818,7 @@ export default {
         if (!this.remote || this.isBlock) {
           this.updateSingleSelected(true, slot)
           this.updateMultipleSelected(true, slot)
-            if(this.newSearchModel&&this.selectedMultiple.length>0&&!this.isInputFocus){
+            if(this.newSearchModel&&this.selectedMultiple.length>0&&!this.visible){
               let multipleAry=[];
                 this.selectedMultiple.forEach(item=>{
                     multipleAry.push(item["label"]);
@@ -1081,7 +1082,7 @@ export default {
             this.navigateOptions('prev');
           }
           if(keyCode === 39||keyCode === 37){
-            this.selectBlockSingle(this.focusValue)
+             this.selectBlockSingle(this.focusValue)
           }
           return false
         }
@@ -1564,7 +1565,7 @@ export default {
         // });
         // }
       }
-      if(!this.isSingleSelect){
+     if(!this.isSingleSelect){
         this.hideMenu()
       }
     },
@@ -1736,7 +1737,7 @@ export default {
         } else {
           this.model = val
           // TODO
-        }
+        }       
         if (val === ''&&!this.visible) this.query = ''
       }
     },
@@ -1853,7 +1854,7 @@ export default {
       // this.broadcast('Drop', 'on-update-popper');
     },
     selectedSingle(val) {
-      if (this.filterable && !this.showBottom && !this.isQuerySelect) {
+     if (this.filterable && !this.showBottom && !this.isQuerySelect) {
         this.query = val
         if (this.query !== '') this.selectToChangeQuery = true
       }
