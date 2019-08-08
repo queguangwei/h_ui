@@ -1,6 +1,15 @@
 <template>
   <div>
     <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus cols="2">
+      <h-form-item label="下拉表" prop='slider' required>
+        <h-select-table v-model="formItem1.slider" 	filterable	>
+          <h-table-option border :columns="columns1" :data="data1"></h-table-option>
+        </h-select-table>
+      </h-form-item>
+      <h-form-item label="下拉树" prop='tree' required>
+        <h-select-tree v-model="formItem1.tree" :first-value="firstValc" style="width:200px" filterable	:data="baseData1" placement="top" placeholder="你好"></h-select-tree>
+      </h-form-item>
+
       <h-form-item label="选择器" prop="select" required>
         <h-select v-model="formItem1.select" filterable>
           <h-option value="beijing">北京市</h-option>
@@ -8,11 +17,7 @@
           <h-option value="shenzhen">深圳市</h-option>
         </h-select>
       </h-form-item>
-      <h-form-item label="下拉表" prop='slider' required>
-        <h-select-table v-model="formItem1.slider" 	filterable	>
-          <h-table-option border :columns="columns1" :data="data1"></h-table-option>
-        </h-select-table>
-      </h-form-item>
+
       <h-form-item label="日期控件">
         <h-row>
           <h-col span="11">
@@ -40,9 +45,7 @@
           </h-select>
         </h-typefield>
       </h-form-item>
-      <h-form-item label="下拉树" prop='tree' required>
-        <h-select-tree v-model="formItem1.tree" :first-value="firstValc" style="width:200px" filterable	:data="baseData1" placement="top" placeholder="你好"></h-select-tree>
-      </h-form-item>
+
 
       <h-form-item label="输入框" prop="input" required>
         <h-input v-model="formItem1.input" placeholder="请输入"></h-input>
@@ -88,7 +91,7 @@
         changeform:false,
         formItem1: {
           input: '1',
-          select: 'beijing',
+          select: '',
           radio: '',
           money: '',
           checkbox: [],
