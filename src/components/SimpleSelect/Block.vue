@@ -166,7 +166,7 @@ export default {
       if (this.multiple) {
         this.$parent.$parent.selectBlockMultiple(item.value,item)
       } else {
-        this.$parent.$parent.selectBlockSingle(item.value,item)
+        this.$parent.$parent.selectBlockSingle(item.value,false)
       }
     },
     checkChange(val, item) {

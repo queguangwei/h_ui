@@ -84,7 +84,7 @@ export default {
             <h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >
         </h-form-item>
         <h-form-item label="select" prop="city1">
-            <h-select v-model="formValidate.city"  multiple placeholder="请选择所在地" class="curItemClass" >
+            <h-select v-model="formValidate.city1"  multiple placeholder="请选择所在地" class="curItemClass" >
                 <h-option value="beijing">北京市</h-option>
                 <h-option value="shanghai">上海市</h-option>
                 <h-option value="shenzhen">深圳市</h-option>
