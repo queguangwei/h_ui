@@ -1,6 +1,6 @@
 import SimpleSelect from '../SelectTable/SelectTable.vue'
 export default {
-  name: 'SimpleSelect',
+  name: 'SingleSelect',
   mixins: [SimpleSelect],
   props: {
     block:{
@@ -14,6 +14,10 @@ export default {
       type: Boolean,
       default: true
     },
+    accuFilter: {
+      type: Boolean,
+      default: true
+    }
   },
   data() {
     return {

@@ -166,7 +166,7 @@ export default {
       if (this.multiple) {
         this.$parent.$parent.selectBlockMultiple(item.value,item)
       } else {
-        this.$parent.$parent.selectBlockSingle(item.value,item)
+        this.$parent.$parent.selectBlockSingle(item.value,false)
       }
     },
     checkChange(val, item) {
@@ -181,6 +181,7 @@ export default {
         '\\$1'
       )
       let status = true
+      let isEffective = false
      // if(!this.$parent.$parent.accuFilter){   //149105 【TS:201906280063-资管业委会（资管）_钱佳华-【需求类型】需求【需求描述】select和SimpleSelect 控件多选时 如果搜索时输入的信息完全匹配到 value或者label的时候 自动勾上；对接开发：郑海华【事业部】资管业委会【项目名称】HUNDSUN投资交易管理系统软件V4.5【产品负责人】孔磊【需求提出人】钱佳华
           this.cloneData.forEach(col => {
             let targetLabel = col.label
@@ -199,11 +200,18 @@ export default {
             }
             if(this.$parent.$parent.accuFilter){          
               if ((parsedQuery===targetoption)&&!selected) {
-                    this.$parent.$parent.selectBlockMultiple(targetValue)
+                if(this.$parent.$parent.isSingleSelect){
+                  isEffective = true
+                  this.$parent.$parent.selectBlockSingle(targetValue,true)
+                }else{
+                    this.$parent.$parent.selectBlockMultiple(targetValue)                                  
+                }
               }
             }
           })
-
+          if(this.$parent.$parent.isSingleSelect&&!isEffective){
+            this.$parent.$parent.selectBlockSingle('',true)
+          }
           this.dispatch('SimpleSelect', 'on-options-visible-change', { data: this.cloneData })
 
           this.showEmpty = status

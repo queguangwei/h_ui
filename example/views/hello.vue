@@ -83,13 +83,14 @@ export default {
         <h-form-item label="typefield" prop="mail">
             <h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >
         </h-form-item>
-        <h-form-item label="select" prop="city">
-            <h-select v-model="formValidate.city"  multiple placeholder="请选择所在地" class="curItemClass" >
+        <h-form-item label="select" prop="city1">
+            <h-select v-model="formValidate.city1"  multiple placeholder="请选择所在地" class="curItemClass" >
                 <h-option value="beijing">北京市</h-option>
                 <h-option value="shanghai">上海市</h-option>
                 <h-option value="shenzhen">深圳市</h-option>
             </h-select>
         </h-form-item>
+        {{formValidate.city}}
         <h-form-item label="singleSelect" prop="city">
             <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass" >
                 <h-select-block :data="bigData"></h-select-block>
@@ -130,6 +131,7 @@ export default {
       formValidate: {
         name: "",
         mail: "",
+        city1:'',
         city: '',
         gender: "",
         interest: [],
@@ -149,7 +151,7 @@ export default {
   },
   mounted() {
     // window.isO45 = true;
-    document.addEventListener("keyup", event => {
+    document.addEventListener("keydown", event => {
       enterHandler1(this.$refs.formValidate, event);
     });
   }
