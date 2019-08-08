@@ -11,9 +11,11 @@
     <Button @click="getData">重新赋值</Button>
     <h-input v-model="aaa"></h-input> -->
      <Button @click="changemsg">显示</Button>
+    <Button @click="addData">添加数据</Button>
+    <Button @click="removeData">删除数据</Button>
      <!-- :multiLevel="multiLevel1" -->
      <!-- :multiLevel="multiLevel2"  -->
-    <h-table :columns="columns1" :multiLevel="multiLevel1" :data="[]" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="300" canMove @on-move="onMove" :lastColWidth="150">
+    <h-table :columns="columns" :data="data0" border :highlight-row="true" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="300" canMove @on-move="onMove" :lastColWidth="150">
       <span slot="loading">我是自定义加载！！！</span>
     </h-table>
     <h-button @click="setLoading">切换状态</h-button>
@@ -175,6 +177,95 @@ export default {
           {title:'456'},
           {title:'456'},
         ],
+      ],
+      columns: [
+        {
+          title: '姓名',
+          key: 'name',
+          width: 100,
+          ellipsis:true,
+        },
+        {
+          title: '姓名1',
+          key: 'name',
+          ellipsis:true,
+        },
+        {
+          title: '年龄',
+          key: 'age',
+          width: 100,
+          ellipsis:true,
+        },
+        {
+          title: '年龄1',
+          key: 'age',
+          ellipsis:true,
+        },
+        {
+          title: '省份',
+          key: 'province',
+          width: 100,
+          ellipsis:true
+        },{
+          title: '省份1',
+          key: 'province',
+          ellipsis:true
+        },
+        {
+          title: '市区',
+          key: 'city',
+          width: 100,
+          ellipsis:true
+        },{
+          title: '市区1',
+          key: 'city',
+          ellipsis:true
+        },
+        {
+          type: 'text',
+          title: '地址',
+          key: 'address',
+          width: 200,
+          ellipsis:true
+        },{
+          type: 'text',
+          title: '地址1',
+          key: 'address',
+          ellipsis:true
+        },
+        {
+          title: '邮编',
+          key: 'zip',
+          width: 120,
+          ellipsis:true,
+          headerTooltip: true
+        },{
+          title: '邮编1',
+          key: 'zip',
+          ellipsis:true,
+          headerTooltip: true
+        },
+        {
+          title: '操作',
+          key: 'action',
+          render: (h, params) => {
+            return h('div', [
+              h('h-button', {
+                props: {
+                  type: 'info',
+                  size: 'small'
+                }
+              }, '查看'),
+              h('h-button', {
+                props: {
+                  type: 'text',
+                  size: 'small'
+                }
+              }, '编辑')
+            ]);
+          },
+          ellipsis:true
+        }
       ],
       columns18: [
          {
@@ -1730,6 +1821,12 @@ export default {
     },
     changemsg(){
       this.msgbox = !this.msgbox;
+    },
+    addData() {
+      this.data0 = this.data4
+    },
+    removeData(){
+      this.data0 = []
     },
     onDrag(e,i){
       console.log(e);
