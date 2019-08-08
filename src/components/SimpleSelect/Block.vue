@@ -191,15 +191,18 @@ export default {
             }          
             let targetValue =col.value
             let selected=col.selected
-            let targetoption=this.$parent.$parent.filterBy=="label"||this.$parent.$parent.filterBy==undefined?targetLabel:targetValue;
-            let hidden = !new RegExp(parsedQuery, 'i').test(targetoption)
+           // let targetoption=this.$parent.$parent.filterBy=="label"||this.$parent.$parent.filterBy==undefined?targetLabel:targetValue;
+            let hidden = !new RegExp(parsedQuery, 'i').test(col.label)
+            if(hidden){
+               hidden=!new RegExp(parsedQuery, 'i').test(col.value)
+            }
             this.$set(col, 'hidden', hidden)
             
             if (status && !hidden) {
               status = false
             }
             if(this.$parent.$parent.accuFilter){          
-              if ((parsedQuery===targetoption)&&!selected) {
+              if ((parsedQuery===targetLabel)&&!selected) {
                 if(this.$parent.$parent.isSingleSelect){
                   isEffective = true
                   this.$parent.$parent.selectBlockSingle(targetValue,true)
