@@ -1058,7 +1058,7 @@ export default {
         }
         this.isInputFocus = false
         if(this.isSingleSelect&&this.model==''){
-          this.query==''
+          this.query=''
         }
       }
     },
@@ -1542,7 +1542,7 @@ export default {
         this.$refs.reference.blur()
       }
       if(this.isSingleSelect&&this.model==''){
-        this.query==''
+        this.query=''
       }
     },
     selectBlockSingle(value,status=false) {

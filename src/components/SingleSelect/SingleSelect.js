@@ -1,6 +1,6 @@
 import SimpleSelect from '../SelectTable/SelectTable.vue'
 export default {
-  name: 'SimpleSelect',
+  name: 'SingleSelect',
   mixins: [SimpleSelect],
   props: {
     block:{
