@@ -30,6 +30,7 @@ export default {
       isCopy:false,
       newSearchCheckAll:false,
       newSearchUnCheckAll:false,
+      isResetField:false,
     }
   },
   methods: {
@@ -176,6 +177,10 @@ export default {
         return
 
       }
+      if(this.isResetField){
+        this.isResetField=false
+        return
+      }
       if(oldVal!=''&&val==''&&this.model.length>0){
         this.model=[]
         return
@@ -226,6 +231,15 @@ export default {
         str=str.substr(1)
       }
       this.selectedResult=str
+    },
+    isResetField(){
+      if(this.newSearchModel&&!this.visible){
+        let multipleAry=[]
+        this.selectedMultiple.forEach(item=>{
+          multipleAry.push(item['label'])
+        })
+        this.selectedResult=multipleAry.join(',')
+      }
     }
   }
 }
