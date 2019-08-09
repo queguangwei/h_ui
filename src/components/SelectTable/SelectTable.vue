@@ -61,7 +61,7 @@
             @click.native.stop="clearSingleSelect"></Icon>
       <Icon name="unfold"
             :class="[prefixCls + '-arrow']"
-            v-if="!searchIcon && (!remote || showArrow||isSingleSelect)"
+            v-if="!searchIcon && (!remote || showArrow||isSingleSelect||newSearchModel)"
             @click.native.stop="arrowClick"
             ref="arrowb"></Icon>
       <Icon ref="searchIcon"
