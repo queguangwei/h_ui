@@ -61,7 +61,8 @@
             @click.native.stop="clearSingleSelect"></Icon>
       <Icon name="unfold"
             :class="[prefixCls + '-arrow']"
-            v-if="!searchIcon && (!remote || showArrow)"
+            v-if="!searchIcon && (!remote || showArrow||isSingleSelect)"
+            @click.native.stop="arrowClick"
             ref="arrowb"></Icon>
       <Icon ref="searchIcon"
             :name="searchIcon"
@@ -540,7 +541,8 @@ export default {
         this.clearable &&
         !this.showPlaceholder &&
         !this.readonly &&
-        !this.disabled
+        !this.disabled&&
+        !this.isSingleSelect
       )
     },
     inputStyle() {
@@ -643,7 +645,7 @@ export default {
       if (this.disabled || this.readonly || !this.editable) {
         return false
       }
-      if (event.keyCode == 9) {
+      if (event.keyCode == 9&&!this.isSingleSelect) {
         this.toggleMenu()
       }
     },
@@ -707,7 +709,12 @@ export default {
       }
     },
     showdrop(){
+      if(!this.isSingleSelect){
         this.toggleMenu();
+      }
+    },
+    arrowClick(){
+      this.toggleMenu();
     },
      offsetArrow() {
       if (!this.multiple) return
@@ -721,7 +728,7 @@ export default {
       }
     },
     toggleMenu() {
-      if (this.disabled || !this.editable || this.readonly || this.isSingleSelect) {
+      if (this.disabled || !this.editable || this.readonly) {
         return false
       }
       this.visible = !this.visible
@@ -1064,28 +1071,30 @@ export default {
       }
     },
     handleKeydown(e) {
-      if (this.visible) {
-        const keyCode = e.keyCode
+      const keyCode = e.keyCode
+      if(this.visible){
         // Esc slide-up
         if (keyCode === 27) {
           e.preventDefault()
           this.hideMenu()
         }
-        if(this.isSingleSelect){
-          if (keyCode === 39) {
-            e.preventDefault();
-            this.navigateOptions('next');
-          }
-          // left
-          if (keyCode === 37) {
-            e.preventDefault();
-            this.navigateOptions('prev');
-          }
-          if(keyCode === 39||keyCode === 37){
-             this.selectBlockSingle(this.focusValue)
-          }
-          return false
+      }
+      if(this.isSingleSelect){
+        if (keyCode === 39) {
+          e.preventDefault();
+          this.navigateOptions('next');
         }
+        // left
+        if (keyCode === 37) {
+          e.preventDefault();
+          this.navigateOptions('prev');
+        }
+        if(keyCode === 39||keyCode === 37){
+            this.selectBlockSingle(this.focusValue)
+        }
+        return false
+      }
+      if (this.visible) {
         // if(window.isO45){
           // right
           // if (keyCode === 39) {

@@ -17,7 +17,7 @@
         </h-form-item>
         {{formValidate.city}}
         <h-form-item label="singleSelect" prop="city">
-            <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass" >
+            <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass" transfer>
                 <h-select-block :data="bigData"></h-select-block>
             </h-single-select>
         </h-form-item>
