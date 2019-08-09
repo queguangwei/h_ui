@@ -1939,7 +1939,7 @@ export default {
         {
           type: 'drag',
           width: 60,
-          fixed: 'left',
+          fixed: 'right',
           align: 'center'
         },
         {
@@ -1947,7 +1947,7 @@ export default {
           key: 'name',
           align: 'center',
           width:200,
-          fixed:'left',
+          fixed:'right',
         },
         {
           title: '年龄',
@@ -1956,7 +1956,7 @@ export default {
         },
         {
           title: '地址',
-          ellipsis:true,
+          // ellipsis:true,
           key: 'address',
                     // fixed:'right'
           // hiddenCol:true,
