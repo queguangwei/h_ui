@@ -610,7 +610,7 @@ export default {
     checkAll() {
       return 'h-select-checkall'
     },
-    selectTabindex() { 
+    selectTabindex() {
       return this.disabled ? -1 : ((this.tabindex + "") !== "-1" ? this.tabindex : 0);
     },
     notFoundShow() {
@@ -708,7 +708,7 @@ export default {
       }
     },
     showdrop(){
-        this.toggleMenu();  
+        this.toggleMenu();
     },
      offsetArrow() {
       if (!this.multiple) return
@@ -814,7 +814,7 @@ export default {
 
       this.options = options
       this.availableOptions = options
-      
+
       if (init) {
         if (!this.remote || this.isBlock) {
           this.updateSingleSelected(true, slot)
@@ -979,7 +979,7 @@ export default {
             })
           })
         }
-        if (!init) {      
+        if (!init) {
           if (this.labelInValue) {
             this.$emit('on-change', {
               value: value,
@@ -1281,7 +1281,7 @@ export default {
           this.toggleSelect(false)
           this.selectedResult=''
           e.preventDefault();
-          
+
       }
     },
     handleInputDelete() {
@@ -1586,7 +1586,7 @@ export default {
       if (index >= 0) {
         this.removeTag(index)
         if(this.newSearchModel){
-          
+
           //let itemidx=searchAry.indexOf()
         }
       } else {
@@ -1596,7 +1596,7 @@ export default {
             arr.push(this.specialVal)
             this.model=arr
             if(!changeitem){ this.selectedResult=this.getLabel(this.specialVal);}
-           
+
             return false
           }
           if (value!=this.specialVal && this.model.indexOf(this.specialVal)>=0) {
@@ -1641,7 +1641,7 @@ export default {
     this.$nextTick(() => {
       this.broadcastQuery('')
     })
-    this.updateOptions(true) 
+    this.updateOptions(true)
     this.$on('append', () => {
       this.slotChange()
       this.updateOptions(true, true)
@@ -1745,7 +1745,7 @@ export default {
         } else {
           this.model = val
           // TODO
-        }       
+        }
         if (val === ''&&!this.visible) this.query = ''
       }
     },
@@ -1851,7 +1851,7 @@ export default {
       // this.broadcast('Drop', 'on-update-popper');
     },
     selectedSingle(val) {
-     if (this.filterable && !this.showBottom && !this.isQuerySelect) {
+      if (this.filterable && !this.showBottom && !this.isQuerySelect) {
         this.query = val
         if (this.query !== '') this.selectToChangeQuery = true
       }

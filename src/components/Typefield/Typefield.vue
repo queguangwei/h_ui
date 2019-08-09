@@ -56,7 +56,7 @@ export default {
   mixins: [ Emitter,Locale ],
   props: {
     type: {
-      validator (value){
+      validator(value){
         return oneOf(value,['money','cardNo'])
       },
       default:'money'
@@ -146,10 +146,18 @@ export default {
         let num = parseInt(value);
         return num <= 32767 && num >= -1;
       }
-    }
+    },
+    max: {
+      type: Number,
+      default: Infinity
+    },
+    min: {
+      type: Number,
+      default: -Infinity
+    },
   },
   computed: {
-    clazz () {
+    clazz() {
       return [
         `${prefixCls}`,
         {
@@ -164,20 +172,20 @@ export default {
         }
       ]
     },
-    tipzz () {
+    tipzz() {
       return `${prefixCls}-tip`;
     },
-    classes () {
+    classes() {
       return `${prefixCls}-${this.algin}`;
     },
-    localePlaceholder () {
+    localePlaceholder() {
       if (this.setNull) {
         return '';
       }
       if (this.placeholder === undefined) {
-          return this.t('i.typefield.placeholder');
+        return this.t('i.typefield.placeholder');
       } else {
-          return this.placeholder;
+        return this.placeholder;
       }
     },
   },
@@ -192,14 +200,14 @@ export default {
     },
     tipShow(val){
       if (val&&this.transfer) {
-          this.$refs.drop.update();
+        this.$refs.drop.update();
       }
       // else {
       //     this.$refs.drop.destroy();
       // }
     }
   },
-  mounted () {
+  mounted() {
     this.prepend = this.$slots.prepend !== undefined;
     this.append = this.$slots.append !== undefined;
     if(this.value !=null||this.value!=undefined){
@@ -208,7 +216,7 @@ export default {
   },
   methods:{
     // keyup,focus,blur
-    blurValue (e) {
+    blurValue(e) {
       this.havefocused = false;
       this.focused = false;
       if (this.type=='money') {
@@ -240,14 +248,14 @@ export default {
       }
       return val;
     },
-    blur () {
+    blur() {
       this.havefocused = false;
       this.$refs.input.blur();
       // this.$emit('on-blur')
       this.$emit('input', this.cardFormatValue(this.inputValue));
       this.dispatch('FormItem', 'on-form-blur', this.inputValue)
     },
-    focusValue (e) {
+    focusValue(e) {
       if (this.readonly||this.disabled) return false;
       this.focused = true;
       this.havefocused = true;
@@ -285,7 +293,7 @@ export default {
     select() {
       this.$refs.input.select()
     },
-    valChange (event) {
+    valChange(event) {
       let value = event.target.value.trim().replace(/,/g,'');
       // if (event.type == 'input' && value.match(/^\-?\.?$|\.$/)) return; // prevent fire early if decimal. If no more input the change event will fire later
       // if (event.type == 'change' && Number(value) == this.currentValue) return; // already fired change for input event
