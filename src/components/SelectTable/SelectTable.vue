@@ -453,6 +453,7 @@ export default {
       selectedResult:'',
        isSearchDelete:false,
        isQuerySelect:false,
+       isMultiSpecial:false,
       // newSearchModelselectItem:{},
       // isCopy:false,
       // newSearchCheckAll:false,
@@ -611,7 +612,7 @@ export default {
     checkAll() {
       return 'h-select-checkall'
     },
-    selectTabindex() {
+    selectTabindex() { 
       return this.disabled ? -1 : ((this.tabindex + "") !== "-1" ? this.tabindex : 0);
     },
     notFoundShow() {
@@ -820,12 +821,13 @@ export default {
 
       this.options = options
       this.availableOptions = options
-
+      
       if (init) {
         if (!this.remote || this.isBlock) {
           this.updateSingleSelected(true, slot)
           this.updateMultipleSelected(true, slot)
-            if(this.newSearchModel&&this.selectedMultiple.length>0&&!this.visible){
+           //if(this.newSearchModel&&this.selectedMultiple.length>0&&!this.visible){
+            if(this.newSearchModel&&!this.visible){
               let multipleAry=[];
                 this.selectedMultiple.forEach(item=>{
                     multipleAry.push(item["label"]);
@@ -984,7 +986,7 @@ export default {
             })
           })
         }
-        if (!init) {
+        if (!init) {      
           if (this.labelInValue) {
             this.$emit('on-change', {
               value: value,
@@ -1288,7 +1290,7 @@ export default {
           this.toggleSelect(false)
           this.selectedResult=''
           e.preventDefault();
-
+          
       }
     },
     handleInputDelete() {
@@ -1555,7 +1557,7 @@ export default {
         this.query=''
       }
     },
-    select() {
+     select() {
       if (this.filterable) {
         this.$refs.input.select()
       }
@@ -1593,7 +1595,7 @@ export default {
       if (index >= 0) {
         this.removeTag(index)
         if(this.newSearchModel){
-
+          
           //let itemidx=searchAry.indexOf()
         }
       } else {
@@ -1603,7 +1605,7 @@ export default {
             arr.push(this.specialVal)
             this.model=arr
             if(!changeitem){ this.selectedResult=this.getLabel(this.specialVal);}
-
+           
             return false
           }
           if (value!=this.specialVal && this.model.indexOf(this.specialVal)>=0) {
@@ -1612,6 +1614,7 @@ export default {
             if(searchAry.indexOf(specialItem[0].label)>-1){
                 let idx=searchAry.indexOf(specialItem[0].label)
                 searchAry.splice(idx,1);
+                this.isMultiSpecial=true;
                 this.selectedResult=searchAry.join(',');
             }
             this.removeTag(index);
@@ -1647,7 +1650,7 @@ export default {
     this.$nextTick(() => {
       this.broadcastQuery('')
     })
-    this.updateOptions(true)
+    this.updateOptions(true) 
     this.$on('append', () => {
       this.slotChange()
       this.updateOptions(true, true)
@@ -1751,7 +1754,7 @@ export default {
         } else {
           this.model = val
           // TODO
-        }
+        }       
         if (val === ''&&!this.visible) this.query = ''
       }
     },
