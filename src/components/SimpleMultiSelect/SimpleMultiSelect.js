@@ -171,6 +171,11 @@ export default {
         this.newSearchUnCheckAll=false
         return
       }
+      if(this.isMultiSpecial){
+        this.isMultiSpecial=false
+        return
+
+      }
       if(oldVal!=''&&val==''&&this.model.length>0){
         this.model=[]
         return
