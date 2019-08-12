@@ -61,7 +61,7 @@
             @click.native.stop="clearSingleSelect"></Icon>
       <Icon name="unfold"
             :class="[prefixCls + '-arrow']"
-            v-if="!searchIcon && (!remote || showArrow||isSingleSelect||newSearchModel)"
+            v-if="!searchIcon && (!remote || showArrow ||newSearchModel)"
             @click.native.stop="arrowClick"
             ref="arrowb"></Icon>
       <Icon ref="searchIcon"
@@ -1561,7 +1561,7 @@ export default {
         this.$refs.input.select()
       }
     },
-    selectBlockSingle(value,status=false) {
+    selectBlockSingle(value,status=false,str) {
       this.isQuerySelect = status
       this.availableOptions = this.options
       this.selectToChangeQuery = true
@@ -1580,7 +1580,7 @@ export default {
         // });
         // }
       }
-     if(!this.isSingleSelect){
+     if(!this.isSingleSelect||str=='click'){
         this.hideMenu()
       }
     },
@@ -1662,7 +1662,7 @@ export default {
       this.slotChange()
       this.updateOptions(true, true)
     })
-    on(document, 'keydown', this.handleKeydown)
+    on(this.$refs.select, 'keydown', this.handleKeydown)
     // document.addEventListener('keydown', this.handleKeydown);
     this.$on('on-select-selected', (value, status) => {
       value = this.isBlock ? value : this.getFormatValue(value)
@@ -1740,7 +1740,7 @@ export default {
     }
   },
   beforeDestroy() {
-    off(document, 'keydown', this.handleKeydown)
+    off(this.$refs.select, 'keydown', this.handleKeydown)
     // document.removeEventListener('keydown', this.handleKeydown);
     this.broadcast('Drop', 'on-destroy-popper')
   },
@@ -1748,7 +1748,9 @@ export default {
     value: {
       immediate: true,
       handler(val) {
-        this.isQuerySelect = false
+        if(this.model==!val){
+          this.isQuerySelect = false
+        }
         if (this.multiple && this.isString) {
           this.model = this.strtoArr(val)
         } else {

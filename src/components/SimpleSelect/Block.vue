@@ -166,7 +166,7 @@ export default {
       if (this.multiple) {
         this.$parent.$parent.selectBlockMultiple(item.value,item)
       } else {
-        this.$parent.$parent.selectBlockSingle(item.value,false)
+        this.$parent.$parent.selectBlockSingle(item.value,false,'click')
       }
     },
     checkChange(val, item) {
@@ -176,6 +176,7 @@ export default {
       this.isFocus = false
     },
     queryChange(val) {
+      console.log(val)
       const parsedQuery = val.replace(
         /(\^|\(|\)|\[|\]|\$|\*|\+|\.|\?|\\|\{|\}|\|)/g,
         '\\$1'
@@ -201,7 +202,7 @@ export default {
             if (status && !hidden) {
               status = false
             }
-            if(this.$parent.$parent.accuFilter){          
+            if(this.$parent.$parent.accuFilter){         
               if ((parsedQuery===targetLabel)&&!selected) {
                 if(this.$parent.$parent.isSingleSelect){
                   isEffective = true
