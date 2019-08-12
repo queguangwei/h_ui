@@ -717,7 +717,7 @@ export default {
     arrowClick(){
       this.toggleMenu();
     },
-     offsetArrow() {
+    offsetArrow() {
       if (!this.multiple) return
       let el = this.$refs.reference
       if (el.scrollHeight > el.clientHeight) {
@@ -924,7 +924,6 @@ export default {
           if (this.model.length === selectedModel.length) {
             this.slotChangeDuration = true
           }
-
           this.model = selectedModel
         }
       }
@@ -1092,7 +1091,7 @@ export default {
           this.navigateOptions('prev');
         }
         if(keyCode === 39||keyCode === 37){
-            this.selectBlockSingle(this.focusValue)
+          this.selectBlockSingle(this.focusValue)
         }
         return false
       }
@@ -1328,7 +1327,7 @@ export default {
         },0);
     },
     newModelSearchDelete(multipleAry){
-    if (this.multiple && this.selectedMultiple.length>0) {
+      if (this.multiple && this.selectedMultiple.length>0) {
         let searchAry=this.selectedResult.split(',');
             for(let i=0;i<multipleAry.length;i++){
               if(searchAry.indexOf(multipleAry[i])<0){
@@ -1648,7 +1647,7 @@ export default {
     // 处理 remote 初始值
     this.updateLabel()
     this.$nextTick(() => {
-      this.broadcastQuery('')
+      if(!this.isSingleSelect) this.broadcastQuery('')
     })
     this.updateOptions(true) 
     this.$on('append', () => {
@@ -1749,6 +1748,7 @@ export default {
     value: {
       immediate: true,
       handler(val) {
+        this.isQuerySelect = false
         if (this.multiple && this.isString) {
           this.model = this.strtoArr(val)
         } else {
@@ -1820,6 +1820,9 @@ export default {
       this.$emit('on-drop-change', val)
     },
     query(val) {
+      if(this.isSingleSelect&&this.isInputFocus){
+        if (!this.visible && val) this.visible = true;
+      }
       if (this.remote && this.remoteMethod) {
         if (!this.selectToChangeQuery) {
           // 解决当通过表单方法firstNodeFocused定位到SimpleSelect时只能输入但不展示下拉选项的问题

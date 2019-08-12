@@ -186,7 +186,7 @@ export default {
           this.cloneData.forEach(col => {
             let targetLabel = col.label
             // 如果存在多列，则匹配目标为多列所有列
-            if (this.showCol.length&&!this.$parent.$parent.newSearchModel) {
+            if (this.showCol.length&&!this.$parent.$parent.newSearchModel&&!this.$parent.$parent.isSingleSelect) {
               targetLabel = targetLabel + ' ' + this.getTargetLabel(col).join(' ')
             }          
             let targetValue =col.value
