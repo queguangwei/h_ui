@@ -343,10 +343,10 @@ export default {
       }
     },
     changeVal(val) {
-       if(this.currentValue==null&&this.viewValue!=this.currentValue){
-         this.viewValue=null;
-         return;
-       }
+      if(this.currentValue==null&&this.viewValue!=this.currentValue){
+        this.viewValue=null;
+        return;
+      }
       val = Number(val)
       if (!isNaN(val)) {
         const step = this.step
