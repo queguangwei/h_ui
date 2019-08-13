@@ -404,7 +404,11 @@ export default {
       if(this.$el.querySelector('input')){
         let input=this.$el.querySelector('input')
          if(input.getAttribute('search')==='multiSelect'){
+           if(this.$children[0].isResetField==undefined){
+              this.$children[0].$children[0].isResetField=true
+           }else{
               this.$children[0].isResetField=true
+           }
          }
       }
       if (Array.isArray(value)) {
