@@ -26,6 +26,9 @@
             v-show="showPlaceholder && (!filterable&&!newSearchModel||showBottom)">{{ localePlaceholder }}</span>
       <span :class="[prefixCls + '-selected-value']"
             v-show="!showPlaceholder && !multiple && !(filterable && !showBottom)">{{ selectedSingle }}</span>
+      <!-- o45模式下失去焦点需要显示多列数据 -->
+      <span :class="[prefixCls + '-selected-value']"
+            v-show="showMutiLabel">{{ singleMutiLabel }}</span>
       <!--搜索框开启newSearchModel时渲染-->
           <input type="text"
              v-if="newSearchModel&&multiple"
@@ -43,7 +46,7 @@
              ref="input">
       <!-- 下拉输入框(远程搜索时渲染) -->
       <input type="text"
-             v-if="filterable && !showBottom &&!newSearchModel"
+             v-if="filterable && !showBottom &&!newSearchModel&&!showMutiLabel"
              v-model="query"
              :disabled="disabled"
              :readonly="!editable||readonly"
@@ -451,13 +454,15 @@ export default {
       isSelectAll:false,
       showTotal:false,
       selectedResult:'',
-       isSearchDelete:false,
-       isQuerySelect:false,
-       isMultiSpecial:false,
+      isSearchDelete:false,
+      isQuerySelect:false,
+      isMultiSpecial:false,
       // newSearchModelselectItem:{},
       // isCopy:false,
       // newSearchCheckAll:false,
       // newSearchUnCheckAll:false,
+      showMutiLabel:false,
+      singleMutiLabel:''
     }
   },
   computed: {
@@ -710,6 +715,13 @@ export default {
       }
     },
     showdrop(){
+      this.isInputFocus = true
+      if(this.isSingleSelect && this.showMutiLabel){
+        this.showMutiLabel = false
+        this.$nextTick(()=>{
+          this.select()
+        })
+      }
       if(!this.isSingleSelect){
         this.toggleMenu();
       }
@@ -733,7 +745,7 @@ export default {
         return false
       }
       this.visible = !this.visible
-      this.isInputFocus = false
+      // this.isInputFocus = false
       if(this.newSearchModel){
         this.isInputFocus = true
       }
@@ -1243,6 +1255,9 @@ export default {
     handleFocus(e) {
       e.target.selectionStart = 0
       e.target.selectionEnd = this.query.length
+      if(this.isSingleSelect){
+        this.showMutiLabel = false
+      }
     },
      handleBlur() {
       this.$emit('on-blur')
@@ -1525,6 +1540,9 @@ export default {
     },
     focus() {
       if (this.disabled || this.readonly) return
+      if(this.isSingleSelect){
+        this.showMutiLabel = false
+      }
       this.$nextTick(() => {
         this.isInputFocus = true
         if(!this.isSingleSelect){
@@ -1552,11 +1570,13 @@ export default {
       } else {
         this.$refs.reference.blur()
       }
-      if(this.isSingleSelect&&this.model==''){
-        this.query=''
+      if(this.isSingleSelect){
+        if(this.model==''){
+          this.query=''
+        }
       }
     },
-     select() {
+    select() {
       if (this.filterable) {
         this.$refs.input.select()
       }
@@ -1639,7 +1659,20 @@ export default {
       for (let i = 0; i < doms.length; i++) {
         if (doms[i].style.display !== 'none') return doms[i]
       }
-    }
+    },
+    setSingleSelect(){
+      let curlabel = ''
+      this.findChild(child=>{
+        child.cloneData.forEach((col,i)=>{
+          if(col.value==this.model&&child.showCol.length>0){
+            curlabel = col[child.showCol[0]]
+          }
+        })
+      })
+      this.singleMutiLabel = this.query+' '+curlabel
+      this.showMutiLabel = true
+      
+    },
   },
   mounted() {
     this.isBlock = this.block ? true : false
@@ -1811,6 +1844,8 @@ export default {
             // if(!window.isO45){
             if(!this.isSingleSelect){
               this.broadcastQuery('')
+            }else{
+              this.broadcast('Block', 'on-query-change', '',true)
             }
           }, 300)
         }
@@ -1865,11 +1900,14 @@ export default {
       // this.broadcast('Drop', 'on-update-popper');
     },
     selectedSingle(val) {
-     if (this.filterable && !this.showBottom && !this.isQuerySelect) {
+      if (this.filterable && !this.showBottom && !this.isQuerySelect) {
         this.query = val
         if (this.query !== '') this.selectToChangeQuery = true
       }
       this.viewValue = val
+      if(this.isSingleSelect&&!this.isInputFocus&&this.model!=''){
+        this.setSingleSelect()
+      }
     },
     // options(val) {
     //   console.log('options', val)
@@ -1905,6 +1943,11 @@ export default {
           this.showTotal = true
         }else{
           this.showTotal = false
+        }
+      }
+      if(this.isSingleSelect){
+        if(!val&&this.model!=''){
+          this.setSingleSelect()
         }
       }
       if(this.newSearchModel&&val){

@@ -8,6 +8,7 @@
                      style="width:200px;"
                      filterable
                      v-model="value2"
+                     widthAdaption
                      @on-change="change">
       <!-- <div slot="header">
         <h-button @click="selectAll(true)">全选</h-button>
