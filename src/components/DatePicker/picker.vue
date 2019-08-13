@@ -42,6 +42,7 @@
                      :showTime="type === 'datetime' || type === 'datetimerange'"
                      :confirm="isConfirm"
                      :showLong="showLong"
+                     :showToday="showToday"
                      :longValue="longValue"
                      :selectionMode="selectionMode"
                      :steps="steps"
@@ -62,7 +63,8 @@
                      @on-pick-click="disableClickOutSide = true"
                      @on-selection-mode-change="onSelectionModeChange"
                      @on-select-range="handleSelectRange"
-                     @on-pick-long="handleLongDate"></component>
+                     @on-pick-long="handleLongDate"
+                     @on-pick-today="handlePickToday"></component>
           <slot name="footer"></slot>
         </div>
       </Drop>
@@ -233,6 +235,10 @@ export default {
         let num = parseInt(value);
         return num <= 32767 && num >= -1;
       }
+    },
+    showToday:{
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -312,7 +318,8 @@ export default {
         this.type === 'datetime' ||
         this.type === 'datetimerange' ||
         this.multiple ||
-        this.showLong
+        this.showLong ||
+        this.showToday
       )
     }
   },
@@ -755,6 +762,18 @@ export default {
         this.internalValue = longtime
       }
       this.emitChange()
+    },
+    handlePickToday(){
+      let disabledDateFn =
+        this.options &&
+        typeof this.options.disabledDate === 'function' &&
+        this.options.disabledDate
+      let td =new Date();
+      let isDisabled = disabledDateFn && disabledDateFn(td)
+      if(!isDisabled){
+      this.$set(this.internalValue, 0,new Date())
+      this.emitChange()
+      }
     }
   },
   watch: {
