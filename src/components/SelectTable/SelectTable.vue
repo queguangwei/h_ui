@@ -617,7 +617,7 @@ export default {
     checkAll() {
       return 'h-select-checkall'
     },
-    selectTabindex() { 
+    selectTabindex() {
       return this.disabled ? -1 : ((this.tabindex + "") !== "-1" ? this.tabindex : 0);
     },
     notFoundShow() {
@@ -833,19 +833,19 @@ export default {
 
       this.options = options
       this.availableOptions = options
-      
+
       if (init) {
         if (!this.remote || this.isBlock) {
           this.updateSingleSelected(true, slot)
           this.updateMultipleSelected(true, slot)
            //if(this.newSearchModel&&this.selectedMultiple.length>0&&!this.visible){
-            if(this.newSearchModel&&!this.visible){
-              let multipleAry=[];
-                this.selectedMultiple.forEach(item=>{
-                    multipleAry.push(item["label"]);
-              })
-              this.selectedResult=multipleAry.join(',');
-           }
+          if(this.newSearchModel&&!this.visible){
+            let multipleAry=[];
+            this.selectedMultiple.forEach(item=>{
+              multipleAry.push(item["label"]);
+            })
+            this.selectedResult=multipleAry.join(',');
+          }
         }
       }
     },
@@ -997,7 +997,7 @@ export default {
             })
           })
         }
-        if (!init) {      
+        if (!init) {
           if (this.labelInValue) {
             this.$emit('on-change', {
               value: value,
@@ -1259,52 +1259,51 @@ export default {
         this.showMutiLabel = false
       }
     },
-     handleBlur() {
+    handleBlur() {
       this.$emit('on-blur')
     },
     handkeSearchBlur(){
-       let multipleAry=[];
+      let multipleAry=[];
       this.selectedMultiple.forEach(item=>{
-            multipleAry.push(item["label"]);
+        multipleAry.push(item["label"]);
       })
       let modelstr=multipleAry.join(",");
       if(modelstr!=this.selectedResult){
         this.selectedResult=modelstr;
       }
-       this.isInputFocus = false
-
+      this.isInputFocus = false
     },
     resetInputState(e) {
       this.inputLength = this.$refs.input.value.length * 12 + 56
       if(this.visible &&this.showBottom&&e.keyCode==9){ //153789 【TS:201907180097-资管业委会（资管）_贺文能-【需求类型】需求【需求描述】simple-select tab切换时失去焦点，不会将下拉框收起， 详见附件】
         this.hideMenu();
-         this.isInputFocus = false
+        this.isInputFocus = false
       }
       if(this.newSearchModel&&!this.isInputFocus){
         this.isInputFocus=true;
       }
       if(this.newSearchModel&&e.keyCode=="86"&&e.ctrlKey){
-         this.handleNewSearchCopy(e);
+        this.handleNewSearchCopy(e);
       }
       if(this.newSearchModel&&e.keyCode=="65"&&e.ctrlKey){
-         this.handleNewSearchCheckAll(e);
-         this.toggleSelect(true);
-         let multipleAry=[];
-          this.selectedMultiple.forEach(item=>{
-                multipleAry.push(item["label"]);
-          })
-          let modelstr=multipleAry.join(",");
-          if(modelstr!=this.selectedResult){
-            this.selectedResult=modelstr;
-          }
-          e.preventDefault();
+        this.handleNewSearchCheckAll(e);
+        this.toggleSelect(true);
+        let multipleAry=[];
+        this.selectedMultiple.forEach(item=>{
+          multipleAry.push(item["label"]);
+        })
+        let modelstr=multipleAry.join(",");
+        if(modelstr!=this.selectedResult){
+          this.selectedResult=modelstr;
+        }
+        e.preventDefault();
       }
       if(this.newSearchModel&&e.keyCode=="68"&&e.ctrlKey){
-          this.handleNewSearchUnCheckAll(e);
-          this.toggleSelect(false)
-          this.selectedResult=''
-          e.preventDefault();
-          
+        this.handleNewSearchUnCheckAll(e);
+        this.toggleSelect(false)
+        this.selectedResult=''
+        e.preventDefault();
+
       }
     },
     handleInputDelete() {
@@ -1323,52 +1322,52 @@ export default {
     },
     handleNewSearchSelect(changeitem){
       if(!changeitem) return;
-       let label=changeitem.label;
-       let selectAry=this.selectedResult.trim().split(",");
-       let index=selectAry.indexOf(label);
-       if(index>=0){
-           selectAry.splice(index,1);
-       }else{
-           selectAry.push(label);
-       }
-       this.selectedResult=selectAry.join(",")
+      let label=changeitem.label;
+      let selectAry=this.selectedResult.trim().split(",");
+      let index=selectAry.indexOf(label);
+      if(index>=0){
+        selectAry.splice(index,1);
+      }else{
+        selectAry.push(label);
+      }
+      this.selectedResult=selectAry.join(",")
     },
     // handleSearchDelete(){
     //   this.isSearchDelete=true;
     // },
     newSearchUpdate(){
       setTimeout(()=> {
-          this.$refs.dropdown.setWidthAdaption();
-        },0);
+        this.$refs.dropdown.setWidthAdaption();
+      },0);
     },
     newModelSearchDelete(multipleAry){
       if (this.multiple && this.selectedMultiple.length>0) {
         let searchAry=this.selectedResult.split(',');
-            for(let i=0;i<multipleAry.length;i++){
-              if(searchAry.indexOf(multipleAry[i])<0){
-                  this.selectedMultiple.splice(i,1);
-                  this.model.splice(i,1);
-              }
+        for(let i=0;i<multipleAry.length;i++){
+          if(searchAry.indexOf(multipleAry[i])<0){
+            this.selectedMultiple.splice(i,1);
+            this.model.splice(i,1);
           }
+        }
       }
       // this.isSearchDelete=false;
     },
     newModelhandleSearch(searchkey){
-       if (this.remote && this.remoteMethod) {
+      if (this.remote && this.remoteMethod) {
         if (!this.selectToChangeQuery) {
           // 解决当通过表单方法firstNodeFocused定位到SimpleSelect时只能输入但不展示下拉选项的问题
           if (!this.visible && searchkey) this.visible = true;
           this.remoteMethod(searchkey)
           if(searchkey!=","){
-             setTimeout(()=> {
-                this.$emit('on-query-change', searchkey)
-                this.broadcastQuery(searchkey)
-                this.newSearchUpdate();
-                //this.$refs.dropdown.setWidthAdaption(true);
-              }, 300);
+            setTimeout(()=> {
+              this.$emit('on-query-change', searchkey)
+              this.broadcastQuery(searchkey)
+              this.newSearchUpdate();
+              //this.$refs.dropdown.setWidthAdaption(true);
+            }, 300);
           }
           //this.$emit('on-query-change', searchkey)
-         // this.broadcastQuery(searchkey)
+          //this.broadcastQuery(searchkey)
         }
         this.findChild(child => {
           child.isFocus = false
@@ -1396,7 +1395,7 @@ export default {
 
     },
     getLabel(val){
-     let item=  this.options.filter(item=>item.value==val)
+      let item=  this.options.filter(item=>item.value==val)
       return item?item[0].label:'';
     },
     // use when slot changed
@@ -1614,7 +1613,7 @@ export default {
       if (index >= 0) {
         this.removeTag(index)
         if(this.newSearchModel){
-          
+
           //let itemidx=searchAry.indexOf()
         }
       } else {
@@ -1624,17 +1623,17 @@ export default {
             arr.push(this.specialVal)
             this.model=arr
             if(!changeitem){ this.selectedResult=this.getLabel(this.specialVal);}
-           
+
             return false
           }
           if (value!=this.specialVal && this.model.indexOf(this.specialVal)>=0) {
             const index = this.model.indexOf(this.specialVal);
             const specialItem = this.selectedMultiple.filter(item=>item["value"]==this.specialVal)
             if(searchAry.indexOf(specialItem[0].label)>-1){
-                let idx=searchAry.indexOf(specialItem[0].label)
-                searchAry.splice(idx,1);
-                this.isMultiSpecial=true;
-                this.selectedResult=searchAry.join(',');
+              let idx=searchAry.indexOf(specialItem[0].label)
+              searchAry.splice(idx,1);
+              this.isMultiSpecial=true;
+              this.selectedResult=searchAry.join(',');
             }
             this.removeTag(index);
           }
@@ -1682,7 +1681,7 @@ export default {
     this.$nextTick(() => {
       if(!this.isSingleSelect) this.broadcastQuery('')
     })
-    this.updateOptions(true) 
+    this.updateOptions(true)
     this.$on('append', () => {
       this.slotChange()
       this.updateOptions(true, true)
@@ -1789,7 +1788,7 @@ export default {
         } else {
           this.model = val
           // TODO
-        }       
+        }
         if (val === ''&&!this.visible) this.query = ''
       }
     },
