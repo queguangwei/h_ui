@@ -238,12 +238,14 @@ export default {
   },
   methods:{
     keyDown(e) {
-      if (e.keyCode === 38 || e.keyCode === 39) {
-        e.preventDefault()
-        this.up(e)
-      } else if (e.keyCode === 40 || e.keyCode === 37) {
-        e.preventDefault()
-        this.down(e)
+      if(window.isO45) {
+        if (e.keyCode === 39) {
+          e.preventDefault()
+          this.up(e)
+        } else if (e.keyCode === 37) {
+          e.preventDefault()
+          this.down(e)
+        }
       }
     },
     up(e) {
