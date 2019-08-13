@@ -60,7 +60,7 @@ export default {
 		},
 		setWidthAdaption(){
 			let content = this.$refs.selectdrop
-			if(this.$parent.$options.name ==='SimpleSelect'||this.$parent.$options.name ==='SingleSelect'){
+			if(this.$parent.$options.name ==='SimpleSelect'||this.$parent.$options.name ==='SingleSelect'||this.$parent.$options.name ==='SimpleMultiSelect'){
 				content = content.querySelectorAll('.h-selectTable-dropdown-list')[0].children[0]
 				// if(this.$parent.showBottom || this.$parent.hideMult){
 				// 	content = content.children[1].children[0]

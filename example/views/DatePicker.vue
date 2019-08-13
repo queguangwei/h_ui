@@ -10,7 +10,7 @@
       <p>设置属性 type 为 date 或 daterange 分别显示选择单日和选择范围类型。<br>
         设置属性 placement 可以更改选择器出现的方向</p>
       <h-col span="12">
-        <h-date-picker v-model="model1"  format="yyyy-MM-dd" type="date" style="width: 200px" @on-clickout="s" :showFormat="true"></h-date-picker>{{model1}}
+        <h-date-picker v-model="model1"  format="yyyy-MM-dd" type="date"  :options="options4"   style="width: 200px" @on-clickout="s" :showFormat="true" showToday></h-date-picker>{{model1}}
       </h-col>
       <h-col span="12">
         {{model2}}

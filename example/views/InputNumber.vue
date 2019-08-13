@@ -9,8 +9,8 @@
       <span slot="append">px</span>
     </h-input-number>
     <h-input-number :max="20"
-                    :min="1"
-                    :step="1.2"
+                    :min="-1"
+                    :step="1"
                     v-model="value2"
                     focusAllSelect
                     @on-focus="focusEvent"

@@ -1010,10 +1010,10 @@ function getElement(ele, field, status) {
   var curNode = getCurNode(field)
   if(curNode.querySelector('input')){
     if(curNode.querySelector('input').getAttribute('search')==='multiSelect'){
-      let isshow=curNode.querySelector('.h-select-dropdown').style.display
-      if(isshow!='none'){
-        return
-      }
+      let isshow=curNode.__vue__.dropVisible
+        if(isshow){
+          return
+        }
     }
   }
   
