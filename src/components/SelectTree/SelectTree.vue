@@ -489,9 +489,11 @@ export default{
         });
       }
     },
-    handleFocus(e){
+    handleFocus(){
+      this.$emit('on-focus')
     },
     handleBlur() {
+      this.$emit('on-blur')
     },
     handleInputDown() {
       var val = this.query;

@@ -9,7 +9,9 @@
                      filterable
                      v-model="value2"
                      widthAdaption
-                     @on-change="change">
+                     @on-change="change"
+                     @on-focus="focus"
+                      @on-blur="handleBlur">
       <!-- <div slot="header">
         <h-button @click="selectAll(true)">全选</h-button>
         <h-button @click="selectAll(false)">全不选</h-button>
@@ -115,7 +117,7 @@
 
     <p>showValue为true，输入框显示value值，下拉框显示label+value、开启accuFilter完全匹配，并且搜到的结果自动勾选</p>
     <span>#149105需求  select和SimpleSelect 控件多选时 如果搜索时输入的信息完全匹配到 value或者label的时候 自动勾上；</span>
-    <h-simple-select v-model="valuetest" ref="test" filterable  multiple  filterBy="label">
+    <h-simple-select v-model="valuetest" ref="test" filterable  multiple  buttonToTop style="width:300px">
       <h-select-block :data="bigDatatest"></h-select-block>
     </h-simple-select>
     <h-button @click="enable">enable</h-button>
@@ -211,6 +213,9 @@ export default {
     }
   },
   methods: {
+    focus() {
+      console.log('focus')
+    },
     handleBlur() {
       console.log('blur')
     },
@@ -267,7 +272,6 @@ export default {
     },
     copying(obj){
       let val=obj.newval;
-      debugger
       this.valueRemote=val.split(",");
        console.log(obj)
     },
