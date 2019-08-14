@@ -11,7 +11,7 @@
     <h-button @on-click="checkedData(false)">多选不选择某行</h-button>
     <!-- isCheckbox checkStrictly -->
     <!-- selectRoot -->
-    <h-simple-tree-gird ref="treeGird" headSelection canDrag canMove :columns="columns1" no-data-text="123" isCheckbox :data="treedata" :height="400" @on-row-dblclick="selectChange" @on-expand="expand" @on-drag="expand" >
+    <h-simple-tree-gird ref="treeGird" :rowClassName="rowClassName" headSelection canDrag canMove :columns="columns1" no-data-text="123" isCheckbox :data="treedata" :height="400" @on-row-dblclick="selectChange" @on-expand="expand" @on-drag="expand" >
       <span slot="loading">1244</span>
     </h-simple-tree-gird>
   </div>
@@ -222,6 +222,12 @@ export default {
       this.$refs.treeGird.checkedRow(0,status);
       console.log(this.$refs.treeGird.getSelection())
     },
+    rowClassName(row,id){
+      if (id === 1||id===50) {
+        return 'demo-table-info-row';
+      }
+      return '';
+    }
   },
   mounted() {
     let attributes = {
@@ -236,3 +242,10 @@ export default {
   }
 }
 </script>
+<style>
+.demo-table-info-row td{
+  background-color: #2db7f5 !important;
+  color: #fff;
+}
+</style>
+

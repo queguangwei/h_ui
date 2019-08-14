@@ -87,9 +87,9 @@ export default {
     document.addEventListener("keydown", event => {
       enterHandler1(this.$refs.formValidate, event);
     });
-    // setTimeout(()=>{
-    //     this.formValidate.city="value11"
-    // },2000)
+    setTimeout(()=>{
+        this.formValidate.city="value11"
+    },1000)
   },
   methods:{
     handleSubmit(){
