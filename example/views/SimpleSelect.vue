@@ -8,6 +8,7 @@
                      style="width:200px;"
                      filterable
                      v-model="value2"
+                     widthAdaption
                      @on-change="change"
                      @on-focus="focus"
                       @on-blur="handleBlur">
@@ -53,8 +54,8 @@
                      @on-drop-change="handleChange"
                      ref="simSel">
       <h-select-block :data="remoteData"></h-select-block>
-      <!-- <h-select-block :data="v20190321.options2"></h-select-block> -->
-    </h-simple-select> -->
+      <h-select-block :data="v20190321.options2"></h-select-block>
+    </h-simple-select> --> -->
     {{v20190321.value}}
 
     <h-simple-select filterable
@@ -271,7 +272,6 @@ export default {
     },
     copying(obj){
       let val=obj.newval;
-      debugger
       this.valueRemote=val.split(",");
        console.log(obj)
     },
