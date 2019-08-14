@@ -1,5 +1,9 @@
 <template>
 <div>
+  <!--<h-simple-select v-model="value" ref="test" @on-blur="blurtest" :filterable=true>-->
+    <!--<h-select-block :data="bigData"></h-select-block>-->
+  <!--</h-simple-select>-->
+  <!--<Button @click="getFocus">获取焦点</Button>-->
     <Button @on-click="changeData">改变数值</Button>
     <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
         <!-- <h-form-item label="input" prop="name">
@@ -15,15 +19,16 @@
                 <h-option value="shenzhen">深圳市</h-option>
             </h-select>
         </h-form-item> -->
+      <h-form-item prop="date" label="data">
+        <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
+      </h-form-item>
         {{formValidate.city}}
         <h-form-item label="singleSelect" prop="city" required>
             <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass" transfer widthAdaption>
                 <h-select-block :data="bigData" :showCol="showCol"></h-select-block>
             </h-single-select>
         </h-form-item>
-        <h-form-item prop="date" label="data">
-            <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" class="curItemClass" ></h-date-picker>
-        </h-form-item>
+
         <h-form-item prop="time" label="time">
             <h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time" class="curItemClass" ></h-time-picker>
         </h-form-item>
@@ -54,6 +59,7 @@ import { enterHandler1 } from "../../src/util/tools.js";
 export default {
   data() {
     return {
+      value:'value0',
       showCol:['label1'],
       formValidate: {
         name: "",
@@ -82,7 +88,7 @@ export default {
     }
   },
   mounted() {
-    // window.isO45 = true;
+     window.isO45 = false;
     document.addEventListener("keydown", event => {
       enterHandler1(this.$refs.formValidate, event);
     });
@@ -91,6 +97,12 @@ export default {
     },2000)
   },
   methods:{
+    getFocus() {
+      this.$refs.test.focus()
+    },
+    blurtest(){
+      console.log("lsjflsja;");
+    },
     handleSubmit(){
         this.formValidate.city="value1"
     },
