@@ -17,7 +17,7 @@
         </h-form-item> -->
         {{formValidate.city}}
         <h-form-item label="singleSelect" prop="city" required>
-            <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass" transfer widthAdaption>
+            <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass" remote>
                 <h-select-block :data="bigData" :showCol="showCol"></h-select-block>
             </h-single-select>
         </h-form-item>
@@ -45,6 +45,7 @@
             <h-button type="primary" canFocus @click="handleSubmit('formValidate')" class="curItemClass" >提交</h-button>
             <h-button type="ghost"  canFocus  @click="handleReset('formValidate')" style="margin-left: 8px" class="curItemClass" >重置</h-button>
             <h-button @click="focusFirst">焦点定位到第一项</h-button>
+            <h-button @click="clear">清空当前选项</h-button>
         </h-form-item>
     </h-form>
 </div>
@@ -86,9 +87,9 @@ export default {
     document.addEventListener("keydown", event => {
       enterHandler1(this.$refs.formValidate, event);
     });
-    setTimeout(()=>{
-        this.formValidate.city="value11"
-    },2000)
+    // setTimeout(()=>{
+    //     this.formValidate.city="value11"
+    // },2000)
   },
   methods:{
     handleSubmit(){
@@ -99,6 +100,9 @@ export default {
     },
     focusFirst(){
         this.$refs.formValidate.firstNodeFocused()
+    },
+    clear(){
+        this.formValidate.city=''
     }
   }
 };

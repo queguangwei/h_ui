@@ -806,6 +806,7 @@ export default {
   watch: {
     data: {
       handler (val) {
+        this.selection = {}
         this.handleResize();
         if(this.rebuildData.length === 0 || val.length === 0) {
           if(this.$refs.body) {
