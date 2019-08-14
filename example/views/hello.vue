@@ -17,7 +17,7 @@
         </h-form-item> -->
         {{formValidate.city}}
         <h-form-item label="singleSelect" prop="city" required>
-            <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass" transfer>
+            <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass" transfer widthAdaption>
                 <h-select-block :data="bigData" :showCol="showCol"></h-select-block>
             </h-single-select>
         </h-form-item>
@@ -67,7 +67,7 @@ export default {
         desc: ""
       },
       bigData: [
-        { value: "value1", label: "label1",label1: "多列1"},
+        { value: "value1", label: "label1",label1: "多列11111111111111111111111111111111111111111111111111111111"},
         { value: "value2", label: "label2",label1: "多列2" },
         { value: "value3", label: "label3",label1: "多列3" },
         { value: "value4", label: "label4",label1: "多列4" },
@@ -86,6 +86,9 @@ export default {
     document.addEventListener("keydown", event => {
       enterHandler1(this.$refs.formValidate, event);
     });
+    setTimeout(()=>{
+        this.formValidate.city="value11"
+    },2000)
   },
   methods:{
     handleSubmit(){

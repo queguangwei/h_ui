@@ -8,8 +8,8 @@
                      style="width:200px;"
                      filterable
                      v-model="value2"
-                     @on-change="change"
-                      @on-blur="handleBlur">
+                     widthAdaption
+                     @on-change="change">
       <!-- <div slot="header">
         <h-button @click="selectAll(true)">全选</h-button>
         <h-button @click="selectAll(false)">全不选</h-button>
@@ -52,8 +52,8 @@
                      @on-drop-change="handleChange"
                      ref="simSel">
       <h-select-block :data="remoteData"></h-select-block>
-      <!-- <h-select-block :data="v20190321.options2"></h-select-block> -->
-    </h-simple-select> -->
+      <h-select-block :data="v20190321.options2"></h-select-block>
+    </h-simple-select> --> -->
     {{v20190321.value}}
 
     <h-simple-select filterable

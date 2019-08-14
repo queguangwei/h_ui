@@ -175,8 +175,7 @@ export default {
     blur() {
       this.isFocus = false
     },
-    queryChange(val) {
-      console.log(val)
+    queryChange(val,states) {
       const parsedQuery = val.replace(
         /(\^|\(|\)|\[|\]|\$|\*|\+|\.|\?|\\|\{|\}|\|)/g,
         '\\$1'
@@ -203,7 +202,7 @@ export default {
               status = false
             }
             if(this.$parent.$parent.accuFilter){         
-              if ((parsedQuery===targetLabel)&&!selected) {
+              if ((parsedQuery===targetLabel)&&!selected&&!states) {
                 if(this.$parent.$parent.isSingleSelect){
                   isEffective = true
                   this.$parent.$parent.selectBlockSingle(targetValue,true)
@@ -213,7 +212,7 @@ export default {
               }
             }
           })
-          if(this.$parent.$parent.isSingleSelect&&!isEffective){
+          if(this.$parent.$parent.isSingleSelect&&!isEffective&&!states){
             this.$parent.$parent.selectBlockSingle('',true)
           }
           this.dispatch('SimpleSelect', 'on-options-visible-change', { data: this.cloneData })
@@ -352,8 +351,8 @@ export default {
     this.$on('on-select-close', () => {
       this.isFocus = false
     })
-    this.$on('on-query-change', val => {
-      this.queryChange(val)
+    this.$on('on-query-change', (val,states) => {
+      this.queryChange(val,states)
     })
     this.$on('on-select-top', (status) => {
       this.selectedTop(status)
