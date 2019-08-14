@@ -9,7 +9,9 @@
                      filterable
                      v-model="value2"
                      widthAdaption
-                     @on-change="change">
+                     @on-change="change"
+                     @on-focus="focus"
+                      @on-blur="handleBlur">
       <!-- <div slot="header">
         <h-button @click="selectAll(true)">全选</h-button>
         <h-button @click="selectAll(false)">全不选</h-button>
@@ -211,6 +213,9 @@ export default {
     }
   },
   methods: {
+    focus() {
+      console.log('focus')
+    },
     handleBlur() {
       console.log('blur')
     },
@@ -267,7 +272,6 @@ export default {
     },
     copying(obj){
       let val=obj.newval;
-      debugger
       this.valueRemote=val.split(",");
        console.log(obj)
     },
