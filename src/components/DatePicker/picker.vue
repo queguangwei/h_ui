@@ -475,8 +475,6 @@ export default {
     focus() {
       if (this.disabled) return false
 //       this.$nextTick(()=>{
-      // 为了支持o45模式下form的firstNodeFocused()窗体不弹出
-      if(this.value !== '' && window.isO45) return false
       setTimeout(() => {
         if (!this.iconVisible) {
           this.visible = true
@@ -484,6 +482,7 @@ export default {
         }
         this.isFocus = true
         if (this.$refs.input) this.$refs.input.focus()
+        if(window.isO45 && this.value !== '') this.select()
       }, 0)
 //        this.visible =status =='notShow'?false:true;
 //      })
