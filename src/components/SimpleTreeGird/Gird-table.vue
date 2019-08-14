@@ -24,8 +24,8 @@
           :data="rebuildData"
           :prefix-cls="prefixCls"
           :columns="cloneColumns"
-          :columnsWidth="columnsWidth" 
-          :checkStrictly="checkStrictly" 
+          :columnsWidth="columnsWidth"
+          :checkStrictly="checkStrictly"
           :checkedObj="checkedObj"
           :indexAndId="indexAndId"
           :selectRoot="selectRoot"
@@ -42,6 +42,7 @@
       <div :class="[prefixCls + '-fixed']" :style="fixedTableStyle" v-if="isLeftFixed" ref="leftF">
         <div :class="fixedHeaderClasses" v-if="showHeader">
           <gird-head
+            fixed="left"
             :prefix-cls="prefixCls"
             :styleObject="tableStyle"
             :columns="leftFixedColumns"
@@ -54,13 +55,14 @@
         <div :class="[prefixCls + '-fixed-body']" :style="fixedBodyStyle" ref="fixedBody" v-show="!(!!localeNoDataText && (!data || data.length === 0))" @mousewheel="handleFixedMousewheel" @DOMMouseScroll="handleFixedMousewheel">
           <Tree-table
             ref="tbody"
-            :styleObject ="tableBodyStyle"
+            fixed="left"
+            :styleObject ="tableStyle"
             :indent ="Number(0)"
             :data="rebuildData"
             :prefix-cls="prefixCls"
             :columns="cloneColumns"
-            :columnsWidth="columnsWidth" 
-            :checkStrictly="checkStrictly" 
+            :columnsWidth="columnsWidth"
+            :checkStrictly="checkStrictly"
             :checkedObj="checkedObj"
             :indexAndId="indexAndId"
             :selectRoot="selectRoot"
@@ -216,6 +218,12 @@ export default {
       type:Boolean,
       default:false,
     },
+    rowClassName: {
+      type: Function,
+      default () {
+        return '';
+      }
+    },
   },
   data () {
     return {
@@ -352,7 +360,8 @@ export default {
       let style = {};
       if (this.bodyHeight !== 0) {
         // add a height to resolve scroll bug when browser has a scrollBar in fixed type and height prop
-        const height = (this.isLeftFixed || this.isRightFixed) ? this.bodyHeight + this.scrollBarWidth : this.bodyHeight;
+        // const height = (this.isLeftFixed || this.isRightFixed) ? this.bodyHeight + this.scrollBarWidth : this.bodyHeight;
+        const height = this.bodyHeight;
         style.height = `${height}px`;
       }
       return style;
@@ -360,13 +369,17 @@ export default {
     textStyle(){
       let style = {};
       style.width = this.initWidth!=0?this.initWidth+'px':'100%';
-      const height = (this.isLeftFixed || this.isRightFixed) ? this.bodyHeight + this.scrollBarWidth : this.bodyHeight;
+      // const height = (this.isLeftFixed || this.isRightFixed) ? this.bodyHeight + this.scrollBarWidth : this.bodyHeight;
+      const height = this.bodyHeight;
       style.height = this.height?Number(height-this.scrollBarWidth)+'px':null;
       style.lineHeight = this.height?Number(height-this.scrollBarWidth)+'px':null;
       return style;
     },
   },
   methods: {
+    rowClsName (id,row) {
+      return this.rowClassName(row,id);
+    },
     handleMouseIn (id) {
       if (this.disabledHover) return;
       let inx = this.indexAndId[id]
@@ -472,17 +485,17 @@ export default {
               const column = this.cloneColumns[i];
               let width = parseInt(getStyle($td[i], 'width'));
               if (i === autoWidthIndex) {
-                  width = parseInt(getStyle($td[i], 'width')) - 1;
+                width = parseInt(getStyle($td[i], 'width')) - 1;
               }
               if (column.width) {
-                  width = column.width||''
+                width = column.width||''
               } else {
-                  if (width < 100) width = 100
+                if (width < 100) width = 100
               }
               this.cloneColumns[i]._width = width||'';
-
+              this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b);
               columnsWidth[column._index] = {
-                  width: width
+                width: width
               };
             }
             this.columnsWidth = columnsWidth;
@@ -490,7 +503,7 @@ export default {
             if (!this.$refs.thead) return;
             const $th = this.$refs.thead.$el.querySelectorAll('thead tr')[0].querySelectorAll('th');
             for (let i = 0; i < $th.length; i++) {    // can not use forEach in Firefox
-              const column = this.cloneColumns[i]; 
+              const column = this.cloneColumns[i];
               let width = parseInt(getStyle($th[i], 'width'));
               if (i === autoWidthIndex) {
                 width = parseInt(getStyle($th[i], 'width')) - 1;
@@ -574,7 +587,7 @@ export default {
       }else{
         if(this.selection[row.id]){
           delete this.selection[row.id];
-        }        
+        }
       }
     },
     clearSelected () {
@@ -591,7 +604,7 @@ export default {
       let selectIndex=[];
       for(let i in this.checkedObj){
         if(this.checkedObj[i].checked){
-          arr.push(this.checkedObj[i].row); 
+          arr.push(this.checkedObj[i].row);
           selectIndex.push(this.checkedObj[i].id);
         }
       }
@@ -619,7 +632,7 @@ export default {
       if (this.showHeader) this.$refs.header.scrollLeft = event.target.scrollLeft;
       if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = event.target.scrollTop;
     },
-    // 将数据转换成objData,同时rebuild 
+    // 将数据转换成objData,同时rebuild
     makeColumns () {
       var that = this;
       let columns = deepCopy(this.columns);
@@ -659,7 +672,7 @@ export default {
     },
     initResize(){
       this.$nextTick(() => {
-        this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0; 
+        this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0;
       });
     },
     deepTraversal(data,id,status,str){
@@ -668,7 +681,7 @@ export default {
           this.$set(data[i],str,status)
           this.setStatus(data[i],i)
           break;
-        } 
+        }
         if(data[i].children&&data[i].children.length>0){
           this.deepTraversal(data[i].children,id,status,str)
         }
@@ -731,7 +744,7 @@ export default {
     },
     setStatus(col,status){
       if(!this.indexAndId[col.id]){
-        this.indexAndId[col.id]= this.checkedObj.length;          
+        this.indexAndId[col.id]= this.checkedObj.length;
         this.checkedObj.push({
           id:col.id,
           checked:status,
@@ -752,7 +765,7 @@ export default {
           if(data[i].id == id){
             result = data[i]
             break
-          } 
+          }
           if(data[i].children&&data[i].children.length>0){
             findRow(data[i].children,id,status)
           }
@@ -801,8 +814,17 @@ export default {
   },
   watch: {
     data: {
-      handler () {
+      handler (val) {
+        this.selection = {}
         this.handleResize();
+        if(this.rebuildData.length === 0 || val.length === 0) {
+          if(this.$refs.body) {
+            this.$refs.body.scrollLeft = 0
+          }
+          if(this.$refs.header) {
+            this.$refs.header.scrollLeft = 0
+          }
+        }
         this.rebuildData = this.data
       },
       deep: true

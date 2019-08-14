@@ -5,11 +5,11 @@
     <h2>基本用法</h2>
     <h1>algin设置左中右</h1>
       {{value11}}
-      <h-typefield v-model="value11" hoverTips immeDivided focusAllSelect integerNum="17" suffixNum="2" type="money" bigTips placeholder="金额"  @on-blur="s" style="width:300px" algin="left" ref="test"></h-typefield>
+      <h-typefield v-model="value11" hoverTips immeDivided focusAllSelect integerNum="17" suffixNum="2" type="money" bigTips placeholder="金额"  @on-blur="s" style="width:300px" algin="left"></h-typefield>
+      {{value12}}
+      <h-typefield v-model="value12" bigTips focusAllSelect integerNum="13" suffixNum="2" type="money" :max="10" :min="0" :step="0.1" algin="center" style="width:300px" ref="test"></h-typefield>
       <Button @on-click="testClick(true)">获取焦点</Button>
       <Button @on-click="testClick(false)">失去焦点</Button>
-      {{value12}}
-      <h-typefield v-model="value12" bigTips focusAllSelect integerNum="13" suffixNum="2" type="money"  @on-blur="s" style="width:300px" algin="center"></h-typefield>
       {{value13}}
       <h-typefield v-model="value13" focusAllSelect integerNum="7" suffixNum="1" type="money" placeholder="金额" bigTips @on-blur="s" style="width:300px" algin="right"></h-typefield>
     <h1>divided 和 isround设置四舍五入 整数位7位，小数位3为</h1>
@@ -89,6 +89,11 @@ export default {
       value13: '',
       cardNo:'',
     }
+  },
+  mounted(){
+    setTimeout(()=>{
+      this.value11=null
+    },2000)
   },
   methods: {
     testClick(val){

@@ -1,6 +1,7 @@
 <template>
   <div>
     <h-button @on-click="loadData">加载数据</h-button>
+    <h-button @on-click="removeData">清空数据</h-button>
     <h-button @on-click="changeData1('1103')">展开第一层</h-button>
     <h-button @on-click="changeData('1103')">展开关闭某行</h-button>
     <h-button @on-click="clearData">清除已选项</h-button>
@@ -10,13 +11,13 @@
     <h-button @on-click="checkedData(false)">多选不选择某行</h-button>
     <!-- isCheckbox checkStrictly -->
     <!-- selectRoot -->
-    <h-simple-tree-gird ref="treeGird" headSelection canDrag canMove :columns="columns1" no-data-text="123" isCheckbox :data="treedata" :height="400" @on-row-dblclick="selectChange" @on-expand="expand" @on-drag="expand" >
+    <h-simple-tree-gird ref="treeGird" :rowClassName="rowClassName" headSelection canDrag canMove :columns="columns1" no-data-text="123" isCheckbox :data="treedata" :height="400" @on-row-dblclick="selectChange" @on-expand="expand" @on-drag="expand" >
       <span slot="loading">1244</span>
     </h-simple-tree-gird>
   </div>
 </template>
 <script>
-let tData =require('../assets/simpleTreeGird.json'); 
+let tData =require('../assets/simpleTreeGird.json');
 let bigData = [];
 for(var i=0;i<5;i++){
   let obj =  {
@@ -105,37 +106,53 @@ let bigData1 = [{
 }]
 
 export default {
-  data () {
+  data() {
     return {
       baseData: [],
       treedata: [],
       columns1: [
-         {
-                /* type: 'selectTree', */
-                title: 'name',
-                key: 'name',
-                // fixed: 'left',
-                // width: 100,
-                align: 'left',
-            },
-            {
-                /* type: 'text', */
-                title: 'age',
-                // width: 200,
-                key: 'age',
-                fixed: 'left',
-                align: 'left',
-                // hiddenCol: true,
-            },
-            {
-                /* type: 'text', */
-                title: 'address',
-                // width: 300,
-                // fixed: 'left',
-                key: 'address',
-                align: 'center',
-                hiddenCol: false,
-            }
+        {
+          title:'index',
+          key: 'index',
+        },
+        {
+          title: 'name',
+          key: 'name',
+          width: 200,
+        },
+        {
+          title: 'age',
+          width: 100,
+          key: 'age',
+        },
+        {
+          title: 'address',
+          width: 300,
+          key: 'address',
+          hiddenCol: false,
+        },
+        {
+          title: 'money',
+          width: 200,
+          key: 'money',
+        },
+        {
+          title: 'cardId',
+          width: 100,
+          key: 'cardId',
+          hiddenCol: false,
+        },
+        {
+          title: 'city',
+          key: 'city',
+          width: 300
+        },
+        {
+          title: 'dating',
+          width: 200,
+          key: 'dating',
+          hiddenCol: false,
+        }
       ],
     }
   },
@@ -163,6 +180,10 @@ export default {
         }
       return parentKeyNodes[attributes.rootParentId];
     },
+    removeData() {
+      this.treedata = []
+
+    },
     loadData(){
       let old = new Date().getTime()
       this.treedata=this.baseData;
@@ -170,7 +191,7 @@ export default {
       // this.treedata = jsonData.slice(0, 100);
       this.$nextTick(() => {
         let newDate = new Date().getTime() - old
-        console.log(newDate)
+//        console.log(newDate)
       })
       // setTimeout(() => {
       //   // this.$refs.treeGird.selectRow(51, true)
@@ -201,8 +222,14 @@ export default {
       this.$refs.treeGird.checkedRow(0,status);
       console.log(this.$refs.treeGird.getSelection())
     },
+    rowClassName(row,id){
+      if (id === 1||id===50) {
+        return 'demo-table-info-row';
+      }
+      return '';
+    }
   },
-  mounted () {
+  mounted() {
     let attributes = {
       keyField: 'id',
       parentKeyField: '_parentId',
@@ -215,3 +242,10 @@ export default {
   }
 }
 </script>
+<style>
+.demo-table-info-row td{
+  background-color: #2db7f5 !important;
+  color: #fff;
+}
+</style>
+
