@@ -240,9 +240,10 @@ export default {
   },
   watch: {
     value(val) {
-      if (val != null || val != undefined) {
-        this.initValue(String(val));
+      if (val == null || val == undefined) {
+        val=''
       }
+      this.initValue(String(val));
     },
     inputValue(val) {
       this.viewValue = changeTipsVal(

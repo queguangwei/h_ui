@@ -218,6 +218,12 @@ export default {
       type:Boolean,
       default:false,
     },
+    rowClassName: {
+      type: Function,
+      default () {
+        return '';
+      }
+    },
   },
   data () {
     return {
@@ -371,6 +377,9 @@ export default {
     },
   },
   methods: {
+    rowClsName (id,row) {
+      return this.rowClassName(row,id);
+    },
     handleMouseIn (id) {
       if (this.disabledHover) return;
       let inx = this.indexAndId[id]

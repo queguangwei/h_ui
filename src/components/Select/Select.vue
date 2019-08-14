@@ -1404,6 +1404,9 @@
       value:{
         immediate: true,
         handler(val) {
+          if(val==null){//value如果设置为null 变为''
+            val = ''
+          }
           if (this.multiple && this.isString) {
             this.model = this.strtoArr(val);
           }else{
