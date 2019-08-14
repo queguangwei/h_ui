@@ -1005,6 +1005,7 @@ function getCurNode(obj) {
   return obj
 }
 function getElement(ele, field, status) {
+  console.log(ele, field)
   var nodes = ele.querySelectorAll('.curItemClass')
   var index = 0
   var curNode = getCurNode(field)
