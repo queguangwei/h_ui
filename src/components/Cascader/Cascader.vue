@@ -57,8 +57,9 @@
                 @click.stop="handleSelectItem(index)" v-html="item.display"></li>
             </ul>
           </div>
-          <ul v-show="filterable && query !== '' && !querySelections.length" :class="[prefixCls + '-not-found-tip']"
-          ><li>{{ localeNotFoundText }}</li></ul>
+          <ul v-show="filterable && query !== '' && !querySelections.length" :class="[prefixCls + '-not-found-tip']">
+            <li>{{ localeNotFoundText }}</li>
+          </ul>
         </div>
       </Drop>
     </transition>

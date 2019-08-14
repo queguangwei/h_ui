@@ -40,6 +40,7 @@
         :class="[prefixCls + '-input']"
         :placeholder="showPlaceholder?localePlaceholder:''"
         autocomplete="off"
+        @focus="handleFocus"
         @blur="handleBlur"
         @keydown.delete="handleInputDelete"
         :tabindex="tabindex"
@@ -334,7 +335,7 @@ export default {
     },
     tabindex: {
       type: [String, Number],
-      default: "-1",
+      default: 0,
       validator(value) {
         let num = parseInt(value);
         return num <= 32767 && num >= -1;
@@ -1123,6 +1124,9 @@ export default {
       if (topOverflowDistance < 0) {
           this.$refs.dropdown.$el.scrollTop += topOverflowDistance;
       }
+    },
+    handleFocus() {
+      this.$emit('on-focus')
     },
     handleBlur () {
       if (this.multiple && this.filterable) this.$refs.reference.scrollTop = 0
