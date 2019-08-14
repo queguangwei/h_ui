@@ -15,6 +15,8 @@
           :disabled="disabled"
           :value="displayInputRender"
           @on-change="handleInput"
+          @on-focus="focusEvent"
+          @on-blur="blurEvent"
           :size="size"
           :placeholder="inputPlaceholder"></h-input>
         <div
@@ -372,6 +374,12 @@
       },
       handleFocus () {
         this.$refs.input.focus();
+      },
+      focusEvent() {
+        this.$emit('on-focus')
+      },
+      blurEvent() {
+        this.$emit('on-blur')
       },
       // 排除 loading 后的 data，避免重复触发 updateSelect
       getValidData (data) {

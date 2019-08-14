@@ -9,6 +9,7 @@
                      filterable
                      v-model="value2"
                      @on-change="change"
+                     @on-focus="focus"
                       @on-blur="handleBlur">
       <!-- <div slot="header">
         <h-button @click="selectAll(true)">全选</h-button>
@@ -211,6 +212,9 @@ export default {
     }
   },
   methods: {
+    focus() {
+      console.log('focus')
+    },
     handleBlur() {
       console.log('blur')
     },

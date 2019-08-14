@@ -1243,6 +1243,7 @@ export default {
     handleFocus(e) {
       e.target.selectionStart = 0
       e.target.selectionEnd = this.query.length
+      this.$emit('on-focus')
     },
     handleBlur() {
       this.$emit('on-blur')
