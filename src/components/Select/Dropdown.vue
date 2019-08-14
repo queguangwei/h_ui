@@ -60,7 +60,7 @@ export default {
 		},
 		setWidthAdaption(){
 			let content = this.$refs.selectdrop
-			if(this.$parent.$options.name ==='SimpleSelect'){
+			if(this.$parent.$options.name ==='SimpleSelect'||this.$parent.$options.name ==='SingleSelect'||this.$parent.$options.name ==='SimpleMultiSelect'){
 				content = content.querySelectorAll('.h-selectTable-dropdown-list')[0].children[0]
 				// if(this.$parent.showBottom || this.$parent.hideMult){
 				// 	content = content.children[1].children[0]
@@ -111,7 +111,7 @@ export default {
 					}
 				});
 			}
-			if (this.$parent.$options.name === 'Select'|| this.$parent.$options.name === 'SelectTree' || this.$parent.$options.name === 'SelectTable'|| this.$parent.$options.name ==='SimpleSelect') {
+			if (this.$parent.$options.name === 'Select'|| this.$parent.$options.name === 'SelectTree' || this.$parent.$options.name === 'SelectTable'|| this.$parent.$options.name ==='SimpleSelect'|| this.$parent.$options.name ==='SingleSelect'|| this.$parent.$options.name ==='SimpleMultiSelect') {
 				if (!this.dropWidth) {
 					let width = parseInt(getStyle(this.$parent.$el, 'width'));
 					this.width = width

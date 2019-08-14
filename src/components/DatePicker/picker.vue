@@ -16,7 +16,6 @@
                  :placeholder="localePlaceholder"
                  :value="visualValue"
                  :name="name"
-                 :tabindex="tabindex"
                  @click.native="clickHandler"
                  @on-keyup.prevent="keyUpHandler"
                  @on-input-change="handleInputChange"
@@ -43,6 +42,7 @@
                      :showTime="type === 'datetime' || type === 'datetimerange'"
                      :confirm="isConfirm"
                      :showLong="showLong"
+                     :showToday="showToday"
                      :longValue="longValue"
                      :selectionMode="selectionMode"
                      :steps="steps"
@@ -55,6 +55,7 @@
                      :showTwoPanel="this.showTwoPanel"
                      :range-num="controlRange?selectRange:0"
                      :pickMode="pickMode"
+                     :tabindex="tabindex"
                      v-bind="ownPickerProps"
                      @on-pick="onPick"
                      @on-pick-clear="handleClear"
@@ -62,7 +63,8 @@
                      @on-pick-click="disableClickOutSide = true"
                      @on-selection-mode-change="onSelectionModeChange"
                      @on-select-range="handleSelectRange"
-                     @on-pick-long="handleLongDate"></component>
+                     @on-pick-long="handleLongDate"
+                     @on-pick-today="handlePickToday"></component>
           <slot name="footer"></slot>
         </div>
       </Drop>
@@ -228,11 +230,15 @@ export default {
     },
     tabindex: {
       type: [String, Number],
-      default: "-1",
+      default: "0",
       validator(value) {
         let num = parseInt(value);
         return num <= 32767 && num >= -1;
       }
+    },
+    showToday:{
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -280,8 +286,16 @@ export default {
         ? publicVModelValue.map(formatDate)
         : formatDate(publicVModelValue)
     },
-    opened() {
-      return this.open === null ? this.visible : this.open
+//    opened() {
+//      return this.open === null ? this.visible : this.open
+//    },
+    opened: {
+      get:function() {
+        return this.open === null ? this.visible : this.open
+      },
+      set:function(val) {
+        this.visible = val
+      }
     },
     iconType() {
       let icon = 'activity'
@@ -294,7 +308,6 @@ export default {
       return bottomPlaced ? 'slide-up' : 'slide-down'
     },
     visualValue() {
-      // console.log('internalValue', this.internalValue)
       this.viewValue = this.formatDate(this.internalValue)
       return this.formatDate(this.internalValue)
     },
@@ -304,7 +317,8 @@ export default {
         this.type === 'datetime' ||
         this.type === 'datetimerange' ||
         this.multiple ||
-        this.showLong
+        this.showLong ||
+        this.showToday
       )
     }
   },
@@ -313,7 +327,6 @@ export default {
       this.cursorPos = this.$refs.input.$el.querySelector('input').selectionStart
     },
     keyUpHandler(e) {
-      // console.log('cursorPos', this.cursorPos)
       let $input = this.$refs.input.$el.querySelector('input')
 
       switch(e.keyCode) {
@@ -400,7 +413,6 @@ export default {
       // let tmpAfter = sections.slice(3, 5)
       // this.visualValue = tmpPre.join(':') + ' - ' + tmpAfter.join(':')
 
-      // console.log('sectionIndex', sectionIndex)
       if (sectionIndex < 3) {
         let tmp;
         if (this.internalValue[0] !== null) {
@@ -453,6 +465,7 @@ export default {
       this.isFocus = true
       if (this.iconVisible) return
       this.handleVisible()
+      this.$emit('on-focus')
     },
     handleVisible() {
       if (this.readonly || this.disabled) return
@@ -461,7 +474,7 @@ export default {
     },
     focus() {
       if (this.disabled) return false
-      // this.$nextTick(()=>{
+//       this.$nextTick(()=>{
       setTimeout(() => {
         if (!this.iconVisible) {
           this.visible = true
@@ -469,9 +482,10 @@ export default {
         }
         this.isFocus = true
         if (this.$refs.input) this.$refs.input.focus()
+        if(window.isO45 && this.value !== '') this.select()
       }, 0)
-      //   this.visible =status =='notShow'?false:true;
-      // })
+//        this.visible =status =='notShow'?false:true;
+//      })
     },
     blur() {
       if (this.isFocus) {
@@ -482,12 +496,16 @@ export default {
       this.isFocus = false
       if (this.$refs.input) this.$refs.input.blur()
     },
+    select() {
+      this.$refs.input.select()
+    },
     handleBlur() {
       this.visible = false
       this.onSelectionModeChange(this.type)
       this.internalValue = this.internalValue.slice() // trigger panel watchers to reset views
       this.reset()
       this.$refs.pickerPanel.onToggleVisibility(false)
+      this.$emit('on-blur')
     },
     reset() {
       this.$refs.pickerPanel.reset && this.$refs.pickerPanel.reset()
@@ -742,6 +760,18 @@ export default {
         this.internalValue = longtime
       }
       this.emitChange()
+    },
+    handlePickToday(){
+      let disabledDateFn =
+        this.options &&
+        typeof this.options.disabledDate === 'function' &&
+        this.options.disabledDate
+      let td =new Date();
+      let isDisabled = disabledDateFn && disabledDateFn(td)
+      if(!isDisabled){
+      this.$set(this.internalValue, 0,new Date())
+      this.emitChange()
+      }
     }
   },
   watch: {

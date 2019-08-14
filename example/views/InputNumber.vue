@@ -9,11 +9,12 @@
       <span slot="append">px</span>
     </h-input-number>
     <h-input-number :max="20"
-                    :min="1"
-                    :step="1.2"
+                    :min="-1"
+                    :step="1"
                     v-model="value2"
                     focusAllSelect
                     @on-focus="focusEvent"
+                    @on-blur="blurEvent"
                     ref="input"></h-input-number>
     <Button @click="testClick()">获取焦点</Button>
     <br>
@@ -71,6 +72,12 @@ export default {
   methods: {
     testClick() {
       this.$refs.input.focus();
+    },
+    focusEvent(e) {
+      console.log('focus', e)
+    },
+    blurEvent(e) {
+      console.log('blur', e)
     }
   },
   watch: {

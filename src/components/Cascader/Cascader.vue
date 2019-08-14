@@ -15,6 +15,8 @@
           :disabled="disabled"
           :value="displayInputRender"
           @on-change="handleInput"
+          @on-focus="focusEvent"
+          @on-blur="blurEvent"
           :size="size"
           :placeholder="inputPlaceholder"></h-input>
         <div
@@ -42,7 +44,7 @@
             :data="data"
             :disabled="disabled"
             :change-on-select="changeOnSelect"
-            :trigger="trigger" 
+            :trigger="trigger"
             :multiple="multiple"></Caspanel>
           <div :class="[prefixCls + '-dropdown']" v-show="filterable && query !== '' && querySelections.length">
             <ul :class="[selectPrefixCls + '-dropdown-list']">
@@ -106,7 +108,7 @@
       readonly: {
         type: Boolean,
         default: false
-      },  
+      },
       placeholder: {
         type: String
       },
@@ -373,6 +375,12 @@
       handleFocus () {
         this.$refs.input.focus();
       },
+      focusEvent() {
+        this.$emit('on-focus')
+      },
+      blurEvent() {
+        this.$emit('on-blur')
+      },
       // 排除 loading 后的 data，避免重复触发 updateSelect
       getValidData (data) {
         function deleteData (item) {
@@ -404,6 +412,9 @@
         this.isFocus = false;
         this.visible=false;
         this.$refs.input.blur();
+      },
+      select() {
+        this.$refs.input.select()
       },
       handleKeydown(e){
         const keyCode = e.keyCode;

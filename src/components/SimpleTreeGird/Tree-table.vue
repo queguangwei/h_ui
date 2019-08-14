@@ -9,7 +9,7 @@
           @mouseenter.stop="handleMouseIn(row.id)"
           @mouseleave.stop="handleMouseOut(row.id)"
           class="not-child"
-          :class="rowClasses(row.id)"
+          :class="rowClasses(row.id,row)"
           @click="clickCurrentRow(row,row.id,$event)"
           @dblclick="dblclickCurrentRow(row,row.id,$event)">
           <td v-for="(column,inx) in columns" :class="alignCls(column, row)" :key="column.index">
@@ -35,8 +35,9 @@
           :style="expandStl(row.id,index,row)">
           <td :colspan="columns.length" style="border:0">   
             <Tree-table
-              :styleObject = "styleObject"
-              :indent = "indent+1"
+              :fixed="fixed"
+              :styleObject ="styleObject"
+              :indent ="indent+1"
               :data="row.children"
               :prefix-cls="prefixCls"
               :columns ="columns"
@@ -93,6 +94,7 @@
       scrollBarWidth:[Number,String],
       rowSelect:Boolean,
       headSelection: Boolean,
+      fixed:String,
     },
     computed: {
       objData () {
@@ -105,11 +107,20 @@
       }
     },
     methods: {
-      rowClasses(id){
+      rowClasses(id,row){
         let index = this.indexAndId[id];
-        return{
-          [`${this.prefixCls}-row-highlight`]: this.checkedObj[index]&&this.checkedObj[index]._isHighlight,
-          [`${this.prefixCls}-row-hover`]: this.checkedObj[index]&&this.checkedObj[index]._isHover,
+        return[
+          this.rowClsName(id,row),
+          {
+            [`${this.prefixCls}-row-highlight`]: this.checkedObj[index]&&this.checkedObj[index]._isHighlight,
+            [`${this.prefixCls}-row-hover`]: this.checkedObj[index]&&this.checkedObj[index]._isHover,
+          }
+        ]
+      },
+      rowClsName (id,row) {
+        let index = this.indexAndId[id];
+        if(this._parent){
+          return this._parent.rowClsName(id,row);
         }
       },
       isExpanded(id,inx,row){
@@ -138,9 +149,6 @@
               [`${this.prefixCls}-icon-click-expanded`]:this.checkedObj[inx]&&this.checkedObj[inx]._isExpand,
             }
           ]
-      },
-      rowClsName (_index) {
-        // return this.$parent.$parent.rowClassName(this.objData[_index], _index);
       },
       handleclick () {},
       clickCurrentRow (row,id,e) {
