@@ -626,7 +626,7 @@ export default {
       return 'h-select-checkall'
     },
     selectTabindex() {
-      return this.disabled ? -1 : ((this.tabindex + "") !== "-1" ? this.tabindex : 0);
+      return this.disabled ? -1 : ((this.tabindex + "") !== "-1" ? (this.filterable ? -1 : this.tabindex) : 0);
     },
     notFoundShow() {
       let options = this.options
