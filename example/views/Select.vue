@@ -260,7 +260,9 @@
         <h-select v-model="model10"
                   placement="top"
                   width="200"
-                  filterable ref="test">
+                  filterable
+                  ref="test"
+        @on-focus="fo" @on-blur="bl">
           <h-option :value="3">{{'<你>'}}</h-option>
           <h-option v-for="(item, index) in uList"
                     :value="item.id"

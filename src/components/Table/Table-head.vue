@@ -148,23 +148,11 @@ export default {
   },
   mounted(){
     this.getLeftWidth();
-    on(document, 'keyup', this.handleKeyup);
     //  this.changeMultiData(this.multiLevel);
     this.multiData = this.multiLevel;
     on(window, 'resize', this.getLeftWidth);
   },
   methods: {
-    handleKeyup(e) {
-      if (this.isCurrent && !e.shiftKey) {
-        const keyCode = e.keyCode
-        // ctrl
-        if (keyCode === 17) {
-          e.preventDefault()
-          e.stopPropagation()
-          this.cancelSort()
-        }
-      }
-    },
     cellClasses (column) {
       return [
         `${this.prefixCls}-cell`,
@@ -185,7 +173,7 @@ export default {
       return [
         `${this.prefixCls}-filter-select-item`,
         {
-            [`${this.prefixCls}-filter-select-item-selected`]: !column._filterChecked.length
+          [`${this.prefixCls}-filter-select-item-selected`]: !column._filterChecked.length
         }
       ];
     },
@@ -213,9 +201,6 @@ export default {
           this.handleSort(index, 'normal');
         }
       }
-    },
-    cancelSort() {
-      this.handleSort(this.sortIndex, 'normal');
     },
     handleFilter (index) {
       let _index = this.columns[index]._index;
@@ -337,7 +322,7 @@ export default {
       }
       if(this.moveingColumn){
         this.moveing = true;
-         addClass(document.body, 'useSelect');
+        addClass(document.body, 'useSelect');
         this.$parent.moveProxyVisible = true;
         let dom = this.findObj(event,'TH').cloneNode(true);
         dom.width = column._width;

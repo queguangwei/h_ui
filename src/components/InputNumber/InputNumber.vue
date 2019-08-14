@@ -301,6 +301,7 @@ export default {
       let val = Number(event.target.value.trim());
       this.focused = false;
       this.setValue(val);
+      this.$emit('on-blur', event)
     },
     keyDown(e) {
       if (e.keyCode === 38) {
