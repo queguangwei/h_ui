@@ -1258,6 +1258,7 @@ export default {
       if(this.isSingleSelect){
         this.showMutiLabel = false
       }
+      this.$emit('on-focus')
     },
     handleBlur() {
       this.$emit('on-blur')
@@ -1675,7 +1676,7 @@ export default {
         this.singleMutiLabel = this.query+' '+curlabel
       }
       this.showMutiLabel = true
-      
+
     },
   },
   mounted() {
