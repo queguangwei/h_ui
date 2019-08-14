@@ -90,6 +90,11 @@ export default {
       cardNo:'',
     }
   },
+  mounted(){
+    setTimeout(()=>{
+      this.value11=null
+    },2000)
+  },
   methods: {
     testClick(val){
       if (val) {

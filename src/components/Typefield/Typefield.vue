@@ -12,7 +12,6 @@
       :maxlength="maxlength"
       :tabindex="tabindex"
       @blur="blurValue"
-      @keydown.stop="keyDown"
       @input="valChange"
       @change="valChange"
       @focus="focusValue($event)"
@@ -50,6 +49,7 @@ import Locale from "../../mixins/locale";
 import Drop from "../Select/Dropdown.vue";
 import TransferDom from "../../directives/transfer-dom";
 const prefixCls = "h-typefield";
+import { on, off } from '../../util/dom';
 
 function addNum(num1, num2) {
   let sq1, sq2, m;
@@ -240,9 +240,10 @@ export default {
   },
   watch: {
     value(val) {
-      if (val != null || val != undefined) {
-        this.initValue(String(val));
+      if (val == null || val == undefined) {
+        val=''
       }
+      this.initValue(String(val));
     },
     inputValue(val) {
       this.viewValue = changeTipsVal(
@@ -267,6 +268,7 @@ export default {
     if (this.value != null || this.value != undefined) {
       this.initValue(String(this.value));
     }
+    on(document,'keydown', this.keyDown);
   },
   methods: {
     keyDown(e) {
@@ -703,6 +705,7 @@ export default {
     if (this.transfer) {
       this.$refs.drop.destroy();
     }
+    off(document,'keydown',this.keyDown)
   }
 };
 </script>
