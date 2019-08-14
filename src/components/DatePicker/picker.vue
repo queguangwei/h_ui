@@ -308,7 +308,6 @@ export default {
       return bottomPlaced ? 'slide-up' : 'slide-down'
     },
     visualValue() {
-      // console.log('internalValue', this.internalValue)
       this.viewValue = this.formatDate(this.internalValue)
       return this.formatDate(this.internalValue)
     },
@@ -328,7 +327,6 @@ export default {
       this.cursorPos = this.$refs.input.$el.querySelector('input').selectionStart
     },
     keyUpHandler(e) {
-      // console.log('cursorPos', this.cursorPos)
       let $input = this.$refs.input.$el.querySelector('input')
 
       switch(e.keyCode) {
@@ -415,7 +413,6 @@ export default {
       // let tmpAfter = sections.slice(3, 5)
       // this.visualValue = tmpPre.join(':') + ' - ' + tmpAfter.join(':')
 
-      // console.log('sectionIndex', sectionIndex)
       if (sectionIndex < 3) {
         let tmp;
         if (this.internalValue[0] !== null) {
@@ -468,6 +465,7 @@ export default {
       this.isFocus = true
       if (this.iconVisible) return
       this.handleVisible()
+      this.$emit('on-focus')
     },
     handleVisible() {
       if (this.readonly || this.disabled) return
@@ -477,8 +475,6 @@ export default {
     focus() {
       if (this.disabled) return false
 //       this.$nextTick(()=>{
-      // 为了支持o45模式下form的firstNodeFocused()窗体不弹出
-      if(this.value !== '' && window.isO45) return false
       setTimeout(() => {
         if (!this.iconVisible) {
           this.visible = true
@@ -486,6 +482,7 @@ export default {
         }
         this.isFocus = true
         if (this.$refs.input) this.$refs.input.focus()
+        if(window.isO45 && this.value !== '') this.select()
       }, 0)
 //        this.visible =status =='notShow'?false:true;
 //      })
@@ -508,6 +505,7 @@ export default {
       this.internalValue = this.internalValue.slice() // trigger panel watchers to reset views
       this.reset()
       this.$refs.pickerPanel.onToggleVisibility(false)
+      this.$emit('on-blur')
     },
     reset() {
       this.$refs.pickerPanel.reset && this.$refs.pickerPanel.reset()
