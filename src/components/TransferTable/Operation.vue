@@ -1,5 +1,5 @@
 <template>
-  <div :class="prefixCls + '-operation'">
+  <div :class="prefixCls + '-operation'" v-show="!isHide">
     <h-button type="primary" size="small" :disabled="!rightActive" @click.native="moveToLeft">
       <Icon name="return"></Icon> {{ operations[0] }}
     </h-button>
@@ -26,7 +26,8 @@
       prefixCls: String,
       operations: Array,
       leftActive: Boolean,
-      rightActive: Boolean
+      rightActive: Boolean,
+      isHide:Boolean,
     },
     methods: {
       moveToLeft () {

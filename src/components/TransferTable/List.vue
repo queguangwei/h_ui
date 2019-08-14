@@ -81,6 +81,7 @@
       filterPlaceholder: String,
       filterMethod: Function,
       noEdit:Boolean,
+      isHide:Boolean,
     },
     data () {
         return {
@@ -99,9 +100,12 @@
         listStyle(){
           let style={};
           if (this.width) {
-              style.width = this.width+'px'
-              return style;
+              style.width = this.width+'px'              
           }
+          if(this.isHide){
+              style.display ='none'
+          }
+          return style;
         },
         classes () {
             return [

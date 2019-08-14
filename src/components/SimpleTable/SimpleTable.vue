@@ -2237,11 +2237,11 @@ export default {
           this.highlightCurrentRow(_index)
         }
         // ctrl
-        if (e.keyCode === 17) {
-          e.preventDefault()
-          e.stopPropagation()
-          this.cancelSort()
-        }
+//        if (e.keyCode === 17) {
+//          e.preventDefault()
+//          e.stopPropagation()
+//          this.cancelSort()
+//        }
       }
     },
     cancelSort() {
