@@ -245,6 +245,7 @@ export default {
         isNaN(val) && (val = 0);
       }
       this.$nextTick(() => {
+        this.calcViewValue();
         this.currentValue = val;
         this.$emit("input", val);
         this.$emit("on-change", val);
@@ -279,6 +280,7 @@ export default {
         val = this.min;
       }
       this.setValue(val);
+      this.$emit("on-blur", event);
     },
     keyDown(e) {
       if (e.keyCode === 38) {
@@ -299,25 +301,24 @@ export default {
         return;
       }
       if (event.type == "input" && val.match(/^\-{1}\.?$/)) {
-        // 只检测负号 小数点由后面Number(val)！==NaN判断
         this.oldValue = val.toString();
         return;
       }
       if (event.type == "change" && Number(val) === this.currentValue) return; // already fired change for input event
-      if (this.precision && val.match(this.precisionRegExp)) {
+
+      if (event.type == "input" && this.precision === 0 && val.match(/\./)) {
+        event.target.value = this.oldValue;
+        return;
+      }
+      if (this.precision !== undefined && val.match(this.precisionRegExp)) {
         event.target.value = this.oldValue;
         return;
       }
       const { min, max } = this;
       if (!isNaN(Number(val))) {
-        if (val > max) {
-          val = max;
-        }
+        val = val > max ? max : val;
         // 输入值小于最小值时不做处理，避免min大于两位时不能输入单个数字
-        // else if (val < min) {
-        //   val = min;
-        //   event.target.value = val;
-        // }
+        //  val = val < min ? min : val;
         event.target.value = val;
         this.viewValue = val;
         this.oldValue = val.toString();
