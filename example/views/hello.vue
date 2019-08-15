@@ -1,15 +1,23 @@
 <template>
   <div>
     <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus cols="2">
+      <h-form-item label="选择器" prop="select" required>
+        <h-select v-model="formItem1.select" filterable multiple @on-blur="blurtest" @on-focus="focustest">
+          <h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>
+        </h-select>
+      </h-form-item>
       <h-form-item label="输入框" prop="input" required>
         <h-input v-model="formItem1.input" placeholder="请输入" @on-blur="blurtest" @on-focus="focustest"></h-input>
       </h-form-item>
+      <h-form-item label="金额框" prop="money" required>
+        <h-typefield v-model="formItem1.money" bigTips focusAllSelect integerNum="13" suffixNum="2" type="money" :max="10000000000" :min="0" :step="100" algin="center" style="width:300px"></h-typefield>
+      </h-form-item>
 
-      <h-form-item label="inputNumber" prop="inputnumber" required>
+      <h-form-item label="inputNumber" prop="inputNumber" required>
         <h-input-number :max="20"
-                        :min="-1"
+                        :min="-10"
                         :step="1"
-                        v-model="value2"
+                        v-model="formItem1.inputNumber"
                         focusAllSelect
                         @on-focus="focustest"
                         @on-blur="blurtest"
@@ -17,7 +25,7 @@
       </h-form-item>
 
       <h-form-item label="文本域" prop="textarea" required>
-        <h-input v-model="formItem1.textarea" type="textarea" placeholder="请输入..."  @on-blur="blurtest" @on-focus="focustest"></h-input>
+        <h-input v-model="formItem1.textarea" type="textarea" placeholder="请输入..."  focusAllSelect @on-blur="blurtest" @on-focus="focustest"></h-input>
       </h-form-item>
 
       <h-form-item label="文本密码" prop="cascader" required>
@@ -29,25 +37,19 @@
       </h-form-item>
 
       <h-form-item>
-        <h-form-item label="选择器" prop="select" required>
-          <h-select v-model="formItem1.select" filterable  @on-blur="blurtest" @on-focus="focustest">
-            <h-option value="beijing">北京市</h-option>
-            <h-option value="shanghai">上海市</h-option>
-            <h-option value="shenzhen">深圳市</h-option>
-          </h-select>
-        </h-form-item>
 
-        <h-form-item label="金额框" prop="money" required>
-          <h-typefield v-model="formItem1.money" @on-blur="blurtest" @on-focus="focustest">
-            <h-select v-model="select2" placeholder="" slot="append" style="width: 45px" :isArrow="false" :clearable="false" :tranfer="true">
-              <h-option value="com">.com</h-option>
-              <h-option value="org">.org</h-option>
-              <h-option value="io">.io</h-option>
-            </h-select>
-          </h-typefield>
-        </h-form-item>
 
-        <h-form-item label="inputnumber" required prop="fatdate" required>
+        <!--<h-form-item label="金额框" prop="money" required>-->
+          <!--<h-typefield v-model="formItem1.money" @on-blur="blurtest" @on-focus="focustest">-->
+            <!--<h-select v-model="select2" placeholder="" slot="append" style="width: 45px" :isArrow="false" :clearable="false" :tranfer="true">-->
+              <!--<h-option value="com">.com</h-option>-->
+              <!--<h-option value="org">.org</h-option>-->
+              <!--<h-option value="io">.io</h-option>-->
+            <!--</h-select>-->
+          <!--</h-typefield>-->
+        <!--</h-form-item>-->
+
+        <h-form-item label="inputnumber" required prop="fatdate">
           <h-input-number :max="10" :min="1"  @on-blur="blurtest" @on-focus="focustest"></h-input-number>
         </h-form-item>
 
@@ -91,7 +93,7 @@
           <!--<h-fast-date v-model="formItem1.fatdate"></h-fast-date>-->
         <!--</h-form-item>-->
 
-        <h-form-item label="简单下拉框" required prop="fatdate" required>
+        <h-form-item label="简单下拉框" required prop="fatdate">
           <h-simple-select v-model="value" ref="test">
             <h-select-block :data="bigData"></h-select-block>
           </h-simple-select>
@@ -131,7 +133,8 @@ export default {
       changeform:false,
       formItem1: {
         input: '1',
-        select: 'beijing',
+        inputNumber: 1,
+        select: [],
         radio: '',
         money: '',
         checkbox: [],
@@ -282,6 +285,32 @@ export default {
         }
       ],
       firstValc: 'parent',
+      cityList: [
+        {
+          value: 'beijing',
+          label: '北京市'
+        },
+        {
+          value: 'shanghai',
+          label: '上海市'
+        },
+        {
+          value: 'shenzhen',
+          label: '深圳市'
+        },
+        {
+          value: 'hangzhou',
+          label: '杭州市'
+        },
+        {
+          value: 'nanjing',
+          label: '南京市'
+        },
+        {
+          value: 'chongqi',
+          label: '重庆市'
+        }
+      ],
     }
   },
   methods: {
