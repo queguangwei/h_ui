@@ -8,7 +8,7 @@
           :styleObject="tableStyle"
           :columns="cloneColumns"
           :columns-width="columnsWidth"
-          :dataLenght="data.length"
+          :dataLength="data.length"
           :headSelection ="headSelection"
           :canDrag="canDrag"
           :canMove="canMove"
@@ -47,7 +47,7 @@
             :styleObject="tableStyle"
             :columns="leftFixedColumns"
             :columns-width="columnsWidth"
-            :dataLenght="data.length"
+            :dataLength="data.length"
             :headSelection ="headSelection"
             :canDrag="canDrag"
           ></gird-head>

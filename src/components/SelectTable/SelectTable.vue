@@ -715,8 +715,11 @@ export default {
       }
     },
     showdrop(){
-      this.isInputFocus = true
       if(this.isSingleSelect && this.showMutiLabel){
+        if (this.disabled || !this.editable || this.readonly) {
+          return false
+        }
+        this.isInputFocus = true
         this.showMutiLabel = false
         this.$nextTick(()=>{
           this.select()
