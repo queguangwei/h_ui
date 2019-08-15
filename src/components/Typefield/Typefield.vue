@@ -199,9 +199,17 @@ export default {
     }
   },
   computed: {
+    integerRegExp() {
+      //匹配整数长度的正则
+      let matchLength = Number(this.integerNum) + 1;
+      return new RegExp(
+        "^[0-9]{" + matchLength + "}|^-[0-9]{" + matchLength + "}"
+      );
+    },
     precisionRegExp() {
       //用于小数位精度匹配的正则表达式
-      return new RegExp("\\.([0-9]{" + (Number(this.suffixNum) + 1) + "})");
+      let matchLength = Number(this.suffixNum) + 1;
+      return new RegExp("\\.[0-9]{" + matchLength + "}");
     },
     clazz() {
       return [
@@ -434,6 +442,11 @@ export default {
       // if (event.type == 'input' && value.match(/^\-?\.?$|\.$/)) return; // prevent fire early if decimal. If no more input the change event will fire later
       // if (event.type == 'change' && Number(value) == this.currentValue) return; // already fired change for input event
 
+      if (value.match(this.integerRegExp)) {
+        //匹配整数位数
+        event.target.value = this.currentValue;
+        value = this.currentValue;
+      }
       if (!this.isround && value.match(this.precisionRegExp)) {
         //匹配小数位数；非四舍五入模式下，超过指定位数后不允许继续输入
         event.target.value = this.currentValue;
