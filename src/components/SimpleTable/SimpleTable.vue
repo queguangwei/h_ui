@@ -38,6 +38,7 @@
                   v-on:mousedown="mousedown($event,column,index)"
                   v-on:mouseout="mouseout($event,column,index)"
                   v-on:mousemove="mousemove($event,column,index)"
+                  v-on:mouseup="mouseup($event,column,index)"
                   :class="alignCls(column)"   style="position:relative">
                 <table-cell :column="column"
                             :index="index"
@@ -547,7 +548,8 @@ export default {
       hoverIndex:-1,
       scheduledAnimationFrame: false, // 是否进行动画帧更新visibledata,
       isHorizontal:false,
-      lastScrollTop: 0
+      lastScrollTop: 0,
+      beginLocation: {}
     }
   },
   computed: {
@@ -928,6 +930,8 @@ export default {
       })
     },
     mousedown(event, column, index,isLeft) {
+      this.beginLocation.clientX = event.clientX
+      this.beginLocation.clientY = event.clientY
       if (this.$isServer||(isLeft&&this.isRightFixed)) return
       if (!column) return
       if (!this.canDrag && !this.canMove) return
@@ -1101,24 +1105,6 @@ export default {
         document.addEventListener('mousemove', handleMouseMove)
         document.addEventListener('mouseup', handleMouseUp)
       }
-      if(column.sortable) {
-        const type = column._sortType
-        if(column.type === 'selection') {
-          if(type === 'normal') {
-            this.handleSort(index, 'asc')
-          }else {
-            this.handleSort(index, 'normal')
-          }
-        }else {
-          if (type === 'normal') {
-            this.handleSort(index, 'asc')
-          } else if (type === 'asc') {
-            this.handleSort(index, 'desc')
-          } else {
-            this.handleSort(index, 'normal')
-          }
-        }
-      }
     },
     mousemove(event, column, index,isLeft) {
       if (!this.canDrag || !column||(isLeft&&this.isRightFixed)) return
@@ -1164,6 +1150,36 @@ export default {
           this.movingColumn = null
         }
       }
+    },
+    mouseup(event, column, index) {
+      //拖拽表头排序不触发
+      if(this.isDrag(this.beginLocation.clientX, this.beginLocation.clientY, event.clientX, event.clientY)) {
+        return
+      }
+      if(column.sortable) {
+        const type = column._sortType
+        if(column.type === 'selection') {
+          if(type === 'normal') {
+            this.handleSort(index, 'asc')
+          }else {
+            this.handleSort(index, 'normal')
+          }
+        }else {
+          if (type === 'normal') {
+            this.handleSort(index, 'asc')
+          } else if (type === 'asc') {
+            this.handleSort(index, 'desc')
+          } else {
+            this.handleSort(index, 'normal')
+          }
+        }
+      }
+    },
+    isDrag(x1, y1, x2, y2) {
+      if(Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)) <= 1) {
+        return false;
+      }
+      return true;
     },
     mouseout() {
       if (this.$isServer) return

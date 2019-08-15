@@ -280,7 +280,7 @@ export default {
         val = this.min;
       }
       this.setValue(val);
-      this.$emit("on-blur", event);
+      this.$emit('on-blur', event);
     },
     keyDown(e) {
       if (e.keyCode === 38) {
