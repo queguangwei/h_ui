@@ -14,7 +14,7 @@
           :class="alignCls(column)"
           >
           <div>
-            <Checkbox v-if="headSelection&&!index" @mousedown.native.stop="handleClick" @click.native.stop="selectAll" :value="isSelectAll" class="asyc-check"></Checkbox>
+            <Checkbox v-if="headSelection&&!index" @mousedown.native.stop="handleClick" @on-change="selectAll" :value="isSelectAll" class="asyc-check"></Checkbox>
             <template>
               <span v-if="!column.renderHeader" @click="handleSortByHead(index)">{{ column.title || '#' }}</span>
               <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
@@ -60,21 +60,21 @@ export default {
       moving: false,
       movingColumn: null,
       cloumnsLeft: [],
-      isSelectAll:false,
     }
   },
   computed: {
-    // isSelectAll () {
-    //   let isSelectAll = true;
-    //   if (!this.data.length) isSelectAll = false;
-    //   for (let i = 0; i < this.data.length; i++) {
-    //     if (!this.objData[this.data[i]._index]._isChecked && !this.objData[this.data[i]._index]._isDisabled) {
-    //       isSelectAll = false;
-    //       break;
-    //     }
-    //   }
-    //   return isSelectAll;
-    // }
+    isSelectAll () {
+      let isSelectAll = true;
+      if (this.dataLength<1) isSelectAll = false;
+      let data = this.$parent.checkedObj
+      for (let i = 0; i < data.length; i++) {
+        if (!data[i].checked) {
+          isSelectAll = false;
+          break;
+        }
+      }
+      return isSelectAll;
+    }
   },
   watch: {
     columns: {
@@ -93,9 +93,8 @@ export default {
   },
   methods: {
     selectAll (event) {
-      event.stopPropagation();
-      this.isSelectAll = !this.isSelectAll
-      this.$parent.isSelectAll = this.isSelectAll
+      const status = !this.isSelectAll;
+      this.$parent.isSelectAll = status
       // this.$parent.selectAll(this.isSelectAll);
     },
     handleSortByHead (index) {
