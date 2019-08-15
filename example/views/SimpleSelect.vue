@@ -68,6 +68,8 @@
                      v-model="v20190321.value2"
                      remote
                      :remote-method="remoteMethod"
+                     @on-focus="focus"
+                     @on-blur="handleBlur"
                      widthAdaption>
       <h-select-block ref="block" :data="remoteData"></h-select-block>
       <!-- <h-select-block :data="v20190321.options2"></h-select-block> -->

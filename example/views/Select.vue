@@ -54,9 +54,12 @@
                  isBackClear
                  style="width:300px"
                  multiple
+                 filterable
                  buttonToTop
                 @on-change="change"
                 @on-scroll="scroll"
+                 @on-focus="focusH"
+                 @on-blur="blurH"
                 :isComputed="isComputed"
                 noMoreText="哈哈哈哈"
                 showTitle
@@ -817,11 +820,14 @@ export default {
         }, 200)
       }
     },
+    focusH() {
+      console.log('获取焦点')
+    },
     blurH(){
       console.log('失去焦点了')
     },
     change(e) {
-//      console.log(e)
+      console.log(e)
     },
     clear() {
       this.d = []
