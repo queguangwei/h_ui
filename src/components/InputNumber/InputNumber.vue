@@ -264,8 +264,6 @@ export default {
       this.$emit("on-focus", event);
     },
     blur(event) {
-      console.log("==================触发blur====================");
-      console.log("event.target.value ：  " + event.target.value);
       if (event == undefined) {
         this.focused = false;
         return;
