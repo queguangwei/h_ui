@@ -143,19 +143,15 @@ export default {
   computed: {
     upDisabled: {
       get() {
-        if (this.max) {
-          return this.viewValue >= this.max ? true : false;
-        }
-        return false;
+        return this.viewValue >= this.max ? true : false;
       },
-      set(val) {
-      }
+      set(val) {}
     },
-    downDisabled() {
-      if (this.min) {
+    downDisabled: {
+      get() {
         return this.viewValue <= this.min ? true : false;
-      }
-      return false;
+      },
+      set(val) {}
     },
     precisionRegExp() {
       //用于小数位精度匹配的正则表达式
@@ -218,49 +214,28 @@ export default {
       e.preventDefault();
     },
     up(e) {
-      const targetVal = Number(e.target.value);
-      if (this.upDisabled && isNaN(targetVal)) {
-        return false;
-      }
       this.changeStep("up", e);
     },
     down(e) {
-      const targetVal = Number(e.target.value);
-      if (this.downDisabled && isNaN(targetVal)) {
-        return false;
-      }
       this.changeStep("down", e);
     },
     changeStep(type, e) {
       if (this.disabled || this.readonly) {
         return false;
       }
-      const targetVal = Number(e.target.value);
-      let val = Number(this.currentValue);
+      let val = Number(this.oldValue);
       const step = Number(this.step);
       if (isNaN(val)) {
         return false;
-      }
-      if (!isNaN(targetVal)) {
-        if (type === "up") {
-          if (addNum(targetVal, step) <= this.max) {
-            val = targetVal;
-          } else {
-            return false;
-          }
-        } else if (type === "down") {
-          if (addNum(targetVal, -step) >= this.min) {
-            val = targetVal;
-          } else {
-            return false;
-          }
-        }
       }
       if (type === "up") {
         val = addNum(val, step);
       } else if (type === "down") {
         val = addNum(val, -step);
       }
+      val = val > this.max ? this.max : val;
+      val = val < this.min ? this.min : val;
+      this.oldValue = val;
       this.setValue(val);
     },
     setValue(val) {
@@ -270,6 +245,7 @@ export default {
         isNaN(val) && (val = 0);
       }
       this.$nextTick(() => {
+        this.calcViewValue();
         this.currentValue = val;
         this.$emit("input", val);
         this.$emit("on-change", val);
@@ -300,8 +276,11 @@ export default {
       }
       let val = Number(event.target.value.trim());
       this.focused = false;
+      if (val < this.min) {
+        val = this.min;
+      }
       this.setValue(val);
-      this.$emit('on-blur', event)
+      this.$emit("on-blur", event);
     },
     keyDown(e) {
       if (e.keyCode === 38) {
@@ -322,25 +301,26 @@ export default {
         return;
       }
       if (event.type == "input" && val.match(/^\-{1}\.?$/)) {
-        // 只检测负号 小数点由后面Number(val)！==NaN判断
         this.oldValue = val.toString();
         return;
       }
       if (event.type == "change" && Number(val) === this.currentValue) return; // already fired change for input event
-      if (this.precision && val.match(this.precisionRegExp)) {
+
+      if (event.type == "input" && this.precision === 0 && val.match(/\./)) {
+        event.target.value = this.oldValue;
+        return;
+      }
+      if (this.precision !== undefined && val.match(this.precisionRegExp)) {
         event.target.value = this.oldValue;
         return;
       }
       const { min, max } = this;
       if (!isNaN(Number(val))) {
-        this.currentValue = val;
-        if (val > max) {
-          val = max;
-          event.target.value = val;
-        } else if (val < min) {
-          val = min;
-          event.target.value = val;
-        }
+        val = val > max ? max : val;
+        // 输入值小于最小值时不做处理，避免min大于两位时不能输入单个数字
+        //  val = val < min ? min : val;
+        event.target.value = val;
+        this.viewValue = val;
         this.oldValue = val.toString();
       } else {
         event.target.value = this.oldValue;
@@ -375,7 +355,7 @@ export default {
           : s;
       } else {
         this.viewValue = this.precision
-          ? this.currentValue.toFixed(this.precision)
+          ? Number(this.currentValue).toFixed(this.precision)
           : this.currentValue;
       }
     }

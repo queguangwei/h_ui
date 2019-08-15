@@ -91,9 +91,9 @@ export default {
     }
   },
   mounted(){
-    setTimeout(()=>{
-      this.value11=null
-    },2000)
+    // setTimeout(()=>{
+    //   this.value11=null
+    // },2000)
   },
   methods: {
     testClick(val){
