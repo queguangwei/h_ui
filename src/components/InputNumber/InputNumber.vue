@@ -253,7 +253,8 @@ export default {
       });
     },
     focus(event) {
-      this.oldValue = this.viewValue.toString();
+      this.oldValue =
+        this.viewValue == null ? this.viewValue : this.viewValue.toString();
       if (this.focusAllSelect) {
         this.$refs.input.select();
       }
@@ -298,10 +299,11 @@ export default {
       if (isEmptyString) {
         this.setValue(null);
         this.oldValue = null;
+        
         return;
       }
       if (event.type == "input" && val.match(/^\-{1}\.?$/)) {
-        this.oldValue = val.toString();
+        this.oldValue = val==null?val:val.toString();
         return;
       }
       if (event.type == "change" && Number(val) === this.currentValue) return; // already fired change for input event
@@ -321,7 +323,7 @@ export default {
         //  val = val < min ? min : val;
         event.target.value = val;
         this.viewValue = val;
-        this.oldValue = val.toString();
+        this.oldValue = val==null?val:val.toString();
       } else {
         event.target.value = this.oldValue;
       }
@@ -366,7 +368,7 @@ export default {
     if (this.value > this.max) this.setValue(this.max);
     this.prepend = this.$slots.prepend !== undefined;
     this.append = this.$slots.append !== undefined;
-    this.oldValue = this.viewValue.toString();
+    this.oldValue = this.viewValue==null? this.viewValue: this.viewValue.toString();
   },
   watch: {
     value: {
