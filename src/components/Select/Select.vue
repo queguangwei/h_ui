@@ -1402,7 +1402,7 @@ export default {
       this.tabIndex = -1;
     } else {
       if (("" + this.tabindex) !== '-1') {
-        this.tabIndex = this.tabindex;
+        this.tabIndex = this.filterable ? -1 : this.tabindex;
       }
     }
     // this.setPlacement();
