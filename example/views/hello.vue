@@ -111,209 +111,208 @@
   </div>
 </template>
 <script>
-  let bigData = [];
-  for(let i=0;i<2000;i++){
-    let obj={};
-    obj.value="value"+i;
-    obj.label="label"+i;
-    bigData.push(obj);
-  }
-  export default {
-    mounted() {
-      window.isO45 = true;
-    },
-    data () {
-      return {
-        model1:'',
-        bigData:bigData,
-        value:'value0',
-        value2: 0,
-        changeform:false,
-        formItem1: {
-          input: '1',
-          select: 'beijing',
-          radio: '',
-          money: '',
-          checkbox: [],
-          fatdate: '',
-          date: '',
-          time: '',
-          slider: '',
-          tree:'',
-          textarea: '',
-          cascader:[]
-        },
-        formItem2:{
-          input: '1',
-          select: '',
-          radio: '',
-          money: '',
-          checkbox: [],
-          fatdate: '',
-          date: '',
-          time: '',
-          slider: '',
-          tree:'',
-          textarea: '',
-        },
-        data2: [{
-          value: 'beijing',
-          label: '北京',
-          children: [
-            {
-              value: 'gugong',
-              label: '故宫'
-            },
-            {
-              value: 'tiantan',
-              label: '天坛'
-            },
-            {
-              value: 'wangfujing',
-              label: '王府井'
-            }
-          ]
-        },
+let bigData = [];
+for(let i=0;i<2000;i++){
+  let obj={};
+  obj.value="value"+i;
+  obj.label="label"+i;
+  bigData.push(obj);
+}
+export default {
+  mounted() {
+    window.isO45 = true;
+  },
+  data () {
+    return {
+      model1:'',
+      bigData:bigData,
+      value:'value0',
+      value2: 0,
+      changeform:false,
+      formItem1: {
+        input: '1',
+        select: 'beijing',
+        radio: '',
+        money: '',
+        checkbox: [],
+        fatdate: '',
+        date: '',
+        time: '',
+        slider: '',
+        tree:'',
+        textarea: '',
+        cascader:[]
+      },
+      formItem2:{
+        input: '1',
+        select: '',
+        radio: '',
+        money: '',
+        checkbox: [],
+        fatdate: '',
+        date: '',
+        time: '',
+        slider: '',
+        tree:'',
+        textarea: '',
+      },
+      data2: [{
+        value: 'beijing',
+        label: '北京',
+        children: [
           {
-            value: 'jiangsu',
-            label: '江苏',
+            value: 'gugong',
+            label: '故宫'
+          },
+          {
+            value: 'tiantan',
+            label: '天坛'
+          },
+          {
+            value: 'wangfujing',
+            label: '王府井'
+          }
+        ]
+      },
+      {
+        value: 'jiangsu',
+        label: '江苏',
+        children: [
+          {
+            value: 'nanjing',
+            label: '南京',
             children: [
               {
-                value: 'nanjing',
-                label: '南京',
-                children: [
-                  {
-                    value: 'fuzimiao',
-                    label: '夫子庙',
-                  }
-                ]
-              },
-              {
-                value: 'suzhou',
-                label: '苏州',
-                children: [
-                  {
-                    value: 'zhuozhengyuan',
-                    label: '拙政园',
-                  },
-                  {
-                    value: 'shizilin',
-                    label: '狮子林',
-                  }
-                ]
+                value: 'fuzimiao',
+                label: '夫子庙',
               }
-            ],
-          }
-        ],
-        formValid: {
-          user: '你好',
-          stringInput:'',
-          password: '',
-          test1: '',
-          test2: ''
-        },
-        select1:'',
-        select2:'',
-        stringRule:['email'],
-        regRule: [{test:/^[a-zA-Z]+$/, message:'不全是字母',trigger:'blur'}],
-        columns1: [
-          {
-            title: '姓名',
-            key: 'name',
-            ellipsis: true
+            ]
           },
           {
-            title: '年龄',
-            key: 'age',
-            hiddenCol:true
-          },
-          {
-            title: '地址',
-            key: 'address'
-          }
-        ],
-        data1:[
-          {
-            name: '王小明',
-            age: 18,
-            address: '北京市朝阳区芍药居'
-            // _highlight: true//默认选择当前项
-          },
-          {
-            name: '张小刚',
-            age: 25,
-            address: '北京市海淀区西二旗'
-          },
-          {
-            name: '李小红',
-            age: 30,
-            address: '上海市浦东新区世纪大道'
-          },
-          {
-            name: '周小伟',
-            age: 26,
-            address: '深圳市南山区深南大道'
-          },
-        ],
-        baseData1: [
-          {
-            title: 'parent',
-            id: '1-0',
+            value: 'suzhou',
+            label: '苏州',
             children: [
               {
-                title: 'child1',
-                id: '1-1',
-                children: [
-                  {
-                    title: 'child1-1-1',
-                    id: '1-1-1'
-                  },
-                  {
-                    title: 'child1-1-2',
-                    id: '1-1-2'
-                  }
-                ]
+                value: 'zhuozhengyuan',
+                label: '拙政园',
               },
               {
-                title: 'child2',
-                id: '1-2',
-                children: []
+                value: 'shizilin',
+                label: '狮子林',
               }
             ]
           }
         ],
-        firstValc: 'parent',
-      }
-    },
-    methods: {
-      focustest(){
-        console.log("获取焦点");
+      }],
+      formValid: {
+        user: '你好',
+        stringInput:'',
+        password: '',
+        test1: '',
+        test2: ''
       },
-      blurtest(){
-        console.log("失去焦点");
-      },
-      firstNodeFocused(name){
-        this.$refs[name].firstNodeFocused();
-      },
-      changeform1(){
-        this.changeform = !this.changeform;
-      },
-      handleSubmit (name) {
-        let _this=this
-        this.$refs[name].validate((valid) => {
-          if (valid) {
-            _this.$hMessage.success('提交成功!');
-          } else {
-            _this.$hMessage.error('表单验证失败!');
-          }
-        })
-      },
-      handleReset (name) {
-        this.$refs[name].resetFields();
-      },
-      totest() {
-        this.$refs.changeDrop.focus();
-      },
+      select1:'',
+      select2:'',
+      stringRule:['email'],
+      regRule: [{test:/^[a-zA-Z]+$/, message:'不全是字母',trigger:'blur'}],
+      columns1: [
+        {
+          title: '姓名',
+          key: 'name',
+          ellipsis: true
+        },
+        {
+          title: '年龄',
+          key: 'age',
+          hiddenCol:true
+        },
+        {
+          title: '地址',
+          key: 'address'
+        }
+      ],
+      data1:[
+        {
+          name: '王小明',
+          age: 18,
+          address: '北京市朝阳区芍药居'
+          // _highlight: true//默认选择当前项
+        },
+        {
+          name: '张小刚',
+          age: 25,
+          address: '北京市海淀区西二旗'
+        },
+        {
+          name: '李小红',
+          age: 30,
+          address: '上海市浦东新区世纪大道'
+        },
+        {
+          name: '周小伟',
+          age: 26,
+          address: '深圳市南山区深南大道'
+        },
+      ],
+      baseData1: [
+        {
+          title: 'parent',
+          id: '1-0',
+          children: [
+            {
+              title: 'child1',
+              id: '1-1',
+              children: [
+                {
+                  title: 'child1-1-1',
+                  id: '1-1-1'
+                },
+                {
+                  title: 'child1-1-2',
+                  id: '1-1-2'
+                }
+              ]
+            },
+            {
+              title: 'child2',
+              id: '1-2',
+              children: []
+            }
+          ]
+        }
+      ],
+      firstValc: 'parent',
     }
+  },
+  methods: {
+    focustest(){
+      console.log("获取焦点");
+    },
+    blurtest(){
+      console.log("失去焦点");
+    },
+    firstNodeFocused(name){
+      this.$refs[name].firstNodeFocused();
+    },
+    changeform1(){
+      this.changeform = !this.changeform;
+    },
+    handleSubmit(name) {
+      let _this=this
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          _this.$hMessage.success('提交成功!');
+        } else {
+          _this.$hMessage.error('表单验证失败!');
+        }
+      })
+    },
+    handleReset(name) {
+      this.$refs[name].resetFields();
+    },
+    totest() {
+      this.$refs.changeDrop.focus();
+    },
   }
+}
 </script>
