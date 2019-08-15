@@ -319,13 +319,14 @@ export default {
           if (addNum(targetVal, step) <= this.max) {
             val = targetVal;
           } else {
-            return false;
+            val = this.max;
           }
         } else if (type === "down") {
           if (addNum(targetVal, -step) >= this.min) {
             val = targetVal;
           } else {
-            return false;
+            val = this.min;
+            // return false;
           }
         }
       }
@@ -334,8 +335,11 @@ export default {
       } else if (type === "down") {
         val = addNum(val, -step);
       }
+      val = val == null ? val : val.toString();
+
       this.$nextTick(() => {
         this.currentValue = val;
+        this.bigShow(this.type, this.currentValue);
         this.$emit("input", val);
         this.$emit("on-change", val);
         this.dispatch("FormItem", "on-form-change", val);
@@ -385,7 +389,6 @@ export default {
     blur() {
       this.havefocused = false;
       this.$refs.input.blur();
-      // this.$emit('on-blur')
       this.$emit("input", this.cardFormatValue(this.inputValue));
       this.dispatch("FormItem", "on-form-blur", this.inputValue);
     },
@@ -441,8 +444,10 @@ export default {
 
       // if (event.type == 'input' && value.match(/^\-?\.?$|\.$/)) return; // prevent fire early if decimal. If no more input the change event will fire later
       // if (event.type == 'change' && Number(value) == this.currentValue) return; // already fired change for input event
-
-      if (value.match(this.integerRegExp)) {
+      if (!isNaN(Number(value)) && Number(value) > this.max) {
+        event.target.value = this.max.toString();
+        value = this.max.toString();
+      } else if (this.max == Infinity && value.match(this.integerRegExp)) {
         //匹配整数位数
         event.target.value = this.currentValue;
         value = this.currentValue;
@@ -450,11 +455,10 @@ export default {
       if (this.isround) {
         //四舍五入模式下不做操作
       } else if (Number(this.suffixNum) === 0 && value.match(/\./)) {
-        console.log("match");
         // 小数位为0时不允许输入小数点
         event.target.value = this.currentValue;
         value = this.currentValue;
-      } else if (value.match(this.precisionRegExp)) {
+      } else if (value.toString().match(this.precisionRegExp)) {
         //匹配小数位数；非四舍五入模式下，超过指定位数后不允许继续输入
         event.target.value = this.currentValue;
         value = this.currentValue;
