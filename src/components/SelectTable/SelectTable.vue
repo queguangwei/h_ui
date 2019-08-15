@@ -114,6 +114,10 @@
             <slot name="header">
             </slot>
           </div>
+          <div v-if="buttonToTop&&multiple" :class="[prefixCls + '-btnToTop']">
+            <Checkbox v-model="selectHead" @on-change="toggleSelect(!isSelectAll)">全选</Checkbox>
+            <Button size="small" :class="[prefixCls + '-btnToTop-invert']" @click="toggleSelect(false)">全不选</Button>
+          </div>
           <div v-if="!isBlock"
                v-show="(!notFound && !remote) || (remote && !loading && !notFound)"
                :class="[prefixCls + '-dropdown-list']"
@@ -141,7 +145,7 @@
           <slot name="footer">
           </slot>
         </div>
-        <div v-if="isCheckall&&multiple&&!notFoundShow"
+        <div v-if="isCheckall&&multiple&&!notFoundShow&&!buttonToTop"
              :class="checkAll">
           <Button size="small"
                   @click="toggleSelect(false)">全不选</Button>
@@ -383,8 +387,8 @@ export default {
       default:false,
     },
     showValue: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false
     },
     accuFilter:{
       type: Boolean,
@@ -419,6 +423,10 @@ export default {
         let num = parseInt(value);
         return num <= 32767 && num >= -1;
       }
+    },
+    buttonToTop: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -618,7 +626,7 @@ export default {
       return 'h-select-checkall'
     },
     selectTabindex() {
-      return this.disabled ? -1 : ((this.tabindex + "") !== "-1" ? this.tabindex : 0);
+      return this.disabled ? -1 : ((this.tabindex + "") !== "-1" ? (this.filterable ? -1 : this.tabindex) : 0);
     },
     notFoundShow() {
       let options = this.options
@@ -665,7 +673,9 @@ export default {
       this.$emit('on-scroll', num)
     },
     toggleSelect(val) {
+      console.log(val, this.isSelectAll)
       this.isSelectAll = !this.isSelectAll
+      this.selectHead = val
       if (this.isBlock) {
         let hybridValue = []
         let curValue = []
