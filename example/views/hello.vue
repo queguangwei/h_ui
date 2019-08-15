@@ -5,6 +5,17 @@
         <h-input v-model="formItem1.input" placeholder="请输入" @on-blur="blurtest" @on-focus="focustest"></h-input>
       </h-form-item>
 
+      <h-form-item label="inputNumber" prop="inputnumber" required>
+        <h-input-number :max="20"
+                        :min="-1"
+                        :step="1"
+                        v-model="value2"
+                        focusAllSelect
+                        @on-focus="focustest"
+                        @on-blur="blurtest"
+        ></h-input-number>
+      </h-form-item>
+
       <h-form-item label="文本域" prop="textarea" required>
         <h-input v-model="formItem1.textarea" type="textarea" placeholder="请输入..."  @on-blur="blurtest" @on-focus="focustest"></h-input>
       </h-form-item>
@@ -46,21 +57,21 @@
           </h-select-table>
         </h-form-item>
 
-        <!--<h-form-item label="日期控件">-->
-          <!--<h-row>-->
-            <!--<h-col span="11">-->
-              <!--<h-form-item prop="date" required>-->
-                <!--<h-datePicker type="date" placeholder="选择日期" v-model="formItem1.date"></h-datePicker>-->
-              <!--</h-form-item>-->
-            <!--</h-col>-->
-            <!--<h-col span="2" style="text-align: center">-</h-col>-->
-            <!--<h-col span="11">-->
-              <!--<h-form-item prop="time" required>-->
-                <!--<h-timePicker type="time" placeholder="选择时间" v-model="formItem1.time"></h-timePicker>-->
-              <!--</h-form-item>-->
-            <!--</h-col>-->
-          <!--</h-row>-->
-        <!--</h-form-item>-->
+        <h-form-item label="日期控件">
+          <h-row>
+            <h-col span="11">
+              <h-form-item prop="date" required>
+                <h-datePicker type="date" placeholder="选择日期" v-model="formItem1.date"></h-datePicker>
+              </h-form-item>
+            </h-col>
+            <h-col span="2" style="text-align: center">-</h-col>
+            <h-col span="11">
+              <h-form-item prop="time" required>
+                <h-timePicker type="time" placeholder="选择时间" v-model="formItem1.time"></h-timePicker>
+              </h-form-item>
+            </h-col>
+          </h-row>
+        </h-form-item>
 
         <!--<h-form-item label="单选框" prop="radio" required>-->
           <!--<h-radio-group v-model="formItem1.radio">-->
@@ -116,6 +127,7 @@
         model1:'',
         bigData:bigData,
         value:'value0',
+        value2: 0,
         changeform:false,
         formItem1: {
           input: '1',
