@@ -1286,6 +1286,7 @@ export default {
         this.selectedResult=modelstr;
       }
       this.isInputFocus = false
+      this.$emit('on-blur')
     },
     resetInputState(e) {
       this.inputLength = this.$refs.input.value.length * 12 + 56
