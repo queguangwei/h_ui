@@ -2233,8 +2233,8 @@ export default {
         if (e.keyCode === 40 || e.keyCode === 38) {
           e.preventDefault()
           e.stopPropagation()
-          let _index = this.rebuildData[this.focusIndex]._index
-          this.highlightCurrentRow(_index)
+          let _index = this.rebuildData && this.rebuildData[this.focusIndex] ? this.rebuildData[this.focusIndex]._index : null
+          if (_index !== null && Number(_index) >= 0) this.highlightCurrentRow(_index)
         }
         // ctrl
 //        if (e.keyCode === 17) {
