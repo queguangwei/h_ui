@@ -1011,9 +1011,9 @@ function getElement(ele, field, status) {
   if(curNode.querySelector('input')){
     if(curNode.querySelector('input').getAttribute('search')==='multiSelect'){
       let isshow=curNode.__vue__.dropVisible
-        if(isshow){
-          return
-        }
+      if(isshow){
+        return
+      }
     }
   }
 
