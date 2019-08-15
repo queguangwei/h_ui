@@ -49,7 +49,7 @@ import Locale from "../../mixins/locale";
 import Drop from "../Select/Dropdown.vue";
 import TransferDom from "../../directives/transfer-dom";
 const prefixCls = "h-typefield";
-import { on, off } from '../../util/dom';
+import { on, off } from "../../util/dom";
 
 function addNum(num1, num2) {
   let sq1, sq2, m;
@@ -199,9 +199,17 @@ export default {
     }
   },
   computed: {
+    integerRegExp() {
+      //匹配整数长度的正则
+      let matchLength = Number(this.integerNum) + 1;
+      return new RegExp(
+        "^[0-9]{" + matchLength + "}|^-[0-9]{" + matchLength + "}"
+      );
+    },
     precisionRegExp() {
       //用于小数位精度匹配的正则表达式
-      return new RegExp("\\.([0-9]{" + (Number(this.suffixNum) + 1) + "})");
+      let matchLength = Number(this.suffixNum) + 1;
+      return new RegExp("\\.[0-9]{" + matchLength + "}");
     },
     clazz() {
       return [
@@ -241,7 +249,7 @@ export default {
   watch: {
     value(val) {
       if (val == null || val == undefined) {
-        val=''
+        val = "";
       }
       this.initValue(String(val));
     },
@@ -268,7 +276,7 @@ export default {
     if (this.value != null || this.value != undefined) {
       this.initValue(String(this.value));
     }
-    on(document,'keydown', this.keyDown);
+    on(document, "keydown", this.keyDown);
   },
   methods: {
     keyDown(e) {
@@ -434,7 +442,19 @@ export default {
       // if (event.type == 'input' && value.match(/^\-?\.?$|\.$/)) return; // prevent fire early if decimal. If no more input the change event will fire later
       // if (event.type == 'change' && Number(value) == this.currentValue) return; // already fired change for input event
 
-      if (!this.isround && value.match(this.precisionRegExp)) {
+      if (value.match(this.integerRegExp)) {
+        //匹配整数位数
+        event.target.value = this.currentValue;
+        value = this.currentValue;
+      }
+      if (this.isround) {
+        //四舍五入模式下不做操作
+      } else if (Number(this.suffixNum) === 0 && value.match(/\./)) {
+        console.log("match");
+        // 小数位为0时不允许输入小数点
+        event.target.value = this.currentValue;
+        value = this.currentValue;
+      } else if (value.match(this.precisionRegExp)) {
         //匹配小数位数；非四舍五入模式下，超过指定位数后不允许继续输入
         event.target.value = this.currentValue;
         value = this.currentValue;
@@ -649,7 +669,7 @@ export default {
       }
     },
     setNullStr() {
-      let str = this.suffixNum === 0 ? "0" : "0.";
+      let str = Number(this.suffixNum) === 0 ? "0" : "0.";
       for (var i = this.suffixNum - 1; i >= 0; i--) {
         str += "0";
       }
@@ -705,7 +725,7 @@ export default {
     if (this.transfer) {
       this.$refs.drop.destroy();
     }
-    off(document,'keydown',this.keyDown)
+    off(document, "keydown", this.keyDown);
   }
 };
 </script>

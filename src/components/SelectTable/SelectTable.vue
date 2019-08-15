@@ -626,7 +626,7 @@ export default {
       return 'h-select-checkall'
     },
     selectTabindex() {
-      return this.disabled ? -1 : ((this.tabindex + "") !== "-1" ? this.tabindex : 0);
+      return this.disabled ? -1 : ((this.tabindex + "") !== "-1" ? (this.filterable ? -1 : this.tabindex) : 0);
     },
     notFoundShow() {
       let options = this.options
@@ -725,8 +725,11 @@ export default {
       }
     },
     showdrop(){
-      this.isInputFocus = true
       if(this.isSingleSelect && this.showMutiLabel){
+        if (this.disabled || !this.editable || this.readonly) {
+          return false
+        }
+        this.isInputFocus = true
         this.showMutiLabel = false
         this.$nextTick(()=>{
           this.select()
