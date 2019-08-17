@@ -31,6 +31,7 @@ export default {
       newSearchCheckAll:false,
       newSearchUnCheckAll:false,
       isResetField:false,
+      isEnterhide:false,
     }
   },
   methods: {
@@ -44,19 +45,25 @@ export default {
     focus() {
       if (this.disabled || this.readonly) return
       this.$nextTick(() => {
-        console.log('focus'+this.isInputFocus)
         this.isInputFocus = true
         this.$refs.input.focus()
         
       })
     },
     handleKeydown(e) {
+      this.isEnterhide=false;
       if (this.visible) {
         const keyCode = e.keyCode
         // Esc slide-up
         if (keyCode === 13) {
           e.preventDefault()
           this.hideMenu()
+          
+          // this.$refs.input.focus()
+          this.$nextTick(() => {
+            this.$refs.input.focus()
+            this.isEnterhide=true;
+          })
         }
         if(window.isO45){
           if (keyCode === 40) {
