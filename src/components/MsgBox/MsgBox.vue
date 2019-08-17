@@ -54,19 +54,19 @@
   </div>
 </template>
 <script>
-import Icon from '../Icon/Icon.vue';
-import hButton from '../Button/Button.vue';
-import TransferDom from '../../directives/transfer-dom';
-import ScrollbarMixins from './mixins-scrollbar';
-import Locale from '../../mixins/locale';
-import Emitter from '../../mixins/emitter';
-import Drag from '../../directives/drag.js';
-import { on, off } from '../../util/dom';
-const prefixCls = 'h-modal';
+import Icon from "../Icon/Icon.vue";
+import hButton from "../Button/Button.vue";
+import TransferDom from "../../directives/transfer-dom";
+import ScrollbarMixins from "./mixins-scrollbar";
+import Locale from "../../mixins/locale";
+import Emitter from "../../mixins/emitter";
+import Drag from "../../directives/drag.js";
+import { on, off } from "../../util/dom";
+const prefixCls = "h-modal";
 
 export default {
-  name: 'Msgbox',
-  mixins: [ Locale, Emitter, ScrollbarMixins],
+  name: "Msgbox",
+  mixins: [Locale, Emitter, ScrollbarMixins],
   components: { Icon, hButton },
   directives: { TransferDom, Drag },
   props: {
@@ -197,7 +197,7 @@ export default {
       // 弹框内容渲染标识
       rendered: false,
       WindosInnerHeight: window.innerHeight,
-      
+
       headerHeight: 0,
       footerHeight: 0
     };
@@ -284,7 +284,9 @@ export default {
         return this.top;
       }
       let hHeight = this.showHead ? this.headerHeight : 0;
-      let fHeight = this.footerHide ? 0 : this.headerHeight;
+
+      let fHeight = this.footerHide ? 0 : this.footerHeight;
+ 
       let allHeight = hHeight + fHeight + this.height;
       return this.top + (allHeight - this.WindosInnerHeight) / 2;
     }
