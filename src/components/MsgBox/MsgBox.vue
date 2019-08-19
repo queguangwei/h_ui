@@ -286,7 +286,7 @@ export default {
       let hHeight = this.showHead ? this.headerHeight : 0;
 
       let fHeight = this.footerHide ? 0 : this.footerHeight;
- 
+
       let allHeight = hHeight + fHeight + this.height;
       return this.top + (allHeight - this.WindosInnerHeight) / 2;
     }
