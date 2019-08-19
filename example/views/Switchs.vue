@@ -58,6 +58,9 @@ export default {
       disabled: true
     }
   },
+  created() {
+    window.isO45 = true
+  },
   methods:{
     change(status){
       console.log(status);
