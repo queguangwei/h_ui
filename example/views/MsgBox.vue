@@ -5,17 +5,18 @@
     <h-msg-box
       v-model="modal1"
       title="普通的Modal对话框标题"
-      :height="2503"
       :closable="true"
       :mask-closable="false"
-       :scrollable="true"  
-      :top="0"
+       :scrollable="true"
+      isOriginal
       class-name="vertical-center-modal"
     >
       <p>对话框内容</p>
       <p>对话框内容</p>
       <p>对话框内容</p>
+      <h-button @click="showHeader">展示</h-button>
     </h-msg-box>
+
   </div>
 </template>
 <script>
@@ -230,6 +231,9 @@ export default {
     };
   },
   methods: {
+    showHeader() {
+      console.log(document.getElementsByClassName("h-modal-header")[0])
+    },
     handleOpen() {
       console.log("opened");
     },

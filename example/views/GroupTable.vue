@@ -3,7 +3,7 @@
     <h2>基础</h2>
     <h3>单选分组组件</h3>
     <!-- :multiLevel="multiLevel2" -->
-    <h-group-table :columns="columns1" childHighlightRow :height="300" width="600" :data="data1" size="small" @on-expand="expand"  @on-child-change="click1" ref="groupTable" :loading="loading">
+    <h-group-table :columns="columns1" childHighlightRow :height="300" width="600" :data="data1" size="small" @on-expand="expand" :titleRender="titleRender" @on-child-change="click1" ref="groupTable" :loading="loading">
       <P slot="loading">我是自定义de</P>
     </h-group-table>
     <Button @click="setLoad">切换loading</Button>
@@ -499,6 +499,19 @@ export default {
     }
   },
   methods: {
+    titleRender(h, data) {
+      return h('span',{},[
+        h('span',{},[data]),
+        h('h-button',{
+          props: {
+            type: 'primary',
+            size: 'small'
+          },
+          style: {
+            marginLeft: '25px',
+          }
+        }, ["查看"])])
+    },
     expand(data, status) {
       console.log(data, status)
     },
