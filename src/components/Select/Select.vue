@@ -80,12 +80,6 @@
           <span v-if="hideMult&&multiple" :class="hideMultHead" @click="toggleSelect(!isSelectAll)">全选</span>
           <div v-if="showHeader">
             <slot name="header">
-              <template v-if="buttonToTop&&multiple">
-                <span :class="[prefixCls + '-btnToTop']">
-                  <Checkbox v-model="selectHead" @click.native.stop="toggleSelect(!isSelectAll)">全选</Checkbox>
-                  <Button size="small" :class="[prefixCls + '-btnToTop-invert']" @click="toggleSelect(false)">全不选</Button>
-                </span>
-              </template>
             </slot>
           </div>
           <ul v-show="notFoundShow && !enableCreate" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul>
@@ -99,7 +93,7 @@
         </div>
         <div v-if="showFooter" :class="checkAll">
           <slot name="footer">
-            <template  v-if="(isCheckall&&multiple&&!notFoundShow&&!buttonToTop) || (enableCreate && showNewOption)">
+            <template  v-if="(isCheckall&&multiple&&!notFoundShow) || (enableCreate && showNewOption)">
               <Button size="small" @click="toggleSelect(false)">全不选</Button>
               <Button type ="primary" size="small" @click="toggleSelect(true)">全选</Button>
             </template>
@@ -340,11 +334,6 @@ export default {
         let num = parseInt(value);
         return num <= 32767 && num >= -1;
       }
-    },
-    //o45全选按钮在顶部
-    buttonToTop: {
-      type: Boolean,
-      default: false
     }
   },
   data () {
@@ -384,7 +373,7 @@ export default {
       return this.optionInstances.every(op => op.hidden);
     },
     showHeader() {
-      return this.$slots.header || this.buttonToTop
+      return this.$slots.header
     },
     classes () {
       return [
@@ -645,7 +634,6 @@ export default {
           })
         } else {
           this.model=[];
-          this.selectHead = false
         }
       }
     },
@@ -662,7 +650,7 @@ export default {
     },
     toggleMenu () {
       if (this.disabled || this.readonly||!this.editable) {
-          return false;
+        return false;
       }
       // 展开时计算是否足够空间展开
       if (!this.dropVisible) this.setPlacement()
@@ -1465,9 +1453,9 @@ export default {
       this.modelToQuery();
       if (this.multiple) {
         if (this.slotChangeDuration) {
-            this.slotChangeDuration = false;
+          this.slotChangeDuration = false;
         } else {
-            this.updateMultipleSelected();
+          this.updateMultipleSelected();
         }
       } else {
         this.updateSingleSelected();
