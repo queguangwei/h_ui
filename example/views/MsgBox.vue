@@ -1,16 +1,17 @@
 <template>
   <div>
     <h1>普通组件使用</h1>
-    <h-button type="primary" @click="modal1 = true">显示对话框</h-button>
-    <h-msg-box
-      v-model="modal1"
-      title="普通的Modal对话框标题"
-      :closable="true"
-      :mask-closable="false"
-       :scrollable="true"
-      isOriginal
-      class-name="vertical-center-modal"
-    >
+    <h-button type="primary"
+              @click="modal1 = true">显示对话框</h-button>
+    <h-msg-box v-model="modal1"
+               title="普通的Modal对话框标题"
+               :height="2500"
+               :closable="true"
+               :mask-closable="false"
+               :scrollable="true"
+               :top="0"
+               isOriginal
+               class-name="vertical-center-modal">
       <p>对话框内容</p>
       <p>对话框内容</p>
       <p>对话框内容</p>
@@ -21,214 +22,11 @@
 </template>
 <script>
 export default {
-  name: "MsgBoxs",
+  name: 'MsgBoxs',
   data() {
     return {
-      modal1: false,
-      modal2: false,
-      modal_loading: false,
-      modal3: false,
-      val3: [],
-      modal6: false,
-      modal4: false,
-      modal5: false,
-      mulmodel: [],
-      value: "",
-      showModal2: false,
-      options: [
-        {
-          value: "beijing",
-          label: "北京市"
-        },
-        {
-          value: "shanghai",
-          label: "上海市"
-        },
-        {
-          value: "shenzhen",
-          label: "深圳市"
-        },
-        {
-          value: "hangzhou",
-          label: "杭州市"
-        },
-        {
-          value: "nanjing",
-          label: "南京市"
-        },
-        {
-          value: "chongqing",
-          label: "重庆市"
-        }
-      ],
-      baseData4: [
-        {
-          title: "parent",
-          id: "1-0",
-          children: [
-            {
-              title: "child1",
-              id: "1-1",
-
-              children: [
-                {
-                  title: "child1-1-1",
-                  id: "1-1-1",
-                  children: [
-                    {
-                      title: "child1-1-1-1",
-                      id: "1-1-1-1"
-                    }
-                  ]
-                },
-                {
-                  title: "child1-1-2",
-                  id: "1-1-2"
-                }
-              ]
-            },
-            {
-              title: "child2",
-              id: "1-2",
-              children: [
-                {
-                  title: "child1-2-1",
-                  id: "1-2-1",
-                  children: [
-                    {
-                      title: "child1-2-1-1",
-                      id: "1-2-1-1"
-                    }
-                  ]
-                },
-                {
-                  title: "child1-2-2",
-                  id: "1-2-2"
-                }
-              ]
-            },
-            {
-              title: "child3",
-              id: "1-3",
-              children: [
-                {
-                  title: "child1-3-1",
-                  id: "1-3-1",
-                  children: [
-                    {
-                      title: "child1-3-1-1",
-                      id: "1-3-1-1"
-                    }
-                  ]
-                },
-                {
-                  title: "child1-3-2",
-                  id: "1-3-2"
-                }
-              ]
-            },
-            {
-              title: "child4",
-              id: "1-4",
-              children: []
-            },
-            {
-              title: "child5",
-              id: "1-5",
-              children: []
-            }
-          ]
-        }
-      ],
-      columns6: [
-        {
-          title: "日期",
-          key: "date"
-        },
-        {
-          title: "姓名",
-          key: "name"
-        },
-        {
-          title: "年龄",
-          key: "age",
-          filters: [
-            {
-              label: "大于50岁",
-              value: 1
-            },
-            {
-              label: "小于50岁",
-              value: 2
-            }
-          ],
-          // filteredValue:['18','25'],
-          filterMultiple: false,
-          filterRemote(_this, arg1) {
-            this.data5.push({
-              name: "王小明1",
-              age: 20,
-              address: "北京市朝阳区芍药居",
-              date: "2016-10-03"
-            });
-          },
-          filterMethod(value, row) {
-            if (value === 1) {
-              return row.age > 50;
-            } else if (value === 2) {
-              return row.age < 50;
-            }
-          }
-        },
-        {
-          title: "地址",
-          key: "address",
-          filters: [
-            {
-              label: "北京",
-              value: "北京"
-            },
-            {
-              label: "上海",
-              value: "上海"
-            },
-            {
-              label: "深圳",
-              value: "深圳"
-            }
-          ],
-          filterMethod(value, row) {
-            return row.address.indexOf(value) > -1;
-          }
-        }
-      ],
-      data5: [
-        {
-          name: "王小明",
-          age: 18,
-          address: "北京市朝阳区芍药居",
-          date: "2016-10-03"
-        },
-        {
-          name: "张小刚",
-          age: 25,
-          address: "北京市海淀区西二旗",
-          date: "2016-10-01"
-        },
-        {
-          name: "李小红",
-          age: 30,
-          address: "上海市浦东新区世纪大道",
-          date: "2016-10-02"
-        },
-        {
-          name: "周小伟",
-          age: 26,
-          address: "深圳市南山区深南大道",
-          date: "2016-10-04"
-        }
-      ]
-    };
+      modal1: false
+    }
   },
   methods: {
     showHeader() {
@@ -368,20 +166,8 @@ export default {
       this.$hMsgBox.remove();
     }
   },
-  watch: {
-    showModal2(val) {
-      if (val) {
-        // this.$refs.select.focus();
-        this.options = [
-          {
-            value: "beijing",
-            label: "北京市"
-          }
-        ];
-      }
-    }
-  }
-};
+
+}
 </script>
 <style>
 .tabWarp {
