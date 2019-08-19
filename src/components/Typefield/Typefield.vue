@@ -276,7 +276,7 @@ export default {
     if (this.value != null || this.value != undefined) {
       this.initValue(String(this.value));
     }
-    on(document, "keydown", this.keyDown);
+    on(this.$refs.reference, "keydown", this.keyDown);
   },
   methods: {
     keyDown(e) {
@@ -729,7 +729,7 @@ export default {
     if (this.transfer) {
       this.$refs.drop.destroy();
     }
-    off(document, "keydown", this.keyDown);
+    off(this.$refs.reference, "keydown", this.keyDown);
   }
 };
 </script>
