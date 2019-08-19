@@ -1011,7 +1011,8 @@ function getElement(ele, field, status) {
   if(curNode.querySelector('input')){
     if(curNode.querySelector('input').getAttribute('search')==='multiSelect'){
       let isshow=curNode.__vue__.dropVisible
-      if(isshow){
+      let isenter=curNode.__vue__.isEnterhide
+      if(isshow||isenter){
         return
       }
     }
