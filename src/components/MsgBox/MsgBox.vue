@@ -1,61 +1,50 @@
 <template>
-  <div v-transfer-dom
-       :data-transfer="transfer">
+  <div v-transfer-dom :data-transfer="transfer">
     <transition :name="transitionNames[1]">
-      <div :class="maskClasses"
-           v-show="visible"
-           @click="mask"
-           :style="stylecls"></div>
+      <div :class="maskClasses" v-show="visible" @click="mask" :style="stylecls"></div>
     </transition>
-    <div :class="wrapClasses"
-         @click="handleWrapClick"
-         :style="stylecls"
-         ref="wrap">
-      <transition :name="transitionNames[0]"
-                  @after-leave="animationFinish">
+    <div :class="wrapClasses" @click="handleWrapClick" :style="stylecls" ref="wrap">
+      <transition :name="transitionNames[0]" @after-leave="animationFinish">
         <!-- <div :class="classes"> -->
-        <div :class="[prefixCls + '-content']"
-             v-show="visible"
-             v-if="rendered || !lazyload"
-             :style="mainStyles"
-             ref="content">
-          <a :class="[prefixCls + '-maximize']"
-             v-if="maximize"
-             @click="switchSize">
+        <div
+          :class="[prefixCls + '-content']"
+          v-show="visible"
+          v-if="rendered || !lazyload"
+          :style="mainStyles"
+          ref="content"
+        >
+          <a :class="[prefixCls + '-maximize']" v-if="maximize" @click="switchSize">
             <slot name="maximize">
               <Icon :name="maxName"></Icon>
             </slot>
           </a>
-          <a :class="[prefixCls + '-close']"
-             v-if="closable"
-             @click="close">
+          <a :class="[prefixCls + '-close']" v-if="closable" @click="close">
             <slot name="close">
               <Icon name="close"></Icon>
             </slot>
           </a>
-          <div :class="[prefixCls + '-header']"
-               ref="msgHeader"
-               v-if="showHead"
-               v-drag="[this.canDrag,this.isBeyond,this.closeDrop]">
+          <div
+            :class="[prefixCls + '-header']"
+            ref="msgHeader"
+            v-if="showHead"
+            v-drag="[this.canDrag,this.isBeyond,this.closeDrop]"
+          >
             <slot name="header">
               <div :class="[prefixCls + '-header-inner']">{{ title }}</div>
             </slot>
           </div>
-          <div :class="[prefixCls + '-body']"
-               :style="contentStyle">
+          <div :class="[prefixCls + '-body']" :style="contentStyle">
             <slot></slot>
           </div>
-          <div :class="[prefixCls + '-footer']"
-               v-if="!footerHide"
-               ref="msgFooter">
+          <div :class="[prefixCls + '-footer']" v-if="!footerHide" ref="msgFooter">
             <slot name="footer">
-              <h-button type="text"
-                        size="large"
-                        @click="cancel">{{ localeCancelText }}</h-button>
-              <h-button type="primary"
-                        size="large"
-                        :loading="buttonLoading"
-                        @click="ok">{{ localeOkText }}</h-button>
+              <h-button type="text" size="large" @click="cancel">{{ localeCancelText }}</h-button>
+              <h-button
+                type="primary"
+                size="large"
+                :loading="buttonLoading"
+                @click="ok"
+              >{{ localeOkText }}</h-button>
             </slot>
           </div>
         </div>
@@ -65,18 +54,18 @@
   </div>
 </template>
 <script>
-import Icon from '../Icon/Icon.vue'
-import hButton from '../Button/Button.vue'
-import TransferDom from '../../directives/transfer-dom'
-import ScrollbarMixins from './mixins-scrollbar'
-import Locale from '../../mixins/locale'
-import Emitter from '../../mixins/emitter'
-import Drag from '../../directives/drag.js'
-import { on, off } from '../../util/dom'
-const prefixCls = 'h-modal'
+import Icon from "../Icon/Icon.vue";
+import hButton from "../Button/Button.vue";
+import TransferDom from "../../directives/transfer-dom";
+import ScrollbarMixins from "./mixins-scrollbar";
+import Locale from "../../mixins/locale";
+import Emitter from "../../mixins/emitter";
+import Drag from "../../directives/drag.js";
+import { on, off } from "../../util/dom";
+const prefixCls = "h-modal";
 
 export default {
-  name: 'Msgbox',
+  name: "Msgbox",
   mixins: [Locale, Emitter, ScrollbarMixins],
   components: { Icon, hButton },
   directives: { TransferDom, Drag },
@@ -128,7 +117,7 @@ export default {
     transitionNames: {
       type: Array,
       default() {
-        return ['ease', 'fade']
+        return ["ease", "fade"];
       }
     },
     transfer: {
@@ -211,7 +200,7 @@ export default {
 
       headerHeight: 0,
       footerHeight: 0
-    }
+    };
   },
   computed: {
     wrapClasses() {
@@ -221,84 +210,85 @@ export default {
           [`${prefixCls}-hidden`]: !this.wrapShow,
           [`${this.className}`]: !!this.className
         }
-      ]
+      ];
     },
     maskClasses() {
-      return `${prefixCls}-mask`
+      return `${prefixCls}-mask`;
     },
     classes() {
-      return `${prefixCls}`
+      return `${prefixCls}`;
     },
     mainStyles() {
-      this.screenWidth = document.documentElement.clientWidth
-      let style = {}
-      const width = parseInt(this.curWidth)
-      let offsetWidth = width <= 100 ? (this.screenWidth * width) / 100 : width
+      this.screenWidth = document.documentElement.clientWidth;
+      let style = {};
+      const width = parseInt(this.curWidth);
+      let offsetWidth = width <= 100 ? (this.screenWidth * width) / 100 : width;
       const styleWidth = {
         width: width <= 100 ? `${width}%` : `${width}px`,
-        height: this.curHeight ? this.curHeight + 'px' : 'auto'
-      }
+        height: this.curHeight ? this.curHeight + "px" : "auto"
+      };
       if (this.height && this.height < 100 && !this.curHeight) {
-        styleWidth.height = `${this.height}%`
+        styleWidth.height = `${this.height}%`;
       }
-      style.top = this.isMax ? '0' : this.top + 'px'
+      style.top = this.isMax ? "0" : this.actualTop + "px";
       style.left =
         this.left == undefined
-          ? (this.screenWidth - offsetWidth) / 2 + 'px'
-          : this.left + 'px'
-      const customStyle = this.styles ? this.styles : {}
-      Object.assign(style, styleWidth, customStyle)
-      return style
+          ? (this.screenWidth - offsetWidth) / 2 + "px"
+          : this.left + "px";
+      const customStyle = this.styles ? this.styles : {};
+      Object.assign(style, styleWidth, customStyle);
+      return style;
     },
     localeOkText() {
       if (this.okText === undefined) {
-        return this.t('i.modal.okText')
+        return this.t("i.modal.okText");
       } else {
-        return this.okText
+        return this.okText;
       }
     },
     localeCancelText() {
       if (this.cancelText === undefined) {
-        return this.t('i.modal.cancelText')
+        return this.t("i.modal.cancelText");
       } else {
-        return this.cancelText
+        return this.cancelText;
       }
     },
     stylecls() {
-      let style = {}
-      style.zIndex = this.zIndex
+      let style = {};
+      style.zIndex = this.zIndex;
       if (this.maskTop) {
-        style.top = this.maskTop + 'px'
+        style.top = this.maskTop + "px";
       }
       if (this.maskLeft) {
-        style.left = this.maskLeft + 'px'
+        style.left = this.maskLeft + "px";
       }
-
-      if (this.allHeight >= this.WindosInnerHeight) {
-        //如果msgbox高度超出浏览器，则不能垂直居中，display一律设置成block
-        style.display = 'block'
-      }
-      return style
+      return style;
     },
     contentStyle() {
-      let style = {}
+      let style = {};
       if (this.height) {
-        style.height = this.height <= 100 ? `auto` : `${this.height}px`
-        style.overflowY = 'auto'
+        style.height = this.height <= 100 ? `auto` : `${this.height}px`;
+        style.overflowY = "auto";
       }
       if (this.maxHeight) {
-        style.maxHeight = `${this.maxHeight}px`
-        style.overflowY = 'auto'
+        style.maxHeight = `${this.maxHeight}px`;
+        style.overflowY = "auto";
       }
-      return style
+      return style;
     },
     maxName() {
-      return this.isMax ? 'max' : 'min'
+      return this.isMax ? "max" : "min";
     },
-    allHeight() {
-      let hHeight = this.showHead ? this.headerHeight : 0
-      let fHeight = this.footerHide ? 0 : this.footerHeight
-      return hHeight + fHeight + this.height
+    actualTop() {
+      if (this.height < this.WindosInnerHeight) {
+        return this.top;
+      }
+      let hHeight = this.showHead ? this.headerHeight : 0;
+
+      let fHeight = this.footerHide ? 0 : this.footerHeight;
+ 
+      let allHeight = hHeight + fHeight + this.height;
+      return this.top + (allHeight - this.WindosInnerHeight) / 2;
     }
   },
   methods: {
@@ -307,203 +297,198 @@ export default {
       if (
         this.$parent &&
         this.$parent.$options &&
-        this.$parent.$options.name === 'Msgbox-js'
+        this.$parent.$options.name === "Msgbox-js"
       ) {
-        this.$parent.cancel()
-        return
+        this.$parent.cancel();
+        return;
       }
 
-      this.$emit('on-close')
-      this.visible = false
-      this.$emit('input', false)
+      this.$emit("on-close");
+      this.visible = false;
+      this.$emit("input", false);
     },
     headClick() {},
     switchSize() {
       if (!this.isMax) {
-        this.curWidth = this.screenWidth
-        this.curHeight = document.documentElement.clientHeight
+        this.curWidth = this.screenWidth;
+        this.curHeight = document.documentElement.clientHeight;
       } else {
-        this.curWidth = this.width
-        this.curHeight = 0
+        this.curWidth = this.width;
+        this.curHeight = 0;
       }
-      this.isMax = !this.isMax
-      this.$emit('on-maximize', this.isMax)
+      this.isMax = !this.isMax;
+      this.$emit("on-maximize", this.isMax);
     },
     backOrigin() {
-      const obj = this.$refs.content
-      const width = parseInt(this.curWidth)
+      const obj = this.$refs.content;
+      const width = parseInt(this.curWidth);
       const styleWidth = {
         width: width <= 100 ? `${width}%` : `${width}px`
-      }
-      if (this.allHeight >= this.WindosInnerHeight) {
-        this.$refs.wrap.style.display = 'block'
-      } else if (Number(this.top) <= 0) {
-        this.$refs.wrap.style.display = 'flex'
-      }
-
-      obj.style.top = this.top + 'px'
+      };
+      if (Number(this.top) <= 0) this.$refs.wrap.style.display = "flex";
+      obj.style.top = this.actualTop + "px";
       obj.style.left =
         this.left == undefined
-          ? (this.screenWidth - width) / 2 + 'px'
-          : this.left + 'px'
+          ? (this.screenWidth - width) / 2 + "px"
+          : this.left + "px";
     },
     mask() {
       if (this.maskClosable) {
-        this.close()
+        this.close();
       }
     },
     handleWrapClick(event) {
       // use indexOf,do not use === ,because h-modal-wrap can have other custom className
-      const className = event.target.getAttribute('class')
-      if (className && className.indexOf(`${prefixCls}-wrap`) > -1) this.mask()
+      const className = event.target.getAttribute("class");
+      if (className && className.indexOf(`${prefixCls}-wrap`) > -1) this.mask();
     },
     cancel() {
-      this.$emit('on-cancel')
-      this.visible = false
-      this.$emit('input', false)
+      this.$emit("on-cancel");
+      this.visible = false;
+      this.$emit("input", false);
     },
     ok() {
       if (this.loading) {
-        this.buttonLoading = true
+        this.buttonLoading = true;
       } else {
-        this.visible = false
-        this.$emit('input', false)
+        this.visible = false;
+        this.$emit("input", false);
       }
-      this.$emit('on-ok')
+      this.$emit("on-ok");
     },
     EscClose(e) {
       if (this.visible && this.escClose && this.realClose) {
         if (e.keyCode === 27) {
           // esc 关闭前判断 beforeEscClose 函数返回
-          let flag = this.beforeEscClose && this.beforeEscClose()
-          if (!flag) return
+          let flag = this.beforeEscClose && this.beforeEscClose();
+          if (!flag) return;
 
-          this.$emit('on-cancel')
-          this.close()
+          this.$emit("on-cancel");
+          this.close();
         }
       }
     },
     tabClose(e) {
       if (e.keyCode == 9 && this.visible) {
-        event.preventDefault()
+        event.preventDefault();
       }
     },
     animationFinish() {
-      this.$emit('on-hidden')
+      this.$emit("on-hidden");
     },
     ScreenRes() {
-      this.screenWidth = document.documentElement.clientWidth
-      this.WindosInnerHeight = window.innerHeight
+      this.screenWidth = document.documentElement.clientWidth;
+      this.WindosInnerHeight = window.innerHeight;
     }
   },
   mounted() {
     if (this.visible) {
-      this.wrapShow = true
-      this.rendered = true
+      this.wrapShow = true;
+      this.rendered = true;
       this.$nextTick(() => {
-        this.$emit('on-open')
-      })
+        this.$emit("on-open");
+      });
     }
-    let showHead = true
+    let showHead = true;
 
     if (this.$slots.header === undefined && !this.title) {
-      showHead = false
+      showHead = false;
     }
 
-    this.showHead = showHead
+    this.showHead = showHead;
 
     // ESC close
     // document.addEventListener('keydown', this.EscClose);
-    this.$on('on-esc-real-close', status => {
-      this.realClose = status
-    })
-    on(document, 'keydown', this.EscClose)
-    on(window, 'resize', this.ScreenRes)
+    this.$on("on-esc-real-close", status => {
+      this.realClose = status;
+    });
+    on(document, "keydown", this.EscClose);
+    on(window, "resize", this.ScreenRes);
     if (this.disableTabEvent) {
-      on(document.querySelector('#app'), 'keydown', this.tabClose)
+      on(document.querySelector("#app"), "keydown", this.tabClose);
     }
   },
   beforeDestroy() {
-    off(document, 'keydown', this.EscClose)
-    off(window, 'resize', this.ScreenRes)
-    this.removeScrollEffect()
+    off(document, "keydown", this.EscClose);
+    off(window, "resize", this.ScreenRes);
+    this.removeScrollEffect();
     if (this.disableTabEvent) {
-      off(document.querySelector('#app'), 'keydown', this.tabClose)
+      off(document.querySelector("#app"), "keydown", this.tabClose);
     }
   },
   watch: {
     value(val) {
-      this.visible = val
+      this.visible = val;
       if (val) {
         this.$nextTick(() => {
           if (this.showHead) {
-            this.headerHeight = this.$refs.msgHeader.offsetHeight
+            this.footerHeight = this.$refs.msgFooter.offsetHeight;
           }
           if (!this.footerHide) {
-            this.footerHeight = this.$refs.msgFooter.offsetHeight
+            this.headerHeight = this.$refs.msgHeader.offsetHeight;
           }
-        })
+        });
       }
 
       if (val && this.isOriginal) {
         // 开启了懒加载以后首次渲染时需要在nextTick中执行
         if (!this.rendered && this.lazyload) {
           this.$nextTick(() => {
-            this.backOrigin()
-          })
-          return
+            this.backOrigin();
+          });
+          return;
         }
-        this.backOrigin()
+        this.backOrigin();
       }
     },
     visible(val) {
       if (val === false) {
-        this.buttonLoading = false
+        this.buttonLoading = false;
         this.timer = setTimeout(() => {
-          this.wrapShow = false
-          this.removeScrollEffect()
-        }, 300)
+          this.wrapShow = false;
+          this.removeScrollEffect();
+        }, 300);
       } else {
-        this.rendered = true
+        this.rendered = true;
         this.$nextTick(() => {
-          this.$emit('on-open')
-        })
-        if (this.timer) clearTimeout(this.timer)
-        this.wrapShow = true
+          this.$emit("on-open");
+        });
+        if (this.timer) clearTimeout(this.timer);
+        this.wrapShow = true;
         if (!this.scrollable) {
-          this.addScrollEffect()
+          this.addScrollEffect();
         }
       }
-      this.broadcast('Table', 'on-visible-change', val)
-      this.broadcast('EditGird', 'on-visible-change', val)
+      this.broadcast("Table", "on-visible-change", val);
+      this.broadcast("EditGird", "on-visible-change", val);
       this.broadcast(
-        'SimpleSelect',
-        'on-visible-change',
+        "SimpleSelect",
+        "on-visible-change",
         val,
         this.mainStyles.top
-      )
-      this.broadcast('Select', 'on-visible-change', val, this.mainStyles.top)
+      );
+      this.broadcast("Select", "on-visible-change", val, this.mainStyles.top);
     },
     loading(val) {
       if (!val) {
-        this.buttonLoading = false
+        this.buttonLoading = false;
       }
     },
     scrollable(val) {
       if (!val) {
-        this.addScrollEffect()
+        this.addScrollEffect();
       } else {
-        this.removeScrollEffect()
+        this.removeScrollEffect();
       }
     },
     title(val) {
       if (this.$slots.header === undefined) {
-        this.showHead = !!val
+        this.showHead = !!val;
       }
     },
     width(val) {
-      this.curWidth = val
+      this.curWidth = val;
     }
   }
-}
+};
 </script>

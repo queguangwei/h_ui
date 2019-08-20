@@ -120,6 +120,7 @@ export default {
       cloumnsLeft:{},
       multiData:null,
       isCurrent: true,
+      sortIndex: 0,
       beginLocation: {}
     }
   },
@@ -188,6 +189,7 @@ export default {
       }
       let _index = this.columns[index]._index;
       this.$parent.handleSort(_index, type);
+      this.sortIndex = index
     },
     handleSortByHead(index) {
       const column = this.columns[index];

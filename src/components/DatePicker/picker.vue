@@ -17,6 +17,7 @@
                  :value="visualValue"
                  :name="name"
                  @click.native="clickHandler"
+                 @on-keyup.prevent="keyUpHandler"
                  @on-input-change="handleInputChange"
                  @on-focus="handleFocus"
                  @on-blur="handleBlur"
@@ -391,6 +392,7 @@ export default {
       } else if(this.cursorPos > 10) {
         sectionIndex = Math.ceil((this.cursorPos - 10) / 3) + 3 - 1 // 3 - 5
       }
+
       if (sectionIndex === -1) return
 
       // // 待改变项值
@@ -479,10 +481,8 @@ export default {
           this.$refs.pickerPanel.onToggleVisibility(true)
         }
         this.isFocus = true
-        if (this.$refs.input)
-          this.$refs.input.focus()
-        if(window.isO45 && this.value !== '')
-          this.select()
+        if (this.$refs.input) this.$refs.input.focus()
+        if(window.isO45 && this.value !== '') this.select()
       }, 0)
 //        this.visible =status =='notShow'?false:true;
 //      })
@@ -656,6 +656,7 @@ export default {
     },
     formatDate(value) {
       const format = DEFAULT_FORMATS[this.type]
+
       if (this.multiple) {
         const formatter = TYPE_VALUE_RESOLVER_MAP.multiple.formatter
         return formatter(value, this.format || format)
@@ -826,7 +827,6 @@ export default {
     }
     this.$refs.drop.destroy()
     off(document, 'keydown', this.handleKeydown)
-    off(document, 'keyup', this.keyUpHandler)
   },
   mounted() {
     const initialValue = this.value
@@ -843,7 +843,6 @@ export default {
     }
     if (this.open !== null) this.visible = this.open
     on(document, 'keydown', this.handleKeydown)
-    on(document, 'keyup', this.keyUpHandler)
   }
 }
 </script>

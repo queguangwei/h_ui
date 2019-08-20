@@ -114,6 +114,10 @@
             <slot name="header">
             </slot>
           </div>
+          <div v-if="buttonToTop&&multiple" :class="[prefixCls + '-btnToTop']">
+            <Checkbox v-model="selectHead" @on-change="toggleSelect(!isSelectAll)">全选</Checkbox>
+            <Button size="small" :class="[prefixCls + '-btnToTop-invert']" @click="toggleSelect(false)">全不选</Button>
+          </div>
           <div v-if="!isBlock"
                v-show="(!notFound && !remote) || (remote && !loading && !notFound)"
                :class="[prefixCls + '-dropdown-list']"
@@ -141,7 +145,7 @@
           <slot name="footer">
           </slot>
         </div>
-        <div v-if="isCheckall&&multiple&&!notFoundShow"
+        <div v-if="isCheckall&&multiple&&!notFoundShow&&!buttonToTop"
              :class="checkAll">
           <Button size="small"
                   @click="toggleSelect(false)">全不选</Button>
@@ -419,6 +423,10 @@ export default {
         let num = parseInt(value);
         return num <= 32767 && num >= -1;
       }
+    },
+    buttonToTop: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -665,7 +673,9 @@ export default {
       this.$emit('on-scroll', num)
     },
     toggleSelect(val) {
+      console.log(val, this.isSelectAll)
       this.isSelectAll = !this.isSelectAll
+      this.selectHead = val
       if (this.isBlock) {
         let hybridValue = []
         let curValue = []
@@ -1081,8 +1091,11 @@ export default {
           this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
         }
         this.isInputFocus = false
-        if(this.isSingleSelect&&this.model==''){
-          this.query=''
+        if(this.isSingleSelect&&this.model==''&&this.query!=''){
+          if(this.options.length>0){
+            this.model = this.options[0].value
+            this.isQuerySelect = false
+          }
         }
       }
     },
@@ -1575,8 +1588,11 @@ export default {
         this.$refs.reference.blur()
       }
       if(this.isSingleSelect){
-        if(this.model==''){
-          this.query=''
+        if(this.model==''&&this.query!=''){
+          if(this.options.length>0){
+            this.model = this.options[0].value
+            this.isQuerySelect = false
+          }
         }
       }
     },
@@ -1673,11 +1689,11 @@ export default {
         this.findChild(child=>{
           child.cloneData.forEach((col,i)=>{
             if(col.value==this.model&&child.showCol.length>0){
-              curlabel = col[child.showCol[0]]
+              curlabel = col.label+' '+ col[child.showCol[0]]
             }
           })
         })
-        this.singleMutiLabel = this.query+' '+curlabel
+        this.singleMutiLabel = curlabel
       }
       this.showMutiLabel = true
 
