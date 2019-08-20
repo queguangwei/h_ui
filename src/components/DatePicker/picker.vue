@@ -826,7 +826,9 @@ export default {
     }
     this.$refs.drop.destroy()
     off(document, 'keydown', this.handleKeydown)
-    off(document, 'keyup', this.keyUpHandler)
+    if(!window.isO45) {
+      off(document, 'keyup', this.keyUpHandler)
+    }
   },
   mounted() {
     const initialValue = this.value
@@ -843,7 +845,9 @@ export default {
     }
     if (this.open !== null) this.visible = this.open
     on(document, 'keydown', this.handleKeydown)
-    on(document, 'keyup', this.keyUpHandler)
+    if(!window.isO45) {
+      on(document, 'keyup', this.keyUpHandler)
+    }
   }
 }
 </script>
