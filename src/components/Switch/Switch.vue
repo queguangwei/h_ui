@@ -1,5 +1,5 @@
 <template>
-  <span :class="wrapClasses" :style="styles" @click="toggle" tabindex=0 ref="core" @focus="focus" @blur="blur" ref="switchWrap">
+  <span :class="wrapClasses" :style="styles" @click="toggle" tabindex=0 ref="core" @focus="focus" @blur="blur">
     <span :class="slideClasses" :style="styleSlide"></span>
     <span :class="innerClasses">
       <slot name="open" v-if="currentValue"></slot>
@@ -88,10 +88,10 @@
       }
     },
     mounted() {
-      on(this.$refs.switchWrap, 'keyup', this.handleKeyup);
+      on(this.$refs.core, 'keyup', this.handleKeyup);
     },
     beforeDestroy() {
-      off(this.$refs.switchWrap, 'keyup', this.handleKeyup)
+      off(this.$refs.core, 'keyup', this.handleKeyup)
     },
     methods: {
       toggle () {
