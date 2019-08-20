@@ -243,17 +243,18 @@ export default {
       this.setValue(val)
     },
     setValue(val) {
-      console.log('=============触发setValue=================')
-      console.log('val+' + val)
       // 如果 step 是小数，且没有设置 precision ，是有问题的
       if (!isNaN(this.precision) && val !== null) {
         val = Number(Number(val).toFixed(this.precision))
         isNaN(val) && (val = 0)
       }
+
+      this.oldValue = val == null ? val : val.toString()
+      this.viewValue = val == null ? val : val.toString()
+
+      this.calcViewValue()
+      this.$emit('input', val)
       this.$nextTick(() => {
-        console.log('????????')
-        this.calcViewValue()
-        this.$emit('input', val)
         this.$emit('on-change', val)
         this.dispatch('FormItem', 'on-form-change', val)
       })
@@ -271,8 +272,6 @@ export default {
       this.$emit('on-focus', event)
     },
     blur(event) {
-      console.log('========================触发blur===========================')
-      console.log(event.target.value.trim())
       if (event == undefined) {
         this.focused = false
         return
@@ -281,7 +280,6 @@ export default {
         this.setValue(null)
         this.focused = false
         this.viewValue = null
-
         return
       }
       let val = Number(event.target.value.trim())
@@ -290,13 +288,7 @@ export default {
         val = this.min
       }
       this.setValue(val)
-      this.$nextTick(() => {
-        // 失焦后检查viewValue，oldVaule，value是否统一
-        this.viewValue = this.value
-        this.oldValue = this.value
-        this.$emit('on-blur', event)
-      })
-      
+      this.$emit('on-blur', event)
     },
     keyDown(e) {
       if (e.keyCode === 38) {
@@ -308,9 +300,6 @@ export default {
       }
     },
     change(event) {
-      console.log('============触发change===========')
-      console.log(event)
-
       let val = event.target.value.trim()
       val = val == '' && this.setzero ? '0' : val // 设置setzero后 清空后置为0(有min时置为min[后续判断])
       const isEmptyString = val.length === 0
@@ -324,7 +313,6 @@ export default {
         return
       }
       // if (event.type == 'change' && Number(val) === this.oldValue) return // already fired change for input event
-
       if (event.type == 'input' && this.precision === 0 && val.match(/\./)) {
         event.target.value = this.oldValue
         return
