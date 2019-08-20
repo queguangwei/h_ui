@@ -13,6 +13,9 @@
         <h-datePicker type="date" placeholder="选择日期" v-model="formItem1.end" class="curItemClass"></h-datePicker>
       </h-form-item>
 
+      <h-form-item label="金额框" prop="money" required>
+        <h-typefield v-model="formItem1.money" class="curItemClass" bigTips focusAllSelect integerNum="13" type="money" :max="10000000000" :min="0" :step="10000" algin="center" style="width:300px"></h-typefield>
+      </h-form-item>
       <!--<h-form-item label="日期控件">-->
         <!--<h-row>-->
           <!--<h-col span="11">-->
@@ -36,9 +39,7 @@
       <h-form-item label="输入框" prop="input" required>
         <h-input v-model="formItem1.input" placeholder="请输入" class="curItemClass" @on-blur="blurtest" @on-focus="focustest"></h-input>
       </h-form-item>
-      <h-form-item label="金额框" prop="money" required>
-        <h-typefield v-model="formItem1.money" class="curItemClass" bigTips focusAllSelect integerNum="13" suffixNum="2" type="money" :max="10000000000" :min="0" :step="100" algin="center" style="width:300px"></h-typefield>
-      </h-form-item>
+
 
       <h-form-item label="inputNumber" prop="inputNumber" required>
         <h-input-number :max="20"
@@ -73,10 +74,6 @@
       </h-form-item>
       <h-form-item label="下拉树" prop='tree' required>
         <h-select-tree v-model="formItem1.tree" :first-value="firstValc" style="width:200px" :data="baseData1" placement="top" placeholder="你好" filterable @on-focus="focustest" @on-blur="blurtest"></h-select-tree>
-      </h-form-item>
-
-      <h-form-item label="inputnumber" required prop="fatdate">
-        <h-input-number :max="10" :min="1"  @on-blur="blurtest" @on-focus="focustest"></h-input-number>
       </h-form-item>
 
       <h-form-item label="下拉表" prop='slider' required>
@@ -154,7 +151,7 @@ export default {
         input: '1',
         select: '',
         radio: '',
-        money: '',
+        money: 100,
         checkbox: [],
         fatdate: '',
         date: '',
@@ -317,8 +314,10 @@ export default {
       ],
     }
   },
-  mounted() {
+  created() {
     window.isO45 = true;
+  },
+  mounted() {
     document.addEventListener("keydown", event => {
       enterHandler1(this.$refs.formValidate, event);
     });
@@ -339,6 +338,7 @@ export default {
     handleSubmit(name) {
       let _this=this
       this.$refs[name].validate((valid) => {
+        console.log(valid)
         if (valid) {
           _this.$hMessage.success('提交成功!');
         } else {
