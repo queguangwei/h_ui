@@ -24,8 +24,8 @@
       </h-form-item>
         {{formValidate.city}}
         <h-form-item label="singleSelect" prop="city" required>
-            <h-single-select v-model="formValidate.city" disabled placeholder="请选择所在地" class="curItemClass" remote>
-                <h-select-block :data="bigData" :showCol="showCol"></h-select-block>
+            <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass" widthAdaption>
+                <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
             </h-single-select>
         </h-form-item>
 
@@ -85,7 +85,8 @@ export default {
         { value: "value9", label: "label9",label1: "多列9" },
         { value: "value10", label: "label10",label1: "多列10" },
         { value: "value11", label: "label11",label1: "多列11" },
-      ]
+      ],
+      colWidth:['200','200'],
     }
   },
   mounted() {
