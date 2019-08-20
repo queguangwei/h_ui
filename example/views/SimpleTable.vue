@@ -5,9 +5,12 @@
     <h2>带边线 多选</h2>
     <Button @click="loadData">加载数据</Button>
     <Button @click="changeData">切换数据</Button>
-    <!--<h-simple-table :columns="columnsBig" :data="bigData" border stripe @on-select="select" @on-select-cancel="select" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="300" @on-select-all='change' @on-scroll="change" @on-selection-change="change" width="1200" :canDrag="false">-->
-      <!--<span slot="loading">我是自定义加载！！！</span>-->
-    <!--</h-simple-table>-->
+    <h-simple-table :columns="columnsBig" :data="bigData" border stripe @on-select="select" @on-select-cancel="select" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="300" @on-select-all='change' @on-scroll="change" @on-selection-change="change" width="1200" :canDrag="false">
+      <span slot="loading">我是自定义加载！！！</span>
+    </h-simple-table>
+    <div>
+      <h-page :total="100" show-total></h-page>
+    </div>
     <h-button @click="setLoading">切换状态</h-button>
     <h-button @click="clearData">清除数据</h-button>
     <h2>不带边线 单选 on-current-change</h2>
@@ -544,7 +547,7 @@ export default {
     },
     setLoading(){
       this.$set(this.bigData[0],'fundId','sheishi')
-      // this.loading = !this.loading;
+       this.loading = !this.loading;
     },
     click1 (selection) {
       console.log(selection);
@@ -632,6 +635,7 @@ export default {
     }
   },
   mounted(){
+    window.isO45 = true
     this.columns1=[
         {
           type: 'selection',

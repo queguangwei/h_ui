@@ -1077,6 +1077,16 @@ export function enterHandler1(ele, evt) {
       el.__vue__.focus()
     }
   }
+  // if(evt.keyCode == 27) {
+  //   evt.preventDefault()
+  //   var el = getElement(ele, evt.target, false)
+  //   if (!el) {
+  //     return false
+  //   } else {
+  //     el.__vue__.blur()
+  //   }
+  // }
+
 }
 
 /**
