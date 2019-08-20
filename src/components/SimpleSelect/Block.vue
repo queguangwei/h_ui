@@ -85,7 +85,11 @@ export default {
     // 显示多列的表头，表头高度默认 30，宽度默认 100
     showHeader: {
       type: Array,
-      default: () => []
+      default: () => [],
+    },
+    colWidth:{
+      type: Array,
+      default: () => [],
     }
     // disabled: {
     //   type: Boolean,
@@ -336,7 +340,8 @@ export default {
     } else if (this.showCol.length) {
       this.styleArr = []
       for(let i = 0; i < this.showCol.length + 1; i++) {
-        this.styleArr.push(this.calcStyle(''))
+        let str = this.colWidth[i]?this.colWidth[i]:''
+        this.styleArr.push(this.calcStyle(str))
       }
     }
   },
