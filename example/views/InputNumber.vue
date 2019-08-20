@@ -5,6 +5,7 @@
     <h-input-number :max="100"
                     :min="1"
                     v-model="value1"
+                    style="width:200px"
                     :precision="2">
       <span slot="append">px</span>
     </h-input-number>
@@ -17,6 +18,16 @@
                     @on-blur="blurEvent"
                     ref="input"></h-input-number>
     <Button @click="testClick()">获取焦点</Button>
+
+    <h-input-number :max="10000"
+                    :min="0"
+                    :step="100"
+                    v-model="value1"
+                    style="width:200px"
+                    @on-change="changee"
+                    :precision="2">
+      <span slot="append">px</span>
+    </h-input-number>
     <br>
     <br>
     <h-input-number :max="10"
@@ -59,17 +70,14 @@ export default {
   data() {
     return {
       value1: 0,
-      value2: 0,
-      value3: 3,
-      value4: 4,
-      value5: 5,
-      disabled: true,
-      value6: 1,
-      value7: 0,
-      value8: 0.0000007
+      onee: true
     }
   },
   methods: {
+    changee() {
+      console.log('触发change！！')
+      this.value1 = Math.floor(this.value1 / 100) * 100
+    },
     testClick() {
       this.$refs.input.focus();
     },
