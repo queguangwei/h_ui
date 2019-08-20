@@ -418,7 +418,7 @@ export default {
     },
     tabindex: {
       type: [String, Number],
-      default: "-1",
+      default: 0,
       validator(value) {
         let num = parseInt(value);
         return num <= 32767 && num >= -1;
@@ -1289,6 +1289,7 @@ export default {
         this.selectedResult=modelstr;
       }
       this.isInputFocus = false
+      this.$emit('on-blur')
     },
     resetInputState(e) {
       this.inputLength = this.$refs.input.value.length * 12 + 56
