@@ -1091,8 +1091,11 @@ export default {
           this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
         }
         this.isInputFocus = false
-        if(this.isSingleSelect&&this.model==''){
-          this.query=''
+        if(this.isSingleSelect&&this.model==''&&this.query!=''){
+          if(this.options.length>0){
+            this.model = this.options[0].value
+            this.isQuerySelect = false
+          }
         }
       }
     },
@@ -1584,8 +1587,11 @@ export default {
         this.$refs.reference.blur()
       }
       if(this.isSingleSelect){
-        if(this.model==''){
-          this.query=''
+        if(this.model==''&&this.query!=''){
+          if(this.options.length>0){
+            this.model = this.options[0].value
+            this.isQuerySelect = false
+          }
         }
       }
     },
@@ -1682,11 +1688,11 @@ export default {
         this.findChild(child=>{
           child.cloneData.forEach((col,i)=>{
             if(col.value==this.model&&child.showCol.length>0){
-              curlabel = col[child.showCol[0]]
+              curlabel = col.label+' '+ col[child.showCol[0]]
             }
           })
         })
-        this.singleMutiLabel = this.query+' '+curlabel
+        this.singleMutiLabel = curlabel
       }
       this.showMutiLabel = true
 
