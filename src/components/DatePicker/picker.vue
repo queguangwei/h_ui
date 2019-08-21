@@ -771,6 +771,9 @@ export default {
         this.$set(this.internalValue, 0,new Date())
         this.emitChange()
       }
+    },
+    getDate(val){
+      return val.replace(/[^0-9]/ig,"");
     }
   },
   watch: {
