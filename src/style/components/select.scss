@@ -297,6 +297,14 @@ $select-group-prefix-cls:  "#{$css-prefix}select-group";
     &-right{
         text-align:right;
     }
+
+  &-btnToTop {
+    padding: 7px 12px;
+    &-invert {
+      float: right;
+      margin-right: 12px;
+    }
+  }
 }
 
 @include select-item($select-prefix-cls, $select-item-prefix-cls);

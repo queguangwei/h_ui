@@ -3,32 +3,27 @@
     <h2>基础</h2>
     <h3>单选分组组件</h3>
     <!-- :multiLevel="multiLevel2" -->
-    <h-group-table :columns="columns1" childHighlightRow :height="300" width="600" :data="data1" size="small" @on-expand="expand" :titleRender="titleRender" @on-child-change="click1" ref="groupTable" :loading="loading">
-    </h-group-table>
-    <h-group-table :columns="columns1"
-                   childHighlightRow
-                   :height="300"
-                   width="600"
-                   :data="data1"
-                   size="small"
-                   @on-select="ons"
-                   @on-expand="expand"
-                   @on-child-change="click1"
-                   ref="groupTable"
-                   isGroupSeparated
-                   :loading="loading">
+    <h-group-table :columns="columns1" childHighlightRow :height="300" width="600" :data="data1" size="small" @on-expand="expand"  @on-child-change="click1" ref="groupTable" :loading="loading">
       <P slot="loading">我是自定义de</P>
     </h-group-table>
+    <Button @click="setLoad">切换loading</Button>
+    <h-group-table :columns="columns1" :data="data1" @on-row-dblclick="dblClick" :loading="loading"></h-group-table>
+    <h-group-table :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" stripe :loading="loading"></h-group-table>
+    <h-group-table :columns="columns1" :data="[]" no-data-text="哎呀你好" :loading="loading"></h-group-table>
+    <Button @click="getDate">获取数据</Button>
+    <h3>多选分组组件</h3>
+    <h-group-table :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading"></h-group-table>
+    <h-group-table :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" @on-selection-change="selsetChange" :loading="loading"></h-group-table>
   </div>
 </template>
 
 <script>
 import TexpandRow from './Texpand-row.vue'
-var tData = [
+var tData= [
   {
-    title: '分组表格数据：group1【项目编号：45424451114】 共计：3项',
-    expand: true,
-    item: [
+    title:'分组表格数据：group1【项目编号：45424451114】 共计：3项',
+    expand:true,
+    item:[
       {
         name: '王小明',
         age: 18,
@@ -36,9 +31,9 @@ var tData = [
         money: '120.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
         // _highlight: true//默认选择当前项
       },
       {
@@ -48,9 +43,9 @@ var tData = [
         money: '130.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
       },
       {
         name: '李小红',
@@ -59,9 +54,9 @@ var tData = [
         money: '140.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
       },
       {
         name: '周小伟',
@@ -70,9 +65,9 @@ var tData = [
         money: '150.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
       },
       {
         name: '王小明',
@@ -81,9 +76,9 @@ var tData = [
         money: '120.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
         // _highlight: true//默认选择当前项
       },
       {
@@ -93,9 +88,9 @@ var tData = [
         money: '130.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
       },
       {
         name: '李小红',
@@ -104,9 +99,9 @@ var tData = [
         money: '140.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
       },
       {
         name: '周小伟',
@@ -115,9 +110,9 @@ var tData = [
         money: '150.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
       },
       {
         name: '王小明',
@@ -126,9 +121,9 @@ var tData = [
         money: '120.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
         // _highlight: true//默认选择当前项
       },
       {
@@ -138,9 +133,9 @@ var tData = [
         money: '130.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
       },
       {
         name: '李小红',
@@ -149,9 +144,9 @@ var tData = [
         money: '140.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
       },
       {
         name: '周小伟',
@@ -160,15 +155,15 @@ var tData = [
         money: '150.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
       }
     ]
   },
   {
-    title: '分组表格数据：group2【项目编号：45424451114】 共计：3项',
-    item: [
+    title:'分组表格数据：group2【项目编号：45424451114】 共计：3项',
+    item:[
       {
         name: '王小明',
         age: 18,
@@ -176,9 +171,9 @@ var tData = [
         money: '120.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
         // _highlight: true//默认选择当前项
       },
       {
@@ -188,9 +183,9 @@ var tData = [
         money: '130.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
       },
       {
         name: '李小红',
@@ -199,9 +194,9 @@ var tData = [
         money: '140.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
       },
       {
         name: '周小伟',
@@ -210,15 +205,15 @@ var tData = [
         money: '150.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
       }
     ]
   },
   {
-    title: '分组表格数据：group3【项目编号：45424451114】 共计：3项',
-    item: [
+    title:'分组表格数据：group3【项目编号：45424451114】 共计：3项',
+    item:[
       {
         name: '王小明',
         age: 18,
@@ -226,9 +221,9 @@ var tData = [
         money: '120.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
         // _highlight: true//默认选择当前项
       },
       {
@@ -238,9 +233,9 @@ var tData = [
         money: '130.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
       },
       {
         name: '李小红',
@@ -249,9 +244,9 @@ var tData = [
         money: '140.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
       },
       {
         name: '周小伟',
@@ -260,15 +255,15 @@ var tData = [
         money: '150.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
       }
     ]
   },
   {
-    title: '分组表格数据：group4【项目编号：45424451114】 共计：3项',
-    item: [
+    title:'分组表格数据：group4【项目编号：45424451114】 共计：3项',
+    item:[
       {
         name: '王小明',
         age: 18,
@@ -276,9 +271,9 @@ var tData = [
         money: '120.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
         // _highlight: true//默认选择当前项
       },
       {
@@ -288,9 +283,9 @@ var tData = [
         money: '130.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
       },
       {
         name: '李小红',
@@ -299,9 +294,9 @@ var tData = [
         money: '140.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
       },
       {
         name: '周小伟',
@@ -310,44 +305,91 @@ var tData = [
         money: '150.00',
         cardId: '6223 5678 1234 5678',
         city: '北京',
-        dating: '2018-03-07',
-        timing: '16:00:00.00',
-        tree: 'leaf1'
+        dating:'2018-03-07',
+        timing:'16:00:00.00',
+        tree:'leaf1'
       }
     ]
   }
-]
+];
 export default {
-  components: { TexpandRow },
+  components:{TexpandRow},
   data() {
     return {
-      loading: false,
+      loading:false,
       columns1: [
-        {
-          type: 'selection',
-          width: 50
-        },
+        // {
+        //   type: 'expand',
+        //   width: 50,
+        //   render: (h, params) => {
+        //     return h(TexpandRow, {
+        //       props: {
+        //           row: params.row
+        //       }
+        //     })
+        //   }
+        // },
+        // {
+        //   title: '姓名',
+        //   key: 'name',
+        //   width: 200,
+        //   hiddenOther:true,
+        //   render:(h,params)=>{
+        //     return h('span',[
+        //       h('Icon', {
+        //         props: {
+        //           name: 'person'
+        //         }
+        //       }),
+        //     ])
+        //   }
+        // },
         {
           title: '年龄',
           width: 200,
-          key: 'age'
+          key: 'age',
         },
         {
           title: '地址',
           width: 200,
-          key: 'address'
+          key: 'address',
         },
         {
           title: '金额',
-          key: 'money'
+          key: 'money',
           // width: 160
-        }
+        },
+        // {
+        //   title: '卡号',
+        //   width: 200,
+        //   key: 'cardId',
+        //   hiddenCol: true
+        // },
+        // {
+        //   title: '地区',
+        //   width: 200,
+        //   key: 'city',
+        // },
+        // {
+        //   title: '日期',
+        //   width: 200,
+        //   key: 'dating',
+        // },
+        // {
+        //   title: '时间',
+        //   width: 200,
+        //   key: 'timing',
+        // },
+        // {
+        //   title: '下拉树',
+        //   key: 'tree',
+        // }
       ],
       columns4: [
         {
           type: 'selection',
           width: 60,
-          align: 'center'
+          align: 'center',
         },
         {
           type: 'text',
@@ -359,14 +401,14 @@ export default {
           type: 'number',
           title: '年龄',
           width: 200,
-          key: 'age'
+          key: 'age',
         },
         {
           type: 'textArea',
           rows: 2,
           width: 200,
           title: '地址',
-          key: 'address'
+          key: 'address',
         },
         {
           type: 'money',
@@ -375,35 +417,35 @@ export default {
           integerNum: 3,
           suffixNum: 2,
           bigTips: true,
-          key: 'money'
+          key: 'money',
         },
         {
           type: 'card',
           title: '卡号',
           width: 200,
-          key: 'cardId'
+          key: 'cardId',
         },
         {
           type: 'select',
           title: '地区',
           width: 200,
           key: 'city',
-          multiple: false,
+          multiple:false,
           option: [
-            { value: '北京' },
-            { value: '上海' },
-            { value: '天津' },
-            { value: '沈阳' },
-            { value: '杭州' },
-            { value: '武汉' }
-          ]
+              {value:"北京"},
+              {value:"上海"},
+              {value:"天津"},
+              {value:"沈阳"},
+              {value:"杭州"},
+              {value:"武汉"},
+          ],
         },
         {
           type: 'date',
           title: '日期',
           width: 200,
           key: 'dating',
-          dateType: 'date',
+          dateType:'date',
           format: 'yyyy-MM-dd'
         },
         {
@@ -411,116 +453,80 @@ export default {
           title: '时间',
           width: 200,
           key: 'timing',
-          dateType: 'time',
+          dateType:'time',
           format: 'HH:mm:ss',
-          steps: []
+          steps: [],
         },
         {
           type: 'selectTree',
           title: '下拉树',
           width: 200,
           key: 'tree',
-          treeData: [
-            {
+          treeData:[{
+            expand: true,
+            selected:true,
+            title: 'parent 1',
+            children: [{
+              title: 'parent 1-0',
               expand: true,
-              selected: true,
-              title: 'parent 1',
-              children: [
-                {
-                  title: 'parent 1-0',
-                  expand: true,
-                  children: [
-                    {
-                      title: 'leaf1',
-                      disableCheckbox: true
-                    },
-                    {
-                      title: 'leaf2'
-                    }
-                  ]
-                },
-                {
-                  title: 'parent 1-1',
-                  expand: true,
-                  checked: true,
-                  children: [
-                    {
-                      title: 'leaf3'
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
+              children: [{
+                title: 'leaf1',
+                disableCheckbox: true
+              }, {
+                title: 'leaf2',
+              }]
+            }, {
+              title: 'parent 1-1',
+              expand: true,
+              checked: true,
+              children: [{
+                title: 'leaf3',
+              }]
+            }]
+          }],
           showCheckbox: false,
-          checkStrictly: false
+          checkStrictly: false,
         }
       ],
       data1: tData,
-      multiLevel2: [
+      multiLevel2:[
         [
-          {
-            title: '123',
-            cols: 2,
-            align: 'center',
-            className: 'demo-table-info-column'
-          },
-          { title: '456', rows: 2, align: 'center' },
-          { title: '789', align: 'right' }
+          {title:'123',cols:2,align:'center',className:'demo-table-info-column'},
+          {title:'456',rows:2,align:'center'},
+          {title:'789',align:'right'},
         ]
-      ]
+      ],
     }
   },
   methods: {
-    titleRender(h, data) {
-      return h('span', {}, [
-        h('span', {}, [data]),
-        h('h-button', {
-          props: {
-            type: 'primary',
-            size: 'small'
-          },
-          style: {
-            marginLeft: '25px',
-          }
-        }, ["查看"])])
-    },
-    ons(p1, p2, p3) {
-      console.log('select!')
-      console.log(p1)
-      console.log(p2)
-      console.log(p3)
-    },
     expand(data, status) {
       console.log(data, status)
     },
-    dblClick(e, curIndex) {
-      console.log(e, curIndex)
+    dblClick(e,curIndex){
+      console.log(e,curIndex);
     },
-    setLoad() {
-      this.loading = !this.loading
+    setLoad(){
+      this.loading = !this.loading;
     },
-    click1(s, j, i) {
-      console.log(s)
-      console.log(j)
-      console.log(i)
+    click1(s,j,i){
+      console.log(s);
+      console.log(j);
+      console.log(i);
     },
-    allSelect(allSelection) {
-      console.log(allSelection)
+    allSelect (allSelection){
+      console.log(allSelection);
     },
-    select(selection, row) {
-      //已选择的项和刚刚选择的项
-      console.log(selection)
-      console.log(row)
+    select (selection,row){//已选择的项和刚刚选择的项
+      console.log(selection);
+      console.log(row);
     },
-    selsetChange(selection) {
-      //选项发生变化时触发已选择的项
-      console.log(selection)
+    selsetChange (selection){//选项发生变化时触发已选择的项
+      console.log(selection);
     },
-    getDate() {
-      console.log(this.$refs.groupTable.cloneData)
+    getDate(){
+      console.log(this.$refs.groupTable.cloneData);
     },
-    addDate() {
+    addDate(){
       tData = this.data1.push({
         name: '',
         age: null,
@@ -528,16 +534,16 @@ export default {
         money: '',
         cardId: '',
         city: '',
-        dating: '',
-        timing: '',
-        tree: ''
-      })
+        dating:'',
+        timing:'',
+        tree:''
+      });
     }
   }
 }
 </script>
 <style>
-.demo-table-info-column {
+.demo-table-info-column{
   color: red;
 }
 /* .h-editgird .h-editgird-cell-with-render .dbClass{display:none;} */

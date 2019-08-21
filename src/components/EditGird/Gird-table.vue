@@ -945,7 +945,7 @@ export default {
           const status = !data._isChecked
           _this.objData[k].item[m]._isChecked = status
           if (!this.isGroupSeparated) {
-            //如果父子行不是分离的，则判断父亲是否被选中
+            //如果父子行不是分离的，修改父亲的选中情况
             _this.objData[k]._isChecked = !_this.objData[k].item.some(
               col => !col._isChecked
             )
