@@ -2015,6 +2015,11 @@ export default {
         } else {
           newRow._isMatched = false
         }
+        //【TS:201908140071-资管业委会（资管）_钱佳华-【需求类型】缺陷【需求描述】需求背景：如果开启selectC】 如果全选 分页加载数据 也要全选数据
+        if(this.isSelectAll) {
+          newRow._isChecked = true
+        }
+
         // const newRowdata = deepCopy(row)
         newRow._index = oldLength + index
         newRow._rowKey = rowKey++

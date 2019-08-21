@@ -1962,10 +1962,7 @@ export default {
         },
         {
           title: '地址',
-          // ellipsis:true,
           key: 'address',
-                    // fixed:'right'
-          // hiddenCol:true,
         },
         {
           title: '地址1',
