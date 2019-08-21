@@ -673,7 +673,6 @@ export default {
       this.$emit('on-scroll', num)
     },
     toggleSelect(val) {
-      console.log(val, this.isSelectAll)
       this.isSelectAll = !this.isSelectAll
       this.selectHead = val
       if (this.isBlock) {

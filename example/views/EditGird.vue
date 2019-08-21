@@ -41,37 +41,36 @@
 <!--     <Button @click="getDate">获取数据</Button>
     <Button @click = "addDate">新增一行</Button> -->
 
-    <!--<h3>多选</h3>-->
+    <h3>多选</h3>
     <!--<h-edit-gird :columns="columns4" :data="data1" :showEditInput="true" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-select-cancel="select" height="200"></h-edit-gird>-->
     <!--<h-edit-gird :columns="columns4" :data="data1" @on-select-all="allSelect" @on-selection-change="selsetChange" height="200" :loading="loading"></h-edit-gird>-->
-    <!--<h3>直接显示编辑框</h3>-->
-    <!--<Button @click="getChangeData">获取改变后的数据</Button>-->
-    <!--<h-edit-gird :columns="columns1" ref="table1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" :showEditInput="true" height="200" :loading="loading"></h-edit-gird>-->
-    <!--<Button @click="setLoad">切换loading</Button>-->
-    <!--<Button @click="addDate">添加一行</Button>-->
-    <!--<p>动态显示隐藏输入框</p>-->
-    <!--<h-row style="margin-top: 10px;margin-bottom: 10px;">-->
-        <!--<h-col span="24">-->
-          <!--<span>-->
-            <!--<h-button type="primary" style="margin-right: 5px;" @click="showInput">打开</h-button>-->
-          <!--</span>-->
-          <!--<span>-->
-            <!--<h-button type="primary" style="margin-right: 5px;" @click="hideInput">关闭</h-button>-->
-          <!--</span>-->
-        <!--</h-col>-->
-      <!--</h-row>-->
+    <h3>直接显示编辑框</h3>
+    <Button @click="getChangeData">获取改变后的数据</Button>
+    <h-edit-gird :columns="columns1" ref="table1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" :showEditInput="true" height="200" :loading="loading"></h-edit-gird>
+    <Button @click="setLoad">切换loading</Button>
+    <Button @click="addDate">添加一行</Button>
+    <p>动态显示隐藏输入框</p>
+    <h-row style="margin-top: 10px;margin-bottom: 10px;">
+        <h-col span="24">
+          <span>
+            <h-button type="primary" style="margin-right: 5px;" @click="showInput">打开</h-button>
+          </span>
+          <span>
+            <h-button type="primary" style="margin-right: 5px;" @click="hideInput">关闭</h-button>
+          </span>
+        </h-col>
+      </h-row>
 
-      <!--<h-edit-gird :columns="columnsA" :data="datainput" size="small" :showEditInput="showEditInput" stripe></h-edit-gird>-->
+      <h-edit-gird :columns="columnsA" :data="datainput" size="small" :showEditInput="showEditInput" stripe></h-edit-gird>
   </div>
 </template>
 
 <script>
 let bigData = []
-for (let i = 0; i < 70; i++) {
+for (let i = 0; i < 100; i++) {
   let obj = {};
-  obj.value = "value" + i;
-  obj.label = "label111111111111111111111111111111111111111111111111" + i;
-  obj.label1 = "name" + i;
+  obj.value = i;
+  obj.label = i + "岁";
   bigData.push(obj);
 }
 var tData= [
@@ -84,8 +83,8 @@ var tData= [
     city: '北京',
     dating:'2018-03-07',
     timing:'16:00:00.00',
-    tree:'leaf1'
-    // _highlight: true//默认选择当前项
+    tree:'leaf1',
+//     _highlight: true//默认选择当前项
   },
   {
     name: '张小刚',
@@ -303,77 +302,49 @@ export default {
           width: 200,
           filterRE:/[^\d]/g,
           sortable:true,
-          // typeWidth:100,
-          // hiddenOther:true,
           rule: { required: true, message: '姓名不能为空'},
-          // render: (h, params) => {
-          //   return h('div', [
-          //     h('h-button', {
-          //       props: {
-          //         type: 'primary',
-          //         size: 'small'
-          //       },
-          //       style: {
-          //         marginRight: '5px'
-          //       },
-          //       on: {
-          //         'click': () => {
-          //           this.show(params.index)
-          //         }
-          //       }
-          //     }, '查看')
-          //   ]);
-          // }
         },
         {
-          width:250,
-          typeWidth:0,
+          width: 100,
           render: (h, params) => {
-             return h('div', [
-               h('h-simple-select', {
-                 props: {
-                   transfer: true,
-                   filterable: true,
-                   multiple:true,
-                 },
-                 on: {
-                   'on-change': (e) => {
-
-
-                     console.log(e)
-                   },
-                   'on-blur': (e) => {
-
-                   },
-                 }
-               }, [h('h-select-block', {
-                 props: {
-                   data:this.selectList
-                 }
-               })])
-             ]);
-//            return h('div', [
-//              h('h-switch', {
-//                on: {
-//                  'click': () => {
-//                    this.show(params.index)
-//                  }
-//                }
-//              })
-//            ]);
+            return h('div', [
+              h('h-switch', {
+                on: {
+                  'click': () => {
+                    this.show(params.index)
+                  }
+                }
+              })
+            ])
           }
         },
         {
-          type: 'number',
+          width:220,
           title: '年龄',
           key: 'age',
-          hiddenCol:false,
-          prelabel:(index)=>{
-            if(index==2){
-              return "123";
-            }
-          },
-          rule: { required: true, message: '年龄不能为空'},
+          render: (h, params) => {
+            return h('div', [
+              h('h-simple-select', {
+                props: {
+                  transfer: true,
+                  filterable: true,
+                },
+                on: {
+                  'on-change': (e) => {
+                    console.log(e)
+                  },
+                  'on-blur': (e) => {
+                    console.log(e)
+                  },
+                }
+              }, [h('h-select-block', {
+                props: {
+                  data:this.selectList
+                }
+              })])
+            ]);
+          }
+
         },
         {
           type: 'textArea',

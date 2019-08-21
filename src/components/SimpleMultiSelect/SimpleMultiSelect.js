@@ -37,7 +37,7 @@ export default {
   },
   methods: {
     showdrop(){
-      return  
+      return
     },
     handleFocus(e) {
       e.target.selectionStart = 0
@@ -48,7 +48,7 @@ export default {
       this.$nextTick(() => {
         this.isInputFocus = true
         this.$refs.input.focus()
-        
+
       })
     },
     handleKeydown(e) {
@@ -60,10 +60,11 @@ export default {
           e.preventDefault()
           this.hideMenu()
         }
+        // enter
         if (keyCode === 13) {
           e.preventDefault()
           this.hideMenu()
-          
+
           // this.$refs.input.focus()
           this.$nextTick(() => {
             this.$refs.input.focus()
@@ -71,27 +72,29 @@ export default {
           })
         }
         if(window.isO45){
+          // down
           if (keyCode === 40) {
             e.preventDefault()
             this.navigateOptions('next')
           }
-          // prev
+          // up
           if (keyCode === 38) {
             e.preventDefault()
             this.navigateOptions('prev')
           }
+          // space
           if(keyCode === 32){
             e.preventDefault()
-    
+
             let index = this.focusIndex - 1
             if (index < 0) return false
-  
+
             // 设置 focusInit 后直接回车取不到 focusValue
             if(!this.focusValue) {
               this.focusValue = this.availableOptions[this.focusIndex - 1].value
             }
             if(this.availableOptions[this.focusIndex - 1].disabled) return
-  
+
             if (this.isBlock) {
 
               let optionitem=this.options.filter(item=>item.value===this.focusValue)
@@ -103,7 +106,7 @@ export default {
               }
               return
             }
-  
+
             this.findChild(child => {
               if (!this.multiple) {
                 child.$refs.table.enterSingle(index, true)
