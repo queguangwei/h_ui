@@ -17,7 +17,6 @@
                  :value="visualValue"
                  :name="name"
                  @click.native="clickHandler"
-                 @on-keyup.prevent="keyUpHandler"
                  @on-input-change="handleInputChange"
                  @on-focus="handleFocus"
                  @on-blur="handleBlur"
@@ -414,19 +413,19 @@ export default {
       // this.visualValue = tmpPre.join(':') + ' - ' + tmpAfter.join(':')
 
       if (sectionIndex < 3) {
-        let tmp;
+        let tmp
         if (this.internalValue[0] !== null) {
-          tmp = new Date(this.internalValue[0]).getTime() + append * Math.pow(60, 2 - sectionIndex);
+          tmp = new Date(this.internalValue[0]).getTime() + append * Math.pow(60, 2 - sectionIndex)
         } else {
-          tmp = new Date(1970, 1, 1, 0, 0, 0);
+          tmp = new Date(1970, 1, 1, 0, 0, 0)
         }
         this.$set(this.internalValue, 0, new Date(tmp))
       } else {
-        let tmp;
+        let tmp
         if (this.internalValue[1] !== null) {
           tmp = new Date(this.internalValue[1]).getTime() + append * Math.pow(60, 5 - sectionIndex)
         } else {
-          tmp = new Date(1970, 1, 1, 0, 0, 0);
+          tmp = new Date(1970, 1, 1, 0, 0, 0)
         }
         this.$set(this.internalValue, 1, new Date(tmp))
       }
@@ -769,8 +768,8 @@ export default {
       let td =new Date();
       let isDisabled = disabledDateFn && disabledDateFn(td)
       if(!isDisabled){
-      this.$set(this.internalValue, 0,new Date())
-      this.emitChange()
+        this.$set(this.internalValue, 0,new Date())
+        this.emitChange()
       }
     }
   },
@@ -827,6 +826,9 @@ export default {
     }
     this.$refs.drop.destroy()
     off(document, 'keydown', this.handleKeydown)
+    if(!window.isO45) {
+      off(document, 'keyup', this.keyUpHandler)
+    }
   },
   mounted() {
     const initialValue = this.value
@@ -843,6 +845,9 @@ export default {
     }
     if (this.open !== null) this.visible = this.open
     on(document, 'keydown', this.handleKeydown)
+    if(!window.isO45) {
+      on(document, 'keyup', this.keyUpHandler)
+    }
   }
 }
 </script>

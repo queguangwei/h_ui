@@ -3,6 +3,7 @@ import Router from 'vue-router'
 // import { resolve } from 'dns';
 import Home from '../views/Home.vue'
 import Hello from '../views/hello.vue'
+import MyExample from '../views/MyExample.vue'
 import Switchs from '../views/Switchs.vue'
 import Typefield from '../views/Typefield.vue'
 import Input from '../views/Input.vue'
@@ -434,6 +435,7 @@ const router = new Router({
       // { name: 'cuiyang', path: '/cuiyang', component: Cuiyang },
       { path: '/', redirect: '/home' },
       { name: 'home', path: '/home', component:Home},
+      { name: 'myExample', path: '/myExample', component:MyExample},
       { name: 'switchs', path: '/switchs', component:Switchs },
       { name: 'typefield', path: '/typefield', component: Typefield},
       {
