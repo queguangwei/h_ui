@@ -6,7 +6,7 @@
               @click="modal1 = true">显示对话框</h-button>
     <h-msg-box v-model="modal1"
                title="普通的Modal对话框标题"
-               :height="2500"
+               :height="20000"
                :scrollable="true"
                :top="1"
                :left="110"
