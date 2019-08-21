@@ -68,7 +68,7 @@ for (let i = 0; i < 1; i++) {
 
 export default {
   components:{TexpandRow},
-  data () {
+  data() {
     return {
       showmsg:false,
       checked:false,
@@ -294,7 +294,7 @@ export default {
                   }
                 }
               }, '删除')
-            ]);
+            ])
           }
         }
       ],
@@ -490,7 +490,7 @@ export default {
     },
     setLoading(){
       this.$set(this.bigData[0],'fundId','sheishi')
-       this.loading = !this.loading;
+      // this.loading = !this.loading;
     },
     click1 (selection) {
       console.log(selection);

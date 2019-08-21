@@ -549,8 +549,7 @@ export default {
       scheduledAnimationFrame: false, // 是否进行动画帧更新visibledata,
       isHorizontal:false,
       lastScrollTop: 0,
-      beginLocation: {},
-      isCtrlDown: false
+      beginLocation: {}
     }
   },
   computed: {
@@ -1159,11 +1158,6 @@ export default {
       }
       if(column.sortable) {
         const type = column._sortType
-        // 【TS:201907290145-资管业委会（资管）_孔磊-【需求类型】需求【需求描述】表格2、点击列头时就可以进行排序】 按ctrl+鼠标点击可重置排序
-        if(window.isO45 && this.isCtrlDown) {
-          this.handleSort(index, 'normal')
-          return
-        }
         if(column.type === 'selection') {
           if(type === 'normal') {
             this.handleSort(index, 'asc')
@@ -1664,6 +1658,7 @@ export default {
         this.cloneColumns[index]._sortType = type
         return
       }
+      this.sortIndex = index
       let _index = this.cloneColumns[index]._index
       //【TS:201907290144-资管业委会（资管）_孔磊-【需求类型】需求【需求描述】表格1、勾选框列可以排序，选中的在上面】
       const columnType = this.cloneColumns[index].type
@@ -2185,12 +2180,6 @@ export default {
         // home
         if (keyCode == 36) {
         }
-        // ctrl
-        if (e.keyCode === 17) {
-          e.preventDefault()
-          e.stopPropagation()
-          this.isCtrlDown = true
-        }
       }
     },
     navigateOptions(direction) {
@@ -2269,12 +2258,15 @@ export default {
           if (_index !== null && Number(_index) >= 0) this.highlightCurrentRow(_index)
         }
         // ctrl
-        if (e.keyCode === 17) {
-          e.preventDefault()
-          e.stopPropagation()
-          this.isCtrlDown = false
-        }
+//        if (e.keyCode === 17) {
+//          e.preventDefault()
+//          e.stopPropagation()
+//          this.cancelSort()
+//        }
       }
+    },
+    cancelSort() {
+      this.handleSort(this.sortIndex, 'normal');
     },
     keySelectRange() {
       let max, min
