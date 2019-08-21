@@ -196,6 +196,9 @@ export default {
     step: {
       type: Number,
       default: 1
+    },
+    uppercaseMethod: {
+      type: Function
     }
   },
   computed: {
@@ -660,12 +663,16 @@ export default {
     bigShow(type, value) {
       if (type == "money" && value) {
         if (this.bigTips) {
-          this.bigNum = changeTipsVal(
-            value,
-            this.integerNum,
-            this.suffixNum,
-            this.isround
-          );
+          if(this.uppercaseMethod) {
+            this.bigNum = this.uppercaseMethod(value, this.integerNum, this.suffixNum, this.isround)
+          }else {
+            this.bigNum = changeTipsVal(
+              value,
+              this.integerNum,
+              this.suffixNum,
+              this.isround
+            )
+          }
           this.tipShow = Boolean(this.bigNum);
         }
       } else {
