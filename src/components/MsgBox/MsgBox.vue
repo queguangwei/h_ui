@@ -242,10 +242,12 @@ export default {
         styleWidth.height = `${this.height}%`
       }
       style.top = this.isMax ? '0' : this.top + 'px'
+
       style.left =
         this.left == undefined
           ? (this.screenWidth - offsetWidth) / 2 + 'px'
           : this.left + 'px'
+
       const customStyle = this.styles ? this.styles : {}
       Object.assign(style, styleWidth, customStyle)
       return style
@@ -283,7 +285,19 @@ export default {
     contentStyle() {
       let style = {}
       if (this.height) {
-        style.height = this.height <= 100 ? `auto` : `${this.height}px`
+        if (this.isMax) {
+          let footerHeight = this.footerHide ? 0 : this.footerHeight
+          let titleHeight = this.showHead ? this.titleHeight : 0
+          let styleheight =
+            this.allHeight > this.WindosInnerHeight
+              ? this.height
+              : this.WindosInnerHeight - footerHeight - titleHeight
+          style.height = styleheight + 'px'
+          console.log("styleheight="+styleheight)
+        } else {
+          style.height = this.height <= 100 ? `auto` : `${this.height}px`
+        }
+
         style.overflowY = 'auto'
       }
       if (this.maxHeight) {
