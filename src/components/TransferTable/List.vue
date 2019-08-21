@@ -7,6 +7,7 @@
     <div :class="bodyClasses">
       <div :class="prefixCls + '-body-search-wrapper'" v-if="filterable">
         <Search
+          ref="search"
           :prefix-cls="prefixCls + '-search'"
           :query="query"
           @on-query-clear="handleQueryClear"
@@ -194,7 +195,10 @@
       },
       rowClick(val){
         this.$emit('on-row-click',val)
-      } 
+      },
+      clearSearch(){
+        this.$refs.search.clearSearch()
+      }
     },
     created () {
         // this.updateFilteredData();
