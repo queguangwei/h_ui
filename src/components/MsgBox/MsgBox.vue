@@ -241,16 +241,17 @@ export default {
       if (this.height && this.height < 100 && !this.curHeight) {
         styleWidth.height = `${this.height}%`
       }
-      style.top = this.isMax ? '0' : this.actualTop + 'px'
+
       if (this.isMax) {
+        style.top = '0px'
         style.left = '0px'
       } else {
+        style.top = this.top + 'px'
         style.left =
           this.left == undefined
             ? (this.screenWidth - offsetWidth) / 2 + 'px'
             : this.left + 'px'
       }
-
       const customStyle = this.styles ? this.styles : {}
       Object.assign(style, styleWidth, customStyle)
       return style
@@ -288,8 +289,9 @@ export default {
     contentStyle() {
       let style = {}
       style.overflowY = 'auto'
-      if (this.isMax ) {
-        let mHeight = this.curHeight - this.headerHeight - this.footerHeight - 2 
+      if (this.isMax) {
+        let mHeight =
+          this.curHeight - (this.headerHeight + 1) - (this.footerHeight + 1) //加1是为了消除边线影响F
         style.height = `${mHeight}px`
         style.maxHeight = `${mHeight}px`
       } else {
