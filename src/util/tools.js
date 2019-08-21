@@ -1238,34 +1238,34 @@ export function numtochinese(Num,suffixNumber) {
     switch (perchar) {
       case '0':
         tmpnewchar = '零' + tmpnewchar
-      break;
+        break;
       case '1':
         tmpnewchar = '壹' + tmpnewchar
-      break;
+        break;
       case '2':
         tmpnewchar = '贰' + tmpnewchar
-      break;
+        break;
       case '3':
         tmpnewchar = '叁' + tmpnewchar
-      break;
+        break;
       case '4':
         tmpnewchar = '肆' + tmpnewchar
-      break;
+        break;
       case '5':
         tmpnewchar = '伍' + tmpnewchar
-      break;
+        break;
       case '6':
         tmpnewchar = '陆' + tmpnewchar
-      break;
+        break;
       case '7':
         tmpnewchar = '柒' + tmpnewchar
-      break;
+        break;
       case '8':
         tmpnewchar = '捌' + tmpnewchar
-      break;
+        break;
       case '9':
         tmpnewchar = '玖' + tmpnewchar
-      break;
+        break;
     }
     switch (part[0].length - i - 1) {
       case 0:
