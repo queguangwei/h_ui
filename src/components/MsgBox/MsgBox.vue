@@ -241,12 +241,15 @@ export default {
       if (this.height && this.height < 100 && !this.curHeight) {
         styleWidth.height = `${this.height}%`
       }
-      style.top = this.isMax ? '0' : this.top + 'px'
-
-      style.left =
-        this.left == undefined
-          ? (this.screenWidth - offsetWidth) / 2 + 'px'
-          : this.left + 'px'
+      style.top = this.isMax ? '0' : this.actualTop + 'px'
+      if (this.isMax) {
+        style.left = '0px'
+      } else {
+        style.left =
+          this.left == undefined
+            ? (this.screenWidth - offsetWidth) / 2 + 'px'
+            : this.left + 'px'
+      }
 
       const customStyle = this.styles ? this.styles : {}
       Object.assign(style, styleWidth, customStyle)
@@ -284,25 +287,18 @@ export default {
     },
     contentStyle() {
       let style = {}
-      if (this.height) {
-        if (this.isMax) {
-          let footerHeight = this.footerHide ? 0 : this.footerHeight
-          let titleHeight = this.showHead ? this.titleHeight : 0
-          let styleheight =
-            this.allHeight > this.WindosInnerHeight
-              ? this.height
-              : this.WindosInnerHeight - footerHeight - titleHeight
-          style.height = styleheight + 'px'
-          console.log("styleheight="+styleheight)
-        } else {
+      style.overflowY = 'auto'
+      if (this.isMax ) {
+        let mHeight = this.curHeight - this.headerHeight - this.footerHeight - 2 
+        style.height = `${mHeight}px`
+        style.maxHeight = `${mHeight}px`
+      } else {
+        if (this.height) {
           style.height = this.height <= 100 ? `auto` : `${this.height}px`
         }
-
-        style.overflowY = 'auto'
-      }
-      if (this.maxHeight) {
-        style.maxHeight = `${this.maxHeight}px`
-        style.overflowY = 'auto'
+        if (this.maxHeight) {
+          style.maxHeight = `${this.maxHeight}px`
+        }
       }
       return style
     },
@@ -354,12 +350,16 @@ export default {
       } else if (Number(this.top) <= 0) {
         this.$refs.wrap.style.display = 'flex'
       }
-
-      obj.style.top = this.top + 'px'
-      obj.style.left =
-        this.left == undefined
-          ? (this.screenWidth - width) / 2 + 'px'
-          : this.left + 'px'
+      if (this.isMax) {
+        obj.style.top = '0px'
+        obj.style.left = '0px'
+      } else {
+        obj.style.top = this.top + 'px'
+        obj.style.left =
+          this.left == undefined
+            ? (this.screenWidth - width) / 2 + 'px'
+            : this.left + 'px'
+      }
     },
     mask() {
       if (this.maskClosable) {
