@@ -32,6 +32,7 @@ export default {
       newSearchUnCheckAll:false,
       isResetField:false,
       isEnterhide:false,
+      timer:null,
     }
   },
   methods: {
@@ -55,6 +56,10 @@ export default {
       if (this.visible) {
         const keyCode = e.keyCode
         // Esc slide-up
+        if (keyCode === 27) {
+          e.preventDefault()
+          this.hideMenu()
+        }
         if (keyCode === 13) {
           e.preventDefault()
           this.hideMenu()
@@ -214,7 +219,15 @@ export default {
       if(searchkey==''){
         return
       }
-      this.newModelhandleSearch(searchkey)
+      if(this.timer) {
+        clearTimeout(this.timer)
+        this.timer=null
+      }
+      this.timer = setTimeout(()=>{
+        clearTimeout(this.timer)
+        this.timer=null
+        this.newModelhandleSearch(searchkey)
+      },300)
 
     },
     newSearchModelselectItem(changeitem){
@@ -248,5 +261,8 @@ export default {
         this.selectedResult=multipleAry.join(',')
       }
     }
+  },
+  beforeDestroy(){
+    this.timer=null
   }
 }
