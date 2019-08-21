@@ -11,7 +11,7 @@
                :top="0"
                isOriginal
                class-name="vertical-center-modal"> -->
-    <h-msg-box v-model="modal1">
+    <h-msg-box v-model="modal1" maximize left=100 top=100>
       <p>对话框内容</p>
     </h-msg-box>
 
