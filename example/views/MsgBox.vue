@@ -12,10 +12,11 @@
                :left="110"
                maximize
                isOriginal
-               class-name="vertical-center-modal">
-    
-        <p>对话框内容</p>
-      </h-msg-box>
+               class-name="vertical-center-modal"> 
+    </h-msg-box>
+    <h-msg-box v-model="modal1" maximize left=100 top=100>
+      <p>对话框内容</p>
+    </h-msg-box>
 
   </div>
 </template>

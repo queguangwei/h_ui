@@ -771,6 +771,9 @@ export default {
         this.$set(this.internalValue, 0,new Date())
         this.emitChange()
       }
+    },
+    getDate(val){
+      return val.replace(/[^0-9]/ig,"");
     }
   },
   watch: {
@@ -790,7 +793,8 @@ export default {
           this.dispatch('Msgbox', 'on-esc-real-close', false)
         }, 0)
       }
-      this.$refs.drop.update()
+      // 仅在transfer时进行重新计算【类似其余的下拉】，否则会不断触发回流，引起性能问题
+      if (this.transfer) this.$refs.drop.update()
       this.$emit('on-open-change', state)
     },
     value: {
