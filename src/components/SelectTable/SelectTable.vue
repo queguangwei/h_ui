@@ -860,6 +860,9 @@ export default {
             this.selectedResult=multipleAry.join(',');
           }
         }
+        if(this.remote){
+          this.$refs.dropdown.setWidthAdaption();
+        }
       }
     },
     updateSingleSelected(init = false, slot = false) {
@@ -1124,32 +1127,6 @@ export default {
         return false
       }
       if (this.visible) {
-        // if(window.isO45){
-          // right
-          // if (keyCode === 39) {
-          //   e.preventDefault();
-          //   this.navigateOptions('next');
-          // }
-          // // left
-          // if (keyCode === 37) {
-          //   e.preventDefault();
-          //   this.navigateOptions('prev');
-          // }
-          // if(!this.multiple && (keyCode === 39||keyCode === 37)){
-          //   this.model = this.focusValue
-          // }
-          // if(this.multiple&&keyCode === 32){
-          //   let index = this.focusIndex - 1
-          //   if (index < 0) return false
-          //   if(!this.focusValue) {
-          //     this.focusValue = this.availableOptions[this.focusIndex - 1].value
-          //   }
-          //   if(this.availableOptions[this.focusIndex - 1].disabled) return
-          //   this.selectBlockMultiple(this.focusValue)
-          // }
-          // return false;
-        // }
-        // next
         if (keyCode === 40) {
           e.preventDefault()
           this.navigateOptions('next')

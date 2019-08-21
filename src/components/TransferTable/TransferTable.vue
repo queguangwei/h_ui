@@ -343,6 +343,9 @@
           }
           return copied;
         });
+      },
+      clearSearch(dir='left'){//清空搜索框
+        this.$refs[dir].clearSearch()
       }
     },
     watch: {
