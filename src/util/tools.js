@@ -1473,3 +1473,24 @@ export function divideNum(num){
   }
   return num>=0?array[0]+revalue+pointStr:'-'+array[0]+revalue+pointStr
 }
+/**
+ * @description 金额转大写调用外部方法，只提供处理后金额
+ * @date 2019-08-21
+ * @param {String} value 金额数字
+ * @param {Number} integerNum 整数位数
+ * @param {Number} suffixNum 小数位数
+ * @param {Boolean} isround 事否四舍五入
+ */
+export function changeTipsNum(value,integerNum,suffixNum,isround){
+  value  = String(value).replace(/[^0-9\.-]/g,'')
+  value = cutNum(value,integerNum)
+  if(value.split('.')[1] && value.split('.')[1].length > 2){
+    if(isround&&isround==true){
+      value = parseFloat(value).toFixedSelf(suffixNum)
+    }else{
+      var suf = value.split('.')[1].substr(0,suffixNum)
+      value = value.split('.')[0]+'.'+suf
+    }
+  }
+  return value
+}
