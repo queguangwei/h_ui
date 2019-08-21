@@ -344,6 +344,7 @@ export default {
       this.$nextTick(() => {
         this.currentValue = val;
         this.bigShow(this.type, this.currentValue);
+              this.$emit("on-keyup", value);
         this.$emit("input", val);
         this.$emit("on-change", val);
         this.dispatch("FormItem", "on-form-change", val);
