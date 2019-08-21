@@ -117,59 +117,39 @@ export default {
     getFocus() {
       this.$refs.test.focus()
     },
-    blurtest(){
-      console.log("lsjflsja;");
+    mounted() {
+      window.isO45 = false;
+      document.addEventListener("keydown", event => {
+        enterHandler1(this.$refs.formValidate, event);
+      });
+      setTimeout(()=>{
+        this.formValidate.city="value11"
+      },1000)
     },
-    handleSubmit(){
+    methods:{
+      getFocus() {
+        this.$refs.test.focus()
+      },
+      blurtest(){
+        console.log("lsjflsja;");
+      },
+      handleSubmit(){
         this.formValidate.city="value1"
-    },
-    changeData(){
+      },
+      changeData(){
         this.bigData = this.bigData.slice(0,2)
-    },
-    focusFirst(){
+      },
+      focusFirst(){
         this.$refs.formValidate.firstNodeFocused()
-    },
-    clear(){
+      },
+      clear(){
         this.formValidate.city=''
     },
     changeShow(){
       this.show=true
     }
   }
-};
-</script>
-
-<!--<template>
-<div>
-<h-multi-select v-model="valueRemote1" :isString="isstring" specialIndex specialVal="value1" width="200" accuFilter newSearchModel>
-  <h-multi-block :data="remotebigData"></h-multi-block>
-</h-multi-select>
-
-    <h-simple-select v-model="value111" ref="test" filterable>
-        <h-select-block :data="bigData"></h-select-block>
-      </h-simple-select>
-      <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-      {{value111}}
-  </div>
-</template>
-<script>
-let bigData = [];
-bigData.push({label:'全选',value:'-1'})
-for(let i=0;i<2000;i++){
-  let obj={};
-  obj.value="value"+i;
-  obj.label="label"+i;
-  bigData.push(obj);
 }
-export default {
-  data () {
-    return{
-      bigData:bigData,
-      value111:'value0',
-      isstring:false,
-      valueRemote1:[],
-      remotebigData:bigData
-  }}
 }
 </script>
--->
+

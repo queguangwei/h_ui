@@ -1238,34 +1238,34 @@ export function numtochinese(Num,suffixNumber) {
     switch (perchar) {
       case '0':
         tmpnewchar = '零' + tmpnewchar
-      break;
+        break;
       case '1':
         tmpnewchar = '壹' + tmpnewchar
-      break;
+        break;
       case '2':
         tmpnewchar = '贰' + tmpnewchar
-      break;
+        break;
       case '3':
         tmpnewchar = '叁' + tmpnewchar
-      break;
+        break;
       case '4':
         tmpnewchar = '肆' + tmpnewchar
-      break;
+        break;
       case '5':
         tmpnewchar = '伍' + tmpnewchar
-      break;
+        break;
       case '6':
         tmpnewchar = '陆' + tmpnewchar
-      break;
+        break;
       case '7':
         tmpnewchar = '柒' + tmpnewchar
-      break;
+        break;
       case '8':
         tmpnewchar = '捌' + tmpnewchar
-      break;
+        break;
       case '9':
         tmpnewchar = '玖' + tmpnewchar
-      break;
+        break;
     }
     switch (part[0].length - i - 1) {
       case 0:
@@ -1472,4 +1472,25 @@ export function divideNum(num){
     }
   }
   return num>=0?array[0]+revalue+pointStr:'-'+array[0]+revalue+pointStr
+}
+/**
+ * @description 金额转大写调用外部方法，只提供处理后金额
+ * @date 2019-08-21
+ * @param {String} value 金额数字
+ * @param {Number} integerNum 整数位数
+ * @param {Number} suffixNum 小数位数
+ * @param {Boolean} isround 事否四舍五入
+ */
+export function changeTipsNum(value,integerNum,suffixNum,isround){
+  value  = String(value).replace(/[^0-9\.-]/g,'')
+  value = cutNum(value,integerNum)
+  if(value.split('.')[1] && value.split('.')[1].length > 2){
+    if(isround&&isround==true){
+      value = parseFloat(value).toFixedSelf(suffixNum)
+    }else{
+      var suf = value.split('.')[1].substr(0,suffixNum)
+      value = value.split('.')[0]+'.'+suf
+    }
+  }
+  return value
 }
