@@ -42,7 +42,8 @@ import {
   formatnumber,
   changeTipsVal,
   cutNum,
-  divideNum
+  divideNum,
+  changeTipsNum
 } from "../../util/tools";
 import Emitter from "../../mixins/emitter";
 import Locale from "../../mixins/locale";
@@ -663,8 +664,10 @@ export default {
     bigShow(type, value) {
       if (type == "money" && value) {
         if (this.bigTips) {
+          //【TS:201908090448-资管业委会（资管）_钱佳华-【需求类型】需求【需求描述】需求背景：金额控件需要支持万】
           if(this.uppercaseMethod) {
-            this.bigNum = this.uppercaseMethod(value, this.integerNum, this.suffixNum, this.isround)
+            let val = changeTipsNum(value, this.integerNum, this.suffixNum, this.isround)
+            this.bigNum = this.uppercaseMethod(val)
           }else {
             this.bigNum = changeTipsVal(
               value,

@@ -251,7 +251,7 @@ export default {
                 }
               }),
               h('strong', params.row.name)
-            ]);
+            ])
           }
         },
         {
