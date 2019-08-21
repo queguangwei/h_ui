@@ -199,7 +199,10 @@ export default {
     step: {
       type: Number,
       default: 1
-    }
+    },
+//    uppercaseMethod: {
+//      type: Function
+//    }
   },
   computed: {
     integerRegExp() {
