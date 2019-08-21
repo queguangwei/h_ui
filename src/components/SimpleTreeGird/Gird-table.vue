@@ -544,10 +544,9 @@ export default {
       this.$nextTick(()=>{
         this.$emit('on-row-click', row);
         if(this.highlightRow){
-          this.$emit('on-current-change', status?row:null);
+          this.$emit('on-current-change', this.checkedObj[inx]._isHighlight?row:null);
         }
         if(this.selectRoot){
-          debugger
           if(row._parentId!=undefined){
             let item = null
             for(var i=0;i<this.data.length;i++){
@@ -556,9 +555,9 @@ export default {
                 break;
               }
             }
-            this.$emit('on-select-root',status?item:null)
+            this.$emit('on-select-root',this.checkedObj[inx]._isHighlight?item:null)
           }else{
-            this.$emit('on-select-root',status?row:null)
+            this.$emit('on-select-root',this.checkedObj[inx]._isHighlight?row:null)
           }
         }
       })
