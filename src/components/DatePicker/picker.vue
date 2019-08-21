@@ -17,7 +17,6 @@
                  :value="visualValue"
                  :name="name"
                  @click.native="clickHandler"
-                 @on-keyup.prevent="keyUpHandler"
                  @on-input-change="handleInputChange"
                  @on-focus="handleFocus"
                  @on-blur="handleBlur"
