@@ -13,7 +13,7 @@
     <h-button @on-click="selectAll(false)">非全选</h-button>
     <!-- isCheckbox checkStrictly -->
     <!-- selectRoot -->
-    <h-simple-tree-gird ref="treeGird" :rowClassName="rowClassName" headSelection  canDrag canMove :columns="columns1" no-data-text="123" isCheckbox :data="treedata" :height="400" @on-row-dblclick="selectChange" @on-expand="expand" @on-drag="expand" >
+    <h-simple-tree-gird ref="treeGird" selectRoot :columns="columns1" isCheckbox :data="treedata" :height="400" @on-select-root="selectChange" >
       <span slot="loading">1244</span>
     </h-simple-tree-gird>
   </div>
