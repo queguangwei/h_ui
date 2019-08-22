@@ -29,7 +29,7 @@
       <!-- o45模式下失去焦点需要显示多列数据 -->
       <span :class="[prefixCls + '-selected-value']"
             v-show="showMutiLabel&&singleMutiLabel">{{ singleMutiLabel }}</span>
-      <!--搜索框开启newSearchModel时渲染-->
+      <!--搜索框开启 newSearchModel 时渲染-->
           <input type="text"
              v-if="newSearchModel&&multiple"
              v-model="selectedResult"
@@ -41,7 +41,8 @@
              :placeholder="showPlaceholder?localePlaceholder:''"
              @focus="handleFocus"
              @blur="handkeSearchBlur"
-             @keydown="resetInputState"
+             @keydown="resetInputState" 
+               @keyup="handleInputKeyup"
              :tabindex="tabindex"
              ref="input">
       <!-- 下拉输入框(远程搜索时渲染) -->
@@ -56,6 +57,7 @@
              @blur="handleBlur"
              @keydown="resetInputState"
              @keydown.delete="handleInputDelete"
+              @keyup="handleInputKeyup"
              :tabindex="tabindex"
              ref="input">
       <Icon name="close"
@@ -649,6 +651,15 @@ export default {
     }
   },
   methods: {
+    handleInputKeyup(){
+      if(this.newSearchModel){
+        this.$emit('on-keyup',this.selectedResult)
+      }else{
+        this.$emit('on-keyup',this.query)
+        
+      }
+ 
+    },
     selectedTop(status=true) {
       this.broadcast('Block', 'on-select-top',status)
     },
