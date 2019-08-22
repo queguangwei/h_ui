@@ -1,5 +1,5 @@
 <template>
-  <div :class="classes" ref="core">
+  <div :class="classes">
     <label :class="[prefixCls + '-label']"
            :style="labelStyles"
            v-if="label || $slots.label"
@@ -29,7 +29,6 @@
 <script>
 import AsyncValidator from 'async-validator'
 import Emitter from '../../mixins/emitter'
-import { on, off } from '../../util/dom'
 import {
   is,
   // findComponentChildren,
@@ -155,7 +154,6 @@ export default {
       mustShowErrorList: [],
       modeChanged: false,
       showModal:true,
-      isEscDown: false
     }
   },
   watch: {
@@ -348,10 +346,6 @@ export default {
       )
     },
     validate(trigger, callback = function() {}) {
-//      if(this.isEscDown) {
-//        console.log(trigger)
-//        return
-//      }
       this.showModal = true
       if (this.isNotChecked) return
       const rules = this.getFilteredRule(trigger)
@@ -409,7 +403,7 @@ export default {
       let prop = getPropByPath(model, path)
       if(this.$el.querySelector('input')){
         let input=this.$el.querySelector('input')
-        if(input.getAttribute('zhge')==='multiSelect'){
+        if(input.getAttribute('search')==='multiSelect'){
           if(this.$children[0].isResetField==undefined){
             this.$children[0].$children[0].isResetField=true
           }else{
@@ -469,29 +463,9 @@ export default {
     },
     closeTip(){
       this.showModal = false
-    },
-    handleKeydown(e) {
-      if(e.keyCode === 27) {
-        e.preventDefault()
-        e.stopPropagation()
-        console.log(this.$refs.core.children[1].childNodes)
-//        findDomNode(this.$refs.core.blur())
-        this.isEscDown = true
-      }
-    },
-    handleKeyup(e) {
-      const keyCode = e.keyCode
-      // space
-      if (keyCode === 27) {
-        e.preventDefault()
-        e.stopPropagation()
-        this.isEscDown = false
-      }
     }
   },
   mounted() {
-    on(this.$refs.core, 'keydown', this.handleKeydown)
-    on(this.$refs.core, 'keyup', this.handleKeyup)
     // 当form设置cols时，忽略textarea，slider中设置的cols,该组件独占一行,默认formItem子组件仅有一个textarea/slider/upload
     if (this.form.cols) {
       this.$nextTick(() => {
@@ -543,8 +517,6 @@ export default {
     }
   },
   beforeDestroy() {
-    off(this.$refs.core, 'keyup', this.handleKeyup)
-    off(this.$refs.core, 'keydown', this.handleKeydown)
     this.dispatch('Form', 'on-form-item-remove', this)
   },
   created() {}
