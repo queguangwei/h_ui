@@ -2386,6 +2386,13 @@ export default {
           this.updateVisibleData()
           this.$nextTick(() => {
             this.cloneData.push.apply(this.cloneData, deepCopy(this.addData))
+            if(this.isSelectAll) {
+              this.$emit(
+                'on-selection-change',
+                this.getSelection(),
+                this.getSelection(true)
+              )
+            }
           })
         }
       },
