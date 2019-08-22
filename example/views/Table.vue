@@ -15,32 +15,32 @@
     <Button @click="removeData">删除数据</Button>
      <!-- :multiLevel="multiLevel1" -->
      <!-- :multiLevel="multiLevel2"  -->
-    <h-table :columns="columns" :data="data0" :summationData="summationData1" border :highlight-row="true" @on-sort-change="sortchange" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="300" canMove @on-move="onMove" :lastColWidth="150">
+    <h-table :columns="columns" :data="data0" :summationData="summationData1" border :highlight-row="true" @on-sort-change="sortchange" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="500" canMove @on-move="onMove" :lastColWidth="150">
       <span slot="loading">我是自定义加载！！！</span>
     </h-table>
-    <!--<h-button @click="setLoading">切换状态</h-button>-->
-    <!--<h-button @click="setMult">切换hiddenCol</h-button>-->
-    <!--<h2>带边线</h2>-->
-    <!--<h-table border :columns="columns1" :data="data0" stripe no-data-text="数据为空" :show-header="false" :loading="loading" canMove>-->
-      <!--<div slot="header">我是表头</div>-->
-      <!--<div slot="footer">我是表尾</div>-->
-    <!--</h-table>-->
-    <!--<h2>自定义样式</h2>-->
-    <!--<p>行：通过属性 row-class-name 可以给某一行指定一个样式名称。</p>-->
-    <!--<p>列：通过给列 columns 设置字段 className 可以给某一列指定一个样式。</p>-->
-    <!--<p>单元格：通过给数据 data 设置字段 cellClassName 可以给任意一个单元格指定样式。</p>-->
-    <!--<p>自定义行样式：</p>-->
-    <!--<h-table :row-class-name="rowClassName" :multiLevel="multiLevel2" :columns="columns1" :data="data1" :loading="loading" :highlight-row='true' canMove></h-table>-->
-    <!--<p>自定义列样式：</p>-->
-    <!--<h-table :columns="columns9" :data="data1" :loading="loading"></h-table>-->
-    <!--<p>自定义任意单元格样式：</p>-->
-    <!--<Button @on-click="changeHidden">改变hiddenCol</Button>-->
-    <!--<h-table :columns="columns1" :data="data8" @on-row-click="click1" :loading="loading"></h-table> &ndash;&gt;-->
-    <!--<h2>固定表头</h2>-->
-    <!--<p>通过设置属性 height 给表格指定高度后，会自动固定表头。当纵向内容过多时可以使用</p>-->
-    <!--<p>设置maxheight 600</p>-->
-    <!--<h-table maxHeight="600" :columns="columns1" :data="data2" border :loading="loading" showTitle @on-drag-drop="handleDrop"></h-table>-->
-    <!--<h-table height="200" :columns="columns1" :data="data2" border :loading="loading" showTitle></h-table>-->
+    <h-button @click="setLoading">切换状态</h-button>
+    <h-button @click="setMult">切换hiddenCol</h-button>
+    <h2>带边线</h2>
+    <h-table border :columns="columns1" :data="data0" stripe no-data-text="数据为空" :show-header="false" :loading="loading" canMove>
+      <div slot="header">我是表头</div>
+      <div slot="footer">我是表尾</div>
+    </h-table>
+    <h2>自定义样式</h2>
+    <p>行：通过属性 row-class-name 可以给某一行指定一个样式名称。</p>
+    <p>列：通过给列 columns 设置字段 className 可以给某一列指定一个样式。</p>
+    <p>单元格：通过给数据 data 设置字段 cellClassName 可以给任意一个单元格指定样式。</p>
+    <p>自定义行样式：</p>
+    <h-table :row-class-name="rowClassName" :multiLevel="multiLevel2" :columns="columns1" :data="data1" :loading="loading" :highlight-row='true' canMove></h-table>
+    <p>自定义列样式：</p>
+    <h-table :columns="columns9" :data="data1" :loading="loading"></h-table>
+    <p>自定义任意单元格样式：</p>
+    <Button @on-click="changeHidden">改变hiddenCol</Button>
+    <h-table :columns="columns1" :data="data8" @on-row-click="click1" :loading="loading"></h-table> -->
+    <h2>固定表头</h2>
+    <p>通过设置属性 height 给表格指定高度后，会自动固定表头。当纵向内容过多时可以使用</p>
+    <p>设置maxheight 600</p>
+    <h-table maxHeight="600" :columns="columns1" :data="data2" border :loading="loading" showTitle @on-drag-drop="handleDrop"></h-table>
+    <h-table height="200" :columns="columns1" :data="data2" border :loading="loading" showTitle></h-table>
     <!--<h2>固定列</h2>-->
     <!--<p>通过给数据 columns 的项设置 fixed 为 left 或 right，可以左右固定需要的列。</p>-->
     <!--<h-table border :columns="columns2" showTitle :data="data3" :loading="loading" canMove height="250" canDragFixed :minDragWidth="60"></h-table>-->
@@ -1226,6 +1226,61 @@ export default {
       ],
       data4: [
         {
+          name: '<a href="javascript:alert(1);">王小明</a>',
+          age: 18,
+          address: '北京市朝阳区芍药居',
+          province: '北京市',
+          city: '朝阳区',
+          zip: 100000
+        },
+        {
+          name: '张小刚',
+          age: 25,
+          address: '北京市海淀区西二旗',
+          province: '北京市',
+          city: '海淀区',
+          zip: 100000
+        },
+        {
+          name: '李小红',
+          age: 30,
+          address: '上海市浦东新区世纪大道',
+          province: '上海市',
+          city: '浦东新区',
+          zip: 100000
+        },
+        {
+          name: '周小伟',
+          age: 26,
+          address: '深圳市南山区深南大道',
+          province: '广东',
+          city: '南山区',
+          zip: 100000
+        },
+        {
+          name: '王小明',
+          age: 18,
+          address: '北京市朝阳区芍药居',
+          province: '北京市',
+          city: '朝阳区',
+          zip: 100000
+        },
+        {
+          name: '张小刚',
+          age: 25,
+          address: '北京市海淀区西二旗',
+          province: '北京市',
+          city: '海淀区',
+          zip: 100000
+        },
+        {
+          name: '李小红',
+          age: 30,
+          address: '上海市浦东新区世纪大道',
+          province: '上海市',
+          city: '浦东新区',
+          zip: 100000
+        },{
           name: '<a href="javascript:alert(1);">王小明</a>',
           age: 18,
           address: '北京市朝阳区芍药居',

@@ -339,11 +339,11 @@ export default {
     nextMonth(panel) {
       this.changePanelDate(panel, 'Month', 1)
     },
-    changePanelDate(panel, type, increment) {
+    changePanelDate(panel, type, increment, updateOtherPanel = true) {
       const current = new Date(this[`${panel}PanelDate`])
       current[`set${type}`](current[`get${type}`]() + increment)
       this[`${panel}PanelDate`] = current
-
+      if (!updateOtherPanel) return
       if (this.splitPanels) {
         // change other panel if dates overlap
         const otherPanel = panel === 'left' ? 'right' : 'left'
@@ -357,14 +357,14 @@ export default {
         // keep the panels together
         const otherPanel = panel === 'left' ? 'right' : 'left'
         const otherCurrent = new Date(this[`${otherPanel}PanelDate`])
-        otherCurrent[`set${type}`](otherCurrent[`get${type}`]() + increment)
         if (type === 'Month') {
           const nextMonthLastDate = new Date(
               otherCurrent.getFullYear(), otherCurrent.getMonth() + increment + 1, 0
           ).getDate();
           otherCurrent.setDate(Math.min(nextMonthLastDate, otherCurrent.getDate()));
         }
-        // 需求159917:点击第一次时不联动，年会相隔1年        
+        // 需求159917:点击第一次时不联动，年会相隔1年      
+        otherCurrent[`set${type}`](otherCurrent[`get${type}`]() + increment)
         this[`${otherPanel}PanelDate`] = otherCurrent
         // if (current[`get${type}`]() !== otherCurrent[`get${type}`]()) {
         //   this[`${otherPanel}PanelDate`] = otherCurrent
@@ -388,7 +388,7 @@ export default {
         const otherPanel = panel === 'left' ? 'right' : 'left'
         const type = currentViewType === 'year-table' ? 'FullYear' : 'Month'
         this[`${otherPanel}PanelDate`] = value
-        this.changePanelDate(otherPanel, type, panel == 'left' ? 1 : -1)
+        this.changePanelDate(otherPanel, type, panel == 'left' ? 1 : -1, false)
       }
     },
     handleRangePick(val) {

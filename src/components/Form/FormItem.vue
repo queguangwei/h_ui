@@ -403,13 +403,13 @@ export default {
       let prop = getPropByPath(model, path)
       if(this.$el.querySelector('input')){
         let input=this.$el.querySelector('input')
-         if(input.getAttribute('search')==='multiSelect'){
-           if(this.$children[0].isResetField==undefined){
-              this.$children[0].$children[0].isResetField=true
-           }else{
-              this.$children[0].isResetField=true
-           }
-         }
+        if(input.getAttribute('search')==='multiSelect'){
+          if(this.$children[0].isResetField==undefined){
+            this.$children[0].$children[0].isResetField=true
+          }else{
+            this.$children[0].isResetField=true
+          }
+        }
       }
       if (Array.isArray(value)) {
         this.validateDisabled = true
@@ -505,8 +505,8 @@ export default {
             return false
           }
         })
-          this.$off('on-form-blur').$on('on-form-blur', this.onFieldBlur)
-          this.$off('on-form-change').$on('on-form-change', this.onFieldChange)
+        this.$off('on-form-blur').$on('on-form-blur', this.onFieldBlur)
+        this.$off('on-form-change').$on('on-form-change', this.onFieldChange)
       }
       // 组合formItem时，将自身requiredIcon隐藏，同时，将父元素的formItem的图标显示
       let parentFormItem = findComponentParent(this, 'FormItem')

@@ -27,7 +27,7 @@
               <span v-else class="span-cell">{{column.title}}</span>
             </template>
             <template v-else>
-              <span class="span-cell" v-if="!column.renderHeader" @click="handleSortByHead(index)" :title="column.headerTooltip ? column.title : ''">{{ column.title || '#' }}</span>
+              <span class="span-cell" v-if="!column.renderHeader" :title="column.headerTooltip ? column.title : ''">{{ column.title || '#' }}</span>
               <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
             </template>
             <template>
@@ -190,19 +190,6 @@ export default {
       let _index = this.columns[index]._index;
       this.$parent.handleSort(_index, type);
       this.sortIndex = index
-    },
-    handleSortByHead(index) {
-      const column = this.columns[index];
-      if (column.sortable) {
-        const type = column._sortType;
-        if (type === 'normal') {
-          this.handleSort(index, 'asc');
-        } else if (type === 'asc') {
-          this.handleSort(index, 'desc');
-        } else {
-          this.handleSort(index, 'normal');
-        }
-      }
     },
     handleFilter (index) {
       let _index = this.columns[index]._index;
