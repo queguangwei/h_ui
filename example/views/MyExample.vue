@@ -1,16 +1,23 @@
 <template>
   <div>
     <h-form :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus cols="2" ref="formValidate">
-      <h-form-item label="选择器" prop="select" required>
-        <h-select v-model="formItem1.select" class="curItemClass" @on-keyup="handlekeyup" filterable multiple>
-          <h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>
-        </h-select>
+      <h-form-item label="金额框" prop="money" required>
+        <h-typefield v-model="formItem1.money" bigTips focusAllSelect integerNum="13" @on-keyup="handlekeyup" suffixNum="2" type="money" :max="100" :min="0" :step="10" algin="center" style="width:300px" ref="test"></h-typefield>
+        <!--<h-typefield v-model="formItem1.money" class="curItemClass" bigTips focusAllSelect type="money"-->
+                     <!--:max="100" :min="0" :step="10" algin="center" style="width:300px"-->
+                      <!--@on-keyup="handlekeyup"></h-typefield>-->
       </h-form-item>
-      <h-form-item label="singleSelect" prop="city" required>
-        <h-single-select v-model="formItem1.city" placeholder="请选择所在地" @on-keyup="handlekeyup" class="curItemClass" widthAdaption>
-          <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
-        </h-single-select>
-      </h-form-item>
+
+      <!--<h-form-item label="选择器" prop="select" required>-->
+        <!--<h-select v-model="formItem1.select" class="curItemClass" @on-keyup="handlekeyup" filterable multiple>-->
+          <!--<h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>-->
+        <!--</h-select>-->
+      <!--</h-form-item>-->
+      <!--<h-form-item label="singleSelect" prop="city" required>-->
+        <!--<h-single-select v-model="formItem1.city" placeholder="请选择所在地" @on-keyup="handlekeyup" class="curItemClass" widthAdaption>-->
+          <!--<h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>-->
+        <!--</h-single-select>-->
+      <!--</h-form-item>-->
       <h-form-item label="开始时间">
         <h-datePicker type="date" placeholder="选择日期" v-model="formItem1.start" class="curItemClass"></h-datePicker>
       </h-form-item>
@@ -18,9 +25,6 @@
         <h-datePicker type="date" placeholder="选择日期" v-model="formItem1.end" class="curItemClass"></h-datePicker>
       </h-form-item>
 
-      <h-form-item label="金额框" prop="money" required>
-        <h-typefield v-model="formItem1.money" class="curItemClass" bigTips focusAllSelect integerNum="13" type="money" :max="10000000000" :min="0" :step="10000" algin="center" style="width:300px"></h-typefield>
-      </h-form-item>
       <h-form-item label="日期控件">
       <h-row>
       <h-col span="11">

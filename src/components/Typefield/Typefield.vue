@@ -329,18 +329,17 @@ export default {
           if (addNum(targetVal, -step) >= this.min) {
             val = addNum(val, -step);
           } else {
-            val = this.min; 
+            val = this.min;
           }
         }
       }
-    
       val = val == null ? val : val.toString();
 
       this.$nextTick(() => {
         this.currentValue = val;
         this.bigShow(this.type, this.currentValue);
-        this.$emit("on-keyup", val, event);
         this.$emit("input", val);
+        this.$emit("on-keyup", val, event);
         this.$emit("on-change", val);
         this.dispatch("FormItem", "on-form-change", val);
       });
