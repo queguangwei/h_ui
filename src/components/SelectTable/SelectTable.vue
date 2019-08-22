@@ -42,7 +42,7 @@
              @focus="handleFocus"
              @blur="handkeSearchBlur"
              @keydown="resetInputState"
-             @keyup="handleInputKeyup"
+             @keyup="handleInputKeyup($event)"
              :tabindex="tabindex"
              ref="input">
       <!-- 下拉输入框(远程搜索时渲染) -->
@@ -57,7 +57,7 @@
              @blur="handleBlur"
              @keydown="resetInputState"
              @keydown.delete="handleInputDelete"
-             @keyup="handleInputKeyup"
+             @keyup="handleInputKeyup($event)"
              :tabindex="tabindex"
              ref="input">
       <Icon name="close"
@@ -651,11 +651,11 @@ export default {
     }
   },
   methods: {
-    handleInputKeyup(){
+    handleInputKeyup(event){
       if(this.newSearchModel){
-        this.$emit('on-keyup',this.selectedResult)
+        this.$emit('on-keyup', event, this.selectedResult)
       }else{
-        this.$emit('on-keyup',this.query)
+        this.$emit('on-keyup',this.query,event)
       }
     },
     selectedTop(status=true) {
