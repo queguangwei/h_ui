@@ -1,4 +1,5 @@
 import SelectTable from '../SelectTable/SelectTable.vue'
+import { on, off } from '../../util/dom'
 export default {
   name: 'SimpleMultiSelect',
   mixins: [SelectTable],
@@ -32,7 +33,6 @@ export default {
       newSearchUnCheckAll:false,
       isResetField:false,
       isEnterhide:false,
-      timer:null,
     }
   },
   methods: {
@@ -52,14 +52,13 @@ export default {
       })
     },
     handleKeydown(e) {
+      // Esc slide-up
+      if (e.keyCode === 27) {
+        this.hideMenu()
+      }
       this.isEnterhide=false;
       if (this.visible) {
         const keyCode = e.keyCode
-        // Esc slide-up
-        if (keyCode === 27) {
-          e.preventDefault()
-          this.hideMenu()
-        }
         // enter
         if (keyCode === 13) {
           e.preventDefault()
@@ -163,10 +162,18 @@ export default {
         this.handleBack(e)
       }
     },
+    handleEsc(e){
+      // Esc slide-up
+      if (e.keyCode === 27) {
+        this.hideMenu()
+      }
+    }
   },
   mounted() {
+    on(document, 'keydown', this.handleEsc)
   },
   beforeDestroy() {
+    off(document, 'keydown', this.handleEsc)
   },
   watch:{
     selectedResult(val, oldVal){
@@ -222,15 +229,7 @@ export default {
       if(searchkey==''){
         return
       }
-      if(this.timer) {
-        clearTimeout(this.timer)
-        this.timer=null
-      }
-      this.timer = setTimeout(()=>{
-        clearTimeout(this.timer)
-        this.timer=null
-        this.newModelhandleSearch(searchkey)
-      },300)
+      this.newModelhandleSearch(searchkey)
 
     },
     newSearchModelselectItem(changeitem){
@@ -265,7 +264,4 @@ export default {
       }
     }
   },
-  beforeDestroy(){
-    this.timer=null
-  }
 }
