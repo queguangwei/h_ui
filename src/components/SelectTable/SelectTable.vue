@@ -1596,7 +1596,7 @@ export default {
         // });
         // }
       }
-     if(!this.isSingleSelect||str=='click'){
+      if(!this.isSingleSelect||str=='click'){
         this.hideMenu()
         this.isInputFocus = false
       }
