@@ -7,7 +7,7 @@
       {{value11}}
       <h-typefield v-model="value11" hoverTips immeDivided focusAllSelect integerNum="17" suffixNum="2" type="money" bigTips placeholder="金额"  @on-blur="s" style="width:300px" algin="left"></h-typefield>
       {{value12}}
-      <h-typefield v-model="value12" bigTips focusAllSelect integerNum="13" suffixNum="2" type="money" :max="10" :min="0" :step="0.1" algin="center" style="width:300px" ref="test"></h-typefield>
+      <h-typefield v-model="value12" bigTips focusAllSelect integerNum="13" @on-keyup="handlekey" suffixNum="2" type="money" :max="100" :min="0" :step="10" algin="center" style="width:300px" ref="test"></h-typefield>
       <Button @on-click="testClick(true)">获取焦点</Button>
       <Button @on-click="testClick(false)">失去焦点</Button>
       {{value13}}
@@ -91,11 +91,15 @@ export default {
     }
   },
   mounted(){
+    window.isO45 = true
     // setTimeout(()=>{
     //   this.value11=null
     // },2000)
   },
   methods: {
+    handlekey(e, val) {
+      console.log(e, val)
+    },
     testClick(val){
       if (val) {
         this.$refs.test.focus();
