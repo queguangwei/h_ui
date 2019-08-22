@@ -27,9 +27,9 @@
       <span :class="[prefixCls + '-selected-value']"
             v-show="!showPlaceholder && !multiple && !(filterable && !showBottom)">{{ selectedSingle }}</span>
       <!-- o45模式下失去焦点需要显示多列数据 -->
-      <span :class="[prefixCls + '-selected-value']"
-            v-show="showMutiLabel&&singleMutiLabel">{{ singleMutiLabel }}</span>
-      <!--搜索框开启 newSearchModel 时渲染-->
+      <!-- <span :class="[prefixCls + '-selected-value']"
+            v-show="showMutiLabel&&singleMutiLabel">{{ singleMutiLabel }}</span> -->
+      <!--搜索框开启newSearchModel时渲染-->
           <input type="text"
              v-if="newSearchModel&&multiple"
              v-model="selectedResult"
@@ -47,7 +47,7 @@
              ref="input">
       <!-- 下拉输入框(远程搜索时渲染) -->
       <input type="text"
-             v-if="filterable && !showBottom &&!newSearchModel&&!(showMutiLabel&&singleMutiLabel)"
+             v-if="filterable && !showBottom &&!newSearchModel"
              v-model="query"
              :disabled="disabled"
              :readonly="!editable||readonly"
@@ -471,8 +471,9 @@ export default {
       // isCopy:false,
       // newSearchCheckAll:false,
       // newSearchUnCheckAll:false,
-      showMutiLabel:false,
-      singleMutiLabel:''
+      // singleMutiLabel:'',
+      curSearchkey:'',
+      querySingle:'',
     }
   },
   computed: {
@@ -733,12 +734,11 @@ export default {
       }
     },
     showdrop(){
-      if(this.isSingleSelect && this.showMutiLabel){
+      if(this.isSingleSelect){
         if (this.disabled || !this.editable || this.readonly) {
           return false
         }
         this.isInputFocus = true
-        this.showMutiLabel = false
         this.$nextTick(()=>{
           this.select()
         })
@@ -789,7 +789,7 @@ export default {
       }
 
       // 单选 恢复 query 值
-      if (!this.multiple && this.query !== this.selectedSingle) {
+      if (!this.multiple && this.query !== this.selectedSingle&&!this.isSingleSelect) {
         this.query = this.selectedSingle
 
         if (!this.remote) {
@@ -869,6 +869,9 @@ export default {
           }
         }
         if(this.remote){
+          if(this.newSearchModel){
+            this.broadcastQuery(this.curSearchkey)
+          }
           this.$refs.dropdown.setWidthAdaption();
         }
       }
@@ -1131,6 +1134,7 @@ export default {
         }
         if(keyCode === 39||keyCode === 37){
           this.selectBlockSingle(this.focusValue)
+          this.isInputFocus = false
         }
         return false
       }
@@ -1256,9 +1260,6 @@ export default {
     handleFocus(e) {
       e.target.selectionStart = 0
       e.target.selectionEnd = this.query.length
-      if(this.isSingleSelect){
-        this.showMutiLabel = false
-      }
       this.$emit('on-focus')
     },
     handleBlur() {
@@ -1361,11 +1362,11 @@ export default {
           // 解决当通过表单方法firstNodeFocused定位到SimpleSelect时只能输入但不展示下拉选项的问题
           if (!this.visible && searchkey) this.visible = true;
           this.remoteMethod(searchkey)
+          this.curSearchkey = searchkey
           if(searchkey!=","){
             setTimeout(()=> {
+              // this.newSearchUpdate();
               this.$emit('on-query-change', searchkey)
-              this.broadcastQuery(searchkey)
-              this.newSearchUpdate();
               //this.$refs.dropdown.setWidthAdaption(true);
             }, 300);
           }
@@ -1542,9 +1543,6 @@ export default {
     },
     focus() {
       if (this.disabled || this.readonly) return
-      if(this.isSingleSelect){
-        this.showMutiLabel = false
-      }
       this.$nextTick(() => {
         this.isInputFocus = true
         if(!this.isSingleSelect){
@@ -1594,16 +1592,6 @@ export default {
       if (this.model === value) {
       } else {
         this.model = value
-        // if (this.filterable && !this.showBorder) {
-        // this.query = value
-        // this.findChild((child) => {
-        //   console.log(child.value)
-        //   if (child.value === value) {
-        //     if (this.query !== '') this.selectToChangeQuery = true;
-        //     this.lastQuery = this.query = child.label === undefined ? child.searchLabel : child.label;
-        //   }
-        // });
-        // }
       }
       if(!this.isSingleSelect||str=='click'){
         this.hideMenu()
@@ -1668,7 +1656,7 @@ export default {
     },
     setSingleSelect(){
       if(this.model==''){
-        this.singleMutiLabel=''
+        this.query =''
       }else{
         let curlabel = ''
         this.findChild(child=>{
@@ -1678,11 +1666,48 @@ export default {
             }
           })
         })
-        this.singleMutiLabel = curlabel
+        this.query = curlabel
+        this.selectToChangeQuery = true
+        this.isQuerySelect = false
       }
-      this.showMutiLabel = true
-
     },
+    queryChange(val){
+      if (this.remote && this.remoteMethod) {
+        if (!this.selectToChangeQuery) {
+          // 解决当通过表单方法firstNodeFocused定位到SimpleSelect时只能输入但不展示下拉选项的问题
+          if (!this.visible && val) this.visible = true;
+          this.remoteMethod(val)
+          this.$emit('on-query-change', val)
+          if (!this.remoteNoQuery) {
+            this.broadcastQuery(val)
+          }
+        }
+        this.findChild(child => {
+          child.isFocus = false
+        })
+      } else {
+        if (!this.isBlock) {
+          if (this.filterable && val) {
+            let focusIndex = this.focusIndex
+            this.$nextTick(() => {
+              this.findChild(child => {
+                if (focusIndex > 0)
+                  child.$refs.table.changeHover(focusIndex - 1, false)
+                this.focusIndex = this.focusInit
+              })
+            })
+          }
+        }
+        if (!this.selectToChangeQuery) {
+          if (!this.visible && val) this.visible = true;
+          this.$emit('on-query-change', val)
+          this.broadcastQuery(val)
+        }else if(this.isQuerySelect){
+          this.broadcastQuery(val)
+        }
+      }
+      this.selectToChangeQuery = false
+    }
   },
   mounted() {
     this.isBlock = this.block ? true : false
@@ -1867,47 +1892,15 @@ export default {
       this.$emit('on-drop-change', val)
     },
     query(val) {
-      // if(this.isSingleSelect&&this.isInputFocus){
-      //   if (!this.visible && val) this.visible = true;
-      // }
-      if (this.remote && this.remoteMethod) {
-        if (!this.selectToChangeQuery) {
-          // 解决当通过表单方法firstNodeFocused定位到SimpleSelect时只能输入但不展示下拉选项的问题
-          if (!this.visible && val) this.visible = true;
-          this.remoteMethod(val)
-          this.$emit('on-query-change', val)
-          if (!this.remoteNoQuery) {
-            this.broadcastQuery(val)
-          }
-        }
-        this.findChild(child => {
-          child.isFocus = false
-        })
-      } else {
-        if (!this.isBlock) {
-          if (this.filterable && val) {
-            let focusIndex = this.focusIndex
-            this.$nextTick(() => {
-              this.findChild(child => {
-                if (focusIndex > 0)
-                  child.$refs.table.changeHover(focusIndex - 1, false)
-                this.focusIndex = this.focusInit
-              })
-            })
-          }
-        }
-        if (!this.selectToChangeQuery) {
-          if (!this.visible && val) this.visible = true;
-          this.$emit('on-query-change', val)
-          this.broadcastQuery(val)
-        }else if(this.isQuerySelect){
-          this.broadcastQuery(val)
-        }
+      if(this.isSingleSelect){
+        this.querySingle = val.split(' ')[0]//此处改变query
+      }else{
+        this.queryChange(val)
       }
-
-      this.selectToChangeQuery = false
-
       // this.broadcast('Drop', 'on-update-popper');
+    },
+    querySingle(val){
+      this.queryChange(val)
     },
     selectedSingle(val) {
       if (this.filterable && !this.showBottom && !this.isQuerySelect) {
