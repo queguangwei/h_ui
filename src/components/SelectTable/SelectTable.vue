@@ -651,11 +651,11 @@ export default {
     }
   },
   methods: {
-    handleInputKeyup(){
+    handleInputKeyupevent(event){
       if(this.newSearchModel){
-        this.$emit('on-keyup',this.selectedResult)
+        this.$emit('on-keyup',this.selectedResult,event)
       }else{
-        this.$emit('on-keyup',this.query)
+        this.$emit('on-keyup',this.query,event)
         
       }
  
