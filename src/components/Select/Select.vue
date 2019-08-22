@@ -544,8 +544,8 @@ export default {
     }
   },
   methods: {
-    handleInputKeyup(){
-      this.$emit('on-keyup',this.query)
+    handleInputKeyup(event){
+      this.$emit('on-keyup',this.query,event)
     },
     handleclick(e){
       e.stopPropagation();
