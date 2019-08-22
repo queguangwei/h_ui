@@ -24,7 +24,7 @@ let bigData = [];
 for(var i=0;i<5;i++){
   let obj =  {
     id: i,
-    // expand:i==0?true:false,
+    expand:i==0?true:false,
     name: '王小明'+i,
     age: 18,
     address: '北京市朝阳区芍药居',

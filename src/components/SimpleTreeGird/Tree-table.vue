@@ -18,7 +18,7 @@
                 <Icon v-if="row.children && row.children.length!=0" name = "play_fill" :class="iconClass(row.id,index)" @click.native.stop="toggleExpand(index,row,$event)"></Icon>
               </span>
               <!-- :indeterminate="row.indeterminate" -->
-              <Checkbox v-if="isCheckbox" :value="checkValue(row.id)"  @on-click="changeSelect(row.id,row,$event)" @click.native.stop="handleclick"></Checkbox> 
+              <Checkbox v-if="isCheckbox" :value="checkValue(row.id)"  @on-click="changeSelect(row.id,row,$event)" @click.native.stop="handleclick"></Checkbox>
             </span>
             <span v-if="column.type=='index'">{{Number(index)+1}}</span>
             <Cell
@@ -31,9 +31,9 @@
           </td>
         </tr>
         <tr v-if="isExpanded(row.id,index,row)"
-          :key="row.id+'child'" 
+          :key="row.id+'child'"
           :style="expandStl(row.id,index,row)">
-          <td :colspan="columns.length" style="border:0">   
+          <td :colspan="columns.length" style="border:0">
             <Tree-table
               :fixed="fixed"
               :styleObject ="styleObject"
@@ -153,7 +153,7 @@
       handleclick () {},
       clickCurrentRow (row,id,e) {
         this._parent.clickCurrentRow(row);
-        if(this.rowSelect){         
+        if(this.rowSelect){
           this.changeSelect(id,row,e)
         }
         if(this.selectRoot){
@@ -179,16 +179,17 @@
         }
       },
       selectRootUp(id,status){
-        this._parent.changeCheckedObj(this.indexAndId[id],status,'_isHighlight')   
+        this._parent.changeCheckedObj(this.indexAndId[id],status,'_isHighlight')
       },
       toggleExpand (index,row,event) {
+        console.log(row)
         let inx = this.indexAndId[row.id];
         let curStatus;
         if(this.checkedObj[inx]._isExpand==null){
           row.children.forEach((col,inx)=>{
             this.setStatus(col,inx);
           })
-          curStatus = true;  
+          curStatus = true;
         }else{
           let obj = event.target;
           let objStl = this.findObj(event,"TR").nextElementSibling;
@@ -205,7 +206,7 @@
         while(obj&&obj.tagName!=name){
           obj=obj.parentElement
         }
-        return obj;      
+        return obj;
       },
       findParent(){
         var obj = this;
@@ -239,10 +240,10 @@
             break;
           }
         }
-        this._parent.changeCheckedObj(this.indexAndId[id],status)   
+        this._parent.changeCheckedObj(this.indexAndId[id],status)
         if(this.checkedObj[this.indexAndId[id]]._parentId!=undefined) {
           this.$parent.updateTreeUp(this.checkedObj[this.indexAndId[id]]._parentId);
-        }    
+        }
       },
       updateTreeDown(data,status,single){
         data.forEach((col,inx)=>{
@@ -255,7 +256,7 @@
       },
       setStatus(col,inx){
         if(!this.indexAndId[col.id]){
-          this._parent.indexAndId[col.id]= this._parent.checkedObj.length;          
+          this._parent.indexAndId[col.id]= this._parent.checkedObj.length;
           this._parent.checkedObj.push({
             id:col.id,
             checked:col.checked||false,
@@ -277,7 +278,7 @@
       getStatus(){
         this._parent = this.findParent();
         this.data.forEach((col,inx)=>{
-          // if(this.collectionState[inx]){           
+          // if(this.collectionState[inx]){
           // }else{
           //   if(col.expand&&col.expand!='false'){
           //     this.collectionState[inx] = true
@@ -286,17 +287,17 @@
           //   }
             this.setStatus(col,inx);
           // }
-        })  
+        })
       },
       handleMouseIn (_index) {
         this._parent.handleMouseIn(_index);
       },
-      handleMouseOut (_index) {          
+      handleMouseOut (_index) {
         this._parent.handleMouseOut(_index);
       },
     },
     mounted(){
-      this.getStatus();   
+      this.getStatus();
     },
     watch: {
       data:{
