@@ -2,7 +2,7 @@
 <div>
   <Button @on-click="changeShow">打开弹框</Button>
   <Button @on-click="changeData">改变数值</Button>
-  <h-msg-box v-model="show" escClose>
+  <!-- <h-msg-box v-model="show" escClose> -->
     <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
       <h-form-item label="input" prop="name">
           <h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>
@@ -20,13 +20,14 @@
       <h-form-item prop="date" label="data">
         <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
       </h-form-item>
+      {{formValidate.city}}
       <h-form-item label="singleSelect" prop="city" required>
         <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass" widthAdaption>
           <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
         </h-single-select>
       </h-form-item>
       <h-form-item label="valueRemote1" prop="valueRemote1" required>
-        <h-multi-select v-model="formValidate.valueRemote1" :isString="isstring" widthAdaption class="curItemClass" specialIndex specialVal="value1" accuFilter newSearchModel>
+        <h-multi-select v-model="formValidate.valueRemote1" :isString="isstring" class="curItemClass" specialVal="value1" accuFilter newSearchModel>
           <h-multi-block :data="remotebigData"></h-multi-block>
         </h-multi-select>
       </h-form-item>
@@ -54,17 +55,16 @@
           <h-button @click="clear">清空当前选项</h-button>
       </h-form-item>
     </h-form>
-  </h-msg-box>
+  <!-- </h-msg-box> -->
 </div>
 </template>
 <script>
 import { enterHandler1 } from "../../src/util/tools.js";
 let bigData = [];
-bigData.push({label:'全选',value:'-1'})
 for(let i=0;i<2000;i++){
   let obj={};
-  obj.value="value"+i;
-  obj.label=i==1?"label"+i+'000000000000000000000000000000000000000000000000000':"label"+i;
+  obj.value=i;
+  obj.label=i;
   bigData.push(obj);
 }
 export default {
@@ -83,7 +83,7 @@ export default {
         date: "",
         time: "",
         desc: "",
-        valueRemote1:[],
+        valueRemote1:'',
       },
       bigData: [
         { value: "value1", label: "label1",label1: "多列11111111111111111111111111111111111111111111111111111111"},
@@ -139,17 +139,16 @@ export default {
 };
 </script>
 
-<!--<template>
+<!-- <template>
 <div>
-<h-multi-select v-model="valueRemote1" :isString="isstring" specialIndex specialVal="value1" width="200" accuFilter newSearchModel>
+<h-multi-select v-model="valueRemote1" remote :remote-method="queryChange" :isString="isstring" width="200" accuFilter newSearchModel>
   <h-multi-block :data="remotebigData"></h-multi-block>
 </h-multi-select>
-
-    <h-simple-select v-model="value111" ref="test" filterable>
-        <h-select-block :data="bigData"></h-select-block>
-      </h-simple-select>
-      <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-      {{value111}}
+<h-simple-select v-model="value111" ref="test" filterable>
+  <h-select-block :data="bigData"></h-select-block>
+</h-simple-select>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+{{value111}}
   </div>
 </template>
 <script>
@@ -158,7 +157,7 @@ bigData.push({label:'全选',value:'-1'})
 for(let i=0;i<2000;i++){
   let obj={};
   obj.value="value"+i;
-  obj.label="label"+i;
+  obj.label=i+'';
   bigData.push(obj);
 }
 export default {
@@ -169,7 +168,15 @@ export default {
       isstring:false,
       valueRemote1:[],
       remotebigData:bigData
-  }}
+    }
+  },
+  methods:{
+    queryChange(val){
+      this.remotebigData=bigData.filter((item)=>{
+        return item.label.indexOf(val)>-1
+      })
+    }
+  }
 }
 </script>
 -->
