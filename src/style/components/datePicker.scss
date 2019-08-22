@@ -281,7 +281,7 @@ $date-picker-cells-width-with-weeknumbers: 226px;
     }
     &-shortcut{
       height: $date-picker-panel-shortcut-height;
-      line-height:$date-picker-panel-shortcut-height;
+      line-height:1.5;
 
       padding: $btn-padding-large;
       transition: all $transition-time $ease-in-out;
