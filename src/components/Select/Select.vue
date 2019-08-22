@@ -42,6 +42,7 @@
         autocomplete="off"
         @focus="handleFocus"
         @blur="handleBlur"
+        @keyup="handleInputKeyup($event)"
         @keydown.delete="handleInputDelete"
         :tabindex="tabindex"
         ref="input">
@@ -543,6 +544,9 @@ export default {
     }
   },
   methods: {
+    handleInputKeyup(event){
+      this.$emit('on-keyup', event, this.query)
+    },
     handleclick(e){
       e.stopPropagation();
     },

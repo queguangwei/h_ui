@@ -210,7 +210,12 @@ export default {
       WindosInnerHeight: window.innerHeight,
 
       headerHeight: 0,
-      footerHeight: 0
+      footerHeight: 0,
+      switchSizeLocation: {
+        //记录拖动后的位置，用于最大化后的还原
+        top: 0,
+        left: 0
+      }
     }
   },
   computed: {
@@ -241,17 +246,11 @@ export default {
       if (this.height && this.height < 100 && !this.curHeight) {
         styleWidth.height = `${this.height}%`
       }
-
-      if (this.isMax) {
-        style.top = '0px'
-        style.left = '0px'
-      } else {
-        style.top = this.top + 'px'
-        style.left =
-          this.left == undefined
-            ? (this.screenWidth - offsetWidth) / 2 + 'px'
-            : this.left + 'px'
-      }
+      style.top = this.top + 'px'
+      style.left =
+        this.left == undefined
+          ? (this.screenWidth - offsetWidth) / 2 + 'px'
+          : this.left + 'px'
       const customStyle = this.styles ? this.styles : {}
       Object.assign(style, styleWidth, customStyle)
       return style
@@ -332,11 +331,30 @@ export default {
     headClick() {},
     switchSize() {
       if (!this.isMax) {
+        //改为最大化
+        this.switchSizeLocation = {
+          left: this.$refs.content.style.left,
+          top: this.$refs.content.style.top
+        }
         this.curWidth = this.screenWidth
         this.curHeight = document.documentElement.clientHeight
+        this.$nextTick(() => {
+          this.$refs.content.style.top = '0px'
+          this.$refs.content.style.left = '0px'
+        })
       } else {
+        //取消最大化
         this.curWidth = this.width
         this.curHeight = 0
+
+        this.$nextTick(() => {
+          if (this.isOriginal) {
+            this.backOrigin()
+          } else {
+            this.$refs.content.style.top = this.switchSizeLocation.top
+            this.$refs.content.style.left = this.switchSizeLocation.left
+          }
+        })
       }
       this.isMax = !this.isMax
       this.$emit('on-maximize', this.isMax)
@@ -425,9 +443,7 @@ export default {
     if (this.$slots.header === undefined && !this.title) {
       showHead = false
     }
-
     this.showHead = showHead
-
     // ESC close
     // document.addEventListener('keydown', this.EscClose);
     this.$on('on-esc-real-close', status => {

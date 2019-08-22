@@ -6,17 +6,16 @@
               @click="modal1 = true">显示对话框</h-button>
     <h-msg-box v-model="modal1"
                title="普通的Modal对话框标题"
-               :height="20000"
+               :height="200"
                :scrollable="true"
-               :top="1"
-               :left="110"
+           :top="0"
                maximize
-               isOriginal
-               class-name="vertical-center-modal"> 
+               class-name= "vertical-center-modal"
+               > 
     </h-msg-box>
-    <h-msg-box v-model="modal1" maximize left=100 top=100>
+    <!-- <h-msg-box v-model="modal1" maximize :left="100" :top="100">
       <p>对话框内容</p>
-    </h-msg-box>
+    </h-msg-box> -->
 
   </div>
 </template>

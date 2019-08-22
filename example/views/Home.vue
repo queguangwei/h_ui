@@ -1,9 +1,23 @@
 <template>
   <div>
       <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus cols="2" onlyBlurRequire>
-        <!-- <h-form-item label="输入框" prop="input" required>
+        <h-form-item label="输入框" prop="input" required>
           <h-input v-model="formItem1.input" placeholder="请输入"></h-input>
-        </h-form-item> -->
+        </h-form-item>
+        <h-form-item label="金额框" prop="money" required>
+          <h-typefield v-model="formItem1.money">
+            <!--  <h-select v-model="select1" slot="prepend" style="width: 80px">
+			   <h-option value="http">http://</h-option>
+			   <h-option value="https">https://</h-option>
+			 </h-select> -->
+
+            <h-select v-model="select2" placeholder="" slot="append" style="width: 45px" :isArrow="false" :clearable="false" :tranfer="true">
+              <h-option value="com">.com</h-option>
+              <h-option value="org">.org</h-option>
+              <h-option value="io">.io</h-option>
+            </h-select>
+          </h-typefield>
+        </h-form-item>
         <h-form-item label="选择器" prop="select" required>
           <h-simple-select v-model="formItem1.select" filterable>
             <h-select-block></h-select-block>
@@ -11,7 +25,7 @@
             <h-option value="shanghai">上海市</h-option>
             <h-option value="shenzhen">深圳市</h-option> -->
           </h-simple-select>
-        </h-form-item>        
+        </h-form-item>
         <h-form-item label="日期控件">
           <h-row>
             <h-col span="11">
@@ -27,20 +41,7 @@
             </h-col>
           </h-row>
         </h-form-item>
-        <h-form-item label="金额框" prop="money" required>
-          <h-typefield v-model="formItem1.money">
-           <!--  <h-select v-model="select1" slot="prepend" style="width: 80px">
-              <h-option value="http">http://</h-option>
-              <h-option value="https">https://</h-option>
-            </h-select> -->
 
-            <h-select v-model="select2" placeholder="" slot="append" style="width: 45px" :isArrow="false" :clearable="false" :tranfer="true">
-            <h-option value="com">.com</h-option>
-            <h-option value="org">.org</h-option>
-            <h-option value="io">.io</h-option>
-          </h-select>
-          </h-typefield>
-        </h-form-item>
         <h-form-item label="单选框" prop="radio" required>
           <h-radio-group v-model="formItem1.radio">
             <h-radio label="male">男</h-radio>
@@ -87,13 +88,14 @@
   </div>
 </template>
 <script>
+  import { enterHandler1 } from "../../src/util/tools.js";
   export default {
     data () {
       return {
         model1:'',
         changeform:false,
         formItem1: {
-          input: '1',
+          input: '',
           select: '',
           radio: '',
           money: '',
@@ -136,7 +138,7 @@
               label: '王府井'
             }
           ]
-          }, 
+          },
           {
             value: 'jiangsu',
             label: '江苏',
@@ -264,16 +266,26 @@
       },
       handleReset (name) {
         this.$refs[name].resetFields();
+//        this.$refs[name].resetValidate();
       },
       totest() {
         this.$refs.changeDrop.focus();
       },
       focus(){
         this.$refs.formItem1.firstNodeFocused()
+      },
+      handleKeydown(e) {
+        console.log(e)
+        if(e.keyCode === 27) {
+          this.$refs.formItem1.resetFields();
+        }
       }
     },
+    created() {
+      window.isO45 = true
+    },
     mounted(){
-      // window.isO45 = true 
+      document.addEventListener("keydown", this.handleKeydown);
     }
   }
 </script>
