@@ -41,8 +41,8 @@
              :placeholder="showPlaceholder?localePlaceholder:''"
              @focus="handleFocus"
              @blur="handkeSearchBlur"
-             @keydown="resetInputState" 
-               @keyup="handleInputKeyup"
+             @keydown="resetInputState"
+             @keyup="handleInputKeyup"
              :tabindex="tabindex"
              ref="input">
       <!-- 下拉输入框(远程搜索时渲染) -->
@@ -57,7 +57,7 @@
              @blur="handleBlur"
              @keydown="resetInputState"
              @keydown.delete="handleInputDelete"
-              @keyup="handleInputKeyup"
+             @keyup="handleInputKeyup"
              :tabindex="tabindex"
              ref="input">
       <Icon name="close"
@@ -656,9 +656,7 @@ export default {
         this.$emit('on-keyup',this.selectedResult)
       }else{
         this.$emit('on-keyup',this.query)
-        
       }
- 
     },
     selectedTop(status=true) {
       this.broadcast('Block', 'on-select-top',status)
