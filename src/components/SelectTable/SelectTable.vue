@@ -41,8 +41,8 @@
              :placeholder="showPlaceholder?localePlaceholder:''"
              @focus="handleFocus"
              @blur="handkeSearchBlur"
-             @keydown="resetInputState" 
-               @keyup="handleInputKeyup"
+             @keydown="resetInputState"
+             @keyup="handleInputKeyup($event)"
              :tabindex="tabindex"
              ref="input">
       <!-- 下拉输入框(远程搜索时渲染) -->
@@ -57,7 +57,7 @@
              @blur="handleBlur"
              @keydown="resetInputState"
              @keydown.delete="handleInputDelete"
-              @keyup="handleInputKeyup"
+             @keyup="handleInputKeyup($event)"
              :tabindex="tabindex"
              ref="input">
       <Icon name="close"
@@ -651,14 +651,12 @@ export default {
     }
   },
   methods: {
-    handleInputKeyupevent(event){
+    handleInputKeyup(event){
       if(this.newSearchModel){
-        this.$emit('on-keyup',this.selectedResult,event)
+        this.$emit('on-keyup', event, this.selectedResult)
       }else{
         this.$emit('on-keyup',this.query,event)
-        
       }
- 
     },
     selectedTop(status=true) {
       this.broadcast('Block', 'on-select-top',status)
@@ -1607,7 +1605,7 @@ export default {
         // });
         // }
       }
-     if(!this.isSingleSelect||str=='click'){
+      if(!this.isSingleSelect||str=='click'){
         this.hideMenu()
         this.isInputFocus = false
       }
