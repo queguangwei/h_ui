@@ -321,24 +321,19 @@ export default {
       if (!isNaN(targetVal)) {
         if (type === "up") {
           if (addNum(targetVal, step) <= this.max) {
-            val = targetVal;
+              val = addNum(val, step);
           } else {
             val = this.max;
           }
         } else if (type === "down") {
           if (addNum(targetVal, -step) >= this.min) {
-            val = targetVal;
+            val = addNum(val, -step);
           } else {
-            val = this.min;
-            // return false;
+            val = this.min; 
           }
         }
       }
-      if (type === "up") {
-        val = addNum(val, step);
-      } else if (type === "down") {
-        val = addNum(val, -step);
-      }
+    
       val = val == null ? val : val.toString();
 
       this.$nextTick(() => {
