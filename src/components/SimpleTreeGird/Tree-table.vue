@@ -23,7 +23,7 @@
             <span v-if="inx==(columns[0].type=='index'?1:0)"
                   :style="indentCls">
               <span class="expand-icon">
-                <Icon v-if="row.children && row.children.length!=0"
+                <Icon v-if="(row.children && row.children.length !== 0) || (typeof row.loaded === 'boolean' && !row.loaded)"
                       name="play_fill"
                       :class="iconClass(row.id,index)"
                       @click.native.stop="toggleExpand(index,row,$event)"></Icon>
