@@ -285,6 +285,8 @@
           //   }else{
           //     this.collectionState[inx] =false
           //   }
+          col.expand= col.expand==="false"?false: col.expand
+          col.expand= col.expand==="true"?true: col.expand
             this.setStatus(col,inx);
           // }
         })
