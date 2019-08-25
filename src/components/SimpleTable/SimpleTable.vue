@@ -1120,7 +1120,7 @@ export default {
         this.moveMove(event, target, column)
       }
     },
-    moveDrag(event, target, column,isLeft) {
+    moveDrag(event, target, column, isLeft) {
       if (!this.dragging||(isLeft&&this.isRightFixed)) {
         let rect = target.getBoundingClientRect()
         const bodyStyle = document.body.style
