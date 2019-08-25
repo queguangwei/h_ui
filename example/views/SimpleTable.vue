@@ -7,7 +7,7 @@
     <Button @click="changeData">切换数据</Button>
     <Button @click="adddata">添加数据</Button>
     <h-simple-table :columns="columnsBig1" :data="bigData" :addData="addData" border stripe
-                    :loading="loading" headAlgin="right" bodyAlgin="left" width="1200" :canDrag="false"
+                    :loading="loading" headAlgin="right" bodyAlgin="left" width="1200" canDrag
                     @on-select="select" @on-select-cancel="select" @on-drag="onDrag" height="500"
                     @on-select-all='change' @on-scroll="change" @on-selection-change="change">
       <span slot="loading">我是自定义加载！！！</span>
@@ -89,6 +89,8 @@ export default {
           type: 'selection',
           align: 'center',
           key:'select',
+          title: '勾选排序',
+          ellipsis:true,
           sortable: true
         },
         {
@@ -108,15 +110,18 @@ export default {
           // sortable:true,
         },
         {
-          title: '年龄',
+          title: '年龄年龄年龄年龄年龄',
           key: 'tradeDate',
+          width: 70,
           sortable:true,
+          ellipsis:true
           // fixed:'left',
         },
         {
           title: '地址',
           ellipsis:true,
           key: 'securityCode',
+          sortable:true
         },
         {
           title: '地址1',
@@ -474,8 +479,8 @@ export default {
       this.msgbox = !this.msgbox;
     },
     onDrag(e,i){
-      console.log(e);
-      console.log(i);
+      // console.log(e);
+      // console.log(i);
     },
     onMove(i,j){
       console.log(i);
