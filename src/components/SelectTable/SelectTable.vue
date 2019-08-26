@@ -906,6 +906,7 @@ export default {
     },
     clearSingleSelect() {
       if (this.readonly || this.disabled) return
+      let result=this.value
       if (this.showCloseIcon) {
         if (this.isBlock) {
           this.toggleSingleSelected('')
@@ -922,6 +923,7 @@ export default {
         }
         this.hideMenu()
         this.isInputFocus = true
+        this.$emit("on-clearSelect",result)
       }
     },
     updateMultipleSelected(init = false, slot = false) {
