@@ -5,17 +5,9 @@
           <h-input v-model="formItem1.input" placeholder="请输入"></h-input>
         </h-form-item>
         <h-form-item label="金额框" prop="money" required>
-          <h-typefield v-model="formItem1.money">
-            <!--  <h-select v-model="select1" slot="prepend" style="width: 80px">
-			   <h-option value="http">http://</h-option>
-			   <h-option value="https">https://</h-option>
-			 </h-select> -->
+          <h-typefield v-model="formItem1.money" nonNegative divided bigTips focusAllSelect
+                       integerNum="10" suffixNum="2"  type="money">
 
-            <h-select v-model="select2" placeholder="" slot="append" style="width: 45px" :isArrow="false" :clearable="false" :tranfer="true">
-              <h-option value="com">.com</h-option>
-              <h-option value="org">.org</h-option>
-              <h-option value="io">.io</h-option>
-            </h-select>
           </h-typefield>
         </h-form-item>
         <h-form-item label="选择器" prop="select" required>
@@ -80,6 +72,7 @@
           <h-cascader v-model="formItem1.cascader" :data="data2" trigger="hover" style="width:200px"></h-cascader>
         </h-form-item>
         <h-form-item>
+          <h-button type="primary" @click="handleValidField('formItem1','money')" style="margin-left: 8px">校验</h-button>
             <h-button type="primary" @click="handleSubmit('formItem1')">提交</h-button>
             <h-button type="ghost" style="margin-left: 8px" @click="handleReset('formItem1')">取消</h-button>
             <h-button type="ghost" style="margin-left: 8px" @click="focus">获取焦点</h-button>
@@ -178,7 +171,6 @@
           test2: ''
         },
         select1:'',
-        select2:'',
         stringRule:['email'],
         regRule: [{test:/^[a-zA-Z]+$/, message:'不全是字母',trigger:'blur'}],
         columns1: [
@@ -253,6 +245,15 @@
     methods: {
       changeform1(){
         this.changeform = !this.changeform;
+      },
+      handleValidField (name, str) {
+        this.$refs[name].validateField(str, (valid) => {
+          if (valid) {
+            this.$hMessage.error(valid);
+          } else {
+            this.$hMessage.success('校验正确');
+          }
+        })
       },
       handleSubmit (name) {
         let _this=this
