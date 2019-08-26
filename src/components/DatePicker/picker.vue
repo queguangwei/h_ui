@@ -787,14 +787,16 @@ export default {
         }, 0)
       } else {
         // 显示前才计算位置
+        let oldPlacement = this.fPlacement
         this.setPlacement()
-
+        
         setTimeout(() => {
           this.dispatch('Msgbox', 'on-esc-real-close', false)
         }, 0)
       }
       // 仅在transfer时进行重新计算【类似其余的下拉】，否则会不断触发回流，引起性能问题
-      if (this.transfer) this.$refs.drop.update()
+      // 重新计算位置后进行update
+      if (this.transfer || this.fPlacement !== oldPlacement) this.$refs.drop.update()
       this.$emit('on-open-change', state)
     },
     value: {
@@ -822,7 +824,7 @@ export default {
     },
     placement(val) {
       this.fPlacement = val
-    }
+    },
   },
   beforeDestroy() {
     if (this.picker) {
