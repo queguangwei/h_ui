@@ -778,6 +778,7 @@ export default {
   },
   watch: {
     visible(state) {
+      let oldPlacement = this.fPlacement
       if (state === false) {
         //   this.$refs.drop.destroy();
         const input = this.$el.querySelector('input')
@@ -787,7 +788,6 @@ export default {
         }, 0)
       } else {
         // 显示前才计算位置
-        let oldPlacement = this.fPlacement
         this.setPlacement()
         
         setTimeout(() => {
