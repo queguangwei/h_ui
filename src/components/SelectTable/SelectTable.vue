@@ -868,10 +868,11 @@ export default {
             this.selectedResult=multipleAry.join(',');
           }
         }
+        //tan 50多选改动
         if(this.remote){
-          if(this.newSearchModel){
-            this.broadcastQuery(this.curSearchkey)
-          }
+//          if(this.newSearchModel){
+//            this.broadcastQuery(this.curSearchkey)
+//          }
           this.$refs.dropdown.setWidthAdaption();
         }
       }
@@ -1362,16 +1363,19 @@ export default {
           // 解决当通过表单方法firstNodeFocused定位到SimpleSelect时只能输入但不展示下拉选项的问题
           if (!this.visible && searchkey) this.visible = true;
           this.remoteMethod(searchkey)
-          this.curSearchkey = searchkey
+          //tan 50 多选改动 放开
+//          this.curSearchkey = searchkey
           if(searchkey!=","){
             setTimeout(()=> {
-              // this.newSearchUpdate();
+              //tan 50多选改动 注释掉
+              this.newSearchUpdate();
               this.$emit('on-query-change', searchkey)
               //this.$refs.dropdown.setWidthAdaption(true);
             }, 300);
           }
           //this.$emit('on-query-change', searchkey)
-          //this.broadcastQuery(searchkey)
+          //tan 50改动 注释掉
+          this.broadcastQuery(searchkey)
         }
         this.findChild(child => {
           child.isFocus = false
