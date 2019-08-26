@@ -86,7 +86,7 @@
                       :class="alignCls(column, row)"
                       :data-index="row._index+1"
                       :key="column._index">
-                    <div :class="classesTd(column)">
+                    <div :class="classesTd(column)" :title="column.showTitle?row[column.key]:null">
                       <!-- &&!this.splitIndex -->
                       <template v-if="column.type === 'index'&&!splitIndex">{{row._index + 1}}</template>
                       <template v-if="column.type === 'selection'">
