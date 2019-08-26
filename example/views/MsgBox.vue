@@ -3,15 +3,18 @@
     <h1>普通组件使用</h1>
 
     <h-button type="primary"
-              @click="modal1 = true">显示对话框</h-button>
+              @click="cclickk">显示对话框</h-button>
     <h-msg-box v-model="modal1"
                title="普通的Modal对话框标题"
                :height="200"
                :scrollable="true"
-           :top="0"
+               :top="0"
                maximize
-               class-name= "vertical-center-modal"
-               > 
+               class-name="vertical-center-modal"
+          
+               >
+      <div slot="footer">
+      </div>
     </h-msg-box>
     <!-- <h-msg-box v-model="modal1" maximize :left="100" :top="100">
       <p>对话框内容</p>
@@ -25,6 +28,16 @@ export default {
   data() {
     return {
       modal1: false
+    }
+  },
+  methods: {
+    cclickk() {
+      // this.modal1 = true
+      this.$hMsgBox.confirm({
+        content: '111',
+        cancelType: 'ghost',
+        maximize:true
+      })
     }
   }
 }
