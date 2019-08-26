@@ -287,7 +287,7 @@ export default {
     },
     contentStyle() {
       let style = {}
-     
+
       if (this.isMax) {
         let mHeight =
           this.curHeight - (this.headerHeight + 1) - (this.footerHeight + 1) //加1是为了消除边线影响F
@@ -295,9 +295,11 @@ export default {
         style.maxHeight = `${mHeight}px`
       } else {
         if (this.height) {
+          style.overflowY = 'auto'
           style.height = this.height <= 100 ? `auto` : `${this.height}px`
         }
         if (this.maxHeight) {
+          style.overflowY = 'auto'
           style.maxHeight = `${this.maxHeight}px`
         }
       }
