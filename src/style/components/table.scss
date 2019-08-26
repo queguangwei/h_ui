@@ -208,7 +208,8 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
   th &-cell{
     // display: inline-block;
     //position: relative;
-    white-space: nowrap;
+    //o45需求 表头要控制可缩小的最小长度，至少保留一个文字和排序按钮 参考element ui
+    //white-space: nowrap;
     overflow: hidden;
     vertical-align: middle;
   }
@@ -364,6 +365,8 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
 
   &-sort{
     @include sortable();
+    float: right;
+    margin-top: 2px;
   }
   &-sortnew{
     @include sortable();
