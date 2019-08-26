@@ -1120,7 +1120,7 @@ export default {
         this.moveMove(event, target, column)
       }
     },
-    moveDrag(event, target, column,isLeft) {
+    moveDrag(event, target, column, isLeft) {
       if (!this.dragging||(isLeft&&this.isRightFixed)) {
         let rect = target.getBoundingClientRect()
         const bodyStyle = document.body.style
@@ -1396,7 +1396,13 @@ export default {
           : false
       let oldIndex = -1
       if(this.objData[_index]._isChecked&&this.rowSelectOnly){
-        return;
+        for(let i in this.objData) {
+          if(this.objData[i]._isChecked) {
+            this.objData[i]._isChecked = false
+          }
+          this.objData[_index]._isChecked = true
+        }
+        return
       }
       for (let i in this.objData) {
         this.objData[i]._isChecked = false //单选时取消多选项，估值6.0专用

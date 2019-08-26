@@ -654,9 +654,9 @@ export default {
   methods: {
     handleInputKeyup(event){
       if(this.newSearchModel){
-        this.$emit('on-keyup', event, this.selectedResult)
+        this.$emit('on-keyup', this.selectedResult, event)
       }else{
-        this.$emit('on-keyup',this.query,event)
+        this.$emit('on-keyup', this.query, event)
       }
     },
     selectedTop(status=true) {
@@ -1308,8 +1308,8 @@ export default {
         this.toggleSelect(false)
         this.selectedResult=''
         e.preventDefault();
-
       }
+      this.$emit('on-keydown', e)
     },
     handleInputDelete() {
       if (this.multiple && this.model.length && this.query === '') {
