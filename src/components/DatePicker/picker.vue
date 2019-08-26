@@ -690,8 +690,13 @@ export default {
         this.cursorPos = 8
       }
 
-      if (!this.isConfirm) this.onSelectionModeChange(this.type) // reset the selectionMode
-      if (!this.isConfirm) this.visible = visible
+      if (!this.isConfirm)
+        this.onSelectionModeChange(this.type) // reset the selectionMode
+      if (!this.isConfirm)
+        this.visible = visible
+      if(this.showToday) {
+
+      }
       this.emitChange()
     },
     onPickSuccess() {
@@ -769,6 +774,7 @@ export default {
       let isDisabled = disabledDateFn && disabledDateFn(td)
       if(!isDisabled){
         this.$set(this.internalValue, 0,new Date())
+        this.visible = false
         this.emitChange()
       }
     },
@@ -789,7 +795,7 @@ export default {
       } else {
         // 显示前才计算位置
         this.setPlacement()
-        
+
         setTimeout(() => {
           this.dispatch('Msgbox', 'on-esc-real-close', false)
         }, 0)
