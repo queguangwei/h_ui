@@ -24,7 +24,7 @@ let bigData = [];
 for(var i=0;i<5;i++){
   let obj =  {
     id: i,
-    expand:i==0?true:false,
+    expand: "false",
     name: '王小明'+i,
     age: 18,
     address: '北京市朝阳区芍药居',
@@ -34,6 +34,7 @@ for(var i=0;i<5;i++){
     dating:'2018',
     timing:'16',
     tree: '345',
+    
   }
   bigData.push(obj)
 }
@@ -98,7 +99,7 @@ let bigData1 = [{
       age: 18,
       address: '北京市朝阳区芍药居',
       money: '120.00',
-      cardId: '6223 ',
+      cardId: ' 6223 ',
       city: '北京',
       dating:'2018',
       timing:'16',
