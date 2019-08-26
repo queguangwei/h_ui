@@ -2,7 +2,7 @@
   <div>
     <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
       <h-form-item label="日期">
-        <h-date-picker type="date" placeholder="选择日期" v-model="formCustom.date" class="curItemClass" iconVisible></h-date-picker>
+        <h-date-picker type="date" placeholder="选择日期" showToday v-model="formCustom.date" class="curItemClass"></h-date-picker>
       </h-form-item>
       <h-form-item label="金额框" prop="money">
         <h-typefield v-model="formCustom.money" divided bigTips focusAllSelect

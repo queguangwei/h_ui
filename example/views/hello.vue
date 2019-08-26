@@ -2,9 +2,9 @@
 <div>
   <Button @on-click="changeShow">打开弹框</Button>
   <Button @on-click="changeData">改变数值</Button>
-  <!-- <h-msg-box v-model="show" escClose> -->
+   <h-msg-box v-model="show" escClose @on-cancel="cancel">
     <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
-      <h-form-item label="input" prop="name">
+      <h-form-item label="input" prop="name" required>
           <h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>
       </h-form-item>
       <h-form-item label="typefield" prop="mail">
@@ -48,14 +48,14 @@
               <h-checkbox label="看电影" class="curItemClass" ></h-checkbox>
           </h-checkbox-group>
       </h-form-item>
-      <h-form-item>
-          <h-button type="primary" canFocus @click="handleSubmit('formValidate')" class="curItemClass" >提交</h-button>
-          <h-button type="ghost"  canFocus  @click="handleReset('formValidate')" style="margin-left: 8px" class="curItemClass" >重置</h-button>
-          <h-button @click="focusFirst">焦点定位到第一项</h-button>
-          <h-button @click="clear">清空当前选项</h-button>
-      </h-form-item>
+      <!--<h-form-item>-->
+          <!--<h-button type="primary" canFocus @click="handleSubmit('formValidate')" class="curItemClass" >提交</h-button>-->
+          <!--<h-button type="ghost"  canFocus  @click="handleReset('formValidate')" style="margin-left: 8px" class="curItemClass" >重置</h-button>-->
+          <!--<h-button @click="focusFirst">焦点定位到第一项</h-button>-->
+          <!--<h-button @click="clear">清空当前选项</h-button>-->
+      <!--</h-form-item>-->
     </h-form>
-  <!-- </h-msg-box> -->
+   </h-msg-box>
 </div>
 </template>
 <script>
@@ -134,6 +134,10 @@ export default {
     },
     changeShow(){
       this.show=true
+      this.$refs.formValidate.firstNodeFocused()
+    },
+    cancel() {
+      this.$refs.formValidate.resetFields()
     }
   }
 };
