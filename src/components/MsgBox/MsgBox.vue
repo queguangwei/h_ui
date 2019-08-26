@@ -287,7 +287,7 @@ export default {
     },
     contentStyle() {
       let style = {}
-      style.overflowY = 'auto'
+     
       if (this.isMax) {
         let mHeight =
           this.curHeight - (this.headerHeight + 1) - (this.footerHeight + 1) //加1是为了消除边线影响F
