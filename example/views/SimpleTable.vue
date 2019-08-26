@@ -6,10 +6,8 @@
     <Button @click="loadData">加载数据</Button>
     <Button @click="changeData">切换数据</Button>
     <Button @click="adddata">添加数据</Button>
-    <h-simple-table :columns="columnsBig1" :data="bigData" :addData="addData" border stripe
-                    :loading="loading" headAlgin="right" bodyAlgin="left" width="1200" :canDrag="false"
-                    @on-select="select" @on-select-cancel="select" @on-drag="onDrag" height="500"
-                    @on-select-all='change' @on-scroll="change" @on-selection-change="change">
+    <h-simple-table :columns="columnsBig1" :data="bigData" :addData="addData" border stripe :loading="loading" headAlgin="right" bodyAlgin="left" width="1200" :canDrag="true"
+                    @on-select="select" @on-select-cancel="select" @on-drag="onDrag" height="500" @on-select-all='change' @on-scroll="change" @on-selection-change="change">
       <span slot="loading">我是自定义加载！！！</span>
     </h-simple-table>
     <h-button @click="setLoading">切换状态</h-button>
@@ -95,6 +93,7 @@ export default {
           title: '姓名',
           key: 'fundId',
           width:200,
+          showTitle:true,
           // remote: true,
           // renderHeader:(h, params)=>{
           //   return h('span','123')
