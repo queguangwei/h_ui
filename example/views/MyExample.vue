@@ -1,12 +1,10 @@
 <template>
   <div>
     <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
-      <h-form-item label="日期">
-        <h-date-picker type="date" placeholder="选择日期" showToday v-model="formCustom.date" class="curItemClass"></h-date-picker>
-      </h-form-item>
-      <h-form-item label="金额框" prop="money">
-        <h-typefield v-model="formCustom.money" divided bigTips focusAllSelect
-                     integerNum="10" suffixNum="2"  type="money" :max="1000000000" :min="0" :step="100">
+
+      <h-form-item label="金额框" prop="face_balance">
+        <h-typefield v-model="formCustom.face_balance" nonNegative divided focusAllSelect
+                     integerNum="10" suffixNum="2"  type="money" :step="10">
         </h-typefield>
       </h-form-item>
       <h-form-item label="密码" prop="passwd">
@@ -17,6 +15,9 @@
       </h-form-item>
       <h-form-item label="年龄" prop="age">
         <h-input type="text" v-model="formCustom.age" number></h-input>
+      </h-form-item>
+      <h-form-item label="日期">
+        <h-date-picker type="date" placeholder="选择日期" showToday v-model="formCustom.date" class="curItemClass"></h-date-picker>
       </h-form-item>
       <h-form-item>
         <h-button type="primary" @click="handleSubmit('formCustom')">提交</h-button>
@@ -29,10 +30,10 @@
 export default {
   data () {
     const validateMoney = (rule, value, callback) => {
+      console.log('face_balance validator', value)
       if (value === '') {
         callback(new Error('请输入金额'));
       } else {
-        console.log(value)
         callback();
       }
     };
@@ -77,12 +78,24 @@ export default {
     return {
       formCustom: {
         date: '',
-        money: '',
+        face_balance: '0.00',
         passwd: '',
         passwdCheck: '',
         age: ''
       },
       ruleCustom: {
+        face_balance: [{
+          validator: (rule, value, callback)=>{
+            console.log('face_balance validator', value)
+            let tmpVal = parseFloat(value);
+            // let tmpVal = parseFloat((this.formItem.face_balance+'').replace(',', ''));
+            if(isNaN(tmpVal) || tmpVal == 0 || tmpVal % 10 != 0) {
+
+            } else {
+              callback();
+            }
+          }, trigger:'blur,change'}
+        ],
         money: [
           { validator: validateMoney, triggger: 'blur'}
         ],

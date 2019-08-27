@@ -94,19 +94,18 @@ export default {
           sortable: true
         },
         {
-          title: '姓名',
+          title: '姓名姓名姓名姓名姓名姓名姓名姓名',
           key: 'fundId',
-          width:200,
           showTitle:true,
           ellipsis:true,
         },
         {
-          title: '年龄',
+          title: '今日开盘价(元)',
           key: 'tradeDate',
-          width: 80,
+//          width: 80,
           sortable:true,
-          ellipsis:true
-          // fixed:'left',
+          ellipsis:true,
+          align:'right'
         },
         {
           title: '地址',
@@ -580,7 +579,7 @@ export default {
     }
   },
   mounted(){
-    window.isO45 = true
+    window.isO45 = false
   }
 }
 </script>

@@ -348,9 +348,9 @@ export default {
       )
     },
     validate(trigger, callback = function() {}) {
-      if(this.forcePass) {
-        return
-      }
+//      if(this.forcePass) {
+//        return
+//      }
       this.showModal = true
       if (this.isNotChecked) return
       const rules = this.getFilteredRule(trigger)
@@ -423,7 +423,7 @@ export default {
         this.validateDisabled = true
         prop.o[prop.k] = this.initialValue
       }
-      this.forcePass = false
+//      this.forcePass = false
     },
     /**
      * @description 重置校验结果
@@ -435,6 +435,7 @@ export default {
       if (cb) cb()
     },
     onFieldBlur(val) {
+      console.log(val)
       this.validate('blur', () => {})
     },
     onFieldChange(val) {
@@ -471,7 +472,7 @@ export default {
       this.showModal = false
     },
     handleIsValidate() {
-      this.forcePass = true
+//      this.forcePass = true
     }
   },
   mounted() {

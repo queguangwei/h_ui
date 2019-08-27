@@ -43,7 +43,8 @@
                 <table-cell :column="column"
                             :index="index"
                             :checked="isSelectAll"
-                            :prefixCls="prefixCls">
+                            :prefixCls="prefixCls"
+                            :titleEllipsis="titleEllipsis">
                 </table-cell>
               </th>
             </tr>
@@ -158,7 +159,8 @@
                   <table-cell :column="column"
                               :index="index"
                               :checked="isSelectAll"
-                              :prefixCls="prefixCls">
+                              :prefixCls="prefixCls"
+                              :titleEllipsis="titleEllipsis">
                   </table-cell>
                 </th>
               </tr>
@@ -494,6 +496,10 @@ export default {
     isMulitSort:{//多列排序
       type:Boolean,
       default:false,
+    },
+    titleEllipsis: {
+      type: Boolean,
+      default:true
     }
   },
   data() {
@@ -1000,9 +1006,10 @@ export default {
               lastWidth = lastWidth - getScrollBarSize()
             }
             //最小宽度 o45： padding 8、 一个文字... 24、 排序 16+4
-
             if(window.isO45) {
               columnWidth = columnWidth <= 60 ? 60 : columnWidth
+            }else {
+              columnWidth = columnWidth <= 74 ? 74 : columnWidth
             }
             _this.changeWidth(columnWidth, column.key, lastWidth)
 

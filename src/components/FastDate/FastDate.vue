@@ -11,6 +11,7 @@
       :transfer="transfer"
       :format="format"
       :options="options"
+      :showToday="showToday"
       :placement="fPlacement"
       :autoPlacement = "autoPlacement"
       @on-change="handleChange"
@@ -147,6 +148,10 @@ export default {
         let num = parseInt(value);
         return num <= 32767 && num >= -1;
       }
+    },
+    showToday:{
+      type: Boolean,
+      default: false
     }
   },
   data(){
@@ -504,7 +509,9 @@ export default {
       }
     },
     focus(){
-      this.opened = true;
+      if(!window.isO45) {
+        this.opened = true;
+      }
       this.$refs.year.focus();
     },
     isClear(){
