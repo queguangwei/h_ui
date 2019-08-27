@@ -668,10 +668,10 @@ export default {
     }
   },
   methods: {
-    handleInputKeyup(event) {
-      if (this.newSearchModel) {
-        this.$emit('on-keyup', event, this.selectedResult)
-      } else {
+    handleInputKeyup(event){
+      if(this.newSearchModel){
+        this.$emit('on-keyup', this.selectedResult, event)
+      }else{
         this.$emit('on-keyup', this.query, event)
       }
     },
@@ -900,11 +900,12 @@ export default {
             this.selectedResult = multipleAry.join(',')
           }
         }
-        if (this.remote) {
-          if (this.newSearchModel) {
-            this.broadcastQuery(this.curSearchkey)
-          }
-          this.$refs.dropdown.setWidthAdaption()
+        //tan 50多选改动
+        if(this.remote){
+//          if(this.newSearchModel){
+//            this.broadcastQuery(this.curSearchkey)
+//          }
+          this.$refs.dropdown.setWidthAdaption();
         }
       }
     },
@@ -1344,8 +1345,13 @@ export default {
       if (this.newSearchModel && e.keyCode == '68' && e.ctrlKey) {
         this.handleNewSearchUnCheckAll(e)
         this.toggleSelect(false)
-        this.selectedResult = ''
-        e.preventDefault()
+        this.selectedResult=''
+        e.preventDefault();
+      }
+      if(this.newSearchModel){
+        this.$emit('on-keydown', this.selectedResult, e)
+      }else{
+        this.$emit('on-keydown', this.query, e)
       }
     },
     handleInputDelete() {
@@ -1400,16 +1406,19 @@ export default {
           // 解决当通过表单方法firstNodeFocused定位到SimpleSelect时只能输入但不展示下拉选项的问题
           if (!this.visible && searchkey) this.visible = true
           this.remoteMethod(searchkey)
-          this.curSearchkey = searchkey
-          if (searchkey != ',') {
-            setTimeout(() => {
-              // this.newSearchUpdate();
+          //tan 50 多选改动 放开
+//          this.curSearchkey = searchkey
+          if(searchkey!=","){
+            setTimeout(()=> {
+              //tan 50多选改动 注释掉
+              this.newSearchUpdate();
               this.$emit('on-query-change', searchkey)
               //this.$refs.dropdown.setWidthAdaption(true);
             }, 300)
           }
           //this.$emit('on-query-change', searchkey)
-          //this.broadcastQuery(searchkey)
+          //tan 50改动 注释掉
+          this.broadcastQuery(searchkey)
         }
         this.findChild(child => {
           child.isFocus = false

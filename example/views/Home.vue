@@ -2,41 +2,35 @@
   <div>
       <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus cols="2" onlyBlurRequire>
         <h-form-item label="输入框" prop="input" required>
-          <h-input v-model="formItem1.input" placeholder="请输入"></h-input>
+          <h-input v-model="formItem1.input" placeholder="请输入" class="curItemClass"></h-input>
+        </h-form-item>
+        <h-form-item label="特殊日期" required prop="fatdate">
+          <h-fast-date v-model="formItem1.fatdate" class="curItemClass" showToday></h-fast-date>
         </h-form-item>
         <h-form-item label="金额框" prop="money" required>
-          <h-typefield v-model="formItem1.money">
-            <!--  <h-select v-model="select1" slot="prepend" style="width: 80px">
-			   <h-option value="http">http://</h-option>
-			   <h-option value="https">https://</h-option>
-			 </h-select> -->
-
-            <h-select v-model="select2" placeholder="" slot="append" style="width: 45px" :isArrow="false" :clearable="false" :tranfer="true">
-              <h-option value="com">.com</h-option>
-              <h-option value="org">.org</h-option>
-              <h-option value="io">.io</h-option>
-            </h-select>
+          <h-typefield class="curItemClass" v-model="formItem1.money" nonNegative divided bigTips focusAllSelect
+                       integerNum="10" suffixNum="2"  type="money">
           </h-typefield>
         </h-form-item>
         <h-form-item label="选择器" prop="select" required>
-          <h-simple-select v-model="formItem1.select" filterable>
+          <h-simple-select class="curItemClass" v-model="formItem1.select" filterable>
             <h-select-block></h-select-block>
-            <!-- <h-option value="beijing">北京市</h-option>
+            <h-option value="beijing">北京市</h-option>
             <h-option value="shanghai">上海市</h-option>
-            <h-option value="shenzhen">深圳市</h-option> -->
+            <h-option value="shenzhen">深圳市</h-option>
           </h-simple-select>
         </h-form-item>
         <h-form-item label="日期控件">
           <h-row>
             <h-col span="11">
               <h-form-item prop="date" required>
-                <h-datePicker type="date" placeholder="选择日期" v-model="formItem1.date"></h-datePicker>
+                <h-datePicker type="date" iconVisible placeholder="选择日期" class="curItemClass" v-model="formItem1.date"></h-datePicker>
               </h-form-item>
             </h-col>
             <h-col span="2" style="text-align: center">-</h-col>
             <h-col span="11">
               <h-form-item prop="time" required>
-                <h-timePicker type="time" placeholder="选择时间" v-model="formItem1.time"></h-timePicker>
+                <h-timePicker type="time" placeholder="选择时间" class="curItemClass" v-model="formItem1.time"></h-timePicker>
               </h-form-item>
             </h-col>
           </h-row>
@@ -56,15 +50,6 @@
               <h-checkbox label="看电影"></h-checkbox>
           </h-checkbox-group>
         </h-form-item>
-        <h-form-item label="特殊日期" required prop="fatdate">
-          <h-fast-date v-model="formItem1.fatdate"></h-fast-date>
-        </h-form-item>
-        <h-form-item label="特殊日期" required prop="fatdate">
-          <h-fast-date v-model="formItem1.fatdate"></h-fast-date>
-        </h-form-item>
-        <h-form-item label="特殊日期" required prop="fatdate">
-          <h-fast-date v-model="formItem1.fatdate"></h-fast-date>
-        </h-form-item>
         <h-form-item label="下拉表" prop='slider' required>
           <h-select-table v-model="formItem1.slider" >
             <h-table-option border :columns="columns1" :data="data1"></h-table-option>
@@ -80,6 +65,7 @@
           <h-cascader v-model="formItem1.cascader" :data="data2" trigger="hover" style="width:200px"></h-cascader>
         </h-form-item>
         <h-form-item>
+          <h-button type="primary" @click="handleValidField('formItem1','money')" style="margin-left: 8px">校验</h-button>
             <h-button type="primary" @click="handleSubmit('formItem1')">提交</h-button>
             <h-button type="ghost" style="margin-left: 8px" @click="handleReset('formItem1')">取消</h-button>
             <h-button type="ghost" style="margin-left: 8px" @click="focus">获取焦点</h-button>
@@ -178,7 +164,6 @@
           test2: ''
         },
         select1:'',
-        select2:'',
         stringRule:['email'],
         regRule: [{test:/^[a-zA-Z]+$/, message:'不全是字母',trigger:'blur'}],
         columns1: [
@@ -254,6 +239,15 @@
       changeform1(){
         this.changeform = !this.changeform;
       },
+      handleValidField (name, str) {
+        this.$refs[name].validateField(str, (valid) => {
+          if (valid) {
+            this.$hMessage.error(valid);
+          } else {
+            this.$hMessage.success('校验正确');
+          }
+        })
+      },
       handleSubmit (name) {
         let _this=this
         this.$refs[name].validate((valid) => {
@@ -282,10 +276,13 @@
       }
     },
     created() {
-      window.isO45 = true
+      window.isO45 = false
     },
     mounted(){
-      document.addEventListener("keydown", this.handleKeydown);
+      document.addEventListener("keydown", event => {
+        enterHandler1(this.$refs.formItem1, event);
+      });
+//      document.addEventListener("keydown", this.handleKeydown);
     }
   }
 </script>

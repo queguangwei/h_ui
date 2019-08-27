@@ -2,9 +2,9 @@
 <div>
   <Button @on-click="changeShow">打开弹框</Button>
   <Button @on-click="changeData">改变数值</Button>
-  <!-- <h-msg-box v-model="show" escClose> -->
+   <h-msg-box v-model="show" escClose @on-cancel="cancel">
     <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
-      <h-form-item label="input" prop="name">
+      <h-form-item label="input" prop="name" required>
           <h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>
       </h-form-item>
       <h-form-item label="typefield" prop="mail">
@@ -22,7 +22,7 @@
       </h-form-item>
       {{formValidate.city}}
       <h-form-item label="singleSelect" prop="city" required>
-        <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass" widthAdaption>
+        <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass" widthAdaption @on-keydown="handlekeydown">
           <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
         </h-single-select>
       </h-form-item>
@@ -48,14 +48,14 @@
               <h-checkbox label="看电影" class="curItemClass" ></h-checkbox>
           </h-checkbox-group>
       </h-form-item>
-      <h-form-item>
-          <h-button type="primary" canFocus @click="handleSubmit('formValidate')" class="curItemClass" >提交</h-button>
-          <h-button type="ghost"  canFocus  @click="handleReset('formValidate')" style="margin-left: 8px" class="curItemClass" >重置</h-button>
-          <h-button @click="focusFirst">焦点定位到第一项</h-button>
-          <h-button @click="clear">清空当前选项</h-button>
-      </h-form-item>
+      <!--<h-form-item>-->
+          <!--<h-button type="primary" canFocus @click="handleSubmit('formValidate')" class="curItemClass" >提交</h-button>-->
+          <!--<h-button type="ghost"  canFocus  @click="handleReset('formValidate')" style="margin-left: 8px" class="curItemClass" >重置</h-button>-->
+          <!--<h-button @click="focusFirst">焦点定位到第一项</h-button>-->
+          <!--<h-button @click="clear">清空当前选项</h-button>-->
+      <!--</h-form-item>-->
     </h-form>
-  <!-- </h-msg-box> -->
+   </h-msg-box>
 </div>
 </template>
 <script>
@@ -104,8 +104,10 @@ export default {
       value111:'value0',
     }
   },
+  created() {
+    window.isO45 = true
+  },
   mounted() {
-     window.isO45 = false;
     document.addEventListener("keydown", event => {
       enterHandler1(this.$refs.formValidate, event);
     });
@@ -114,6 +116,10 @@ export default {
     },1000)
   },
   methods:{
+    handlekeydown(val, e) {
+      console.log(val)
+      console.log(e)
+    },
     getFocus() {
       this.$refs.test.focus()
     },
@@ -121,7 +127,7 @@ export default {
       console.log("lsjflsja;");
     },
     handleSubmit(){
-        this.formValidate.city="value1"
+      this.formValidate.city="value1"
     },
     changeData(){
         this.bigData = this.bigData.slice(0,2)
@@ -134,6 +140,10 @@ export default {
     },
     changeShow(){
       this.show=true
+      this.$refs.formValidate.firstNodeFocused()
+    },
+    cancel() {
+      this.$refs.formValidate.resetFields()
     }
   }
 };
