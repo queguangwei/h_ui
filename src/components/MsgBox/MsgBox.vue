@@ -42,7 +42,8 @@
             </slot>
           </div>
           <div :class="[prefixCls + '-body']"
-               :style="contentStyle">
+               :style="contentStyle"
+          ref="box">
             <slot></slot>
           </div>
           <div :class="[prefixCls + '-footer']"
@@ -73,6 +74,7 @@ import Locale from '../../mixins/locale'
 import Emitter from '../../mixins/emitter'
 import Drag from '../../directives/drag.js'
 import { on, off } from '../../util/dom'
+import { findComponentChildren } from '../../util/tools'
 const prefixCls = 'h-modal'
 
 export default {

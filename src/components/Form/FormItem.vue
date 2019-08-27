@@ -1,5 +1,5 @@
 <template>
-  <div :class="classes">
+  <div :class="classes" ref="formItemWrapper">
     <label :class="[prefixCls + '-label']"
            :style="labelStyles"
            v-if="label || $slots.label"
@@ -36,6 +36,7 @@ import {
   deepCopy,
   typeOf
 } from '../../util/tools'
+import { on, off } from '../../util/dom'
 import Validate from './validate'
 const prefixCls = 'h-form-item'
 const parentPrefixCls = 'h-form'
@@ -154,6 +155,7 @@ export default {
       mustShowErrorList: [],
       modeChanged: false,
       showModal:true,
+      forcePass: false
     }
   },
   watch: {
@@ -346,6 +348,9 @@ export default {
       )
     },
     validate(trigger, callback = function() {}) {
+//      if(this.forcePass) {
+//        return
+//      }
       this.showModal = true
       if (this.isNotChecked) return
       const rules = this.getFilteredRule(trigger)
@@ -418,6 +423,7 @@ export default {
         this.validateDisabled = true
         prop.o[prop.k] = this.initialValue
       }
+//      this.forcePass = false
     },
     /**
      * @description 重置校验结果
@@ -429,6 +435,7 @@ export default {
       if (cb) cb()
     },
     onFieldBlur(val) {
+      console.log(val)
       this.validate('blur', () => {})
     },
     onFieldChange(val) {
@@ -463,9 +470,13 @@ export default {
     },
     closeTip(){
       this.showModal = false
+    },
+    handleIsValidate() {
+//      this.forcePass = true
     }
   },
   mounted() {
+    on(this.$refs.formItemWrapper, 'keydown', this.handleIsValidate)
     // 当form设置cols时，忽略textarea，slider中设置的cols,该组件独占一行,默认formItem子组件仅有一个textarea/slider/upload
     if (this.form.cols) {
       this.$nextTick(() => {
@@ -517,6 +528,7 @@ export default {
     }
   },
   beforeDestroy() {
+    off(this.$refs.formItemWrapper, 'keydown', this.handleIsValidate)
     this.dispatch('Form', 'on-form-item-remove', this)
   },
   created() {}
