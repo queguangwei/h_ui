@@ -22,7 +22,7 @@
       </h-form-item>
       {{formValidate.city}}
       <h-form-item label="singleSelect" prop="city" required>
-        <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass" widthAdaption>
+        <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass" widthAdaption @on-keydown="handlekeydown">
           <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
         </h-single-select>
       </h-form-item>
@@ -104,8 +104,10 @@ export default {
       value111:'value0',
     }
   },
+  created() {
+    window.isO45 = true
+  },
   mounted() {
-     window.isO45 = false;
     document.addEventListener("keydown", event => {
       enterHandler1(this.$refs.formValidate, event);
     });
@@ -114,6 +116,10 @@ export default {
     },1000)
   },
   methods:{
+    handlekeydown(val, e) {
+      console.log(val)
+      console.log(e)
+    },
     getFocus() {
       this.$refs.test.focus()
     },
@@ -121,7 +127,7 @@ export default {
       console.log("lsjflsja;");
     },
     handleSubmit(){
-        this.formValidate.city="value1"
+      this.formValidate.city="value1"
     },
     changeData(){
         this.bigData = this.bigData.slice(0,2)

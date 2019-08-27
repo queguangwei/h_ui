@@ -43,6 +43,7 @@
         @focus="handleFocus"
         @blur="handleBlur"
         @keyup="handleInputKeyup($event)"
+        @keydown="handleInputKeydown($event)"
         @keydown.delete="handleInputDelete"
         :tabindex="tabindex"
         ref="input">
@@ -546,6 +547,9 @@ export default {
   methods: {
     handleInputKeyup(event){
       this.$emit('on-keyup', this.query, event)
+    },
+    handleInputKeydown(event) {
+      this.$emit('on-keydown', this.query, event)
     },
     handleclick(e){
       e.stopPropagation();

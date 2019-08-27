@@ -2,38 +2,38 @@
   <div>
       <h-form ref="formItem1" :model="formItem1" :compareModel="formItem2" :label-width="80" errorFocus cols="2" onlyBlurRequire>
         <h-form-item label="输入框" prop="input" required>
-          <h-input v-model="formItem1.input" placeholder="请输入"></h-input>
+          <h-input v-model="formItem1.input" placeholder="请输入" class="curItemClass"></h-input>
         </h-form-item>
         <h-form-item label="特殊日期" required prop="fatdate">
-          <h-fast-date v-model="formItem1.fatdate"></h-fast-date>
+          <h-fast-date v-model="formItem1.fatdate" class="curItemClass" showToday></h-fast-date>
+        </h-form-item>
+        <h-form-item label="金额框" prop="money" required>
+          <h-typefield class="curItemClass" v-model="formItem1.money" nonNegative divided bigTips focusAllSelect
+                       integerNum="10" suffixNum="2"  type="money">
+          </h-typefield>
+        </h-form-item>
+        <h-form-item label="选择器" prop="select" required>
+          <h-simple-select class="curItemClass" v-model="formItem1.select" filterable>
+            <h-select-block></h-select-block>
+            <h-option value="beijing">北京市</h-option>
+            <h-option value="shanghai">上海市</h-option>
+            <h-option value="shenzhen">深圳市</h-option>
+          </h-simple-select>
         </h-form-item>
         <h-form-item label="日期控件">
           <h-row>
             <h-col span="11">
               <h-form-item prop="date" required>
-                <h-datePicker type="date" iconVisible placeholder="选择日期" v-model="formItem1.date"></h-datePicker>
+                <h-datePicker type="date" iconVisible placeholder="选择日期" class="curItemClass" v-model="formItem1.date"></h-datePicker>
               </h-form-item>
             </h-col>
             <h-col span="2" style="text-align: center">-</h-col>
             <h-col span="11">
               <h-form-item prop="time" required>
-                <h-timePicker type="time" placeholder="选择时间" v-model="formItem1.time"></h-timePicker>
+                <h-timePicker type="time" placeholder="选择时间" class="curItemClass" v-model="formItem1.time"></h-timePicker>
               </h-form-item>
             </h-col>
           </h-row>
-        </h-form-item>
-        <h-form-item label="金额框" prop="money" required>
-          <h-typefield v-model="formItem1.money" nonNegative divided bigTips focusAllSelect
-                       integerNum="10" suffixNum="2"  type="money">
-          </h-typefield>
-        </h-form-item>
-        <h-form-item label="选择器" prop="select" required>
-          <h-simple-select v-model="formItem1.select" filterable>
-            <h-select-block></h-select-block>
-            <!-- <h-option value="beijing">北京市</h-option>
-            <h-option value="shanghai">上海市</h-option>
-            <h-option value="shenzhen">深圳市</h-option> -->
-          </h-simple-select>
         </h-form-item>
 
         <h-form-item label="单选框" prop="radio" required>
@@ -49,13 +49,6 @@
               <h-checkbox label="跑步"></h-checkbox>
               <h-checkbox label="看电影"></h-checkbox>
           </h-checkbox-group>
-        </h-form-item>
-
-        <h-form-item label="特殊日期" required prop="fatdate">
-          <h-fast-date v-model="formItem1.fatdate"></h-fast-date>
-        </h-form-item>
-        <h-form-item label="特殊日期" required prop="fatdate">
-          <h-fast-date v-model="formItem1.fatdate"></h-fast-date>
         </h-form-item>
         <h-form-item label="下拉表" prop='slider' required>
           <h-select-table v-model="formItem1.slider" >
@@ -283,9 +276,12 @@
       }
     },
     created() {
-      window.isO45 = true
+      window.isO45 = false
     },
     mounted(){
+      document.addEventListener("keydown", event => {
+        enterHandler1(this.$refs.formItem1, event);
+      });
 //      document.addEventListener("keydown", this.handleKeydown);
     }
   }
