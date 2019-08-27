@@ -979,7 +979,7 @@ export default {
           if (_this.dragging) {
             const { startColumnLeft, startLeft } = _this.dragState
             const finalLeft = parseInt(resizeProxy.style.left, 10)
-            const columnWidth = finalLeft - startColumnLeft
+            let columnWidth = finalLeft - startColumnLeft
             let dragWidth = finalLeft - startLeft //>0为输入框增大，<0为减小
             if (dragWidth >= 0) {
               lastWidth =
@@ -998,6 +998,11 @@ export default {
             }
             if (table.bodyHeight !== 0&&!this.isRightFixed) {
               lastWidth = lastWidth - getScrollBarSize()
+            }
+            //最小宽度 o45： padding 8、 一个文字... 24、 排序 16+4
+
+            if(window.isO45) {
+              columnWidth = columnWidth <= 60 ? 60 : columnWidth
             }
             _this.changeWidth(columnWidth, column.key, lastWidth)
 

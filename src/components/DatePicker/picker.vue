@@ -605,8 +605,8 @@ export default {
       if (this.showClose) {
         this.handleClear()
       } else if (!this.disabled) {
-        this.isFocus = true
-        this.handleVisible(true)
+        this.isFocus = !this.isFocus
+        this.handleVisible(this.isFocus)
       }
     },
     handleClear() {

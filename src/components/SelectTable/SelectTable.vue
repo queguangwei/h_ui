@@ -1311,7 +1311,11 @@ export default {
         this.selectedResult=''
         e.preventDefault();
       }
-      this.$emit('on-keydown', e)
+      if(this.newSearchModel){
+        this.$emit('on-keydown', this.selectedResult, e)
+      }else{
+        this.$emit('on-keydown', this.query, e)
+      }
     },
     handleInputDelete() {
       if (this.multiple && this.model.length && this.query === '') {

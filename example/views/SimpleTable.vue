@@ -101,9 +101,9 @@ export default {
           ellipsis:true,
         },
         {
-          title: '年龄年龄年龄年龄年龄',
+          title: '年龄',
           key: 'tradeDate',
-          width: 70,
+          width: 80,
           sortable:true,
           ellipsis:true
           // fixed:'left',
@@ -446,8 +446,12 @@ export default {
     loadData(){
       this.showmsg = true;
       this.columnsBig1.splice(2, 0, {
-        title: '地址1',
+        title: '交易市场',
         key: 'securityName',
+        width: 80,
+        sortable:true,
+        ellipsis:true,
+        showTitle:true
       })
       this.columnsBig1.push({
         title: '年龄年龄年龄年龄年龄年龄年龄1',

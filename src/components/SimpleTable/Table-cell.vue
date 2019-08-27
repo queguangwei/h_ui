@@ -2,10 +2,10 @@
   <div :class="cellClasses" :style="minWidthStyle(column)">
     <template v-if="column.type === 'selection'">
       <Checkbox v-if="!column.title" :size="checkboxSize" @mousedown.native.stop="handleClick" :value="checked" @on-change="selectAll"></Checkbox>
-      <span v-else :class="ellipsisClass(column)" :style="ellipsisStyle(column)">{{column.title}}</span>
+      <span v-else :class="ellipsisClass(column)" :style="ellipsisStyle(column)" :title="column.showTitle?column.title:null">{{column.title}}</span>
     </template>
     <template v-else>
-      <span v-if="!column.renderHeader" :class="ellipsisClass(column)" :style="ellipsisStyle(column)">{{ column.title || '#' }}</span>
+      <span v-if="!column.renderHeader" :class="ellipsisClass(column)" :style="ellipsisStyle(column)" :title="column.showTitle?column.title:null">{{ column.title || '#' }}</span>
       <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
     </template>
     <span :class="[prefixCls + '-sort']" v-if="column.sortable&&!useNewSort&&column.type!=='selection'">
@@ -55,8 +55,9 @@ export default {
   methods: {
     minWidthStyle(column) {
       let style = {}
-      if(column.width === 30) {
-        style.paddingLeft = 0
+      if(column.width === 60) {
+        style.paddingLeft = 8 + 'px'
+        style.paddingRight = 8 + 'px'
       }
       return style
     },
@@ -64,7 +65,7 @@ export default {
       let style = {}
       if(column.width && column.ellipsis) {
         style.display = 'inline-block'
-        style.width = `${column.width - 51 <= 30 ? 30 : column.width - 51}px`
+        style.width = `${column.width - 36 <= 24 ? 24 : column.width - 36}px`
       }
       return style
     },
