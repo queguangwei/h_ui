@@ -23,10 +23,7 @@
             <span v-if="inx==(columns[0].type=='index'?1:0)"
                   :style="indentCls">
               <span class="expand-icon">
-                <Icon v-if="(row.children && row.children.length !== 0) || (typeof row.loaded === 'boolean' && !row.loaded)"
-                      name="play_fill"
-                      :class="iconClass(row.id,index)"
-                      @click.native.stop="toggleExpand(index,row,$event)"></Icon>
+                <Icon v-if="(row.children && row.children.length !== 0) || (typeof row.leaf === 'boolean' && !row.leaf)" name = "play_fill" :class="iconClass(row.id,index)" @click.native.stop="toggleExpand(index,row,$event)"></Icon>
               </span>
               <!-- :indeterminate="row.indeterminate" -->
               <Checkbox v-if="isCheckbox"
@@ -304,17 +301,9 @@ export default {
     getStatus() {
       this._parent = this.findParent()
       this.data.forEach((col, inx) => {
-        // if(this.collectionState[inx]){
-        // }else{
-        //   if(col.expand&&col.expand!='false'){
-        //     this.collectionState[inx] = true
-        //   }else{
-        //     this.collectionState[inx] =false
-        //   }
         col.expand = col.expand === 'false' ? false : col.expand
         col.expand = col.expand === 'true' ? true : col.expand
         this.setStatus(col, inx)
-        // }
       })
     },
     handleMouseIn(_index) {
