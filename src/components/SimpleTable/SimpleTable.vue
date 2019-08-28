@@ -43,7 +43,8 @@
                 <table-cell :column="column"
                             :index="index"
                             :checked="isSelectAll"
-                            :prefixCls="prefixCls">
+                            :prefixCls="prefixCls"
+                            :titleEllipsis="titleEllipsis">
                 </table-cell>
               </th>
             </tr>
@@ -86,7 +87,7 @@
                       :class="alignCls(column, row)"
                       :data-index="row._index+1"
                       :key="column._index">
-                    <div :class="classesTd(column)">
+                    <div :class="classesTd(column)" :title="column.showTitle?row[column.key]:null">
                       <!-- &&!this.splitIndex -->
                       <template v-if="column.type === 'index'&&!splitIndex">{{row._index + 1}}</template>
                       <template v-if="column.type === 'selection'">
@@ -158,7 +159,8 @@
                   <table-cell :column="column"
                               :index="index"
                               :checked="isSelectAll"
-                              :prefixCls="prefixCls">
+                              :prefixCls="prefixCls"
+                              :titleEllipsis="titleEllipsis">
                   </table-cell>
                 </th>
               </tr>
@@ -494,6 +496,10 @@ export default {
     isMulitSort:{//多列排序
       type:Boolean,
       default:false,
+    },
+    titleEllipsis: {
+      type: Boolean,
+      default:true
     }
   },
   data() {
@@ -979,7 +985,7 @@ export default {
           if (_this.dragging) {
             const { startColumnLeft, startLeft } = _this.dragState
             const finalLeft = parseInt(resizeProxy.style.left, 10)
-            const columnWidth = finalLeft - startColumnLeft
+            let columnWidth = finalLeft - startColumnLeft
             let dragWidth = finalLeft - startLeft //>0为输入框增大，<0为减小
             if (dragWidth >= 0) {
               lastWidth =
@@ -998,6 +1004,12 @@ export default {
             }
             if (table.bodyHeight !== 0&&!this.isRightFixed) {
               lastWidth = lastWidth - getScrollBarSize()
+            }
+            //最小宽度 o45： padding 8、 一个文字... 24、 排序 16+4
+            if(window.isO45) {
+              columnWidth = columnWidth <= 60 ? 60 : columnWidth
+            }else {
+              columnWidth = columnWidth <= 74 ? 74 : columnWidth
             }
             _this.changeWidth(columnWidth, column.key, lastWidth)
 
@@ -1120,7 +1132,7 @@ export default {
         this.moveMove(event, target, column)
       }
     },
-    moveDrag(event, target, column,isLeft) {
+    moveDrag(event, target, column, isLeft) {
       if (!this.dragging||(isLeft&&this.isRightFixed)) {
         let rect = target.getBoundingClientRect()
         const bodyStyle = document.body.style
@@ -1396,7 +1408,13 @@ export default {
           : false
       let oldIndex = -1
       if(this.objData[_index]._isChecked&&this.rowSelectOnly){
-        return;
+        for(let i in this.objData) {
+          if(this.objData[i]._isChecked) {
+            this.objData[i]._isChecked = false
+          }
+          this.objData[_index]._isChecked = true
+        }
+        return
       }
       for (let i in this.objData) {
         this.objData[i]._isChecked = false //单选时取消多选项，估值6.0专用
