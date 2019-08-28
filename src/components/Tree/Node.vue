@@ -36,7 +36,8 @@
     <ul :class="classes"
         ref="children"
         v-if="childrenShow">
-      <Tree-node v-if="data.expand && data.expand!='false' && (!data.leaf||data.leaf=='false')"
+      <Tree-node ref="nodes"
+                 v-if="data.expand && data.expand!='false' && (!data.leaf||data.leaf=='false')"
                  v-for="(item,i) in data.children"
                  :key="i"
                  :data="item"
@@ -220,8 +221,12 @@ export default {
     }
   },
   methods: {
-    handleExpand() {
+    handleExpand(status) {
       const item = this.data
+      let curStatus = this.$refs.children.style.display === 'block' ||
+       (this.childrenShow && !this.$refs.children.style.display)
+      // 状态不变的时候直接退出
+      if (typeof status === 'boolean' && status === curStatus) return
       // async loading
       if (item.children && item.children.length === 0) {
         const tree = findComponentsUpward(this, 'Tree')
