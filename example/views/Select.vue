@@ -68,6 +68,7 @@
                 algin="center">
         <h-option v-for="item in cityList"
                   :value="item.value"
+                  :key="item.value"
                   :disabled="item.value==2">
           {{ item.label }}
         </h-option>
