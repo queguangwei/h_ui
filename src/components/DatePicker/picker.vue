@@ -6,6 +6,7 @@
          :class="[prefixCls + '-rel']">
       <slot>
         <h-input ref="input"
+        :tabindex="tabindex"
                  :key="forceInputRerender"
                  :element-id="elementId"
                  :class="[prefixCls + '-editor']"
@@ -55,7 +56,8 @@
                      :showTwoPanel="this.showTwoPanel"
                      :range-num="controlRange?selectRange:0"
                      :pickMode="pickMode"
-                     :tabindex="tabindex"
+       :tabindex="-1"
+
                      v-bind="ownPickerProps"
                      @on-pick="onPick"
                      @on-pick-clear="handleClear"
@@ -811,7 +813,7 @@ export default {
       }
       // 仅在transfer时进行重新计算【类似其余的下拉】，否则会不断触发回流，引起性能问题
       // 重新计算位置后进行update
-      if (this.transfer || this.fPlacement !== oldPlacement) this.$refs.drop.update()
+     this.$refs.drop.update()
       this.$emit('on-open-change', state)
     },
     value: {
