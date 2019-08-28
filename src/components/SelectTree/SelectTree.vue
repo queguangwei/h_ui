@@ -419,11 +419,14 @@ export default{
         this.findQuery(this.baseDate,'');
       }
     },
-    checkChange(val){
+    checkChange(val, curNode){
       let strModel = this.formatValue;
       this.lastquery = this.query
       if (this.filterable && !this.showBottom) {
         this.query='';
+      }
+      if (curNode && this.onlyChild) {
+        this.$refs.tree.nodeExpand('id', curNode.id)
       }
       let arr=[];
       let arrModel = [];
