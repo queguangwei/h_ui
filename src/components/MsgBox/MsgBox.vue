@@ -42,7 +42,8 @@
             </slot>
           </div>
           <div :class="[prefixCls + '-body']"
-               :style="contentStyle">
+               :style="contentStyle"
+          ref="box">
             <slot></slot>
           </div>
           <div :class="[prefixCls + '-footer']"
@@ -73,6 +74,7 @@ import Locale from '../../mixins/locale'
 import Emitter from '../../mixins/emitter'
 import Drag from '../../directives/drag.js'
 import { on, off } from '../../util/dom'
+import { findComponentChildren } from '../../util/tools'
 const prefixCls = 'h-modal'
 
 export default {
@@ -287,7 +289,7 @@ export default {
     },
     contentStyle() {
       let style = {}
-      style.overflowY = 'auto'
+
       if (this.isMax) {
         let mHeight =
           this.curHeight - (this.headerHeight + 1) - (this.footerHeight + 1) //加1是为了消除边线影响F
@@ -295,9 +297,11 @@ export default {
         style.maxHeight = `${mHeight}px`
       } else {
         if (this.height) {
+          style.overflowY = 'auto'
           style.height = this.height <= 100 ? `auto` : `${this.height}px`
         }
         if (this.maxHeight) {
+          style.overflowY = 'auto'
           style.maxHeight = `${this.maxHeight}px`
         }
       }

@@ -348,6 +348,7 @@ export default {
           title: '年龄',
           width: 200,
           key: 'age',
+          sortable:true
         },
         {
           title: '地址',
