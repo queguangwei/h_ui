@@ -12,7 +12,7 @@
       </tr>
       <tr class="cur-th">
         <th v-for="(column, index) in columns"
-          :class="alignCls(column)" 
+          :class="alignCls(column)"
           :key="index"
           v-on:mousedown="mousedown($event,column,index)"
           v-on:mouseout="mouseout($event,column,index)"
@@ -162,7 +162,7 @@ export default {
     },
     aliCls(item){
       return[
-        { 
+        {
           [`${item.className}`]: item.className,
           [`${this.prefixCls}-column-${item.align}`]: item.align,
         }

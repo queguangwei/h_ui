@@ -3,7 +3,7 @@
        :style="styles"
        @mouseleave="handleMouseLeave($event)"
        ref="tableWrap">
-    <div :class="classes">
+    <div :class="classes" ref="tableInner">
       <div :class="[prefixCls + '-header']"
            v-if="showHeader"
            ref="header"
@@ -500,7 +500,7 @@ export default {
       let style = {}
       if (this.bodyHeight !== 0) {
         let height = this.bodyHeight - this.scrollBarWidth
-        if (this.tableWidth < this.initWidth + 1) {
+        if (this.tableWidth < this.initWidth) {
           height = height + this.scrollBarWidth - 1
         }
         style.height = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`
@@ -611,10 +611,7 @@ export default {
         totalWidth = totalWidth + this.scrollBarWidth
       }
       this.tableWidth = totalWidth + 1
-      if (
-        this.cloneColumns[lastInx].fixed != 'right' &&
-        this.tableWidth < this.initWidth
-      ) {
+      if (this.cloneColumns[lastInx].fixed != 'right' && this.tableWidth < this.initWidth) {
         this.tableWidth = this.initWidth - 1
       }
       this.$emit('on-drag', width, key)
@@ -679,6 +676,8 @@ export default {
                 if (width < 100) width = 100
               }
               this.cloneColumns[i]._width = width || ''
+              //
+              this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)||this.tableWidth;
               columnsWidth[column._index] = {
                 width: width
               }
@@ -703,9 +702,7 @@ export default {
                 if (width < 100) width = 100
               }
               this.cloneColumns[i]._width = width || ''
-              this.tableWidth = this.cloneColumns
-                .map(cell => cell._width)
-                .reduce((a, b) => a + b)
+              this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)
               columnsWidth[column._index] = {
                 width: width
               }
@@ -715,8 +712,7 @@ export default {
             }
             this.columnsWidth = columnsWidth
           }
-          this.initWidth =
-            parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0
+          this.initWidth = parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0
         })
         // get table real height,for fixed when set height prop,but height < table's height,show scrollBarWidth
         this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))
