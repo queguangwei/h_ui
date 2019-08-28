@@ -275,7 +275,6 @@
         this.$refs.formItem1.firstNodeFocused()
       },
       handleKeydown(e) {
-        console.log(e)
         if(e.keyCode === 27) {
           this.$refs.formItem1.resetFields();
         }

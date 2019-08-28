@@ -1686,17 +1686,16 @@ export default {
           child.isFocus = false
         })
       } else {
-        if (!this.isBlock) {
-          if (this.filterable && val) {
-            let focusIndex = this.focusIndex
-            this.$nextTick(() => {
-              this.findChild(child => {
-                if (focusIndex > 0)
-                  child.$refs.table.changeHover(focusIndex - 1, false)
-                this.focusIndex = this.focusInit
-              })
+        if (this.filterable) {
+          let focusIndex = this.focusIndex
+          this.$nextTick(() => {
+            this.findChild(child => {
+              if (!this.isBlock && val && focusIndex > 0)
+                child.$refs.table.changeHover(focusIndex - 1, false)
+              // SimpleSelect默认光标聚焦第一个选项
+              this.focusIndex = this.isBlock && this.autoFocus ? 1 : this.focusInit
             })
-          }
+          })
         }
         if (!this.selectToChangeQuery) {
           if (!this.visible && val) this.visible = true;
@@ -1912,9 +1911,6 @@ export default {
         this.setSingleSelect()
       }
     },
-    // options(val) {
-    //   console.log('options', val)
-    // },
     // eslint-disable-next-line
     selectedMultiple(val) {
       this.$nextTick(() => {
@@ -1957,6 +1953,14 @@ export default {
         this.$emit("on-input-focus");
       }
     },
+    options(val, old) {
+      if (this.remote && this.autoFocus && this.isBlock) {
+        this.findChild(child => {
+          this.focusIndex = 1
+          return true
+        })
+      }
+    }
   }
 }
 </script>
