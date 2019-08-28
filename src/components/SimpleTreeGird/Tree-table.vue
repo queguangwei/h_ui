@@ -15,7 +15,7 @@
           <td v-for="(column,inx) in columns" :class="alignCls(column, row)" :key="column.index">
             <span v-if="inx==(columns[0].type=='index'?1:0)" :style="indentCls" >
               <span class="expand-icon">
-                <Icon v-if="row.children && row.children.length!=0" name = "play_fill" :class="iconClass(row.id,index)" @click.native.stop="toggleExpand(index,row,$event)"></Icon>
+                <Icon v-if="(row.children && row.children.length !== 0) || (typeof row.leaf === 'boolean' && !row.leaf)" name = "play_fill" :class="iconClass(row.id,index)" @click.native.stop="toggleExpand(index,row,$event)"></Icon>
               </span>
               <!-- :indeterminate="row.indeterminate" -->
               <Checkbox v-if="isCheckbox" :value="checkValue(row.id)"  @on-click="changeSelect(row.id,row,$event)" @click.native.stop="handleclick"></Checkbox>
@@ -182,7 +182,6 @@
         this._parent.changeCheckedObj(this.indexAndId[id],status,'_isHighlight')
       },
       toggleExpand (index,row,event) {
-        console.log(row)
         let inx = this.indexAndId[row.id];
         let curStatus;
         if(this.checkedObj[inx]._isExpand==null){
@@ -278,15 +277,9 @@
       getStatus(){
         this._parent = this.findParent();
         this.data.forEach((col,inx)=>{
-          // if(this.collectionState[inx]){
-          // }else{
-          //   if(col.expand&&col.expand!='false'){
-          //     this.collectionState[inx] = true
-          //   }else{
-          //     this.collectionState[inx] =false
-          //   }
-            this.setStatus(col,inx);
-          // }
+          col.expand = col.expand === "false" ? false: col.expand
+          col.expand = col.expand === "true"? true: col.expand
+          this.setStatus(col,inx);
         })
       },
       handleMouseIn (_index) {
