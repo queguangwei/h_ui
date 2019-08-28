@@ -81,7 +81,7 @@
     </h-tabs>
     <h2>图标</h2>
     <Button @click="setShow">设置显示隐藏</Button>
-  <div v-show="isShow">  
+  <div v-show="isShow">
     <h-tabs ref="tab">
       <h-tab-pane label="macOS" icon="social-apple">
         <h-button type="primary" @click="modal1 = true">显示对话框</h-button>
@@ -132,8 +132,10 @@
     </h-tabs> -->
     <h2>附加内容 </h2>
     <p>设置 slot extra 可以在页签右边添加附加操作。</p>
-    <h-tabs ref="remove" type="card" @on-tab-remove="handleTabRemove1" showArrow closable v-model="key">
-      <h-tab-pane v-for="tab in tabs" :key="tab" :name="'标签' + tab" :label="'标签' + tab">标签{{ tab }}的内容</h-tab-pane>  
+    <h-tabs ref="remove" type="line" @on-tab-remove="handleTabRemove1" showArrow closable v-model="key">
+      <h-tab-pane v-for="tab in tabs" :key="tab" :name="'标签' + tab" :label="'标签' + tab">
+        标签{{ tab }}的内容
+      </h-tab-pane>
     </h-tabs>
      <h-button type="ghost" @click="handleTabsAdd(true)" size="small" slot="extra">增加</h-button>
      <h-button type="ghost" @click="handleTabsAdd(false)" size="small" slot="extra">减少</h-button>
@@ -159,7 +161,7 @@
   </div>
 </template>
 <script>
-  export default {  
+  export default {
     data () {
       return {
         key: "标签12",
@@ -216,8 +218,8 @@
               }
             ]
           }
-        ],   
-        curIndex:null, 
+        ],
+        curIndex:null,
         isShow: false,
       }
     },
@@ -240,7 +242,7 @@
               this['tabs' + name] = false;
 
             }, 300);
-            
+
           },
           onCancel: () => {
             this.$hMessage.info('你点击了取消按钮')

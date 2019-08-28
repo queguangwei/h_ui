@@ -182,6 +182,7 @@ export default {
         {
           title: '姓名',
           key: 'name',
+          fixed: "left",
           width: 100,
           ellipsis:true,
         },
