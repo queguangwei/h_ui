@@ -6,6 +6,10 @@ export default {
     block:{
       default: true,
     },
+    autoFocus: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
