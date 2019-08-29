@@ -435,7 +435,6 @@ export default {
       if (cb) cb()
     },
     onFieldBlur(val) {
-      console.log(val)
       this.validate('blur', () => {})
     },
     onFieldChange(val) {

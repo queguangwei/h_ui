@@ -642,10 +642,10 @@ export default {
       return this.disabled
         ? -1
         : this.tabindex + '' !== '-1'
-        ? this.filterable
-          ? -1
-          : this.tabindex
-        : 0
+          ? this.filterable
+            ? -1
+            : this.tabindex
+          : 0
     },
     notFoundShow() {
       let options = this.options
@@ -921,7 +921,6 @@ export default {
             break
           }
         }
-
         if (this.model === '') {
           this.selectedSingle = ''
         } else if (this.remote && curSingle) {
@@ -1162,6 +1161,11 @@ export default {
         }
       }
       if (this.isSingleSelect) {
+        // backspace
+        if(keyCode === 8) {
+          this.model = ''
+        }
+        // right
         if (keyCode === 39) {
           e.preventDefault()
           this.navigateOptions('next')
@@ -1235,16 +1239,13 @@ export default {
       if (this.isBlock) {
         if (direction === 'next') {
           const next = this.focusIndex + 1
-          this.focusIndex =
-            this.focusIndex === this.availableOptions.length ? 1 : next
+          this.focusIndex = this.focusIndex === this.availableOptions.length ? 1 : next
         } else if (direction === 'prev') {
           const prev = this.focusIndex - 1
-          this.focusIndex =
-            this.focusIndex <= 1 ? this.availableOptions.length : prev
+          this.focusIndex = this.focusIndex <= 1 ? this.availableOptions.length : prev
         }
 
         this.focusValue = this.availableOptions[this.focusIndex - 1].value
-
         // 处理滚动条
         this.findChild(child => {
           // let curTop = child.$el.scrollTop
@@ -1262,7 +1263,6 @@ export default {
           child.$refs.table.changeHover(this.focusIndex - 1, false)
         })
       }
-
       if (direction === 'next') {
         const next = this.focusIndex + 1
         this.focusIndex = this.focusIndex === this.options.length ? 1 : next
@@ -1545,7 +1545,7 @@ export default {
     },
     handleBack(e) {
       if (!this.isBackClear || this.readonly || this.disable) return
-      if (e.keyCode == 8&&this.value!==null&&this.value!="") {
+      if (e.keyCode === 8 && this.value !== null && this.value!== '') {
         let c = this.value
         if (this.multiple) {
           this.clearMultipleSelect()
@@ -1604,13 +1604,6 @@ export default {
       })
     },
     blur() {
-      if (this.multiple) {
-        // 多选返回数组
-        this.dispatch('FormItem', 'on-form-blur', this.selectedMultiple)
-      } else {
-        // 单选返回字符串
-        this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
-      }
       this.isInputFocus = false
       this.visible = false
       if (this.filterable) {
@@ -1626,6 +1619,13 @@ export default {
           }
         }
       }
+      if (this.multiple) {
+        // 多选返回数组
+        this.dispatch('FormItem', 'on-form-blur', this.selectedMultiple)
+      } else {
+        // 单选返回字符串
+        this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
+      }
     },
     select() {
       if (this.filterable) {
@@ -1636,14 +1636,16 @@ export default {
       this.isQuerySelect = status
       this.availableOptions = this.options
       this.selectToChangeQuery = true
-
-      if (this.model === value) {
-      } else {
+      if (this.model !== value) {
         this.model = value
       }
-      if (!this.isSingleSelect || str == 'click') {
+      if (str === 'click') {
         this.hideMenu()
-        this.isInputFocus = false
+        if(this.isSingleSelect) {
+          this.focus()
+        }else {
+          this.isInputFocus = false
+        }
       }
     },
     selectBlockMultiple(value, changeitem) {
@@ -1744,15 +1746,18 @@ export default {
           let focusIndex = this.focusIndex
           this.$nextTick(() => {
             this.findChild(child => {
-              if (!this.isBlock && val && focusIndex > 0)
+              if (!this.isBlock && val && focusIndex > 0) {
                 child.$refs.table.changeHover(focusIndex - 1, false)
-              // SimpleSelect默认光标聚焦第一个选项
-              if (this.isBlock && this.autoFocus) {
-                this.focusValue = ''
-                this.focusIndex = 1
-                return true
-              } 
-              this.focusIndex = this.focusInit
+              }
+              if(!this.isSingleSelect) {
+                // SimpleSelect默认光标聚焦第一个选项
+                if (this.isBlock && this.autoFocus) {
+                  this.focusValue = ''
+                  this.focusIndex = 1
+                  return true
+                }
+                this.focusIndex = this.focusInit
+              }
             })
           })
         }

@@ -2,8 +2,13 @@
 <div>
   <Button @on-click="changeShow">打开弹框</Button>
   <Button @on-click="changeData">改变数值</Button>
-   <h-msg-box v-model="show" escClose @on-cancel="cancel">
+   <h-msg-box v-model="show" escClose :mask-closable="false" @on-cancel="cancel">
     <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
+      <h-form-item label="singleSelect" prop="city" required>
+        <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass" widthAdaption @on-keydown="handlekeydown">
+          <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
+        </h-single-select>
+      </h-form-item>
       <h-form-item label="input" prop="name" required>
           <h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>
       </h-form-item>
@@ -20,12 +25,7 @@
       <h-form-item prop="date" label="data">
         <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
       </h-form-item>
-      {{formValidate.city}}
-      <h-form-item label="singleSelect" prop="city" required>
-        <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass" widthAdaption @on-keydown="handlekeydown">
-          <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
-        </h-single-select>
-      </h-form-item>
+
       <h-form-item label="valueRemote1" prop="valueRemote1" required>
         <h-multi-select v-model="formValidate.valueRemote1" :isString="isstring" class="curItemClass" specialVal="value1" accuFilter newSearchModel>
           <h-multi-block :data="remotebigData"></h-multi-block>
@@ -97,6 +97,7 @@ export default {
         { value: "value9", label: "label9",label1: "多列9" },
         { value: "value10", label: "label10",label1: "多列10" },
         { value: "value11", label: "label11",label1: "多列11" },
+        { value: "value12", label: "label12",label1: "多列12" },
       ],
       colWidth:['200','200'],
       isstring:false,
@@ -112,13 +113,13 @@ export default {
       enterHandler1(this.$refs.formValidate, event);
     });
     setTimeout(()=>{
-        this.formValidate.city="value11"
+        this.formValidate.city="value1"
     },1000)
   },
   methods:{
     handlekeydown(val, e) {
-      console.log(val)
-      console.log(e)
+//      console.log(val)
+//      console.log(e)
     },
     getFocus() {
       this.$refs.test.focus()
