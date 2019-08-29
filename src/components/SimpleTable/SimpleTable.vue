@@ -936,7 +936,7 @@ export default {
         }
       })
     },
-    mousedown(event, column, index,isLeft) {
+    mousedown(event, column, index, isLeft) {
       this.beginLocation.clientX = event.clientX
       this.beginLocation.clientY = event.clientY
       if (this.$isServer||(isLeft&&this.isRightFixed)) return
