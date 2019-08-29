@@ -77,7 +77,7 @@ export default {
         name: "",
         mail: "",
         city1:'',
-        city: '',
+        city: 'value1',
         gender: "",
         interest: [],
         date: "",
@@ -86,7 +86,7 @@ export default {
         valueRemote1:'',
       },
       bigData: [
-        { value: "value1", label: "label1",label1: "多列11111111111111111111111111111111111111111111111111111111"},
+        { value: "value1", label: "label1",label1: "多列1"},
         { value: "value2", label: "label2",label1: "多列2" },
         { value: "value3", label: "label3",label1: "多列3" },
         { value: "value4", label: "label4",label1: "多列4" },
@@ -112,9 +112,9 @@ export default {
     document.addEventListener("keydown", event => {
       enterHandler1(this.$refs.formValidate, event);
     });
-    setTimeout(()=>{
-        this.formValidate.city="value1"
-    },1000)
+//    setTimeout(()=>{
+//        this.formValidate.city="value1"
+//    },1000)
   },
   methods:{
     handlekeydown(val, e) {
