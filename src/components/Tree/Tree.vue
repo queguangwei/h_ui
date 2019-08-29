@@ -1,7 +1,6 @@
 <template>
   <ul :class="wrapper">
-    <Tree-node ref="nodes"
-               v-for="(item,i) in stateTree"
+    <Tree-node v-for="(item,i) in stateTree"
                :key="i"
                :data="item"
                visible
@@ -296,26 +295,6 @@ export default {
         this.updateTreeDown(node, { checked, indeterminate: false }) // reset `indeterminate` when going down
       }
       this.$emit('on-check-change', this.getCheckedNodes(), node)
-    },
-    nodeExpand(key, value, status) {
-      let targetNode = null
-      function findNode(node) {
-        if (node.data[key] === value) {
-          targetNode = node
-          return true
-        }
-        const childNodes = node.$refs.nodes
-        if (childNodes) {
-          return childNodes.some(child => findNode(child))
-        }
-      }
-      const nodes = this.$refs.nodes
-      if (Array.isArray(nodes) && nodes.length > 0) {
-        nodes.some(node => findNode(node))
-        if (targetNode !== null) {
-          targetNode.handleExpand(status)
-        }
-      }
     },
     nodeSelect(key, value, status = true) {
       let nodeIndex
