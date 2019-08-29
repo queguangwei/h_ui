@@ -508,6 +508,8 @@ export default {
         if (col.fixed && col.fixed === 'left') width += col._width;
       });
       style.width = `${width}px`;
+      style.display='fixed' 
+      style.zIndex="0"
       return style;
     },
     fixedRightTableStyle () {
