@@ -97,6 +97,7 @@ export default {
         { value: "value9", label: "label9",label1: "多列9" },
         { value: "value10", label: "label10",label1: "多列10" },
         { value: "value11", label: "label11",label1: "多列11" },
+        { value: "value12", label: "label12",label1: "多列12" },
       ],
       colWidth:['200','200'],
       isstring:false,
@@ -112,7 +113,7 @@ export default {
       enterHandler1(this.$refs.formValidate, event);
     });
     setTimeout(()=>{
-        this.formValidate.city="value11"
+        this.formValidate.city="value1"
     },1000)
   },
   methods:{
