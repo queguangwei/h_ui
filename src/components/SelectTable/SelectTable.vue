@@ -642,10 +642,10 @@ export default {
       return this.disabled
         ? -1
         : this.tabindex + '' !== '-1'
-          ? this.filterable
-            ? -1
-            : this.tabindex
-          : 0
+        ? this.filterable
+          ? -1
+          : this.tabindex
+        : 0
     },
     notFoundShow() {
       let options = this.options
@@ -1161,11 +1161,6 @@ export default {
         }
       }
       if (this.isSingleSelect) {
-        // backspace
-        if(keyCode === 8) {
-          this.model = ''
-        }
-        // right
         if (keyCode === 39) {
           e.preventDefault()
           this.navigateOptions('next')
@@ -1545,7 +1540,7 @@ export default {
     },
     handleBack(e) {
       if (!this.isBackClear || this.readonly || this.disable) return
-      if (e.keyCode === 8 && this.value !== null && this.value!== '') {
+      if (e.keyCode == 8 && this.value !== null && this.value != "") {
         let c = this.value
         if (this.multiple) {
           this.clearMultipleSelect()
@@ -1604,6 +1599,13 @@ export default {
       })
     },
     blur() {
+      if (this.multiple) {
+        // 多选返回数组
+        this.dispatch('FormItem', 'on-form-blur', this.selectedMultiple)
+      } else {
+        // 单选返回字符串
+        this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
+      }
       this.isInputFocus = false
       this.visible = false
       if (this.filterable) {
@@ -1619,13 +1621,6 @@ export default {
           }
         }
       }
-      if (this.multiple) {
-        // 多选返回数组
-        this.dispatch('FormItem', 'on-form-blur', this.selectedMultiple)
-      } else {
-        // 单选返回字符串
-        this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
-      }
     },
     select() {
       if (this.filterable) {
@@ -1636,14 +1631,13 @@ export default {
       this.isQuerySelect = status
       this.availableOptions = this.options
       this.selectToChangeQuery = true
-      if (this.model !== value) {
+
+      if (this.model === value) {
+      } else {
         this.model = value
       }
-      this.hideMenu()
-      if (str === 'click' && this.isSingleSelect) {
-        this.focus()
-      }
-      if(!this.isSingleSelect) {
+      if (!this.isSingleSelect || str == 'click') {
+        this.hideMenu()
         this.isInputFocus = false
       }
     },
@@ -1745,18 +1739,15 @@ export default {
           let focusIndex = this.focusIndex
           this.$nextTick(() => {
             this.findChild(child => {
-              if (!this.isBlock && val && focusIndex > 0) {
+              if (!this.isBlock && val && focusIndex > 0)
                 child.$refs.table.changeHover(focusIndex - 1, false)
-              }
-              if(!this.isSingleSelect) {
-                // SimpleSelect默认光标聚焦第一个选项
-                if (this.isBlock && this.autoFocus) {
-                  this.focusValue = ''
-                  this.focusIndex = 1
-                  return true
-                }
-                this.focusIndex = this.focusInit
-              }
+              // SimpleSelect默认光标聚焦第一个选项
+              if (this.isBlock && this.autoFocus) {
+                this.focusValue = ''
+                this.focusIndex = 1
+                return true
+              } 
+              this.focusIndex = this.focusInit
             })
           })
         }
