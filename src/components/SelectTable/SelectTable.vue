@@ -642,10 +642,10 @@ export default {
       return this.disabled
         ? -1
         : this.tabindex + '' !== '-1'
-        ? this.filterable
-          ? -1
-          : this.tabindex
-        : 0
+          ? this.filterable
+            ? -1
+            : this.tabindex
+          : 0
     },
     notFoundShow() {
       let options = this.options
@@ -793,7 +793,7 @@ export default {
       if (
         this.visible &&
         this.filterable &&
-        this.showBottom &&
+        // this.showBottom &&
         this.$refs.input
       ) {
         this.$nextTick(() => {
@@ -1545,7 +1545,7 @@ export default {
     },
     handleBack(e) {
       if (!this.isBackClear || this.readonly || this.disable) return
-      if (e.keyCode == 8&&this.value!==null&&this.value!="") {
+      if (e.keyCode === 8 && this.value !== null && this.value!== '') {
         let c = this.value
         if (this.multiple) {
           this.clearMultipleSelect()
@@ -1751,7 +1751,12 @@ export default {
               }
               if(!this.isSingleSelect) {
                 // SimpleSelect默认光标聚焦第一个选项
-                this.focusIndex = this.isBlock && this.autoFocus ? 1 : this.focusInit
+                if (this.isBlock && this.autoFocus) {
+                  this.focusValue = ''
+                  this.focusIndex = 1
+                  return true
+                }
+                this.focusIndex = this.focusInit
               }
             })
           })
@@ -1890,7 +1895,7 @@ export default {
       this.currentLabel = val
       this.updateLabel()
     },
-    model(val) {
+    model() {
       let backModel = this.arrtoStr(this.model)
       this.$emit('input', backModel)
       this.modelToQuery()
@@ -2020,6 +2025,7 @@ export default {
     options(val, old) {
       if (this.remote && this.autoFocus && this.isBlock) {
         this.findChild(child => {
+          this.focusValue = ''
           this.focusIndex = 1
           return true
         })

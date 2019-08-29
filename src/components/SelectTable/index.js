@@ -1,4 +1,6 @@
-import SelectTable from './SelectTable.vue';
+import SelectTable from './SelectTable.vue'
 import Option from './Option.vue'
-SelectTable.Option = Option;
-export default SelectTable;
+import SingleSelectTable from './SingleSelectTable.vue'
+SelectTable.Option = Option
+SingleSelectTable.Option = Option
+export { SelectTable, SingleSelectTable }
