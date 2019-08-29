@@ -1639,13 +1639,12 @@ export default {
       if (this.model !== value) {
         this.model = value
       }
-      if (str === 'click') {
-        this.hideMenu()
-        if(this.isSingleSelect) {
-          this.focus()
-        }else {
-          this.isInputFocus = false
-        }
+      this.hideMenu()
+      if (str === 'click' && this.isSingleSelect) {
+        this.focus()
+      }
+      if(!this.isSingleSelect) {
+        this.isInputFocus = false
       }
     },
     selectBlockMultiple(value, changeitem) {
