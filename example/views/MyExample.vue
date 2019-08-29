@@ -1,29 +1,34 @@
 <template>
   <div>
     <p>form</p>
-    <!--<h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">-->
-      <!--<h-form-item label="金额框" prop="face_balance">-->
-        <!--<h-typefield v-model="formCustom.face_balance" nonNegative divided focusAllSelect-->
-                     <!--integerNum="10" suffixNum="2"  type="money" :step="10">-->
-        <!--</h-typefield>-->
-      <!--</h-form-item>-->
-      <!--<h-form-item label="密码" prop="passwd">-->
-        <!--<h-input type="password" v-model="formCustom.passwd"></h-input>-->
-      <!--</h-form-item>-->
-      <!--<h-form-item label="确认密码" prop="passwdCheck">-->
-        <!--<h-input type="password" v-model="formCustom.passwdCheck"></h-input>-->
-      <!--</h-form-item>-->
-      <!--<h-form-item label="年龄" prop="age">-->
-        <!--<h-input type="text" v-model="formCustom.age" number></h-input>-->
-      <!--</h-form-item>-->
-      <!--<h-form-item label="日期">-->
-        <!--<h-date-picker type="date" placeholder="选择日期" showToday v-model="formCustom.date" class="curItemClass"></h-date-picker>-->
-      <!--</h-form-item>-->
-      <!--<h-form-item>-->
-        <!--<h-button type="primary" @click="handleSubmit('formCustom')">提交</h-button>-->
-        <!--<h-button type="ghost" @click="handleReset('formCustom')" style="margin-left: 8px">重置</h-button>-->
-      <!--</h-form-item>-->
-    <!--</h-form>-->
+    <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
+      <h-form-item label="singleSelect" prop="city">
+        <h-single-select v-model="formCustom.city" placeholder="请选择所在地" widthAdaption>
+          <h-select-block :data="bigData" :showCol="showCol"></h-select-block>
+        </h-single-select>
+      </h-form-item>
+      <h-form-item label="金额框" prop="face_balance">
+        <h-typefield v-model="formCustom.face_balance" nonNegative divided focusAllSelect
+                     integerNum="10" suffixNum="2"  type="money" :step="10">
+        </h-typefield>
+      </h-form-item>
+      <h-form-item label="密码" prop="passwd">
+        <h-input type="password" v-model="formCustom.passwd"></h-input>
+      </h-form-item>
+      <h-form-item label="确认密码" prop="passwdCheck">
+        <h-input type="password" v-model="formCustom.passwdCheck"></h-input>
+      </h-form-item>
+      <h-form-item label="年龄" prop="age">
+        <h-input type="text" v-model="formCustom.age" number></h-input>
+      </h-form-item>
+      <h-form-item label="日期">
+        <h-date-picker type="date" placeholder="选择日期" showToday v-model="formCustom.date" class="curItemClass"></h-date-picker>
+      </h-form-item>
+      <h-form-item>
+        <h-button type="primary" @click="handleSubmit('formCustom')">提交</h-button>
+        <h-button type="ghost" @click="handleReset('formCustom')" style="margin-left: 8px">重置</h-button>
+      </h-form-item>
+    </h-form>
     <p>tabs</p>
     <!--<h-tabs ref="remove">-->
       <!--<h-tab-pane v-for="(item) in list" :key="item.show_title"  :label="item.show_title" :name="item.show_title">-->
@@ -62,7 +67,7 @@ let list2 = [{
   },{
     show_title:"tab5"
   }]
-
+import { enterHandler1 } from "../../src/util/tools.js"
 export default {
   data () {
     const validateMoney = (rule, value, callback) => {
@@ -118,8 +123,23 @@ export default {
         face_balance: '0.00',
         passwd: '',
         passwdCheck: '',
-        age: ''
+        age: '',
+        city: ''
       },
+      showCol:['label1'],
+      bigData: [
+        { value: "value1", label: "label1",label1: "多列11111111111111111111111111111111111111111111111111111111"},
+        { value: "value2", label: "label2",label1: "多列2" },
+        { value: "value3", label: "label3",label1: "多列3" },
+        { value: "value4", label: "label4",label1: "多列4" },
+        { value: "value5", label: "label5",label1: "多列5" },
+        { value: "value6", label: "label6",label1: "多列6" },
+        { value: "value7", label: "label7",label1: "多列7" },
+        { value: "value8", label: "label8",label1: "多列8" },
+        { value: "value9", label: "label9",label1: "多列9" },
+        { value: "value10", label: "label10",label1: "多列10" },
+        { value: "value11", label: "label11",label1: "多列11" },
+      ],
       ruleCustom: {
         face_balance: [{
           validator: (rule, value, callback)=>{
@@ -179,6 +199,14 @@ export default {
 
     }
 
-  }
+  },
+  created() {
+    window.isO45 = true
+  },
+  mounted() {
+//    document.addEventListener("keydown", event => {
+//      enterHandler1(this.$refs.formValidate, event);
+//    })
+  },
 }
 </script>
