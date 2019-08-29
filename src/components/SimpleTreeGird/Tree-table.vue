@@ -214,7 +214,7 @@ export default {
       } else {
         let obj = event.target
         let objStl = this.findObj(event, 'TR').nextElementSibling
-        if (objStl.style.display == 'none') {
+        if (objStl && objStl.style.display == 'none') {
           curStatus = true
         } else {
           curStatus = false
