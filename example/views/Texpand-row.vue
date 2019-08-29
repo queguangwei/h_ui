@@ -16,24 +16,24 @@
           <span class="expand-value">{{ row.birthday }}</span>
         </h-col>
       </h-row>
-      <h-row>
-        <h-col span="8">
-          <h-table :columns="col" :data="data1"></h-table>
-          <Button @click="add">加一行</Button>
-          <!-- <span class="expand-key">最喜欢的书：</span> -->
-          <span class="expand-value">{{ row.book }}</span>
-        </h-col>
-        <h-col span="8">
-          <span class="expand-key">最喜欢的电影：</span>
-          <span class="expand-value">{{ row.movie }}</span>
-        </h-col>
-        <h-col span="8">
-          <span class="expand-key">最喜欢的音乐：</span>
-          <span class="expand-value">{{ row.music }}</span>
-        </h-col>
-      </h-row>
+      <!--<h-row>-->
+        <!--<h-col span="8">-->
+          <!--<h-table :columns="col" :data="data1"></h-table>-->
+          <!--<Button @click="add">加一行</Button>-->
+          <!--&lt;!&ndash; <span class="expand-key">最喜欢的书：</span> &ndash;&gt;-->
+          <!--<span class="expand-value">{{ row.book }}</span>-->
+        <!--</h-col>-->
+        <!--<h-col span="8">-->
+          <!--<span class="expand-key">最喜欢的电影：</span>-->
+          <!--<span class="expand-value">{{ row.movie }}</span>-->
+        <!--</h-col>-->
+        <!--<h-col span="8">-->
+          <!--<span class="expand-key">最喜欢的音乐：</span>-->
+          <!--<span class="expand-value">{{ row.music }}</span>-->
+        <!--</h-col>-->
+      <!--</h-row>-->
     </div>
-  </div>  
+  </div>
 </template>
 
 <script>
@@ -86,13 +86,15 @@ export default {
     fixed(val){
       console.log('val'+val);
     }
-  } 
+  }
 }
 </script>
 <style type="text/css">
 .expand-row{
-  width: 400px;  
-  height: 300px;
+  width: 450px;
+  height: 250px;
+  background: greenyellow;
+  border: 1px dotted #7E828A;
 }
 
 </style>
