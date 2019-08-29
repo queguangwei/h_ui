@@ -1,4 +1,4 @@
-import SimpleSelect from '../SelectTable/SelectTable.vue'
+import SimpleSelect from './SingleSelect.vue'
 export default {
   name: 'SingleSelect',
   mixins: [SimpleSelect],
