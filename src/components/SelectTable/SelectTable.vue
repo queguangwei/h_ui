@@ -793,7 +793,7 @@ export default {
       if (
         this.visible &&
         this.filterable &&
-        this.showBottom &&
+        // this.showBottom &&
         this.$refs.input
       ) {
         this.$nextTick(() => {
@@ -1747,7 +1747,12 @@ export default {
               if (!this.isBlock && val && focusIndex > 0)
                 child.$refs.table.changeHover(focusIndex - 1, false)
               // SimpleSelect默认光标聚焦第一个选项
-              this.focusIndex = this.isBlock && this.autoFocus ? 1 : this.focusInit
+              if (this.isBlock && this.autoFocus) {
+                this.focusValue = ''
+                this.focusIndex = 1
+                return true
+              } 
+              this.focusIndex = this.focusInit
             })
           })
         }
@@ -2015,6 +2020,7 @@ export default {
     options(val, old) {
       if (this.remote && this.autoFocus && this.isBlock) {
         this.findChild(child => {
+          this.focusValue = ''
           this.focusIndex = 1
           return true
         })

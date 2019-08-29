@@ -23,7 +23,7 @@
             <span v-if="inx==(columns[0].type=='index'?1:0)"
                   :style="indentCls">
               <span class="expand-icon">
-                <Icon v-if="(row.children && row.children.length !== 0) || (typeof row.leaf === 'boolean' && !row.leaf)" name = "play_fill" :class="iconClass(row.id,index)" @click.native.stop="toggleExpand(index,row,$event)"></Icon>
+                <Icon v-if="(row.children && row.children.length !== 0) || row.leaf === 'false' || row.leaf === false" name = "play_fill" :class="iconClass(row.id,index)" @click.native.stop="toggleExpand(index,row,$event)"></Icon>
               </span>
               <!-- :indeterminate="row.indeterminate" -->
               <Checkbox v-if="isCheckbox"
