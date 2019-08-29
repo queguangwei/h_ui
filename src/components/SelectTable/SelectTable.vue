@@ -1925,10 +1925,10 @@ export default {
           }
 
           setTimeout(() => {
-            if (this.remote && this.remoteMethod) return
             if (this.showBottom || this.multiple) {
               this.query = ''
             }
+            if (this.remote && this.remoteMethod) return
             // if(!window.isO45){
             if (!this.isSingleSelect) {
               this.broadcastQuery('')
