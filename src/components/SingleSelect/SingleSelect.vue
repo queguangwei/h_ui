@@ -1152,6 +1152,7 @@
         }
       },
       handleKeydown(e) {
+        console.log(111111)
         const keyCode = e.keyCode
         if (this.visible) {
           // Esc slide-up
