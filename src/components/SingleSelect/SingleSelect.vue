@@ -856,7 +856,6 @@ export default {
     updateOptions(init, slot = false) {
       let _this = this
       let options = []
-
       this.findChild(child => {
         let data = []
         if (_this.isBlock) {
@@ -910,6 +909,14 @@ export default {
       }
     },
     updateSingleSelected(init = false, slot = false) {
+      // 赋值默认项是遍历选项绑定focusIndex
+      const singVal = this.query ? this.query : this.model
+      for(let ind in this.options) {
+        if(this.options[ind].value === singVal) {
+          this.focusIndex = this.options[ind].index + 1
+          continue
+        }
+      }
       const type = typeof this.model
       if (type === 'string' || type === 'number') {
         let findModel = false
@@ -1161,10 +1168,6 @@ export default {
         }
       }
       if (this.isSingleSelect) {
-        // backspace
-        if(keyCode === 8) {
-          this.model = ''
-        }
         // right
         if (keyCode === 39) {
           e.preventDefault()
@@ -1715,24 +1718,33 @@ export default {
         this.query = ''
       } else {
         let curlabel = ''
+        let index = 0
         this.findChild(child => {
           child.cloneData.forEach((col, i) => {
             if (col.value == this.model && child.showCol.length > 0) {
               curlabel = col.label + ' ' + col[child.showCol[0]]
+              index = col._index + 1
             }
           })
         })
         this.query = curlabel
-        this.selectToChangeQuery = true
+        // 造成搜索值清空后切换焦点重新赋上bug
+//        this.selectToChangeQuery = true
         this.isQuerySelect = false
+        this.focusIndex = index
       }
     },
     queryChange(val) {
       if (this.remote && this.remoteMethod) {
         if (!this.selectToChangeQuery) {
           // 解决当通过表单方法firstNodeFocused定位到SimpleSelect时只能输入但不展示下拉选项的问题
-          if (!this.visible && val) this.visible = true
-          this.remoteMethod(val)
+          if (!this.visible && val) {
+            this.visible = true
+          }
+          // query值为空时不应该触发远程搜索方法
+          if(val !== '') {
+            this.remoteMethod(val)
+          }
           this.$emit('on-query-change', val)
           if (!this.remoteNoQuery) {
             this.broadcastQuery(val)
@@ -1972,7 +1984,7 @@ export default {
         if (this.query !== '') this.selectToChangeQuery = true
       }
       this.viewValue = val
-      if (this.isSingleSelect && !this.isInputFocus) {
+      if (this.isSingleSelect) {
         this.setSingleSelect()
       }
     },
