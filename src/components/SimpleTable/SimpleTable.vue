@@ -1407,6 +1407,7 @@ export default {
           ? this.objData[_index]._isHighlight
           : false
       let oldIndex = -1
+      // 选择多项，点击其中一项选中，其他反选
       if(this.objData[_index]._isChecked&&this.rowSelectOnly){
         for(let i in this.objData) {
           if(this.objData[i]._isChecked) {
@@ -1414,6 +1415,14 @@ export default {
           }
           this.objData[_index]._isChecked = true
         }
+        this.$nextTick(() => {
+          this.$emit(
+            'on-selection-change',
+            this.getSelection(),
+            this.getSelection(true),
+            _index
+          )
+        })
         return
       }
       for (let i in this.objData) {
@@ -1426,13 +1435,10 @@ export default {
           this.objData[i]._isHighlight = false //单选是上一项取消选中
         }
       }
-      const oldData =
-        oldIndex < 0
-          ? null
-          : JSON.parse(JSON.stringify(this.cloneData[oldIndex]))
+      const oldData = oldIndex < 0 ? null : JSON.parse(JSON.stringify(this.cloneData[oldIndex]))
       if (curStatus && !this.selectOption) {
         this.objData[_index]._isHighlight = false
-        this.objData[_index]._isChecked = false
+        this.objData[_index]._isChecked = false``
         // this.$emit('on-current-change-cancle',JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
         this.$nextTick(() => {
           this.$emit('on-current-change', null, null)
