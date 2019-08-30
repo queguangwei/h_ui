@@ -5,11 +5,11 @@
       <div :class="maskClasses"
            v-show="visible"
            @click="mask"
-           :style="stylecls"></div>
+           :style="styleclsMask"></div>
     </transition>
     <div :class="wrapClasses"
          @click="handleWrapClick"
-         :style="stylecls"
+         :style="styleclsMainWrap"
          ref="wrap">
       <transition :name="transitionNames[0]"
                   @after-leave="animationFinish">
@@ -43,7 +43,7 @@
           </div>
           <div :class="[prefixCls + '-body']"
                :style="contentStyle"
-          ref="box">
+               ref="box">
             <slot></slot>
           </div>
           <div :class="[prefixCls + '-footer']"
@@ -271,7 +271,18 @@ export default {
         return this.cancelText
       }
     },
-    stylecls() {
+    styleclsMask() {
+      let style = {}
+      style.zIndex = this.zIndex
+      if (this.maskTop) {
+        style.top = this.maskTop + 'px'
+      }
+      if (this.maskLeft) {
+        style.left = this.maskLeft + 'px'
+      }
+      return style
+    },
+    styleclsMainWrap() {
       let style = {}
       style.zIndex = this.zIndex
       if (this.maskTop) {
