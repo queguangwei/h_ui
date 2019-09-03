@@ -192,7 +192,7 @@ export default {
             // 如果存在多列，则匹配目标为多列所有列
             if (this.showCol.length&&!this.$parent.$parent.newSearchModel&&!this.$parent.$parent.isSingleSelect) {
               targetLabel = targetLabel + ' ' + this.getTargetLabel(col).join(' ')
-            }          
+            }
             let targetValue =col.value
             let selected=col.selected
            // let targetoption=this.$parent.$parent.filterBy=="label"||this.$parent.$parent.filterBy==undefined?targetLabel:targetValue;
@@ -201,17 +201,17 @@ export default {
                hidden=!new RegExp(parsedQuery, 'i').test(col.value)
             }
             this.$set(col, 'hidden', hidden)
-            
+
             if (status && !hidden) {
               status = false
             }
-            if(this.$parent.$parent.accuFilter){         
+            if(this.$parent.$parent.accuFilter){
               if ((parsedQuery===targetLabel)&&!selected&&!states) {
                 if(this.$parent.$parent.isSingleSelect){
                   isEffective = true
                   this.$parent.$parent.selectBlockSingle(targetValue,true)
                 }else{
-                    this.$parent.$parent.selectBlockMultiple(targetValue)                                  
+                    this.$parent.$parent.selectBlockMultiple(targetValue)
                 }
               }
             }
