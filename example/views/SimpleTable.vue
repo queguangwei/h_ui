@@ -20,7 +20,7 @@
       <!-- notAdaptive  -->
     <h-simple-table ref="simTable" canMove :summationRender="false" @on-right-click="rightClick" rowSelectOnly
                     :summationData="summationData" :columns="columnsBig1" border :data="bigData" height="300"
-                    highlight-row @on-sort-change="sortchange">
+                    highlight-row @on-sort-change="sortchange" @on-selection-change="selsetChange">
     </h-simple-table>
     <!-- </h-msg-box> -->
     <h-button @click='changeClo'>改变冻结列</h-button>
@@ -81,12 +81,12 @@ export default {
       addData:[],
       bigData:[],
       columnsBig1:[
-        {
-          type: 'index',
-          align: 'center',
-          width:200,
-          fixed:'left',
-        },
+//        {
+//          type: 'index',
+//          align: 'center',
+//          width:200,
+//          fixed:'left',
+//        },
         {
           type: 'selection',
           align: 'center',
@@ -580,6 +580,7 @@ export default {
   },
   mounted(){
     window.isO45 = false
+    this.bigData = jsonData
   }
 }
 </script>
