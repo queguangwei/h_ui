@@ -93,7 +93,10 @@
           <router-link to="/selectTree">SelectTree</router-link>
         </li>
         <li>
-          <router-link to="/selectTable">selectTable</router-link>
+          <router-link to="/selectTable">SelectTable</router-link>
+        </li>
+        <li>
+          <router-link to="/simpleMultiSelect">SimpleMultiSelect</router-link>
         </li>
         <li>
           <router-link to="/form">Form</router-link>
@@ -455,6 +458,10 @@ export default {
         {
           name: "SelectTable",
           path: "/selectTable"
+        },
+        {
+          name: "SimpleMultiSelect",
+          path: "/simpleMultiSelect"
         },
         {
           name: "FastDate",
