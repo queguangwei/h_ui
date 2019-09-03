@@ -5,7 +5,10 @@
    <h-msg-box v-model="show" escClose :mask-closable="false" @on-cancel="cancel">
     <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
       <h-form-item label="singleSelect" prop="city" required>
-        <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass" widthAdaption @on-keydown="handlekeydown">
+        <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass"
+                         remote filterable :loading="isLoading" :remote-method="remoteMethod1"
+                         widthAdaption keepInputValue showValueOnly
+                         @on-keydown="handlekeydown">
           <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
         </h-single-select>
       </h-form-item>
@@ -71,8 +74,8 @@ export default {
   data() {
     return {
       show:false,
+      isLoading: false,
       value:'value0',
-      showCol:['label1'],
       formValidate: {
         name: "",
         mail: "",
@@ -85,6 +88,7 @@ export default {
         desc: "",
         valueRemote1:'',
       },
+      showCol:['label1'],
       bigData: [
         { value: "value1", label: "label1",label1: "多列1"},
         { value: "value2", label: "label2",label1: "多列2" },
@@ -99,6 +103,7 @@ export default {
         { value: "value11", label: "label11",label1: "多列11" },
         { value: "value12", label: "label12",label1: "多列12" },
       ],
+      remoteData:[],
       colWidth:['200','200'],
       isstring:false,
       remotebigData:bigData,
@@ -117,6 +122,22 @@ export default {
 //    },1000)
   },
   methods:{
+    remoteMethod1(query) {
+      if (query !== "") {
+        this.isLoading = true;
+        setTimeout(() => {
+          this.isLoading = false;
+          const list = this.bigData.map(item => {
+            return item;
+          });
+          this.remoteData = list.filter(
+            item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1
+          );
+        }, 200);
+      } else {
+        this.remoteData = [];
+      }
+    },
     handlekeydown(val, e) {
 //      console.log(val)
 //      console.log(e)
@@ -142,6 +163,7 @@ export default {
     changeShow(){
       this.show=true
       this.$refs.formValidate.firstNodeFocused()
+//      this.formValidate.city = 'value1'
     },
     cancel() {
       this.$refs.formValidate.resetFields()
