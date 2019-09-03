@@ -1683,7 +1683,10 @@ export default {
           }
         }
         this.model.push(value)
-        this.broadcast('Drop', 'on-update-popper')
+        this.$nextTick(() => {
+          this.broadcast("Drop", "on-update-popper");
+          this.$refs.input.focus();
+        });
       }
     },
     setPlacement(top = 0) {
