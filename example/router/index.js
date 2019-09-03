@@ -53,6 +53,7 @@ import GroupTable from '../views/GroupTable.vue'
 import TreeGird from '../views/TreeGird.vue'
 import AsycTreeGird from '../views/AsycTreeGird.vue'
 import SelectTable from '../views/SelectTable.vue'
+import SimpleMultiSelect from '../views/SimpleMultiSelect.vue'
 import FastDate from '../views/FastDate.vue'
 import SplicePanel from '../views/SplicePanel.vue'
 import Panel from '../views/Panel.vue'
@@ -680,6 +681,11 @@ const router = new Router({
           name: 'SelectTable',
           path: '/selectTable',
           component: SelectTable
+      },
+      {
+        name: 'SimpleMultiSelect',
+        path: '/simpleMultiSelect',
+        component: SimpleMultiSelect
       },
       {
           name: 'FastDate',
