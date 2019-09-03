@@ -3,7 +3,8 @@
     <p>form</p>
     <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
       <h-form-item label="singleSelect" prop="city">
-        <h-single-select v-model="formCustom.city" placeholder="请选择所在地" widthAdaption>
+        <h-single-select v-model="formCustom.city" placeholder="请选择所在地"
+                         remote filterable widthAdaption placement="top" transfer>
           <h-select-block :data="bigData" :showCol="showCol"></h-select-block>
         </h-single-select>
       </h-form-item>
@@ -139,6 +140,11 @@ export default {
         { value: "value9", label: "label9",label1: "多列9" },
         { value: "value10", label: "label10",label1: "多列10" },
         { value: "value11", label: "label11",label1: "多列11" },
+        { value: "value12", label: "label12",label1: "多列12" },
+        { value: "value13", label: "label13",label1: "多列13" },
+        { value: "value14", label: "label14",label1: "多列14" },
+        { value: "value15", label: "label15",label1: "多列15" },
+        { value: "value16", label: "label16",label1: "多列16" },
       ],
       ruleCustom: {
         face_balance: [{
