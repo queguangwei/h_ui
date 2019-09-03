@@ -8,9 +8,9 @@ export default {
   },
   render: (h, ctx) => {
     const params = {
-        column: ctx.props.column,
-        index: ctx.props.index
-    };
-    return ctx.props.render(h, params);
+      column: ctx.props.column,
+      index: ctx.props.index
+    }
+    return ctx.props.render(h, params)
   }
-};
+}
