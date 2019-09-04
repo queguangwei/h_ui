@@ -24,6 +24,7 @@
         :disabled="disabled"
         :checked="currentValue"
         @change="change"
+        :tabindex="tabindex"
         @click="click($event)">
     </span>
     <slot><span v-if="showSlot">{{ text||label }}</span></slot>
@@ -39,6 +40,14 @@
     name: 'Checkbox',
     mixins: [ Emitter ],
     props: {
+      tabindex: {
+        type: [String, Number],
+        default: "0",
+        validator(value) {
+          let num = parseInt(value);
+          return num <= 32767 && num >= -1;
+        }
+      },
       disabled: {
         type: Boolean,
         default: false

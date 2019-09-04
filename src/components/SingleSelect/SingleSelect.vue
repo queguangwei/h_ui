@@ -109,9 +109,6 @@
                    ref="input">
             <!-- <input type="text" placeholder="请输入..." class="h-input h-input-left">  -->
           </span>
-          <span v-if="hideMult&&multiple"
-                :class="hideMultHead"
-                @click="toggleSelect(!isSelectAll)">全选</span>
           <div v-if="showHeader"
                :class="headerSlotCls">
             <slot name="header">
@@ -403,6 +400,10 @@ export default {
       type: Boolean,
       default: false
     },
+    showValueOnly: {
+      type: Boolean,
+      default: false
+    },
     tabindex: {
       type: [String, Number],
       default: 0,
@@ -458,12 +459,6 @@ export default {
     }
   },
   computed: {
-    hideMultHead() {
-      return {
-        [`${prefixCls}-hideMultHead`]: this.hideMult && this.multiple,
-        [`${prefixCls}-hideMultHead-select`]: this.isSelectAll
-      }
-    },
     searchClass() {
       return [
         `${prefixCls}-search`
@@ -1546,6 +1541,11 @@ export default {
             }
           })
         })
+        if(this.showValueOnly) {
+          let ind = curlabel.indexOf(' ')
+          curlabel = curlabel.substring(0, ind)
+        }
+        //o45 证券代码控件 模糊输入，不匹配下拉项保留输入值
         if(curlabel == '' && this.keepInputValue && this.model) {
           this.query = this.model
           return
@@ -1767,12 +1767,7 @@ export default {
             if (this.showBottom || this.multiple) {
               this.query = ''
             }
-            // if(!window.isO45){
-            if (!this.isSingleSelect) {
-              this.broadcastQuery('')
-            } else {
-              this.broadcast('Block', 'on-query-change', '', true)
-            }
+            this.broadcast('Block', 'on-query-change', '', true)
           }, 300)
         }
         setTimeout(() => {
@@ -1784,7 +1779,7 @@ export default {
     },
     query(val) {
       this.querySingle = val.split(' ')[0] //此处改变query
-      // this.broadcast('Drop', 'on-update-popper');
+      this.broadcast('Drop', 'on-update-popper');
     },
     querySingle(val) {
       this.queryChange(val)
