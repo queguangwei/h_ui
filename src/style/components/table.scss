@@ -377,7 +377,12 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
          color: #666;
       }
     }
-
+  }
+  &-sortSimp{
+    @include sortable();
+    float: right;
+    margin-top: 2px;
+    margin-left: 3px;
   }
   &-newsort-wrap{
     display: inline-block;
