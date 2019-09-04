@@ -17,9 +17,11 @@
                    :data="rebuildData"
                    :multiLevel="cloneMultiLevel"
                    :canDrag="canDrag"
+                   :isCheckbox="isCheckbox"
                    :canMove="canMove"
                    :lastColWidth="lastColWidth"
                    :minDragWidth="minDragWidth"
+                   :headSelection ="headSelection"
                    @on-change-width="changeWidth"></gird-head>
       </div>
       <div :class="[prefixCls + '-body']"
@@ -219,6 +221,10 @@ export default {
       default() {
         return []
       }
+    },
+    headSelection:{
+      type:Boolean,
+      default:false
     },
     size: {
       validator(value) {
@@ -1040,15 +1046,6 @@ export default {
         )
       }
     },
-    // 更新树表格全选状态至子节点
-    updateTreeGridChild (data, status) {
-      if (data.children && data.children.length > 0) {
-        data.children.forEach(child => {
-          this.updateTreeGridChild(child, status)
-        })
-      }
-      this.objData[data._index]._isChecked = status
-    },
     selectAll(status) {
       // this.rebuildData.forEach((data) => {
       //     if(this.objData[data._index]._isDisabled){
@@ -1068,8 +1065,6 @@ export default {
               col._isChecked = status
             })
           }
-          // 更新至树表格子节点
-          if (this.typeName == 'treeGird') this.updateTreeGridChild(data, status)
         }
       }
       const selection = this.getSelection()
@@ -1400,7 +1395,25 @@ export default {
       }
       return selection
     },
-    selectChange() {
+    // 更新树表格全选状态至子节点
+    // updateTreeGridChild (data, status) {
+    //   if (data.children && data.children.length > 0) {
+    //     this.objData[data._index]._isChecked = status
+    //     data.children.forEach(child => {
+    //       this.updateTreeGridChild(child, status)
+    //     })
+    //   } else {
+    //     this.objData[data._index]._isChecked = status
+    //   }
+    // },
+    // selectAllTreeNode (status) {
+    //   this.updateTreeGridChild(this.rebuildData, status)
+    // },
+    selectAllTreeNode (status) {
+      this.$refs.tbody.updateAllTreeStatus(status)
+      this.selectChange()
+    },
+    selectChange () {
       this.$emit('on-select-change', this.getTreeSelection())
     },
     editselectChange(val, i, j) {

@@ -24,6 +24,7 @@
               <Checkbox :value="isSelectAll" @mousedown.native.stop="handleClick" @on-change="selectAll"></Checkbox>
             </template>
             <template v-else>
+              <Checkbox :value="isSelectAll" v-if="isCheckbox&&headSelection&&!index" @on-change="selectAll" @mousedown.native.stop="handleClick" class="asyc-check"></Checkbox>
               <span v-if="!column.renderHeader" @click="handleSortByHead(index)">{{ column.title || '#' }}</span>
               <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
             </template>
@@ -97,6 +98,9 @@ export default {
         return []
       }
     },
+    isCheckbox:Boolean,
+    // 头部是否显示checkbox
+    headSelection: Boolean,
     // data: Array,    // rebuildData for sort or filter
     columnsWidth: Object,
     fixed: {
@@ -157,7 +161,13 @@ export default {
     },
     selectAll () {
       const status = !this.isSelectAll;
-      this.$parent.selectAll(status);
+      if (this.$parent.typeName == "treeGird"){
+        this.$parent.selectAllTreeNode(status)
+      } 
+      else {
+        this.$parent.selectAll(status);
+      }
+
     },
     handleSortByHead (index) {
     },
