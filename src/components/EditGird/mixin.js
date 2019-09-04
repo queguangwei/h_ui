@@ -31,8 +31,13 @@ export default {
             }
             // when browser has scrollBar,set a width to resolve scroll position bug
             if (this.columns.length === index + 1 && top && this.$parent.bodyHeight !== 0&&this.$parent.data.length>0 && this.$parent.typeName!= 'groupTable') {
-                width += this.$parent.scrollBarWidth;
-            }
+                // 考虑所有都有宽度，总列宽小于屏幕宽度时，不可加scrollBarWidth
+                width += this.$parent.scrollBarWidth
+                // 树表格嵌套, 针对所有列设置宽度，总列宽小于屏幕宽度时，表格头全部加scrollBarWidth，此时列上也需要加scrollBarWidth
+                if (this.$parent.typeName == 'treeGird' && this.$options.name == 'GirdHead' && parseInt(this.styleObject.width) < this.$parent.$el.clientWidth) {
+                    width -= this.$parent.scrollBarWidth
+                }
+            }  
             if(this.columns.length === index + 1&&width&&!top&&this.$parent.typeName== 'groupTable'&&this.$parent.height>0){
               const colWidth = this.columns.slice(0, this.columns.length - 1)
                   .reduce((acc, col) => acc + (col._width || 0), 0) + width;
@@ -78,6 +83,7 @@ export default {
                 if (firstFixedIndex === index) width += this.$parent.scrollBarWidth;
             }
             if (width === '0') width = '';
+            console.log(width)
             return width;
         },
         convertTreeData(rows, attributes) {

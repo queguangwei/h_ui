@@ -1040,6 +1040,15 @@ export default {
         )
       }
     },
+    // 更新树表格全选状态至子节点
+    updateTreeGridChild (data, status) {
+      if (data.children && data.children.length > 0) {
+        data.children.forEach(child => {
+          this.updateTreeGridChild(child, status)
+        })
+      }
+      this.objData[data._index]._isChecked = status
+    },
     selectAll(status) {
       // this.rebuildData.forEach((data) => {
       //     if(this.objData[data._index]._isDisabled){
@@ -1049,7 +1058,7 @@ export default {
       //     }
 
       // });
-      for (const data of this.rebuildData) {
+      for (let data of this.rebuildData) {
         if (this.objData[data._index]._isDisabled) {
           continue
         } else {
@@ -1059,6 +1068,8 @@ export default {
               col._isChecked = status
             })
           }
+          // 更新至树表格子节点
+          if (this.typeName == 'treeGird') this.updateTreeGridChild(data, status)
         }
       }
       const selection = this.getSelection()
