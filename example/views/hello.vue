@@ -2,15 +2,20 @@
 <div>
   <Button @on-click="changeShow">打开弹框</Button>
   <Button @on-click="changeData">改变数值</Button>
-   <h-msg-box v-model="show" escClose :mask-closable="false" @on-cancel="cancel">
+   <h-msg-box v-model="show" escClose :mask-closable="false" @on-cancel="cancel" height="1200">
     <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
       <h-form-item label="singleSelect" prop="city" required>
         <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass"
                          remote filterable :loading="isLoading" :remote-method="remoteMethod1"
-                         widthAdaption keepInputValue showFirstLabelOnly
+                          keepInputValue showFirstLabelOnly transfer :animated="false"
                          @on-keydown="handlekeydown">
           <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
         </h-single-select>
+      </h-form-item>
+      <h-form-item label="valueRemote1" prop="valueRemote1" required>
+        <h-multi-select v-model="formValidate.valueRemote1" :isString="isstring" class="curItemClass" specialVal="value1" accuFilter transfer newSearchModel>
+          <h-multi-block :data="remotebigData"></h-multi-block>
+        </h-multi-select>
       </h-form-item>
       <h-form-item label="input" prop="name" required>
           <h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>
@@ -27,12 +32,6 @@
       </h-form-item>
       <h-form-item prop="date" label="data">
         <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
-      </h-form-item>
-
-      <h-form-item label="valueRemote1" prop="valueRemote1" required>
-        <h-multi-select v-model="formValidate.valueRemote1" :isString="isstring" class="curItemClass" specialVal="value1" accuFilter newSearchModel>
-          <h-multi-block :data="remotebigData"></h-multi-block>
-        </h-multi-select>
       </h-form-item>
       <h-form-item prop="time" label="time">
         <h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time" class="curItemClass" ></h-time-picker>
