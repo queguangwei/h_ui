@@ -400,7 +400,7 @@ export default {
       type: Boolean,
       default: false
     },
-    showValueOnly: {
+    showFirstLabelOnly: {
       type: Boolean,
       default: false
     },
@@ -1541,7 +1541,7 @@ export default {
             }
           })
         })
-        if(this.showValueOnly) {
+        if(this.showFirstLabelOnly) {
           let ind = curlabel.indexOf(' ')
           curlabel = curlabel.substring(0, ind)
         }

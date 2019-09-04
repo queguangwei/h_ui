@@ -324,7 +324,7 @@ import TableCell from './Table-cell.vue'
 import Cell from './Cell.vue'
 import Checkbox from '../Checkbox/Checkbox.vue'
 
-const prefixCls = 'h-simpleTable'
+const prefixCls = 'h-table'
 
 let rowKey = 1
 let columnKey = 1
