@@ -103,13 +103,13 @@ export default {
 
             if (this.isBlock) {
               const optionitem = this.options.filter(item => item.value === this.focusValue);
-              this.handkeSearchBlur();
               this.selectBlockMultiple(this.focusValue, optionitem[0]);
-              if (this.filterable) {
-                this.$nextTick(() => {
+              this.$nextTick(() => {
+                if (this.filterable) {
                   this.$refs.input.focus();
-                });
-              }
+                  this.handkeSearchBlur();
+                }
+              });
               return;
             }
 
