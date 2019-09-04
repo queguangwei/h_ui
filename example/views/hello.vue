@@ -7,7 +7,7 @@
       <h-form-item label="singleSelect" prop="city" required>
         <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass"
                          remote filterable :loading="isLoading" :remote-method="remoteMethod1"
-                         widthAdaption keepInputValue showValueOnly
+                         widthAdaption keepInputValue showFirstLabelOnly
                          @on-keydown="handlekeydown">
           <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
         </h-single-select>
