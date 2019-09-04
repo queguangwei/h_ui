@@ -29,6 +29,10 @@ export default {
             // when browser has scrollBar,set a width to resolve scroll position bug
             if (this.columns.length === index + 1 && top && this.$parent.bodyHeight !== 0&&this.$parent.data.length>0) {
                 width += this.$parent.scrollBarWidth;
+                // 树表格嵌套 针对所有列设置宽度，总列宽小于屏幕宽度时，表格头全部加scrollBarWidth，此时列上也需要加scrollBarWidth
+                if (this.$options.name == 'TableHead' && parseInt(this.styleObject.width) < this.$parent.$el.clientWidth) {
+                    width -= this.$parent.scrollBarWidth
+                }
             }
             // when fixed type,reset first right fixed column's width
             if (this.fixed === 'right') {
