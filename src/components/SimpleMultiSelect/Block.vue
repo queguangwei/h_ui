@@ -211,16 +211,16 @@ export default {
         }
       });
 
-      this.dispatch("SimpleSelect", "on-options-visible-change", { data: this.cloneData });
+      // this.dispatch("SimpleSelect", "on-options-visible-change", { data: this.cloneData });
 
-      if (status && !hidden) {
-        status = false;
-      }
-      if (this.$parent.$parent.accuFilter) {
-        if (parsedQuery === targetLabel && !selected) {
-          this.$parent.$parent.selectBlockMultiple(targetValue);
-        }
-      }
+      // if (status && !hidden) {
+      //   status = false;
+      // }
+      // if (this.$parent.$parent.accuFilter) {
+      //   if (parsedQuery === targetLabel && !selected) {
+      //     this.$parent.$parent.selectBlockMultiple(targetValue);
+      //   }
+      // }
       // });
 
       this.dispatch("SimpleSelect", "on-options-visible-change", { data: this.cloneData });

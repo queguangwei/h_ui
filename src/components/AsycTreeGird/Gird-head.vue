@@ -68,7 +68,9 @@ export default {
   computed: {
     styles () {//深拷贝
       const style = Object.assign({}, this.styleObject);
-      const width = this.$parent.bodyHeight === 0 ? parseInt(this.styleObject.width) : parseInt(this.styleObject.width) + this.$parent.scrollBarWidth;
+      // 考虑所有都有宽度，总列宽小于屏幕宽度时，不可加scrollBarWidth
+      const width = this.$parent.bodyHeight === 0 ? parseInt(this.styleObject.width) : parseInt(this.styleObject.width) < this.$parent.$el.clientWidth ?parseInt(this.styleObject.width) : parseInt(this.styleObject.width) + this.$parent.scrollBarWidth;
+      // const width = this.$parent.bodyHeight === 0 ? parseInt(this.styleObject.width) : parseInt(this.styleObject.width) + this.$parent.scrollBarWidth;
       style.width = `${width}px`;
       return style;
     },

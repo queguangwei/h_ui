@@ -389,7 +389,8 @@ export default {
       dragEl: null,
       baseInx: null,
       offsetInx: null,
-      lastScrollTop: 0
+      lastScrollTop: 0,
+      mulitSortList:[]
     };
   },
   computed: {
@@ -1279,12 +1280,24 @@ export default {
           col._sortType = 'normal'
         }
         if (col._index == _index) {
+          // 第一个插入当前排序的，使得返回后的字段可以按顺序返回
+          this.mulitSortList.unshift(i)
           index = i;
         }
       });//rightFixed index error
       this.cloneColumns[index]._sortType = type;
+      // 数组去重
+      this.mulitSortList  = Array.from(new Set(this.mulitSortList))
       if(this.isMulitSort){
-        this.$emit('on-sort-change',JSON.parse(JSON.stringify(this.getSorts())))
+        let sortValList = {}
+        this.mulitSortList.forEach(item => {
+          if (this.cloneColumns[item].sortable && this.cloneColumns[item]._sortType != 'normal') {
+            sortValList[this.cloneColumns[item].key] = this.cloneColumns[item]._sortType
+          }
+        })
+        // this.$emit('on-sort-change',JSON.parse(JSON.stringify(this.getSorts())))
+        this.$emit('on-sort-change', sortValList)
+        sortValList = undefined
         return
       }
       const key = this.cloneColumns[index].key;
