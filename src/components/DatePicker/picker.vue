@@ -329,9 +329,10 @@ export default {
       this.cursorPos = this.$refs.input.$el.querySelector('input').selectionStart
     },
     keyUpHandler(e) {
-      let $input = this.$refs.input.$el.querySelector('input')
+      let $input = this.$refs.input ? this.$refs.input.$el.querySelector('input') : null
 
-      switch(e.keyCode) {
+      if (this.pickMode !== 'move' || $input === null) return
+      switch (e.keyCode) {
         case 38:
           e.preventDefault()
           $input.setSelectionRange(0, this.cursorPos)
@@ -360,7 +361,6 @@ export default {
 
           this.cursorPos < 0 && (this.cursorPos = 0)
           $input.setSelectionRange(this.cursorPos, this.cursorPos)
-          // this.cursorPos = $input.selectionStart
           break
         case 39:
           e.preventDefault()
@@ -374,7 +374,6 @@ export default {
 
           this.cursorPos > 19 && (this.cursorPos = 19)
           $input.setSelectionRange(this.cursorPos, this.cursorPos)
-          // this.cursorPos = $input.selectionStart
           break
       }
     },
