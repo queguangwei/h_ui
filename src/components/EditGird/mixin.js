@@ -83,7 +83,6 @@ export default {
                 if (firstFixedIndex === index) width += this.$parent.scrollBarWidth;
             }
             if (width === '0') width = '';
-            console.log(width)
             return width;
         },
         convertTreeData(rows, attributes) {
