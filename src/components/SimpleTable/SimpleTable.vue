@@ -731,7 +731,7 @@ export default {
           style.marginRight = `${this.scrollBarWidth}px`
           this.showScroll = true
         } else {
-          width = width==0?0:width;
+          width = width==0?0:width
         }
         style.width = `${width}px`
         return style
@@ -825,7 +825,7 @@ export default {
       * @param {string} rowIndex -objdata中索引
       * @param {number} curIndex - 行索引
       */
-    handleRightClick (event, _index, curIndex) {
+    handleRightClick(event, _index, curIndex) {
       // this.$emit('on-right-click')
       if (this.objData[_index]._isDisabled) return
       if (this.cloneData[_index]) {
@@ -900,10 +900,10 @@ export default {
           that.$set(col, '_width', width)
         }
         // 限制最后一列拖拽改变宽度
-//        if (i == lastInx && !that.notAdaptive) {
-//          that.$set(col, 'width', lastWidth)
-//          that.$set(col, '_width', lastWidth)
-//        }
+        //        if (i == lastInx && !that.notAdaptive) {
+        //          that.$set(col, 'width', lastWidth)
+        //          that.$set(col, '_width', lastWidth)
+        //        }
         var colWidth = col.width || col._width
         totalWidth = totalWidth + colWidth
       })
@@ -1061,7 +1061,7 @@ export default {
             }
             resizeLeft =
               _this.$el
-                .querySelectorAll(`th`)
+                .querySelectorAll('th')
                 [resizeIndex].getBoundingClientRect().right -
               tableLeft -
               1
@@ -1074,7 +1074,7 @@ export default {
             }
             resizeLeft =
               _this.$el
-                .querySelectorAll(`th`)
+                .querySelectorAll('th')
                 [resizeIndex].getBoundingClientRect().left -
               tableLeft -
               1
@@ -1219,9 +1219,9 @@ export default {
           this.$refs.body.scrollTop = 0
         }
         // 解决数据变动导致滚动条跳动问题
-        this.$refs.content.style.transform = `translate3d(0, ${transformTop}px, 0)`
+        this.$refs.content.style.transform = `translateY(${transformTop}px)`
         if (this.$refs.leftContent) {
-          this.$refs.leftContent.style.transform = `translate3d(0, ${transformTop}px, 0)`
+          this.$refs.leftContent.style.transform = `translateY(${transformTop}px))`
         }
 
         let width = this.$refs.body.getBoundingClientRect().width
@@ -1857,7 +1857,7 @@ export default {
         this.$refs.header.scrollLeft = event.target.scrollLeft
         if (this.isSummation) this.sumMarginLeft = event.target.scrollLeft
         if (this.$refs.fixedBody) this.$refs.fixedBody.scrollTop = scrolltop
-        let oldBottomNum = this.buttomNum;
+        let oldBottomNum = this.buttomNum
         this.buttomNum = getBarBottomS(
           event.target,
           this.bodyHeight,
@@ -1866,15 +1866,15 @@ export default {
           this.isScrollX
         )
         if (oldBottomNum !== null && this.buttomNum !== null) {
-          this.$emit('on-scroll', this.buttomNum, scrolltop !== this.lastScrollTop ? "y" : "x");
+          this.$emit('on-scroll', this.buttomNum, scrolltop !== this.lastScrollTop ? 'y' : 'x')
         }
-        this.lastScrollTop = scrolltop;
+        this.lastScrollTop = scrolltop
         let curtop = Math.floor(scrolltop / this.itemHeight) * this.itemHeight
 
         this.updateVisibleDataDebounce(false)(scrolltop)
-        this.$refs.content.style.transform = `translate3d(0, ${curtop}px, 0)`
+        this.$refs.content.style.transform = `translateY(${curtop}px)`
         if (this.$refs.leftContent) {
-          this.$refs.leftContent.style.transform = `translate3d(0, ${curtop}px, 0)`
+          this.$refs.leftContent.style.transform = `translateY(${curtop}px)`
         }
       }
       // setTimeout(() => {
@@ -1904,14 +1904,14 @@ export default {
           this.isScrollX
         )
         if (oldBottomNum !== null && this.buttomNum !== null) {
-          this.$emit('on-scroll', this.buttomNum, scrolltop !== this.lastScrollTop ? "y" : "x");
+          this.$emit('on-scroll', this.buttomNum, scrolltop !== this.lastScrollTop ? 'y' : 'x')
         }
         this.lastScrollTop = scrolltop
         let curtop = Math.floor(scrolltop / this.itemHeight) * this.itemHeight
         this.updateVisibleData(scrolltop)
-        this.$refs.content.style.transform = `translate3d(0, ${curtop}px, 0)`
+        this.$refs.content.style.transform = `translateY(${curtop}px)`
         if (this.$refs.leftContent) {
-          this.$refs.leftContent.style.transform = `translate3d(0, ${curtop}px, 0)`
+          this.$refs.leftContent.style.transform = `translateY(${curtop}px)`
         }
       })
     },
@@ -2265,9 +2265,9 @@ export default {
       if (curTop != top) {
         this.updateVisibleData(top)
         this.$refs.body.scrollTop = top
-        this.$refs.content.style.transform = `translate3d(0, ${top}px, 0)`
+        this.$refs.content.style.transform = `translateY(${top}px)`
         if (this.$refs.leftContent) {
-          this.$refs.leftContent.style.transform = `translate3d(0, ${top}px, 0)`
+          this.$refs.leftContent.style.transform = `translateY(${top}px)`
         }
       }
     },
@@ -2498,7 +2498,7 @@ export default {
         ? this.$refs.content.style.transform
         : ''
       this.$refs.body.scrollTop = transform.match(
-        /translate3d\(\d+px,\s*(\d+)px,\s*(\d+)px\)/i
+        /translateY\(\d+px,\s*(\d+)px,\s*(\d+)px\)/i
       )[1]
       this.handleResize()
       on(window, 'resize', this.handleResize)
