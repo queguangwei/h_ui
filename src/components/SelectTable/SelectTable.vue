@@ -1385,11 +1385,12 @@ export default {
     },
     newModelSearchDelete(multipleAry) {
       if (this.multiple && this.selectedMultiple.length > 0) {
-        let searchAry = this.selectedResult.split(',')
-        for (let i = 0; i < multipleAry.length; i++) {
-          if (searchAry.indexOf(multipleAry[i]) < 0) {
-            this.selectedMultiple.splice(i, 1)
-            this.model.splice(i, 1)
+        const searchAry = this.selectedResult.split(",");
+        for (let index = 0; index < multipleAry.length; index++) {
+          const label = multipleAry[index];
+          if (!searchAry.includes(label)) {
+            this.selectedMultiple.splice(this.selectedMultiple.findIndex(item => item.label === label), 1);
+            this.model.splice(this.model.findIndex(item => item === label), 1);
           }
         }
       }
@@ -1642,12 +1643,13 @@ export default {
       }
     },
     selectBlockMultiple(value, changeitem) {
-      const index = this.model.indexOf(value)
       if (this.newSearchModel) {
         this.newSearchModelselectItem = false
         this.newSearchModelselectItem = changeitem
       }
-      let searchAry = this.selectedResult.split(',')
+      
+      const index = this.model.indexOf(value)
+      let searchAry = this.model.length ? this.selectedResult.split(',') : []
       if (index >= 0) {
         this.removeTag(index)
         if (this.newSearchModel) {
