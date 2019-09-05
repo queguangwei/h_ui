@@ -232,10 +232,10 @@ export default {
     },
     tabindex: {
       type: [String, Number],
-      default: "0",
+      default: '0',
       validator(value) {
-        let num = parseInt(value);
-        return num <= 32767 && num >= -1;
+        let num = parseInt(value)
+        return num <= 32767 && num >= -1
       }
     },
     showToday:{
@@ -288,9 +288,9 @@ export default {
         ? publicVModelValue.map(formatDate)
         : formatDate(publicVModelValue)
     },
-//    opened() {
-//      return this.open === null ? this.visible : this.open
-//    },
+    //    opened() {
+    //      return this.open === null ? this.visible : this.open
+    //    },
     opened: {
       get:function() {
         return this.open === null ? this.visible : this.open
@@ -476,7 +476,7 @@ export default {
     },
     focus() {
       if (this.disabled) return false
-//       this.$nextTick(()=>{
+      //       this.$nextTick(()=>{
       setTimeout(() => {
         if (!this.iconVisible) {
           this.visible = true
@@ -486,8 +486,8 @@ export default {
         if (this.$refs.input) this.$refs.input.focus()
         if(window.isO45 && this.value !== '') this.select()
       }, 0)
-//        this.visible =status =='notShow'?false:true;
-//      })
+      //        this.visible =status =='notShow'?false:true;
+      //      })
     },
     blur() {
       if (this.isFocus) {
@@ -572,9 +572,9 @@ export default {
       const oldValue = this.visualValue
       const newValue = event.target.value
       let newDate = this.parseDate(newValue)
-      if(newDate[0] == null || !newDate || newDate == []) {
-        newDate = this.internalValue
-      }
+      // if(newDate[0] == null || !newDate || newDate == []) {
+      //   newDate = this.internalValue
+      // }
       const disabledDateFn =
         this.options &&
         typeof this.options.disabledDate === 'function' &&
@@ -780,7 +780,7 @@ export default {
         this.options &&
         typeof this.options.disabledDate === 'function' &&
         this.options.disabledDate
-      let td =new Date();
+      let td =new Date()
       let isDisabled = disabledDateFn && disabledDateFn(td)
       if(!isDisabled){
         this.$set(this.internalValue, 0,new Date())
@@ -789,7 +789,7 @@ export default {
       }
     },
     getDate(val){
-      return val.replace(/[^0-9]/ig,"");
+      return val.replace(/[^0-9]/ig,'')
     }
   },
   watch: {
@@ -812,7 +812,7 @@ export default {
       }
       // 仅在transfer时进行重新计算【类似其余的下拉】，否则会不断触发回流，引起性能问题
       // 重新计算位置后进行update
-     this.$refs.drop.update()
+      this.$refs.drop.update()
       this.$emit('on-open-change', state)
     },
     value: {
