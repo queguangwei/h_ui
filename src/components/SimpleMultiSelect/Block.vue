@@ -167,17 +167,19 @@ export default {
       return item.label ? item.label : item.value;
     },
     select(item) {
-      if (item.disabled) {
-        return false;
-      }
-      if (this.multiple) {
-        this.$parent.$parent.selectBlockMultiple(item.value, item);
-      } else {
-        this.$parent.$parent.selectBlockSingle(item.value, item);
-      }
+      if (item.disabled) return false;
+      this.multiple && this.$parent.$parent.selectBlockMultiple(item.value, item);
+      this.$nextTick(() => {
+        this.$parent.$parent.handleSearchBlur();
+        this.$parent.$parent.filterable && this.$parent.$parent.$refs.input.focus();
+      });
     },
     checkChange(val, item) {
-      this.$parent.$parent.selectBlockMultiple(item.value, item);
+      this.multiple && this.$parent.$parent.selectBlockMultiple(item.value, item);
+      this.$nextTick(() => {
+        this.$parent.$parent.handleSearchBlur();
+        this.$parent.$parent.filterable && this.$parent.$parent.$refs.input.focus();
+      });
     },
     blur() {
       this.isFocus = false;

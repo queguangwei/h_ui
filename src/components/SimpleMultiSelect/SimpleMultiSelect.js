@@ -31,7 +31,6 @@ export default {
   data() {
     return {
       selectedResult: "",
-      newSearchModelselectItem: {},
       isCopy: false,
       newSearchCheckAll: false,
       newSearchUnCheckAll: false,
@@ -47,6 +46,9 @@ export default {
       e.target.selectionStart = 0;
       e.target.selectionEnd = this.selectedResult.length;
     },
+    handleSearchBlur() {
+      this.selectedResult = this.selectedMultiple.map(item => item.label).join();
+    },
     focus() {
       /// ???
       if (this.disabled || this.readonly) return;
@@ -61,19 +63,19 @@ export default {
     handleKeydown(e) {
       if (_.isKeyMatch(e, "Esc")) {
         this.hideMenu();
+        this.handleSearchBlur();
         this.$nextTick(() => {
           this.$refs.input.focus();
         });
       }
 
-      this.isEnterhide = false;
       if (this.visible) {
         if (_.isKeyMatch(e, "Enter")) {
           e.preventDefault();
           this.hideMenu();
+          this.handleSearchBlur();
           this.$nextTick(() => {
             this.$refs.input.focus();
-            this.isEnterhide = true;
           });
         }
 
@@ -105,10 +107,8 @@ export default {
               const optionitem = this.options.filter(item => item.value === this.focusValue);
               this.selectBlockMultiple(this.focusValue, optionitem[0]);
               this.$nextTick(() => {
-                if (this.filterable) {
-                  this.$refs.input.focus();
-                  this.handkeSearchBlur();
-                }
+                this.handleSearchBlur();
+                this.filterable && this.$refs.input.focus();
               });
               return;
             }
@@ -184,31 +184,6 @@ export default {
         return;
       }
       this.newModelhandleSearch(searchkey);
-    },
-    newSearchModelselectItem(changeitem) {
-      if (!changeitem) return;
-      let label = changeitem["label"];
-      let selectVal = changeitem["value"];
-      let selectAry = this.selectedResult
-        .trim()
-        .replace(/^,*|,*$/g, "")
-        .split(",");
-      let index = selectAry.indexOf(label);
-      if (index >= 0) {
-        selectAry.splice(index, 1);
-      } else {
-        if (this.specialIndex) {
-          if (selectVal == this.specialVal) {
-            selectAry = [];
-          }
-        }
-        selectAry.push(label);
-      }
-      let str = selectAry.join(",");
-      if (str.substr(0, 1) == ",") {
-        str = str.substr(1);
-      }
-      this.selectedResult = str;
     },
     isResetField() {
       if (this.newSearchModel && !this.visible) {
