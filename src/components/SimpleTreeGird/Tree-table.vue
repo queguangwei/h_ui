@@ -283,7 +283,7 @@ export default {
         this._parent.checkedObj.push({
           id: col.id,
           checked: col.checked || false,
-          _isExpand: col.expand || null,
+          _isExpand: (col.expand + '') === 'true' || null,
           _collectionState: this.collectionState[inx],
           _parentId: col._parentId,
           _isHighlight: col.highlight || false,
