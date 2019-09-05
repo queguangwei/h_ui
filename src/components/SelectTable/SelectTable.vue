@@ -12,17 +12,12 @@
       <span v-if="showTotal"
             :class="[prefixCls + '-selected-num']">共选择 {{selectedMultiple.length}} 项</span>
       <!-- 多选时输入框内选中值模拟 -->
-      <div class="h-tag"
-           v-if="!newSearchModel"
-           v-for="(item, index) in selectedMultiple"
-           v-show="item.label&&!showTotal"
-           :key="index">
-        <span class="h-tag-text"
-              v-if="!showValue">{{ item.label }}</span>
-        <span class="h-tag-text"
-              v-if="showValue">{{ item.value }}</span>
-        <Icon name="close"
-              @click.native.stop="removeTag(index)"></Icon>
+      <div v-if="!newSearchModel">
+        <div class="h-tag" v-for="(item, index) in selectedMultiple" v-show="item.label&&!showTotal" :key="index">
+          <span class="h-tag-text" v-if="!showValue">{{ item.label }}</span>
+          <span class="h-tag-text" v-if="showValue">{{ item.value }}</span>
+          <Icon name="close" @click.native.stop="removeTag(index)"></Icon>
+        </div>
       </div>
       <!-- 下拉输入框模拟（非远程搜索时渲染）  -->
       <span :class="[prefixCls + '-placeholder']"
@@ -43,7 +38,7 @@
              search="multiSelect"
              :placeholder="showPlaceholder?localePlaceholder:''"
              @focus="handleFocus"
-             @blur="handkeSearchBlur"
+             @blur="handleBlur"
              @keydown="resetInputState"
              @keyup="handleInputKeyup($event)"
              :tabindex="tabindex"
@@ -477,7 +472,6 @@ export default {
       isSearchDelete: false,
       isQuerySelect: false,
       isMultiSpecial: false,
-      // newSearchModelselectItem:{},
       // isCopy:false,
       // newSearchCheckAll:false,
       // newSearchUnCheckAll:false,
@@ -1299,18 +1293,6 @@ export default {
     handleBlur() {
       this.$emit('on-blur')
     },
-    handkeSearchBlur() {
-      let multipleAry = []
-      this.selectedMultiple.forEach(item => {
-        multipleAry.push(item['label'])
-      })
-      let modelstr = multipleAry.join(',')
-      if (modelstr != this.selectedResult) {
-        this.selectedResult = modelstr
-      }
-      this.isInputFocus = false
-      this.$emit('on-blur')
-    },
     resetInputState(e) {
       this.inputLength = this.$refs.input.value.length * 12 + 56
       if (this.visible && this.showBottom && e.keyCode == 9) {
@@ -1643,18 +1625,10 @@ export default {
       }
     },
     selectBlockMultiple(value, changeitem) {
-      if (this.newSearchModel) {
-        this.newSearchModelselectItem = false
-        this.newSearchModelselectItem = changeitem
-      }
-      
       const index = this.model.indexOf(value)
       let searchAry = this.model.length ? this.selectedResult.split(',') : []
       if (index >= 0) {
         this.removeTag(index)
-        if (this.newSearchModel) {
-          //let itemidx=searchAry.indexOf()
-        }
       } else {
         if (this.specialIndex) {
           if (value == this.specialVal) {
@@ -1664,7 +1638,6 @@ export default {
             if (!changeitem) {
               this.selectedResult = this.getLabel(this.specialVal)
             }
-
             return false
           }
           if (
@@ -1972,20 +1945,12 @@ export default {
     },
     // eslint-disable-next-line
     selectedMultiple(val) {
+      this.viewValue = val;
+      this.showTotal = this.showTotalNum && this.multiple && !this.isInputFocus && val.length > 2 ? true : false;
+      this.selectedResult = this.selectedMultiple.map(item => item.label).join();
       this.$nextTick(() => {
         this.offsetArrow()
       })
-      this.viewValue = val
-      if (
-        this.showTotalNum &&
-        this.multiple &&
-        !this.isInputFocus &&
-        val.length > 2
-      ) {
-        this.showTotal = true
-      } else {
-        this.showTotal = false
-      }
     },
     selectHead(val) {
       // this.toggleSelect(val)

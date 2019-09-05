@@ -19,7 +19,7 @@ Vue.use(Venus);
 // Vue.component('h-upload',Upload)
 // Vue.component('h-button',Button)
 
-// window.isO45 = true;
+window.isO45 = true;
 
 new Vue({
   el: "#app",
