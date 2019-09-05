@@ -204,12 +204,19 @@ export default {
         }
       }
     },
-    'data.expand': function() {
-      this.childrenShow =
-        this.data.expand &&
-        this.data.expand != 'false' &&
-        (!this.data.leaf || this.data.leaf == 'false')
-      this.iconShow = this.data.expand && this.data.expand != 'false'
+    'data.expand': {
+      deep: true,
+      handler: function() {
+        this.childrenShow =
+          this.data.expand &&
+          this.data.expand != 'false' &&
+          (!this.data.leaf || this.data.leaf == 'false')
+        this.iconShow = this.data.expand && this.data.expand != 'false'
+        // 处理expand为true但是处于收缩状态，重新赋值data不能展开的问题
+        if (this.childrenShow && this.$refs.children) {
+          this.$refs.children.style.display = 'block'
+        }
+      }
     },
     'data.leaf': function() {
       this.childrenShow =

@@ -17,7 +17,7 @@
 </template>
 <script>
 import TreeNode from './Node.vue'
-import { findComponentsDownward, deepCopy } from '../../util/tools'
+import { deepCopy } from '../../util/tools'
 import Emitter from '../../mixins/emitter'
 import Locale from '../../mixins/locale'
 
@@ -136,7 +136,7 @@ export default {
       const flatTree = []
       function flattenChildren(node, parent) {
         node.nodeKey = keyCounter++
-        ;[
+        [
           'expand',
           'disabled',
           'disableCheckbox',
