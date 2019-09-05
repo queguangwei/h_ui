@@ -1,10 +1,10 @@
 <template>
   <div>
-    <h-form :model="form" :label-width="80">
-      <h-form-item label="输入框">
+    <h-form ref="form" :model="form" :label-width="80">
+      <h-form-item label="输入框" prop="input">
         <h-input v-model="form.input" placeholder="请输入"></h-input>
       </h-form-item>
-      <h-form-item label="选择器">
+      <h-form-item label="选择器" prop="select">
         <h-multi-select v-model="form.select">
           <h-multi-block :data="bigData"></h-multi-block>
         </h-multi-select>
@@ -33,6 +33,14 @@ export default {
         {
           label: "test-3",
           value: "3"
+        },
+        {
+          label: "test-4",
+          value: "4"
+        },
+        {
+          label: "test-5",
+          value: "5"
         }
       ],
       form: {
@@ -40,6 +48,12 @@ export default {
         select: ""
       }
     };
+  },
+  mounted() {
+    this.form.select = "1,2,5";
+    setTimeout(() => {
+      this.$refs["form"].resetFields();
+    }, 1000);
   }
 };
 </script>
