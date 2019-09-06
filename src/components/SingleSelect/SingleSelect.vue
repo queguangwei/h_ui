@@ -1,6 +1,7 @@
 <template>
   <div :class="classes"
        v-clickoutside="{trigger: 'mousedown', handler: handleClose}"
+       :style="multiplestyle"
        ref="select">
     <div :class="selectionCls"
          ref="reference"
@@ -58,6 +59,7 @@
              @focus="handleFocus"
              @blur="handleBlur"
              @keydown="resetInputState"
+             @keydown.delete="handleInputDelete"
              @keyup="handleInputKeyup($event)"
              :tabindex="tabindex"
              ref="input">
@@ -79,6 +81,7 @@
       <transition :name="transitionName">
         <Drop :class="dropdownCls"
               :dropWidth="dropWidth"
+              :multiple="multiple"
               v-show="dropVisible"
               :placement="fPlacement"
               :data-transfer="transfer"
@@ -93,7 +96,7 @@
             <!-- <ul v-show="notFoundShow" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul> -->
             <span :class="searchClass"
                   ref='search'
-                  v-if="filterable && showBottom">
+                  v-if="filterable && showBottom&&!hideMult">
             <input type="text"
                    v-model="query"
                    :disabled="disabled"
@@ -102,6 +105,7 @@
                    :placeholder="localeSearchHolder"
                    @blur="handleBlur"
                    @keydown="resetInputState"
+                   @keydown.delete="handleInputDelete"
                    :tabindex="tabindex"
                    ref="input">
               <!-- <input type="text" placeholder="请输入..." class="h-input h-input-left">  -->
@@ -145,6 +149,7 @@
     <div v-else>
       <Drop :class="dropdownCls"
             :dropWidth="dropWidth"
+            :multiple="multiple"
             v-show="dropVisible"
             :placement="fPlacement"
             :data-transfer="transfer"
@@ -159,7 +164,7 @@
           <!-- <ul v-show="notFoundShow" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul> -->
           <span :class="searchClass"
                 ref='search'
-                v-if="filterable && showBottom">
+                v-if="filterable && showBottom&&!hideMult">
             <input type="text"
                    v-model="query"
                    :disabled="disabled"
@@ -168,6 +173,7 @@
                    :placeholder="localeSearchHolder"
                    @blur="handleBlur"
                    @keydown="resetInputState"
+                   @keydown.delete="handleInputDelete"
                    :tabindex="tabindex"
                    ref="input">
             <!-- <input type="text" placeholder="请输入..." class="h-input h-input-left">  -->
@@ -227,11 +233,23 @@ import Emitter from '../../mixins/emitter'
 import Locale from '../../mixins/locale'
 const prefixCls = 'h-selectTable'
 export default {
-  name: 'SelectTable',
+  name: 'SingleSelect',
   mixins: [Emitter, Locale],
   components: { Icon, Drop, Checkbox },
   directives: { clickoutside, TransferDom },
   props: {
+    animated: {
+      type: Boolean,
+      default: true
+    },
+    block:{
+      type: Boolean,
+      default: true,
+    },
+    isSingleSelect:{
+      type:Boolean,
+      default:true,
+    },
     disabled: {
       type: Boolean,
       default: false
@@ -266,7 +284,7 @@ export default {
     },
     filterable: {
       type: Boolean,
-      default: false
+      default: true
     },
     focusSelect: {
       type: Boolean,
@@ -402,6 +420,10 @@ export default {
       },
       default: 'large'
     },
+    hideMult: {
+      type: Boolean,
+      default: false
+    },
     // focusIndex 初始值
     focusInit: {
       type: Number,
@@ -423,7 +445,7 @@ export default {
     //一直显示arrow图标，包括远程搜索时
     showArrow: {
       type: Boolean,
-      default: false
+      default: true
     },
     showValue: {
       type: Boolean,
@@ -431,7 +453,7 @@ export default {
     },
     accuFilter: {
       type: Boolean,
-      default: false
+      default: true
     },
     // 需求 148437 特殊属性
     // 远程搜索不需要执行 query
@@ -470,10 +492,6 @@ export default {
         let num = parseInt(value)
         return num <= 32767 && num >= -1
       }
-    },
-    animated: {
-      type: Boolean,
-      default: true
     }
   },
   data() {
@@ -529,7 +547,7 @@ export default {
     },
     listStyle() {
       let style = {}
-      if (!this.showHeader) {
+      if (!this.showHeader && !this.hideMult) {
         if (this.showBorder) {
           style.paddingTop = this.showBottom ? '52px' : '0'
         } else {
@@ -540,12 +558,14 @@ export default {
     },
     classes() {
       return [
-        `${prefixCls}`,`${prefixCls}-single`,
+        `${prefixCls}`,
         {
           [`${prefixCls}-visible`]: this.visible,
           [`${prefixCls}-disabled`]: this.disabled,
           [`${prefixCls}-readonly`]: this.readonly,
           [`${prefixCls}-editable`]: !this.editable,
+          [`${prefixCls}-multiple`]: this.multiple,
+          [`${prefixCls}-single`]: !this.multiple,
           [`${prefixCls}-show-clear`]: this.showCloseIcon,
           [`${prefixCls}-${this.size}`]: !!this.size
         }
@@ -554,6 +574,7 @@ export default {
     dropdownCls() {
       return {
         ['h-select-dropdown-transfer']: this.transfer,
+        [prefixCls + '-multiple']: this.multiple && this.transfer,
         ['h-auto-complete']: this.autoComplete
       }
     },
@@ -586,12 +607,24 @@ export default {
     },
     showCloseIcon() {
       return (
+        !this.multiple &&
         this.clearable &&
         !this.showPlaceholder &&
         !this.readonly &&
         !this.disabled &&
         !this.isSingleSelect
       )
+    },
+    inputStyle() {
+      let style = {}
+      if (this.multiple) {
+        if (this.showPlaceholder) {
+          style.width = '100%'
+        } else {
+          style.width = `${this.inputLength}px`
+        }
+      }
+      return style
     },
     localePlaceholder() {
       if (this.placeholder === undefined) {
@@ -640,6 +673,11 @@ export default {
         status = false
       return this.visible && status
     },
+    multiplestyle() {
+      return {
+        width: `${this.width}px`
+      }
+    },
     checkAll() {
       return 'h-select-checkall'
     },
@@ -674,10 +712,11 @@ export default {
   },
   methods: {
     handleInputKeyup(event){
+      //o45 忽略tab
       if(event.keyCode !== 9) {
-        if(this.newSearchModel){
+        if (this.newSearchModel) {
           this.$emit('on-keyup', this.selectedResult, event)
-        }else{
+        } else {
           this.$emit('on-keyup', this.query, event)
         }
       }
@@ -777,8 +816,7 @@ export default {
       this.toggleMenu()
     },
     offsetArrow() {
-      if (!this.multiple)
-        return
+      if (!this.multiple) return
       let el = this.$refs.reference
       if (el.scrollHeight > el.clientHeight) {
         if (this.$refs.arrowb) this.$refs.arrowb.$el.style.right = '22px'
@@ -862,6 +900,7 @@ export default {
       })
 
       this.options = options
+
       this.availableOptions = options
 
       if (init) {
@@ -887,20 +926,31 @@ export default {
     },
     updateSingleSelected(init = false, slot = false) {
       // 赋值默认项是遍历选项绑定focusIndex
-      const singVal = this.query ? this.query : this.model
-      for(let ind in this.options) {
-        if(this.options[ind].value === singVal) {
-          this.focusIndex = this.options[ind].index + 1
-          continue
+      if(init) {
+        for(let i in this.availableOptions) {
+          if(this.availableOptions[i].value === this.model) {
+            this.focusIndex = this.availableOptions[i].index + 1
+            break
+          }
         }
       }
+//      else {
+//        const singVal = this.query.split(' ')[0]
+//        for(let j in this.availableOptions) {
+//          if(this.availableOptions[j].label === singVal) {
+//            this.focusIndex = this.availableOptions[j].index + 1
+//            break
+//          }
+//        }
+//      }
+
       const type = typeof this.model
       if (type === 'string' || type === 'number') {
         let findModel = false
         let curSingle = ''
-        for (let i = 0; i < this.options.length; i++) {
-          if (this.model === this.options[i].value) {
-            curSingle = this.options[i].label
+        for (let k in this.options) {
+          if (this.model === this.options[k].value) {
+            curSingle = this.options[k].label
             findModel = true
             break
           }
@@ -913,12 +963,11 @@ export default {
           this.selectedSingle = curSingle
         }
         //o45 证券代码控件需要
-        if (slot && !findModel && !this.keepInputValue) {
+        if (slot && !findModel) {
           this.model = ''
           this.query = ''
-        }else {
-          this.selectedSingle = this.model
         }
+
       }
       this.toggleSingleSelected(this.model, init)
     },
@@ -1000,6 +1049,11 @@ export default {
         })
       }
       if (!init) {
+        // o45
+//        if(this.keepInputValue) {
+//          this.selectedSingle = this.query
+//        }
+
         if (this.labelInValue) {
           this.$emit('on-change', { value: value, label: label })
           this.dispatch('FormItem', 'on-form-change', { value: value, label: label })
@@ -1012,8 +1066,13 @@ export default {
     handleClose() {
       this.hideMenu()
       if (this.isInputFocus) {
-        // 单选返回字符串
-        this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
+        if (this.multiple) {
+          // 多选返回数组
+          this.dispatch('FormItem', 'on-form-blur', this.selectedMultiple)
+        } else {
+          // 单选返回字符串
+          this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
+        }
         this.isInputFocus = false
         if (this.isSingleSelect && this.model == '' && this.query != '') {
           if (this.options.length > 0) {
@@ -1047,7 +1106,7 @@ export default {
         }
         if (keyCode === 39 || keyCode === 37) {
           this.selectBlockSingle(this.focusValue)
-          this.isInputFocus = false
+//          this.isInputFocus = false
         }
         return false
       }
@@ -1076,10 +1135,14 @@ export default {
           if (this.availableOptions[this.focusIndex - 1].disabled) return
 
           if (this.isBlock) {
-            if (window.IS_LICAI) {
-              this.model = this.focusValue
+            if (!this.multiple) {
+              if (window.IS_LICAI) {
+                this.model = this.focusValue
+              } else {
+                this.selectBlockSingle(this.focusValue)
+              }
             } else {
-              this.selectBlockSingle(this.focusValue)
+              this.selectBlockMultiple(this.focusValue)
             }
             if (this.filterable) {
               this.$nextTick(() => {
@@ -1088,8 +1151,13 @@ export default {
             }
             return
           }
+
           this.findChild(child => {
-            child.$refs.table.enterSingle(index, true)
+            if (!this.multiple) {
+              child.$refs.table.enterSingle(index, true)
+            } else {
+              child.$refs.table.enterSelect(index, true)
+            }
           })
         }
       }
@@ -1101,12 +1169,11 @@ export default {
       if (this.isBlock) {
         if (direction === 'next') {
           const next = this.focusIndex + 1
-          this.focusIndex = this.focusIndex === this.availableOptions.length ? 1 : next
+          this.focusIndex = this.focusIndex >= this.availableOptions.length ? 1 : next
         } else if (direction === 'prev') {
           const prev = this.focusIndex - 1
           this.focusIndex = this.focusIndex <= 1 ? this.availableOptions.length : prev
         }
-
         this.focusValue = this.availableOptions[this.focusIndex - 1].value
         // 处理滚动条
         this.findChild(child => {
@@ -1115,7 +1182,6 @@ export default {
           let top = itemHeight * (this.focusIndex - 1)
           child.$el.scrollTop = top
         })
-
         return
       }
 
@@ -1216,6 +1282,11 @@ export default {
         this.$emit('on-keydown', this.query, e)
       }
     },
+    handleInputDelete() {
+      if (this.multiple && this.model.length && this.query === '') {
+        this.removeTag(this.model.length - 1)
+      }
+    },
     handleNewSearchCopy(e) {
       this.isCopy = true
     },
@@ -1224,6 +1295,82 @@ export default {
     },
     handleNewSearchUnCheckAll() {
       this.newSearchUnCheckAll = true
+    },
+    handleNewSearchSelect(changeitem) {
+      if (!changeitem) return
+      let label = changeitem.label
+      let selectAry = this.selectedResult.trim().split(',')
+      let index = selectAry.indexOf(label)
+      if (index >= 0) {
+        selectAry.splice(index, 1)
+      } else {
+        selectAry.push(label)
+      }
+      this.selectedResult = selectAry.join(',')
+    },
+    // handleSearchDelete(){
+    //   this.isSearchDelete=true;
+    // },
+    newSearchUpdate() {
+      setTimeout(() => {
+        this.$refs.dropdown.setWidthAdaption()
+      }, 0)
+    },
+    newModelSearchDelete(multipleAry) {
+      if (this.multiple && this.selectedMultiple.length > 0) {
+        let searchAry = this.selectedResult.split(',')
+        for (let i = 0; i < multipleAry.length; i++) {
+          if (searchAry.indexOf(multipleAry[i]) < 0) {
+            this.selectedMultiple.splice(i, 1)
+            this.model.splice(i, 1)
+          }
+        }
+      }
+      // this.isSearchDelete=false;
+    },
+    newModelhandleSearch(searchkey) {
+      if (this.remote && this.remoteMethod) {
+        if (!this.selectToChangeQuery) {
+          // 解决当通过表单方法firstNodeFocused定位到SimpleSelect时只能输入但不展示下拉选项的问题
+          if (!this.visible && searchkey) this.visible = true
+          this.remoteMethod(searchkey)
+          //tan 50 多选改动 放开
+//          this.curSearchkey = searchkey
+          if(searchkey!=","){
+            setTimeout(()=> {
+              //tan 50多选改动 注释掉
+              this.newSearchUpdate();
+              this.$emit('on-query-change', searchkey)
+              //this.$refs.dropdown.setWidthAdaption(true);
+            }, 300)
+          }
+          //this.$emit('on-query-change', searchkey)
+          //tan 50改动 注释掉
+          this.broadcastQuery(searchkey)
+        }
+        this.findChild(child => {
+          child.isFocus = false
+        })
+      } else {
+        if (!this.selectToChangeQuery) {
+          if (!this.visible && searchkey) this.visible = true
+          this.$emit('on-query-change', searchkey)
+          this.broadcastQuery(searchkey)
+        }
+
+        if (!this.isBlock) {
+          if (this.filterable && searchkey) {
+            this.$nextTick(() => {
+              this.findChild(child => {
+                if (this.focusIndex > 0)
+                  child.$refs.table.changeHover(this.focusIndex - 1, false)
+                this.focusIndex = 1
+                child.$refs.table.changeHover(this.focusIndex - 1, true)
+              })
+            })
+          }
+        }
+      }
     },
     getLabel(val) {
       let item = this.options.filter(item => item.value == val)
@@ -1277,21 +1424,70 @@ export default {
     // 处理 remote 初始值
     updateLabel() {
       if (this.remote) {
-        if (this.model !== '') {
+        if (!this.multiple && this.model !== '') {
           this.selectToChangeQuery = true
           if (this.currentLabel === '') this.currentLabel = this.model
           this.lastQuery = this.currentLabel
           this.query = this.currentLabel
+        } else if (this.multiple && this.model.length) {
+          if (this.currentLabel.length !== this.model.length) {
+            let tmp = []
+            for (let i = 0; i < this.model.length; i++) {
+              tmp.push('')
+            }
+            this.currentLabel = tmp
+          }
+
+          this.selectedMultiple = this.model.map((item, index) => {
+            return {
+              value: item,
+              label: this.currentLabel[index]
+            }
+          })
         }
+      }
+    },
+    strtoArr(val) {
+      if (this.multiple && this.isString) {
+        if (val == '' || val == ' ' || val == null || val == undefined) {
+          return []
+        } else if (val.length > 0 && val.indexOf(',') == -1) {
+          return new Array(val)
+        } else {
+          return val.split(',')
+        }
+      } else {
+        return val
+      }
+    },
+    arrtoStr(val) {
+      if (this.multiple && this.isString) {
+        if (val.length == 0) {
+          return ''
+        } else {
+          return val.join(',')
+        }
+      } else {
+        return val
       }
     },
     handleBack(e) {
       if (!this.isBackClear || this.readonly || this.disable) return
       if (e.keyCode === 8 && this.value !== null && this.value!== '') {
         let c = this.value
-        this.model = ''
+        if (this.multiple) {
+          this.clearMultipleSelect()
+        } else {
+          this.model = ''
+        }
         this.$emit('on-clear-select', c)
       }
+    },
+    clearMultipleSelect() {
+      if (this.disabled || !this.editable || this.readonly) {
+        return false
+      }
+      this.model = []
     },
     getFormatValue(value) {
       let val = ''
@@ -1303,7 +1499,7 @@ export default {
       return val.slice(0, val.length - 1)
     },
     searchStyle() {
-      if (this.filterable && this.showBottom) {
+      if (this.filterable && this.showBottom && !this.hideMult) {
         if (this.isBlock) {
           this.$refs.search.style.width = '100%'
           this.$refs.input.style.width = '100%'
@@ -1354,9 +1550,14 @@ export default {
         this.$refs.input.select()
       }
     },
+    //左右键、点选选中options中value值
     selectBlockSingle(value, status = false, str) {
       this.isQuerySelect = status
-      this.availableOptions = this.options
+
+      if(!this.isInputFocus) {
+        this.availableOptions = this.options
+      }
+
       this.selectToChangeQuery = true
       if (this.model !== value) {
         this.model = value
@@ -1365,6 +1566,51 @@ export default {
         this.hideMenu()
         this.isInputFocus = false
         this.focus()
+      }
+    },
+    selectBlockMultiple(value, changeitem) {
+      const index = this.model.indexOf(value)
+      if (this.newSearchModel) {
+        this.newSearchModelselectItem = false
+        this.newSearchModelselectItem = changeitem
+      }
+      let searchAry = this.selectedResult.split(',')
+      if (index >= 0) {
+        this.removeTag(index)
+        if (this.newSearchModel) {
+          //let itemidx=searchAry.indexOf()
+        }
+      } else {
+        if (this.specialIndex) {
+          if (value == this.specialVal) {
+            let arr = []
+            arr.push(this.specialVal)
+            this.model = arr
+            if (!changeitem) {
+              this.selectedResult = this.getLabel(this.specialVal)
+            }
+
+            return false
+          }
+          if (
+            value != this.specialVal &&
+            this.model.indexOf(this.specialVal) >= 0
+          ) {
+            const index = this.model.indexOf(this.specialVal)
+            const specialItem = this.selectedMultiple.filter(
+              item => item['value'] == this.specialVal
+            )
+            if (searchAry.indexOf(specialItem[0].label) > -1) {
+              let idx = searchAry.indexOf(specialItem[0].label)
+              searchAry.splice(idx, 1)
+              this.isMultiSpecial = true
+              this.selectedResult = searchAry.join(',')
+            }
+            this.removeTag(index)
+          }
+        }
+        this.model.push(value)
+        this.broadcast('Drop', 'on-update-popper')
       }
     },
     setPlacement(top = 0) {
@@ -1575,10 +1821,14 @@ export default {
         if (this.model == !val) {
           this.isQuerySelect = false
         }
-        this.model = val
-        if (val === '' && !this.visible) {
-          this.query = ''
+        if (this.multiple && this.isString) {
+          this.model = this.strtoArr(val)
+        } else {
+          this.model = val
+          // TODO
         }
+        if (val === '' && !this.visible) this.query = ''
+
       }
     },
     label(val) {
@@ -1586,7 +1836,8 @@ export default {
       this.updateLabel()
     },
     model() {
-      this.$emit('input', this.model)
+      let backModel = this.arrtoStr(this.model)
+      this.$emit('input', backModel)
       this.modelToQuery()
       this.updateSingleSelected()
     },
@@ -1616,7 +1867,7 @@ export default {
 
           setTimeout(() => {
             if (this.remote && this.remoteMethod) return
-            if (this.showBottom) {
+            if (this.showBottom || this.multiple) {
               this.query = ''
             }
             this.broadcast('Block', 'on-query-change', '', true)
@@ -1679,6 +1930,13 @@ export default {
       }
     },
     isInputFocus(val) {
+      if (this.showTotalNum && this.multiple) {
+        if (!val && this.selectedMultiple.length > 2) {
+          this.showTotal = true
+        } else {
+          this.showTotal = false
+        }
+      }
       if (!val) {
         this.setSingleSelect()
       }
