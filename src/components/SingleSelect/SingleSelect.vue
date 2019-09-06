@@ -77,7 +77,76 @@
             :class="[prefixCls + '-arrow']"
             v-if="filterable && searchIcon && !showArrow"></Icon>
     </div>
-    <transition :name="transitionName">
+    <div v-if="animated">
+      <transition :name="transitionName">
+        <Drop :class="dropdownCls"
+              :dropWidth="dropWidth"
+              :multiple="multiple"
+              v-show="dropVisible"
+              :placement="fPlacement"
+              :data-transfer="transfer"
+              :widthAdaption="widthAdaption"
+              :maxDropWidth="maxDropWidth"
+              ref="dropdown"
+              v-transfer-dom>
+          <div :class="content"
+               ref="content"
+               @click="handleclick">
+            <!-- 单选时清空按钮 -->
+            <!-- <ul v-show="notFoundShow" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul> -->
+            <span :class="searchClass"
+                  ref='search'
+                  v-if="filterable && showBottom&&!hideMult">
+            <input type="text"
+                   v-model="query"
+                   :disabled="disabled"
+                   :readonly="!editable||readonly"
+                   :class="[prefixCls + '-input']"
+                   :placeholder="localeSearchHolder"
+                   @blur="handleBlur"
+                   @keydown="resetInputState"
+                   @keydown.delete="handleInputDelete"
+                   :tabindex="tabindex"
+                   ref="input">
+              <!-- <input type="text" placeholder="请输入..." class="h-input h-input-left">  -->
+          </span>
+            <div v-if="showHeader"
+                 :class="headerSlotCls">
+              <slot name="header">
+              </slot>
+            </div>
+            <div v-if="!isBlock"
+                 v-show="(!notFound && !remote) || (remote && !loading && !notFound)"
+                 :class="[prefixCls + '-dropdown-list']"
+                 :style="listStyle"
+                 ref='list'
+                 @scroll="handleSelectScroll">
+              <slot></slot>
+              <ul v-show="isComputed"
+                  :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>
+            </div>
+            <div v-if="isBlock"
+                 id="blockWrapper"
+                 v-show="(!notFound && !remote) || (remote && !notFound)"
+                 :class="[prefixCls + '-dropdown-list']"
+                 :style="listStyle"
+                 ref='blockWrapper'>
+              <slot></slot>
+            </div>
+            <div v-show="loading && isBlock"
+                 :class="[prefixCls+'-block-loading']">{{localeLoadingText}}</div>
+            <ul v-show="loading && !isBlock"
+                :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
+          </div>
+          <div v-if="showFooter"
+               :class="checkAll">
+            <slot name="footer">
+            </slot>
+          </div>
+        </Drop>
+      </transition>
+    </div>
+    <div v-else>
       <Drop :class="dropdownCls"
             :dropWidth="dropWidth"
             :multiple="multiple"
@@ -143,7 +212,7 @@
           </slot>
         </div>
       </Drop>
-    </transition>
+    </div>
   </div>
 </template>
 <script>
@@ -164,11 +233,23 @@ import Emitter from '../../mixins/emitter'
 import Locale from '../../mixins/locale'
 const prefixCls = 'h-selectTable'
 export default {
-  name: 'SelectTable',
+  name: 'SingleSelect',
   mixins: [Emitter, Locale],
   components: { Icon, Drop, Checkbox },
   directives: { clickoutside, TransferDom },
   props: {
+    animated: {
+      type: Boolean,
+      default: true
+    },
+    block:{
+      type: Boolean,
+      default: true,
+    },
+    isSingleSelect:{
+      type:Boolean,
+      default:true,
+    },
     disabled: {
       type: Boolean,
       default: false
@@ -203,7 +284,7 @@ export default {
     },
     filterable: {
       type: Boolean,
-      default: false
+      default: true
     },
     focusSelect: {
       type: Boolean,
@@ -364,7 +445,7 @@ export default {
     //一直显示arrow图标，包括远程搜索时
     showArrow: {
       type: Boolean,
-      default: false
+      default: true
     },
     showValue: {
       type: Boolean,
@@ -372,7 +453,7 @@ export default {
     },
     accuFilter: {
       type: Boolean,
-      default: false
+      default: true
     },
     // 需求 148437 特殊属性
     // 远程搜索不需要执行 query
@@ -631,10 +712,13 @@ export default {
   },
   methods: {
     handleInputKeyup(event){
-      if(this.newSearchModel){
-        this.$emit('on-keyup', this.selectedResult, event)
-      }else{
-        this.$emit('on-keyup', this.query, event)
+      //o45 忽略tab
+      if(event.keyCode !== 9) {
+        if (this.newSearchModel) {
+          this.$emit('on-keyup', this.selectedResult, event)
+        } else {
+          this.$emit('on-keyup', this.query, event)
+        }
       }
     },
     selectedTop(status = true) {
@@ -816,6 +900,7 @@ export default {
       })
 
       this.options = options
+
       this.availableOptions = options
 
       if (init) {
@@ -841,20 +926,31 @@ export default {
     },
     updateSingleSelected(init = false, slot = false) {
       // 赋值默认项是遍历选项绑定focusIndex
-      const singVal = this.query ? this.query : this.model
-      for(let ind in this.options) {
-        if(this.options[ind].value === singVal) {
-          this.focusIndex = this.options[ind].index + 1
-          continue
+      if(init) {
+        for(let i in this.availableOptions) {
+          if(this.availableOptions[i].value === this.model) {
+            this.focusIndex = this.availableOptions[i].index + 1
+            break
+          }
         }
       }
+//      else {
+//        const singVal = this.query.split(' ')[0]
+//        for(let j in this.availableOptions) {
+//          if(this.availableOptions[j].label === singVal) {
+//            this.focusIndex = this.availableOptions[j].index + 1
+//            break
+//          }
+//        }
+//      }
+
       const type = typeof this.model
       if (type === 'string' || type === 'number') {
         let findModel = false
         let curSingle = ''
-        for (let i = 0; i < this.options.length; i++) {
-          if (this.model === this.options[i].value) {
-            curSingle = this.options[i].label
+        for (let k in this.options) {
+          if (this.model === this.options[k].value) {
+            curSingle = this.options[k].label
             findModel = true
             break
           }
@@ -867,12 +963,11 @@ export default {
           this.selectedSingle = curSingle
         }
         //o45 证券代码控件需要
-        if (slot && !findModel && !this.keepInputValue) {
+        if (slot && !findModel) {
           this.model = ''
           this.query = ''
-        }else {
-          this.selectedSingle = this.model
         }
+
       }
       this.toggleSingleSelected(this.model, init)
     },
@@ -954,6 +1049,11 @@ export default {
         })
       }
       if (!init) {
+        // o45
+//        if(this.keepInputValue) {
+//          this.selectedSingle = this.query
+//        }
+
         if (this.labelInValue) {
           this.$emit('on-change', { value: value, label: label })
           this.dispatch('FormItem', 'on-form-change', { value: value, label: label })
@@ -1006,7 +1106,7 @@ export default {
         }
         if (keyCode === 39 || keyCode === 37) {
           this.selectBlockSingle(this.focusValue)
-          this.isInputFocus = false
+//          this.isInputFocus = false
         }
         return false
       }
@@ -1069,12 +1169,11 @@ export default {
       if (this.isBlock) {
         if (direction === 'next') {
           const next = this.focusIndex + 1
-          this.focusIndex = this.focusIndex === this.availableOptions.length ? 1 : next
+          this.focusIndex = this.focusIndex >= this.availableOptions.length ? 1 : next
         } else if (direction === 'prev') {
           const prev = this.focusIndex - 1
           this.focusIndex = this.focusIndex <= 1 ? this.availableOptions.length : prev
         }
-
         this.focusValue = this.availableOptions[this.focusIndex - 1].value
         // 处理滚动条
         this.findChild(child => {
@@ -1083,7 +1182,6 @@ export default {
           let top = itemHeight * (this.focusIndex - 1)
           child.$el.scrollTop = top
         })
-
         return
       }
 
@@ -1452,9 +1550,14 @@ export default {
         this.$refs.input.select()
       }
     },
+    //左右键、点选选中options中value值
     selectBlockSingle(value, status = false, str) {
       this.isQuerySelect = status
-      this.availableOptions = this.options
+
+      if(!this.isInputFocus) {
+        this.availableOptions = this.options
+      }
+
       this.selectToChangeQuery = true
       if (this.model !== value) {
         this.model = value

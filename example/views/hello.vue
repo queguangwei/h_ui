@@ -2,13 +2,14 @@
 <div>
   <Button @on-click="changeShow">打开弹框</Button>
   <Button @on-click="changeData">改变数值</Button>
-   <h-msg-box v-model="show" escClose :mask-closable="false" @on-cancel="cancel">
+   <h-msg-box v-model="show" escClose :mask-closable="false" @on-cancel="cancel" height="1000">
     <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
       <h-form-item label="singleSelect" prop="city" required>
+        {{formValidate.city}}
         <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass"
                          remote filterable :loading="isLoading" :remote-method="remoteMethod1"
-                         widthAdaption keepInputValue showFirstLabelOnly
-                         @on-keydown="handlekeydown">
+                         widthAdaption keepInputValue  transfer :accuFilter="false"
+                         :autoCheckSwitch="false" :animated="false" @on-keydown="handlekeydown">
           <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
         </h-single-select>
       </h-form-item>
@@ -80,28 +81,31 @@ export default {
         name: "",
         mail: "",
         city1:'',
-        city: 'value1',
+        city: 'value3',
         gender: "",
         interest: [],
         date: "",
         time: "",
         desc: "",
-        valueRemote1:'',
+        valueRemote1: [],
       },
       showCol:['label1'],
       bigData: [
-        { value: "value1", label: "label1",label1: "多列1"},
+        { value: "value1", label: "600570",label1: "恒生电子"},
         { value: "value2", label: "label2",label1: "多列2" },
-        { value: "value3", label: "label3",label1: "多列3" },
+        { value: "value3", label: "label3",label1: "海康威视" },
         { value: "value4", label: "label4",label1: "多列4" },
         { value: "value5", label: "label5",label1: "多列5" },
         { value: "value6", label: "label6",label1: "多列6" },
         { value: "value7", label: "label7",label1: "多列7" },
         { value: "value8", label: "label8",label1: "多列8" },
         { value: "value9", label: "label9",label1: "多列9" },
-        { value: "value10", label: "label10",label1: "多列10" },
-        { value: "value11", label: "label11",label1: "多列11" },
-        { value: "value12", label: "label12",label1: "多列12" },
+        { value: "value10", label: "600570",label1: "多列10" },
+        { value: "value11", label: "600570",label1: "多列11" },
+        { value: "value12", label: "600570",label1: "多列12" },
+        { value: "value13", label: "600570",label1: "多列13" },
+        { value: "value14", label: "600570",label1: "多列14" },
+        { value: "value15", label: "600570",label1: "多列15" },
       ],
       remoteData:[],
       colWidth:['200','200'],
