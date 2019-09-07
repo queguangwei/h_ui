@@ -430,10 +430,12 @@
       //
       var offsetParent = (isParentFixed && isParentTransformed) ? getOffsetParent(reference) : getOffsetParent(popper);
       var referenceOffsets = getOffsetRectRelativeToCustomParent(reference, offsetParent, isParentFixed, isParentTransformed);
+      console.log(referenceOffsets)
       //
       // Get popper sizes
       //
       var popperRect = getOuterSizes(popper);
+      console.log(popperRect)
       //
       // Compute offsets of popper
       //

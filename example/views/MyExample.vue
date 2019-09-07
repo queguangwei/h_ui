@@ -3,21 +3,21 @@
     <p>form</p>
     <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
       <h-form-item label="singleSelect" prop="city">
-        <h-single-select v-model="formCustom.city" placeholder="请选择所在地"
-                         remote filterable widthAdaption placement="top" transfer>
-          <h-select-block :data="bigData" :showCol="showCol"></h-select-block>
+        <h-single-select class="curItemClass" v-model="formCustom.city" placeholder="请选择所在地"
+                         remote filterable :remote-method="remoteMethod1" widthAdaption placement="top" transfer>
+          <h-select-block :data="remoteData" :showCol="showCol"></h-select-block>
         </h-single-select>
       </h-form-item>
       <h-form-item label="金额框" prop="face_balance">
-        <h-typefield v-model="formCustom.face_balance" nonNegative divided focusAllSelect
+        <h-typefield class="curItemClass" v-model="formCustom.face_balance" nonNegative divided focusAllSelect
                      integerNum="10" suffixNum="2"  type="money" :step="10">
         </h-typefield>
       </h-form-item>
       <h-form-item label="密码" prop="passwd">
-        <h-input type="password" v-model="formCustom.passwd"></h-input>
+        <h-input class="curItemClass" type="password" v-model="formCustom.passwd"></h-input>
       </h-form-item>
       <h-form-item label="确认密码" prop="passwdCheck">
-        <h-input type="password" v-model="formCustom.passwdCheck"></h-input>
+        <h-input class="curItemClass" type="password" v-model="formCustom.passwdCheck"></h-input>
       </h-form-item>
       <h-form-item label="年龄" prop="age">
         <h-input type="text" v-model="formCustom.age" number></h-input>
@@ -129,23 +129,28 @@ export default {
       },
       showCol:['label1'],
       bigData: [
-        { value: "value1", label: "label1",label1: "多列11111111111111111111111111111111111111111111111111111111"},
+        { value: "value1", label: "label1",label1: "多列111111111111111111111"},
         { value: "value2", label: "label2",label1: "多列2" },
-        { value: "value3", label: "label3",label1: "多列3" },
+        { value: "value3", label: "label3",label1: "海康威视" },
         { value: "value4", label: "label4",label1: "多列4" },
         { value: "value5", label: "label5",label1: "多列5" },
         { value: "value6", label: "label6",label1: "多列6" },
         { value: "value7", label: "label7",label1: "多列7" },
         { value: "value8", label: "label8",label1: "多列8" },
         { value: "value9", label: "label9",label1: "多列9" },
-        { value: "value10", label: "label10",label1: "多列10" },
-        { value: "value11", label: "label11",label1: "多列11" },
-        { value: "value12", label: "label12",label1: "多列12" },
-        { value: "value13", label: "label13",label1: "多列13" },
-        { value: "value14", label: "label14",label1: "多列14" },
-        { value: "value15", label: "label15",label1: "多列15" },
-        { value: "value16", label: "label16",label1: "多列16" },
+        { value: "value10", label: "600570",label1: "恒生电子" },
+        { value: "value11", label: "000001",label1: "平安银行" },
+        { value: "value12", label: "601600",label1: "中国铝业" },
+        { value: "value13", label: "300056",label1: "三维丝" },
+        { value: "value14", label: "002354",label1: "天神娱乐" },
+        { value: "value15", label: "002016",label1: "世荣兆业" },
+        { value: "value16", label: "501009",label1: "生物科技" },
+        { value: "value17", label: "502014",label1: "一带一A" },
+        { value: "value18", label: "513660",label1: "恒生通" },
+        { value: "value19", label: "600570",label1: "多列15" },
+        { value: "value20", label: "600570",label1: "多列15" },
       ],
+      remoteData:[],
       ruleCustom: {
         face_balance: [{
           validator: (rule, value, callback)=>{
@@ -175,6 +180,22 @@ export default {
     }
   },
   methods: {
+    remoteMethod1(query) {
+      if (query !== "") {
+        this.isLoading = true;
+        setTimeout(() => {
+          this.isLoading = false;
+          const list = this.bigData.map(item => {
+            return item;
+          });
+          this.remoteData = list.filter(
+            item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1
+          );
+        }, 200);
+      } else {
+        this.remoteData = [];
+      }
+    },
     handleSubmit (name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
@@ -210,9 +231,9 @@ export default {
     window.isO45 = true
   },
   mounted() {
-//    document.addEventListener("keydown", event => {
-//      enterHandler1(this.$refs.formValidate, event);
-//    })
+    document.addEventListener("keydown", event => {
+      enterHandler1(this.$refs.formCustom, event);
+    })
   },
 }
 </script>

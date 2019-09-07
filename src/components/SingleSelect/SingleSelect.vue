@@ -536,7 +536,6 @@ export default {
       // newSearchUnCheckAll:false,
       // singleMutiLabel:'',
       curSearchkey: '',
-      querySingle: ''
     }
   },
   computed: {
@@ -898,10 +897,10 @@ export default {
           }
         }
       })
-
       this.options = options
-
       this.availableOptions = options
+
+      this.broadcast('Drop', 'on-update-popper')
 
       if (init) {
         if (!this.remote || this.isBlock) {
@@ -1553,7 +1552,7 @@ export default {
     //左右键、点选选中options中value值
     selectBlockSingle(value, status = false, str) {
       this.isQuerySelect = status
-
+      //焦点未离开勿更新可选options
       if(!this.isInputFocus) {
         this.availableOptions = this.options
       }
@@ -1881,11 +1880,9 @@ export default {
       this.$emit('on-drop-change', val)
     },
     query(val) {
-      this.querySingle = val.split(' ')[0] //此处改变query
+      let querySingle = val.split(' ')[0] //此处改变query
+      this.queryChange(querySingle)
       this.broadcast('Drop', 'on-update-popper');
-    },
-    querySingle(val) {
-      this.queryChange(val)
     },
     selectedSingle(val) {
       if (this.filterable && !this.showBottom && !this.isQuerySelect) {
