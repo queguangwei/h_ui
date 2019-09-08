@@ -6,6 +6,7 @@
          :class="[prefixCls + '-rel']">
       <slot>
         <h-input ref="input"
+        :tabindex="tabindex"
                  :key="forceInputRerender"
                  :element-id="elementId"
                  :class="[prefixCls + '-editor']"
@@ -17,6 +18,7 @@
                  :value="visualValue"
                  :name="name"
                  @click.native="clickHandler"
+                 @input="handleInput"
                  @on-input-change="handleInputChange"
                  @on-focus="handleFocus"
                  @on-blur="handleBlur"
@@ -54,7 +56,8 @@
                      :showTwoPanel="this.showTwoPanel"
                      :range-num="controlRange?selectRange:0"
                      :pickMode="pickMode"
-                     :tabindex="tabindex"
+       :tabindex="-1"
+
                      v-bind="ownPickerProps"
                      @on-pick="onPick"
                      @on-pick-clear="handleClear"
@@ -229,10 +232,10 @@ export default {
     },
     tabindex: {
       type: [String, Number],
-      default: "0",
+      default: '0',
       validator(value) {
-        let num = parseInt(value);
-        return num <= 32767 && num >= -1;
+        let num = parseInt(value)
+        return num <= 32767 && num >= -1
       }
     },
     showToday:{
@@ -285,9 +288,9 @@ export default {
         ? publicVModelValue.map(formatDate)
         : formatDate(publicVModelValue)
     },
-//    opened() {
-//      return this.open === null ? this.visible : this.open
-//    },
+    //    opened() {
+    //      return this.open === null ? this.visible : this.open
+    //    },
     opened: {
       get:function() {
         return this.open === null ? this.visible : this.open
@@ -326,9 +329,10 @@ export default {
       this.cursorPos = this.$refs.input.$el.querySelector('input').selectionStart
     },
     keyUpHandler(e) {
-      let $input = this.$refs.input.$el.querySelector('input')
+      let $input = this.$refs.input ? this.$refs.input.$el.querySelector('input') : null
 
-      switch(e.keyCode) {
+      if (this.pickMode !== 'move' || $input === null) return
+      switch (e.keyCode) {
         case 38:
           e.preventDefault()
           $input.setSelectionRange(0, this.cursorPos)
@@ -357,7 +361,6 @@ export default {
 
           this.cursorPos < 0 && (this.cursorPos = 0)
           $input.setSelectionRange(this.cursorPos, this.cursorPos)
-          // this.cursorPos = $input.selectionStart
           break
         case 39:
           e.preventDefault()
@@ -371,7 +374,6 @@ export default {
 
           this.cursorPos > 19 && (this.cursorPos = 19)
           $input.setSelectionRange(this.cursorPos, this.cursorPos)
-          // this.cursorPos = $input.selectionStart
           break
       }
     },
@@ -463,17 +465,18 @@ export default {
     handleFocus() {
       this.isFocus = true
       if (this.iconVisible) return
-      this.handleVisible()
+      this.handleVisible(true)
+
       this.$emit('on-focus')
     },
-    handleVisible() {
+    handleVisible(status) {
       if (this.readonly || this.disabled) return
-      this.visible = true
-      this.$refs.pickerPanel.onToggleVisibility(true)
+      this.visible = status
+      this.$refs.pickerPanel.onToggleVisibility(status)
     },
     focus() {
       if (this.disabled) return false
-//       this.$nextTick(()=>{
+      //       this.$nextTick(()=>{
       setTimeout(() => {
         if (!this.iconVisible) {
           this.visible = true
@@ -483,8 +486,8 @@ export default {
         if (this.$refs.input) this.$refs.input.focus()
         if(window.isO45 && this.value !== '') this.select()
       }, 0)
-//        this.visible =status =='notShow'?false:true;
-//      })
+      //        this.visible =status =='notShow'?false:true;
+      //      })
     },
     blur() {
       if (this.isFocus) {
@@ -549,6 +552,15 @@ export default {
       }
       return true
     },
+    handleInput(val) {
+      if(window.isO45) {
+        if(val.length === 0) {
+          this.handleVisible(false)
+        }else {
+          this.handleVisible(true)
+        }
+      }
+    },
     handleInputChange(event) {
       // if (value==''||String(value).length==0) {
       //   this.handleClear();
@@ -559,7 +571,10 @@ export default {
         this.type.indexOf('range') > -1 ? true : false || this.multiple
       const oldValue = this.visualValue
       const newValue = event.target.value
-      const newDate = this.parseDate(newValue)
+      let newDate = this.parseDate(newValue)
+      // if(newDate[0] == null || !newDate || newDate == []) {
+      //   newDate = this.internalValue
+      // }
       const disabledDateFn =
         this.options &&
         typeof this.options.disabledDate === 'function' &&
@@ -591,8 +606,8 @@ export default {
       if (this.showClose) {
         this.handleClear()
       } else if (!this.disabled) {
-        this.isFocus = true
-        this.handleVisible()
+        this.isFocus = !this.isFocus
+        this.handleVisible(this.isFocus)
       }
     },
     handleClear() {
@@ -682,16 +697,16 @@ export default {
       } else {
         this.internalValue = Array.isArray(dates) ? dates : [dates]
       }
-
       // 选中值初始化光标位置
       if (this.internalValue.length === 2) {
         this.cursorPos = 19
       } else {
         this.cursorPos = 8
       }
-
-      if (!this.isConfirm) this.onSelectionModeChange(this.type) // reset the selectionMode
-      if (!this.isConfirm) this.visible = visible
+      if (!this.isConfirm)
+        this.onSelectionModeChange(this.type) // reset the selectionMode
+      if (!this.isConfirm || this.showToday)
+        this.visible = visible
       this.emitChange()
     },
     onPickSuccess() {
@@ -765,19 +780,21 @@ export default {
         this.options &&
         typeof this.options.disabledDate === 'function' &&
         this.options.disabledDate
-      let td =new Date();
+      let td =new Date()
       let isDisabled = disabledDateFn && disabledDateFn(td)
       if(!isDisabled){
         this.$set(this.internalValue, 0,new Date())
+        this.visible = false
         this.emitChange()
       }
     },
     getDate(val){
-      return val.replace(/[^0-9]/ig,"");
+      return val.replace(/[^0-9]/ig,'')
     }
   },
   watch: {
     visible(state) {
+      let oldPlacement = this.fPlacement
       if (state === false) {
         //   this.$refs.drop.destroy();
         const input = this.$el.querySelector('input')
@@ -794,7 +811,8 @@ export default {
         }, 0)
       }
       // 仅在transfer时进行重新计算【类似其余的下拉】，否则会不断触发回流，引起性能问题
-      if (this.transfer) this.$refs.drop.update()
+      // 重新计算位置后进行update
+      this.$refs.drop.update()
       this.$emit('on-open-change', state)
     },
     value: {
@@ -822,7 +840,7 @@ export default {
     },
     placement(val) {
       this.fPlacement = val
-    }
+    },
   },
   beforeDestroy() {
     if (this.picker) {

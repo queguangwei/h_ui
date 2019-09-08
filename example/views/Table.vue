@@ -15,32 +15,32 @@
     <Button @click="removeData">删除数据</Button>
      <!-- :multiLevel="multiLevel1" -->
      <!-- :multiLevel="multiLevel2"  -->
-    <h-table :columns="columns" :data="data0" :summationData="summationData1" border :highlight-row="true" @on-sort-change="sortchange" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="500" canMove @on-move="onMove" :lastColWidth="150">
+    <h-table :columns="columns" :data="data0" :summationData="summationData1" border :highlight-row="true" @on-sort-change="sortchange" @on-current-change="click1" :loading="loading" headAlgin="right" bodyAlgin="left" @on-drag="onDrag" height="400" canMove @on-move="onMove" :lastColWidth="150">
       <span slot="loading">我是自定义加载！！！</span>
     </h-table>
     <h-button @click="setLoading">切换状态</h-button>
     <h-button @click="setMult">切换hiddenCol</h-button>
     <h2>带边线</h2>
-    <h-table border :columns="columns1" :data="data0" stripe no-data-text="数据为空" :show-header="false" :loading="loading" canMove>
-      <div slot="header">我是表头</div>
-      <div slot="footer">我是表尾</div>
-    </h-table>
+    <!--<h-table border :columns="columns1" :data="data0" stripe no-data-text="数据为空" :show-header="false" :loading="loading" canMove>-->
+      <!--<div slot="header">我是表头</div>-->
+      <!--<div slot="footer">我是表尾</div>-->
+    <!--</h-table>-->
     <h2>自定义样式</h2>
     <p>行：通过属性 row-class-name 可以给某一行指定一个样式名称。</p>
     <p>列：通过给列 columns 设置字段 className 可以给某一列指定一个样式。</p>
     <p>单元格：通过给数据 data 设置字段 cellClassName 可以给任意一个单元格指定样式。</p>
     <p>自定义行样式：</p>
-    <h-table :row-class-name="rowClassName" :multiLevel="multiLevel2" :columns="columns1" :data="data1" :loading="loading" :highlight-row='true' canMove></h-table>
+    <!--<h-table :row-class-name="rowClassName" :multiLevel="multiLevel2" :columns="columns1" :data="data1" :loading="loading" :highlight-row='true' canMove></h-table>-->
     <p>自定义列样式：</p>
-    <h-table :columns="columns9" :data="data1" :loading="loading"></h-table>
+    <!--<h-table :columns="columns9" :data="data1" :loading="loading"></h-table>-->
     <p>自定义任意单元格样式：</p>
     <Button @on-click="changeHidden">改变hiddenCol</Button>
-    <h-table :columns="columns1" :data="data8" @on-row-click="click1" :loading="loading"></h-table> -->
+    <!--<h-table :columns="columns1" :data="data8" @on-row-click="click1" :loading="loading"></h-table> &ndash;&gt;-->
     <h2>固定表头</h2>
     <p>通过设置属性 height 给表格指定高度后，会自动固定表头。当纵向内容过多时可以使用</p>
     <p>设置maxheight 600</p>
-    <h-table maxHeight="600" :columns="columns1" :data="data2" border :loading="loading" showTitle @on-drag-drop="handleDrop"></h-table>
-    <h-table height="200" :columns="columns1" :data="data2" border :loading="loading" showTitle></h-table>
+    <!--<h-table maxHeight="600" :columns="columns1" :data="data2" border :loading="loading" showTitle @on-drag-drop="handleDrop"></h-table>-->
+    <!--<h-table height="200" :columns="columns1" :data="data2" border :loading="loading" showTitle></h-table>-->
     <!--<h2>固定列</h2>-->
     <!--<p>通过给数据 columns 的项设置 fixed 为 left 或 right，可以左右固定需要的列。</p>-->
     <!--<h-table border :columns="columns2" showTitle :data="data3" :loading="loading" canMove height="250" canDragFixed :minDragWidth="60"></h-table>-->
@@ -76,10 +76,10 @@
     <!--<p>render 函数传入两个参数，第一个是 h，第二个是对象，包含 row、column 和 index，分别指当前单元格数据，当前列数据，当前是第几行。</p>-->
     <!--<h-table border :columns="columns7" :data="data6" :loading="loading"></h-table>-->
     <!--<h2>可展开的表格</h2>-->
-    <!--<p>通过给 columns 数据设置一项，指定 type: 'expand'，即可开启扩展功能。</p>-->
-    <!--<p>给行数据 data 的某项设置 _expanded 为 true，可以默认展开当前行，设置 _disableExpand 可以禁用当前行的展开功能。</p>-->
-    <!--<p>渲染展开区域与自定义列模板方法类似，使用 render 函数。当内容较复杂时，可拆分为组件或使用 JSX。</p>-->
-    <!--<h-table :columns="columns10" :height="300" :data="data9" @on-expand="expand" rowSelect @on-selection-change="select" @on-row-click="rowclick" @on-row-dblclick="rowdblclick" :loading="loading" border></h-table>-->
+    <p>通过给 columns 数据设置一项，指定 type: 'expand'，即可开启扩展功能。</p>
+    <p>给行数据 data 的某项设置 _expanded 为 true，可以默认展开当前行，设置 _disableExpand 可以禁用当前行的展开功能。</p>
+    <p>渲染展开区域与自定义列模板方法类似，使用 render 函数。当内容较复杂时，可拆分为组件或使用 JSX。</p>
+    <h-table :columns="columns10" :height="300" :data="data9" @on-expand="expand" rowSelect @on-selection-change="select" @on-row-click="rowclick" @on-row-dblclick="rowdblclick" :loading="loading" border></h-table>
     <!--<h2>设置大小</h2>-->
     <!--<p>通过设置属性 size 为 large 或 small 可以调整表格尺寸为大或小，默认不填或填写 default 为中。</p>-->
     <!--<h-table size="large" :columns="columns1" :data="data1" :loading="loading"></h-table>-->
@@ -180,16 +180,29 @@ export default {
       ],
       columns: [
         {
+          type: 'expand',
+          width: 50,
+          render: (h, params) => {
+            return h(TexpandRow, {
+              props: {
+                row: params.row
+              }
+            })
+          }
+        },
+        {
           title: '姓名',
           key: 'name',
+          fixed: "left",
           width: 100,
           ellipsis:true,
         },
-        {
-          title: '姓名1',
-          key: 'name',
-          ellipsis:true,
-        },
+//        {
+//          title: '姓名1',
+//          key: 'name',
+//          width: 100,
+//          ellipsis:true,
+//        },
         {
           title: '年龄',
           key: 'age',
@@ -240,11 +253,6 @@ export default {
           title: '邮编',
           key: 'zip',
           width: 120,
-          ellipsis:true,
-          headerTooltip: true
-        },{
-          title: '邮编1',
-          key: 'zip',
           ellipsis:true,
           headerTooltip: true
         },

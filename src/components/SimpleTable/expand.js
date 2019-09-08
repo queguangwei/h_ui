@@ -6,8 +6,8 @@ export default {
     render: Function,
     index: Number,
     column: {
-        type: Object,
-        default: null
+      type: Object,
+      default: null
     },
     sum:{
       type: [Boolean, String],
@@ -18,9 +18,9 @@ export default {
     const params = {
       row: ctx.props.row,
       index: ctx.props.index
-    };
-    if (ctx.props.column) params.column = ctx.props.column;
-    if(ctx.props.sum) params.sum=true;
-    return ctx.props.render(h, params);
+    }
+    if (ctx.props.column) params.column = ctx.props.column
+    if(ctx.props.sum) params.sum=true
+    return ctx.props.render(h, params)
   }
-};
+}

@@ -12,12 +12,17 @@
       <span v-if="showTotal"
             :class="[prefixCls + '-selected-num']">共选择 {{selectedMultiple.length}} 项</span>
       <!-- 多选时输入框内选中值模拟 -->
-      <div v-if="!newSearchModel">
-        <div class="h-tag" v-for="(item, index) in selectedMultiple" v-show="item.label&&!showTotal" :key="index">
-          <span class="h-tag-text" v-if="!showValue">{{ item.label }}</span>
-          <span class="h-tag-text" v-if="showValue">{{ item.value }}</span>
-          <Icon name="close" @click.native.stop="removeTag(index)"></Icon>
-        </div>
+      <div class="h-tag"
+           v-if="!newSearchModel"
+           v-for="(item, index) in selectedMultiple"
+           v-show="item.label&&!showTotal"
+           :key="index">
+        <span class="h-tag-text"
+              v-if="!showValue">{{ item.label }}</span>
+        <span class="h-tag-text"
+              v-if="showValue">{{ item.value }}</span>
+        <Icon name="close"
+              @click.native.stop="removeTag(index)"></Icon>
       </div>
       <!-- 下拉输入框模拟（非远程搜索时渲染）  -->
       <span :class="[prefixCls + '-placeholder']"
@@ -38,7 +43,7 @@
              search="multiSelect"
              :placeholder="showPlaceholder?localePlaceholder:''"
              @focus="handleFocus"
-             @blur="handleBlur"
+             @blur="handkeSearchBlur"
              @keydown="resetInputState"
              @keyup="handleInputKeyup($event)"
              :tabindex="tabindex"
@@ -72,7 +77,76 @@
             :class="[prefixCls + '-arrow']"
             v-if="filterable && searchIcon && !showArrow"></Icon>
     </div>
-    <transition :name="transitionName">
+    <div v-if="animated">
+      <transition :name="transitionName">
+        <Drop :class="dropdownCls"
+              :dropWidth="dropWidth"
+              :multiple="multiple"
+              v-show="dropVisible"
+              :placement="fPlacement"
+              :data-transfer="transfer"
+              :widthAdaption="widthAdaption"
+              :maxDropWidth="maxDropWidth"
+              ref="dropdown"
+              v-transfer-dom>
+          <div :class="content"
+               ref="content"
+               @click="handleclick">
+            <!-- 单选时清空按钮 -->
+            <!-- <ul v-show="notFoundShow" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul> -->
+            <span :class="searchClass"
+                  ref='search'
+                  v-if="filterable && showBottom&&!hideMult">
+            <input type="text"
+                   v-model="query"
+                   :disabled="disabled"
+                   :readonly="!editable||readonly"
+                   :class="[prefixCls + '-input']"
+                   :placeholder="localeSearchHolder"
+                   @blur="handleBlur"
+                   @keydown="resetInputState"
+                   @keydown.delete="handleInputDelete"
+                   :tabindex="tabindex"
+                   ref="input">
+              <!-- <input type="text" placeholder="请输入..." class="h-input h-input-left">  -->
+          </span>
+            <div v-if="showHeader"
+                 :class="headerSlotCls">
+              <slot name="header">
+              </slot>
+            </div>
+            <div v-if="!isBlock"
+                 v-show="(!notFound && !remote) || (remote && !loading && !notFound)"
+                 :class="[prefixCls + '-dropdown-list']"
+                 :style="listStyle"
+                 ref='list'
+                 @scroll="handleSelectScroll">
+              <slot></slot>
+              <ul v-show="isComputed"
+                  :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>
+            </div>
+            <div v-if="isBlock"
+                 id="blockWrapper"
+                 v-show="(!notFound && !remote) || (remote && !notFound)"
+                 :class="[prefixCls + '-dropdown-list']"
+                 :style="listStyle"
+                 ref='blockWrapper'>
+              <slot></slot>
+            </div>
+            <div v-show="loading && isBlock"
+                 :class="[prefixCls+'-block-loading']">{{localeLoadingText}}</div>
+            <ul v-show="loading && !isBlock"
+                :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
+          </div>
+          <div v-if="showFooter"
+               :class="checkAll">
+            <slot name="footer">
+            </slot>
+          </div>
+        </Drop>
+      </transition>
+    </div>
+    <div v-else>
       <Drop :class="dropdownCls"
             :dropWidth="dropWidth"
             :multiple="multiple"
@@ -91,10 +165,6 @@
           <span :class="searchClass"
                 ref='search'
                 v-if="filterable && showBottom&&!hideMult">
-            <Checkbox v-model="selectHead"
-                      :size="checkboxSize"
-                      @on-change="toggleSelect"
-                      v-if="checkToHead&&multiple"></Checkbox>
             <input type="text"
                    v-model="query"
                    :disabled="disabled"
@@ -108,21 +178,10 @@
                    ref="input">
             <!-- <input type="text" placeholder="请输入..." class="h-input h-input-left">  -->
           </span>
-          <span v-if="hideMult&&multiple"
-                :class="hideMultHead"
-                @click="toggleSelect(!isSelectAll)">全选</span>
           <div v-if="showHeader"
                :class="headerSlotCls">
             <slot name="header">
             </slot>
-          </div>
-          <div v-if="buttonToTop&&multiple"
-               :class="[prefixCls + '-btnToTop']">
-            <Checkbox v-model="selectHead"
-                      @on-change="toggleSelect(!isSelectAll)">全选</Checkbox>
-            <Button size="small"
-                    :class="[prefixCls + '-btnToTop-invert']"
-                    @click="toggleSelect(false)">全不选</Button>
           </div>
           <div v-if="!isBlock"
                v-show="(!notFound && !remote) || (remote && !loading && !notFound)"
@@ -152,16 +211,8 @@
           <slot name="footer">
           </slot>
         </div>
-        <div v-if="isCheckall&&multiple&&!notFoundShow&&!buttonToTop"
-             :class="checkAll">
-          <Button size="small"
-                  @click="toggleSelect(false)">全不选</Button>
-          <Button type="primary"
-                  size="small"
-                  @click="toggleSelect(true)">全选</Button>
-        </div>
       </Drop>
-    </transition>
+    </div>
   </div>
 </template>
 <script>
@@ -182,11 +233,23 @@ import Emitter from '../../mixins/emitter'
 import Locale from '../../mixins/locale'
 const prefixCls = 'h-selectTable'
 export default {
-  name: 'SelectTable',
+  name: 'SingleSelect',
   mixins: [Emitter, Locale],
   components: { Icon, Drop, Checkbox },
   directives: { clickoutside, TransferDom },
   props: {
+    animated: {
+      type: Boolean,
+      default: true
+    },
+    block:{
+      type: Boolean,
+      default: true,
+    },
+    isSingleSelect:{
+      type:Boolean,
+      default:true,
+    },
     disabled: {
       type: Boolean,
       default: false
@@ -221,7 +284,7 @@ export default {
     },
     filterable: {
       type: Boolean,
-      default: false
+      default: true
     },
     focusSelect: {
       type: Boolean,
@@ -295,11 +358,6 @@ export default {
       type: Boolean,
       default: false
     },
-    isCheckall: {
-      //多选 是否显示全选
-      type: Boolean,
-      default: false
-    },
     noMoreText: {
       //下拉加载完成数据提示
       type: String
@@ -337,10 +395,6 @@ export default {
       default: false
     },
     showBorder: {
-      type: Boolean,
-      default: false
-    },
-    checkToHead: {
       type: Boolean,
       default: false
     },
@@ -391,7 +445,7 @@ export default {
     //一直显示arrow图标，包括远程搜索时
     showArrow: {
       type: Boolean,
-      default: false
+      default: true
     },
     showValue: {
       type: Boolean,
@@ -399,7 +453,7 @@ export default {
     },
     accuFilter: {
       type: Boolean,
-      default: false
+      default: true
     },
     // 需求 148437 特殊属性
     // 远程搜索不需要执行 query
@@ -423,6 +477,14 @@ export default {
       type: [Boolean, String],
       default: false
     },
+    keepInputValue: {
+      type: Boolean,
+      default: false
+    },
+    showFirstLabelOnly: {
+      type: Boolean,
+      default: false
+    },
     tabindex: {
       type: [String, Number],
       default: 0,
@@ -430,10 +492,6 @@ export default {
         let num = parseInt(value)
         return num <= 32767 && num >= -1
       }
-    },
-    buttonToTop: {
-      type: Boolean,
-      default: false
     }
   },
   data() {
@@ -472,28 +530,18 @@ export default {
       isSearchDelete: false,
       isQuerySelect: false,
       isMultiSpecial: false,
+      // newSearchModelselectItem:{},
       // isCopy:false,
       // newSearchCheckAll:false,
       // newSearchUnCheckAll:false,
       // singleMutiLabel:'',
       curSearchkey: '',
-      querySingle: ''
     }
   },
   computed: {
-    hideMultHead() {
-      return {
-        [`${prefixCls}-hideMultHead`]: this.hideMult && this.multiple,
-        [`${prefixCls}-hideMultHead-select`]: this.isSelectAll
-      }
-    },
     searchClass() {
       return [
-        `${prefixCls}-search`,
-        {
-          [`${prefixCls}-checkHead`]:
-            this.checkToHead && this.showBottom && this.filterable
-        }
+        `${prefixCls}-search`
       ]
     },
     listStyle() {
@@ -636,10 +684,10 @@ export default {
       return this.disabled
         ? -1
         : this.tabindex + '' !== '-1'
-        ? this.filterable
-          ? -1
-          : this.tabindex
-        : 0
+          ? this.filterable
+            ? -1
+            : this.tabindex
+          : 0
     },
     notFoundShow() {
       let options = this.options
@@ -663,10 +711,13 @@ export default {
   },
   methods: {
     handleInputKeyup(event){
-      if(this.newSearchModel){
-        this.$emit('on-keyup', this.selectedResult, event)
-      }else{
-        this.$emit('on-keyup', this.query, event)
+      //o45 忽略tab
+      if(event.keyCode !== 9) {
+        if (this.newSearchModel) {
+          this.$emit('on-keyup', this.selectedResult, event)
+        } else {
+          this.$emit('on-keyup', this.query, event)
+        }
       }
     },
     selectedTop(status = true) {
@@ -784,12 +835,7 @@ export default {
       if (this.newSearchModel) {
         this.isInputFocus = true
       }
-      if (
-        this.visible &&
-        this.filterable &&
-        // this.showBottom &&
-        this.$refs.input
-      ) {
+      if (this.visible && this.filterable && this.$refs.input) {
         this.$nextTick(() => {
           this.isInputFocus = true
           this.$refs.input.focus()
@@ -798,31 +844,6 @@ export default {
     },
     hideMenu() {
       this.visible = false
-      // if(!window.isO45){
-      if (!this.isSingleSelect) {
-        if (this.optionInstances.length > 0) {
-          this.$refs.list && (this.$refs.list.scrollTop = 0)
-          this.optionInstances[0].$refs.table.changeHover(
-            this.focusIndex - 1,
-            false
-          )
-        }
-        this.focusIndex = this.focusInit
-      }
-
-      // 单选 恢复 query 值
-      if (
-        !this.multiple &&
-        this.query !== this.selectedSingle &&
-        !this.isSingleSelect
-      ) {
-        this.query = this.selectedSingle
-
-        if (!this.remote) {
-          this.selectToChangeQuery = true
-        }
-      }
-
       this.broadcast('TabelOption', 'on-select-close')
     },
     findChild(cb) {
@@ -850,7 +871,6 @@ export default {
     updateOptions(init, slot = false) {
       let _this = this
       let options = []
-
       this.findChild(child => {
         let data = []
         if (_this.isBlock) {
@@ -877,14 +897,14 @@ export default {
           }
         }
       })
-
       this.options = options
       this.availableOptions = options
+
+      this.broadcast('Drop', 'on-update-popper')
 
       if (init) {
         if (!this.remote || this.isBlock) {
           this.updateSingleSelected(true, slot)
-          this.updateMultipleSelected(true, slot)
           //if(this.newSearchModel&&this.selectedMultiple.length>0&&!this.visible){
           if (this.newSearchModel && !this.visible) {
             let multipleAry = []
@@ -904,13 +924,32 @@ export default {
       }
     },
     updateSingleSelected(init = false, slot = false) {
+      // 赋值默认项是遍历选项绑定focusIndex
+      if(init) {
+        for(let i in this.availableOptions) {
+          if(this.availableOptions[i].value === this.model) {
+            this.focusIndex = this.availableOptions[i].index + 1
+            break
+          }
+        }
+      }
+//      else {
+//        const singVal = this.query.split(' ')[0]
+//        for(let j in this.availableOptions) {
+//          if(this.availableOptions[j].label === singVal) {
+//            this.focusIndex = this.availableOptions[j].index + 1
+//            break
+//          }
+//        }
+//      }
+
       const type = typeof this.model
       if (type === 'string' || type === 'number') {
         let findModel = false
         let curSingle = ''
-        for (let i = 0; i < this.options.length; i++) {
-          if (this.model === this.options[i].value) {
-            curSingle = this.options[i].label
+        for (let k in this.options) {
+          if (this.model === this.options[k].value) {
+            curSingle = this.options[k].label
             findModel = true
             break
           }
@@ -922,11 +961,12 @@ export default {
         } else if (!this.remote) {
           this.selectedSingle = curSingle
         }
-
+        //o45 证券代码控件需要
         if (slot && !findModel) {
           this.model = ''
           this.query = ''
         }
+
       }
       this.toggleSingleSelected(this.model, init)
     },
@@ -952,54 +992,6 @@ export default {
         this.$emit('on-clear-select', result)
       }
     },
-    updateMultipleSelected(init = false, slot = false) {
-      if (this.multiple && Array.isArray(this.model)) {
-        let selected = this.remote
-          ? this.selectedMultiple.filter(
-              item => this.model.filter(v => v === item.value).length
-            )
-          : []
-
-        for (let i = 0; i < this.model.length; i++) {
-          const model = this.model[i]
-
-          for (let j = 0; j < this.options.length; j++) {
-            const option = this.options[j]
-
-            if (model === option.value) {
-              selected.push({
-                value: option.value,
-                label: option.label
-              })
-            }
-          }
-        }
-
-        const selectedArray = []
-        const selectedObject = {}
-        selected.forEach(item => {
-          selectedObject[item.value] = item
-        })
-        for (let key in selectedObject) {
-          selectedArray.push(selectedObject[key])
-        }
-        this.selectedMultiple = this.remote ? selectedArray : selected
-
-        if (slot) {
-          let selectedModel = []
-
-          for (let i = 0; i < selected.length; i++) {
-            selectedModel.push(selected[i].value)
-          }
-
-          if (this.model.length === selectedModel.length) {
-            this.slotChangeDuration = true
-          }
-          this.model = selectedModel
-        }
-      }
-      this.toggleMultipleSelected(this.model, init)
-    },
     removeTag(index) {
       if (this.disabled || !this.editable || this.readonly) {
         return false
@@ -1024,105 +1016,49 @@ export default {
     },
     toggleSingleSelected(value, init = false) {
       // let _this = this
-      if (!this.multiple) {
-        let label = value
-        if (this.options.length) {
-          let option = this.options.filter(opt => opt.value === value)[0]
-          if (option) {
-            label = option.label
-          }
-        }
-        if (this.isBlock) {
-          this.findChild(child => {
-            this.options.forEach((col, i) => {
-              if (value == col.value) {
-                this.$set(child.cloneData[i], 'selected', true)
-              } else {
-                this.$set(child.cloneData[i], 'selected', false)
-              }
-            })
-          })
-        } else {
-          this.findChild(child => {
-            this.options.forEach(col => {
-              let index = value.indexOf(col.value)
-              if (index >= 0) {
-                child.$refs.table.clearSelect(col.index, true)
-                child.$refs.table.clearSingle(col.index, true)
-              } else {
-                child.$refs.table.clearSelect(col.index, false)
-                child.$refs.table.clearSingle(col.index, false)
-              }
-            })
-          })
-        }
-        if (!init) {
-          if (this.labelInValue) {
-            this.$emit('on-change', {
-              value: value,
-              label: label
-            })
-            this.dispatch('FormItem', 'on-form-change', {
-              value: value,
-              label: label
-            })
-          } else {
-            this.$emit('on-change', value)
-            this.dispatch('FormItem', 'on-form-change', value)
-          }
+      let label = value
+      if (this.options.length) {
+        let option = this.options.filter(opt => opt.value === value)[0]
+        if (option) {
+          label = option.label
         }
       }
-    },
-    toggleMultipleSelected(value, init = false) {
-      let _this = this
-      if (this.multiple) {
-        let hybridValue = []
-        for (let i = 0; i < value.length; i++) {
-          hybridValue.push({
-            value: value[i]
-          })
-        }
+      if (this.isBlock) {
         this.findChild(child => {
-          if (this.isBlock) {
-            let curSelect = true
-            _this.options.forEach((col, i) => {
-              let index = value.indexOf(col.value)
-              if (index > -1) {
-                this.$set(child.cloneData[i], 'selected', true)
-                hybridValue[index].label = col.label
-              } else {
-                this.$set(child.cloneData[i], 'selected', false)
-                if (curSelect) {
-                  curSelect = false
-                }
-              }
-            })
-            if (_this.options.length == 0) curSelect = false
-            this.isSelectAll = curSelect
-          } else {
-            _this.options.forEach(col => {
-              let index = value.indexOf(col.value)
-              if (index >= 0) {
-                child.$refs.table.clearSelect(col.index, true)
-                hybridValue[index].label = col.label
-              } else {
-                child.$refs.table.clearSelect(col.index, false)
-              }
-            })
-          }
-        })
-        if (!init) {
-          if (this.labelInValue) {
-            this.$emit('on-change', hybridValue)
-            this.dispatch('FormItem', 'on-form-change', hybridValue)
-          } else {
-            let changeItem = value
-            if (this.valueToString) {
-              changeItem = changeItem.join(',')
+          this.options.forEach((col, i) => {
+            if (value == col.value) {
+              this.$set(child.cloneData[i], 'selected', true)
+            } else {
+              this.$set(child.cloneData[i], 'selected', false)
             }
-            this.$emit('on-change', changeItem)
-            this.dispatch('FormItem', 'on-form-change', changeItem)
-          }
+          })
+        })
+      } else {
+        this.findChild(child => {
+          this.options.forEach(col => {
+            let index = value.indexOf(col.value)
+            if (index >= 0) {
+              child.$refs.table.clearSelect(col.index, true)
+              child.$refs.table.clearSingle(col.index, true)
+            } else {
+              child.$refs.table.clearSelect(col.index, false)
+              child.$refs.table.clearSingle(col.index, false)
+            }
+          })
+        })
+      }
+      if (!init) {
+        // o45
+//        if(this.keepInputValue) {
+//          this.selectedSingle = this.query
+//        }
+
+        if (this.labelInValue) {
+          this.$emit('on-change', { value: value, label: label })
+          this.dispatch('FormItem', 'on-form-change', { value: value, label: label })
+        } else {
+          this.$emit('on-change', value)
+          this.dispatch('FormItem', 'on-form-change', value)
         }
       }
     },
@@ -1152,9 +1088,12 @@ export default {
         if (keyCode === 27) {
           e.preventDefault()
           this.hideMenu()
+          //下拉框弹出，ESC收起面板后，焦点在输入框，内容全选
+          this.focus()
         }
       }
       if (this.isSingleSelect) {
+        // right
         if (keyCode === 39) {
           e.preventDefault()
           this.navigateOptions('next')
@@ -1166,7 +1105,7 @@ export default {
         }
         if (keyCode === 39 || keyCode === 37) {
           this.selectBlockSingle(this.focusValue)
-          this.isInputFocus = false
+//          this.isInputFocus = false
         }
         return false
       }
@@ -1182,6 +1121,7 @@ export default {
         }
         // enter
         if (keyCode === 13 || (this.newSearchModel && keyCode == 32)) {
+
           e.preventDefault()
 
           let index = this.focusIndex - 1
@@ -1228,12 +1168,11 @@ export default {
       if (this.isBlock) {
         if (direction === 'next') {
           const next = this.focusIndex + 1
-          this.focusIndex = this.focusIndex === this.availableOptions.length ? 1 : next
+          this.focusIndex = this.focusIndex >= this.availableOptions.length ? 1 : next
         } else if (direction === 'prev') {
           const prev = this.focusIndex - 1
           this.focusIndex = this.focusIndex <= 1 ? this.availableOptions.length : prev
         }
-
         this.focusValue = this.availableOptions[this.focusIndex - 1].value
         // 处理滚动条
         this.findChild(child => {
@@ -1242,7 +1181,6 @@ export default {
           let top = itemHeight * (this.focusIndex - 1)
           child.$el.scrollTop = top
         })
-
         return
       }
 
@@ -1260,8 +1198,8 @@ export default {
         this.focusIndex = this.focusIndex <= 1 ? this.options.length : prev
       }
       let top = this.$refs.list.children[0].querySelectorAll('.h-table-row')[
-        this.focusIndex - 1
-      ].offsetTop
+      this.focusIndex - 1
+        ].offsetTop
       this.findChild(child => {
         child.$refs.table.changeHover(this.focusIndex - 1, true)
       })
@@ -1291,6 +1229,18 @@ export default {
       this.$emit('on-focus')
     },
     handleBlur() {
+      this.$emit('on-blur')
+    },
+    handkeSearchBlur() {
+      let multipleAry = []
+      this.selectedMultiple.forEach(item => {
+        multipleAry.push(item['label'])
+      })
+      let modelstr = multipleAry.join(',')
+      if (modelstr != this.selectedResult) {
+        this.selectedResult = modelstr
+      }
+      this.isInputFocus = false
       this.$emit('on-blur')
     },
     resetInputState(e) {
@@ -1367,12 +1317,11 @@ export default {
     },
     newModelSearchDelete(multipleAry) {
       if (this.multiple && this.selectedMultiple.length > 0) {
-        const searchAry = this.selectedResult.split(",");
-        for (let index = 0; index < multipleAry.length; index++) {
-          const label = multipleAry[index];
-          if (!searchAry.includes(label)) {
-            this.selectedMultiple.splice(this.selectedMultiple.findIndex(item => item.label === label), 1);
-            this.model.splice(this.model.findIndex(item => item === label), 1);
+        let searchAry = this.selectedResult.split(',')
+        for (let i = 0; i < multipleAry.length; i++) {
+          if (searchAry.indexOf(multipleAry[i]) < 0) {
+            this.selectedMultiple.splice(i, 1)
+            this.model.splice(i, 1)
           }
         }
       }
@@ -1436,7 +1385,7 @@ export default {
       this.query = query
     },
     modelToQuery() {
-      if (!this.multiple && this.filterable && this.model !== undefined) {
+      if (this.filterable && this.model !== undefined) {
         this.findChild(child => {
           if (this.model === child.value) {
             if (child.label) {
@@ -1523,7 +1472,7 @@ export default {
     },
     handleBack(e) {
       if (!this.isBackClear || this.readonly || this.disable) return
-      if (e.keyCode == 8 && this.value !== null && this.value != "") {
+      if (e.keyCode === 8 && this.value !== null && this.value!== '') {
         let c = this.value
         if (this.multiple) {
           this.clearMultipleSelect()
@@ -1552,11 +1501,7 @@ export default {
       if (this.filterable && this.showBottom && !this.hideMult) {
         if (this.isBlock) {
           this.$refs.search.style.width = '100%'
-          if (this.multiple && this.checkToHead) {
-            this.$refs.input.style.width = 'calc(100% - 40px)'
-          } else {
-            this.$refs.input.style.width = '100%'
-          }
+          this.$refs.input.style.width = '100%'
         } else {
           let width =
             this.dropWidth > 0
@@ -1582,13 +1527,6 @@ export default {
       })
     },
     blur() {
-      if (this.multiple) {
-        // 多选返回数组
-        this.dispatch('FormItem', 'on-form-blur', this.selectedMultiple)
-      } else {
-        // 单选返回字符串
-        this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
-      }
       this.isInputFocus = false
       this.visible = false
       if (this.filterable) {
@@ -1596,39 +1534,51 @@ export default {
       } else {
         this.$refs.reference.blur()
       }
-      if (this.isSingleSelect) {
-        if (this.model == '' && this.query != '') {
-          if (this.options.length > 0) {
-            this.model = this.options[0].value
-            this.isQuerySelect = false
-          }
+      if (this.model === '' && this.query !== '') {
+        if (this.options.length > 0 && !this.keepInputValue) {
+          this.model = this.options[0].value
+          this.isQuerySelect = false
+        }else {
+          this.model = this.query
         }
       }
+      this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
     },
     select() {
       if (this.filterable) {
         this.$refs.input.select()
       }
     },
+    //左右键、点选选中options中value值
     selectBlockSingle(value, status = false, str) {
       this.isQuerySelect = status
-      this.availableOptions = this.options
-      this.selectToChangeQuery = true
+      //焦点未离开勿更新可选options
+      if(!this.isInputFocus) {
+        this.availableOptions = this.options
+      }
 
-      if (this.model === value) {
-      } else {
+      this.selectToChangeQuery = true
+      if (this.model !== value) {
         this.model = value
       }
-      if (!this.isSingleSelect || str == 'click') {
+      if (str === 'click') {
         this.hideMenu()
         this.isInputFocus = false
+        this.focus()
       }
     },
     selectBlockMultiple(value, changeitem) {
       const index = this.model.indexOf(value)
-      let searchAry = this.model.length ? this.selectedResult.split(',') : []
+      if (this.newSearchModel) {
+        this.newSearchModelselectItem = false
+        this.newSearchModelselectItem = changeitem
+      }
+      let searchAry = this.selectedResult.split(',')
       if (index >= 0) {
         this.removeTag(index)
+        if (this.newSearchModel) {
+          //let itemidx=searchAry.indexOf()
+        }
       } else {
         if (this.specialIndex) {
           if (value == this.specialVal) {
@@ -1638,6 +1588,7 @@ export default {
             if (!changeitem) {
               this.selectedResult = this.getLabel(this.specialVal)
             }
+
             return false
           }
           if (
@@ -1658,10 +1609,7 @@ export default {
           }
         }
         this.model.push(value)
-        this.$nextTick(() => {
-          this.broadcast("Drop", "on-update-popper");
-          this.$refs.input.focus();
-        });
+        this.broadcast('Drop', 'on-update-popper')
       }
     },
     setPlacement(top = 0) {
@@ -1670,7 +1618,7 @@ export default {
         // let allWidth = document.body.clientWidth
         let allHeight = document.body.clientHeight
         let curbottom = allHeight - obj.offsetTop - obj.clientHeight - top
-        let bottomNum = this.isCheckall ? 250 : 210
+        let bottomNum = 210
         if (curbottom < bottomNum) {
           this.fPlacement = 'top'
         }
@@ -1686,24 +1634,43 @@ export default {
         this.query = ''
       } else {
         let curlabel = ''
+        let index = 0
         this.findChild(child => {
           child.cloneData.forEach((col, i) => {
             if (col.value == this.model && child.showCol.length > 0) {
               curlabel = col.label + ' ' + col[child.showCol[0]]
+              index = col._index + 1
             }
           })
         })
+        if(this.showFirstLabelOnly) {
+          let ind = curlabel.indexOf(' ')
+          curlabel = curlabel.substring(0, ind)
+        }
+        //o45 证券代码控件 模糊输入，不匹配下拉项保留输入值
+        if(curlabel == '' && this.keepInputValue && this.model) {
+          this.query = this.model
+          return
+        }
         this.query = curlabel
-        this.selectToChangeQuery = true
+        // 造成搜索值清空后切换焦点重新赋上bug
+
         this.isQuerySelect = false
+        this.focusIndex = index
       }
     },
+
     queryChange(val) {
       if (this.remote && this.remoteMethod) {
         if (!this.selectToChangeQuery) {
           // 解决当通过表单方法firstNodeFocused定位到SimpleSelect时只能输入但不展示下拉选项的问题
-          if (!this.visible && val) this.visible = true
-          this.remoteMethod(val)
+          if (!this.visible && val) {
+            this.visible = true
+          }
+          // query值为空时不应该触发远程搜索方法
+          if(val !== '') {
+            this.remoteMethod(val)
+          }
           this.$emit('on-query-change', val)
           if (!this.remoteNoQuery) {
             this.broadcastQuery(val)
@@ -1717,15 +1684,18 @@ export default {
           let focusIndex = this.focusIndex
           this.$nextTick(() => {
             this.findChild(child => {
-              if (!this.isBlock && val && focusIndex > 0)
+              if (!this.isBlock && val && focusIndex > 0) {
                 child.$refs.table.changeHover(focusIndex - 1, false)
-              // SimpleSelect默认光标聚焦第一个选项
-              if (this.isBlock && this.autoFocus) {
-                this.focusValue = ''
-                this.focusIndex = 1
-                return true
-              } 
-              this.focusIndex = this.focusInit
+              }
+              if(!this.isSingleSelect) {
+                // SimpleSelect默认光标聚焦第一个选项
+                if (this.isBlock && this.autoFocus) {
+                  this.focusValue = ''
+                  this.focusIndex = 1
+                  return true
+                }
+                this.focusIndex = this.focusInit
+              }
             })
           })
         }
@@ -1857,6 +1827,7 @@ export default {
           // TODO
         }
         if (val === '' && !this.visible) this.query = ''
+
       }
     },
     label(val) {
@@ -1867,16 +1838,7 @@ export default {
       let backModel = this.arrtoStr(this.model)
       this.$emit('input', backModel)
       this.modelToQuery()
-      if (this.multiple) {
-        if (this.slotChangeDuration || this.allClick) {
-          this.allClick = false
-          this.slotChangeDuration = false
-        } else {
-          this.updateMultipleSelected()
-        }
-      } else {
-        this.updateSingleSelected()
-      }
+      this.updateSingleSelected()
     },
     visible(val) {
       if (val) {
@@ -1903,16 +1865,11 @@ export default {
           }
 
           setTimeout(() => {
+            if (this.remote && this.remoteMethod) return
             if (this.showBottom || this.multiple) {
               this.query = ''
             }
-            if (this.remote && this.remoteMethod) return
-            // if(!window.isO45){
-            if (!this.isSingleSelect) {
-              this.broadcastQuery('')
-            } else {
-              this.broadcast('Block', 'on-query-change', '', true)
-            }
+            this.broadcast('Block', 'on-query-change', '', true)
           }, 300)
         }
         setTimeout(() => {
@@ -1923,34 +1880,38 @@ export default {
       this.$emit('on-drop-change', val)
     },
     query(val) {
-      if (this.isSingleSelect) {
-        this.querySingle = val.split(' ')[0] //此处改变query
-      } else {
-        this.queryChange(val)
-      }
-      // this.broadcast('Drop', 'on-update-popper');
-    },
-    querySingle(val) {
-      this.queryChange(val)
+      let querySingle = val.split(' ')[0] //此处改变query
+      this.queryChange(querySingle)
+      this.broadcast('Drop', 'on-update-popper');
     },
     selectedSingle(val) {
       if (this.filterable && !this.showBottom && !this.isQuerySelect) {
         this.query = val
-        if (this.query !== '') this.selectToChangeQuery = true
+        if (this.query !== '')
+          this.selectToChangeQuery = true
       }
+      //viewValue 实际并没有使用
       this.viewValue = val
-      if (this.isSingleSelect && !this.isInputFocus) {
+      if (!this.isInputFocus) {
         this.setSingleSelect()
       }
     },
     // eslint-disable-next-line
     selectedMultiple(val) {
-      this.viewValue = val;
-      this.showTotal = this.showTotalNum && this.multiple && !this.isInputFocus && val.length > 2 ? true : false;
-      this.selectedResult = this.selectedMultiple.map(item => item.label).join();
       this.$nextTick(() => {
         this.offsetArrow()
       })
+      this.viewValue = val
+      if (
+        this.showTotalNum &&
+        this.multiple &&
+        !this.isInputFocus &&
+        val.length > 2
+      ) {
+        this.showTotal = true
+      } else {
+        this.showTotal = false
+      }
     },
     selectHead(val) {
       // this.toggleSelect(val)
@@ -1973,10 +1934,8 @@ export default {
           this.showTotal = false
         }
       }
-      if (this.isSingleSelect) {
-        if (!val) {
-          this.setSingleSelect()
-        }
+      if (!val) {
+        this.setSingleSelect()
       }
       if ((this.newSearchModel || this.isSingleSelect) && val) {
         this.$emit('on-input-focus')

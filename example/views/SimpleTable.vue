@@ -6,19 +6,21 @@
     <Button @click="loadData">加载数据</Button>
     <Button @click="changeData">切换数据</Button>
     <Button @click="adddata">添加数据</Button>
-    <h-simple-table :columns="columnsBig1" :data="bigData" :addData="addData" border stripe
-                    :loading="loading" headAlgin="right" bodyAlgin="left" width="1200" canDrag
-                    @on-select="select" @on-select-cancel="select" @on-drag="onDrag" height="500"
-                    @on-select-all='change' @on-scroll="change" @on-selection-change="change">
-      <span slot="loading">我是自定义加载！！！</span>
-    </h-simple-table>
+    <!--<h-simple-table :columns="columnsBig1" :data="bigData" :addData="addData" border stripe rowSelectOnly-->
+                    <!--:loading="loading" headAlgin="right" bodyAlgin="left" width="1200" canDrag-->
+                    <!--@on-select="select" @on-select-cancel="select" @on-drag="onDrag" height="500"-->
+                    <!--@on-select-all='change' @on-scroll="change" @on-selection-change="change">-->
+      <!--<span slot="loading">我是自定义加载！！！</span>-->
+    <!--</h-simple-table>-->
     <h-button @click="setLoading">切换状态</h-button>
     <h-button @click="clearData">清除数据</h-button>
     <h2>不带边线 单选 on-current-change</h2>
     <!-- :multiLevel="multiLevel1" -->
     <!-- <h-msg-box v-model="showmsg" :width="1000"> -->
       <!-- notAdaptive  -->
-    <h-simple-table ref="simTable" canMove :summationRender="false" @on-right-click="rightClick" :summationData="summationData" :columns="columnsBig1" border :data="bigData" height="300" @on-selection-change="selsetChange" @on-current-change="selsetChange1" @on-row-dblclick="dblclick" highlight-row @on-sort-change="sortchange">
+    <h-simple-table ref="simTable" canMove :summationRender="false" @on-right-click="rightClick" rowSelectOnly
+                    :summationData="summationData" :columns="columnsBig1" border :data="bigData" height="300"
+                    highlight-row @on-sort-change="sortchange" @on-selection-change="selsetChange">
     </h-simple-table>
     <!-- </h-msg-box> -->
     <h-button @click='changeClo'>改变冻结列</h-button>
@@ -79,43 +81,31 @@ export default {
       addData:[],
       bigData:[],
       columnsBig1:[
-        {
-          type: 'index',
-          align: 'center',
-          width:200,
-          fixed:'left',
-        },
+//        {
+//          type: 'index',
+//          align: 'center',
+//          width:200,
+//          fixed:'left',
+//        },
         {
           type: 'selection',
           align: 'center',
           key:'select',
-          title: '勾选排序',
-          ellipsis:true,
           sortable: true
         },
         {
-          title: '姓名',
+          title: '姓名姓名姓名姓名姓名姓名姓名姓名',
           key: 'fundId',
-          width:200,
-          // remote: true,
-          // renderHeader:(h, params)=>{
-          //   return h('span','123')
-          // },
-          render:(h, params)=>{
-            return h('span',params.row.fundId+' 567')
-            // return params.row.fundId+' 123'
-          }
-          // hiddenCol:true,
-          // align: 'center',
-          // sortable:true,
+          showTitle:true,
+          ellipsis:true,
         },
         {
-          title: '年龄年龄年龄年龄年龄',
+          title: '今日开盘价(元)',
           key: 'tradeDate',
-          width: 70,
+//          width: 80,
           sortable:true,
-          ellipsis:true
-          // fixed:'left',
+          ellipsis:true,
+          align:'right'
         },
         {
           title: '地址',
@@ -124,20 +114,20 @@ export default {
           sortable:true
         },
         {
-          title: '地址1',
+          title: '银行',
           key: 'securityName',
           minWidth:200,
         },
         {
           title: '年龄',
-          key: 'tradeDate1',
+          key: 'tradeDir',
           minWidth:200,
         },
         {
-          title: '地址',
+          title: '数量',
           ellipsis:true,
           minWidth:200,
-          key: 'securityCode1',
+          key: 'tradeQuantity',
         },
       ],
       columns1: [
@@ -455,11 +445,15 @@ export default {
     loadData(){
       this.showmsg = true;
       this.columnsBig1.splice(2, 0, {
-        title: '地址1',
+        title: '交易市场',
         key: 'securityName',
+        width: 80,
+        sortable:true,
+        ellipsis:true,
+        showTitle:true
       })
       this.columnsBig1.push({
-        title: '年龄1',
+        title: '年龄年龄年龄年龄年龄年龄年龄1',
         key: 'tradeDate'
       })
 
@@ -585,7 +579,8 @@ export default {
     }
   },
   mounted(){
-    window.isO45 = true
+    window.isO45 = false
+    this.bigData = jsonData
   }
 }
 </script>

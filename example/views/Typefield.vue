@@ -84,7 +84,7 @@ export default {
       select1:'',
       select2:'',
       input1: 'px',
-      value11: '1111111111111111111',
+      value11: '1111111',
       value12: '',
       value13: '',
       cardNo:'',

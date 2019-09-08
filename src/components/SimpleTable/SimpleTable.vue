@@ -43,7 +43,8 @@
                 <table-cell :column="column"
                             :index="index"
                             :checked="isSelectAll"
-                            :prefixCls="prefixCls">
+                            :prefixCls="prefixCls"
+                            :titleEllipsis="titleEllipsis">
                 </table-cell>
               </th>
             </tr>
@@ -86,7 +87,7 @@
                       :class="alignCls(column, row)"
                       :data-index="row._index+1"
                       :key="column._index">
-                    <div :class="classesTd(column)">
+                    <div :class="classesTd(column)" :title="column.showTitle?row[column.key]:null">
                       <!-- &&!this.splitIndex -->
                       <template v-if="column.type === 'index'&&!splitIndex">{{row._index + 1}}</template>
                       <template v-if="column.type === 'selection'">
@@ -158,7 +159,8 @@
                   <table-cell :column="column"
                               :index="index"
                               :checked="isSelectAll"
-                              :prefixCls="prefixCls">
+                              :prefixCls="prefixCls"
+                              :titleEllipsis="titleEllipsis">
                   </table-cell>
                 </th>
               </tr>
@@ -287,7 +289,8 @@
       <slot name="loading">
         <h-icon name="load-c"
                 size=18
-                class='h-load-loop'></h-icon>
+                class='h-load-loop'>
+        </h-icon>
         <div v-text="loadingText"></div>
       </slot>
     </Spin>
@@ -465,8 +468,7 @@ export default {
         return []
       }
     },
-    switchEmpty: {
-      //上下键盘切换选项时清空选项
+    switchEmpty: {  //上下键盘切换选项时清空选项
       type: Boolean,
       default: false
     },
@@ -474,26 +476,29 @@ export default {
       type: Boolean,
       default: false
     },
-    // 数据更新时滚动条置为 0
-    scrollbarToZero: {
+    scrollbarToZero: {  // 数据更新时滚动条置为 0
       type: Boolean,
       default: false
     },
-    newSort:{
+    newSort: {
       type:Boolean,
       default:false
     },
-    summationRender:{
+    summationRender: {
       type:Boolean,
       default:true
     },
-    rowSelectOnly:{
-      type:Boolean,//多选时是否支持点击行只选中，再次点击不进行反选
+    rowSelectOnly: { //多选时是否支持点击行只选中，再次点击不进行反选
+      type:Boolean,
       default:false
     },
-    isMulitSort:{//多列排序
+    isMulitSort: {  //多列排序
       type:Boolean,
       default:false,
+    },
+    titleEllipsis: {
+      type: Boolean,
+      default:true
     }
   },
   data() {
@@ -700,10 +705,9 @@ export default {
     headStyles() {
       //深拷贝
       const style = Object.assign({}, this.tableStyle)
-      const width =
-        this.data.length == 0
-          ? parseInt(this.tableStyle.width)
-          : parseInt(this.tableStyle.width) + this.scrollBarWidth
+      const width = this.data.length == 0
+        ? parseInt(this.tableStyle.width)
+        : parseInt(this.tableStyle.width) + this.scrollBarWidth
       style.width = `${width}px`
       return style
     },
@@ -727,7 +731,7 @@ export default {
           style.marginRight = `${this.scrollBarWidth}px`
           this.showScroll = true
         } else {
-          width = width==0?0:width;
+          width = width==0?0:width
         }
         style.width = `${width}px`
         return style
@@ -791,16 +795,16 @@ export default {
         return left.concat(other)
       }
       if(this.isRightFixed){
-        let right = [];
-        let other = [];
+        let right = []
+        let other = []
         this.cloneColumns.forEach((col) => {
           if (col.fixed && col.fixed === 'right') {
-            right.push(col);
+            right.push(col)
           } else {
-            other.push(col);
+            other.push(col)
           }
-        });
-        return right.concat(other);
+        })
+        return right.concat(other)
       }
     },
     isLeftFixed() {
@@ -821,7 +825,7 @@ export default {
       * @param {string} rowIndex -objdata中索引
       * @param {number} curIndex - 行索引
       */
-    handleRightClick (event, _index, curIndex) {
+    handleRightClick(event, _index, curIndex) {
       // this.$emit('on-right-click')
       if (this.objData[_index]._isDisabled) return
       if (this.cloneData[_index]) {
@@ -887,19 +891,19 @@ export default {
       }
     },
     changeWidth(width, key, lastWidth) {
-      var that = this
-      var lastInx = this.cloneColumns.length - 1
-      var totalWidth = 0
+      let that = this
+      let lastInx = this.cloneColumns.length - 1
+      let totalWidth = 0
       this.cloneColumns.forEach((col, i) => {
         if (col.key == key) {
           that.$set(col, 'width', width)
           that.$set(col, '_width', width)
         }
-        // && !that.notAdaptive
-        if (i == lastInx && !that.notAdaptive) {
-          that.$set(col, 'width', lastWidth)
-          that.$set(col, '_width', lastWidth)
-        }
+        // 限制最后一列拖拽改变宽度
+        //        if (i == lastInx && !that.notAdaptive) {
+        //          that.$set(col, 'width', lastWidth)
+        //          that.$set(col, '_width', lastWidth)
+        //        }
         var colWidth = col.width || col._width
         totalWidth = totalWidth + colWidth
       })
@@ -930,13 +934,14 @@ export default {
         }
       })
     },
-    mousedown(event, column, index,isLeft) {
+    mousedown(event, column, index, isLeft) {
       this.beginLocation.clientX = event.clientX
       this.beginLocation.clientY = event.clientY
       if (this.$isServer||(isLeft&&this.isRightFixed)) return
       if (!column) return
       if (!this.canDrag && !this.canMove) return
       let _this = this
+
       if (this.draggingColumn) {
         this.dragging = true
         this.resizeProxyVisible = true
@@ -950,42 +955,36 @@ export default {
         let tableWidth = this.$el.offsetWidth
         let headWidth = this.tableWidth
         addClass(columnEl, 'noclick')
-
         this.dragState = {
           startMouseLeft: event.clientX,
           startLeft: columnRect.right - tableLeft,
           startColumnLeft: columnRect.left - tableLeft,
           tableLeft
         }
-
         const resizeProxy = this.$refs.resizeProxy
         resizeProxy.style.left = this.dragState.startLeft + 'px'
-
         document.onselectstart = function() {
           return false
         }
         document.ondragstart = function() {
           return false
         }
-
         const handleMouseMove = event => {
           const deltaLeft = event.clientX - this.dragState.startMouseLeft
           const proxyLeft = this.dragState.startLeft + deltaLeft
-
           resizeProxy.style.left = Math.max(minLeft, proxyLeft) + 'px'
         }
-
         const handleMouseUp = () => {
           if (_this.dragging) {
             const { startColumnLeft, startLeft } = _this.dragState
             const finalLeft = parseInt(resizeProxy.style.left, 10)
-            const columnWidth = finalLeft - startColumnLeft
-            let dragWidth = finalLeft - startLeft //>0为输入框增大，<0为减小
+            let columnWidth = finalLeft - startColumnLeft
+            //拖拽的宽度 >0为增大，<0为减小
+            let dragWidth = finalLeft - startLeft
             if (dragWidth >= 0) {
-              lastWidth =
-                lastWidth - dragWidth >= this.lastColWidth
-                  ? lastWidth - dragWidth
-                  : this.lastColWidth
+              //o45需求最后一列可拖动变宽，这样这里的代码没有意义，原本是为了限制最后一列宽度
+              lastWidth = lastWidth - dragWidth >= this.lastColWidth
+                ? lastWidth - dragWidth : this.lastColWidth
             } else {
               if (headWidth >= tableWidth) {
                 //此时有滚动条
@@ -999,21 +998,23 @@ export default {
             if (table.bodyHeight !== 0&&!this.isRightFixed) {
               lastWidth = lastWidth - getScrollBarSize()
             }
+            //表头最小宽度 (o45： padding 8、 一个文字... 24、 排序 16+4)
+            if(window.isO45) {
+              columnWidth = columnWidth <= 60 ? 60 : columnWidth
+            }else {
+              columnWidth = columnWidth <= 74 ? 74 : columnWidth
+            }
             _this.changeWidth(columnWidth, column.key, lastWidth)
-
             document.body.style.cursor = ''
             _this.dragging = false
             _this.draggingColumn = false
             _this.dragState = {}
-
             table.resizeProxyVisible = false
           }
-
           document.removeEventListener('mousemove', handleMouseMove)
           document.removeEventListener('mouseup', handleMouseUp)
           document.onselectstart = null
           document.ondragstart = null
-
           setTimeout(function() {
             removeClass(columnEl, 'noclick')
           }, 0)
@@ -1060,7 +1061,7 @@ export default {
             }
             resizeLeft =
               _this.$el
-                .querySelectorAll(`th`)
+                .querySelectorAll('th')
                 [resizeIndex].getBoundingClientRect().right -
               tableLeft -
               1
@@ -1073,7 +1074,7 @@ export default {
             }
             resizeLeft =
               _this.$el
-                .querySelectorAll(`th`)
+                .querySelectorAll('th')
                 [resizeIndex].getBoundingClientRect().left -
               tableLeft -
               1
@@ -1183,9 +1184,9 @@ export default {
     },
     isDrag(x1, y1, x2, y2) {
       if(Math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)) <= 1) {
-        return false;
+        return false
       }
-      return true;
+      return true
     },
     mouseout() {
       if (this.$isServer) return
@@ -1218,9 +1219,9 @@ export default {
           this.$refs.body.scrollTop = 0
         }
         // 解决数据变动导致滚动条跳动问题
-        this.$refs.content.style.transform = `translate3d(0, ${transformTop}px, 0)`
+        this.$refs.content.style.transform = `translateY(${transformTop}px)`
         if (this.$refs.leftContent) {
-          this.$refs.leftContent.style.transform = `translate3d(0, ${transformTop}px, 0)`
+          this.$refs.leftContent.style.transform = `translateY(${transformTop}px))`
         }
 
         let width = this.$refs.body.getBoundingClientRect().width
@@ -1395,8 +1396,23 @@ export default {
           ? this.objData[_index]._isHighlight
           : false
       let oldIndex = -1
+      // 选择多项，点击其中一项选中，其他反选
       if(this.objData[_index]._isChecked&&this.rowSelectOnly){
-        return;
+        for(let i in this.objData) {
+          if(this.objData[i]._isChecked) {
+            this.objData[i]._isChecked = false
+          }
+          this.objData[_index]._isChecked = true
+        }
+        this.$nextTick(() => {
+          this.$emit(
+            'on-selection-change',
+            this.getSelection(),
+            this.getSelection(true),
+            _index
+          )
+        })
+        return
       }
       for (let i in this.objData) {
         this.objData[i]._isChecked = false //单选时取消多选项，估值6.0专用
@@ -1408,13 +1424,10 @@ export default {
           this.objData[i]._isHighlight = false //单选是上一项取消选中
         }
       }
-      const oldData =
-        oldIndex < 0
-          ? null
-          : JSON.parse(JSON.stringify(this.cloneData[oldIndex]))
+      const oldData = oldIndex < 0 ? null : JSON.parse(JSON.stringify(this.cloneData[oldIndex]))
       if (curStatus && !this.selectOption) {
         this.objData[_index]._isHighlight = false
-        this.objData[_index]._isChecked = false
+        this.objData[_index]._isChecked = false``
         // this.$emit('on-current-change-cancle',JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
         this.$nextTick(() => {
           this.$emit('on-current-change', null, null)
@@ -1640,14 +1653,14 @@ export default {
      * 获取所有列选中的排序件
      */
     getSorts() {
-      const cloneColumns = this.cloneColumns;
-      const filters = {};
+      const cloneColumns = this.cloneColumns
+      const filters = {}
       cloneColumns.forEach(col => {
         if (col.sortable&&col._sortType!='normal') {
-          filters[col.key] = col._sortType;
+          filters[col.key] = col._sortType
         }
       })
-      return filters;
+      return filters
     },
     handleSort(index, type) {
       if (this.cloneColumns[index]._sortType === type) {
@@ -1844,7 +1857,7 @@ export default {
         this.$refs.header.scrollLeft = event.target.scrollLeft
         if (this.isSummation) this.sumMarginLeft = event.target.scrollLeft
         if (this.$refs.fixedBody) this.$refs.fixedBody.scrollTop = scrolltop
-        let oldBottomNum = this.buttomNum;
+        let oldBottomNum = this.buttomNum
         this.buttomNum = getBarBottomS(
           event.target,
           this.bodyHeight,
@@ -1853,15 +1866,15 @@ export default {
           this.isScrollX
         )
         if (oldBottomNum !== null && this.buttomNum !== null) {
-          this.$emit('on-scroll', this.buttomNum, scrolltop !== this.lastScrollTop ? "y" : "x");
+          this.$emit('on-scroll', this.buttomNum, scrolltop !== this.lastScrollTop ? 'y' : 'x')
         }
-        this.lastScrollTop = scrolltop;
+        this.lastScrollTop = scrolltop
         let curtop = Math.floor(scrolltop / this.itemHeight) * this.itemHeight
 
         this.updateVisibleDataDebounce(false)(scrolltop)
-        this.$refs.content.style.transform = `translate3d(0, ${curtop}px, 0)`
+        this.$refs.content.style.transform = `translateY(${curtop}px)`
         if (this.$refs.leftContent) {
-          this.$refs.leftContent.style.transform = `translate3d(0, ${curtop}px, 0)`
+          this.$refs.leftContent.style.transform = `translateY(${curtop}px)`
         }
       }
       // setTimeout(() => {
@@ -1871,7 +1884,7 @@ export default {
     /**
     * @description 使用requestAnimationFrame根据动画帧更新visibleData，原理同setTimeout，更贴近浏览器重绘原理
     */
-    updateVisibleAnimate (event) {
+    updateVisibleAnimate(event) {
       if (this.scheduledAnimationFrame) { return }
       this.scheduledAnimationFrame = true
       window.requestAnimationFrame((num) => {
@@ -1882,7 +1895,7 @@ export default {
         this.$refs.header.scrollLeft = event.target.scrollLeft
         if (this.isSummation) this.sumMarginLeft = event.target.scrollLeft
         if (this.$refs.fixedBody) this.$refs.fixedBody.scrollTop = scrolltop
-        let oldBottomNum = this.buttomNum;
+        let oldBottomNum = this.buttomNum
         this.buttomNum = getBarBottomS(
           event.target,
           this.bodyHeight,
@@ -1891,14 +1904,14 @@ export default {
           this.isScrollX
         )
         if (oldBottomNum !== null && this.buttomNum !== null) {
-          this.$emit('on-scroll', this.buttomNum, scrolltop !== this.lastScrollTop ? "y" : "x");
+          this.$emit('on-scroll', this.buttomNum, scrolltop !== this.lastScrollTop ? 'y' : 'x')
         }
-        this.lastScrollTop = scrolltop;
+        this.lastScrollTop = scrolltop
         let curtop = Math.floor(scrolltop / this.itemHeight) * this.itemHeight
         this.updateVisibleData(scrolltop)
-        this.$refs.content.style.transform = `translate3d(0, ${curtop}px, 0)`
+        this.$refs.content.style.transform = `translateY(${curtop}px)`
         if (this.$refs.leftContent) {
-          this.$refs.leftContent.style.transform = `translate3d(0, ${curtop}px, 0)`
+          this.$refs.leftContent.style.transform = `translateY(${curtop}px)`
         }
       })
     },
@@ -2252,9 +2265,9 @@ export default {
       if (curTop != top) {
         this.updateVisibleData(top)
         this.$refs.body.scrollTop = top
-        this.$refs.content.style.transform = `translate3d(0, ${top}px, 0)`
+        this.$refs.content.style.transform = `translateY(${top}px)`
         if (this.$refs.leftContent) {
-          this.$refs.leftContent.style.transform = `translate3d(0, ${top}px, 0)`
+          this.$refs.leftContent.style.transform = `translateY(${top}px)`
         }
       }
     },
@@ -2485,7 +2498,7 @@ export default {
         ? this.$refs.content.style.transform
         : ''
       this.$refs.body.scrollTop = transform.match(
-        /translate3d\(\d+px,\s*(\d+)px,\s*(\d+)px\)/i
+        /translateY\(\d+px,\s*(\d+)px,\s*(\d+)px\)/i
       )[1]
       this.handleResize()
       on(window, 'resize', this.handleResize)

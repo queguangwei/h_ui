@@ -208,8 +208,7 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
   th &-cell{
     // display: inline-block;
     //position: relative;
-    //o45需求 表头要控制可缩小的最小长度，至少保留一个文字和排序按钮 参考element ui
-    //white-space: nowrap;
+    white-space: nowrap;
     overflow: hidden;
     vertical-align: middle;
   }
@@ -300,7 +299,7 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
     background-color: $primary-color;
     color: $table-row-dragover-td-color;
   }
-  
+
   &-summation {
     border-top: $table-summation-border;
   }
@@ -346,7 +345,7 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
   &-fixed-header{
     overflow: hidden;
   }
-  
+
   &-fixed-body{
     overflow: hidden;
     position: relative;
@@ -365,8 +364,6 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
 
   &-sort{
     @include sortable();
-    float: right;
-    margin-top: 2px;
   }
   &-sortnew{
     @include sortable();
@@ -380,13 +377,18 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
          color: #666;
       }
     }
-
+  }
+  &-sortSimp{
+    @include sortable();
+    float: right;
+    margin-top: 2px;
+    margin-left: 3px;
   }
   &-newsort-wrap{
     display: inline-block;
     position: absolute;
     right: 0px;
-    background: #ffff; 
+    background: #ffff;
     height: 24px;
   }
   &-filter{
@@ -409,7 +411,7 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
       &-item{
           padding: $table-filter-list-item-padding;
           //就是选择某个元素的下一个元素
-          // .h-checkbox-wrapper + .h-checkbox-wrapper{            
+          // .h-checkbox-wrapper + .h-checkbox-wrapper{
           //     margin: 0;
           // }
           .h-checkbox-wrapper{

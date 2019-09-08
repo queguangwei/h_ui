@@ -2,13 +2,13 @@
   <div :class="cellClasses" :style="minWidthStyle(column)">
     <template v-if="column.type === 'selection'">
       <Checkbox v-if="!column.title" :size="checkboxSize" @mousedown.native.stop="handleClick" :value="checked" @on-change="selectAll"></Checkbox>
-      <span v-else :class="ellipsisClass(column)" :style="ellipsisStyle(column)">{{column.title}}</span>
+      <span v-else :class="ellipsisClass(column, titleEllipsis)" :style="ellipsisStyle(column)" :title="column.showTitle?column.title:null">{{column.title}}</span>
     </template>
     <template v-else>
-      <span v-if="!column.renderHeader" :class="ellipsisClass(column)" :style="ellipsisStyle(column)">{{ column.title || '#' }}</span>
+      <span v-if="!column.renderHeader" :class="ellipsisClass(column, titleEllipsis)" :style="ellipsisStyle(column)" :title="column.showTitle?column.title:null">{{ column.title || '#' }}</span>
       <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
     </template>
-    <span :class="[prefixCls + '-sort']" v-if="column.sortable&&!useNewSort&&column.type!=='selection'">
+    <span :class="[prefixCls + '-sortSimp']" v-if="column.sortable&&!useNewSort&&column.type!=='selection'">
       <Icon name="android-arrow-dropup" :class="{on: column._sortType === 'asc'}" @on-click="handleSort(index, 'asc')" @mousedown.native.stop="handleClick"></Icon>
       <Icon name="android-arrow-dropdo" :class="{on: column._sortType === 'desc'}" @on-click="handleSort(index, 'desc')" @mousedown.native.stop="handleClick"></Icon>
     </span>
@@ -29,6 +29,7 @@ export default {
     index:[Number,String],
     checked:Boolean,
     prefixCls:String,
+    titleEllipsis:Boolean
   },
   components:{renderHeader},
   computed: {
@@ -55,22 +56,37 @@ export default {
   methods: {
     minWidthStyle(column) {
       let style = {}
-      if(column.width === 30) {
-        style.paddingLeft = 0
+      if(column.width === 60) {
+        style.paddingLeft = 8 + 'px'
+        style.paddingRight = 8 + 'px'
       }
       return style
     },
     ellipsisStyle(column) {
       let style = {}
-      if(column.width && column.ellipsis) {
-        style.display = 'inline-block'
-        style.width = `${column.width - 51 <= 30 ? 30 : column.width - 51}px`
+      let width = 0
+      style.display = 'inline-block'
+      if(column._width && this.titleEllipsis) {
+        if(window.isO45) {
+          if(column.sortable) {
+            width = column._width - 36 <= 24 ? 24 : column._width - 36
+          }else {
+            width = column._width - 16 <= 24 ? 24 : column._width - 16
+          }
+        }else {
+          if(column.sortable) {
+            width = column._width - 50 <= 24 ? 24 : column._width - 50
+          }else {
+            width = column._width - 30 <= 24 ? 24 : column._width - 30
+          }
+        }
+        style.width = `${width}px`
       }
       return style
     },
-    ellipsisClass(column){
+    ellipsisClass(column, titleEllipsis){
       return {
-        [`${this.prefixCls}-cell-ellipsis`]: column.ellipsis && column.ellipsis != 'false'
+        [`${this.prefixCls}-cell-ellipsis`]: titleEllipsis && titleEllipsis != 'false'
       }
     },
     handleClick(){

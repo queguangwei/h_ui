@@ -198,6 +198,10 @@ export default {
       type: Number,
       default: 1
     },
+    stepSwitch: {
+      type: Boolean,
+      default: true
+    },
     uppercaseMethod: {
       type: Function
     }
@@ -285,12 +289,14 @@ export default {
   methods: {
     keyDown(e) {
       if (window.isO45) {
-        if (e.keyCode === 39) {
-          e.preventDefault();
-          this.up(e);
-        } else if (e.keyCode === 37) {
-          e.preventDefault();
-          this.down(e);
+        if(this.stepSwitch) {
+          if (e.keyCode === 39) {
+            e.preventDefault();
+            this.up(e);
+          } else if (e.keyCode === 37) {
+            e.preventDefault();
+            this.down(e);
+          }
         }
       }
     },

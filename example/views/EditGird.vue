@@ -2,11 +2,12 @@
   <div>
     <h2>基础</h2>
     <h3>单选</h3>
-    <Button @click="addDate">增加数据</Button><Button @click="getChangeData">获取改变后的数据</Button>
-    <Button @click="delDate">删除数据</Button>
-    <!-- <Button @click="changeMsg">显示</Button> -->
-    <!-- <h-msg-box v-model = "showMsgBox" width="1000"> -->
-      <h-edit-gird ref="table" border height="600"
+    <Button @click="addDate">增加数据</Button>
+    <Button @click="getChangeData">获取改变后的数据</Button>
+    <Button @click="readOnly">只读</Button>
+    <Button @click="write">可写</Button>
+    <Button @click="chooseFirst">选中第一项</Button>
+      <h-edit-gird ref="table" border height="500"
         :showEditInput=true
         :columns="columns1"
         :data="data2"
@@ -26,27 +27,24 @@
         @on-editarea-blur="selectchange"
         @on-money-blur="selectchange"
         @on-money-change="selectchange"
-        @on-editdate-change="selectchange">
+        @on-editdate-change="selectchange"
+        @on-selection-change="selsetChange"
+      >
         <p slot='loading'>我是自定义loading</p>
       </h-edit-gird>
-    <!-- </h-msg-box> -->
     <Button @click="getData">获取数据</Button>
     <Button @click="setLoad">切换loading</Button>
-    <!--<p>小</p>-->
-    <!--<h-edit-gird :columns="columns1" :data="data1" @on-current-change="click1" @on-row-click="click1" ref="editGird" width="800" no-data-text="你好呀" :loading="loading"></h-edit-gird>-->
+    <p>小</p>
+    <h-edit-gird :columns="columns1" :data="data1" @on-current-change="click1" @on-row-click="click1" ref="editGird" width="800" no-data-text="你好呀" :loading="loading"></h-edit-gird>
     <!--<p>中</p>-->
     <!--<h-edit-gird :columns="columns1" :data="data1" size="large" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" @on-select-cancel="click1" ref="editGird" stripe :loading="loading"></h-edit-gird>-->
     <!--<p>大</p>-->
-
-<!--     <Button @click="getDate">获取数据</Button>
-    <Button @click = "addDate">新增一行</Button> -->
-
     <h3>多选</h3>
-    <!--<h-edit-gird :columns="columns4" :data="data1" :showEditInput="true" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-select-cancel="select" height="200"></h-edit-gird>-->
+    <h-edit-gird :columns="columns4" :data="data1" :showEditInput="true" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-select-cancel="select" height="200"></h-edit-gird>
     <!--<h-edit-gird :columns="columns4" :data="data1" @on-select-all="allSelect" @on-selection-change="selsetChange" height="200" :loading="loading"></h-edit-gird>-->
     <h3>直接显示编辑框</h3>
     <Button @click="getChangeData">获取改变后的数据</Button>
-    <h-edit-gird :columns="columns1" ref="table1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" :showEditInput="true" height="200" :loading="loading"></h-edit-gird>
+    <h-edit-gird :columns="columns1" ref="table1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" :showEditInput="true" height="500" :loading="loading"></h-edit-gird>
     <Button @click="setLoad">切换loading</Button>
     <Button @click="addDate">添加一行</Button>
     <p>动态显示隐藏输入框</p>
@@ -60,7 +58,6 @@
           </span>
         </h-col>
       </h-row>
-
       <h-edit-gird :columns="columnsA" :data="datainput" size="small" :showEditInput="showEditInput" stripe></h-edit-gird>
   </div>
 </template>
@@ -102,6 +99,17 @@ var tData= [
     age: 30,
     address: '上海市浦东新区世纪大道',
     money: '140.00',
+    cardId: '6223 5678 1234 5678',
+    city: '北京',
+    dating:'2018-03-07',
+    timing:'16:00:00.00',
+    tree:'leaf1'
+  },
+  {
+    name: '周小伟',
+    age: 26,
+    address: '深圳市南山区深南大道',
+    money: '150.00',
     cardId: '6223 5678 1234 5678',
     city: '北京',
     dating:'2018-03-07',
@@ -279,22 +287,20 @@ export default {
   data() {
     return {
       loading:false,
-      showMsgBox:false,
       showEditInput:true,
       selectList: [],
       columns1: [
-        // {
-        //   type: 'expand',
-        //   fixed: 'left',
-        //   width: 50,
-        //   render: (h, params) => {
-        //     return h(TexpandRow, {
-        //       props: {
-        //           row: params.row
-        //       }
-        //     })
-        //   }
-        // },
+         {
+           type: 'selection',
+           fixed: 'left',
+//           render: (h, params) => {
+//             return h(TexpandRow, {
+//               props: {
+//                   row: params.row
+//               }
+//             })
+//           }
+         },
         {
           type: 'text',
           title: '姓名',
@@ -425,7 +431,7 @@ export default {
         {
           type: 'selectTree',
           title: '下拉树',
-          // width: 200,
+           width: 200,
           key: 'tree',
           showCheckbox: false,
           checkStrictly: false,
@@ -504,13 +510,20 @@ export default {
       }
   },
   methods: {
+    chooseFirst() {
+//      this.$refs.table.toggleSelect(0)
+      this.$refs.table.selectAll(true)
+    },
+    readOnly() {
+      this.columns1[8].type=''
+    },
+    write() {
+      this.columns1[8].type = 'date'
+    },
     sortChange(i,j,k){
       console.log(i);
       console.log(j);
       console.log(k);
-    },
-    changeMsg(){
-      this.showMsgBox = !this.showMsgBox;
     },
     expand(e,status){
       console.log(e);
@@ -590,9 +603,9 @@ export default {
       }
     },
     selectchange(val,i,j){
-      console.log(val);
-      console.log(i);
-      console.log(j);
+//      console.log(val);
+//      console.log(i);
+//      console.log(j);
     },
     getChangeData(){
       console.log(this.$refs.table.getChangeData())

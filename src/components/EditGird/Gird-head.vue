@@ -12,7 +12,7 @@
       </tr>
       <tr class="cur-th">
         <th v-for="(column, index) in columns"
-          :class="alignCls(column)" 
+          :class="alignCls(column)"
           :key="index"
           v-on:mousedown="mousedown($event,column,index)"
           v-on:mouseout="mouseout($event,column,index)"
@@ -24,6 +24,7 @@
               <Checkbox :value="isSelectAll" @mousedown.native.stop="handleClick" @on-change="selectAll"></Checkbox>
             </template>
             <template v-else>
+              <Checkbox :value="isSelectAll" v-if="isCheckbox&&headSelection&&!index" @on-change="selectAll" @mousedown.native.stop="handleClick" class="asyc-check"></Checkbox>
               <span v-if="!column.renderHeader" @click="handleSortByHead(index)">{{ column.title || '#' }}</span>
               <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
             </template>
@@ -97,6 +98,9 @@ export default {
         return []
       }
     },
+    isCheckbox:Boolean,
+    // 头部是否显示checkbox
+    headSelection: Boolean,
     // data: Array,    // rebuildData for sort or filter
     columnsWidth: Object,
     fixed: {
@@ -124,7 +128,8 @@ export default {
   computed: {
     styles () {//深拷贝
       const style = Object.assign({}, this.styleObject);
-      const width = this.$parent.bodyHeight === 0 ? parseInt(this.styleObject.width) : parseInt(this.styleObject.width) + this.$parent.scrollBarWidth;
+       // 考虑所有都有宽度，总列宽小于屏幕宽度时，不可加scrollBarWidth
+      const width = this.$parent.bodyHeight === 0 ? parseInt(this.styleObject.width) : parseInt(this.styleObject.width) < this.$parent.$el.clientWidth ?parseInt(this.styleObject.width) : parseInt(this.styleObject.width) + this.$parent.scrollBarWidth;
       style.width = `${width}px`;
       return style;
     },
@@ -156,13 +161,19 @@ export default {
     },
     selectAll () {
       const status = !this.isSelectAll;
-      this.$parent.selectAll(status);
+      if (this.$parent.typeName == "treeGird"){
+        this.$parent.selectAllTreeNode(status)
+      } 
+      else {
+        this.$parent.selectAll(status);
+      }
+
     },
     handleSortByHead (index) {
     },
     aliCls(item){
       return[
-        { 
+        {
           [`${item.className}`]: item.className,
           [`${this.prefixCls}-column-${item.align}`]: item.align,
         }

@@ -73,10 +73,12 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
             .#{$selectTable-prefix-cls}-arrow:nth-of-type(2) {
                 display: none;
             }
+            .#{$selectTable-prefix-cls}-input {
+                cursor: not-allowed;
+            }
             &:hover {
                 border-color: $border-color-base;
                 box-shadow: none;
-
                 .#{$selectTable-prefix-cls}-arrow:nth-of-type(1) {
                     display: inline-block;
                 }

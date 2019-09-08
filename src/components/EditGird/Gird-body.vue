@@ -312,6 +312,15 @@
           }
           this.updateCheckUp(parentKey);
         },
+        updateAllTreeStatus (status) {
+          this.flatState.forEach(item => {
+            this.$set(item.node, 'checked', status)
+            if(item.node.indeterminate){
+              this.$set(item.node, 'indeterminate', false)
+            }
+            this.$parent.objData[item.node._index]._isChecked = status
+          })
+        },
         changeSelect (row, e, checked) {
           let selectInx=[];
           if (e) e.stopPropagation();

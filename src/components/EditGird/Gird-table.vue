@@ -3,7 +3,7 @@
        :style="styles"
        @mouseleave="handleMouseLeave($event)"
        ref="tableWrap">
-    <div :class="classes">
+    <div :class="classes" ref="tableInner">
       <div :class="[prefixCls + '-header']"
            v-if="showHeader"
            ref="header"
@@ -17,9 +17,11 @@
                    :data="rebuildData"
                    :multiLevel="cloneMultiLevel"
                    :canDrag="canDrag"
+                   :isCheckbox="isCheckbox"
                    :canMove="canMove"
                    :lastColWidth="lastColWidth"
                    :minDragWidth="minDragWidth"
+                   :headSelection ="headSelection"
                    @on-change-width="changeWidth"></gird-head>
       </div>
       <div :class="[prefixCls + '-body']"
@@ -219,6 +221,10 @@ export default {
       default() {
         return []
       }
+    },
+    headSelection:{
+      type:Boolean,
+      default:false
     },
     size: {
       validator(value) {
@@ -500,7 +506,7 @@ export default {
       let style = {}
       if (this.bodyHeight !== 0) {
         let height = this.bodyHeight - this.scrollBarWidth
-        if (this.tableWidth < this.initWidth + 1) {
+        if (this.tableWidth < this.initWidth) {
           height = height + this.scrollBarWidth - 1
         }
         style.height = this.scrollBarWidth > 0 ? `${height}px` : `${height}px`
@@ -611,10 +617,7 @@ export default {
         totalWidth = totalWidth + this.scrollBarWidth
       }
       this.tableWidth = totalWidth + 1
-      if (
-        this.cloneColumns[lastInx].fixed != 'right' &&
-        this.tableWidth < this.initWidth
-      ) {
+      if (this.cloneColumns[lastInx].fixed != 'right' && this.tableWidth < this.initWidth) {
         this.tableWidth = this.initWidth - 1
       }
       this.$emit('on-drag', width, key)
@@ -679,6 +682,8 @@ export default {
                 if (width < 100) width = 100
               }
               this.cloneColumns[i]._width = width || ''
+              //
+              this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)||this.tableWidth;
               columnsWidth[column._index] = {
                 width: width
               }
@@ -703,9 +708,7 @@ export default {
                 if (width < 100) width = 100
               }
               this.cloneColumns[i]._width = width || ''
-              this.tableWidth = this.cloneColumns
-                .map(cell => cell._width)
-                .reduce((a, b) => a + b)
+              this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)
               columnsWidth[column._index] = {
                 width: width
               }
@@ -715,8 +718,7 @@ export default {
             }
             this.columnsWidth = columnsWidth
           }
-          this.initWidth =
-            parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0
+          this.initWidth = parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0
         })
         // get table real height,for fixed when set height prop,but height < table's height,show scrollBarWidth
         this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, 'height'))
@@ -1053,7 +1055,7 @@ export default {
       //     }
 
       // });
-      for (const data of this.rebuildData) {
+      for (let data of this.rebuildData) {
         if (this.objData[data._index]._isDisabled) {
           continue
         } else {
@@ -1393,7 +1395,25 @@ export default {
       }
       return selection
     },
-    selectChange() {
+    // 更新树表格全选状态至子节点
+    // updateTreeGridChild (data, status) {
+    //   if (data.children && data.children.length > 0) {
+    //     this.objData[data._index]._isChecked = status
+    //     data.children.forEach(child => {
+    //       this.updateTreeGridChild(child, status)
+    //     })
+    //   } else {
+    //     this.objData[data._index]._isChecked = status
+    //   }
+    // },
+    // selectAllTreeNode (status) {
+    //   this.updateTreeGridChild(this.rebuildData, status)
+    // },
+    selectAllTreeNode (status) {
+      this.$refs.tbody.updateAllTreeStatus(status)
+      this.selectChange()
+    },
+    selectChange () {
       this.$emit('on-select-change', this.getTreeSelection())
     },
     editselectChange(val, i, j) {

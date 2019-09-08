@@ -2,9 +2,18 @@
 <div>
   <Button @on-click="changeShow">打开弹框</Button>
   <Button @on-click="changeData">改变数值</Button>
-  <!-- <h-msg-box v-model="show" escClose> -->
+   <h-msg-box v-model="show" escClose :mask-closable="false" @on-cancel="cancel" width="580" height="1000">
     <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
-      <h-form-item label="input" prop="name">
+      <h-form-item label="singleSelect" prop="city" required>
+        {{formValidate.city}}
+        <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass"
+                         remote filterable :loading="isLoading" :remote-method="remoteMethod1"
+                         widthAdaption keepInputValue placement="top" transfer :accuFilter="false"
+                         :autoCheckSwitch="false" :animated="false" @on-keydown="handlekeydown">
+          <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
+        </h-single-select>
+      </h-form-item>
+      <h-form-item label="input" prop="name" required>
           <h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>
       </h-form-item>
       <h-form-item label="typefield" prop="mail">
@@ -20,12 +29,7 @@
       <h-form-item prop="date" label="data">
         <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
       </h-form-item>
-      {{formValidate.city}}
-      <h-form-item label="singleSelect" prop="city" required>
-        <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass" widthAdaption>
-          <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
-        </h-single-select>
-      </h-form-item>
+
       <h-form-item label="valueRemote1" prop="valueRemote1" required>
         <h-multi-select v-model="formValidate.valueRemote1" :isString="isstring" class="curItemClass" specialVal="value1" accuFilter newSearchModel>
           <h-multi-block :data="remotebigData"></h-multi-block>
@@ -48,14 +52,14 @@
               <h-checkbox label="看电影" class="curItemClass" ></h-checkbox>
           </h-checkbox-group>
       </h-form-item>
-      <h-form-item>
-          <h-button type="primary" canFocus @click="handleSubmit('formValidate')" class="curItemClass" >提交</h-button>
-          <h-button type="ghost"  canFocus  @click="handleReset('formValidate')" style="margin-left: 8px" class="curItemClass" >重置</h-button>
-          <h-button @click="focusFirst">焦点定位到第一项</h-button>
-          <h-button @click="clear">清空当前选项</h-button>
-      </h-form-item>
+      <!--<h-form-item>-->
+          <!--<h-button type="primary" canFocus @click="handleSubmit('formValidate')" class="curItemClass" >提交</h-button>-->
+          <!--<h-button type="ghost"  canFocus  @click="handleReset('formValidate')" style="margin-left: 8px" class="curItemClass" >重置</h-button>-->
+          <!--<h-button @click="focusFirst">焦点定位到第一项</h-button>-->
+          <!--<h-button @click="clear">清空当前选项</h-button>-->
+      <!--</h-form-item>-->
     </h-form>
-  <!-- </h-msg-box> -->
+   </h-msg-box>
 </div>
 </template>
 <script>
@@ -71,49 +75,82 @@ export default {
   data() {
     return {
       show:false,
+      isLoading: false,
       value:'value0',
-      showCol:['label1'],
       formValidate: {
         name: "",
         mail: "",
         city1:'',
-        city: '',
+        city: 'value3',
         gender: "",
         interest: [],
         date: "",
         time: "",
         desc: "",
-        valueRemote1:'',
+        valueRemote1: [],
       },
+      showCol:['label1'],
       bigData: [
-        { value: "value1", label: "label1",label1: "多列11111111111111111111111111111111111111111111111111111111"},
+        { value: "value1", label: "600570",label1: "恒生电子"},
         { value: "value2", label: "label2",label1: "多列2" },
-        { value: "value3", label: "label3",label1: "多列3" },
+        { value: "value3", label: "label3",label1: "海康威视" },
         { value: "value4", label: "label4",label1: "多列4" },
         { value: "value5", label: "label5",label1: "多列5" },
         { value: "value6", label: "label6",label1: "多列6" },
         { value: "value7", label: "label7",label1: "多列7" },
         { value: "value8", label: "label8",label1: "多列8" },
         { value: "value9", label: "label9",label1: "多列9" },
-        { value: "value10", label: "label10",label1: "多列10" },
-        { value: "value11", label: "label11",label1: "多列11" },
+        { value: "value10", label: "600570",label1: "多列10" },
+        { value: "value11", label: "000001",label1: "平安银行" },
+        { value: "value12", label: "601600",label1: "中国铝业" },
+        { value: "value13", label: "300056",label1: "三维丝" },
+        { value: "value14", label: "002354",label1: "天神娱乐" },
+        { value: "value15", label: "002016",label1: "世荣兆业" },
+        { value: "value16", label: "501009",label1: "生物科技" },
+        { value: "value17", label: "502014",label1: "一带一A" },
+        { value: "value18", label: "513660",label1: "恒生通" },
+        { value: "value19", label: "600570",label1: "多列15" },
+        { value: "value20", label: "600570",label1: "多列15" },
       ],
+      remoteData:[],
       colWidth:['200','200'],
       isstring:false,
       remotebigData:bigData,
       value111:'value0',
     }
   },
+  created() {
+    window.isO45 = true
+  },
   mounted() {
-     window.isO45 = false;
     document.addEventListener("keydown", event => {
       enterHandler1(this.$refs.formValidate, event);
     });
-    setTimeout(()=>{
-        this.formValidate.city="value11"
-    },1000)
+//    setTimeout(()=>{
+//        this.formValidate.city="value1"
+//    },1000)
   },
   methods:{
+    remoteMethod1(query) {
+      if (query !== "") {
+        this.isLoading = true;
+        setTimeout(() => {
+          this.isLoading = false;
+          const list = this.bigData.map(item => {
+            return item;
+          });
+          this.remoteData = list.filter(
+            item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1
+          );
+        }, 200);
+      } else {
+        this.remoteData = [];
+      }
+    },
+    handlekeydown(val, e) {
+//      console.log(val)
+//      console.log(e)
+    },
     getFocus() {
       this.$refs.test.focus()
     },
@@ -121,7 +158,7 @@ export default {
       console.log("lsjflsja;");
     },
     handleSubmit(){
-        this.formValidate.city="value1"
+      this.formValidate.city="value1"
     },
     changeData(){
         this.bigData = this.bigData.slice(0,2)
@@ -134,6 +171,11 @@ export default {
     },
     changeShow(){
       this.show=true
+      this.$refs.formValidate.firstNodeFocused()
+//      this.formValidate.city = 'value1'
+    },
+    cancel() {
+      this.$refs.formValidate.resetFields()
     }
   }
 };
