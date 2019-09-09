@@ -2,13 +2,13 @@
 <div>
   <Button @on-click="changeShow">打开弹框</Button>
   <Button @on-click="changeData">改变数值</Button>
-   <h-msg-box v-model="show" escClose :mask-closable="false" @on-cancel="cancel" height="1000">
+   <h-msg-box v-model="show" escClose :mask-closable="false" @on-cancel="cancel" width="580" height="1000">
     <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
       <h-form-item label="singleSelect" prop="city" required>
         {{formValidate.city}}
         <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass"
                          remote filterable :loading="isLoading" :remote-method="remoteMethod1"
-                         widthAdaption keepInputValue  transfer :accuFilter="false"
+                         widthAdaption keepInputValue
                          :autoCheckSwitch="false" :animated="false" @on-keydown="handlekeydown">
           <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
         </h-single-select>
@@ -101,11 +101,16 @@ export default {
         { value: "value8", label: "label8",label1: "多列8" },
         { value: "value9", label: "label9",label1: "多列9" },
         { value: "value10", label: "600570",label1: "多列10" },
-        { value: "value11", label: "600570",label1: "多列11" },
-        { value: "value12", label: "600570",label1: "多列12" },
-        { value: "value13", label: "600570",label1: "多列13" },
-        { value: "value14", label: "600570",label1: "多列14" },
-        { value: "value15", label: "600570",label1: "多列15" },
+        { value: "value11", label: "000001",label1: "平安银行" },
+        { value: "value12", label: "601600",label1: "中国铝业" },
+        { value: "value13", label: "300056",label1: "三维丝" },
+        { value: "value14", label: "002354",label1: "天神娱乐" },
+        { value: "value15", label: "002016",label1: "世荣兆业" },
+        { value: "value16", label: "501009",label1: "生物科技" },
+        { value: "value17", label: "502014",label1: "一带一A" },
+        { value: "value18", label: "513660",label1: "恒生通" },
+        { value: "value19", label: "600570",label1: "多列15" },
+        { value: "value20", label: "600570",label1: "多列15" },
       ],
       remoteData:[],
       colWidth:['200','200'],
