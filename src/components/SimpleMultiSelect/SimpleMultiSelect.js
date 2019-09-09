@@ -49,21 +49,12 @@ export default {
     handleSearchBlur() {
       this.selectedResult = this.selectedMultiple.map(item => item.label).join();
     },
-    focus() {
-      /// ???
-      if (this.disabled || this.readonly) return;
-      this.$nextTick(() => {
-        this.isInputFocus = true;
-        this.$refs.input.focus();
-      });
-    },
     keyup() {
       return;
     },
     handleKeydown(e) {
       if (_.isKeyMatch(e, "Esc")) {
         this.hideMenu();
-        this.handleSearchBlur();
         this.$nextTick(() => {
           this.$refs.input.focus();
         });
@@ -73,7 +64,6 @@ export default {
         if (_.isKeyMatch(e, "Enter")) {
           e.preventDefault();
           this.hideMenu();
-          this.handleSearchBlur();
           this.$nextTick(() => {
             this.$refs.input.focus();
           });
@@ -128,70 +118,70 @@ export default {
       if (this.visible || this.isInputFocus) {
         this.handleBack(e);
       }
+    },
+    broadcastQuery(keyword) {
+      this.broadcast("Block", "on-query-change", keyword);
+      if (this.isSelectFilter) {
+        this.findChild(({ cloneData }) => {
+          this.selectHead = cloneData.length > 0 && cloneData.every(({ selected, hidden }) => selected && !hidden);
+        });
+      }
     }
   },
   watch: {
     selectedResult(val, oldVal) {
-      let searchkey = "";
-      let selectAry = val.split(",");
-      // let oldselectAry=oldVal.split(",");
-      let multipleAry = [];
+      const multipleAry = this.selectedMultiple.map(item => item.label);
+      const resultAry = val === "" ? [] : val.split(",");
+      const keywords = resultAry.filter(item => !multipleAry.includes(item));
+
       if (this.isCopy) {
         this.$emit("on-paste", { oldval: oldVal, newval: val });
         this.isCopy = false;
         return;
       }
+
       if (this.newSearchCheckAll) {
         this.newSearchCheckAll = false;
         return;
       }
+
       if (this.newSearchUnCheckAll) {
         this.newSearchUnCheckAll = false;
         return;
       }
+
       if (this.isMultiSpecial) {
         this.isMultiSpecial = false;
         return;
       }
+
       if (this.isResetField) {
         this.isResetField = false;
-        return;
       }
+
       if (oldVal != "" && val == "" && this.model.length > 0) {
         this.model = [];
         return;
       }
-      if (oldVal + "," == val) {
-        searchkey = ",";
-        this.newModelhandleSearch(searchkey);
-        return;
-      }
-      this.selectedMultiple.forEach(item => {
-        multipleAry.push(item["label"]);
-      });
-      //if(this.isSearchDelete){
+
+      // sync selectedMultiple
       this.newModelSearchDelete(multipleAry);
-      // }
-      for (let i = 0; i < selectAry.length; i++) {
-        if (multipleAry.indexOf(selectAry[i]) < 0) {
-          searchkey = selectAry[i];
-        }
+
+      // run newModelhandleSearch
+      if (keywords.length > 0) {
+        this.newModelhandleSearch(keywords[keywords.length - 1]);
       }
-      if (searchkey == "" && multipleAry.length < selectAry.length) {
-        searchkey = selectAry[selectAry.length - 1];
-      }
-      if (searchkey == "") {
-        return;
-      }
-      this.newModelhandleSearch(searchkey);
     },
-    isResetField() {
-      if (this.newSearchModel && !this.visible) {
-        let multipleAry = [];
-        this.selectedMultiple.forEach(item => {
-          multipleAry.push(item["label"]);
-        });
-        this.selectedResult = multipleAry.join(",");
+    isResetField(newVal) {
+      if (newVal && this.newSearchModel && !this.visible) {
+        this.selectedResult = this.selectedMultiple.map(item => item.label).join();
+      }
+    },
+    dropVisible(newVal) {
+      // run search bar handler on fold
+      if (!newVal) {
+        this.handleSearchBlur();
+        this.focusIndex = this.focusInit;
       }
     }
   }
