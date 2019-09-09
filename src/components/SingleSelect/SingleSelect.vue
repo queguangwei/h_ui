@@ -845,6 +845,7 @@ export default {
             options.push({
               value: col.value,
               label: col.label || col.value,
+              label1: col[child.showCol[0]],
               disabled: col.disabled || false,
               index: i
             })
@@ -865,7 +866,6 @@ export default {
       })
       this.options = options
       this.availableOptions = options
-
       this.broadcast('Drop', 'on-update-popper')
 
       if (init) {
@@ -899,16 +899,6 @@ export default {
           }
         }
       }
-//      else {
-//        const singVal = this.query.split(' ')[0]
-//        for(let j in this.availableOptions) {
-//          if(this.availableOptions[j].label === singVal) {
-//            this.focusIndex = this.availableOptions[j].index + 1
-//            break
-//          }
-//        }
-//      }
-
       const type = typeof this.model
       if (type === 'string' || type === 'number') {
         let findModel = false
@@ -932,7 +922,6 @@ export default {
           this.model = ''
           this.query = ''
         }
-
       }
       this.toggleSingleSelected(this.model, init)
     },
@@ -1015,6 +1004,12 @@ export default {
       }
       if (!init) {
         // o45
+        for(let j in this.availableOptions) {
+          if(this.availableOptions[j].value === value) {
+            this.focusIndex = this.availableOptions[j].index + 1
+            break
+          }
+        }
 //        if(this.keepInputValue) {
 //          this.selectedSingle = this.query
 //        }
@@ -1163,9 +1158,7 @@ export default {
         const prev = this.focusIndex - 1
         this.focusIndex = this.focusIndex <= 1 ? this.options.length : prev
       }
-      let top = this.$refs.list.children[0].querySelectorAll('.h-table-row')[
-      this.focusIndex - 1
-        ].offsetTop
+      let top = this.$refs.list.children[0].querySelectorAll('.h-table-row')[this.focusIndex - 1].offsetTop
       this.findChild(child => {
         child.$refs.table.changeHover(this.focusIndex - 1, true)
       })
@@ -1590,11 +1583,19 @@ export default {
       } else {
         let curlabel = ''
         let index = 0
+//        this.findChild(child => {
+//          child.cloneData.forEach((col, i) => {
+//            if (col.value == this.model && child.showCol.length > 0) {
+//              curlabel = col.label + ' ' + col[child.showCol[0]]
+//              index = col.index + 1
+//            }
+//          })
+//        })
         this.findChild(child => {
-          child.cloneData.forEach((col, i) => {
+          this.availableOptions.forEach((col, i) => {
             if (col.value == this.model && child.showCol.length > 0) {
               curlabel = col.label + ' ' + col[child.showCol[0]]
-              index = col._index + 1
+              index = col.index + 1
             }
           })
         })
@@ -1762,6 +1763,10 @@ export default {
     if (this.isBlock) {
       this.$on('on-options-visible-change', arg => {
         this.availableOptions = arg.data.filter(option => !option.hidden)
+        //写入index 左右切换使用
+        this.availableOptions.forEach((col, i) => {
+          this.$set(this.availableOptions[i], 'index', i)
+        })
       })
     }
   },
@@ -1849,9 +1854,9 @@ export default {
       }
       //viewValue 实际并没有使用
       this.viewValue = val
-      if (!this.isInputFocus) {
+//      if (!this.isInputFocus) {
         this.setSingleSelect()
-      }
+//      }
     },
     // eslint-disable-next-line
     selectedMultiple(val) {
