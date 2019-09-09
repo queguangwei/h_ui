@@ -430,12 +430,10 @@
       //
       var offsetParent = (isParentFixed && isParentTransformed) ? getOffsetParent(reference) : getOffsetParent(popper);
       var referenceOffsets = getOffsetRectRelativeToCustomParent(reference, offsetParent, isParentFixed, isParentTransformed);
-      console.log(referenceOffsets)
       //
       // Get popper sizes
       //
       var popperRect = getOuterSizes(popper);
-      console.log(popperRect)
       //
       // Compute offsets of popper
       //
@@ -451,7 +449,6 @@
       } else {
           popperOffsets.left = referenceOffsets.left + referenceOffsets.width / 2 - popperRect.width / 2;
           if (placement === 'top') {
-            console.log(referenceOffsets.top, popperRect.height)
               popperOffsets.top = referenceOffsets.top - popperRect.height;
           } else {
               popperOffsets.top = referenceOffsets.bottom;
@@ -973,6 +970,17 @@
    * @returns {Object} object containing width and height properties
    */
   function getOuterSizes(element) {
+    var calcHeightToForceRepaint = element.offsetHeight
+    if(window.isO45) {
+      var items = element.getElementsByTagName('ul')[0]
+      var itemss = items.getElementsByTagName('li')
+      var len = itemss.length
+      if(len > 0 && len < 7) {
+        calcHeightToForceRepaint = 30 * len
+      }else {
+        calcHeightToForceRepaint = element.offsetHeight
+      }
+    }
 
       // NOTE: 1 DOM access here
       var _display = element.style.display, _visibility = element.style.visibility;
@@ -983,7 +991,8 @@
       var styles = root.getComputedStyle(element);
       var x = parseFloat(styles.marginTop) + parseFloat(styles.marginBottom);
       var y = parseFloat(styles.marginLeft) + parseFloat(styles.marginRight);
-      var result = { width: element.offsetWidth + y, height: element.offsetHeight + x };
+
+      var result = { width: element.offsetWidth + y, height: calcHeightToForceRepaint + x };
 
       // reset element styles
       element.style.display = _display; element.style.visibility = _visibility;
