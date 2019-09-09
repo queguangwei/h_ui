@@ -1578,19 +1578,10 @@ export default {
       }
     },
     setSingleSelect() {
-      if (this.model == '') {
-        this.query = ''
-      } else {
-        let curlabel = ''
-        let index = 0
-//        this.findChild(child => {
-//          child.cloneData.forEach((col, i) => {
-//            if (col.value == this.model && child.showCol.length > 0) {
-//              curlabel = col.label + ' ' + col[child.showCol[0]]
-//              index = col.index + 1
-//            }
-//          })
-//        })
+      let curlabel = ''
+      let index = 0
+      //焦点在输入框内
+      if(this.isInputFocus) {
         this.findChild(child => {
           this.availableOptions.forEach((col, i) => {
             if (col.value == this.model && child.showCol.length > 0) {
@@ -1599,23 +1590,39 @@ export default {
             }
           })
         })
+        this.focusIndex = index
         if(this.showFirstLabelOnly) {
           let ind = curlabel.indexOf(' ')
           curlabel = curlabel.substring(0, ind)
-        }else {
-          this.selectedSingle = curlabel
         }
-        //o45 证券代码控件 模糊输入，不匹配下拉项保留输入值
-        if(curlabel == '' && this.keepInputValue && this.model) {
-          this.query = this.model
-          return
+        this.selectedSingle = curlabel
+      }else {
+        if (this.model == '') {
+          this.query = ''
+        } else {
+          this.findChild(child => {
+            this.availableOptions.forEach((col, i) => {
+              if (col.value == this.model && child.showCol.length > 0) {
+                curlabel = col.label + ' ' + col[child.showCol[0]]
+                index = col.index + 1
+              }
+            })
+          })
+          if(this.showFirstLabelOnly) {
+            let ind = curlabel.indexOf(' ')
+            curlabel = curlabel.substring(0, ind)
+          }else {
+            this.selectedSingle = curlabel
+          }
+          //o45 证券代码控件 模糊输入，不匹配下拉项保留输入值
+          if(curlabel == '' && this.keepInputValue && this.model) {
+            this.query = this.model
+            return
+          }
         }
-//        this.query = curlabel
-        // 造成搜索值清空后切换焦点重新赋上bug
-
-        this.isQuerySelect = false
-        this.focusIndex = index
       }
+      this.isQuerySelect = false
+      this.focusIndex = index
     },
 
     queryChange(val) {
@@ -1854,9 +1861,7 @@ export default {
       }
       //viewValue 实际并没有使用
       this.viewValue = val
-//      if (!this.isInputFocus) {
-        this.setSingleSelect()
-//      }
+      this.setSingleSelect()
     },
     // eslint-disable-next-line
     selectedMultiple(val) {

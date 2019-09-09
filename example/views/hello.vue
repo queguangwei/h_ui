@@ -10,7 +10,7 @@
                          remote filterable :loading="isLoading" :remote-method="remoteMethod1"
                          widthAdaption keepInputValue
                          :autoCheckSwitch="false" :animated="false" @on-keydown="handlekeydown">
-          <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
+          <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
         </h-single-select>
       </h-form-item>
       <h-form-item label="input" prop="name" required>
@@ -109,8 +109,6 @@ export default {
         { value: "value16", label: "501009",label1: "生物科技" },
         { value: "value17", label: "502014",label1: "一带一A" },
         { value: "value18", label: "513660",label1: "恒生通" },
-        { value: "value19", label: "600570",label1: "多列15" },
-        { value: "value20", label: "600570",label1: "多列15" },
       ],
       remoteData:[],
       colWidth:['200','200'],

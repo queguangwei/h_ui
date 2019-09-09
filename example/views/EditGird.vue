@@ -511,8 +511,8 @@ export default {
   },
   methods: {
     chooseFirst() {
-//      this.$refs.table.toggleSelect(0)
-      this.$refs.table.selectAll(true)
+      this.$refs.table.toggleSelect(0)
+//      this.$refs.table.selectAll(true)
     },
     readOnly() {
       this.columns1[8].type=''
