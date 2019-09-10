@@ -6,6 +6,7 @@
     <Button @click="getChangeData">获取改变后的数据</Button>
     <Button @click="readOnly">只读</Button>
     <Button @click="write">可写</Button>
+    <Button @click="chooseFirst">选中第一项</Button>
       <h-edit-gird ref="table" border height="500"
         :showEditInput=true
         :columns="columns1"
@@ -26,7 +27,9 @@
         @on-editarea-blur="selectchange"
         @on-money-blur="selectchange"
         @on-money-change="selectchange"
-        @on-editdate-change="selectchange">
+        @on-editdate-change="selectchange"
+        @on-selection-change="selsetChange"
+      >
         <p slot='loading'>我是自定义loading</p>
       </h-edit-gird>
     <Button @click="getData">获取数据</Button>
@@ -507,6 +510,10 @@ export default {
       }
   },
   methods: {
+    chooseFirst() {
+      this.$refs.table.toggleSelect(0)
+//      this.$refs.table.selectAll(true)
+    },
     readOnly() {
       this.columns1[8].type=''
     },

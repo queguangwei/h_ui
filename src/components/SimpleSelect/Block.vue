@@ -229,6 +229,7 @@ export default {
       if(this.$parent.$parent.isSingleSelect&&!isEffective&&!states){
         this.$parent.$parent.selectBlockSingle('',true)
       }
+
       this.dispatch('SimpleSelect', 'on-options-visible-change', { data: this.cloneData })
       this.dispatch('SingleSelect', 'on-options-visible-change', { data: this.cloneData })
       this.showEmpty = status

@@ -1845,13 +1845,16 @@ export default {
         if (this.model == !val) {
           this.isQuerySelect = false
         }
+
         if (this.multiple && this.isString) {
           this.model = this.strtoArr(val)
         } else {
           this.model = val
-          // TODO
         }
-        if (val === '' && !this.visible) this.query = ''
+        
+        if (val === '' && !this.visible) {
+          this.query = ''
+        }
       }
     },
     label(val) {
@@ -1940,9 +1943,19 @@ export default {
     },
     // eslint-disable-next-line
     selectedMultiple(val) {
-      this.viewValue = val
-      this.showTotal = this.showTotalNum && this.multiple && !this.isInputFocus && val.length > 2 ? true : false
-      this.selectedResult = this.selectedMultiple.map(item => item.label).join()
+      this.viewValue = val;
+      this.showTotal = this.showTotalNum && this.multiple && !this.isInputFocus && val.length > 2 ? true : false;
+      // this.selectedResult = this.selectedMultiple.map(item => item.label).join();
+      // sync selectedResult
+      const splitSelectedResult = this.selectedResult === "" ? [] : this.selectedResult.split(",");
+      const splitSelectedMultiple = this.selectedMultiple.map(item => item.label);
+      let selectedResult = this.selectedResult;
+      for (const item of splitSelectedMultiple) {
+        if (!splitSelectedResult.includes(item)) {
+          selectedResult = selectedResult === "" ? item : `${selectedResult},${item}`;
+        }
+      }
+      this.selectedResult = selectedResult;
       this.$nextTick(() => {
         this.offsetArrow()
       })
