@@ -996,11 +996,11 @@ export default {
             }
           }
           flag = false
-          this.isInputFocus = false
           this.isQuerySelect = false
         }else {
           this.setSingleSelect()
         }
+        this.isInputFocus = false
         // 单选返回字符串
         this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
       }
@@ -1355,6 +1355,7 @@ export default {
     },
     blur() {
       this.visible = false
+      this.isInputFocus = false
       if (this.filterable) {
         this.$refs.input.blur()
       } else {
@@ -1380,9 +1381,8 @@ export default {
           }
         }
         flag = false
-        this.isInputFocus = false
         this.isQuerySelect = false
-      }else if(this.model !== '' && this.query !== '') {
+      }else if(this.model !== '' && this.query !== '') { // 删除字符仍有匹配项但model未被清空
         this.setSingleSelect()
       }
       this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
