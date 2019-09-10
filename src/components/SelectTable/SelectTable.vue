@@ -6,6 +6,7 @@
     <div :class="selectionCls"
          ref="reference"
          :tabindex="selectTabindex"
+         :title="tooltip"
          @keyup="keyup"
          @keydown="keydown"
          @click="showdrop">
@@ -434,6 +435,11 @@ export default {
     buttonToTop: {
       type: Boolean,
       default: false
+    },
+    // 鼠标在输入框悬浮时显示额外的提示信息
+    tooltip: {
+      type: String,
+      default: ""
     }
   },
   data() {
