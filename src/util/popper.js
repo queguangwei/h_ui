@@ -453,6 +453,10 @@
           } else {
               popperOffsets.top = referenceOffsets.bottom;
           }
+          if(window.isO45) {
+            let el = getOffsetSum(reference)
+            popperOffsets.left = el.left
+          }
       }
 
       // Add width and height to our offsets object
@@ -1213,6 +1217,28 @@
       };
   }
 
+  function findParent(dom) {
+    if(dom) {
+      if(dom.parentNode.nodeName !== 'BODY') {
+        findParent(dom.parentNode)
+      }else {
+        console.log(dom.parentNode)
+      }
+    }
+  }
+  function getOffsetSum(ele){
+    var top= 0,left=0;
+    while(ele){
+      top+=ele.offsetTop;
+      left+=ele.offsetLeft;
+      ele=ele.offsetParent;
+    }
+    return {
+      top:top,
+      left:left
+    }
+  }
+
   /**
    * Given an element and one of its parents, return the offset
    * @function
@@ -1224,7 +1250,6 @@
   function getOffsetRectRelativeToCustomParent(element, parent, fixed, transformed) {
       var elementRect = getBoundingClientRect(element);
       var parentRect = getBoundingClientRect(parent);
-
       if (fixed && !transformed) {
           var scrollParent = getScrollParent(parent);
           parentRect.top += scrollParent.scrollTop;
@@ -1232,7 +1257,6 @@
           parentRect.left += scrollParent.scrollLeft;
           parentRect.right += scrollParent.scrollLeft;
       }
-
       var rect = {
           top: elementRect.top - parentRect.top ,
           left: elementRect.left - parentRect.left ,
