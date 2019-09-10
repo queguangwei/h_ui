@@ -636,10 +636,10 @@ export default {
       return this.disabled
         ? -1
         : this.tabindex + '' !== '-1'
-        ? this.filterable
-          ? -1
-          : this.tabindex
-        : 0
+          ? this.filterable
+            ? -1
+            : this.tabindex
+          : 0
     },
     notFoundShow() {
       let options = this.options
@@ -896,10 +896,10 @@ export default {
         }
         //tan 50多选改动
         if(this.remote){
-//          if(this.newSearchModel){
-//            this.broadcastQuery(this.curSearchkey)
-//          }
-          this.$refs.dropdown.setWidthAdaption();
+          //          if(this.newSearchModel){
+          //            this.broadcastQuery(this.curSearchkey)
+          //          }
+          this.$refs.dropdown.setWidthAdaption()
         }
       }
     },
@@ -956,8 +956,8 @@ export default {
       if (this.multiple && Array.isArray(this.model)) {
         let selected = this.remote
           ? this.selectedMultiple.filter(
-              item => this.model.filter(v => v === item.value).length
-            )
+            item => this.model.filter(v => v === item.value).length
+          )
           : []
 
         for (let i = 0; i < this.model.length; i++) {
@@ -1323,7 +1323,7 @@ export default {
         this.handleNewSearchUnCheckAll(e)
         this.toggleSelect(false)
         this.selectedResult=''
-        e.preventDefault();
+        e.preventDefault()
       }
       if(this.newSearchModel){
         this.$emit('on-keydown', this.selectedResult, e)
@@ -1367,12 +1367,12 @@ export default {
     },
     newModelSearchDelete(multipleAry) {
       if (this.multiple && this.selectedMultiple.length > 0) {
-        const searchAry = this.selectedResult.split(",");
+        const searchAry = this.selectedResult.split(',')
         for (let index = 0; index < multipleAry.length; index++) {
-          const label = multipleAry[index];
+          const label = multipleAry[index]
           if (!searchAry.includes(label)) {
-            this.selectedMultiple.splice(this.selectedMultiple.findIndex(item => item.label === label), 1);
-            this.model.splice(this.model.findIndex(item => item === label), 1);
+            this.selectedMultiple.splice(this.selectedMultiple.findIndex(item => item.label === label), 1)
+            this.model.splice(this.model.findIndex(item => item === label), 1)
           }
         }
       }
@@ -1385,11 +1385,11 @@ export default {
           if (!this.visible && searchkey) this.visible = true
           this.remoteMethod(searchkey)
           //tan 50 多选改动 放开
-//          this.curSearchkey = searchkey
-          if(searchkey!=","){
+          //          this.curSearchkey = searchkey
+          if(searchkey!=','){
             setTimeout(()=> {
               //tan 50多选改动 注释掉
-              this.newSearchUpdate();
+              this.newSearchUpdate()
               this.$emit('on-query-change', searchkey)
               //this.$refs.dropdown.setWidthAdaption(true);
             }, 300)
@@ -1523,7 +1523,7 @@ export default {
     },
     handleBack(e) {
       if (!this.isBackClear || this.readonly || this.disable) return
-      if (e.keyCode == 8 && this.value !== null && this.value != "") {
+      if (e.keyCode == 8 && this.value !== null && this.value != '') {
         let c = this.value
         if (this.multiple) {
           this.clearMultipleSelect()
@@ -1615,13 +1615,8 @@ export default {
       this.availableOptions = this.options
       this.selectToChangeQuery = true
 
-      if (this.model === value) {
-      } else {
+      if (this.model !== value) {
         this.model = value
-      }
-      if (!this.isSingleSelect || str == 'click') {
-        this.hideMenu()
-        this.isInputFocus = false
       }
     },
     selectBlockMultiple(value, changeitem) {
@@ -1659,9 +1654,9 @@ export default {
         }
         this.model.push(value)
         this.$nextTick(() => {
-          this.broadcast("Drop", "on-update-popper");
-          this.$refs.input.focus();
-        });
+          this.broadcast('Drop', 'on-update-popper')
+          this.$refs.input.focus()
+        })
       }
     },
     setPlacement(top = 0) {
