@@ -49,6 +49,14 @@ export default {
     handleSearchBlur() {
       this.selectedResult = this.selectedMultiple.map(item => item.label).join();
     },
+    focus() {
+      /// ???
+      if (this.disabled || this.readonly) return;
+      this.$nextTick(() => {
+        this.isInputFocus = true;
+        this.$refs.input.focus();
+      });
+    },
     keyup() {
       return;
     },
