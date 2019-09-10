@@ -642,10 +642,10 @@ export default {
       return this.disabled
         ? -1
         : this.tabindex + '' !== '-1'
-        ? this.filterable
-          ? -1
-          : this.tabindex
-        : 0
+          ? this.filterable
+            ? -1
+            : this.tabindex
+          : 0
     },
     notFoundShow() {
       let options = this.options
@@ -902,10 +902,10 @@ export default {
         }
         //tan 50多选改动
         if(this.remote){
-//          if(this.newSearchModel){
-//            this.broadcastQuery(this.curSearchkey)
-//          }
-          this.$refs.dropdown.setWidthAdaption();
+          //          if(this.newSearchModel){
+          //            this.broadcastQuery(this.curSearchkey)
+          //          }
+          this.$refs.dropdown.setWidthAdaption()
         }
       }
     },
@@ -962,8 +962,8 @@ export default {
       if (this.multiple && Array.isArray(this.model)) {
         let selected = this.remote
           ? this.selectedMultiple.filter(
-              item => this.model.filter(v => v === item.value).length
-            )
+            item => this.model.filter(v => v === item.value).length
+          )
           : []
 
         for (let i = 0; i < this.model.length; i++) {
@@ -1329,7 +1329,7 @@ export default {
         this.handleNewSearchUnCheckAll(e)
         this.toggleSelect(false)
         this.selectedResult=''
-        e.preventDefault();
+        e.preventDefault()
       }
       if(this.newSearchModel){
         this.$emit('on-keydown', this.selectedResult, e)
@@ -1373,12 +1373,12 @@ export default {
     },
     newModelSearchDelete(multipleAry) {
       if (this.multiple && this.selectedMultiple.length > 0) {
-        const searchAry = this.selectedResult.split(",");
+        const searchAry = this.selectedResult.split(',')
         for (let index = 0; index < multipleAry.length; index++) {
-          const label = multipleAry[index];
+          const label = multipleAry[index]
           if (!searchAry.includes(label)) {
-            this.selectedMultiple.splice(this.selectedMultiple.findIndex(item => item.label === label), 1);
-            this.model.splice(this.model.findIndex(item => item === label), 1);
+            this.selectedMultiple.splice(this.selectedMultiple.findIndex(item => item.label === label), 1)
+            this.model.splice(this.model.findIndex(item => item === label), 1)
           }
         }
       }
@@ -1391,11 +1391,11 @@ export default {
           if (!this.visible && searchkey) this.visible = true
           this.remoteMethod(searchkey)
           //tan 50 多选改动 放开
-//          this.curSearchkey = searchkey
-          if(searchkey!=","){
+          //          this.curSearchkey = searchkey
+          if(searchkey!=','){
             setTimeout(()=> {
               //tan 50多选改动 注释掉
-              this.newSearchUpdate();
+              this.newSearchUpdate()
               this.$emit('on-query-change', searchkey)
               //this.$refs.dropdown.setWidthAdaption(true);
             }, 300)
@@ -1529,7 +1529,7 @@ export default {
     },
     handleBack(e) {
       if (!this.isBackClear || this.readonly || this.disable) return
-      if (e.keyCode == 8 && this.value !== null && this.value != "") {
+      if (e.keyCode == 8 && this.value !== null && this.value != '') {
         let c = this.value
         if (this.multiple) {
           this.clearMultipleSelect()
@@ -1621,14 +1621,10 @@ export default {
       this.availableOptions = this.options
       this.selectToChangeQuery = true
 
-      if (this.model === value) {
-      } else {
+      if (this.model !== value) {
         this.model = value
       }
-      if (!this.isSingleSelect || str == 'click') {
-        this.hideMenu()
-        this.isInputFocus = false
-      }
+      this.hideMenu()
     },
     selectBlockMultiple(value, changeitem) {
       const index = this.model.indexOf(value)
@@ -1665,9 +1661,9 @@ export default {
         }
         this.model.push(value)
         this.$nextTick(() => {
-          this.broadcast("Drop", "on-update-popper");
-          this.$refs.input.focus();
-        });
+          this.broadcast('Drop', 'on-update-popper')
+          this.$refs.input.focus()
+        })
       }
     },
     setPlacement(top = 0) {
@@ -1954,19 +1950,19 @@ export default {
     },
     // eslint-disable-next-line
     selectedMultiple(val) {
-      this.viewValue = val;
-      this.showTotal = this.showTotalNum && this.multiple && !this.isInputFocus && val.length > 2 ? true : false;
+      this.viewValue = val
+      this.showTotal = this.showTotalNum && this.multiple && !this.isInputFocus && val.length > 2 ? true : false
       // this.selectedResult = this.selectedMultiple.map(item => item.label).join();
       // sync selectedResult
-      const splitSelectedResult = this.selectedResult === "" ? [] : this.selectedResult.split(",");
-      const splitSelectedMultiple = this.selectedMultiple.map(item => item.label);
-      let selectedResult = this.selectedResult;
+      const splitSelectedResult = this.selectedResult === '' ? [] : this.selectedResult.split(',')
+      const splitSelectedMultiple = this.selectedMultiple.map(item => item.label)
+      let selectedResult = this.selectedResult
       for (const item of splitSelectedMultiple) {
         if (!splitSelectedResult.includes(item)) {
-          selectedResult = selectedResult === "" ? item : `${selectedResult},${item}`;
+          selectedResult = selectedResult === '' ? item : `${selectedResult},${item}`
         }
       }
-      this.selectedResult = selectedResult;
+      this.selectedResult = selectedResult
       this.$nextTick(() => {
         this.offsetArrow()
       })

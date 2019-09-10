@@ -8,7 +8,7 @@
         {{formValidate.city}}
         <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass"
                          remote filterable :loading="isLoading" :remote-method="remoteMethod1"
-                         widthAdaption keepInputValue
+                         widthAdaption keepInputValue transfer
                          :autoCheckSwitch="false" :animated="false" @on-keydown="handlekeydown">
           <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
         </h-single-select>
@@ -91,8 +91,8 @@ export default {
       },
       showCol:['label1'],
       bigData: [
-        { value: "value1", label: "600570",label1: "恒生电子"},
-        { value: "value2", label: "label2",label1: "多列2" },
+        { value: "value1", label: "label1",label1: "多列1"},
+        { value: "value2", label: "600570",label1: "恒生电子" },
         { value: "value3", label: "label3",label1: "海康威视" },
         { value: "value4", label: "label4",label1: "多列4" },
         { value: "value5", label: "label5",label1: "多列5" },
@@ -100,7 +100,7 @@ export default {
         { value: "value7", label: "label7",label1: "多列7" },
         { value: "value8", label: "label8",label1: "多列8" },
         { value: "value9", label: "label9",label1: "多列9" },
-        { value: "value10", label: "600570",label1: "多列10" },
+        { value: "value10", label: "label10",label1: "多列10" },
         { value: "value11", label: "000001",label1: "平安银行" },
         { value: "value12", label: "601600",label1: "中国铝业" },
         { value: "value13", label: "300056",label1: "三维丝" },
