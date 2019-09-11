@@ -780,8 +780,7 @@ export default {
         return false
       }
       this.visible = !this.visible
-      // this.isInputFocus = false
-      if (this.newSearchModel) {
+      if (this.visible || this.newSearchModel) {
         this.isInputFocus = true
       }
       if (
