@@ -4,9 +4,12 @@
     <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
       <h-form-item label="singleSelect" prop="city">
         <h-single-select class="curItemClass" v-model="formCustom.city" placeholder="请选择所在地"
-                         remote filterable :remote-method="remoteMethod1" widthAdaption placement="top" transfer>
-          <h-select-block :data="remoteData" :showCol="showCol"></h-select-block>
+                          filterable  widthAdaption
+                         placement="top" transfer keepInputValue>
+          <h-select-block :data="bigData" ></h-select-block>
         </h-single-select>
+        {{formCustom.city}}
+        <h-button type="primary" @click="modifyValue">改值</h-button>
       </h-form-item>
       <h-form-item label="金额框" prop="face_balance">
         <h-typefield class="curItemClass" v-model="formCustom.face_balance" nonNegative divided focusAllSelect
@@ -125,7 +128,7 @@ export default {
         passwd: '',
         passwdCheck: '',
         age: '',
-        city: ''
+        city: '123'
       },
       showCol:['label1'],
       bigData: [
@@ -180,6 +183,9 @@ export default {
     }
   },
   methods: {
+    modifyValue() {
+      this.formCustom.city = 'value1'
+    },
     remoteMethod1(query) {
       if (query !== "") {
         this.isLoading = true;
