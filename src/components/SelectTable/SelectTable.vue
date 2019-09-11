@@ -436,11 +436,6 @@ export default {
       type: Boolean,
       default: false
     },
-    // 鼠标在输入框悬浮时显示额外的提示信息
-    tooltip: {
-      type: String,
-      default: ""
-    }
   },
   data() {
     return {
@@ -483,7 +478,8 @@ export default {
       // newSearchUnCheckAll:false,
       // singleMutiLabel:'',
       curSearchkey: '',
-      querySingle: ''
+      querySingle: '',
+      tooltip: ''
     }
   },
   computed: {
@@ -1725,7 +1721,7 @@ export default {
                 this.focusValue = ''
                 this.focusIndex = 1
                 return true
-              } 
+              }
               this.focusIndex = this.focusInit
             })
           })
@@ -1857,7 +1853,7 @@ export default {
         } else {
           this.model = val
         }
-        
+
         if (val === '' && !this.visible) {
           this.query = ''
         }
@@ -1961,6 +1957,7 @@ export default {
           selectedResult = selectedResult === '' ? item : `${selectedResult},${item}`
         }
       }
+      this.tooltip = selectedResult
       this.selectedResult = selectedResult
       this.$nextTick(() => {
         this.offsetArrow()
