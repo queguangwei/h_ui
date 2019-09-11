@@ -1,3 +1,5 @@
+import isArrayLike from "./isArrayLike";
+import isArrayLikeObject from "./isArrayLikeObject";
 import isKeyMatch from "./isKeyMatch";
 
 /**
@@ -5,4 +7,4 @@ import isKeyMatch from "./isKeyMatch";
  * @example import _ from "@/util"; _.isKeyMatch(event, "Enter");
  * @author yangyc21550@hundsun.com
  */
-export default { isKeyMatch };
+export default { isArrayLike, isArrayLikeObject, isKeyMatch };
