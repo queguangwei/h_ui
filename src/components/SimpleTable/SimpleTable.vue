@@ -2335,6 +2335,30 @@ export default {
           this.keySelectRange()
         }
       }
+    },
+    resetTableScrollPos() {
+      if (this.$refs.header) {
+        this.$refs.header.scrollLeft = 0
+      }
+      const body = this.$refs.body
+      if (body) {
+        body.scrollLeft = 0
+        const bodyContent = this.$refs.content
+        if (bodyContent) {
+          bodyContent.style.transform = 'translateY(0)'
+          body.scrollTop = 0
+        }
+      }
+      const fixedBodyContent = this.$refs.leftContent
+      if (fixedBodyContent) {
+        fixedBodyContent.style.transform = 'translateY(0)'
+        if (this.$refs.fixedBody) {
+          this.$refs.fixedBody.scrollTop = 0
+        }
+      }
+      if (this.$refs.summation) {
+        this.$refs.summation.style.marginLeft = 0
+      }
     }
   },
   created() {
@@ -2366,6 +2390,7 @@ export default {
         this.handleResize()
         this.fixedHeader()
         this.getLeftWidth()
+        this.resetTableScrollPos()
       }
     })
     on(document, 'keyup', this.keySelect)
