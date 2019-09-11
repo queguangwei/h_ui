@@ -321,10 +321,10 @@ export default {
     },
     areaClass() {
       return [
-        `canEdit h-input`,
+        'canEdit h-input',
         {
-          [`h-input-disabled`]: this.column.disabled,
-          [`h-input-noresize`]: !this.column.canResize
+          ['h-input-disabled']: this.column.disabled,
+          ['h-input-noresize']: !this.column.canResize
         }
       ]
     },
@@ -722,7 +722,11 @@ export default {
     this.hiddenOther = this.column.hiddenOther ? true : false
 
     if (this.renderType !== 'normal' && this.column.rule) {
-      this.dispatch('EditGird', 'on-rule-cell-add', this)
+      if ((this.column.fixed === 'left' && this.$parent.$parent.fixed === 'left') 
+      || (this.column.fixed === 'right' && this.$parent.$parent.fixed === 'right')
+      || (this.column.fixed !== 'left' && this.column.fixed !== 'right' && !this.$parent.$parent.fixed) ) {
+        this.dispatch('EditGird', 'on-rule-cell-add', this)
+      }
     }
   },
   mounted() {
@@ -744,7 +748,11 @@ export default {
   },
   beforeDestroy() {
     if (this.renderType !== 'normal' && this.column.rule) {
-      this.dispatch('EditGird', 'on-rule-cell-remove', this)
+      if ((this.column.fixed === 'left' && this.$parent.$parent.fixed === 'left') 
+      || (this.column.fixed === 'right' && this.$parent.$parent.fixed === 'right')
+      || (this.column.fixed !== 'left' && this.column.fixed !== 'right' && !this.$parent.$parent.fixed) ) {
+        this.dispatch('EditGird', 'on-rule-cell-remove', this)
+      }
     }
   }
 }
