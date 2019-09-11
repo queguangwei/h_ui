@@ -8,7 +8,7 @@
       <span v-if="!column.renderHeader" :class="ellipsisClass(column, titleEllipsis)" :style="ellipsisStyle(column)" :title="column.showTitle?column.title:null">{{ column.title || '#' }}</span>
       <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
     </template>
-    <span :class="[prefixCls + '-sortSimp']" v-if="column.sortable&&!useNewSort&&column.type!=='selection'">
+    <span :class="sortCellCls" v-if="column.sortable&&!useNewSort&&column.type!=='selection'">
       <Icon name="android-arrow-dropup" :class="{on: column._sortType === 'asc'}" @on-click="handleSort(index, 'asc')" @mousedown.native.stop="handleClick"></Icon>
       <Icon name="android-arrow-dropdo" :class="{on: column._sortType === 'desc'}" @on-click="handleSort(index, 'desc')" @mousedown.native.stop="handleClick"></Icon>
     </span>
@@ -33,6 +33,15 @@ export default {
   },
   components:{renderHeader},
   computed: {
+    sortCellCls () {
+      // o45 排序图标右浮动
+       return [
+        {
+          [`${this.prefixCls}-sortSimp`] : window.isO45,
+          [`${this.prefixCls}-sort`]: !window.isO45
+        },
+      ]
+    },
     objData() {
       return this.$parent.objData
     },
@@ -65,21 +74,21 @@ export default {
     ellipsisStyle(column) {
       let style = {}
       let width = 0
-      style.display = 'inline-block'
-      if(column._width && this.titleEllipsis) {
-        if(window.isO45) {
+      if(column._width && this.titleEllipsis && window.isO45) {
+          style.display = 'inline-block'
           if(column.sortable) {
             width = column._width - 36 <= 24 ? 24 : column._width - 36
           }else {
             width = column._width - 16 <= 24 ? 24 : column._width - 16
           }
-        }else {
-          if(column.sortable) {
-            width = column._width - 50 <= 24 ? 24 : column._width - 50
-          }else {
-            width = column._width - 30 <= 24 ? 24 : column._width - 30
-          }
-        }
+        // if(window.isO45) {
+        // }else {
+        //   if(column.sortable) {
+        //     width = column._width - 50 <= 24 ? 24 : column._width - 50
+        //   }else {
+        //     width = column._width - 30 <= 24 ? 24 : column._width - 30
+        //   }
+        // }
         style.width = `${width}px`
       }
       return style

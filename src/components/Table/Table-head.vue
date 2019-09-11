@@ -10,7 +10,7 @@
           <div :class="[prefixCls+'-cell']"><span>{{multi.title}}</span></div>
         </th>
       </tr>
-      <tr class="cur-th">
+      <tr class="cur-th" :style="{height: theadHeight + 'px'}">
         <th v-for="(column, index) in columns"
           v-on:mousedown="mousedown($event,column,index)"
           v-on:mouseout="mouseout($event,column,index)"
@@ -98,6 +98,7 @@ export default {
     objData: Object,
     data: Array,    // rebuildData for sort or filter
     columnsWidth: Object,
+    theadHeight: Number,
     fixed: {
       type: [Boolean, String],
       default: false
