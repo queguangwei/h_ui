@@ -8,8 +8,8 @@
         {{formValidate.city}}
         <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass"
                          remote filterable :loading="isLoading" :remote-method="remoteMethod1"
-                         widthAdaption keepInputValue transfer
-                         :autoCheckSwitch="false" :animated="false" @on-keydown="handlekeydown">
+                         widthAdaption  transfer showFirstLabelOnly
+                         :animated="false" @on-keydown="handlekeydown">
           <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
         </h-single-select>
       </h-form-item>
@@ -81,7 +81,7 @@ export default {
         name: "",
         mail: "",
         city1:'',
-        city: 'value3',
+        city: 'value1',
         gender: "",
         interest: [],
         date: "",
@@ -91,8 +91,18 @@ export default {
       },
       showCol:['label1'],
       bigData: [
-        { value: "value1", label: "label1",label1: "多列1"},
-        { value: "value2", label: "600570",label1: "恒生电子" },
+        { value: "1", label: "1",label1: "多列01"},
+        { value: "2", label: "2",label1: "多列02"},
+        { value: "3", label: "3",label1: "多列03"},
+        { value: "11", label: "11",label1: "多列11"},
+        { value: "12", label: "12",label1: "多列12"},
+        { value: "13", label: "13",label1: "多列13"},
+        { value: "21", label: "21",label1: "多列21"},
+        { value: "22", label: "22",label1: "多列22"},
+        { value: "23", label: "23",label1: "多列23"},
+        { value: "30", label: "30",label1: "多列30"},
+        { value: "value1", label: "label1",label1: "恒生电子" },
+        { value: "value2", label: "label2",label1: "大华股份" },
         { value: "value3", label: "label3",label1: "海康威视" },
         { value: "value4", label: "label4",label1: "多列4" },
         { value: "value5", label: "label5",label1: "多列5" },
