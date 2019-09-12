@@ -1159,7 +1159,7 @@ export default {
     mouseup(event, column, index) {
       //拖拽表头排序不触发
       // 仅045使用
-      if (!window.isO45) return 
+      if (!window.isO45) return
       if(this.isDrag(this.beginLocation.clientX, this.beginLocation.clientY, event.clientX, event.clientY)) {
         return
       }
@@ -2542,12 +2542,11 @@ export default {
   },
   activated() {
     if (this.keepAliveFlag) {
-      let transform = this.$refs.content
-        ? this.$refs.content.style.transform
-        : ''
-      this.$refs.body.scrollTop = transform.match(
-        /translateY\(\d+px,\s*(\d+)px,\s*(\d+)px\)/i
-      )[1]
+      let transform = this.$refs.content ? this.$refs.content.style.transform : ''
+      let transformMatch = transform.match(/translateY\(\d+px,\s*(\d+)px,\s*(\d+)px\)/i)
+      if(transformMatch !== null) {
+        this.$refs.body.scrollTop = transformMatch[1]
+      }
       this.handleResize()
       on(window, 'resize', this.handleResize)
     }

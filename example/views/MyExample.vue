@@ -1,11 +1,65 @@
 <template>
   <div>
+    <p>msgbox</p>
+    <Button @on-click="changeShow">打开弹框</Button>
+    <h-msg-box v-model="show" escClose :mask-closable="false" @on-cancel="cancel" width="580" height="800">
+      <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
+        <h-form-item label="singleSelect" prop="city" required>
+          {{formValidate.city}}
+          <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass"
+                           remote filterable :loading="isLoading" :remote-method="remoteMethod1"
+                           widthAdaption  transfer showFirstLabelOnly autoPlacement
+                           :animated="false" @on-keydown="handlekeydown">
+            <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
+          </h-single-select>
+        </h-form-item>
+        <h-form-item label="input" prop="name" required>
+          <h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>
+        </h-form-item>
+        <h-form-item label="typefield" prop="mail">
+          <h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >
+        </h-form-item>
+        <h-form-item label="select" prop="city1">
+          <h-select v-model="formValidate.city1"  multiple placeholder="请选择所在地" class="curItemClass" >
+            <h-option value="beijing">北京市</h-option>
+            <h-option value="shanghai">上海市</h-option>
+            <h-option value="shenzhen">深圳市</h-option>
+          </h-select>
+        </h-form-item>
+        <h-form-item prop="date" label="data">
+          <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
+        </h-form-item>
+
+        <h-form-item label="valueRemote1" prop="valueRemote1" required>
+          <h-multi-select v-model="formValidate.valueRemote1" :isString="isstring" class="curItemClass" specialVal="value1" accuFilter newSearchModel>
+            <h-multi-block :data="remotebigData"></h-multi-block>
+          </h-multi-select>
+        </h-form-item>
+        <h-form-item prop="time" label="time">
+          <h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time" class="curItemClass" ></h-time-picker>
+        </h-form-item>
+        <h-form-item label="radio" prop="gender">
+          <h-radio-group v-model="formValidate.gender">
+            <h-radio label="male" class="curItemClass" >男</h-radio>
+            <h-radio label="female" class="curItemClass" >女</h-radio>
+          </h-radio-group>
+        </h-form-item>
+        <h-form-item label="checkbox" prop="interest">
+          <h-checkbox-group v-model="formValidate.interest">
+            <h-checkbox label="吃饭" class="curItemClass" ></h-checkbox>
+            <h-checkbox label="睡觉" class="curItemClass" ></h-checkbox>
+            <h-checkbox label="跑步" class="curItemClass" ></h-checkbox>
+            <h-checkbox label="看电影" class="curItemClass" ></h-checkbox>
+          </h-checkbox-group>
+        </h-form-item>
+      </h-form>
+    </h-msg-box>
+
     <p>form</p>
     <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
       <h-form-item label="singleSelect" prop="city">
         <h-single-select class="curItemClass" v-model="formCustom.city" placeholder="请选择所在地"
-                          filterable  widthAdaption
-                         placement="top" transfer keepInputValue>
+                         filterable widthAdaption autoPlacement keepInputValue>
           <h-select-block :data="bigData" ></h-select-block>
         </h-single-select>
         {{formCustom.city}}
@@ -28,49 +82,23 @@
       <h-form-item label="日期">
         <h-date-picker type="date" placeholder="选择日期" showToday v-model="formCustom.date" class="curItemClass"></h-date-picker>
       </h-form-item>
+
       <h-form-item>
         <h-button type="primary" @click="handleSubmit('formCustom')">提交</h-button>
         <h-button type="ghost" @click="handleReset('formCustom')" style="margin-left: 8px">重置</h-button>
       </h-form-item>
     </h-form>
-    <p>tabs</p>
-    <!--<h-tabs ref="remove">-->
-      <!--<h-tab-pane v-for="(item) in list" :key="item.show_title"  :label="item.show_title" :name="item.show_title">-->
-        <!--<div style="height:230px;width:100%;overflow:auto">-->
-            <!--{{item.show_title}}-->
-        <!--</div>-->
-      <!--</h-tab-pane>-->
-    <!--</h-tabs>-->
-      <!--<h-button @click="remove(true)">切换1</h-button>-->
-      <!--<h-button @click="remove(false)">切换2</h-button>-->
-      <!--<h-button @click="removeAll">清空</h-button>-->
-    <p>editGird</p>
 
   </div>
 </template>
 <script>
-let list1 = [{
-  show_title:"tab1"
-},
-  {
-    show_title:"tab2"
-  },
-  {
-    show_title:"tab3"
-  }]
-let list2 = [{
-  show_title:"tab1"
-},
-  {
-    show_title:"tab2"
-  },
-  {
-    show_title:"tab3"
-  },{
-    show_title:"tab4"
-  },{
-    show_title:"tab5"
-  }]
+  let bigData = [];
+  for(let i=0;i<2000;i++){
+    let obj={};
+    obj.value=i;
+    obj.label=i;
+    bigData.push(obj);
+  }
 import { enterHandler1 } from "../../src/util/tools.js"
 export default {
   data () {
@@ -122,6 +150,57 @@ export default {
     };
 
     return {
+      show:false,
+      isLoading: false,
+      value:'value0',
+      formValidate: {
+        name: "",
+        mail: "",
+        city1:'',
+        city: 'value1',
+        gender: "",
+        interest: [],
+        date: "",
+        time: "",
+        desc: "",
+        valueRemote1: [],
+      },
+      showCol:['label1'],
+      bigData: [
+        { value: "1", label: "1",label1: "多列01"},
+        { value: "2", label: "2",label1: "多列02"},
+        { value: "3", label: "3",label1: "多列03"},
+        { value: "11", label: "11",label1: "多列11"},
+        { value: "12", label: "12",label1: "多列12"},
+        { value: "13", label: "13",label1: "多列13"},
+        { value: "21", label: "21",label1: "多列21"},
+        { value: "22", label: "22",label1: "多列22"},
+        { value: "23", label: "23",label1: "多列23"},
+        { value: "30", label: "30",label1: "多列30"},
+        { value: "value1", label: "label1",label1: "恒生电子" },
+        { value: "value2", label: "label2",label1: "大华股份" },
+        { value: "value3", label: "label3",label1: "海康威视" },
+        { value: "value4", label: "label4",label1: "多列4" },
+        { value: "value5", label: "label5",label1: "多列5" },
+        { value: "value6", label: "label6",label1: "多列6" },
+        { value: "value7", label: "label7",label1: "多列7" },
+        { value: "value8", label: "label8",label1: "多列8" },
+        { value: "value9", label: "label9",label1: "多列9" },
+        { value: "value10", label: "label10",label1: "多列10" },
+        { value: "value11", label: "000001",label1: "平安银行" },
+        { value: "value12", label: "601600",label1: "中国铝业" },
+        { value: "value13", label: "300056",label1: "三维丝" },
+        { value: "value14", label: "002354",label1: "天神娱乐" },
+        { value: "value15", label: "002016",label1: "世荣兆业" },
+        { value: "value16", label: "501009",label1: "生物科技" },
+        { value: "value17", label: "502014",label1: "一带一A" },
+        { value: "value18", label: "513660",label1: "恒生通" },
+      ],
+      remoteData:[],
+      colWidth:['200','200'],
+      isstring:false,
+      remotebigData:bigData,
+      value111:'value0',
       list: [],
       formCustom: {
         date: '',
@@ -131,30 +210,6 @@ export default {
         age: '',
         city: '123'
       },
-      showCol:['label1'],
-      bigData: [
-        { value: "value1", label: "label1",label1: "多列111111111111111111111"},
-        { value: "value2", label: "label2",label1: "多列2" },
-        { value: "value3", label: "label3",label1: "海康威视" },
-        { value: "value4", label: "label4",label1: "多列4" },
-        { value: "value5", label: "label5",label1: "多列5" },
-        { value: "value6", label: "label6",label1: "多列6" },
-        { value: "value7", label: "label7",label1: "多列7" },
-        { value: "value8", label: "label8",label1: "多列8" },
-        { value: "value9", label: "label9",label1: "多列9" },
-        { value: "value10", label: "600570",label1: "恒生电子" },
-        { value: "value11", label: "000001",label1: "平安银行" },
-        { value: "value12", label: "601600",label1: "中国铝业" },
-        { value: "value13", label: "300056",label1: "三维丝" },
-        { value: "value14", label: "002354",label1: "天神娱乐" },
-        { value: "value15", label: "002016",label1: "世荣兆业" },
-        { value: "value16", label: "501009",label1: "生物科技" },
-        { value: "value17", label: "502014",label1: "一带一A" },
-        { value: "value18", label: "513660",label1: "恒生通" },
-        { value: "value19", label: "600570",label1: "多列15" },
-        { value: "value20", label: "600570",label1: "多列15" },
-      ],
-      remoteData:[],
       ruleCustom: {
         face_balance: [{
           validator: (rule, value, callback)=>{
@@ -184,6 +239,18 @@ export default {
     }
   },
   methods: {
+    handleSubmit (name) {
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          this.$Message.success('提交成功!');
+        } else {
+          this.$Message.error('表单验证失败!');
+        }
+      })
+    },
+    handleReset (name) {
+      this.$refs[name].resetFields();
+    },
     remoteMethod1(query) {
       if (query !== "") {
         this.isLoading = true;
@@ -200,36 +267,20 @@ export default {
         this.remoteData = [];
       }
     },
-    handleSubmit (name) {
-      this.$refs[name].validate((valid) => {
-        if (valid) {
-          this.$Message.success('提交成功!');
-        } else {
-          this.$Message.error('表单验证失败!');
-        }
-      })
+    handlekeydown(val, e) {
+      console.log(val)
+      console.log(e)
     },
-    handleReset (name) {
-      this.$refs[name].resetFields();
+    clear(){
+      this.formValidate.city=''
     },
-    remove(status) {
-      if(status) {
-        this.list = list1
-      }else {
-        this.list = list2
-      }
-      this.$nextTick(()=>{
-        this.$refs.remove.updateNav()
-      })
+    changeShow(){
+      this.show=true
+      this.$refs.formValidate.firstNodeFocused()
     },
-    removeAll() {
-      this.list = []
-      this.$nextTick(()=>{
-        this.$refs.remove.updateNav()
-      })
-
+    cancel() {
+      this.$refs.formValidate.resetFields()
     }
-
   },
   created() {
     window.isO45 = true

@@ -334,7 +334,7 @@ export default {
         rule => !rule.trigger || rule.trigger.indexOf(trigger) !== -1
       )
     },
-    validate(trigger, value, callback = function() {}) {
+    validate(trigger, callback = function() {}) {
       this.showModal = true
       if (this.isNotChecked) return
       const rules = this.getFilteredRule(trigger)
@@ -418,7 +418,7 @@ export default {
       if (cb) cb()
     },
     onFieldBlur(val) {
-      this.validate('blur', val, () => {})
+      this.validate('blur', () => {})
     },
     onFieldChange(val) {
       if (this.validateDisabled) {
@@ -426,7 +426,7 @@ export default {
         return
       }
       if (this.isOnlyBlurRequire) return
-      this.validate('change', val, () => {})
+      this.validate('change', () => {})
     },
     commonRule(str) {
       let rules = this.getRules()

@@ -1233,12 +1233,11 @@ export default {
         this.focus()
       }
     },
-    setPlacement(top = 0) {
+    setPlacement() {
       if (this.autoPlacement) {
-        let obj = this.$refs.select
-        // let allWidth = document.body.clientWidth
-        let allHeight = document.body.clientHeight
-        let curbottom = allHeight - obj.offsetTop - obj.clientHeight - top
+        let clientHeight = document.documentElement.clientHeight
+        let rect = this.$refs.select.getBoundingClientRect()
+        let curbottom = clientHeight - rect.top - rect.height
         let bottomNum = 210
         if (curbottom < bottomNum) {
           this.fPlacement = 'top'
@@ -1425,14 +1424,15 @@ export default {
     // if (this.disabled) {
     //   this.tabIndex = -1
     // }
-    this.setPlacement()
-    this.$on('on-visible-change', (val, top) => {
-      if (val) {
-        this.$nextTick(() => {
-          this.setPlacement(parseInt(top))
-        })
-      }
-    })
+
+//    this.setPlacement()
+//    this.$on('on-visible-change', (val, top) => {
+//      if (val) {
+//        this.$nextTick(() => {
+//          this.setPlacement(parseInt(top))
+//        })
+//      }
+//    })
 
     if (this.isBlock) {
       this.$on('on-options-visible-change', arg => {
@@ -1474,6 +1474,8 @@ export default {
     },
     visible(val) {
       if (val) {
+        // 显示前才计算位置
+        this.setPlacement()
         this.$nextTick(() => {
           let content = this.$refs.content
           if (content.scrollHeight > content.clientHeight) {
