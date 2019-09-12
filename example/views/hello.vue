@@ -2,13 +2,13 @@
 <div>
   <Button @on-click="changeShow">打开弹框</Button>
   <Button @on-click="changeData">改变数值</Button>
-   <h-msg-box v-model="show" escClose :mask-closable="false" @on-cancel="cancel" width="580" height="1000">
+   <h-msg-box v-model="show" escClose :mask-closable="false" @on-cancel="cancel" width="580" height="200">
     <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
       <h-form-item label="singleSelect" prop="city" required>
         {{formValidate.city}}
         <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass"
                          remote filterable :loading="isLoading" :remote-method="remoteMethod1"
-                         widthAdaption  transfer showFirstLabelOnly
+                         widthAdaption  transfer showFirstLabelOnly autoPlacement
                          :animated="false" @on-keydown="handlekeydown">
           <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
         </h-single-select>

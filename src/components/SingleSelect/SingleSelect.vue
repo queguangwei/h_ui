@@ -1234,6 +1234,32 @@ export default {
       }
     },
     setPlacement(top = 0) {
+      // 自动适配逻辑调整
+//      if (this.autoPlacement) {
+//        let clientHeight = document.documentElement.clientHeight
+//        let clienWidth = document.documentElement.clientWidth
+//        let rect = this.$refs.wrapper.getBoundingClientRect()
+//        let curbottom = clientHeight - rect.top - rect.height
+//        let bottomNum = this.confirm ? 300 : 250
+//
+//        let rightNum = this.type.indexOf('range') > -1 ? 436 : 220
+//        let isShortcuts =
+//          this.options &&
+//          this.options.shortcuts &&
+//          this.options.shortcuts.length > 0
+//        rightNum = isShortcuts ? rightNum + 95 : rightNum
+//
+//        if (curbottom < bottomNum && rect.right < rightNum && rect.top > bottomNum ) {
+//          this.fPlacement = 'top-end'
+//        } else if (curbottom < bottomNum && rect.top > bottomNum) {
+//          this.fPlacement = 'top-start'
+//        } else if (clienWidth - rect.left < rightNum) {
+//          this.fPlacement = 'bottom-end'
+//        } else {
+//          this.fPlacement = 'bottom-start'
+//        }
+//      }
+
       if (this.autoPlacement) {
         let obj = this.$refs.select
         // let allWidth = document.body.clientWidth
@@ -1428,6 +1454,7 @@ export default {
     this.setPlacement()
     this.$on('on-visible-change', (val, top) => {
       if (val) {
+        debugger
         this.$nextTick(() => {
           this.setPlacement(parseInt(top))
         })
@@ -1474,6 +1501,8 @@ export default {
     },
     visible(val) {
       if (val) {
+        // 显示前才计算位置
+//        this.setPlacement()
         this.$nextTick(() => {
           let content = this.$refs.content
           if (content.scrollHeight > content.clientHeight) {
