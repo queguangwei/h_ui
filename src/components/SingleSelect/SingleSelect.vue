@@ -1333,6 +1333,11 @@ export default {
           if (!this.remoteNoQuery) {
             this.broadcastQuery(val)
           }
+        }else {
+          // 非自动匹配到的值手动清空后绑定的model没清空问题
+          if(val === '') {
+            this.model = ''
+          }
         }
         this.findChild(child => {
           child.isFocus = false
