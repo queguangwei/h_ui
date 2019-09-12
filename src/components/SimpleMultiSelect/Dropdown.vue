@@ -1,6 +1,6 @@
 <template>
   <div ref="dropdown" class="h-select-dropdown" :style="styles" @click="onClick" @mousedown.stop="onMouseDown">
-    <slot @test="test"></slot>
+    <slot></slot>
   </div>
 </template>
 <script>
@@ -57,9 +57,6 @@ export default {
     }
   },
   methods: {
-    test(item) {
-      debugger;
-    },
     onClick(event) {
       this.$emit("click", event);
     },
@@ -161,9 +158,6 @@ export default {
   created() {
     this.$on("on-update-popper", this.update);
     this.$on("on-destroy-popper", this.destroy);
-    this.$on("test", params => {
-      debugger;
-    });
   },
   beforeDestroy() {
     this.popper && this.popper.destroy();

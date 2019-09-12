@@ -1,11 +1,13 @@
 <template>
-  <div ref="container" v-click-outside="{trigger: 'mousedown', handler: onClickOutside}" :class="containerClass">
+  <div
+    ref="container"
+    v-click-outside="{trigger: 'mousedown', handler: onClickOutside}"
+    :class="containerClass"
+    @keydown="onContainerKeyDown"
+  >
     <!-- 可视区域 -->
-    <div ref="display" :title="tooltip" :class="displayClass" @click="onDisplayClick">
-      <!-- 显示已选记录的数量 -->
-      <p v-if="displaySelectedAmount" :class="[prefixCls + '-selected-num']">共选择 {{ selectedRecords.length }} 项</p>
+    <div ref="display" :title="tooltip" :class="displayClass">
       <!-- 搜索输入框 -->
-      <!-- search="multiSelect" ??? -->
       <input
         ref="input"
         v-model="magicString"
@@ -38,7 +40,7 @@
         v-transfer-dom
         :dropWidth="dropWidth"
         :maxDropWidth="maxDropWidth"
-        :multiple="multiple"
+        :multiple="true"
         :placement="placement"
         :data-transfer="transfer"
         :widthAdaption="widthAdaption"
@@ -48,6 +50,7 @@
           <div ref="blockWrapper" id="blockWrapper" :class="[prefixCls + '-dropdown-list']">
             <slot></slot>
           </div>
+          <div v-show="loading" :class="[prefixCls + '-block-loading']">{{ loadingText || t('i.select.loading') }}</div>
         </div>
       </drop>
     </transition>
@@ -56,6 +59,7 @@
 
 <script>
 import Locale from "../../mixins/locale";
+import { SimpleMultiSelectApi } from "./Api";
 import ClickOutside from "../../directives/clickoutside";
 import TransferDom from "../../directives/transfer-dom";
 import Drop from "./Dropdown.vue";
@@ -64,13 +68,10 @@ import _ from "../..//util";
 export default {
   components: { Drop, Icon },
   directives: { ClickOutside, TransferDom },
-  mixins: [Locale],
+  mixins: [Locale, SimpleMultiSelectApi],
   data() {
     return {
       prefixCls: "h-selectTable",
-      filterable: true,
-      multiple: true,
-      isInputFocus: false, // 输入框是否处于活动状态
       isDropdownVisible: false, // 下拉框是否处于可视状态
       selectedRecords: [], // 已选记录集合
       magicString: "", // 神奇的字符串，输入框的绑定，已选记录的快览，搜索的关键字
@@ -78,73 +79,9 @@ export default {
     };
   },
   props: {
-    // 实现双向绑定
     value: {
       type: [String, Array],
       default: ""
-    },
-    // 设置输入框 tabindex
-    tabindex: {
-      type: [String, Number],
-      default: 0,
-      validator(value) {
-        return parseInt(value) >= -1 && parseInt(value) <= 32767;
-      }
-    },
-    // 设置下拉框的宽度,不设置时下拉框的宽度等于输入框宽度
-    dropWidth: {
-      type: [String, Number]
-    },
-    // 下拉框的自适应时设置的最大宽度，实际值会取输入框宽度与 maxDropWidth 的最大值
-    maxDropWidth: {
-      type: [String, Number],
-      default: 500
-    },
-    // 弹窗的展开方向
-    placement: {
-      default: "bottom",
-      validator(value) {
-        return ["top", "top-start", "top-end", "bottom", "bottom-start", "bottom-end", "left", "left-start", "left-end", "right", "right-start", "right-end"].includes(value);
-      }
-    },
-    // 是否将弹层放置于 body 内，它将不受父级样式影响，从而达到更好的效果
-    transfer: {
-      type: Boolean,
-      default: false
-    },
-    // 下拉框的宽度是否随着内容自适应，以 Simple-select 设置的宽度为最小宽度，最大宽度取输入框宽度与 maxDropWidth 的最大值
-    widthAdaption: {
-      type: Boolean,
-      default: false
-    },
-    // 设置输入框为禁用状态
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    // 设置输入框为只读
-    readonly: {
-      type: Boolean,
-      default: false
-    },
-    // ??
-    editable: {
-      type: Boolean,
-      default: true
-    },
-    // 输入框默认的提示信息
-    placeholder: {
-      type: String
-    },
-    // 鼠标在输入框悬浮时显示额外的提示信息
-    tooltip: {
-      type: String,
-      default: ""
-    },
-    // 多选时离开焦点显示选择多少项
-    showTotalNum: {
-      type: Boolean,
-      default: false
     }
   },
   computed: {
@@ -163,10 +100,6 @@ export default {
     displayClass() {
       return [`${this.prefixCls}-selection`];
     },
-    // 是否展示已选记录的数量
-    displaySelectedAmount() {
-      return this.showTotalNum && !this.isInputFocus && this.selectedRecords.length > 2;
-    },
     transitionName() {
       return this.placement.match(/^bottom/) ? "slide-up" : "slide-down";
     },
@@ -184,6 +117,16 @@ export default {
           newVal = newVal === "" ? [] : newVal.split(",");
         }
         this.model = newVal;
+      }
+    },
+    model(newVal) {
+      if (this.blockVm) {
+        let selectedRecords = [];
+        for (const value of newVal) {
+          selectedRecords = selectedRecords.concat(this.blockVm.blockData.filter(item => item.value === value));
+        }
+        this.selectedRecords = selectedRecords.map(({ label, value }) => ({ label, value }));
+        this.updateMagicString(false); // keep keyword of magic string
       }
     },
     selectedRecords(newVal) {
@@ -208,39 +151,45 @@ export default {
       this.selectedRecords = selectedRecords;
       if (keywords.length) {
         this.blockVm.onQuery(keywords[keywords.length - 1]);
-      }
-    },
-    model(newVal) {
-      if (this.blockVm) {
-        let selectedRecords = [];
-        for (const value of newVal) {
-          selectedRecords = selectedRecords.concat(this.blockVm.blockData.filter(item => item.value === value));
-        }
-        this.selectedRecords = selectedRecords.map(({ label, value }) => ({ label, value }));
-        this.updateMagicString(false);
+        this.isDropdownVisible = true;
       }
     },
     isDropdownVisible(newVal) {
-      if (newVal) {
-      } else {
-        this.updateMagicString(true);
-      }
+      this.$emit("on-drop-change", newVal);
     }
   },
   methods: {
     onClickOutside() {
       this.isDropdownVisible = false;
-      this.isInputFocus = false;
     },
-    onDisplayClick() {
-      if (this.disabled || this.readonly || !this.editable) return false;
-      this.isDropdownVisible = true;
-      this.isInputFocus = true;
+    onContainerKeyDown(e) {
+      if (this.isDropdownVisible && this.blockVm) {
+        if (_.isKeyMatch(e, "Esc") || _.isKeyMatch(e, "Enter")) {
+          this.isDropdownVisible = false;
+          this.$refs.input.blur();
+          this.$nextTick(() => {
+            this.$refs.input.focus();
+          });
+        }
+        if (_.isKeyMatch(e, "Up")) {
+          e.preventDefault();
+          this.blockVm.highlight("prev");
+        }
+        if (_.isKeyMatch(e, "Down")) {
+          e.preventDefault();
+          this.blockVm.highlight("next");
+        }
+        if (_.isKeyMatch(e, "Space")) {
+          e.preventDefault();
+          this.blockVm.highlight("click");
+        }
+      }
     },
     onInputFocus(e) {
       e.target.selectionStart = 0;
       e.target.selectionEnd = this.magicString.length;
       this.$emit("on-focus");
+      this.$emit("on-input-focus");
     },
     onInputBlur() {
       this.$emit("on-blur");
@@ -281,17 +230,18 @@ export default {
       }
     },
 
+    // 下拉面板关闭
     afterTransitionLeave() {
-      this.blockVm.onQuery("");
+      this.updateMagicString(true);
+      this.blockVm.onQuery();
     }
   },
   created() {
     this.$on("on-data-ready", (records, blockVm) => {
       this.blockVm = blockVm; // block instance
-      this.selectedRecords = records.filter(({ value }) => this.model.includes(value));
+      this.selectedRecords = records.filter(({ value }) => this.model.includes(value)); // on-data-ready 之后, 先同步一次 model
       this.updateMagicString();
     });
-
     this.$on("on-selected", record => {
       if (this.selectedRecords.some(item => item.label === record.label && item.value === record.value)) return false;
       else {

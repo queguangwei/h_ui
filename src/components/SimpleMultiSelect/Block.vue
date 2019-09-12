@@ -1,7 +1,5 @@
 <template>
   <div ref="block" @scroll="onScroll" :class="blockCls">
-    <!-- ??? -->
-    <div :class="[prefixCls+'-phantom']" :style="phantomStl"></div>
     <!-- main content -->
     <ul ref="content" :class="[prefixCls+'block-content']">
       <li
@@ -19,52 +17,48 @@
         </slot>
       </li>
     </ul>
+
+    <!-- work with different status -->
+    <div
+      v-if="!$parent.$parent.loading && filteredData.length <= 0"
+      :class="[prefixCls+'-empty']"
+    >{{ t("i.select.noMatch") }}</div>
+    <div v-if="$parent.$parent.loading && filteredData.length === 0" :class="[prefixCls+'-loading-placeholder']">&nbsp;</div>
   </div>
 </template>
 
 <script>
+import Locale from "../../mixins/locale";
+import { SimpleMultiSelectBlockApi } from "./Api";
 import Checkbox from "../Checkbox/Checkbox.vue";
-import _ from "../..//util";
 import { getBarBottom, getScrollBarSize } from "../../util/tools";
 export default {
-  components: {
-    Checkbox
-  },
+  components: { Checkbox },
+  mixins: [Locale, SimpleMultiSelectBlockApi],
   data() {
     return {
       prefixCls: "h-select-block",
-      multiple: true,
-      blockData: [], // 所有数据集合
-      visualData: [] // 可视数据集合
+      blockData: [], // 所有的数据集合
+      visualData: [] // 可视区域的数据集合
     };
-  },
-  props: {
-    // 选择框中数据，必填
-    data: {
-      type: Array,
-      validator(value) {
-        if (_.isArrayLikeObject(value)) {
-          return value.length <= 0 || (value.length > 0 && typeof value[0]["label"] === "string" && typeof value[0]["value"] === "string");
-        } else return false;
-      },
-      default() {
-        return [];
-      }
-    },
-    test: String
   },
   computed: {
     blockCls() {
       return [`${this.prefixCls}-drop`, `${this.prefixCls}-multiple`];
     },
-    phantomStl() {
-      return {};
+    // 继承 loading 状态
+    loading() {
+      return this.$parent.$parent.loading;
+    },
+    // 搜索过滤后的数据集合
+    filteredData() {
+      return this.blockData.filter(item => !item.hidden);
     }
   },
   watch: {
     data: {
       deep: true,
-      handler: function(newVal) {
+      handler(newVal) {
         this.blockData = JSON.parse(
           JSON.stringify(
             newVal.map((item, index) => {
@@ -80,9 +74,9 @@ export default {
           )
         );
 
-        this.updateVisualData();
+        // initialize
+        this.reset() && this.updateVisualData();
         this.$nextTick(() => {
-          // share data with grandparent
           this.emit(-2, "on-data-ready", newVal.map(({ label, value }) => ({ label, value })));
         });
       }
@@ -113,7 +107,6 @@ export default {
       let i = 0,
         end = start;
 
-      // ???
       while (i < visualCount) {
         if (!blockData[end]) {
           i = visualCount;
@@ -141,9 +134,20 @@ export default {
       const { _index, selected, label, value } = item;
       this.$set(this.blockData[_index], "selected", !selected);
       this.emit(-2, selected ? "on-cancel-selected" : "on-selected", { label, value });
+
+      // 关于为什么要加这个状态，这是个很玄学的问题 ～～
+      // 它是用在查询操作里面的
+      // 不妨这样理解，在选择过程中分发出来的查询请求一律打回
+      this.isSelecting = true;
     },
 
-    onQuery(keyword) {
+    onQuery(keyword = "") {
+      // 再一次说，在选择过程中分发出来的查询请求一律打回
+      if (this.isSelecting) {
+        this.isSelecting = false;
+        return false;
+      }
+
       keyword = keyword.replace(/(\^|\(|\)|\[|\]|\$|\*|\+|\.|\?|\\|\{|\}|\|)/g, "\\$1");
       for (const item of this.blockData) {
         const { _index, label, value } = item;
@@ -152,6 +156,60 @@ export default {
           this.$set(this.blockData[_index], "hidden", !new RegExp(keyword, "i").test(label) && !new RegExp(keyword, "i").test(value));
         }
       }
+      this.reset() && this.updateVisualData();
+    },
+
+    highlight(action) {
+      if (action === "prev") {
+        if (this.highlightIndex < 0) {
+          this.highlightIndex = this.filteredData.length - 1;
+          this.$el.scrollTop = 30 * this.highlightIndex;
+          this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", true);
+        } else if (this.highlightIndex === 0) {
+          this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", false);
+          this.highlightIndex = this.filteredData.length - 1;
+          this.$el.scrollTop = 30 * this.highlightIndex;
+          this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", true);
+        } else if (this.highlightIndex > 0) {
+          this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", false);
+          this.$el.scrollTop = 30 * --this.highlightIndex;
+          this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", true);
+        }
+      }
+
+      if (action === "next") {
+        if (this.highlightIndex < 0) {
+          this.$set(this.blockData[this.filteredData[++this.highlightIndex]["_index"]], "focus", true);
+        } else if (this.highlightIndex >= 0 && this.highlightIndex < this.filteredData.length - 1) {
+          this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", false);
+          this.$el.scrollTop = 30 * ++this.highlightIndex;
+          this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", true);
+        } else if (this.highlightIndex >= this.filteredData.length - 1) {
+          this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", false);
+          this.highlightIndex = 0;
+          this.$el.scrollTop = 30 * this.highlightIndex;
+          this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", true);
+        }
+      }
+
+      if (action === "click") {
+        this.onItemClick(this.filteredData[this.highlightIndex]);
+      }
+    },
+
+    // 重置高亮的下拉项和滚动条位置
+    reset() {
+      for (const item of this.blockData) {
+        const { _index, focus } = item;
+        if (focus) {
+          this.$set(this.blockData[_index], "focus", false);
+        }
+      }
+
+      this.highlightIndex = -1;
+      this.$el.scrollTop = 0;
+
+      return true;
     },
 
     /**
