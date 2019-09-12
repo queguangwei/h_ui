@@ -971,6 +971,7 @@ export default {
           return false
         }
         const handleMouseMove = event => {
+          document.body.style.cursor = 'col-resize'
           const deltaLeft = event.clientX - this.dragState.startMouseLeft
           const proxyLeft = this.dragState.startLeft + deltaLeft
           resizeProxy.style.left = Math.max(minLeft, proxyLeft) + 'px'
@@ -1050,6 +1051,7 @@ export default {
         let resizeIndex = Number(index)
         let resizeLeft
         const handleMouseMove = event => {
+          document.body.style.cursor = 'pointer'
           this.resizeProxyVisible = true
           const deltaLeft = event.clientX - _this.moveState.startMouseLeft
           const moveLeft = _this.moveState.startLeft + deltaLeft
