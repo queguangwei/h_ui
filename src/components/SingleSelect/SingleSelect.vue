@@ -403,6 +403,10 @@ export default {
       type: Boolean,
       default: false
     },
+    fastMatch: {
+      type: Boolean,
+      default: false
+    },
     tabindex: {
       type: [String, Number],
       default: 0,

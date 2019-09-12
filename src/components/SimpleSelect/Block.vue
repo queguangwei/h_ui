@@ -203,6 +203,7 @@ export default {
         if(hidden){
           hidden=!new RegExp(parsedQuery, 'i').test(col.value)
         }
+
         this.$set(col, 'hidden', hidden)
 
         if (status && !hidden) {

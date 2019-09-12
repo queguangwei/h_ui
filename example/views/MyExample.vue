@@ -58,10 +58,11 @@
     <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
       <h-form-item label="股票代码" prop="stockCode">
         <h-single-select class="curItemClass" v-model="formCustom.stockCode" placeholder="请选择..."
-                         filterable widthAdaption autoPlacement keepInputValue>
+                         filterable widthAdaption autoPlacement keepInputValue
+                         fastMatch>
           <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
         </h-single-select>
-        {{formCustom.city}}
+        {{formCustom.stockCode}}
       </h-form-item>
       <h-form-item label="金额框" prop="face_balance">
         <h-typefield class="curItemClass" v-model="formCustom.face_balance"
@@ -103,7 +104,6 @@ export default {
   data () {
     const validateMoney = (rule, value, callback) => {
       console.log('face_balance validator', value)
-      debugger
       if (value === '') {
         callback(new Error('请输入金额'));
       } else {

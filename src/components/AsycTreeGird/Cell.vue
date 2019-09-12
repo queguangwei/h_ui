@@ -472,7 +472,6 @@ export default {
     },
     row(row) {
       this.normalDate = row[this.column.key]
-      // if(row._index == 6) debugger
       switch (this.column.type) {
         case 'text':
           this.columnText = row[this.column.key]

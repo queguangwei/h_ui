@@ -22,7 +22,6 @@ export default {
             return column.filters && ((!this.fixed && !column.fixed) || (this.fixed === 'left' && column.fixed === 'left') || (this.fixed === 'right' && column.fixed === 'right'));
         },
         setCellWidth (column, index, top) {
-            // debugger;
             let width = '';
             if (column.width) {
                 width = column.width;
@@ -30,7 +29,7 @@ export default {
                 width = this.columnsWidth[column._index].width;
             }
             // when browser has scrollBar,set a width to resolve scroll position bug
-            if (this.columns.length === index + 1 && top && this.$parent.bodyHeight !== 0 
+            if (this.columns.length === index + 1 && top && this.$parent.bodyHeight !== 0
               && this.$parent.data.length>0 && this.$parent.bodyRealHeight > this.$parent.bodyHeight
               && this.$parent.tableWidth+1>=this.$parent.initWidth-this.$parent.scrollBarWidth) {
               width += this.$parent.scrollBarWidth;
