@@ -1,8 +1,8 @@
 <template>
   <div>
-    <p>msgbox</p>
+    <h1>msgbox</h1>
     <Button @on-click="changeShow">打开弹框</Button>
-    <h-msg-box v-model="show" escClose :mask-closable="false" @on-cancel="cancel" width="580" height="800">
+    <h-msg-box v-model="show" escClose :mask-closable="false" @on-cancel="cancel" width="580" height="700">
       <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
         <h-form-item label="singleSelect" prop="city" required>
           {{formValidate.city}}
@@ -10,7 +10,7 @@
                            remote filterable :loading="isLoading" :remote-method="remoteMethod1"
                            widthAdaption  transfer showFirstLabelOnly autoPlacement
                            :animated="false" @on-keydown="handlekeydown">
-            <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
+            <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
           </h-single-select>
         </h-form-item>
         <h-form-item label="input" prop="name" required>
@@ -29,7 +29,6 @@
         <h-form-item prop="date" label="data">
           <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
         </h-form-item>
-
         <h-form-item label="valueRemote1" prop="valueRemote1" required>
           <h-multi-select v-model="formValidate.valueRemote1" :isString="isstring" class="curItemClass" specialVal="value1" accuFilter newSearchModel>
             <h-multi-block :data="remotebigData"></h-multi-block>
@@ -55,19 +54,20 @@
       </h-form>
     </h-msg-box>
 
-    <p>form</p>
+    <h1>form</h1>
     <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
-      <h-form-item label="singleSelect" prop="city">
-        <h-single-select class="curItemClass" v-model="formCustom.city" placeholder="请选择所在地"
-                         filterable widthAdaption autoPlacement keepInputValue>
-          <h-select-block :data="bigData" ></h-select-block>
+      <h-form-item label="股票代码" prop="stockCode">
+        <h-single-select class="curItemClass" v-model="formCustom.stockCode" placeholder="请选择..."
+                         filterable widthAdaption autoPlacement keepInputValue
+                         fastMatch>
+          <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
         </h-single-select>
-        {{formCustom.city}}
+        {{formCustom.stockCode}}
       </h-form-item>
       <h-form-item label="金额框" prop="face_balance">
         <h-typefield class="curItemClass" v-model="formCustom.face_balance"
-                     nonNegative divided focusAllSelect
-                     integerNum="12" suffixNum="2"  type="money" :step="10">
+                     nonNegative divided focusAllSelect :min="0" :max="1000000"
+                     integerNum="10" suffixNum="2"  type="money" :step="10">
         </h-typefield>
       </h-form-item>
       <h-form-item label="密码" prop="passwd">
@@ -80,7 +80,7 @@
         <h-input type="text" v-model="formCustom.age" number></h-input>
       </h-form-item>
       <h-form-item label="日期">
-        <h-date-picker type="date" placeholder="选择日期" showToday v-model="formCustom.date" class="curItemClass"></h-date-picker>
+        <h-date-picker type="date" placeholder="选择日期" showToday autoPlacement v-model="formCustom.date" class="curItemClass"></h-date-picker>
       </h-form-item>
 
       <h-form-item>
@@ -104,7 +104,6 @@ export default {
   data () {
     const validateMoney = (rule, value, callback) => {
       console.log('face_balance validator', value)
-      debugger
       if (value === '') {
         callback(new Error('请输入金额'));
       } else {
@@ -165,6 +164,7 @@ export default {
         desc: "",
         valueRemote1: [],
       },
+      colWidth:['150','150'],
       showCol:['label1'],
       bigData: [
         { value: "1", label: "1",label1: "多列01"},
@@ -197,10 +197,8 @@ export default {
         { value: "value18", label: "513660",label1: "恒生通" },
       ],
       remoteData:[],
-      colWidth:['200','200'],
       isstring:false,
       remotebigData:bigData,
-      value111:'value0',
       list: [],
       formCustom: {
         date: '',
@@ -208,7 +206,7 @@ export default {
         passwd: '',
         passwdCheck: '',
         age: '',
-        city: '123'
+        stockCode: '12345'
       },
       ruleCustom: {
         face_balance: [{

@@ -403,6 +403,10 @@ export default {
       type: Boolean,
       default: false
     },
+    fastMatch: {
+      type: Boolean,
+      default: false
+    },
     tabindex: {
       type: [String, Number],
       default: 0,
@@ -1241,6 +1245,8 @@ export default {
         let bottomNum = 210
         if (curbottom < bottomNum) {
           this.fPlacement = 'top'
+        }else {
+          this.fPlacement = 'bottom'
         }
       }
     },

@@ -10,7 +10,6 @@
     },
     computed: {
       objData () {
-        // debugger
         return this.$parent.objData;
       }
     },
