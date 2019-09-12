@@ -1138,7 +1138,6 @@ export default {
     },
     handleBlur () {
       if (this.multiple && this.filterable) this.$refs.reference.scrollTop = 0
-      this.isInputFocus = false
       this.$emit('on-blur');
       if (this.showBottom) return false;
       // this.isInputFocus = false

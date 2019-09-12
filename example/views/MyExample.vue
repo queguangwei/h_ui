@@ -4,13 +4,16 @@
     <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
       <h-form-item label="singleSelect" prop="city">
         <h-single-select class="curItemClass" v-model="formCustom.city" placeholder="请选择所在地"
-                         remote filterable :remote-method="remoteMethod1" widthAdaption placement="top" transfer>
-          <h-select-block :data="remoteData" :showCol="showCol"></h-select-block>
+                          filterable  widthAdaption
+                         placement="top" transfer keepInputValue>
+          <h-select-block :data="bigData" ></h-select-block>
         </h-single-select>
+        {{formCustom.city}}
       </h-form-item>
       <h-form-item label="金额框" prop="face_balance">
-        <h-typefield class="curItemClass" v-model="formCustom.face_balance" nonNegative divided focusAllSelect
-                     integerNum="10" suffixNum="2"  type="money" :step="10">
+        <h-typefield class="curItemClass" v-model="formCustom.face_balance"
+                     nonNegative divided focusAllSelect
+                     integerNum="12" suffixNum="2"  type="money" :step="10">
         </h-typefield>
       </h-form-item>
       <h-form-item label="密码" prop="passwd">
@@ -73,6 +76,7 @@ export default {
   data () {
     const validateMoney = (rule, value, callback) => {
       console.log('face_balance validator', value)
+      debugger
       if (value === '') {
         callback(new Error('请输入金额'));
       } else {
@@ -125,7 +129,7 @@ export default {
         passwd: '',
         passwdCheck: '',
         age: '',
-        city: ''
+        city: '123'
       },
       showCol:['label1'],
       bigData: [

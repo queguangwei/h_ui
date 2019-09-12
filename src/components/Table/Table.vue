@@ -104,6 +104,7 @@
         <div :class="fixedHeaderClasses" v-if="showHeader">
           <table-head
             fixed="left"
+            :theadHeight = "fixedTheadHeight"3
             :prefix-cls="prefixCls"
             :styleObject="fixedTableStyle"
             :columns="leftFixedColumns"
@@ -152,6 +153,7 @@
         <div :class="fixedHeaderClasses" v-if="showHeader">
           <table-head
             fixed="right"
+            :theadHeight = "fixedTheadHeight"
             :prefix-cls="prefixCls"
             :styleObject="fixedRightTableStyle"
             :columns="rightFixedColumns"
@@ -446,10 +448,16 @@ export default {
       //多列排序
       type: Boolean,
       default: false
+    },
+    clickHeadSort:  {
+      // 点击单元格头部排序
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
+      fixedTheadHeight: null,
       ready: false,
       tableWidth: 0,
       dragWidth: 0,
@@ -2053,6 +2061,12 @@ export default {
     this.fixedHeader()
     this.$nextTick(() => {
       this.ready = true
+      if (this.multiLevel && this.multiLevel.length > 0 && (this.isLeftFixed || this.isRightFixed)) {
+        let itemHeight = parseInt(getComputedStyle(this.$refs.thead.$el.getElementsByClassName('cur-th')[0]).height)
+        this.fixedTheadHeight = (this.multiLevel.length + 1) * itemHeight
+      } else {
+        this.fixedTheadHeight = null
+      }
       this.initWidth = parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0
       if (this.$refs.fixedRightBody) {
         let table = this.$refs.fixedRightBody.getElementsByClassName(
@@ -2093,6 +2107,16 @@ export default {
     off(this.$refs.tableWrap, 'keyup', this.keySelect)
   },
   watch: {
+    'multiLevel.length': () => {
+      if (this.multiLevel && this.multiLevel.length > 0 (this.isLeftFixed || this.isRightFixed)) {
+        this.$nextTick(() => {
+          let itemHeight = parseInt(getComputedStyle(this.$refs.thead.$el.getElementsByClassName('cur-th')[0]).height)
+          this.fixedTheadHeight = (this.multiLevel.length + 1) * itemHeight
+        })
+      } else {
+        this.fixedTheadHeight = null
+      }
+    },
     data: {
       handler(val) {
         const oldDataLen = this.rebuildData.length
@@ -2123,6 +2147,9 @@ export default {
           // if(this.fixedAutoHeight){
           this.fixedBodyClientHeight = -1
           //}
+          // 重新赋值后错位
+          if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = this.$refs.body.scrollTop;
+          if (this.isRightFixed) this.$refs.fixedRightBody.scrollTop = this.$refs.body.scrollTop;
         })
       },
       deep: true

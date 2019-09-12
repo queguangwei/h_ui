@@ -149,7 +149,7 @@
                    :key="index">
             </colgroup>
             <thead>
-              <tr>
+              <tr :style = "{height: fixedTheadHeight + 'px'}">
                 <th v-for="(column, index) in leftFixedColumns"
                     :key="index"
                     v-on:mousedown="mousedown($event,column,index,'left')"
@@ -503,6 +503,7 @@ export default {
   },
   data() {
     return {
+      fixedTheadHeight: null, // 冻结列高度（多级表头冻结时有问题）
       ready: false,
       tableWidth: 0,
       dragWidth: 0,
@@ -970,6 +971,7 @@ export default {
           return false
         }
         const handleMouseMove = event => {
+          document.body.style.cursor = 'col-resize'
           const deltaLeft = event.clientX - this.dragState.startMouseLeft
           const proxyLeft = this.dragState.startLeft + deltaLeft
           resizeProxy.style.left = Math.max(minLeft, proxyLeft) + 'px'
@@ -1049,6 +1051,7 @@ export default {
         let resizeIndex = Number(index)
         let resizeLeft
         const handleMouseMove = event => {
+          document.body.style.cursor = 'pointer'
           this.resizeProxyVisible = true
           const deltaLeft = event.clientX - _this.moveState.startMouseLeft
           const moveLeft = _this.moveState.startLeft + deltaLeft
@@ -1155,6 +1158,8 @@ export default {
     },
     mouseup(event, column, index) {
       //拖拽表头排序不触发
+      // 仅045使用
+      if (!window.isO45) return 
       if(this.isDrag(this.beginLocation.clientX, this.beginLocation.clientY, event.clientX, event.clientY)) {
         return
       }
@@ -2378,7 +2383,14 @@ export default {
       this.initWidth = parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0
       this.visibleCount =
         Math.ceil(this.height / this.itemHeight) - (this.showHeader ? 0 : -1)
-      this.updateVisibleData()
+        this.updateVisibleData()
+        // 有多级表头时，计算冻结列的表头高度
+        if (this.multiLevel && this.multiLevel.length > 0 && (this.isLeftFixed || this.isRightFixed)) {
+          let itemHeight = parseInt(getComputedStyle(this.$refs.thead.getElementsByClassName('cur-th')[0]).height)
+          this.fixedTheadHeight = (this.multiLevel.length + 1) * itemHeight
+        } else {
+          this.fixedTheadHeight = null
+        }
       // this.focusIndex = this.defaultFocusIndex
     })
     //window.addEventListener('resize', this.handleResize, false);
@@ -2405,6 +2417,17 @@ export default {
     off(document, 'keyup', this.keySelect)
   },
   watch: {
+    'multiLevel.length': () => {
+      // 有多级表头时，计算冻结列的表头高度
+      if (this.multiLevel && this.multiLevel.length > 0 && (this.isLeftFixed || this.isRightFixed)) {
+        this.$nextTick(() => {
+          let itemHeight = parseInt(getComputedStyle(this.$refs.thead.getElementsByClassName('cur-th')[0]).height)
+          this.fixedTheadHeight = (this.multiLevel.length + 1) * itemHeight
+        })
+      } else {
+        this.fixedTheadHeight = null
+      }
+    },
     toScrollTop() {
       this.privateToScrollTop = this.toScrollTop
     },

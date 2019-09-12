@@ -29,14 +29,7 @@
 <script>
 import AsyncValidator from 'async-validator'
 import Emitter from '../../mixins/emitter'
-import {
-  is,
-  // findComponentChildren,
-  findComponentParent,
-  deepCopy,
-  typeOf
-} from '../../util/tools'
-import { on, off } from '../../util/dom'
+import { is, findComponentParent, deepCopy, typeOf } from '../../util/tools'
 import Validate from './validate'
 const prefixCls = 'h-form-item'
 const parentPrefixCls = 'h-form'
@@ -45,10 +38,8 @@ function getPropByPath(obj, path) {
   let tempObj = obj
   path = path.replace(/\[(\w+)\]/g, '.$1')
   path = path.replace(/^\./, '')
-
   let keyArr = path.split('.')
   let i = 0
-
   for (let len = keyArr.length; i < len - 1; ++i) {
     let key = keyArr[i]
     if (key in tempObj) {
@@ -210,8 +201,8 @@ export default {
             this.labelWrap != null
               ? this.labelWrap
               : this.labelWrap == null && this.form.labelWrap != null
-              ? this.form.labelWrap
-              : false
+                ? this.form.labelWrap
+                : false
         }
       ]
     },
@@ -229,12 +220,10 @@ export default {
         if (!model || !this.prop) {
           return
         }
-
         let path = this.prop
         if (path.indexOf(':') !== -1) {
           path = path.replace(/:/, '.')
         }
-
         return getPropByPath(model, path).v
       }
     },
@@ -254,7 +243,6 @@ export default {
         if (this.marginLeftForce) temp += '!important'
         style.marginLeft = temp
       }
-
       return style
     },
     isShowError() {
@@ -268,16 +256,16 @@ export default {
       return this.onlyBlurRequire
         ? true
         : false || this.form.onlyBlurRequire
-        ? true
-        : false
+          ? true
+          : false
     },
     isNotChecked() {
       return this.form.isCheck ? false : true
     },
     verifyTipStyle(){
-       let style={}
-       style.maxWidth=(this.$children[0].$el.clientWidth-15)+"px"
-       return  style
+      let style={}
+      style.maxWidth=(this.$children[0].$el.clientWidth-15)+"px"
+      return  style
     }
   },
   methods: {
@@ -312,7 +300,6 @@ export default {
         if (rule.mustShowFlag) {
           this.mustShowErrorList.push(rule.message)
         }
-
         if (isRegExp) {
           this.regularValid(rule.test, rule.message, rule.trigger)
         } else if (isFunc) {
@@ -347,10 +334,7 @@ export default {
         rule => !rule.trigger || rule.trigger.indexOf(trigger) !== -1
       )
     },
-    validate(trigger, callback = function() {}) {
-//      if(this.forcePass) {
-//        return
-//      }
+    validate(trigger, value, callback = function() {}) {
       this.showModal = true
       if (this.isNotChecked) return
       const rules = this.getFilteredRule(trigger)
@@ -423,7 +407,6 @@ export default {
         this.validateDisabled = true
         prop.o[prop.k] = this.initialValue
       }
-//      this.forcePass = false
     },
     /**
      * @description 重置校验结果
@@ -435,7 +418,7 @@ export default {
       if (cb) cb()
     },
     onFieldBlur(val) {
-      this.validate('blur', () => {})
+      this.validate('blur', val, () => {})
     },
     onFieldChange(val) {
       if (this.validateDisabled) {
@@ -443,7 +426,7 @@ export default {
         return
       }
       if (this.isOnlyBlurRequire) return
-      this.validate('change', () => {})
+      this.validate('change', val, () => {})
     },
     commonRule(str) {
       let rules = this.getRules()
@@ -470,12 +453,8 @@ export default {
     closeTip(){
       this.showModal = false
     },
-    handleIsValidate() {
-//      this.forcePass = true
-    }
   },
   mounted() {
-    on(this.$refs.formItemWrapper, 'keydown', this.handleIsValidate)
     // 当form设置cols时，忽略textarea，slider中设置的cols,该组件独占一行,默认formItem子组件仅有一个textarea/slider/upload
     if (this.form.cols) {
       this.$nextTick(() => {
@@ -527,7 +506,6 @@ export default {
     }
   },
   beforeDestroy() {
-    off(this.$refs.formItemWrapper, 'keydown', this.handleIsValidate)
     this.dispatch('Form', 'on-form-item-remove', this)
   },
   created() {}

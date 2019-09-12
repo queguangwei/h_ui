@@ -437,7 +437,6 @@
       //
       // Compute offsets of popper
       //
-
       // depending by the popper placement we have to compute its offsets slightly differently
       if (['right', 'left'].indexOf(placement) !== -1) {
           popperOffsets.top = referenceOffsets.top + referenceOffsets.height / 2 - popperRect.height / 2;
@@ -974,29 +973,28 @@
    * @returns {Object} object containing width and height properties
    */
   function getOuterSizes(element) {
+    var calcWidthToForceRepaint = element.offsetWidth;
     var calcHeightToForceRepaint = element.offsetHeight
     if(window.isO45) {
       var items = element.getElementsByTagName('ul')[0]
-      var itemss = items.getElementsByTagName('li')
-      var len = itemss.length
-      if(len > 0 && len < 7) {
-        calcHeightToForceRepaint = 30 * len
-      }else {
-        calcHeightToForceRepaint = element.offsetHeight
+      if(items) {
+        var itemss = items.getElementsByTagName('li')
+        var len = itemss.length
+        if(len > 0 && len < 7) {
+          calcHeightToForceRepaint = 30 * len
+        }
       }
     }
 
       // NOTE: 1 DOM access here
       var _display = element.style.display, _visibility = element.style.visibility;
       element.style.display = 'block'; element.style.visibility = 'hidden';
-      var calcWidthToForceRepaint = element.offsetWidth;
 
       // original method
       var styles = root.getComputedStyle(element);
       var x = parseFloat(styles.marginTop) + parseFloat(styles.marginBottom);
       var y = parseFloat(styles.marginLeft) + parseFloat(styles.marginRight);
-
-      var result = { width: element.offsetWidth + y, height: calcHeightToForceRepaint + x };
+      var result = { width: calcWidthToForceRepaint + y, height: calcHeightToForceRepaint + x };
 
       // reset element styles
       element.style.display = _display; element.style.visibility = _visibility;

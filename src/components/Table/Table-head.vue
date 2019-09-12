@@ -10,7 +10,7 @@
           <div :class="[prefixCls+'-cell']"><span>{{multi.title}}</span></div>
         </th>
       </tr>
-      <tr class="cur-th">
+      <tr class="cur-th" :style="{height: theadHeight + 'px'}">
         <th v-for="(column, index) in columns"
           v-on:mousedown="mousedown($event,column,index)"
           v-on:mouseout="mouseout($event,column,index)"
@@ -98,6 +98,7 @@ export default {
     objData: Object,
     data: Array,    // rebuildData for sort or filter
     columnsWidth: Object,
+    theadHeight: Number,
     fixed: {
       type: [Boolean, String],
       default: false
@@ -260,6 +261,7 @@ export default {
         document.ondragstart = function() { return false; };
 
         const handleMouseMove = (event) => {
+          document.body.style.cursor = 'col-resize'
           const deltaLeft = event.clientX - this.dragState.startMouseLeft;
           const proxyLeft = this.dragState.startLeft + deltaLeft;
 
@@ -339,6 +341,7 @@ export default {
         let resizeIndex = Number(index);
         let resizeLeft;
         const handleMouseMove = (event) => {
+          document.body.style.cursor = 'pointer'
           this.$parent.resizeProxyVisible = true;
           const deltaLeft = event.clientX - this.moveState.startMouseLeft;
           const moveLeft = this.moveState.startLeft + deltaLeft;
@@ -428,6 +431,7 @@ export default {
       }
     },
     mouseup(event, column, index) {
+      if (!this.$parent.clickHeadSort && !window.isO45) return 
       //拖拽表头排序不触发
       if(this.isDrag(this.beginLocation.clientX, this.beginLocation.clientY, event.clientX, event.clientY)) {
         return

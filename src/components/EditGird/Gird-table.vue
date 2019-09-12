@@ -1068,12 +1068,8 @@ export default {
         }
       }
       const selection = this.getSelection()
-      if (status) {
-        this.$emit('on-select-all', selection)
-      } else {
-        // 添加反选的事件
-        this.$emit('on-select-all-cancel', [])
-      }
+      // 添加全选、反选
+      this.$emit('on-select-all', selection)
       this.$emit(
         'on-selection-change',
         selection,

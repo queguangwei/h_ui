@@ -18,7 +18,9 @@
                   :value="data.checked"
                   :indeterminate="data.indeterminate"
                   :disabled="data.disabled || data.disableCheckbox"
-                  @click.native.prevent="handleCheck"></h-checkbox>
+                  @click.native.stop
+                  @on-change="handleCheck"
+                  ></h-checkbox>
       <Render v-if="data.render"
               :render="data.render"
               :data="data"
@@ -282,7 +284,8 @@ export default {
     handleSelect() {
       if (this.data.disabled) return
       if (this.selectToCheck && this.showCheckbox) {
-        this.handleCheck()
+        let val = !this.data.checked
+        this.handleCheck(val)
       } else {
         this.dispatch('Tree', 'on-selected', this.data.nodeKey)
       }
@@ -318,14 +321,16 @@ export default {
     handeMouseover(e) {
       this.dispatch('Tree', 'mouse-over', this.data)
     },
-    handleCheck() {
+    handleCheck(val) {
       if (this.data.disabled || this.data.disableCheckbox) return
-      var checked
-      if (!!this.checkStrictly || !!this.showIndeterminate) {
-        checked = !this.data.checked
-      } else {
-        checked = !this.data.checked && !this.data.indeterminate
-      }
+      // ie下点击某个级联父节点项（非选中状态），点击后其余选项清空，当前级联节点选中，因此修改为点击后级联选项后选中该值
+      // 与ie事件处理顺序有关
+      var checked = val
+      // if (!!this.checkStrictly || !!this.showIndeterminate) {
+      //   checked = !this.data.checked
+      // } else {
+      //   checked = !this.data.checked && !this.data.indeterminate
+      // }
       const changes = {
         checked: checked,
         nodeKey: this.data.nodeKey
