@@ -1,232 +1,256 @@
 <template>
-<div>
-  <Button @on-click="changeShow">打开弹框</Button>
-  <Button @on-click="changeData">改变数值</Button>
-   <h-msg-box v-model="show" escClose :mask-closable="false" @on-cancel="cancel" width="580" height="1000">
-    <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
-      <h-form-item label="singleSelect" prop="city" required>
-        {{formValidate.city}}
-        <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass"
-                         remote filterable :loading="isLoading" :remote-method="remoteMethod1"
-                         widthAdaption  transfer showFirstLabelOnly
-                         :animated="false" @on-keydown="handlekeydown">
-          <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
-        </h-single-select>
-      </h-form-item>
-      <h-form-item label="input" prop="name" required>
-          <h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>
-      </h-form-item>
-      <h-form-item label="typefield" prop="mail">
-          <h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >
-      </h-form-item>
-      <h-form-item label="select" prop="city1">
-          <h-select v-model="formValidate.city1"  multiple placeholder="请选择所在地" class="curItemClass" >
-              <h-option value="beijing">北京市</h-option>
-              <h-option value="shanghai">上海市</h-option>
-              <h-option value="shenzhen">深圳市</h-option>
-          </h-select>
-      </h-form-item>
-      <h-form-item prop="date" label="data">
-        <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
-      </h-form-item>
-
-      <h-form-item label="valueRemote1" prop="valueRemote1" required>
-        <h-multi-select v-model="formValidate.valueRemote1" :isString="isstring" class="curItemClass" specialVal="value1" accuFilter newSearchModel>
-          <h-multi-block :data="remotebigData"></h-multi-block>
-        </h-multi-select>
-      </h-form-item>
-      <h-form-item prop="time" label="time">
-        <h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time" class="curItemClass" ></h-time-picker>
-      </h-form-item>
-      <h-form-item label="radio" prop="gender">
-        <h-radio-group v-model="formValidate.gender">
-          <h-radio label="male" class="curItemClass" >男</h-radio>
-          <h-radio label="female" class="curItemClass" >女</h-radio>
-        </h-radio-group>
-      </h-form-item>
-      <h-form-item label="checkbox" prop="interest">
-          <h-checkbox-group v-model="formValidate.interest">
-              <h-checkbox label="吃饭" class="curItemClass" ></h-checkbox>
-              <h-checkbox label="睡觉" class="curItemClass" ></h-checkbox>
-              <h-checkbox label="跑步" class="curItemClass" ></h-checkbox>
-              <h-checkbox label="看电影" class="curItemClass" ></h-checkbox>
-          </h-checkbox-group>
-      </h-form-item>
-      <!--<h-form-item>-->
-          <!--<h-button type="primary" canFocus @click="handleSubmit('formValidate')" class="curItemClass" >提交</h-button>-->
-          <!--<h-button type="ghost"  canFocus  @click="handleReset('formValidate')" style="margin-left: 8px" class="curItemClass" >重置</h-button>-->
-          <!--<h-button @click="focusFirst">焦点定位到第一项</h-button>-->
-          <!--<h-button @click="clear">清空当前选项</h-button>-->
-      <!--</h-form-item>-->
-    </h-form>
-   </h-msg-box>
-</div>
-</template>
-<script>
-import { enterHandler1 } from "../../src/util/tools.js";
-let bigData = [];
-for(let i=0;i<2000;i++){
-  let obj={};
-  obj.value=i;
-  obj.label=i;
-  bigData.push(obj);
-}
-export default {
-  data() {
-    return {
-      show:false,
-      isLoading: false,
-      value:'value0',
-      formValidate: {
-        name: "",
-        mail: "",
-        city1:'',
-        city: 'value1',
-        gender: "",
-        interest: [],
-        date: "",
-        time: "",
-        desc: "",
-        valueRemote1: [],
-      },
-      showCol:['label1'],
-      bigData: [
-        { value: "1", label: "1",label1: "多列01"},
-        { value: "2", label: "2",label1: "多列02"},
-        { value: "3", label: "3",label1: "多列03"},
-        { value: "11", label: "11",label1: "多列11"},
-        { value: "12", label: "12",label1: "多列12"},
-        { value: "13", label: "13",label1: "多列13"},
-        { value: "21", label: "21",label1: "多列21"},
-        { value: "22", label: "22",label1: "多列22"},
-        { value: "23", label: "23",label1: "多列23"},
-        { value: "30", label: "30",label1: "多列30"},
-        { value: "value1", label: "label1",label1: "恒生电子" },
-        { value: "value2", label: "label2",label1: "大华股份" },
-        { value: "value3", label: "label3",label1: "海康威视" },
-        { value: "value4", label: "label4",label1: "多列4" },
-        { value: "value5", label: "label5",label1: "多列5" },
-        { value: "value6", label: "label6",label1: "多列6" },
-        { value: "value7", label: "label7",label1: "多列7" },
-        { value: "value8", label: "label8",label1: "多列8" },
-        { value: "value9", label: "label9",label1: "多列9" },
-        { value: "value10", label: "label10",label1: "多列10" },
-        { value: "value11", label: "000001",label1: "平安银行" },
-        { value: "value12", label: "601600",label1: "中国铝业" },
-        { value: "value13", label: "300056",label1: "三维丝" },
-        { value: "value14", label: "002354",label1: "天神娱乐" },
-        { value: "value15", label: "002016",label1: "世荣兆业" },
-        { value: "value16", label: "501009",label1: "生物科技" },
-        { value: "value17", label: "502014",label1: "一带一A" },
-        { value: "value18", label: "513660",label1: "恒生通" },
-      ],
-      remoteData:[],
-      colWidth:['200','200'],
-      isstring:false,
-      remotebigData:bigData,
-      value111:'value0',
-    }
-  },
-  created() {
-    window.isO45 = true
-  },
-  mounted() {
-    document.addEventListener("keydown", event => {
-      enterHandler1(this.$refs.formValidate, event);
-    });
-//    setTimeout(()=>{
-//        this.formValidate.city="value1"
-//    },1000)
-  },
-  methods:{
-    remoteMethod1(query) {
-      if (query !== "") {
-        this.isLoading = true;
-        setTimeout(() => {
-          this.isLoading = false;
-          const list = this.bigData.map(item => {
-            return item;
-          });
-          this.remoteData = list.filter(
-            item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1
-          );
-        }, 200);
-      } else {
-        this.remoteData = [];
-      }
-    },
-    handlekeydown(val, e) {
-//      console.log(val)
-//      console.log(e)
-    },
-    getFocus() {
-      this.$refs.test.focus()
-    },
-    blurtest(){
-      console.log("lsjflsja;");
-    },
-    handleSubmit(){
-      this.formValidate.city="value1"
-    },
-    changeData(){
-        this.bigData = this.bigData.slice(0,2)
-    },
-    focusFirst(){
-        this.$refs.formValidate.firstNodeFocused()
-    },
-    clear(){
-        this.formValidate.city=''
-    },
-    changeShow(){
-      this.show=true
-      this.$refs.formValidate.firstNodeFocused()
-//      this.formValidate.city = 'value1'
-    },
-    cancel() {
-      this.$refs.formValidate.resetFields()
-    }
-  }
-};
-</script>
-
-<!-- <template>
-<div>
-<h-multi-select v-model="valueRemote1" remote :remote-method="queryChange" :isString="isstring" width="200" accuFilter newSearchModel>
-  <h-multi-block :data="remotebigData"></h-multi-block>
-</h-multi-select>
-<h-simple-select v-model="value111" ref="test" filterable>
-  <h-select-block :data="bigData"></h-select-block>
-</h-simple-select>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-{{value111}}
+  <div>
+    <h-tabs
+      v-model="val"
+      type="card"
+      :animated="false"
+      lazy
+    >
+      <h-tab-pane label="标签一" name="name1" icon="add">
+        <h-table
+          notSetWidth
+          :columns="columns"
+          :data="data"
+          :summationData="summationData"
+          border
+          headAlgin="right"
+          bodyAlgin="left"
+          height="400"
+          canMove
+        >
+        </h-table>
+      </h-tab-pane>
+      <h-tab-pane label="标签二" name="name2">
+        <h-simple-table :summationData="summationData" :columns="columns" :data="data" height="300" highlight-row>
+        </h-simple-table>
+      </h-tab-pane>
+      <h-tab-pane label="标签三" name="name3">标签三的内容</h-tab-pane>
+    </h-tabs>
   </div>
 </template>
 <script>
-let bigData = [];
-bigData.push({label:'全选',value:'-1'})
-for(let i=0;i<2000;i++){
-  let obj={};
-  obj.value="value"+i;
-  obj.label=i+'';
-  bigData.push(obj);
-}
 export default {
-  data () {
-    return{
-      bigData:bigData,
-      value111:'value0',
-      isstring:false,
-      valueRemote1:[],
-      remotebigData:bigData
-    }
-  },
-  methods:{
-    queryChange(val){
-      this.remotebigData=bigData.filter((item)=>{
-        return item.label.indexOf(val)>-1
-      })
+  data() {
+    return {
+      val: 'name1',
+      columns: [
+        // {
+        //   type: 'expand',
+        // },
+        {
+          title: '姓名',
+          key: 'name',
+          // fixed: 'left',
+          ellipsis: true
+        },
+        {
+          title: '年龄',
+          key: 'age',
+          ellipsis: true,
+          sortable: true
+        },
+        {
+          title: '年龄1',
+          key: 'age',
+          ellipsis: true
+        },
+        {
+          title: '省份',
+          key: 'province',
+          ellipsis: true,
+          sortable: true
+        },
+        {
+          title: '省份1',
+          key: 'province',
+          ellipsis: true
+        },
+        {
+          title: '市区1231283712893719',
+          key: 'city',
+          ellipsis: true,
+          sortable: true
+        },
+        {
+          title: '市区1',
+          key: 'city',
+          ellipsis: true
+        },
+        {
+          type: 'text',
+          title: '地址',
+          key: 'address',
+          ellipsis: true
+        },
+        {
+          type: 'text',
+          title: '地址1',
+          key: 'address',
+          ellipsis: true
+        },
+        {
+          title: '邮编',
+          key: 'zip',
+          ellipsis: true,
+          headerTooltip: true
+        },
+        {
+          title: '操作',
+          key: 'action',
+          render: (h, params) => {
+            return h('div', [
+              h(
+                'h-button',
+                {
+                  props: {
+                    type: 'info',
+                    size: 'small'
+                  }
+                },
+                '查看'
+              ),
+              h(
+                'h-button',
+                {
+                  props: {
+                    type: 'text',
+                    size: 'small'
+                  }
+                },
+                '编辑'
+              )
+            ])
+          },
+          ellipsis: true
+        }
+      ],
+      data: [
+        {
+          name: '<a href="javascript:alert(1);">王小明</a>',
+          age: 18,
+          address: '北京市朝阳区芍药居',
+          province: '北京市',
+          city: '朝阳区',
+          zip: 100000
+        },
+        {
+          name: '张小刚',
+          age: 25,
+          address: '北京市海淀区西二旗',
+          province: '北京市',
+          city: '海淀区',
+          zip: 100000
+        },
+        {
+          name: '李小红',
+          age: 30,
+          address: '上海市浦东新区世纪大道',
+          province: '上海市',
+          city: '浦东新区',
+          zip: 100000
+        },
+        {
+          name: '周小伟',
+          age: 26,
+          address: '深圳市南山区深南大道',
+          province: '广东',
+          city: '南山区',
+          zip: 100000
+        },
+        {
+          name: '王小明',
+          age: 18,
+          address: '北京市朝阳区芍药居',
+          province: '北京市',
+          city: '朝阳区',
+          zip: 100000
+        },
+        {
+          name: '张小刚',
+          age: 25,
+          address: '北京市海淀区西二旗',
+          province: '北京市',
+          city: '海淀区',
+          zip: 100000
+        },
+        {
+          name: '李小红',
+          age: 30,
+          address: '上海市浦东新区世纪大道',
+          province: '上海市',
+          city: '浦东新区',
+          zip: 100000
+        },{
+          name: '<a href="javascript:alert(1);">王小明</a>',
+          age: 18,
+          address: '北京市朝阳区芍药居',
+          province: '北京市',
+          city: '朝阳区',
+          zip: 100000
+        },
+        {
+          name: '张小刚',
+          age: 25,
+          address: '北京市海淀区西二旗',
+          province: '北京市',
+          city: '海淀区',
+          zip: 100000
+        },
+        {
+          name: '李小红',
+          age: 30,
+          address: '上海市浦东新区世纪大道',
+          province: '上海市',
+          city: '浦东新区',
+          zip: 100000
+        },
+        {
+          name: '周小伟',
+          age: 26,
+          address: '深圳市南山区深南大道',
+          province: '广东',
+          city: '南山区',
+          zip: 100000
+        },
+        {
+          name: '王小明',
+          age: 18,
+          address: '北京市朝阳区芍药居',
+          province: '北京市',
+          city: '朝阳区',
+          zip: 100000
+        },
+        {
+          name: '张小刚',
+          age: 25,
+          address: '北京市海淀区西二旗',
+          province: '北京市',
+          city: '海淀区',
+          zip: 100000
+        },
+        {
+          name: '李小红',
+          age: 30,
+          address: '上海市浦东新区世纪大道',
+          province: '上海市',
+          city: '浦东新区',
+          zip: 100000
+        },
+        {
+          name: '周小伟',
+          age: 26,
+          address: '深圳市南山区深南大道',
+          province: '广东',
+          city: '南山区',
+          zip: 100000
+        }
+      ],
+      summationData: [{
+        name: 'qeqweqw',
+        age: 123123123,
+        address: 'qqweqwe'
+      }]
     }
   }
 }
 </script>
--->

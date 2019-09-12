@@ -939,7 +939,7 @@ export default {
             const column = this.cloneColumns[i]
             let width = $td[i].offsetWidth + num
             if ($th && width < $th[i].offsetWidth + 30) {
-              width = $th[i].offsetWidth + 30
+              width = $th[i].offsetWidth + 30 + (column.sortable ? 20 : 0)
             }
             if (column.width) {
               width = column.width || width
