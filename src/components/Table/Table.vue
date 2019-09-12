@@ -104,7 +104,7 @@
         <div :class="fixedHeaderClasses" v-if="showHeader">
           <table-head
             fixed="left"
-            :theadHeight = "fixedTheadHeight"3
+            :theadHeight = "fixedTheadHeight"
             :prefix-cls="prefixCls"
             :styleObject="fixedTableStyle"
             :columns="leftFixedColumns"
