@@ -448,6 +448,11 @@ export default {
       //多列排序
       type: Boolean,
       default: false
+    },
+    clickHeadSort:  {
+      // 点击单元格头部排序
+      type: Boolean,
+      default: false
     }
   },
   data() {

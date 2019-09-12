@@ -261,6 +261,7 @@ export default {
         document.ondragstart = function() { return false; };
 
         const handleMouseMove = (event) => {
+          document.body.style.cursor = 'col-resize'
           const deltaLeft = event.clientX - this.dragState.startMouseLeft;
           const proxyLeft = this.dragState.startLeft + deltaLeft;
 
@@ -340,6 +341,7 @@ export default {
         let resizeIndex = Number(index);
         let resizeLeft;
         const handleMouseMove = (event) => {
+          document.body.style.cursor = 'pointer'
           this.$parent.resizeProxyVisible = true;
           const deltaLeft = event.clientX - this.moveState.startMouseLeft;
           const moveLeft = this.moveState.startLeft + deltaLeft;
@@ -429,6 +431,7 @@ export default {
       }
     },
     mouseup(event, column, index) {
+      if (!this.$parent.clickHeadSort && !window.isO45) return 
       //拖拽表头排序不触发
       if(this.isDrag(this.beginLocation.clientX, this.beginLocation.clientY, event.clientX, event.clientY)) {
         return
