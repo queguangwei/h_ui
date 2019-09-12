@@ -33,7 +33,7 @@
       ></Icon>
     </div>
     <!-- 下拉面板 -->
-    <transition :name="transitionName" @after-leave="afterTransitionLeave">
+    <transition :name="transitionName">
       <drop
         ref="dropdown"
         v-show="isDropdownVisible"
@@ -156,6 +156,10 @@ export default {
     },
     isDropdownVisible(newVal) {
       this.$emit("on-drop-change", newVal);
+      if (!newVal) {
+        this.updateMagicString(true);
+        this.blockVm.onQuery();
+      }
     }
   },
   methods: {
@@ -228,12 +232,6 @@ export default {
           this.magicString = newMagicString.join();
         }
       }
-    },
-
-    // 下拉面板关闭
-    afterTransitionLeave() {
-      this.updateMagicString(true);
-      this.blockVm.onQuery();
     }
   },
   created() {
