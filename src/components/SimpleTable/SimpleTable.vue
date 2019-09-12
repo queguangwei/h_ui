@@ -2384,13 +2384,6 @@ export default {
       this.visibleCount =
         Math.ceil(this.height / this.itemHeight) - (this.showHeader ? 0 : -1)
         this.updateVisibleData()
-        // 有多级表头时，计算冻结列的表头高度
-        if (this.multiLevel && this.multiLevel.length > 0 && (this.isLeftFixed || this.isRightFixed)) {
-          let itemHeight = parseInt(getComputedStyle(this.$refs.thead.getElementsByClassName('cur-th')[0]).height)
-          this.fixedTheadHeight = (this.multiLevel.length + 1) * itemHeight
-        } else {
-          this.fixedTheadHeight = null
-        }
       // this.focusIndex = this.defaultFocusIndex
     })
     //window.addEventListener('resize', this.handleResize, false);
@@ -2417,17 +2410,6 @@ export default {
     off(document, 'keyup', this.keySelect)
   },
   watch: {
-    'multiLevel.length': () => {
-      // 有多级表头时，计算冻结列的表头高度
-      if (this.multiLevel && this.multiLevel.length > 0 && (this.isLeftFixed || this.isRightFixed)) {
-        this.$nextTick(() => {
-          let itemHeight = parseInt(getComputedStyle(this.$refs.thead.getElementsByClassName('cur-th')[0]).height)
-          this.fixedTheadHeight = (this.multiLevel.length + 1) * itemHeight
-        })
-      } else {
-        this.fixedTheadHeight = null
-      }
-    },
     toScrollTop() {
       this.privateToScrollTop = this.toScrollTop
     },
