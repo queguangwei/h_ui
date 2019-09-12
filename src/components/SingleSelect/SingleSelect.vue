@@ -1241,6 +1241,8 @@ export default {
         let bottomNum = 210
         if (curbottom < bottomNum) {
           this.fPlacement = 'top'
+        }else {
+          this.fPlacement = 'bottom'
         }
       }
     },
