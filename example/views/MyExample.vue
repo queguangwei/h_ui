@@ -4,8 +4,7 @@
     <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
       <h-form-item label="singleSelect" prop="city">
         <h-single-select class="curItemClass" v-model="formCustom.city" placeholder="请选择所在地"
-                          filterable  widthAdaption
-                         placement="top" transfer keepInputValue>
+                         filterable widthAdaption autoPlacement keepInputValue>
           <h-select-block :data="bigData" ></h-select-block>
         </h-single-select>
         {{formCustom.city}}
@@ -28,23 +27,12 @@
       <h-form-item label="日期">
         <h-date-picker type="date" placeholder="选择日期" showToday v-model="formCustom.date" class="curItemClass"></h-date-picker>
       </h-form-item>
+
       <h-form-item>
         <h-button type="primary" @click="handleSubmit('formCustom')">提交</h-button>
         <h-button type="ghost" @click="handleReset('formCustom')" style="margin-left: 8px">重置</h-button>
       </h-form-item>
     </h-form>
-    <p>tabs</p>
-    <!--<h-tabs ref="remove">-->
-      <!--<h-tab-pane v-for="(item) in list" :key="item.show_title"  :label="item.show_title" :name="item.show_title">-->
-        <!--<div style="height:230px;width:100%;overflow:auto">-->
-            <!--{{item.show_title}}-->
-        <!--</div>-->
-      <!--</h-tab-pane>-->
-    <!--</h-tabs>-->
-      <!--<h-button @click="remove(true)">切换1</h-button>-->
-      <!--<h-button @click="remove(false)">切换2</h-button>-->
-      <!--<h-button @click="removeAll">清空</h-button>-->
-    <p>editGird</p>
 
   </div>
 </template>

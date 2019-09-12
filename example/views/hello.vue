@@ -2,7 +2,7 @@
 <div>
   <Button @on-click="changeShow">打开弹框</Button>
   <Button @on-click="changeData">改变数值</Button>
-   <h-msg-box v-model="show" escClose :mask-closable="false" @on-cancel="cancel" width="580" height="200">
+   <h-msg-box v-model="show" escClose :mask-closable="false" @on-cancel="cancel" width="580" height="800">
     <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
       <h-form-item label="singleSelect" prop="city" required>
         {{formValidate.city}}
