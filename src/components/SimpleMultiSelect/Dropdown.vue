@@ -8,6 +8,10 @@
 import { Popper } from "../../util";
 export default {
   props: {
+    show: {
+      type: Boolean,
+      default: false
+    },
     placement: {
       type: String,
       validator(value) {
@@ -15,7 +19,19 @@ export default {
       },
       default: "bottom-start"
     },
-    show: {
+    autoPlacement: {
+      type: Boolean,
+      default: false
+    },
+    dropWidth: {
+      type: [String, Number],
+      default: 0
+    },
+    maxDropWidth: {
+      type: [String, Number],
+      default: 500
+    },
+    widthAdaption: {
       type: Boolean,
       default: false
     }
@@ -35,7 +51,7 @@ export default {
   methods: {
     update() {
       const _this = this;
-      setStyle(this.$el, { display: "block", visiblity: "hidden" });
+      setStyle(this.$el, { display: "block", visiblity: "hidden" }); // make sure popper calc exactly
 
       if (this.popper) {
         this.popper.scheduleUpdate();
@@ -43,17 +59,50 @@ export default {
       }
 
       this.$nextTick(() => {
+        const placement = (() => {
+          if (this.autoPlacement) {
+            const { top, bottom, height } = this.$parent.$el.getBoundingClientRect();
+            const wh = window.innerHeight;
+            return wh - top - height < 210 ? "top-start" : "bottom-start";
+          } else {
+            return this.placement;
+          }
+        })();
+
         this.popper = new Popper(this.$parent.$refs.display, this.$el, {
-          placement: this.placement,
+          placement,
+          eventsEnabled: false, // Whether events (resize, scroll) are initially enabled.
           modifiers: {
-            computeStyle: { gpuAcceleration: false },
+            flip: { enabled: false }, // Modifier used to flip the popper’s placement when it starts to overlap its reference element.
+            computeStyle: {
+              gpuAcceleration: false // If true, it uses the CSS 3D transformation to position the popper. Otherwise, it will use the top and left properties
+            },
             applyStyle: { enabled: false },
             applyVueStyle: {
               enabled: true,
               fn(data) {
-                const { show, placement } = _this;
-                const { instance, styles } = data;
-                const { popper: el } = instance;
+                const { show, dropWidth, maxDropWidth, widthAdaption } = _this;
+                const {
+                  instance: { popper: el },
+                  offsets: {
+                    popper: { width: cWidth },
+                    reference: { width: pWidth }
+                  },
+                  styles
+                } = data;
+
+                if (widthAdaption) {
+                  if (parseFloat(dropWidth) > 0) {
+                    styles["min-width"] = parseFloat(dropWidth);
+                  }
+                  if (parseFloat(maxDropWidth) > 0 && parseFloat(maxDropWidth) > parseFloat(dropWidth)) {
+                    styles["max-width"] = Math.max(parseFloat(maxDropWidth), pWidth);
+                  } else {
+                    styles["max-width"] = Math.max(parseFloat(dropWidth), pWidth);
+                  }
+                } else {
+                  styles.width = parseFloat(dropWidth) || pWidth;
+                }
 
                 if (show) {
                   setStyle(el, { display: "block", visiblity: "visible", ...styles });
@@ -63,6 +112,7 @@ export default {
                 }
 
                 function onAnimationEnd() {
+                  _this.$emit("on-animation-end"); // emit on-animation-end, el could be visible or hidden
                   el.removeEventListener("animationend", onAnimationEnd);
                   el.classList.remove("slide-up-enter-active", "slide-up-leave-active", "slide-down-enter-active", "slide-down-leave-active");
                   !show && setStyle(el, { display: "none" });
@@ -89,7 +139,7 @@ export default {
         Object.keys(styles).forEach(function(prop) {
           var unit = "";
           // add unit if the value is numeric and is one of the following
-          if (["width", "height", "top", "right", "bottom", "left"].indexOf(prop) !== -1 && is_numeric(styles[prop])) {
+          if (["width", "max-width", "min-width", "height", "top", "right", "bottom", "left"].indexOf(prop) !== -1 && is_numeric(styles[prop])) {
             unit = "px";
           }
           element.style[prop] = styles[prop] + unit;

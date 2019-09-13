@@ -39,11 +39,12 @@
       :show="isDropdownVisible"
       :dropWidth="dropWidth"
       :maxDropWidth="maxDropWidth"
-      :multiple="true"
       :placement="placement"
+      :autoPlacement="autoPlacement"
       :data-transfer="transfer"
       :widthAdaption="widthAdaption"
       :class="dropClass"
+      @on-animation-end="onAnimationEnd"
     >
       <div ref="content" :class="[`${prefixCls}-dropdown-noline-content`]">
         <div ref="blockWrapper" id="blockWrapper" :class="[prefixCls + '-dropdown-list']">
@@ -76,12 +77,6 @@ export default {
       model: [] // 组件双向绑定的值
     };
   },
-  props: {
-    value: {
-      type: [String, Array],
-      default: ""
-    }
-  },
   computed: {
     containerClass() {
       return [
@@ -98,12 +93,11 @@ export default {
     displayClass() {
       return [`${this.prefixCls}-selection`];
     },
-    transitionName() {
-      return this.placement.match(/^bottom/) ? "slide-up" : "slide-down";
-    },
     dropClass() {
       return {
-        ["h-select-dropdown-transfer"]: this.transfer
+        ["h-select-dropdown-transfer"]: this.transfer,
+        [this.prefixCls + "-multiple"]: this.transfer,
+        ["h-auto-complete"]: true
       };
     }
   },
@@ -154,10 +148,6 @@ export default {
     },
     isDropdownVisible(newVal) {
       this.$emit("on-drop-change", newVal);
-      if (!newVal) {
-        this.updateMagicString(true);
-        this.blockVm.onQuery();
-      }
     }
   },
   methods: {
@@ -201,6 +191,12 @@ export default {
     },
     onInputKeydown(e) {
       this.$emit("on-keydown", this.magicString, e);
+    },
+    onAnimationEnd() {
+      if (!this.isDropdownVisible) {
+        this.updateMagicString(true);
+        this.blockVm.onQuery();
+      }
     },
 
     /**

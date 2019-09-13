@@ -95,9 +95,6 @@ export default {
       }
 
       this.updateVisualData(scrollTop);
-
-      // 修复滚动后出现 x 滚动条问题
-      // this.$parent.widthAdaption && this.$parent.setWidthAdaption();
     },
     updateVisualData(scrollTop = this.lastScollTop || 0) {
       const blockData = this.blockData.filter(item => !item.hidden);
