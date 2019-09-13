@@ -1,166 +1,101 @@
 <template>
-  <div ref="dropdown" class="h-select-dropdown" :style="styles" @click="onClick" @mousedown.stop="onMouseDown">
+  <div ref="container" class="h-select-dropdown" :style="containerStyle">
     <slot></slot>
   </div>
 </template>
+
 <script>
-import { getStyle, getScrollBarSize } from "../../util/tools";
-const Popper = require("../../util/popper.js");
+import { Popper } from "../../util";
 export default {
-  name: "Drop",
   props: {
     placement: {
       type: String,
+      validator(value) {
+        return ["top", "top-start", "top-end", "bottom", "bottom-start", "bottom-end"].includes(value);
+      },
       default: "bottom-start"
     },
-    widthAdaption: {
+    show: {
       type: Boolean,
       default: false
-    },
-    dropWidth: {
-      type: [String, Number]
-    },
-    maxDropWidth: {
-      type: [String, Number]
-    },
-    adaptParentWidth: {
-      type: Boolean
-    },
-    className: {
-      type: String
     }
   },
-  data() {
-    return {
-      popper: null,
-      width: "",
-      parentWidth: null, // 保存当前父节点的宽度，当进行下拉内容自适应时需要与最大宽度进行对比,取较大者设为最大宽度
-      scrollBarWidth: getScrollBarSize()
-    };
-  },
   computed: {
-    styles() {
-      const style = {};
-      if (this.widthAdaption) {
-        if (this.dropWidth || this.maxDropWidth) {
-          if (this.dropWidth) style.minWidth = `${this.dropWidth}px`;
-          if (this.maxDropWidth) {
-            const maxWidth = Math.max(parseInt(this.maxDropWidth), parseInt(this.parentWidth));
-            style.maxWidth = `${maxWidth}px`;
-          }
-          if (this.width) style.width = `${this.width}px`;
-        }
-      } else {
-        if (this.width) style.width = `${this.width}px`;
-      }
-      return style;
+    containerStyle() {
+      return {
+        display: "none"
+      };
+    }
+  },
+  watch: {
+    show(newVal) {
+      this.update();
     }
   },
   methods: {
-    onClick(event) {
-      this.$emit("click", event);
-    },
-    onMouseDown() {
-      // TS201903110540
-      // prevent mousedown event from bubbling up and being caught by handlers on document
-      // which were added in directive v-clickoutside
-    },
-    setWidthAdaption() {
-      setTimeout(() => {
-        let content = this.$refs.dropdown;
-        if (this.$parent.$options.name === "SimpleSelect" || this.$parent.$options.name === "SingleSelect" || this.$parent.$options.name === "SimpleMultiSelect") {
-          content = content.querySelectorAll(".h-selectTable-dropdown-list")[0].children[0];
-        } else {
-          content = content.children[0];
-        }
-        // 横向或者纵向滚动条导致的像素偏移的问题
-        // 是否有纵向滚动条
-        let isScrollY = parseInt(this.$refs.dropdown.clientWidth) > parseInt(content.clientWidth) ? true : false;
-        // 是否有横向滚动条
-        let isScrollX = parseInt(this.$refs.dropdown.clientHeight) > parseInt(content.clientHeight) ? true : false;
-        this.width = parseInt(content.scrollWidth) + this.scrollBarWidth;
-        // if (isScrollX) {
-        // 	this.width = isScrollY ? parseInt(content.scrollWidth) + this.scrollBarWidth : content.scrollWidth
-        // }
-      }, 0);
-    },
     update() {
-      if (this.$isServer) return;
+      const _this = this;
+      setStyle(this.$el, { display: "block", visiblity: "hidden" });
+
       if (this.popper) {
-        this.$nextTick(() => {
-          // select 组件 placement 改变后同步改变 popper 实例
-          this.popper._options.placement = this.widthAdaption ? (this.placement.indexOf("top") >= 0 ? "top-start" : "bottom-start") : this.placement;
-          this.popper.update();
-          // 有滚动条时，下拉宽度为内容宽度
-          if (this.widthAdaption) {
-            this.setWidthAdaption();
-          }
-        });
-      } else {
-        this.$nextTick(() => {
-          let curPlacement = this.widthAdaption ? (this.placement.indexOf("top") >= 0 ? "top-start" : "bottom-start") : this.placement;
-          // let curPlacement = this.placement.indexOf('top') >= 0 ? 'top-start' : this.placement
-          this.popper = new Popper(this.$parent.$refs.reference, this.$el, {
-            gpuAcceleration: false,
-            placement: curPlacement,
-            boundariesPadding: 0,
-            forceAbsolute: true,
-            boundariesElement: "body"
-          });
-          this.popper.onCreate(popper => {
-            this.resetTransformOrigin(popper);
-          });
-          // 有滚动条时，下拉宽度为内容宽度
-          if (this.widthAdaption) {
-            this.setWidthAdaption();
-          }
-        });
+        this.popper.scheduleUpdate();
+        return;
       }
-      if (
-        this.$parent.$options.name === "Select" ||
-        this.$parent.$options.name === "SelectTree" ||
-        this.$parent.$options.name === "SelectTable" ||
-        this.$parent.$options.name === "SimpleSelect" ||
-        this.$parent.$options.name === "SingleSelect" ||
-        this.$parent.$options.name === "SimpleMultiSelect"
-      ) {
-        if (!this.dropWidth) {
-          let width = parseInt(getStyle(this.$parent.$el, "width"));
-          this.width = width;
-          this.parentWidth = width;
-        } else {
-          this.width = this.dropWidth;
-          this.parentWidth = this.dropWidth;
+
+      this.$nextTick(() => {
+        this.popper = new Popper(this.$parent.$refs.display, this.$el, {
+          placement: this.placement,
+          modifiers: {
+            computeStyle: { gpuAcceleration: false },
+            applyStyle: { enabled: false },
+            applyVueStyle: {
+              enabled: true,
+              fn(data) {
+                const { show, placement } = _this;
+                const { instance, styles } = data;
+                const { popper: el } = instance;
+
+                if (show) {
+                  setStyle(el, { display: "block", visiblity: "visible", ...styles });
+                  el.classList.add(placement.includes("top") ? "slide-down-enter-active" : placement.includes("bottom") && "slide-up-enter-active");
+                } else {
+                  el.classList.add(placement.includes("top") ? "slide-down-leave-active" : placement.includes("bottom") && "slide-up-leave-active");
+                }
+
+                function onAnimationEnd() {
+                  el.removeEventListener("animationend", onAnimationEnd);
+                  el.classList.remove("slide-up-enter-active", "slide-up-leave-active", "slide-down-enter-active", "slide-down-leave-active");
+                  !show && setStyle(el, { display: "none" });
+                }
+                el.addEventListener("animationend", onAnimationEnd);
+              },
+              order: 900
+            }
+          }
+        });
+      });
+
+      /**
+       * Set the style to the given popper
+       * @function
+       * @ignore
+       * @argument {Element} element - Element to apply the style to
+       * @argument {Object} styles - Object with a list of properties and values which will be applied to the element
+       */
+      function setStyle(element, styles) {
+        function is_numeric(n) {
+          return n !== "" && !isNaN(parseFloat(n)) && isFinite(n);
         }
+        Object.keys(styles).forEach(function(prop) {
+          var unit = "";
+          // add unit if the value is numeric and is one of the following
+          if (["width", "height", "top", "right", "bottom", "left"].indexOf(prop) !== -1 && is_numeric(styles[prop])) {
+            unit = "px";
+          }
+          element.style[prop] = styles[prop] + unit;
+        });
       }
-      if (this.$parent.$options.name === "Dropdown" && this.adaptParentWidth) {
-        let width = parseInt(getStyle(this.$parent.$el, "width"));
-        this.width = width;
-        this.parentWidth = width;
-      }
-    },
-    destroy() {
-      if (this.popper) {
-        this.resetTransformOrigin(this.popper);
-        setTimeout(() => {
-          this.popper.destroy();
-          this.popper = null;
-        }, 300);
-      }
-    },
-    resetTransformOrigin(popper) {
-      let placementMap = { top: "bottom", bottom: "top" };
-      let placement = popper._popper.getAttribute("x-placement").split("-")[0];
-      let origin = placementMap[placement];
-      popper._popper.style.transformOrigin = `center ${origin}`;
     }
-  },
-  created() {
-    this.$on("on-update-popper", this.update);
-    this.$on("on-destroy-popper", this.destroy);
-  },
-  beforeDestroy() {
-    this.popper && this.popper.destroy();
   }
 };
 </script>

@@ -1,6 +1,7 @@
 import isArrayLike from "./isArrayLike";
 import isArrayLikeObject from "./isArrayLikeObject";
 import isKeyMatch from "./isKeyMatch";
+import Popper from "./popper.min";
 
 /**
  * @description 工具方法
@@ -8,3 +9,4 @@ import isKeyMatch from "./isKeyMatch";
  * @author yangyc21550@hundsun.com
  */
 export default { isArrayLike, isArrayLikeObject, isKeyMatch };
+export { Popper };

@@ -33,27 +33,25 @@
       ></Icon>
     </div>
     <!-- 下拉面板 -->
-    <transition :name="transitionName">
-      <drop
-        ref="dropdown"
-        v-show="isDropdownVisible"
-        v-transfer-dom
-        :dropWidth="dropWidth"
-        :maxDropWidth="maxDropWidth"
-        :multiple="true"
-        :placement="placement"
-        :data-transfer="transfer"
-        :widthAdaption="widthAdaption"
-        :class="dropClass"
-      >
-        <div ref="content" :class="[`${prefixCls}-dropdown-noline-content`]">
-          <div ref="blockWrapper" id="blockWrapper" :class="[prefixCls + '-dropdown-list']">
-            <slot></slot>
-          </div>
-          <div v-show="loading" :class="[prefixCls + '-block-loading']">{{ loadingText || t('i.select.loading') }}</div>
+    <drop
+      ref="dropdown"
+      v-transfer-dom
+      :show="isDropdownVisible"
+      :dropWidth="dropWidth"
+      :maxDropWidth="maxDropWidth"
+      :multiple="true"
+      :placement="placement"
+      :data-transfer="transfer"
+      :widthAdaption="widthAdaption"
+      :class="dropClass"
+    >
+      <div ref="content" :class="[`${prefixCls}-dropdown-noline-content`]">
+        <div ref="blockWrapper" id="blockWrapper" :class="[prefixCls + '-dropdown-list']">
+          <slot></slot>
         </div>
-      </drop>
-    </transition>
+        <div v-show="loading" :class="[prefixCls + '-block-loading']">{{ loadingText || t('i.select.loading') }}</div>
+      </div>
+    </drop>
   </div>
 </template>
 
