@@ -168,7 +168,15 @@ export default {
             this.blockVm.onQuery(keywords[keywords.length - 1]);
           }
         } else {
-          this.blockVm.onQuery();
+          if (this.remote && this.remoteMethod) {
+            this.remoteMethod("", () => {
+              this.$nextTick(() => {
+                this.blockVm.onQuery();
+              });
+            });
+          } else {
+            this.blockVm.onQuery();
+          }
         }
       });
     },
@@ -227,7 +235,17 @@ export default {
     onAnimationEnd() {
       if (!this.isDropdownVisible) {
         this.updateMagicString(true);
-        this.blockVm && this.blockVm.onQuery();
+        if (this.blockVm) {
+          if (this.remote && this.remoteMethod) {
+            this.remoteMethod("", () => {
+              this.$nextTick(() => {
+                this.blockVm.onQuery();
+              });
+            });
+          } else {
+            this.blockVm.onQuery();
+          }
+        }
       }
     },
 
