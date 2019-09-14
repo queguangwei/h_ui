@@ -23,6 +23,7 @@
         @blur="onInputBlur"
         @keyup="onInputKeyup"
         @keydown="onInputKeydown"
+        @paste="onInputPaste"
       />
       <!-- 下拉箭头图标 -->
       <Icon
@@ -123,6 +124,7 @@ export default {
     },
     selectedRecords(newVal) {
       this.$emit("input", newVal.map(item => item.value).join());
+      this.$emit("on-change", this.labelInValue ? newVal.map(({ label, value }) => ({ label, value })) : newVal.map(item => item.value).join());
       this.blockVm.blockData.forEach(({ _index, label, value }) => {
         this.blockVm.$set(this.blockVm.blockData[_index], "selected", newVal.some(item => item.label === label && item.value === value));
       });
@@ -134,7 +136,7 @@ export default {
       for (const label of splitVal) {
         const matched = this.blockVm.blockData.filter(item => item.label === label);
         if (matched.length) {
-          selectedRecords = selectedRecords.concat(matched);
+          selectedRecords = selectedRecords.concat(matched.map(({ label, value }) => ({ label, value })));
         } else {
           keywords.push(label);
         }
@@ -142,8 +144,25 @@ export default {
 
       this.selectedRecords = selectedRecords;
       if (keywords.length) {
-        this.blockVm.onQuery(keywords[keywords.length - 1]);
         this.isDropdownVisible = true;
+        this.$emit("on-query-change", keywords[keywords.length - 1]);
+        if (this.remote && this.remoteMethod) {
+          /**
+           * @description remote-method should take done() as a flag when remote action finish
+           * @example
+           *   remoteMethod(key, done) {
+           *     /// some code
+           *     done(); // make sure I know when to continue
+           *   }
+           */
+          this.remoteMethod(keywords[keywords.length - 1], () => {
+            this.$nextTick(() => {
+              this.blockVm.onQuery(keywords[keywords.length - 1]);
+            });
+          });
+        } else {
+          this.blockVm.onQuery(keywords[keywords.length - 1]);
+        }
       }
     },
     isDropdownVisible(newVal) {
@@ -155,7 +174,7 @@ export default {
       this.isDropdownVisible = false;
     },
     onContainerKeyDown(e) {
-      if (this.isDropdownVisible && this.blockVm) {
+      if (this.isDropdownVisible) {
         if (_.isKeyMatch(e, "Esc") || _.isKeyMatch(e, "Enter")) {
           this.isDropdownVisible = false;
           this.$refs.input.blur();
@@ -163,17 +182,20 @@ export default {
             this.$refs.input.focus();
           });
         }
-        if (_.isKeyMatch(e, "Up")) {
-          e.preventDefault();
-          this.blockVm.highlight("prev");
-        }
-        if (_.isKeyMatch(e, "Down")) {
-          e.preventDefault();
-          this.blockVm.highlight("next");
-        }
-        if (_.isKeyMatch(e, "Space")) {
-          e.preventDefault();
-          this.blockVm.highlight("click");
+
+        if (this.blockVm) {
+          if (_.isKeyMatch(e, "Up")) {
+            e.preventDefault();
+            this.blockVm.highlight("prev");
+          }
+          if (_.isKeyMatch(e, "Down")) {
+            e.preventDefault();
+            this.blockVm.highlight("next");
+          }
+          if (_.isKeyMatch(e, "Space")) {
+            e.preventDefault();
+            this.blockVm.highlight("click");
+          }
         }
       }
     },
@@ -192,18 +214,22 @@ export default {
     onInputKeydown(e) {
       this.$emit("on-keydown", this.magicString, e);
     },
+    onInputPaste(e) {
+      this.$emit("on-paste", { oldval: this.magicString, newval: e.clipboardData.getData("text/plain") });
+    },
     onAnimationEnd() {
       if (!this.isDropdownVisible) {
         this.updateMagicString(true);
-        this.blockVm.onQuery();
+        this.blockVm && this.blockVm.onQuery();
       }
     },
 
     /**
      * @description 监听 model 的变化更新魔法字符串
-     * @public {Boolean} 打开 clearKeyword 可以保证 magicString 与 model 保持一致, 否则会保留魔法字符串中的未知关键字
+     * @param {Boolean} clearKeyword 打开 clearKeyword 可以保证 magicString 与 model 保持一致, 否则会保留魔法字符串中的未知关键字
+     * @param {Function} cb 回调函数
      */
-    updateMagicString(clearKeyword = true) {
+    updateMagicString(clearKeyword = true, cb) {
       if (clearKeyword) {
         this.magicString = this.selectedRecords.map(item => item.label).join();
       } else {
@@ -226,13 +252,17 @@ export default {
           this.magicString = newMagicString.join();
         }
       }
+
+      this.$nextTick(() => cb && cb(this.magicString));
     }
   },
   created() {
-    this.$on("on-data-ready", (records, blockVm) => {
+    this.$on("on-ready", (data, blockVm) => {
       this.blockVm = blockVm; // block instance
-      this.selectedRecords = records.filter(({ value }) => this.model.includes(value)); // on-data-ready 之后, 先同步一次 model
-      this.updateMagicString();
+    });
+    this.$on("on-data-change", (records, blockVm) => {
+      this.selectedRecords = records.filter(({ value }) => this.model.includes(value)); // on-data-change 之后, 先同步一次 model
+      this.updateMagicString(false); // keep keyword of magic string
     });
     this.$on("on-selected", record => {
       if (this.selectedRecords.some(item => item.label === record.label && item.value === record.value)) return false;

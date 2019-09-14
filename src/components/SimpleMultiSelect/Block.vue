@@ -10,20 +10,18 @@
         @click.stop="onItemClick(item)"
       >
         <slot>
-          <p>
+          <span :class="{itemcol: showCol.length > 0}" style="width: 100px;">
             <checkbox size="large" :value="item.selected" :disabled="item.disabled"></checkbox>
             {{item.label || item.value}}
-          </p>
+          </span>
         </slot>
+        <span v-for="col in showCol" :key="col" class="itemcol" style="width: 100px;">{{item[col] || item.label}}</span>
       </li>
     </ul>
 
     <!-- work with different status -->
-    <div
-      v-if="!$parent.$parent.loading && filteredData.length <= 0"
-      :class="[prefixCls+'-empty']"
-    >{{ t("i.select.noMatch") }}</div>
-    <div v-if="$parent.$parent.loading && filteredData.length === 0" :class="[prefixCls+'-loading-placeholder']">&nbsp;</div>
+    <div v-if="!loading && filteredData.length <= 0" :class="[prefixCls+'-empty']">{{ t("i.select.noMatch") }}</div>
+    <div v-if="loading && filteredData.length === 0" :class="[prefixCls+'-loading-placeholder']">&nbsp;</div>
   </div>
 </template>
 
@@ -46,9 +44,21 @@ export default {
     blockCls() {
       return [`${this.prefixCls}-drop`, `${this.prefixCls}-multiple`];
     },
+    // 继承已选的数据集合
+    selectedRecords() {
+      return this.$parent.$parent.selectedRecords;
+    },
     // 继承 loading 状态
     loading() {
       return this.$parent.$parent.loading;
+    },
+    // 继承 specialIndex
+    specialIndex() {
+      return this.$parent.$parent.specialIndex;
+    },
+    // 继承 specialVal
+    specialVal() {
+      return this.$parent.$parent.specialVal;
     },
     // 搜索过滤后的数据集合
     filteredData() {
@@ -59,25 +69,30 @@ export default {
     data: {
       deep: true,
       handler(newVal) {
-        this.blockData = JSON.parse(
-          JSON.stringify(
-            newVal.map((item, index) => {
-              return {
-                ...item,
-                _index: index,
-                focus: false,
-                selected: false,
-                disabled: false,
-                hidden: false
-              };
-            })
-          )
-        );
+        let blockData = [];
+        if (this.selectedRecords) {
+          blockData = blockData.concat(this.selectedRecords.map(item => ({ ...item, selected: true })));
+        }
+
+        for (const item of newVal) {
+          if (blockData.some(({ label, value }) => label === item.label && value === item.value)) {
+            continue;
+          }
+          blockData.push({ ...item, selected: false });
+        }
+
+        this.blockData = blockData.map((item, index) => ({
+          ...item,
+          _index: index,
+          focus: false,
+          disabled: false,
+          hidden: false
+        }));
 
         // initialize
         this.reset() && this.updateVisualData();
         this.$nextTick(() => {
-          this.emit(-2, "on-data-ready", newVal.map(({ label, value }) => ({ label, value })));
+          this.emit(-2, "on-data-change", this.blockData.map(({ label, value }) => ({ label, value })));
         });
       }
     }
@@ -129,6 +144,20 @@ export default {
     },
     onItemClick(item) {
       const { _index, selected, label, value } = item;
+
+      // specialIndex && specialVal
+      if (this.specialIndex && this.specialVal) {
+        if (this.specialVal === value && !selected) {
+          this.$parent.$parent.toggleSelect(false);
+        } else {
+          const specialItemIndex = this.blockData.findIndex(item => item.value === this.specialVal);
+          if (specialItemIndex >= 0 && this.blockData[specialItemIndex]["selected"]) {
+            this.$set(this.blockData[specialItemIndex], "selected", false);
+            this.emit(-2, "on-cancel-selected", { label: this.blockData[specialItemIndex]["label"], value: this.blockData[specialItemIndex]["value"] });
+          }
+        }
+      }
+
       this.$set(this.blockData[_index], "selected", !selected);
       this.emit(-2, selected ? "on-cancel-selected" : "on-selected", { label, value });
 
@@ -147,9 +176,10 @@ export default {
 
       keyword = keyword.replace(/(\^|\(|\)|\[|\]|\$|\*|\+|\.|\?|\\|\{|\}|\|)/g, "\\$1");
       for (const item of this.blockData) {
-        const { _index, label, value } = item;
-        if (keyword === "") this.$set(this.blockData[_index], "hidden", false);
-        else {
+        const { _index, selected, label, value } = item;
+        if (keyword === "" || selected) {
+          this.$set(this.blockData[_index], "hidden", false); // 已选项默认不参加模糊查询
+        } else {
           this.$set(this.blockData[_index], "hidden", !new RegExp(keyword, "i").test(label) && !new RegExp(keyword, "i").test(value));
         }
       }
@@ -213,7 +243,7 @@ export default {
      * @description emit up event with data
      * @param layer {number} up layer, -1 => $parent, -2 => $parent.$parent ..
      */
-    emit(layer = -1, eventName, data) {
+    emit(layer = -1, eventName, data = null) {
       if (layer >= 0) return false;
       let _this = this,
         i = 0;
@@ -226,6 +256,11 @@ export default {
 
       _this.$emit(eventName, data, this);
     }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.emit(-2, "on-ready");
+    });
   }
 };
 </script>

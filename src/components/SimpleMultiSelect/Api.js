@@ -11,6 +11,11 @@ export const SimpleMultiSelectApi = {
     placeholder: {
       type: String
     },
+    // 在 on-change 返回选项时，是否将 label 和 value 一并返回，默认只返回 value
+    labelInValue: {
+      type: Boolean,
+      default: false
+    },
     // 弹窗的展开方向
     placement: {
       default: "bottom",
@@ -43,7 +48,37 @@ export const SimpleMultiSelectApi = {
       type: Boolean,
       default: false
     },
-
+    // 是否使用远程搜索
+    remote: {
+      type: Boolean,
+      default: false
+    },
+    // 远程搜索的方法
+    remoteMethod: {
+      type: Function
+    },
+    // 配合远程搜索使用。loading设置为true时显示加载提示文字
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    // 加载中显示的文字
+    loadingText: {
+      type: String
+    },
+    // 是否开启特殊项目，选择特殊项与其他项互斥
+    specialIndex: {
+      type: Boolean,
+      default: false
+    },
+    // 特殊项关键值（value）
+    specialVal: {
+      type: String,
+      default: "-1",
+      validator(value) {
+        return value !== "";
+      }
+    },
     // 设置输入框 tabindex
     tabindex: {
       type: [String, Number],
@@ -51,6 +86,11 @@ export const SimpleMultiSelectApi = {
       validator(value) {
         return parseInt(value) >= -1 && parseInt(value) <= 32767;
       }
+    },
+    // 鼠标在输入框悬浮时显示额外的提示信息
+    tooltip: {
+      type: String,
+      default: ""
     },
 
     // 设置输入框为禁用状态
@@ -63,29 +103,10 @@ export const SimpleMultiSelectApi = {
       type: Boolean,
       default: false
     },
-    // ??
+    // 设置输入框为可编辑
     editable: {
       type: Boolean,
       default: true
-    },
-
-    // 鼠标在输入框悬浮时显示额外的提示信息
-    tooltip: {
-      type: String,
-      default: ""
-    },
-    // 多选时离开焦点显示选择多少项
-    showTotalNum: {
-      type: Boolean,
-      default: false
-    },
-
-    loading: {
-      type: Boolean,
-      default: false
-    },
-    loadingText: {
-      type: String
     }
   },
   methods: {
@@ -104,10 +125,12 @@ export const SimpleMultiSelectApi = {
     toggleSelect(status) {
       if (this.blockVm) {
         this.selectedRecords = status
-          ? this.blockVm.blockData.map(({ label, value }) => ({
-              label,
-              value
-            }))
+          ? this.blockVm.blockData
+              .filter(({ value }) => this.specialIndex && this.specialVal && value !== this.specialVal) // specialIndex && specialVal
+              .map(({ label, value }) => ({
+                label,
+                value
+              }))
           : [];
         this.$nextTick(() => {
           this.updateMagicString();
@@ -122,12 +145,22 @@ export const SimpleMultiSelectBlockApi = {
     // 选择框中数据，必填
     data: {
       type: Array,
+      default() {
+        return [];
+      },
       validator(value) {
         if (_.isArrayLikeObject(value)) {
           return value.length <= 0 || (value.length > 0 && typeof value[0]["label"] === "string" && typeof value[0]["value"] === "string");
         } else return false;
+      }
+    },
+    // 多列配置项，最多新增3列
+    showCol: {
+      type: Array,
+      validator(value) {
+        return value.length <= 3;
       },
-      default() {
+      default: () => {
         return [];
       }
     }
