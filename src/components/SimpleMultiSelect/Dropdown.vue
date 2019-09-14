@@ -1,5 +1,5 @@
 <template>
-  <div ref="container" class="h-select-dropdown" :style="containerStyle">
+  <div ref="container" class="h-select-dropdown" style="display: none;">
     <slot></slot>
   </div>
 </template>
@@ -34,13 +34,6 @@ export default {
     widthAdaption: {
       type: Boolean,
       default: false
-    }
-  },
-  computed: {
-    containerStyle() {
-      return {
-        display: "none"
-      };
     }
   },
   watch: {

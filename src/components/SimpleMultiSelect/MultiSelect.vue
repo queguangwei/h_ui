@@ -120,6 +120,9 @@ export default {
         }
         this.selectedRecords = selectedRecords.map(({ label, value }) => ({ label, value }));
         this.updateMagicString(false); // keep keyword of magic string
+      } else {
+        // if block is not ready, mostly happens at the very start
+        // and under this circumstance, event on-ready or on-data-change will work
       }
     },
     selectedRecords(newVal) {
@@ -143,27 +146,31 @@ export default {
       }
 
       this.selectedRecords = selectedRecords;
-      if (keywords.length) {
-        this.isDropdownVisible = true;
-        this.$emit("on-query-change", keywords[keywords.length - 1]);
-        if (this.remote && this.remoteMethod) {
-          /**
-           * @description remote-method should take done() as a flag when remote action finish
-           * @example
-           *   remoteMethod(key, done) {
-           *     /// some code
-           *     done(); // make sure I know when to continue
-           *   }
-           */
-          this.remoteMethod(keywords[keywords.length - 1], () => {
-            this.$nextTick(() => {
-              this.blockVm.onQuery(keywords[keywords.length - 1]);
+      this.$nextTick(() => {
+        if (keywords.length) {
+          this.isDropdownVisible = true;
+          this.$emit("on-query-change", keywords[keywords.length - 1]);
+          if (this.remote && this.remoteMethod) {
+            /**
+             * @description remote-method should take done() as a flag when remote action finish
+             * @example
+             *   remoteMethod(key, done) {
+             *     /// some code
+             *     done(); // make sure I know when to continue
+             *   }
+             */
+            this.remoteMethod(keywords[keywords.length - 1], () => {
+              this.$nextTick(() => {
+                this.blockVm.onQuery(keywords[keywords.length - 1]);
+              });
             });
-          });
+          } else {
+            this.blockVm.onQuery(keywords[keywords.length - 1]);
+          }
         } else {
-          this.blockVm.onQuery(keywords[keywords.length - 1]);
+          this.blockVm.onQuery();
         }
-      }
+      });
     },
     isDropdownVisible(newVal) {
       this.$emit("on-drop-change", newVal);
@@ -227,9 +234,8 @@ export default {
     /**
      * @description 监听 model 的变化更新魔法字符串
      * @param {Boolean} clearKeyword 打开 clearKeyword 可以保证 magicString 与 model 保持一致, 否则会保留魔法字符串中的未知关键字
-     * @param {Function} cb 回调函数
      */
-    updateMagicString(clearKeyword = true, cb) {
+    updateMagicString(clearKeyword = true) {
       if (clearKeyword) {
         this.magicString = this.selectedRecords.map(item => item.label).join();
       } else {
@@ -252,18 +258,16 @@ export default {
           this.magicString = newMagicString.join();
         }
       }
-
-      this.$nextTick(() => cb && cb(this.magicString));
     }
   },
   created() {
     this.$on("on-ready", (records, blockVm) => {
       this.blockVm = blockVm; // block instance
-      this.selectedRecords = records.filter(({ value }) => this.model.includes(value)); // on-ready 之后, 先同步一次 model
+      this.selectedRecords = records.filter(({ value }) => this.model.includes(value)); // on block ready, sync selectedRecords with model
       this.updateMagicString();
     });
     this.$on("on-data-change", (records, blockVm) => {
-      this.selectedRecords = records.filter(({ value }) => this.model.includes(value)); // on-data-change 之后, 同步一次 model
+      this.selectedRecords = records.filter(({ value }) => this.model.includes(value)); // on block data change, sync selectedRecords with model again
       this.updateMagicString(false); // keep keyword of magic string
     });
     this.$on("on-selected", record => {
