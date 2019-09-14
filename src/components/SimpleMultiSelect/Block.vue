@@ -89,7 +89,7 @@ export default {
           hidden: false
         }));
 
-        // initialize
+        // reset on data change
         this.reset() && this.updateVisualData();
         this.$nextTick(() => {
           this.emit(-2, "on-data-change", this.blockData.map(({ label, value }) => ({ label, value })));
@@ -258,8 +258,19 @@ export default {
     }
   },
   mounted() {
+    this.blockData = this.data.map((item, index) => ({
+      ...item,
+      _index: index,
+      focus: false,
+      selected: false,
+      disabled: false,
+      hidden: false
+    }));
+
+    // initialize
+    this.reset() && this.updateVisualData();
     this.$nextTick(() => {
-      this.emit(-2, "on-ready");
+      this.emit(-2, "on-ready", this.blockData.map(({ label, value }) => ({ label, value })));
     });
   }
 };

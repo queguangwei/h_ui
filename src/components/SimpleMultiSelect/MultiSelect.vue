@@ -257,11 +257,13 @@ export default {
     }
   },
   created() {
-    this.$on("on-ready", (data, blockVm) => {
+    this.$on("on-ready", (records, blockVm) => {
       this.blockVm = blockVm; // block instance
+      this.selectedRecords = records.filter(({ value }) => this.model.includes(value)); // on-ready 之后, 先同步一次 model
+      this.updateMagicString();
     });
     this.$on("on-data-change", (records, blockVm) => {
-      this.selectedRecords = records.filter(({ value }) => this.model.includes(value)); // on-data-change 之后, 先同步一次 model
+      this.selectedRecords = records.filter(({ value }) => this.model.includes(value)); // on-data-change 之后, 同步一次 model
       this.updateMagicString(false); // keep keyword of magic string
     });
     this.$on("on-selected", record => {
