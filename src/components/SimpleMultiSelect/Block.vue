@@ -91,9 +91,7 @@ export default {
 
         // reset on data change
         this.reset() && this.updateVisualData();
-        this.$nextTick(() => {
-          this.emit(-2, "on-data-change", this.blockData.map(({ label, value }) => ({ label, value })));
-        });
+        this.emit(-2, "on-data-change", this.blockData.map(({ label, value }) => ({ label, value })));
       }
     }
   },
@@ -145,6 +143,11 @@ export default {
     onItemClick(item) {
       const { _index, selected, label, value } = item;
 
+      // 关于为什么要加这个状态，这是个很玄学的问题 ～～
+      // 它是用在查询操作里面的
+      // 不妨这样理解，在选择过程中分发出来的查询请求一律打回
+      this.isSelecting = true;
+
       // specialIndex && specialVal
       if (this.specialIndex && this.specialVal) {
         if (this.specialVal === value && !selected) {
@@ -153,24 +156,22 @@ export default {
           const specialItemIndex = this.blockData.findIndex(item => item.value === this.specialVal);
           if (specialItemIndex >= 0 && this.blockData[specialItemIndex]["selected"]) {
             this.$set(this.blockData[specialItemIndex], "selected", false);
-            this.emit(-2, "on-cancel-selected", { label: this.blockData[specialItemIndex]["label"], value: this.blockData[specialItemIndex]["value"] });
+            this.emit(-2, "on-cancel-selected", { label: this.blockData[specialItemIndex]["label"], value: this.blockData[specialItemIndex]["value"] }, () => {
+              this.isSelecting = false;
+            });
           }
         }
       }
 
       this.$set(this.blockData[_index], "selected", !selected);
-      this.emit(-2, selected ? "on-cancel-selected" : "on-selected", { label, value });
-
-      // 关于为什么要加这个状态，这是个很玄学的问题 ～～
-      // 它是用在查询操作里面的
-      // 不妨这样理解，在选择过程中分发出来的查询请求一律打回
-      this.isSelecting = true;
+      this.emit(-2, selected ? "on-cancel-selected" : "on-selected", { label, value }, () => {
+        this.isSelecting = false;
+      });
     },
 
     onQuery(keyword = "") {
       // 再一次说，在选择过程中分发出来的查询请求一律打回
       if (this.isSelecting) {
-        this.isSelecting = false;
         return false;
       }
 
@@ -242,11 +243,14 @@ export default {
     /**
      * @description emit up event with data
      * @param layer {number} up layer, -1 => $parent, -2 => $parent.$parent ..
+     * @param eventName {String} event name
      */
-    emit(layer = -1, eventName, data = null) {
+    emit(layer = -1, eventName) {
       if (layer >= 0) return false;
-      let _this = this,
-        i = 0;
+
+      const args = [...arguments];
+      let _this = this;
+      let i = 0;
 
       // find the parent by layer
       while (i > layer) {
@@ -254,7 +258,7 @@ export default {
         i--;
       }
 
-      _this.$emit(eventName, data, this);
+      _this.$emit.apply(_this, [eventName, this, ...args.slice(2)]);
     }
   },
   mounted() {
@@ -269,9 +273,7 @@ export default {
 
     // initialize
     this.reset() && this.updateVisualData();
-    this.$nextTick(() => {
-      this.emit(-2, "on-ready", this.blockData.map(({ label, value }) => ({ label, value })));
-    });
+    this.emit(-2, "on-ready", this.blockData.map(({ label, value }) => ({ label, value })));
   }
 };
 </script>

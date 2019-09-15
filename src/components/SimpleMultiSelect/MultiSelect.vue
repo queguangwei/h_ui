@@ -119,7 +119,6 @@ export default {
           selectedRecords = selectedRecords.concat(this.blockVm.blockData.filter(item => item.value === value));
         }
         this.selectedRecords = selectedRecords.map(({ label, value }) => ({ label, value }));
-        this.updateMagicString(false); // keep keyword of magic string
       } else {
         // if block is not ready, mostly happens at the very start
         // and under this circumstance, event on-ready or on-data-change will work
@@ -139,7 +138,12 @@ export default {
       for (const label of splitVal) {
         const matched = this.blockVm.blockData.filter(item => item.label === label);
         if (matched.length) {
-          selectedRecords = selectedRecords.concat(matched.map(({ label, value }) => ({ label, value })));
+          for (const { label, value } of matched) {
+            if (selectedRecords.some(item => item.label === label && item.value === value)) {
+              continue; // make sure there are no repeated selected record
+            }
+            selectedRecords.push({ label, value });
+          }
         } else {
           keywords.push(label);
         }
@@ -232,9 +236,9 @@ export default {
     onInputPaste(e) {
       this.$emit("on-paste", { oldval: this.magicString, newval: e.clipboardData.getData("text/plain") });
     },
-    onAnimationEnd() {
-      if (!this.isDropdownVisible) {
-        this.updateMagicString(true);
+    onAnimationEnd(visible) {
+      if (!visible) {
+        this.updateMagicString();
         if (this.blockVm) {
           if (this.remote && this.remoteMethod) {
             this.remoteMethod("", () => {
@@ -250,57 +254,41 @@ export default {
     },
 
     /**
-     * @description 监听 model 的变化更新魔法字符串
-     * @param {Boolean} clearKeyword 打开 clearKeyword 可以保证 magicString 与 model 保持一致, 否则会保留魔法字符串中的未知关键字
+     * @description 监听 model 的变化，强制更新魔法字符串
+     * @param {Function} cb callback 回调函数
      */
-    updateMagicString(clearKeyword = true) {
-      if (clearKeyword) {
-        this.magicString = this.selectedRecords.map(item => item.label).join();
-      } else {
-        if (this.blockVm) {
-          const splitMagicString = this.magicString === "" ? [] : this.magicString.split(",");
-          const newMagicString = [];
-
-          // 添加已选项
-          for (const { label } of this.selectedRecords) {
-            newMagicString.push(label);
-          }
-
-          // 保留未知关键字
-          for (const label of splitMagicString) {
-            if (this.blockVm.blockData.every(item => item.label !== label)) {
-              newMagicString.push(label);
-            }
-          }
-
-          this.magicString = newMagicString.join();
-        }
-      }
+    updateMagicString(cb) {
+      this.magicString = this.selectedRecords.map(item => item.label).join();
+      this.$nextTick(() => {
+        cb && cb(this.magicString);
+      });
     }
   },
   created() {
-    this.$on("on-ready", (records, blockVm) => {
+    this.$on("on-ready", (blockVm, records) => {
       this.blockVm = blockVm; // block instance
       this.selectedRecords = records.filter(({ value }) => this.model.includes(value)); // on block ready, sync selectedRecords with model
+      this.$nextTick(() => {
+        this.updateMagicString();
+      });
+    });
+    this.$on("on-data-change", (blockVm, records) => {
+      this.selectedRecords = records.filter(({ value }) => this.model.includes(value)); // on block data change, sync selectedRecords with model again
       this.updateMagicString();
     });
-    this.$on("on-data-change", (records, blockVm) => {
-      this.selectedRecords = records.filter(({ value }) => this.model.includes(value)); // on block data change, sync selectedRecords with model again
-      this.updateMagicString(false); // keep keyword of magic string
-    });
-    this.$on("on-selected", record => {
+    this.$on("on-selected", (blockVm, record, cb) => {
       if (this.selectedRecords.some(item => item.label === record.label && item.value === record.value)) return false;
       else {
         this.selectedRecords.push(record);
         this.$nextTick(() => {
-          this.updateMagicString();
+          this.updateMagicString(cb);
         });
       }
     });
-    this.$on("on-cancel-selected", record => {
+    this.$on("on-cancel-selected", (blockVm, record, cb) => {
       this.selectedRecords = this.selectedRecords.filter(item => item.label !== record.label && item.value !== record.value);
       this.$nextTick(() => {
-        this.updateMagicString();
+        this.updateMagicString(cb);
       });
     });
   }

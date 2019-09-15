@@ -105,7 +105,7 @@ export default {
                 }
 
                 function onAnimationEnd() {
-                  _this.$emit("on-animation-end"); // emit on-animation-end, el could be visible or hidden
+                  _this.$emit("on-animation-end", show); // emit on-animation-end, el could be visible or hidden
                   el.removeEventListener("animationend", onAnimationEnd);
                   el.classList.remove("slide-up-enter-active", "slide-up-leave-active", "slide-down-enter-active", "slide-down-leave-active");
                   !show && setStyle(el, { display: "none" });
