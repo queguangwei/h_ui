@@ -223,7 +223,10 @@ export default {
       }
     },
 
-    // 重置高亮的下拉项和滚动条位置
+    /**
+     * @description 重置高亮的下拉项和滚动条位置
+     * @todo 滚动条的处理有点儿问题，如果打开，滚动加载会产生问题
+     */
     reset() {
       for (const item of this.blockData) {
         const { _index, focus } = item;
@@ -233,7 +236,7 @@ export default {
       }
 
       this.highlightIndex = -1;
-      this.$el.scrollTop = 0;
+      // this.$el.scrollTop = 0;
 
       return true;
     },
