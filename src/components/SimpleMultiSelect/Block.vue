@@ -97,8 +97,8 @@ export default {
   },
   methods: {
     onScroll(e) {
-      const { target } = e;
-      const { scrollTop } = target;
+      const { target } = e,
+        { scrollTop } = target;
       const direction = this.lastScollTop === scrollTop ? "x" : "y"; // detect scroll directory
 
       this.lastScollTop = scrollTop;
@@ -127,8 +127,9 @@ export default {
         }
       }
 
-      this.visualData = blockData.slice(start, end); // slice visual data
-      this.$refs.content.style.transform = `translateY(${start * itemHeight}px)`; // ???
+      this.visualData = blockData.slice(start, end);
+      this.$refs.content.style.transform = `translateY(${start * itemHeight}px)`;
+      this.emit(-1, "on-static-update"); // update dropdown panel
     },
     genItemCls(item) {
       return [
@@ -156,22 +157,19 @@ export default {
           const specialItemIndex = this.blockData.findIndex(item => item.value === this.specialVal);
           if (specialItemIndex >= 0 && this.blockData[specialItemIndex]["selected"]) {
             this.$set(this.blockData[specialItemIndex], "selected", false);
-            this.emit(-2, "on-cancel-selected", { label: this.blockData[specialItemIndex]["label"], value: this.blockData[specialItemIndex]["value"] }, () => {
-              this.isSelecting = false;
-            });
+            this.emit(-2, "on-cancel-selected", { label: this.blockData[specialItemIndex]["label"], value: this.blockData[specialItemIndex]["value"] });
           }
         }
       }
 
       this.$set(this.blockData[_index], "selected", !selected);
-      this.emit(-2, selected ? "on-cancel-selected" : "on-selected", { label, value }, () => {
-        this.isSelecting = false;
-      });
+      this.emit(-2, selected ? "on-cancel-selected" : "on-selected", { label, value });
     },
 
     onQuery(keyword = "") {
       // 再一次说，在选择过程中分发出来的查询请求一律打回
       if (this.isSelecting) {
+        this.isSelecting = false;
         return false;
       }
 

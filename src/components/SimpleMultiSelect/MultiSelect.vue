@@ -45,7 +45,7 @@
       :data-transfer="transfer"
       :widthAdaption="widthAdaption"
       :class="dropClass"
-      @on-animation-end="onAnimationEnd"
+      @on-hide="onDropdownHide"
     >
       <div ref="content" :class="[`${prefixCls}-dropdown-noline-content`]">
         <div ref="blockWrapper" id="blockWrapper" :class="[prefixCls + '-dropdown-list']">
@@ -72,7 +72,7 @@ export default {
   data() {
     return {
       prefixCls: "h-selectTable",
-      isDropdownVisible: false, // 下拉框是否处于可视状态
+      isDropdownVisible: false, // 下拉面板是否处于可视状态
       selectedRecords: [], // 已选记录集合
       magicString: "", // 神奇的字符串，输入框的绑定，已选记录的快览，搜索的关键字
       model: [] // 组件双向绑定的值
@@ -116,7 +116,15 @@ export default {
       if (this.blockVm) {
         let selectedRecords = [];
         for (const value of newVal) {
-          selectedRecords = selectedRecords.concat(this.blockVm.blockData.filter(item => item.value === value));
+          const matched = this.blockVm.blockData.filter(item => item.value === value);
+          if (matched.length) {
+            for (const { label, value } of matched) {
+              if (selectedRecords.some(item => item.label === label && item.value === value)) {
+                continue; // make sure there are no repeated selected record
+              }
+              selectedRecords.push({ label, value });
+            }
+          }
         }
         this.selectedRecords = selectedRecords.map(({ label, value }) => ({ label, value }));
       } else {
@@ -130,25 +138,12 @@ export default {
       this.blockVm.blockData.forEach(({ _index, label, value }) => {
         this.blockVm.$set(this.blockVm.blockData[_index], "selected", newVal.some(item => item.label === label && item.value === value));
       });
+      this.$nextTick(() => {
+        this.updateMagicString(false);
+      });
     },
     magicString(newVal) {
-      const splitVal = newVal === "" ? [] : newVal.split(",");
-      let selectedRecords = [];
-      let keywords = [];
-      for (const label of splitVal) {
-        const matched = this.blockVm.blockData.filter(item => item.label === label);
-        if (matched.length) {
-          for (const { label, value } of matched) {
-            if (selectedRecords.some(item => item.label === label && item.value === value)) {
-              continue; // make sure there are no repeated selected record
-            }
-            selectedRecords.push({ label, value });
-          }
-        } else {
-          keywords.push(label);
-        }
-      }
-
+      const { selectedRecords, keywords } = this.resolveMagicString();
       this.selectedRecords = selectedRecords;
       this.$nextTick(() => {
         if (keywords.length) {
@@ -196,10 +191,6 @@ export default {
       if (this.isDropdownVisible) {
         if (_.isKeyMatch(e, "Esc") || _.isKeyMatch(e, "Enter")) {
           this.isDropdownVisible = false;
-          this.$refs.input.blur();
-          this.$nextTick(() => {
-            this.$refs.input.focus();
-          });
         }
 
         if (this.blockVm) {
@@ -236,29 +227,81 @@ export default {
     onInputPaste(e) {
       this.$emit("on-paste", { oldval: this.magicString, newval: e.clipboardData.getData("text/plain") });
     },
-    onAnimationEnd(visible) {
-      if (!visible) {
-        this.updateMagicString();
-        if (this.blockVm) {
-          if (this.remote && this.remoteMethod) {
-            this.remoteMethod("", () => {
-              this.$nextTick(() => {
-                this.blockVm.onQuery();
+    onDropdownHide() {
+      const { magicString: originalMagicString } = this;
+      this.updateMagicString(true, magicString => {
+        this.$refs.input.blur();
+        this.$nextTick(() => {
+          this.$refs.input.focus();
+        });
+
+        if (originalMagicString === magicString) {
+          if (this.blockVm) {
+            if (this.remote && this.remoteMethod) {
+              this.remoteMethod("", () => {
+                this.$nextTick(() => {
+                  this.blockVm.onQuery();
+                });
               });
-            });
-          } else {
-            this.blockVm.onQuery();
+            } else {
+              this.blockVm.onQuery();
+            }
           }
         }
-      }
+      });
     },
 
     /**
-     * @description 监听 model 的变化，强制更新魔法字符串
+     * @description 魔法字符串的解析逻辑
+     * @returns {Object} { selectedRecords, model, keywords }
+     */
+    resolveMagicString() {
+      const splitMagicString = this.magicString === "" ? [] : this.magicString.split(",");
+      let selectedRecords = [],
+        model = [],
+        keywords = [];
+
+      for (const label of splitMagicString) {
+        const matched = this.blockVm.blockData.filter(item => item.label === label);
+        if (matched.length > 0) {
+          for (const { label, value } of matched) {
+            if (selectedRecords.some(item => item.label === label && item.value === value)) {
+              continue; // make sure there are no repeated selected record
+            }
+            selectedRecords.push({ label, value });
+            model.push(value);
+          }
+        } else {
+          keywords.push(label);
+        }
+      }
+
+      return { splitMagicString, selectedRecords, model, keywords };
+    },
+    /**
+     * @description 监听 model 的变化，更新魔法字符串
+     * @param {Boolean} forceUpdate 是否强制更新，开启后将与已选项同步，否则将保留当前的查询关键字
      * @param {Function} cb callback 回调函数
      */
-    updateMagicString(cb) {
-      this.magicString = this.selectedRecords.map(item => item.label).join();
+    updateMagicString(forceUpdate = true, cb) {
+      if (forceUpdate) this.magicString = this.selectedRecords.map(item => item.label).join();
+      else {
+        const { splitMagicString, selectedRecords, keywords } = this.resolveMagicString();
+        let newSplitMagicString = [];
+        for (const label of splitMagicString) {
+          if (!keywords.includes(label) && selectedRecords.some(item => item.label === label) && this.selectedRecords.every(item => item.label !== label)) {
+            continue;
+          }
+          newSplitMagicString.push(label);
+        }
+
+        for (const { label } of this.selectedRecords) {
+          !newSplitMagicString.includes(label) && newSplitMagicString.unshift(label);
+        }
+
+        this.magicString = newSplitMagicString.join();
+      }
+
       this.$nextTick(() => {
         cb && cb(this.magicString);
       });
@@ -268,28 +311,18 @@ export default {
     this.$on("on-ready", (blockVm, records) => {
       this.blockVm = blockVm; // block instance
       this.selectedRecords = records.filter(({ value }) => this.model.includes(value)); // on block ready, sync selectedRecords with model
-      this.$nextTick(() => {
-        this.updateMagicString();
-      });
     });
     this.$on("on-data-change", (blockVm, records) => {
       this.selectedRecords = records.filter(({ value }) => this.model.includes(value)); // on block data change, sync selectedRecords with model again
-      this.updateMagicString();
     });
-    this.$on("on-selected", (blockVm, record, cb) => {
+    this.$on("on-selected", (blockVm, record) => {
       if (this.selectedRecords.some(item => item.label === record.label && item.value === record.value)) return false;
       else {
         this.selectedRecords.push(record);
-        this.$nextTick(() => {
-          this.updateMagicString(cb);
-        });
       }
     });
-    this.$on("on-cancel-selected", (blockVm, record, cb) => {
+    this.$on("on-cancel-selected", (blockVm, record) => {
       this.selectedRecords = this.selectedRecords.filter(item => item.label !== record.label && item.value !== record.value);
-      this.$nextTick(() => {
-        this.updateMagicString(cb);
-      });
     });
   }
 };

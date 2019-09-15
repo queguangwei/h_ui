@@ -38,6 +38,7 @@ export default {
   },
   watch: {
     show(newVal) {
+      this.allowAnimation = true;
       this.update();
     }
   },
@@ -74,7 +75,7 @@ export default {
             applyVueStyle: {
               enabled: true,
               fn(data) {
-                const { show, dropWidth, maxDropWidth, widthAdaption } = _this;
+                const { show, allowAnimation, dropWidth, maxDropWidth, widthAdaption } = _this;
                 const {
                   instance: { popper: el },
                   offsets: {
@@ -99,16 +100,20 @@ export default {
 
                 if (show) {
                   setStyle(el, { display: "block", visiblity: "visible", ...styles });
-                  el.classList.add(placement.includes("top") ? "slide-down-enter-active" : placement.includes("bottom") && "slide-up-enter-active");
+                  if (allowAnimation) {
+                    el.classList.add(placement.includes("top") ? "slide-down-enter-active" : placement.includes("bottom") && "slide-up-enter-active");
+                  }
                 } else {
                   el.classList.add(placement.includes("top") ? "slide-down-leave-active" : placement.includes("bottom") && "slide-up-leave-active");
                 }
 
                 function onAnimationEnd() {
-                  _this.$emit("on-animation-end", show); // emit on-animation-end, el could be visible or hidden
                   el.removeEventListener("animationend", onAnimationEnd);
                   el.classList.remove("slide-up-enter-active", "slide-up-leave-active", "slide-down-enter-active", "slide-down-leave-active");
-                  !show && setStyle(el, { display: "none" });
+                  if (!show) {
+                    setStyle(el, { display: "none" });
+                    _this.$emit("on-hide"); // emit on animation end and dropdown panel hidden
+                  }
                 }
                 el.addEventListener("animationend", onAnimationEnd);
               },
@@ -139,6 +144,15 @@ export default {
         });
       }
     }
+  },
+  mounted() {
+    // update without animation on dropdown panel is visible
+    this.$on("on-static-update", data => {
+      if (this.show) {
+        this.allowAnimation = false;
+        this.update();
+      }
+    });
   }
 };
 </script>
