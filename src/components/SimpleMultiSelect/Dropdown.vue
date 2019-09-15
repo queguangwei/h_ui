@@ -59,7 +59,7 @@ export default {
             const wh = window.innerHeight;
             return wh - top - height < 210 ? "top-start" : "bottom-start";
           } else {
-            return this.placement;
+            return ["top", "bottom"].includes(this.placement) ? `${this.placement}-start` : this.placement;
           }
         })();
 

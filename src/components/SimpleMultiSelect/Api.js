@@ -111,13 +111,6 @@ export const SimpleMultiSelectApi = {
   },
   methods: {
     /**
-     * @description 选择项置顶 或者 选择项恢复开始状态
-     * @param {Boolean} status true/false
-     */
-    selectedTop(status) {
-      this.blockVm && this.blockVm.selectedTop(status);
-    },
-    /**
      * @description 全选/全不选
      * @param {*} status true/false
      * @example this.$refs.xxx.toggleSelect()
@@ -132,9 +125,6 @@ export const SimpleMultiSelectApi = {
                 value
               }))
           : [];
-        this.$nextTick(() => {
-          this.updateMagicString();
-        });
       }
     }
   }
@@ -163,25 +153,6 @@ export const SimpleMultiSelectBlockApi = {
       default: () => {
         return [];
       }
-    }
-  },
-  methods: {
-    /**
-     * @description 选择项置顶 或者 选择项恢复开始状态
-     * @param {Boolean} status true/false
-     */
-    selectedTop(status) {
-      if (status) {
-        this.blockData.sort((a, b) => {
-          return a.selected && !b.selected ? -1 : 0;
-        });
-      } else {
-        this.blockData.sort((a, b) => {
-          return a._index < b._index ? -1 : 0;
-        });
-      }
-
-      this.reset() && this.updateVisualData();
     }
   }
 };

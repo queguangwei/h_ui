@@ -45,7 +45,6 @@
       :data-transfer="transfer"
       :widthAdaption="widthAdaption"
       :class="dropClass"
-      @on-hide="onDropdownHide"
     >
       <div ref="content" :class="[`${prefixCls}-dropdown-noline-content`]">
         <div ref="blockWrapper" id="blockWrapper" :class="[prefixCls + '-dropdown-list']">
@@ -138,49 +137,74 @@ export default {
       this.blockVm.blockData.forEach(({ _index, label, value }) => {
         this.blockVm.$set(this.blockVm.blockData[_index], "selected", newVal.some(item => item.label === label && item.value === value));
       });
+
       this.$nextTick(() => {
         this.updateMagicString(false);
       });
     },
     magicString(newVal) {
-      const { selectedRecords, keywords } = this.resolveMagicString();
-      this.selectedRecords = selectedRecords;
-      this.$nextTick(() => {
-        if (keywords.length) {
+      if (this.remote && this.remoteMethod) {
+        const { selectedRecords: originalSelectedRecords, keywords: originalKeywords } = this.resolveMagicString();
+        if (originalKeywords.length > 0) {
           this.isDropdownVisible = true;
-          this.$emit("on-query-change", keywords[keywords.length - 1]);
-          if (this.remote && this.remoteMethod) {
-            /**
-             * @description remote-method should take done() as a flag when remote action finish
-             * @example
-             *   remoteMethod(key, done) {
-             *     /// some code
-             *     done(); // make sure I know when to continue
-             *   }
-             */
-            this.remoteMethod(keywords[keywords.length - 1], () => {
+          this.$emit("on-query-change", originalKeywords[originalKeywords.length - 1]);
+
+          /**
+           * @description remote-method should take done() as a flag when remote action finish
+           * @example
+           *   remoteMethod(key, done) {
+           *     /// some code
+           *     done(); // make sure I know when to continue
+           *   }
+           */
+          this.remoteMethod(originalKeywords[originalKeywords.length - 1], () => {
+            this.$nextTick(() => {
+              const { selectedRecords, keywords } = this.resolveMagicString();
+              this.selectedRecords = selectedRecords;
               this.$nextTick(() => {
-                this.blockVm.onQuery(keywords[keywords.length - 1]);
+                this.blockVm.onQuery(keywords.length > 0 ? keywords[keywords.length - 1] : "");
               });
             });
-          } else {
-            this.blockVm.onQuery(keywords[keywords.length - 1]);
-          }
+          });
         } else {
-          if (this.remote && this.remoteMethod) {
-            this.remoteMethod("", () => {
-              this.$nextTick(() => {
-                this.blockVm.onQuery();
-              });
-            });
-          } else {
+          this.$emit("on-query-change", "");
+          this.selectedRecords = originalSelectedRecords;
+          this.$nextTick(() => {
             this.blockVm.onQuery();
-          }
+          });
         }
-      });
+      } else {
+        const { selectedRecords, keywords } = this.resolveMagicString();
+        this.selectedRecords = selectedRecords;
+        this.$nextTick(() => {
+          if (keywords.length) {
+            this.isDropdownVisible = true;
+          }
+          this.$emit("on-query-change", keywords.length > 0 ? keywords[keywords.length - 1] : "");
+          this.blockVm.onQuery(keywords.length > 0 ? keywords[keywords.length - 1] : "");
+        });
+      }
     },
     isDropdownVisible(newVal) {
       this.$emit("on-drop-change", newVal);
+      if (!newVal) {
+        const { magicString: originalMagicString } = this;
+        this.updateMagicString(true, magicString => {
+          this.$refs.input.blur();
+          this.$nextTick(() => {
+            this.$refs.input.focus();
+          });
+
+          if (originalMagicString === magicString) {
+            this.$emit("on-query-change", "");
+            if (this.remote && this.remoteMethod) {
+              this.remoteMethod("", () => this.$nextTick(this.blockVm.onQuery));
+            } else {
+              this.blockVm.onQuery();
+            }
+          }
+        });
+      }
     }
   },
   methods: {
@@ -191,20 +215,17 @@ export default {
       if (this.isDropdownVisible) {
         if (_.isKeyMatch(e, "Esc") || _.isKeyMatch(e, "Enter")) {
           this.isDropdownVisible = false;
+          return;
         }
 
         if (this.blockVm) {
-          if (_.isKeyMatch(e, "Up")) {
-            e.preventDefault();
-            this.blockVm.highlight("prev");
-          }
-          if (_.isKeyMatch(e, "Down")) {
-            e.preventDefault();
-            this.blockVm.highlight("next");
-          }
-          if (_.isKeyMatch(e, "Space")) {
-            e.preventDefault();
-            this.blockVm.highlight("click");
+          const keyActionMap = new Map([["Up", "prev"], ["Down", "next"], ["Space", "click"]]);
+          for (const [key, value] of keyActionMap.entries()) {
+            if (_.isKeyMatch(e, key)) {
+              e.preventDefault();
+              this.blockVm.highlight(value);
+              return;
+            }
           }
         }
       }
@@ -226,29 +247,6 @@ export default {
     },
     onInputPaste(e) {
       this.$emit("on-paste", { oldval: this.magicString, newval: e.clipboardData.getData("text/plain") });
-    },
-    onDropdownHide() {
-      const { magicString: originalMagicString } = this;
-      this.updateMagicString(true, magicString => {
-        this.$refs.input.blur();
-        this.$nextTick(() => {
-          this.$refs.input.focus();
-        });
-
-        if (originalMagicString === magicString) {
-          if (this.blockVm) {
-            if (this.remote && this.remoteMethod) {
-              this.remoteMethod("", () => {
-                this.$nextTick(() => {
-                  this.blockVm.onQuery();
-                });
-              });
-            } else {
-              this.blockVm.onQuery();
-            }
-          }
-        }
-      });
     },
 
     /**
@@ -280,6 +278,7 @@ export default {
     },
     /**
      * @description 监听 model 的变化，更新魔法字符串
+     * @todo 这里有个小问题，这个更新逻辑会导致绑定的值改变两次
      * @param {Boolean} forceUpdate 是否强制更新，开启后将与已选项同步，否则将保留当前的查询关键字
      * @param {Function} cb callback 回调函数
      */
@@ -295,7 +294,8 @@ export default {
           newSplitMagicString.push(label);
         }
 
-        for (const { label } of this.selectedRecords) {
+        for (let index = this.selectedRecords.length - 1; index >= 0; index--) {
+          const { label } = this.selectedRecords[index];
           !newSplitMagicString.includes(label) && newSplitMagicString.unshift(label);
         }
 
