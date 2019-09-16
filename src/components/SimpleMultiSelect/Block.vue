@@ -1,5 +1,7 @@
 <template>
   <div ref="block" @scroll="onScroll" :class="blockCls">
+    <!-- real virtual list height -->
+    <div :class="[prefixCls+'-phantom']" :style="phantomStl"></div>
     <!-- main content -->
     <ul ref="content" :class="[prefixCls+'block-content']">
       <li
@@ -36,6 +38,8 @@ export default {
   data() {
     return {
       prefixCls: "h-select-block",
+      visualCount: 20, // visual count of dropdown panel
+      itemHeight: 30, // height of single item
       blockData: [], // 所有的数据集合
       visualData: [] // 可视区域的数据集合
     };
@@ -43,6 +47,11 @@ export default {
   computed: {
     blockCls() {
       return [`${this.prefixCls}-drop`, `${this.prefixCls}-multiple`];
+    },
+    phantomStl() {
+      return {
+        height: this.filteredData.length * this.itemHeight + "px"
+      };
     },
     // 继承已选的数据集合
     selectedRecords() {
@@ -89,8 +98,7 @@ export default {
           hidden: false
         }));
 
-        // reset on data change
-        this.reset() && this.updateVisualData();
+        this.updateVisualData();
         this.emit(-2, "on-data-change", this.blockData.map(({ label, value }) => ({ label, value })));
       }
     }
@@ -100,35 +108,19 @@ export default {
       const { target } = e,
         { scrollTop } = target;
       const direction = this.lastScollTop === scrollTop ? "x" : "y"; // detect scroll directory
-
       this.lastScollTop = scrollTop;
       this.lastScollBottom = getBarBottom(target, getScrollBarSize());
-      if (this.lastScollBottom) {
-        this.$emit("on-scroll", this.lastScollBottom, this.lastScollTop, direction);
-      }
-
-      this.updateVisualData(scrollTop);
+      this.$emit("on-scroll", this.lastScollBottom, this.lastScollTop, direction);
+      this.updateVisualData();
     },
-    updateVisualData(scrollTop = this.lastScollTop || 0) {
-      const blockData = this.blockData.filter(item => !item.hidden);
-      const visualCount = 20; // visual count of dropdown panel
-      const itemHeight = 30; // height of single item
-      const start = Math.floor(scrollTop / itemHeight);
-      let i = 0,
-        end = start;
-
-      while (i < visualCount) {
-        if (!blockData[end]) {
-          i = visualCount;
-          end = blockData.length;
-        } else {
-          i++;
-          end++;
-        }
-      }
-
-      this.visualData = blockData.slice(start, end);
-      this.$refs.content.style.transform = `translateY(${start * itemHeight}px)`;
+    updateVisualData() {
+      // 再谈前端虚拟列表的实现https://juejin.im/entry/5aaf66f56fb9a028c71e403e
+      const scrollTop = this.lastScollTop || 0;
+      const start = Math.floor(scrollTop / this.itemHeight);
+      const end = start + this.visualCount;
+      this.visualData = this.filteredData.slice(start, end);
+      this.$refs.content.style.transform = `translate3d(0, ${start * this.itemHeight}px, 0)`;
+      this.$refs.content.style.webkitTransform = `translate3d(0, ${start * this.itemHeight}px, 0)`;
       this.emit(-1, "on-static-update"); // update dropdown panel
     },
     genItemCls(item) {
@@ -189,16 +181,16 @@ export default {
       if (action === "prev") {
         if (this.highlightIndex < 0) {
           this.highlightIndex = this.filteredData.length - 1;
-          this.$el.scrollTop = 30 * this.highlightIndex;
+          this.$el.scrollTop = this.itemHeight * this.highlightIndex;
           this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", true);
         } else if (this.highlightIndex === 0) {
           this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", false);
           this.highlightIndex = this.filteredData.length - 1;
-          this.$el.scrollTop = 30 * this.highlightIndex;
+          this.$el.scrollTop = this.itemHeight * this.highlightIndex;
           this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", true);
         } else if (this.highlightIndex > 0) {
           this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", false);
-          this.$el.scrollTop = 30 * --this.highlightIndex;
+          this.$el.scrollTop = this.itemHeight * --this.highlightIndex;
           this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", true);
         }
       }
@@ -208,12 +200,12 @@ export default {
           this.$set(this.blockData[this.filteredData[++this.highlightIndex]["_index"]], "focus", true);
         } else if (this.highlightIndex >= 0 && this.highlightIndex < this.filteredData.length - 1) {
           this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", false);
-          this.$el.scrollTop = 30 * ++this.highlightIndex;
+          this.$el.scrollTop = this.itemHeight * ++this.highlightIndex;
           this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", true);
         } else if (this.highlightIndex >= this.filteredData.length - 1) {
           this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", false);
           this.highlightIndex = 0;
-          this.$el.scrollTop = 30 * this.highlightIndex;
+          this.$el.scrollTop = this.itemHeight * this.highlightIndex;
           this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", true);
         }
       }
@@ -236,7 +228,7 @@ export default {
       }
 
       this.highlightIndex = -1;
-      // this.$el.scrollTop = 0;
+      this.$el.scrollTop = 0;
 
       return true;
     },

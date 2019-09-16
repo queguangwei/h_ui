@@ -1,6 +1,9 @@
+import debounce from "./debounce";
+import throttle from "./throttle";
 import isArrayLike from "./isArrayLike";
 import isArrayLikeObject from "./isArrayLikeObject";
 import isKeyMatch from "./isKeyMatch";
+import isObject from "./isObject";
 import Popper from "./popper.min";
 
 /**
@@ -8,5 +11,5 @@ import Popper from "./popper.min";
  * @example import _ from "@/util"; _.isKeyMatch(event, "Enter");
  * @author yangyc21550@hundsun.com
  */
-export default { isArrayLike, isArrayLikeObject, isKeyMatch };
+export default { debounce, throttle, isArrayLike, isArrayLikeObject, isKeyMatch, isObject };
 export { Popper };
