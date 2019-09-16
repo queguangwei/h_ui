@@ -499,6 +499,11 @@ export default {
     titleEllipsis: {
       type: Boolean,
       default:true
+    },
+    // 会在冻结列的表格中渲染所有的列（隐藏），影响性能，当每列设置宽度并...显示时，设置该属性可以提升性能，不能保证每列不换行时，不设置该属性
+    noNeedOtherCol: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -790,7 +795,10 @@ export default {
           if (col.fixed && col.fixed === 'left') {
             left.push(col)
           } else {
-            other.push(col)
+            // 会在冻结列的表格中渲染所有的列（隐藏），影响性能，当每列设置宽度并...显示时，设置该属性可以提升性能
+            if (!this.noNeedOtherCol) {
+              other.push(col)
+            }
           }
         })
         return left.concat(other)
@@ -802,7 +810,10 @@ export default {
           if (col.fixed && col.fixed === 'right') {
             right.push(col)
           } else {
-            other.push(col)
+            // 会在冻结列的表格中渲染所有的列（隐藏），影响性能，当每列设置宽度并...显示时，设置该属性可以提升性能，不能保证每列不换行时，不设置该属性
+            if (!this.noNeedOtherCol) {
+              other.push(col)
+            }
           }
         })
         return right.concat(other)

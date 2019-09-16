@@ -1,426 +1,310 @@
 <template>
-  <div ref="block" @scroll="handleBodyScroll" :class="blockCls">
-    <div v-if="showHeader.length" :class="`${prefixCls}-item-header`">
-      <span
-        v-for="(item, index) in showHeader"
-        :key="index"
-        class="item-header"
-        :style="styleArr[index]"
-      >{{item.title ? item.title : item}}</span>
-    </div>
+  <div ref="block" @scroll="onScroll" :class="blockCls">
+    <!-- real virtual list height -->
     <div :class="[prefixCls+'-phantom']" :style="phantomStl"></div>
-    <ul :class="[prefixCls+'block-content']" ref="content">
+    <!-- main content -->
+    <ul ref="content" :class="[prefixCls+'block-content']">
       <li
-        v-for="(item,inx) in visibleData"
-        :key="inx"
+        v-for="(item, inx) in visualData"
         v-show="!item.hidden"
-        :class="classes(item)"
-        @click.stop="select(item)"
-        @mouseout.stop="blur"
+        :key="inx"
+        :class="genItemCls(item)"
+        @click.stop="onItemClick(item)"
       >
         <slot>
-          <span
-            :style="showCol.length ? styleArr[0] : ''"
-            :class="showCol.length ? 'itemcol' : ''"
-            :title="showCol.length || hideMult ? showLabel(item) : ''"
-          >
-            <checkbox
-              v-show="multiple&&!hideMult"
-              size="large"
-              :value="item.selected"
-              @click.native.stop="handleclick"
-              :disabled="item.disabled"
-              @on-change="checkChange($event,item)"
-            ></checkbox>
-            {{showLabel(item)}}
+          <span :class="{itemcol: showCol.length > 0}" style="width: 100px;">
+            <checkbox size="large" :value="item.selected" :disabled="item.disabled"></checkbox>
+            {{item.label || item.value}}
           </span>
         </slot>
-        <span
-          class="itemcol"
-          v-for="(col, index) in showCol"
-          :key="col"
-          :style="styleArr[index + 1]"
-          :title="item[col]"
-        >{{item[col]}}</span>
+        <span v-for="col in showCol" :key="col" class="itemcol" style="width: 100px;">{{item[col] || item.label}}</span>
       </li>
-      <!-- <li v-if="showEmpty" :class="[prefixCls+'-empty']">{{localeNoMatch}}</li> -->
     </ul>
-    <div v-if="showEmpty && !loading" :class="[prefixCls+'-empty']">{{localeNoMatch}}</div>
-    <!-- 用于撑开高度 -->
-    <div v-show="loading && visibleData.length === 0" :class="[prefixCls+'-loading-placeholder']">&nbsp;</div>
+
+    <!-- work with different status -->
+    <div v-if="!loading && filteredData.length <= 0" :class="[prefixCls+'-empty']">{{ t("i.select.noMatch") }}</div>
+    <div v-if="loading && filteredData.length === 0" :class="[prefixCls+'-loading-placeholder']">&nbsp;</div>
   </div>
 </template>
-<script>
-import Emitter from "../../mixins/emitter";
-import Locale from "../../mixins/locale";
-import Checkbox from "../Checkbox/Checkbox.vue";
-import {
-  // hasClass,
-  deepCopy,
-  getBarBottom,
-  getScrollBarSize
-} from "../../util/tools";
-const prefixCls = "h-select-block";
 
+<script>
+import Locale from "../../mixins/locale";
+import { SimpleMultiSelectBlockApi } from "./Api";
+import Checkbox from "../Checkbox/Checkbox.vue";
+import { getBarBottom, getScrollBarSize } from "../../util/tools";
 export default {
-  name: "Block",
-  componentName: "select-block",
-  mixins: [Emitter, Locale],
   components: { Checkbox },
-  props: {
-    data: {
-      type: Array,
-      default: () => {
-        return [];
-      }
-    },
-    itemHeight: {
-      type: [Number, String],
-      default: 30
-    },
-    // 显示多列
-    showCol: {
-      type: Array,
-      default: () => {
-        return [];
-      }
-    },
-    // 显示多列的表头，表头高度默认 30，宽度默认 100
-    showHeader: {
-      type: Array,
-      default: () => []
-    },
-    colWidth: {
-      type: Array,
-      default: () => []
-    }
-    // disabled: {
-    //   type: Boolean,
-    //   default: false
-    // }
-  },
+  mixins: [Locale, SimpleMultiSelectBlockApi],
   data() {
     return {
-      prefixCls: prefixCls,
-      multiple: false,
-      hideMult: false,
-      visibleData: [],
-      visibleCount: 20,
-      cloneData: [],
-      lastScollTop: 0,
-      lastScollBottom: null,
-      showEmpty: false,
-      showBottom: false,
-      focusIndex: 0
+      prefixCls: "h-select-block",
+      visualCount: 20, // visual count of dropdown panel
+      itemHeight: 30, // height of single item
+      blockData: [], // 所有的数据集合
+      visualData: [] // 可视区域的数据集合
     };
   },
   computed: {
-    phantomStl() {
-      let style = {};
-      let curData = this.cloneData.filter(col => {
-        return !col.hidden;
-      });
-
-      let height = curData.length * 30;
-      if (this.offset && height < 210) {
-        height += 30;
-      }
-      style.height = height + "px";
-      return style;
-    },
     blockCls() {
-      return [
-        `${prefixCls}-drop`,
-        {
-          [`${prefixCls}-multiple`]: this.multiple,
-          [`${prefixCls}-show-bottom`]: this.showBottom,
-          [`${prefixCls}-hideMult`]: this.hideMult && this.multiple
-        }
-      ];
+      return [`${this.prefixCls}-drop`, `${this.prefixCls}-multiple`];
     },
-    localeNoMatch() {
-      return this.t("i.select.noMatch");
+    phantomStl() {
+      return {
+        height: this.filteredData.length * this.itemHeight + "px"
+      };
     },
-    itemClasses() {
-      return "";
+    // 继承已选的数据集合
+    selectedRecords() {
+      return this.$parent.$parent.selectedRecords;
     },
-    offset() {
-      if (this.showHeader.length) return 30;
-      return 0;
-    },
+    // 继承 loading 状态
     loading() {
       return this.$parent.$parent.loading;
+    },
+    // 继承 specialIndex
+    specialIndex() {
+      return this.$parent.$parent.specialIndex;
+    },
+    // 继承 specialVal
+    specialVal() {
+      return this.$parent.$parent.specialVal;
+    },
+    // 搜索过滤后的数据集合
+    filteredData() {
+      return this.blockData.filter(item => !item.hidden);
     }
-  },
-  methods: {
-    classes(item) {
-      return [
-        `${prefixCls}-item`,
-        {
-          [`${prefixCls}-disabled`]: item.disabled || false,
-          [`${prefixCls}-selected`]: item.selected || false,
-          [`${prefixCls}-focus`]: item.focus || false
-        }
-      ];
-    },
-    showLabel(item) {
-      return item.label ? item.label : item.value;
-    },
-    select(item) {
-      if (item.disabled) return false;
-      this.multiple && this.$parent.$parent.selectBlockMultiple(item.value, item);
-      this.$nextTick(() => {
-        this.$parent.$parent.handleSearchBlur();
-        this.$parent.$parent.filterable && this.$parent.$parent.$refs.input.focus();
-      });
-    },
-    checkChange(val, item) {
-      this.multiple && this.$parent.$parent.selectBlockMultiple(item.value, item);
-      this.$nextTick(() => {
-        this.$parent.$parent.handleSearchBlur();
-        this.$parent.$parent.filterable && this.$parent.$parent.$refs.input.focus();
-      });
-    },
-    blur() {
-      this.isFocus = false;
-    },
-    queryChange(val) {
-      const parsedQuery = val.replace(/(\^|\(|\)|\[|\]|\$|\*|\+|\.|\?|\\|\{|\}|\|)/g, "\\$1");
-      let status = true;
-      // if(!this.$parent.$parent.accuFilter){   //149105 【TS:201906280063-资管业委会（资管）_钱佳华-【需求类型】需求【需求描述】select和SimpleSelect 控件多选时 如果搜索时输入的信息完全匹配到 value或者label的时候 自动勾上；对接开发：郑海华【事业部】资管业委会【项目名称】HUNDSUN投资交易管理系统软件V4.5【产品负责人】孔磊【需求提出人】钱佳华
-      this.cloneData.forEach(col => {
-        let targetLabel = col.label;
-        // 如果存在多列，则匹配目标为多列所有列
-        if (this.showCol.length && !this.$parent.$parent.newSearchModel) {
-          targetLabel = targetLabel + " " + this.getTargetLabel(col).join(" ");
-        }
-        let targetValue = col.value;
-        let selected = col.selected;
-        //  let targetoption=this.$parent.$parent.filterBy=="label"||this.$parent.$parent.filterBy==undefined?targetLabel:targetValue;
-        let hidden = !new RegExp(parsedQuery, "i").test(col.label);
-        if (hidden) {
-          hidden = !new RegExp(parsedQuery, "i").test(col.value);
-        }
-        this.$set(col, "hidden", hidden);
-
-        if (status && !hidden) {
-          status = false;
-        }
-        if (this.$parent.$parent.accuFilter) {
-          if (parsedQuery === targetLabel && !selected) {
-            this.$parent.$parent.selectBlockMultiple(targetValue);
-          }
-        }
-      });
-
-      // this.dispatch("SimpleSelect", "on-options-visible-change", { data: this.cloneData });
-
-      // if (status && !hidden) {
-      //   status = false;
-      // }
-      // if (this.$parent.$parent.accuFilter) {
-      //   if (parsedQuery === targetLabel && !selected) {
-      //     this.$parent.$parent.selectBlockMultiple(targetValue);
-      //   }
-      // }
-      // });
-
-      this.dispatch("SimpleSelect", "on-options-visible-change", { data: this.cloneData });
-
-      this.showEmpty = status;
-      if (val) {
-        this.dispatch("Drop", "on-update-popper");
-      }
-      this.$nextTick(() => {
-        if (val) {
-          this.updateVisibleData(0);
-        } else {
-          this.updateVisibleData();
-        }
-        this.$refs.block.scrollTop = 0;
-      });
-    },
-    handleclick() {},
-    handleBodyScroll(event) {
-      let direction = this.lastScollTop !== event.target.scrollTop ? "y" : "x";
-      this.lastScollTop = event.target.scrollTop;
-      this.updateVisibleData(event.target.scrollTop);
-      this.lastScollBottom = getBarBottom(event.target, getScrollBarSize());
-      if (this.lastScollBottom !== null && this.data.length > 0) {
-        this.$emit("on-scroll", this.lastScollBottom, this.lastScollTop, direction);
-      }
-      // 修复滚动后出现 x 滚动条问题
-      if (this.$parent.widthAdaption) {
-        this.$parent.setWidthAdaption();
-      }
-    },
-    updateVisibleData(scrollTop) {
-      // o45 下拉最后一条时闪动问题处理 + 0.01 作为偏移值
-      // 目前仅能在 o45 系统中复现
-      let itemHeight = Number(this.itemHeight) + 0.01;
-      scrollTop = scrollTop == undefined ? this.lastScollTop : scrollTop;
-      this.start = Math.floor(scrollTop / itemHeight);
-      let i = 0;
-      let j = this.start;
-      // 如果存在表头，添加初始偏移量
-      let offset = 0;
-      if (this.start > 0) offset = -this.offset;
-
-      while (i < this.visibleCount) {
-        if (!this.cloneData[j]) {
-          i = this.visibleCount;
-          j = this.cloneData.length;
-        } else {
-          if (!this.cloneData[j].hidden) {
-            i++;
-          }
-          j++;
-        }
-      }
-      this.end = j;
-      this.visibleData = this.cloneData.filter(item => !item.hidden).slice(this.start, this.end);
-      this.$refs.content.style.transform = `translateY(${this.start * itemHeight + offset}px)`;
-    },
-    selectedTop(status) {
-      if (status) {
-        this.cloneData.sort((a, b) => {
-          if (a.selected && !b.selected) {
-            return -1;
-          } else {
-            return 0;
-          }
-        });
-      } else {
-        this.cloneData.sort((a, b) => {
-          return a._index < b._index ? -1 : 0;
-        });
-      }
-      this.$refs.block.scrollTop = 0;
-      this.updateVisibleData(0);
-      this.$parent.$parent.updateOptions();
-    },
-    /**
-     * @description showHeader / showCol = true 时计算宽度
-     */
-    calcStyle(w) {
-      this.calcStyle.cache || (this.calcStyle.cache = {});
-
-      if (this.calcStyle.cache[w]) return this.calcStyle.cache[w];
-
-      if (!this.showCol.length && !this.showHeader.length) {
-        this.calcStyle.cache[w] = "";
-        return this.calcStyle.cache[w];
-      }
-
-      let width = "auto";
-      if (w) {
-        width = w + "px";
-      } else {
-        width = "100px";
-      }
-
-      this.calcStyle.cache[w] = { width };
-      return this.calcStyle.cache[w];
-    },
-    /**
-     * @description 从 cloneData>item 中获取多列的 label 数组
-     */
-    getTargetLabel(option) {
-      let target = [];
-      this.showCol.forEach(col => {
-        target.push(option[col]);
-      });
-
-      return target;
-    }
-  },
-  created() {
-    // showHeader / showCol 生成样式数组
-    if (this.showHeader.length) {
-      this.styleArr = this.showHeader.map(item => this.calcStyle(item.width));
-    } else if (this.showCol.length) {
-      this.styleArr = [];
-      for (let i = 0; i < this.showCol.length + 1; i++) {
-        let str = this.colWidth[i] ? this.colWidth[i] : "";
-        this.styleArr.push(this.calcStyle(str));
-      }
-    }
-  },
-  mounted() {
-    var str = this.$el.innerText;
-    this.searchLabel = str
-      .replace("false", "")
-      .replace("true", "")
-      .trim();
-    // this.searchLabel =str.slice(Number(str.indexOf('</label>')+9));
-    this.dispatch("SimpleSelect", "append");
-    this.$on("on-select-close", () => {
-      this.isFocus = false;
-    });
-    this.$on("on-query-change", val => {
-      this.queryChange(val);
-    });
-    this.$on("on-select-top", status => {
-      this.selectedTop(status);
-    });
-
-    // v20190321
-    this.$on("on-focus-index-change", index => {
-      this.cloneData
-        .filter(item => !item.hidden)
-        .forEach((item, i) => {
-          item.focus = false;
-          if (i === index) {
-            item.focus = true;
-          }
-        });
-    });
-    this.multiple = this.$parent.$parent.multiple;
-    this.showBottom = this.$parent.$parent.showBottom;
-    this.hideMult = this.$parent.$parent.hideMult;
-    this.cloneData = deepCopy(this.data);
-    // v20190321 添加focus
-    this.cloneData.forEach((item, i) => {
-      item._index = i;
-      this.$set(item, "focus", false);
-    });
-    this.$nextTick(() => {
-      this.visibleCount = Math.ceil(210 / Number(this.itemHeight)) + 1;
-      this.updateVisibleData();
-    });
   },
   watch: {
     data: {
       deep: true,
-      handler: function(val) {
-        if (val.length == 0) {
-          this.showEmpty = true;
-        } else {
-          this.showEmpty = false;
+      handler(newVal) {
+        let blockData = [];
+        if (this.selectedRecords) {
+          blockData = blockData.concat(this.selectedRecords.map(item => ({ ...item, selected: true })));
         }
 
-        // this.$nextTick(() => {//viewValue获取时机
-        this.cloneData = deepCopy(this.data);
-        this.cloneData.forEach((item, i) => {
-          item._index = i;
-          this.$set(item, "focus", false);
-        });
-        this.$parent.$parent.updateOptions(true);
-        this.updateVisibleData();
-        // })
-      }
-    },
-    cloneData: {
-      deep: true,
-      handler: function() {
-        // this.$nextTick(()=>{
-        //   this.updateVisibleData();
-        // })
+        for (const item of newVal) {
+          if (blockData.some(({ label, value }) => label === item.label && value === item.value)) {
+            continue;
+          }
+          blockData.push({ ...item, selected: false });
+        }
+
+        this.blockData = blockData.map((item, index) => ({
+          ...item,
+          _index: index,
+          focus: false,
+          disabled: false,
+          hidden: false
+        }));
+
+        this.updateVisualData();
+        this.emit(
+          -2,
+          "on-data-change",
+          this.blockData.map(item => {
+            const { label, value } = item;
+            let target = { label, value };
+            if (this.showCol.length > 0) {
+              for (const col of this.showCol) {
+                target[col] = item[col] || "";
+              }
+            }
+            return target;
+          })
+        );
       }
     }
   },
-  destroyed() {
-    this.dispatch("Select", "remove");
+  methods: {
+    onScroll(e) {
+      const { target } = e,
+        { scrollTop } = target;
+      const direction = this.lastScollTop === scrollTop ? "x" : "y"; // detect scroll directory
+      this.lastScollTop = scrollTop;
+      this.lastScollBottom = getBarBottom(target, getScrollBarSize());
+      this.$emit("on-scroll", this.lastScollBottom, this.lastScollTop, direction);
+      this.updateVisualData();
+    },
+    updateVisualData() {
+      // 再谈前端虚拟列表的实现https://juejin.im/entry/5aaf66f56fb9a028c71e403e
+      const scrollTop = this.lastScollTop || 0;
+      const start = Math.floor(scrollTop / this.itemHeight);
+      const end = start + this.visualCount;
+      this.visualData = this.filteredData.slice(start, end);
+      this.$refs.content.style.transform = `translate3d(0, ${start * this.itemHeight}px, 0)`;
+      this.$refs.content.style.webkitTransform = `translate3d(0, ${start * this.itemHeight}px, 0)`;
+      this.emit(-1, "on-static-update"); // update dropdown panel
+    },
+    genItemCls(item) {
+      return [
+        `${this.prefixCls}-item`,
+        {
+          [`${this.prefixCls}-disabled`]: item.disabled || false,
+          [`${this.prefixCls}-selected`]: item.selected || false,
+          [`${this.prefixCls}-focus`]: item.focus || false
+        }
+      ];
+    },
+    onItemClick(item) {
+      const { _index, selected, label, value } = item;
+
+      // 关于为什么要加这个状态，这是个很玄学的问题 ～～
+      // 它是用在查询操作里面的
+      // 不妨这样理解，在选择过程中分发出来的查询请求一律打回
+      this.isSelecting = true;
+
+      // specialIndex && specialVal
+      if (this.specialIndex && this.specialVal) {
+        if (this.specialVal === value && !selected) {
+          this.$parent.$parent.toggleSelect(false);
+        } else {
+          const specialItemIndex = this.blockData.findIndex(item => item.value === this.specialVal);
+          if (specialItemIndex >= 0 && this.blockData[specialItemIndex]["selected"]) {
+            this.$set(this.blockData[specialItemIndex], "selected", false);
+            this.emit(-2, "on-cancel-selected", { label: this.blockData[specialItemIndex]["label"], value: this.blockData[specialItemIndex]["value"] });
+          }
+        }
+      }
+
+      this.$set(this.blockData[_index], "selected", !selected);
+      this.emit(
+        -2,
+        selected ? "on-cancel-selected" : "on-selected",
+        (() => {
+          let target = { label, value };
+          if (this.showCol) {
+            for (const col of this.showCol) {
+              target[col] = item[col] || "";
+            }
+          }
+          return target;
+        })()
+      );
+    },
+
+    onQuery(keyword = "") {
+      // 再一次说，在选择过程中分发出来的查询请求一律打回
+      if (this.isSelecting) {
+        this.isSelecting = false;
+        return false;
+      }
+
+      keyword = keyword.replace(/(\^|\(|\)|\[|\]|\$|\*|\+|\.|\?|\\|\{|\}|\|)/g, "\\$1");
+      for (const item of this.blockData) {
+        const { _index, selected, label, value } = item;
+        if (keyword === "" || selected) {
+          this.$set(this.blockData[_index], "hidden", false); // 已选项默认不参加模糊查询
+        } else {
+          this.$set(this.blockData[_index], "hidden", !new RegExp(keyword, "i").test(label) && !new RegExp(keyword, "i").test(value));
+        }
+      }
+      this.reset() && this.updateVisualData();
+    },
+
+    highlight(action) {
+      if (action === "prev") {
+        if (this.highlightIndex < 0) {
+          this.highlightIndex = this.filteredData.length - 1;
+          this.$el.scrollTop = this.itemHeight * this.highlightIndex;
+          this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", true);
+        } else if (this.highlightIndex === 0) {
+          this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", false);
+          this.highlightIndex = this.filteredData.length - 1;
+          this.$el.scrollTop = this.itemHeight * this.highlightIndex;
+          this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", true);
+        } else if (this.highlightIndex > 0) {
+          this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", false);
+          this.$el.scrollTop = this.itemHeight * --this.highlightIndex;
+          this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", true);
+        }
+      }
+
+      if (action === "next") {
+        if (this.highlightIndex < 0) {
+          this.$set(this.blockData[this.filteredData[++this.highlightIndex]["_index"]], "focus", true);
+        } else if (this.highlightIndex >= 0 && this.highlightIndex < this.filteredData.length - 1) {
+          this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", false);
+          this.$el.scrollTop = this.itemHeight * ++this.highlightIndex;
+          this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", true);
+        } else if (this.highlightIndex >= this.filteredData.length - 1) {
+          this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", false);
+          this.highlightIndex = 0;
+          this.$el.scrollTop = this.itemHeight * this.highlightIndex;
+          this.$set(this.blockData[this.filteredData[this.highlightIndex]["_index"]], "focus", true);
+        }
+      }
+
+      if (action === "click") {
+        this.onItemClick(this.filteredData[this.highlightIndex]);
+      }
+    },
+
+    /**
+     * @description 重置高亮的下拉项和滚动条位置
+     * @todo 滚动条的处理有点儿问题，如果打开，滚动加载会产生问题
+     */
+    reset() {
+      for (const item of this.blockData) {
+        const { _index, focus } = item;
+        if (focus) {
+          this.$set(this.blockData[_index], "focus", false);
+        }
+      }
+
+      this.highlightIndex = -1;
+      this.$el.scrollTop = 0;
+
+      return true;
+    },
+
+    /**
+     * @description emit up event with data
+     * @param layer {number} up layer, -1 => $parent, -2 => $parent.$parent ..
+     * @param eventName {String} event name
+     */
+    emit(layer = -1, eventName) {
+      if (layer >= 0) return false;
+
+      const args = [...arguments];
+      let _this = this;
+      let i = 0;
+
+      // find the parent by layer
+      while (i > layer) {
+        _this = _this.$parent;
+        i--;
+      }
+
+      _this.$emit.apply(_this, [eventName, this, ...args.slice(2)]);
+    }
+  },
+  mounted() {
+    this.blockData = this.data.map((item, index) => ({
+      ...item,
+      _index: index,
+      focus: false,
+      selected: false,
+      disabled: false,
+      hidden: false
+    }));
+
+    // initialize
+    this.reset() && this.updateVisualData();
+    this.emit(
+      -2,
+      "on-ready",
+      this.blockData.map(item => {
+        const { label, value } = item;
+        let target = { label, value };
+        if (this.showCol.length > 0) {
+          for (const col of this.showCol) {
+            target[col] = item[col] || "";
+          }
+        }
+        return target;
+      })
+    );
   }
 };
 </script>
