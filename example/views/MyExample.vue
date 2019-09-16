@@ -29,11 +29,11 @@
         <h-form-item prop="date" label="data">
           <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
         </h-form-item>
-        <h-form-item label="valueRemote1" prop="valueRemote1" required>
-          <h-multi-select v-model="formValidate.valueRemote1" :isString="isstring" class="curItemClass" specialVal="value1" accuFilter newSearchModel>
-            <h-multi-block :data="remotebigData"></h-multi-block>
-          </h-multi-select>
-        </h-form-item>
+        <!--<h-form-item label="valueRemote1" prop="valueRemote1" required>-->
+          <!--<h-multi-select v-model="formValidate.valueRemote1" :isString="isstring" class="curItemClass" specialVal="value1" accuFilter newSearchModel>-->
+            <!--<h-multi-block :data="remotebigData"></h-multi-block>-->
+          <!--</h-multi-select>-->
+        <!--</h-form-item>-->
         <h-form-item prop="time" label="time">
           <h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time" class="curItemClass" ></h-time-picker>
         </h-form-item>
