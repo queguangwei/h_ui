@@ -47,7 +47,7 @@ export default {
   methods: {
     update() {
       const _this = this;
-      setStyle(this.$el, { display: "block", visiblity: "hidden" }); // make sure popper calc exactly
+      setStyle(this.$el, { display: "block", visibility: "hidden", top: "0", left: "0" }); // make sure popper calc exactly
 
       if (this.popper) {
         this.popper.scheduleUpdate();
@@ -69,6 +69,9 @@ export default {
           placement,
           eventsEnabled: false, // Whether events (resize, scroll) are initially enabled.
           modifiers: {
+            preventOverflow: {
+              escapeWithReference: true // When escapeWithReference is set totrue and reference is completely outside its boundaries, the popper will overflow (or completely leave) the boundaries in order to remain attached to the edge of the reference.
+            },
             flip: { enabled: false }, // Modifier used to flip the popper’s placement when it starts to overlap its reference element.
             computeStyle: {
               gpuAcceleration: false // If true, it uses the CSS 3D transformation to position the popper. Otherwise, it will use the top and left properties
@@ -101,24 +104,28 @@ export default {
                   styles.width = parseFloat(dropWidth) || pWidth;
                 }
 
-                if (show) {
-                  setStyle(el, { display: "block", visiblity: "visible", ...styles });
-                  if (allowAnimation) {
-                    el.classList.add(placement.includes("top") ? "slide-down-enter-active" : placement.includes("bottom") && "slide-up-enter-active");
-                  }
-                } else {
-                  el.classList.add(placement.includes("top") ? "slide-down-leave-active" : placement.includes("bottom") && "slide-up-leave-active");
-                }
+                setStyle(el, { display: "block", visibility: "visible", ...styles }); // make sure animation is possible
 
-                function onAnimationEnd() {
-                  el.removeEventListener("animationend", onAnimationEnd);
-                  el.classList.remove("slide-up-enter-active", "slide-up-leave-active", "slide-down-enter-active", "slide-down-leave-active");
+                if (allowAnimation) {
+                  show
+                    ? el.classList.add(placement.includes("top") ? "slide-down-enter-active" : placement.includes("bottom") && "slide-up-enter-active")
+                    : el.classList.add(placement.includes("top") ? "slide-down-leave-active" : placement.includes("bottom") && "slide-up-leave-active");
+
+                  function onAnimationEnd() {
+                    el.removeEventListener("animationend", onAnimationEnd);
+                    el.classList.remove("slide-up-enter-active", "slide-up-leave-active", "slide-down-enter-active", "slide-down-leave-active");
+                    if (!show) {
+                      setStyle(el, { display: "none" });
+                      _this.$emit("on-hide"); // emit on animation end and dropdown panel hidden
+                    }
+                  }
+                  el.addEventListener("animationend", onAnimationEnd);
+                } else {
                   if (!show) {
                     setStyle(el, { display: "none" });
-                    _this.$emit("on-hide"); // emit on animation end and dropdown panel hidden
+                    _this.$emit("on-hide");
                   }
                 }
-                el.addEventListener("animationend", onAnimationEnd);
               },
               order: 900
             }
