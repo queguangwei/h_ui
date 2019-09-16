@@ -5,7 +5,7 @@
     @mouseenter="handleMouseenter"
     @mouseleave="handleMouseleave">
     <div :class="[prefixCls + '-rel']" ref="reference" @click="handleClick"><slot></slot></div>
-    <transition :name="transition">
+    <transition :name="transition" v-if="!noTransition">
       <Drop
         v-show="currentVisible"
         :placement="placement"
@@ -17,6 +17,17 @@
         :data-transfer="transfer"
         v-transfer-dom><slot name="list"></slot></Drop>
     </transition>
+    <Drop
+        v-else
+        v-show="currentVisible"
+        :placement="placement"
+        :widthAdaption="false"
+        ref="drop"
+        :adaptParentWidth="adaptParentWidth"
+        @mouseenter.native="handleMouseenter"
+        @mouseleave.native="handleMouseleave"
+        :data-transfer="transfer"
+        v-transfer-dom><slot name="list"></slot></Drop>  
   </div>
 </template>
 <script>
@@ -53,6 +64,10 @@
         default: false
       },
       transfer: {
+        type: Boolean,
+        default: false
+      },
+      noTransition: {
         type: Boolean,
         default: false
       },
