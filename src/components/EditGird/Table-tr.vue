@@ -6,7 +6,8 @@
     props: {
       row: Object,
       prefixCls: String,
-      typeName:String
+      typeName:String,
+      clickToSelect:Boolean,
     },
     computed: {
       objData () {
@@ -31,7 +32,7 @@
           `${this.prefixCls}-row`,
           this.rowClsName(_index),
           {
-            [`${this.prefixCls}-row-checked`]: _isChecked,
+            [`${this.prefixCls}-row-checked`]: _isChecked && !this.clickToSelect ,
             [`${this.prefixCls}-row-highlight`]:_isHighlight,
             [`${this.prefixCls}-row-hover`]:_isHover
           }

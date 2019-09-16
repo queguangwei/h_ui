@@ -149,7 +149,7 @@
                    :key="index">
             </colgroup>
             <thead>
-              <tr>
+              <tr :style = "{height: fixedTheadHeight + 'px'}">
                 <th v-for="(column, index) in leftFixedColumns"
                     :key="index"
                     v-on:mousedown="mousedown($event,column,index,'left')"
@@ -499,10 +499,16 @@ export default {
     titleEllipsis: {
       type: Boolean,
       default:true
+    },
+    // 会在冻结列的表格中渲染所有的列（隐藏），影响性能，当每列设置宽度并...显示时，设置该属性可以提升性能，不能保证每列不换行时，不设置该属性
+    noNeedOtherCol: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
+      fixedTheadHeight: null, // 冻结列高度（多级表头冻结时有问题）
       ready: false,
       tableWidth: 0,
       dragWidth: 0,
@@ -789,7 +795,10 @@ export default {
           if (col.fixed && col.fixed === 'left') {
             left.push(col)
           } else {
-            other.push(col)
+            // 会在冻结列的表格中渲染所有的列（隐藏），影响性能，当每列设置宽度并...显示时，设置该属性可以提升性能
+            if (!this.noNeedOtherCol) {
+              other.push(col)
+            }
           }
         })
         return left.concat(other)
@@ -801,7 +810,10 @@ export default {
           if (col.fixed && col.fixed === 'right') {
             right.push(col)
           } else {
-            other.push(col)
+            // 会在冻结列的表格中渲染所有的列（隐藏），影响性能，当每列设置宽度并...显示时，设置该属性可以提升性能，不能保证每列不换行时，不设置该属性
+            if (!this.noNeedOtherCol) {
+              other.push(col)
+            }
           }
         })
         return right.concat(other)
@@ -970,6 +982,7 @@ export default {
           return false
         }
         const handleMouseMove = event => {
+          document.body.style.cursor = 'col-resize'
           const deltaLeft = event.clientX - this.dragState.startMouseLeft
           const proxyLeft = this.dragState.startLeft + deltaLeft
           resizeProxy.style.left = Math.max(minLeft, proxyLeft) + 'px'
@@ -1049,6 +1062,7 @@ export default {
         let resizeIndex = Number(index)
         let resizeLeft
         const handleMouseMove = event => {
+          document.body.style.cursor = 'pointer'
           this.resizeProxyVisible = true
           const deltaLeft = event.clientX - _this.moveState.startMouseLeft
           const moveLeft = _this.moveState.startLeft + deltaLeft
@@ -1155,6 +1169,8 @@ export default {
     },
     mouseup(event, column, index) {
       //拖拽表头排序不触发
+      // 仅045使用
+      if (!window.isO45) return
       if(this.isDrag(this.beginLocation.clientX, this.beginLocation.clientY, event.clientX, event.clientY)) {
         return
       }
@@ -2335,6 +2351,30 @@ export default {
           this.keySelectRange()
         }
       }
+    },
+    resetTableScrollPos() {
+      if (this.$refs.header) {
+        this.$refs.header.scrollLeft = 0
+      }
+      const body = this.$refs.body
+      if (body) {
+        body.scrollLeft = 0
+        const bodyContent = this.$refs.content
+        if (bodyContent) {
+          bodyContent.style.transform = 'translateY(0)'
+          body.scrollTop = 0
+        }
+      }
+      const fixedBodyContent = this.$refs.leftContent
+      if (fixedBodyContent) {
+        fixedBodyContent.style.transform = 'translateY(0)'
+        if (this.$refs.fixedBody) {
+          this.$refs.fixedBody.scrollTop = 0
+        }
+      }
+      if (this.$refs.summation) {
+        this.$refs.summation.style.marginLeft = 0
+      }
     }
   },
   created() {
@@ -2354,7 +2394,7 @@ export default {
       this.initWidth = parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0
       this.visibleCount =
         Math.ceil(this.height / this.itemHeight) - (this.showHeader ? 0 : -1)
-      this.updateVisibleData()
+        this.updateVisibleData()
       // this.focusIndex = this.defaultFocusIndex
     })
     //window.addEventListener('resize', this.handleResize, false);
@@ -2366,6 +2406,7 @@ export default {
         this.handleResize()
         this.fixedHeader()
         this.getLeftWidth()
+        this.resetTableScrollPos()
       }
     })
     on(document, 'keyup', this.keySelect)
@@ -2494,12 +2535,11 @@ export default {
   },
   activated() {
     if (this.keepAliveFlag) {
-      let transform = this.$refs.content
-        ? this.$refs.content.style.transform
-        : ''
-      this.$refs.body.scrollTop = transform.match(
-        /translateY\(\d+px,\s*(\d+)px,\s*(\d+)px\)/i
-      )[1]
+      let transform = this.$refs.content ? this.$refs.content.style.transform : ''
+      let transformMatch = transform.match(/translateY\(\d+px,\s*(\d+)px,\s*(\d+)px\)/i)
+      if(transformMatch !== null) {
+        this.$refs.body.scrollTop = transformMatch[1]
+      }
       this.handleResize()
       on(window, 'resize', this.handleResize)
     }

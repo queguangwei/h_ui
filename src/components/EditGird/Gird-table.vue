@@ -46,6 +46,7 @@
                    :treeOption="treeOptions"
                    :cascaderOption="cascaderOption"
                    :titleRender="titleRender"
+                   :clickToSelect="clickToSelect"
                    :height="Number(height)"
                    @on-select-change="selectChange"
                    @on-editselect-change="editselectChange"
@@ -107,6 +108,7 @@
                      :option="options"
                      :treeOption="treeOptions"
                      :cascaderOption="cascaderOption"
+                     :clickToSelect="clickToSelect"
                      @on-select-change="selectChange"
                      @on-editselect-change="editselectChange"
                      @on-editinput-change="editinputChange"
@@ -147,6 +149,7 @@
                      :option="options"
                      :treeOption="treeOptions"
                      :cascaderOption="cascaderOption"
+                     :clickToSelect="clickToSelect"
                      @on-select-change="selectChange"
                      @on-editselect-change="editselectChange"
                      @on-editinput-change="editinputChange"
@@ -343,7 +346,12 @@ export default {
     isGroupSeparated: {
       type: Boolean,
       default: false
-    }
+    },
+    // 选中或者反选，与highlight-row不同时使用
+    clickToSelect: {
+      type: Boolean,
+      default: false
+    },
   },
   data() {
     return {
@@ -806,6 +814,16 @@ export default {
       }
     },
     clickCurrentRow(_index) {
+      // 高亮选中、反选
+      if (this.clickToSelect) {
+        const curStatus = this.objData[_index]._isHighlight
+        for (let i in this.objData) {
+          if (this.objData[i]._isHighlight) {
+            this.objData[i]._isHighlight = false
+          }
+        }
+        this.objData[_index]._isHighlight = !curStatus
+      }
       if (this.typeName == 'groupTable' && String(_index).indexOf('.') != -1) {
         let arr = String(_index).split('.')
         let i = arr[0]
@@ -1068,12 +1086,8 @@ export default {
         }
       }
       const selection = this.getSelection()
-      if (status) {
-        this.$emit('on-select-all', selection)
-      } else {
-        // 添加反选的事件
-        this.$emit('on-select-all-cancel', [])
-      }
+      // 添加全选、反选
+      this.$emit('on-select-all', selection)
       this.$emit(
         'on-selection-change',
         selection,

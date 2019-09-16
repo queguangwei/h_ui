@@ -10,6 +10,7 @@
           :key="row._rowKey"
           :prefix-cls="prefixCls"
           :typeName = "typeName"
+          :clickToSelect="clickToSelect"
           @mouseenter.native.stop="handleMouseIn(row._index)"
           @mouseleave.native.stop="handleMouseOut(row._index)"
           @click.native="clickCurrentRow(row._index)">
@@ -194,7 +195,8 @@
         treeOption:Array,
         cascaderOption: Array,
         titleRender:Function,
-        height: Number
+        height: Number,
+        clickToSelect:Boolean,
       },
       data(){
         return{

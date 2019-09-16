@@ -523,12 +523,7 @@ export default {
       }
       this.broadcast('Table', 'on-visible-change', val)
       this.broadcast('EditGird', 'on-visible-change', val)
-      this.broadcast(
-        'SimpleSelect',
-        'on-visible-change',
-        val,
-        this.mainStyles.top
-      )
+      this.broadcast('SimpleSelect', 'on-visible-change', val, this.mainStyles.top)
       this.broadcast('Select', 'on-visible-change', val, this.mainStyles.top)
     },
     loading(val) {

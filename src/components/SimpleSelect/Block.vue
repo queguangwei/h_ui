@@ -184,10 +184,8 @@ export default {
         /(\^|\(|\)|\[|\]|\$|\*|\+|\.|\?|\\|\{|\}|\|)/g,
         '\\$1'
       )
-
       let status = true
       let isEffective = false
-
       // if(!this.$parent.$parent.accuFilter){
       // 149105 【TS:201906280063-资管业委会（资管）_钱佳华-【需求类型】需求【需求描述】select和SimpleSelect 控件多选时 如果搜索时输入的信息完全匹配到 value或者label的时候 自动勾上；对接开发：郑海华【事业部】资管业委会【项目名称】HUNDSUN投资交易管理系统软件V4.5【产品负责人】孔磊【需求提出人】钱佳华
       // singleSelect自动勾选，多个label匹配是选第一个，foreach无法break
@@ -205,6 +203,7 @@ export default {
         if(hidden){
           hidden=!new RegExp(parsedQuery, 'i').test(col.value)
         }
+
         this.$set(col, 'hidden', hidden)
 
         if (status && !hidden) {
@@ -225,7 +224,9 @@ export default {
       //      }catch (e) {
       //        if(e.message != 'EndIterative') throw e
       //      }
-
+      if(this.$parent.$parent.isSingleSelect&&!isEffective&&!states){
+        this.$parent.$parent.selectBlockSingle('',true)
+      }
       this.dispatch('SimpleSelect', 'on-options-visible-change', { data: this.cloneData })
       this.dispatch('SingleSelect', 'on-options-visible-change', { data: this.cloneData })
       this.showEmpty = status
