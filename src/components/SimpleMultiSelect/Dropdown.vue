@@ -1,5 +1,7 @@
 <template>
-  <div ref="container" class="h-select-dropdown" style="display: none;">
+  <!-- prevent mousedown event from bubbling up and being caught by handlers on document -->
+  <!-- which were added in directive v-clickoutside -->
+  <div ref="container" class="h-select-dropdown" style="display: none;" @mousedown.stop>
     <slot></slot>
   </div>
 </template>
