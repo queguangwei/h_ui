@@ -373,14 +373,12 @@ export default {
 
     // v20190321
     this.$on('on-focus-index-change', index => {
-      this.cloneData
-        .filter(item => !item.hidden)
-        .forEach((item, i) => {
-          item.focus = false
-          if (i === index) {
-            item.focus = true
-          }
-        })
+      this.cloneData.filter(item => !item.hidden).forEach((item, i) => {
+        item.focus = false
+        if (i === index) {
+          item.focus = true
+        }
+      })
     })
     this.multiple = this.$parent.$parent.multiple
     this.showBottom = this.$parent.$parent.showBottom

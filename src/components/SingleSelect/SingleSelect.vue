@@ -841,8 +841,10 @@ export default {
           this.options.forEach((col, i) => {
             if (value == col.value) {
               this.$set(child.cloneData[i], 'selected', true)
+              this.$set(child.cloneData[i], 'focus', true)
             } else {
               this.$set(child.cloneData[i], 'selected', false)
+              this.$set(child.cloneData[i], 'focus', false)
             }
           })
         })
