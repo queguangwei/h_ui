@@ -99,7 +99,20 @@ export default {
         }));
 
         this.updateVisualData();
-        this.emit(-2, "on-data-change", this.blockData.map(({ label, value }) => ({ label, value })));
+        this.emit(
+          -2,
+          "on-data-change",
+          this.blockData.map(item => {
+            const { label, value } = item;
+            let target = { label, value };
+            if (this.showCol.length > 0) {
+              for (const col of this.showCol) {
+                target[col] = item[col] || "";
+              }
+            }
+            return target;
+          })
+        );
       }
     }
   },
@@ -155,7 +168,19 @@ export default {
       }
 
       this.$set(this.blockData[_index], "selected", !selected);
-      this.emit(-2, selected ? "on-cancel-selected" : "on-selected", { label, value });
+      this.emit(
+        -2,
+        selected ? "on-cancel-selected" : "on-selected",
+        (() => {
+          let target = { label, value };
+          if (this.showCol) {
+            for (const col of this.showCol) {
+              target[col] = item[col] || "";
+            }
+          }
+          return target;
+        })()
+      );
     },
 
     onQuery(keyword = "") {
@@ -266,7 +291,20 @@ export default {
 
     // initialize
     this.reset() && this.updateVisualData();
-    this.emit(-2, "on-ready", this.blockData.map(({ label, value }) => ({ label, value })));
+    this.emit(
+      -2,
+      "on-ready",
+      this.blockData.map(item => {
+        const { label, value } = item;
+        let target = { label, value };
+        if (this.showCol.length > 0) {
+          for (const col of this.showCol) {
+            target[col] = item[col] || "";
+          }
+        }
+        return target;
+      })
+    );
   }
 };
 </script>

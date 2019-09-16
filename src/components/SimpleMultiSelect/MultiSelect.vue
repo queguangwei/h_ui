@@ -6,7 +6,7 @@
     @keydown="onContainerKeyDown"
   >
     <!-- 可视区域 -->
-    <div ref="display" :title="tooltip" :class="displayClass">
+    <div ref="display" :title="magicString" :class="displayClass">
       <!-- 搜索输入框 -->
       <input
         ref="input"
@@ -113,19 +113,29 @@ export default {
     },
     model(newVal) {
       if (this.blockVm) {
-        let selectedRecords = [];
+        const selectedRecords = [];
         for (const value of newVal) {
           const matched = this.blockVm.blockData.filter(item => item.value === value);
           if (matched.length) {
-            for (const { label, value } of matched) {
-              if (selectedRecords.some(item => item.label === label && item.value === value)) {
+            for (const blockRecord of matched) {
+              if (selectedRecords.some(item => item.label === blockRecord.label && item.value === blockRecord.value)) {
                 continue; // make sure there are no repeated selected record
               }
-              selectedRecords.push({ label, value });
+              selectedRecords.push(blockRecord);
             }
           }
         }
-        this.selectedRecords = selectedRecords.map(({ label, value }) => ({ label, value }));
+
+        this.selectedRecords = selectedRecords.map(item => {
+          const { label, value } = item;
+          let target = { label, value };
+          if (this.blockVm.showCol && this.blockVm.showCol.length > 0) {
+            for (const col of this.blockVm.showCol) {
+              target[col] = item[col] || "";
+            }
+          }
+          return target;
+        });
       } else {
         // if block is not ready, mostly happens at the very start
         // and under this circumstance, event on-ready or on-data-change will work

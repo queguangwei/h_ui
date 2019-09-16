@@ -88,10 +88,10 @@ export const SimpleMultiSelectApi = {
       }
     },
     // 鼠标在输入框悬浮时显示额外的提示信息
-    tooltip: {
-      type: String,
-      default: ""
-    },
+    // tooltip: {
+    //   type: String,
+    //   default: ""
+    // },
 
     // 设置输入框为禁用状态
     disabled: {
@@ -126,6 +126,14 @@ export const SimpleMultiSelectApi = {
               }))
           : [];
       }
+    },
+    // 通过this.refs.xxx.focus()调用,是当前输入框获取焦点,并打开选择面板
+    focus() {
+      this.$refs.input.focus();
+    },
+    // 手动取消输入框焦点(this.$refs.xxx.blur())
+    blur() {
+      this.$refs.input.blur();
     }
   }
 };
