@@ -197,6 +197,7 @@ export default {
     },
     isDropdownVisible(newVal) {
       this.$emit("on-drop-change", newVal);
+      this.dropVisible = newVal; // 仅供外部调用，兼容老版本
       if (!newVal) {
         const { magicString: originalMagicString } = this;
         this.updateMagicString(true, magicString => {
@@ -272,19 +273,33 @@ export default {
       for (const label of splitMagicString) {
         const matched = this.blockVm.blockData.filter(item => item.label === label);
         if (matched.length > 0) {
-          for (const { label, value } of matched) {
-            if (selectedRecords.some(item => item.label === label && item.value === value)) {
+          for (const blockRecord of matched) {
+            if (selectedRecords.some(item => item.label === blockRecord.label && item.value === blockRecord.value)) {
               continue; // make sure there are no repeated selected record
             }
-            selectedRecords.push({ label, value });
-            model.push(value);
+            selectedRecords.push(blockRecord);
+            model.push(blockRecord.value);
           }
         } else {
           keywords.push(label);
         }
       }
 
-      return { splitMagicString, selectedRecords, model, keywords };
+      return {
+        splitMagicString,
+        selectedRecords: selectedRecords.map(item => {
+          const { label, value } = item;
+          let target = { label, value };
+          if (this.blockVm.showCol && this.blockVm.showCol.length > 0) {
+            for (const col of this.blockVm.showCol) {
+              target[col] = item[col] || "";
+            }
+          }
+          return target;
+        }),
+        model,
+        keywords
+      };
     },
     /**
      * @description 监听 model 的变化，更新魔法字符串

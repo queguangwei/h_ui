@@ -96,6 +96,7 @@ export default {
                   } else {
                     styles["max-width"] = Math.max(parseFloat(dropWidth), pWidth);
                   }
+                  styles.width = cWidth;
                 } else {
                   styles.width = parseFloat(dropWidth) || pWidth;
                 }
