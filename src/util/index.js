@@ -1,3 +1,4 @@
+import deepCloneAs from "./deepCloneAs";
 import debounce from "./debounce";
 import throttle from "./throttle";
 import isArrayLike from "./isArrayLike";
@@ -11,5 +12,5 @@ import Popper from "./popper.min";
  * @example import _ from "@/util"; _.isKeyMatch(event, "Enter");
  * @author yangyc21550@hundsun.com
  */
-export default { debounce, throttle, isArrayLike, isArrayLikeObject, isKeyMatch, isObject };
+export default { deepCloneAs, debounce, throttle, isArrayLike, isArrayLikeObject, isKeyMatch, isObject };
 export { Popper };

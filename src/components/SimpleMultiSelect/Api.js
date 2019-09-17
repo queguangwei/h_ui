@@ -53,9 +53,20 @@ export const SimpleMultiSelectApi = {
       type: Boolean,
       default: false
     },
-    // 远程搜索的方法
+    /**
+     * @description 远程搜索的方法
+     * @description remote-method should take done() as a flag when remote action finish
+     * @example
+     *   remoteMethod(key, done) {
+     *     /// some code
+     *     done(); // make sure I know when to continue
+     *   }
+     */
     remoteMethod: {
-      type: Function
+      type: Function,
+      default(key, done) {
+        done();
+      }
     },
     // 配合远程搜索使用。loading设置为true时显示加载提示文字
     loading: {
@@ -88,10 +99,10 @@ export const SimpleMultiSelectApi = {
       }
     },
     // 鼠标在输入框悬浮时显示额外的提示信息
-    // tooltip: {
-    //   type: String,
-    //   default: ""
-    // },
+    tooltip: {
+      type: String,
+      default: ""
+    },
 
     // 设置输入框为禁用状态
     disabled: {
@@ -119,11 +130,14 @@ export const SimpleMultiSelectApi = {
       if (this.blockVm) {
         this.selectedRecords = status
           ? this.blockVm.blockData
-              .filter(({ value }) => this.specialIndex && this.specialVal && value !== this.specialVal) // specialIndex && specialVal
-              .map(({ label, value }) => ({
-                label,
-                value
-              }))
+              .filter(({ disabled, value }) => {
+                if (disabled) return false;
+                else {
+                  // specialIndex && specialVal
+                  return this.specialIndex && this.specialVal ? value !== this.specialVal : true;
+                }
+              })
+              .map(item => _.deepCloneAs(item, ["label", "value", ...this.blockVm.showCol]))
           : [];
       }
     },

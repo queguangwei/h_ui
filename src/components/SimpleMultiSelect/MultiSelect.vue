@@ -6,7 +6,7 @@
     @keydown="onContainerKeyDown"
   >
     <!-- 可视区域 -->
-    <div ref="display" :title="magicString" :class="displayClass">
+    <div ref="display" :title="title" :class="displayClass">
       <!-- 搜索输入框 -->
       <input
         ref="input"
@@ -99,6 +99,30 @@ export default {
         [this.prefixCls + "-multiple"]: this.transfer,
         ["h-auto-complete"]: true
       };
+    },
+    title() {
+      if (this.tooltip === "") {
+        // multiline titles implement
+        // O45 给出的标准是每 48 个字符换行，不过不能出现同一个编号被分隔在两行的场景
+        if (this.magicString.length <= 48) return this.magicString;
+        else {
+          let lastBrIndex = 0;
+          let title = "";
+          for (let index = 48; index < this.magicString.length; index++) {
+            const char = this.magicString.charAt(index);
+            if (char !== ",") continue;
+            else if (index - lastBrIndex >= 48) {
+              title += lastBrIndex > 0 ? "\n" : "";
+              title += this.magicString.slice(lastBrIndex, index + 1);
+              lastBrIndex = index + 1;
+            }
+          }
+          title += "\n" + this.magicString.slice(lastBrIndex);
+          return title;
+        }
+      } else {
+        return this.tooltip;
+      }
     }
   },
   watch: {
@@ -127,14 +151,7 @@ export default {
         }
 
         this.selectedRecords = selectedRecords.map(item => {
-          const { label, value } = item;
-          let target = { label, value };
-          if (this.blockVm.showCol && this.blockVm.showCol.length > 0) {
-            for (const col of this.blockVm.showCol) {
-              target[col] = item[col] || "";
-            }
-          }
-          return target;
+          return _.deepCloneAs(item, ["label", "value", ...this.blockVm.showCol]);
         });
       } else {
         // if block is not ready, mostly happens at the very start
@@ -155,18 +172,13 @@ export default {
     magicString(newVal) {
       if (this.remote && this.remoteMethod) {
         const { selectedRecords: originalSelectedRecords, keywords: originalKeywords } = this.resolveMagicString();
-        if (originalKeywords.length > 0) {
+        if (this.isKeyDown) {
           this.isDropdownVisible = true;
-          this.$emit("on-query-change", originalKeywords[originalKeywords.length - 1]);
+          this.isKeyDown = false;
+        }
 
-          /**
-           * @description remote-method should take done() as a flag when remote action finish
-           * @example
-           *   remoteMethod(key, done) {
-           *     /// some code
-           *     done(); // make sure I know when to continue
-           *   }
-           */
+        if (originalKeywords.length > 0) {
+          this.$emit("on-query-change", originalKeywords[originalKeywords.length - 1]);
           this.remoteMethod(originalKeywords[originalKeywords.length - 1], () => {
             this.$nextTick(() => {
               const { selectedRecords, keywords } = this.resolveMagicString();
@@ -187,8 +199,9 @@ export default {
         const { selectedRecords, keywords } = this.resolveMagicString();
         this.selectedRecords = selectedRecords;
         this.$nextTick(() => {
-          if (keywords.length) {
+          if (this.isKeyDown) {
             this.isDropdownVisible = true;
+            this.isKeyDown = false;
           }
           this.$emit("on-query-change", keywords.length > 0 ? keywords[keywords.length - 1] : "");
           this.blockVm.onQuery(keywords.length > 0 ? keywords[keywords.length - 1] : "");
@@ -239,6 +252,8 @@ export default {
             }
           }
         }
+      } else {
+        this.isKeyDown = true; // I gotta know what happened when magic string changes
       }
     },
     onInputFocus(e) {
@@ -287,16 +302,7 @@ export default {
 
       return {
         splitMagicString,
-        selectedRecords: selectedRecords.map(item => {
-          const { label, value } = item;
-          let target = { label, value };
-          if (this.blockVm.showCol && this.blockVm.showCol.length > 0) {
-            for (const col of this.blockVm.showCol) {
-              target[col] = item[col] || "";
-            }
-          }
-          return target;
-        }),
+        selectedRecords: selectedRecords.map(item => _.deepCloneAs(item, ["label", "value", ...this.blockVm.showCol])),
         model,
         keywords
       };
