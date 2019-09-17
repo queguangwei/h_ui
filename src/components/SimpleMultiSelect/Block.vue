@@ -12,12 +12,18 @@
         @click.stop="onItemClick(item)"
       >
         <slot>
-          <span :class="{itemcol: showCol.length > 0}" style="width: 100px;">
+          <span :title="item.label || ''" :class="{itemcol: showCol.length > 0}" style="width: 100px;">
             <checkbox size="large" :value="item.selected" :disabled="item.disabled"></checkbox>
             {{item.label || item.value}}
           </span>
         </slot>
-        <span v-for="col in showCol" :key="col" class="itemcol" style="width: 100px;">{{item[col] || item.label}}</span>
+        <span
+          v-for="col in showCol"
+          :key="col"
+          :title="item[col] || item.label"
+          class="itemcol"
+          style="width: 100px;"
+        >{{ item[col] || item.label }}</span>
       </li>
     </ul>
 
@@ -31,7 +37,8 @@
 import Locale from "../../mixins/locale";
 import { SimpleMultiSelectBlockApi } from "./Api";
 import Checkbox from "../Checkbox/Checkbox.vue";
-import { getBarBottom, getScrollBarSize } from "../../util/tools";
+import { getBarBottom, getScrollBarSize, typeOf } from "../../util/tools";
+import _ from "../../util";
 export default {
   components: { Checkbox },
   mixins: [Locale, SimpleMultiSelectBlockApi],
@@ -94,7 +101,6 @@ export default {
           ...item,
           _index: index,
           focus: false,
-          disabled: false,
           hidden: false
         }));
 
@@ -103,14 +109,7 @@ export default {
           -2,
           "on-data-change",
           this.blockData.map(item => {
-            const { label, value } = item;
-            let target = { label, value };
-            if (this.showCol.length > 0) {
-              for (const col of this.showCol) {
-                target[col] = item[col] || "";
-              }
-            }
-            return target;
+            return _.deepCloneAs(item, ["label", "value", ...this.showCol]);
           })
         );
       }
@@ -147,7 +146,10 @@ export default {
       ];
     },
     onItemClick(item) {
-      const { _index, selected, label, value } = item;
+      const { _index, disabled, selected, label, value } = item;
+      if (disabled) {
+        return false;
+      }
 
       // 关于为什么要加这个状态，这是个很玄学的问题 ～～
       // 它是用在查询操作里面的
@@ -162,25 +164,13 @@ export default {
           const specialItemIndex = this.blockData.findIndex(item => item.value === this.specialVal);
           if (specialItemIndex >= 0 && this.blockData[specialItemIndex]["selected"]) {
             this.$set(this.blockData[specialItemIndex], "selected", false);
-            this.emit(-2, "on-cancel-selected", { label: this.blockData[specialItemIndex]["label"], value: this.blockData[specialItemIndex]["value"] });
+            this.emit(-2, "on-cancel-selected", _.deepCloneAs(this.blockData[specialItemIndex], ["label", "value"]));
           }
         }
       }
 
       this.$set(this.blockData[_index], "selected", !selected);
-      this.emit(
-        -2,
-        selected ? "on-cancel-selected" : "on-selected",
-        (() => {
-          let target = { label, value };
-          if (this.showCol) {
-            for (const col of this.showCol) {
-              target[col] = item[col] || "";
-            }
-          }
-          return target;
-        })()
-      );
+      this.emit(-2, selected ? "on-cancel-selected" : "on-selected", _.deepCloneAs(item, ["label", "value", ...item]));
     },
 
     onQuery(keyword = "") {
@@ -284,9 +274,8 @@ export default {
       ...item,
       _index: index,
       focus: false,
-      selected: false,
-      disabled: false,
-      hidden: false
+      hidden: false,
+      selected: false
     }));
 
     // initialize
@@ -295,14 +284,7 @@ export default {
       -2,
       "on-ready",
       this.blockData.map(item => {
-        const { label, value } = item;
-        let target = { label, value };
-        if (this.showCol.length > 0) {
-          for (const col of this.showCol) {
-            target[col] = item[col] || "";
-          }
-        }
-        return target;
+        return _.deepCloneAs(item, ["label", "value", ...this.showCol]);
       })
     );
   }
