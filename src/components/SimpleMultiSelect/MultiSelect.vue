@@ -26,12 +26,7 @@
         @paste="onInputPaste"
       />
       <!-- 下拉箭头图标 -->
-      <Icon
-        ref="arrowb"
-        name="unfold"
-        :class="[prefixCls + '-arrow']"
-        @click.native.stop="isDropdownVisible = !isDropdownVisible"
-      ></Icon>
+      <Icon ref="arrowb" name="unfold" :class="[prefixCls + '-arrow']" @click.native.stop="onArrowClick"></Icon>
     </div>
     <!-- 下拉面板 -->
     <drop
@@ -239,38 +234,22 @@ export default {
       if (this.isDropdownVisible) {
         if (_.isKeyMatch(e, "Esc") || _.isKeyMatch(e, "Enter")) {
           this.isDropdownVisible = false;
-          return;
-        }
-
-        if (this.blockVm) {
+        } else if (this.blockVm) {
           if (_.isKeyMatch(e, "Up")) {
             e.preventDefault();
             this.blockVm.highlight("prev");
-            return;
-          }
-
-          if (_.isKeyMatch(e, "Down")) {
+          } else if (_.isKeyMatch(e, "Down")) {
             e.preventDefault();
             this.blockVm.highlight("next");
-            return;
-          }
-
-          if (_.isKeyMatch(e, "Space")) {
+          } else if (_.isKeyMatch(e, "Space")) {
             e.preventDefault();
             this.blockVm.highlight("click");
-            return;
-          }
-
-          if (_.isKeyMatch(e, "A") && e.ctrlKey) {
+          } else if (_.isKeyMatch(e, "A") && e.ctrlKey) {
             e.preventDefault();
             this.toggleSelect(true);
-            return;
-          }
-
-          if (_.isKeyMatch(e, "D") && e.ctrlKey) {
+          } else if (_.isKeyMatch(e, "D") && e.ctrlKey) {
             e.preventDefault();
             this.toggleSelect(false);
-            return;
           }
         }
       } else {
@@ -294,6 +273,12 @@ export default {
     },
     onInputPaste(e) {
       this.$emit("on-paste", { oldval: this.magicString, newval: e.clipboardData.getData("text/plain") });
+    },
+    onArrowClick() {
+      if (this.disabled || this.readonly || !this.editable) return false;
+      else {
+        this.isDropdownVisible = !this.isDropdownVisible;
+      }
     },
 
     /**
