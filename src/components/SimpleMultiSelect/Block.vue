@@ -12,12 +12,18 @@
         @click.stop="onItemClick(item)"
       >
         <slot>
-          <span :class="{itemcol: showCol.length > 0}" style="width: 100px;">
+          <span :title="item.label || ''" :class="{itemcol: showCol.length > 0}" style="width: 100px;">
             <checkbox size="large" :value="item.selected" :disabled="item.disabled"></checkbox>
             {{item.label || item.value}}
           </span>
         </slot>
-        <span v-for="col in showCol" :key="col" class="itemcol" style="width: 100px;">{{ item[col] || item.label }}</span>
+        <span
+          v-for="col in showCol"
+          :key="col"
+          :title="item[col] || item.label"
+          class="itemcol"
+          style="width: 100px;"
+        >{{ item[col] || item.label }}</span>
       </li>
     </ul>
 
