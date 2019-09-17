@@ -6,7 +6,9 @@ const keyInfoMap = new Map([
   ["Up", { code: "ArrowUp", which: 38, keyCode: 38 }],
   ["Right", { code: "ArrowRight", which: 39, keyCode: 39 }],
   ["Down", { code: "ArrowDown", which: 40, keyCode: 40 }],
-  ["Left", { code: "ArrowLeft", which: 37, keyCode: 37 }]
+  ["Left", { code: "ArrowLeft", which: 37, keyCode: 37 }],
+  ["A", { code: "KeyA", which: 65, keyCode: 65 }],
+  ["D", { code: "KeyD", which: 68, keyCode: 68 }]
 ]);
 
 /**

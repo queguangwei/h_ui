@@ -243,13 +243,34 @@ export default {
         }
 
         if (this.blockVm) {
-          const keyActionMap = new Map([["Up", "prev"], ["Down", "next"], ["Space", "click"]]);
-          for (const [key, value] of keyActionMap.entries()) {
-            if (_.isKeyMatch(e, key)) {
-              e.preventDefault();
-              this.blockVm.highlight(value);
-              return;
-            }
+          if (_.isKeyMatch(e, "Up")) {
+            e.preventDefault();
+            this.blockVm.highlight("prev");
+            return;
+          }
+
+          if (_.isKeyMatch(e, "Down")) {
+            e.preventDefault();
+            this.blockVm.highlight("next");
+            return;
+          }
+
+          if (_.isKeyMatch(e, "Space")) {
+            e.preventDefault();
+            this.blockVm.highlight("click");
+            return;
+          }
+
+          if (_.isKeyMatch(e, "A") && e.ctrlKey) {
+            e.preventDefault();
+            this.toggleSelect(true);
+            return;
+          }
+
+          if (_.isKeyMatch(e, "D") && e.ctrlKey) {
+            e.preventDefault();
+            this.toggleSelect(false);
+            return;
           }
         }
       } else {
