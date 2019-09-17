@@ -129,7 +129,8 @@ export default {
     styles () {//深拷贝
       const style = Object.assign({}, this.styleObject);
        // 考虑所有都有宽度，总列宽小于屏幕宽度时，不可加scrollBarWidth
-      const width = this.$parent.bodyHeight === 0 ? parseInt(this.styleObject.width) : parseInt(this.styleObject.width) <= this.$parent.$el.clientWidth ? parseInt(this.styleObject.width) : parseInt(this.styleObject.width) + this.$parent.scrollBarWidth;
+      //  无纵向滚动条时，不可加scrollBarWidth
+      const width = this.$parent.bodyHeight === 0 ? parseInt(this.styleObject.width) : parseInt(this.styleObject.width) <= this.$parent.$el.clientWidth || this.$parent.bodyHeight >=  this.$parent.bodyRealHeight ? parseInt(this.styleObject.width) : parseInt(this.styleObject.width) + this.$parent.scrollBarWidth;
       style.width = `${width}px`;
       return style;
     },

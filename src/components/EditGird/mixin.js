@@ -34,8 +34,9 @@ export default {
                 // 考虑所有都有宽度，总列宽小于屏幕宽度时，不可加scrollBarWidth
                 width += this.$parent.scrollBarWidth
                 // 树表格嵌套, 针对所有列设置宽度，总列宽小于屏幕宽度时，表格头全部加scrollBarWidth，此时列上也需要加scrollBarWidth
-                // editgird 没有纵向滚动条时也不能加滚动条宽度
-                if ((this.$parent.typeName == 'treeGird' || this.$parent.typeName == 'editGird')&& this.$options.name == 'GirdHead' && parseInt(this.styleObject.width) <= this.$parent.$el.clientWidth) {
+                // editgird 没有横向滚动条没有纵向滚动条时也不能加滚动条宽度
+                // editgird 有横向滚动条没有纵向滚动条时也不能加滚动条宽度
+                if ((this.$parent.typeName == 'treeGird' || this.$parent.typeName == 'editGird')&& this.$options.name == 'GirdHead' && (parseInt(this.styleObject.width) <= this.$parent.$el.clientWidth || parseInt(this.$parent.bodyStyle.height) >=  this.$parent.$refs.tbody.$el.clientHeight )) {
                     width -= this.$parent.scrollBarWidth
                 }
             }  
