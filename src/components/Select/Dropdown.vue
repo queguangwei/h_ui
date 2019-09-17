@@ -40,20 +40,27 @@ export default {
   },
   computed: {
     styles () {
-      let style = {};
+      let style = {}
       if (this.widthAdaption) {
         if (this.dropWidth || this.maxDropWidth) {
-          if (this.dropWidth) style.minWidth = `${this.dropWidth}px`
+          if (this.dropWidth)
+            style.minWidth = `${this.dropWidth}px`
           if (this.maxDropWidth) {
             let maxWidth = Math.max(parseInt(this.maxDropWidth),parseInt(this.parentWidth))
             style.maxWidth = `${maxWidth}px`
           }
-          if (this.width) style.width = `${this.width}px`;
+          if (this.width)
+            style.width = `${this.width}px`
         }
       } else {
-        if (this.width) style.width = `${this.width}px`;
+        if (this.width)
+          style.width = `${this.width}px`
       }
-      return style;
+      if(this.$parent.isSingleSelect) {
+        let maxWidth = Math.max(parseInt(this.maxDropWidth),parseInt(this.parentWidth))
+        style.width = `${maxWidth}px`
+      }
+      return style
     }
   },
   methods: {

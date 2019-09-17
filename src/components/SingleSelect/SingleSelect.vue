@@ -369,10 +369,6 @@ export default {
       type: Boolean,
       default: false
     },
-    fastMatch: {
-      type: Boolean,
-      default: false
-    },
     tabindex: {
       type: [String, Number],
       default: 0,
@@ -647,7 +643,6 @@ export default {
       this.options = options
       this.availableOptions = options
       this.broadcast('Drop', 'on-update-popper')
-
       if (init) {
         if (!this.remote || this.isBlock) {
           this.updateSingleSelected(true, slot)
@@ -688,7 +683,6 @@ export default {
             }
           }
         }
-
         if (this.model === '') {
           this.selectedSingle = ''
         } else if (this.remote && curSingle) {
@@ -818,8 +812,8 @@ export default {
           }
           if(!flag) {
             if(!this.keepInputValue) {
-              if (this.options.length > 0) {
-                this.model = this.options[0].value
+              if (this.availableOptions.length > 0) {
+                this.model = this.availableOptions[0].value
               }
             }else {
               this.model = this.query
@@ -1051,8 +1045,8 @@ export default {
         }
         if(!flag) {
           if(!this.keepInputValue) {
-            if (this.options.length > 0) {
-              this.model = this.options[0].value
+            if (this.availableOptions.length > 0) {
+              this.model = this.availableOptions[0].value
             }
           }else {
             this.model = this.query
@@ -1087,6 +1081,12 @@ export default {
 //        this.isInputFocus = false
         this.focus()
       }
+      //不匹配到任何项时选中筛选第一项
+      if(value === '' && this.accuFilter && !this.keepInputValue) {
+        this.$nextTick(() => {
+          this.focusIndex = 1
+        })
+      }
     },
     setPlacement() {
       if (this.autoPlacement) {
@@ -1099,11 +1099,6 @@ export default {
         }else {
           this.fPlacement = 'bottom'
         }
-      }
-    },
-    firstVisibleDom(doms) {
-      for (let i = 0; i < doms.length; i++) {
-        if (doms[i].style.display !== 'none') return doms[i]
       }
     },
     setSingleSelect() {
@@ -1178,14 +1173,12 @@ export default {
           if (!this.visible && val) {
             this.visible = true
           }
-          // query值为空时不应该触发远程搜索方法
-//          if(val !== '') {
-            this.remoteMethod(val)
-//          }
+          this.remoteMethod(val)
           this.$emit('on-query-change', val)
           if (!this.remoteNoQuery) {
             this.broadcastQuery(val)
           }
+
         }else {
           // 非自动匹配到的值手动清空后绑定的model没清空问题
           if(val === '') {
@@ -1381,15 +1374,15 @@ export default {
         this.$emit('on-input-focus')
       }
     },
-    options(val, old) {
-      if (this.remote && this.autoFocus && this.isBlock) {
-        this.findChild(child => {
-          this.focusValue = ''
-          this.focusIndex = 1
-          return true
-        })
-      }
-    }
+//    options(val, old) {
+//      if (this.remote && this.isBlock) {
+//        this.findChild(child => {
+//          this.focusValue = ''
+//          this.focusIndex = 1
+//          return true
+//        })
+//      }
+//    }
   }
 }
 </script>
