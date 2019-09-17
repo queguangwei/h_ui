@@ -14,7 +14,6 @@
             v-show="showPlaceholder && (!filterable&&!newSearchModel||showBottom)">{{ localePlaceholder }}</span>
       <span :class="[prefixCls + '-selected-value']"
             v-show="!showPlaceholder && !multiple && !(filterable && !showBottom)">{{ selectedSingle }}</span>
-
       <!-- 下拉输入框(远程搜索时渲染) -->
       <input type="text"
              v-if="filterable && !showBottom &&!newSearchModel"
@@ -30,19 +29,15 @@
              :tabindex="tabindex"
              :title="selectedSingle"
              ref="input">
-      <Icon name="close"
-            :class="[prefixCls + '-arrow']"
-            v-if="showCloseIcon"
-            @click.native.stop="clearSingleSelect"></Icon>
+      <!--<Icon name="close"-->
+            <!--:class="[prefixCls + '-arrow']"-->
+            <!--v-if="showCloseIcon"-->
+            <!--@click.native.stop="clearSingleSelect"></Icon>-->
       <Icon name="unfold"
             :class="[prefixCls + '-arrow']"
             v-if="!searchIcon && (!remote || showArrow ||newSearchModel)"
             @click.native.stop="arrowClick"
             ref="arrowb"></Icon>
-      <Icon ref="searchIcon"
-            :name="searchIcon"
-            :class="[prefixCls + '-arrow']"
-            v-if="filterable && searchIcon && !showArrow"></Icon>
     </div>
     <div v-if="animated">
       <transition :name="transitionName">
@@ -59,8 +54,6 @@
           <div :class="content"
                ref="content"
                @click="handleclick">
-            <!-- 单选时清空按钮 -->
-            <!-- <ul v-show="notFoundShow" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul> -->
             <span :class="searchClass"
                   ref='search'
                   v-if="filterable && showBottom">
@@ -74,13 +67,7 @@
                    @keydown="resetInputState"
                    :tabindex="tabindex"
                    ref="input">
-              <!-- <input type="text" placeholder="请输入..." class="h-input h-input-left">  -->
           </span>
-            <div v-if="showHeader"
-                 :class="headerSlotCls">
-              <slot name="header">
-              </slot>
-            </div>
             <div v-if="!isBlock"
                  v-show="(!notFound && !remote) || (remote && !loading && !notFound)"
                  :class="[prefixCls + '-dropdown-list']"
@@ -104,11 +91,6 @@
             <ul v-show="loading && !isBlock"
                 :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
           </div>
-          <div v-if="showFooter"
-               :class="checkAll">
-            <slot name="footer">
-            </slot>
-          </div>
         </Drop>
       </transition>
     </div>
@@ -126,8 +108,6 @@
         <div :class="content"
              ref="content"
              @click="handleclick">
-          <!-- 单选时清空按钮 -->
-          <!-- <ul v-show="notFoundShow" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul> -->
           <span :class="searchClass"
                 ref='search'
                 v-if="filterable && showBottom">
@@ -141,13 +121,7 @@
                    @keydown="resetInputState"
                    :tabindex="tabindex"
                    ref="input">
-            <!-- <input type="text" placeholder="请输入..." class="h-input h-input-left">  -->
           </span>
-          <div v-if="showHeader"
-               :class="headerSlotCls">
-            <slot name="header">
-            </slot>
-          </div>
           <div v-if="!isBlock"
                v-show="(!notFound && !remote) || (remote && !loading && !notFound)"
                :class="[prefixCls + '-dropdown-list']"
@@ -170,11 +144,6 @@
                :class="[prefixCls+'-block-loading']">{{localeLoadingText}}</div>
           <ul v-show="loading && !isBlock"
               :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
-        </div>
-        <div v-if="showFooter"
-             :class="checkAll">
-          <slot name="footer">
-          </slot>
         </div>
       </Drop>
     </div>
@@ -277,9 +246,6 @@ export default {
     labelInValue: {
       type: Boolean,
       default: false
-    },
-    notFoundText: {
-      type: String
     },
     placement: {
       validator(value) {
@@ -403,10 +369,6 @@ export default {
       type: Boolean,
       default: false
     },
-    fastMatch: {
-      type: Boolean,
-      default: false
-    },
     tabindex: {
       type: [String, Number],
       default: 0,
@@ -450,25 +412,22 @@ export default {
     },
     listStyle() {
       let style = {}
-      if (!this.showHeader) {
-        if (this.showBorder) {
-          style.paddingTop = this.showBottom ? '52px' : '0'
-        } else {
-          style.paddingTop = this.showBottom ? '38px' : '0'
-        }
+      if (this.showBorder) {
+        style.paddingTop = this.showBottom ? '52px' : '0'
+      } else {
+        style.paddingTop = this.showBottom ? '38px' : '0'
       }
       return style
     },
     classes() {
       return [
-        `${prefixCls}`,
+        `${prefixCls}`,`${prefixCls}-single`,
         {
           [`${prefixCls}-visible`]: this.visible,
           [`${prefixCls}-disabled`]: this.disabled,
           [`${prefixCls}-readonly`]: this.readonly,
           [`${prefixCls}-editable`]: !this.editable,
           [`${prefixCls}-multiple`]: this.multiple,
-          [`${prefixCls}-single`]: !this.multiple,
           [`${prefixCls}-show-clear`]: this.showCloseIcon,
           [`${prefixCls}-${this.size}`]: !!this.size
         }
@@ -477,7 +436,6 @@ export default {
     dropdownCls() {
       return {
         ['h-select-dropdown-transfer']: this.transfer,
-        [prefixCls + '-multiple']: this.multiple && this.transfer,
         ['h-auto-complete']: this.autoComplete
       }
     },
@@ -518,17 +476,6 @@ export default {
         !this.isSingleSelect
       )
     },
-    inputStyle() {
-      let style = {}
-      if (this.multiple) {
-        if (this.showPlaceholder) {
-          style.width = '100%'
-        } else {
-          style.width = `${this.inputLength}px`
-        }
-      }
-      return style
-    },
     localePlaceholder() {
       if (this.placeholder === undefined) {
         return this.t('i.select.placeholder')
@@ -541,13 +488,6 @@ export default {
         return this.t('i.select.searchHolder')
       } else {
         return this.searchHolder
-      }
-    },
-    localeNotFoundText() {
-      if (this.notFoundText === undefined) {
-        return this.t('i.select.noMatch')
-      } else {
-        return this.notFoundText
       }
     },
     localeLoadingText() {
@@ -567,7 +507,6 @@ export default {
     transitionName() {
       const bottomPlaced = this.fPlacement.match(/^bottom/)
       return bottomPlaced ? 'slide-up' : 'slide-down'
-      // return this.placement === 'bottom' ? 'slide-up' : 'slide-down';
     },
     dropVisible() {
       let status = true
@@ -581,9 +520,6 @@ export default {
         width: `${this.width}px`
       }
     },
-    checkAll() {
-      return 'h-select-checkall'
-    },
     selectTabindex() {
       return this.disabled
         ? -1
@@ -592,25 +528,6 @@ export default {
             ? -1
             : this.tabindex
           : 0
-    },
-    notFoundShow() {
-      let options = this.options
-      options = options || []
-      let state =
-        this.notFound || (!this.loading && !options.length) || !options.length
-      return state
-    },
-    showFooter() {
-      return this.$slots.footer
-    },
-    showHeader() {
-      return this.$slots.header
-    },
-    headerSlotCls() {
-      return {
-        [`${prefixCls}-header-slot-top`]: this.showBottom,
-        [`${prefixCls}-header-slot`]: !this.showBottom
-      }
     }
   },
   methods: {
@@ -726,7 +643,6 @@ export default {
       this.options = options
       this.availableOptions = options
       this.broadcast('Drop', 'on-update-popper')
-
       if (init) {
         if (!this.remote || this.isBlock) {
           this.updateSingleSelected(true, slot)
@@ -767,7 +683,6 @@ export default {
             }
           }
         }
-
         if (this.model === '') {
           this.selectedSingle = ''
         } else if (this.remote && curSingle) {
@@ -784,48 +699,44 @@ export default {
 
       this.toggleSingleSelected(this.model, init)
     },
-    clearSingleSelect() {
-      if (this.readonly || this.disabled) return
-      let result = this.value
-      if (this.showCloseIcon) {
-        if (this.isBlock) {
-          this.toggleSingleSelected('')
-        } else {
-          this.findChild(child => {
-            child.$refs.table.clearAllRow()
-          })
-        }
-        this.model = ''
-
-        if (this.filterable) {
-          this.query = ''
-          this.selectedSingle = ''
-        }
-        this.hideMenu()
-        this.isInputFocus = true
-        this.$emit('on-clear-select', result)
-      }
-    },
+//    clearSingleSelect() {
+//      if (this.readonly || this.disabled) return
+//      let result = this.value
+//      if (this.showCloseIcon) {
+//        if (this.isBlock) {
+//          this.toggleSingleSelected('')
+//        } else {
+//          this.findChild(child => {
+//            child.$refs.table.clearAllRow()
+//          })
+//        }
+//        this.model = ''
+//
+//        if (this.filterable) {
+//          this.query = ''
+//          this.selectedSingle = ''
+//        }
+//        this.hideMenu()
+//        this.isInputFocus = true
+//        this.$emit('on-clear-select', result)
+//      }
+//    },
     removeTag(index) {
       if (this.disabled || !this.editable || this.readonly) {
         return false
       }
-
       if (this.remote) {
         const tag = this.model[index]
         this.selectedMultiple = this.selectedMultiple.filter(
           item => item.value !== tag
         )
       }
-
       this.model.splice(index, 1)
-
       if (this.filterable && this.visible && this.$refs.input) {
         this.$nextTick(() => {
           this.$refs.input.focus()
         })
       }
-
       this.broadcast('Drop', 'on-update-popper')
     },
     toggleSingleSelected(value, init = false) {
@@ -841,8 +752,10 @@ export default {
           this.options.forEach((col, i) => {
             if (value == col.value) {
               this.$set(child.cloneData[i], 'selected', true)
+              this.$set(child.cloneData[i], 'focus', true)
             } else {
               this.$set(child.cloneData[i], 'selected', false)
+              this.$set(child.cloneData[i], 'focus', false)
             }
           })
         })
@@ -865,7 +778,6 @@ export default {
         if(this.keepInputValue) {
           this.selectedSingle = this.model
         }
-
       }else {
         for(let j in this.availableOptions) {
           if(this.availableOptions[j].value === value) {
@@ -876,7 +788,6 @@ export default {
         if(this.keepInputValue) {
           this.selectedSingle = this.model
         }
-
         if (this.labelInValue) {
           this.$emit('on-change', { value: value, label: label })
           this.dispatch('FormItem', 'on-form-change', { value: value, label: label })
@@ -901,8 +812,8 @@ export default {
           }
           if(!flag) {
             if(!this.keepInputValue) {
-              if (this.options.length > 0) {
-                this.model = this.options[0].value
+              if (this.availableOptions.length > 0) {
+                this.model = this.availableOptions[0].value
               }
             }else {
               this.model = this.query
@@ -985,7 +896,6 @@ export default {
       this.findChild(child => {
         child.$refs.table.changeHover(this.focusIndex - 1, true)
       })
-
       // this.$refs.list.scrollTop = top;
       scrollAnimate(this.$refs.list, curTop, top)
     },
@@ -997,7 +907,6 @@ export default {
       let topOverflowDistance =
         this.optionInstances[index].$el.getBoundingClientRect().top -
         this.$refs.dropdown.$el.getBoundingClientRect().top
-
       if (bottomOverflowDistance > 0) {
         this.$refs.dropdown.$el.scrollTop += bottomOverflowDistance
       }
@@ -1024,54 +933,6 @@ export default {
         this.isInputFocus = true
       }
       this.$emit('on-keydown', this.query, e)
-    },
-
-    newSearchUpdate() {
-      setTimeout(() => {
-        this.$refs.dropdown.setWidthAdaption()
-      }, 0)
-    },
-    newModelhandleSearch(searchkey) {
-      if (this.remote && this.remoteMethod) {
-        if (!this.selectToChangeQuery) {
-          // 解决当通过表单方法firstNodeFocused定位到SimpleSelect时只能输入但不展示下拉选项的问题
-          if (!this.visible && searchkey) this.visible = true
-          this.remoteMethod(searchkey)
-          if(searchkey!=","){
-            setTimeout(()=> {
-              //tan 50多选改动 注释掉
-              this.newSearchUpdate();
-              this.$emit('on-query-change', searchkey)
-              //this.$refs.dropdown.setWidthAdaption(true);
-            }, 300)
-          }
-          //this.$emit('on-query-change', searchkey)
-          //tan 50改动 注释掉
-          this.broadcastQuery(searchkey)
-        }
-        this.findChild(child => {
-          child.isFocus = false
-        })
-      } else {
-        if (!this.selectToChangeQuery) {
-          if (!this.visible && searchkey) this.visible = true
-          this.$emit('on-query-change', searchkey)
-          this.broadcastQuery(searchkey)
-        }
-
-        if (!this.isBlock) {
-          if (this.filterable && searchkey) {
-            this.$nextTick(() => {
-              this.findChild(child => {
-                if (this.focusIndex > 0)
-                  child.$refs.table.changeHover(this.focusIndex - 1, false)
-                this.focusIndex = 1
-                child.$refs.table.changeHover(this.focusIndex - 1, true)
-              })
-            })
-          }
-        }
-      }
     },
     getLabel(val) {
       let item = this.options.filter(item => item.value == val)
@@ -1124,20 +985,9 @@ export default {
     handleBack(e) {
       if (!this.isBackClear || this.readonly || this.disable) return
       if (e.keyCode === 8 && this.value !== null && this.value!== '') {
-        let c = this.value
-        if (this.multiple) {
-          this.clearMultipleSelect()
-        } else {
-          this.model = ''
-        }
-        this.$emit('on-clear-select', c)
+        this.model = ''
+        this.$emit('on-clear-select', this.value)
       }
-    },
-    clearMultipleSelect() {
-      if (this.disabled || !this.editable || this.readonly) {
-        return false
-      }
-      this.model = []
     },
     getFormatValue(value) {
       let val = ''
@@ -1154,10 +1004,7 @@ export default {
           this.$refs.search.style.width = '100%'
           this.$refs.input.style.width = '100%'
         } else {
-          let width =
-            this.dropWidth > 0
-              ? this.dropWidth
-              : parseInt(getStyle(this.$el, 'width'))
+          let width = this.dropWidth > 0 ? this.dropWidth : parseInt(getStyle(this.$el, 'width'))
           width = width - getScrollBarSize() + 'px'
           this.$refs.search.style.width = width
         }
@@ -1198,8 +1045,8 @@ export default {
         }
         if(!flag) {
           if(!this.keepInputValue) {
-            if (this.options.length > 0) {
-              this.model = this.options[0].value
+            if (this.availableOptions.length > 0) {
+              this.model = this.availableOptions[0].value
             }
           }else {
             this.model = this.query
@@ -1209,7 +1056,6 @@ export default {
       }else if(this.model !== '' && this.query !== '') { // 删除字符仍有匹配项但model未被清空
         this.setSingleSelect()
       }
-
 //      this.availableOptions = this.options
 //      this.broadcast('Block', 'on-query-change', this.query)
       this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
@@ -1226,7 +1072,6 @@ export default {
       if(!this.isInputFocus) {
         this.availableOptions = this.options
       }
-
       this.selectToChangeQuery = true
       if (this.model !== value) {
         this.model = value
@@ -1235,6 +1080,12 @@ export default {
         this.hideMenu()
 //        this.isInputFocus = false
         this.focus()
+      }
+      //不匹配到任何项时选中筛选第一项
+      if(value === '' && this.accuFilter && !this.keepInputValue) {
+        this.$nextTick(() => {
+          this.focusIndex = 1
+        })
       }
     },
     setPlacement() {
@@ -1248,11 +1099,6 @@ export default {
         }else {
           this.fPlacement = 'bottom'
         }
-      }
-    },
-    firstVisibleDom(doms) {
-      for (let i = 0; i < doms.length; i++) {
-        if (doms[i].style.display !== 'none') return doms[i]
       }
     },
     setSingleSelect() {
@@ -1277,7 +1123,6 @@ export default {
               }
             })
           }
-
         })
         //下拉框不弹出，仅使用左右键切换选值，要求带出中文
         if(!this.visible) {
@@ -1304,7 +1149,6 @@ export default {
               }
             })
           }
-
         })
         if(this.showFirstLabelOnly) {
           let ind = curlabel.indexOf(' ')
@@ -1322,7 +1166,6 @@ export default {
       this.isQuerySelect = false
       this.focusIndex = index
     },
-
     queryChange(val) {
       if (this.remote && this.remoteMethod) {
         if (!this.selectToChangeQuery) {
@@ -1330,14 +1173,12 @@ export default {
           if (!this.visible && val) {
             this.visible = true
           }
-          // query值为空时不应该触发远程搜索方法
-//          if(val !== '') {
-            this.remoteMethod(val)
-//          }
+          this.remoteMethod(val)
           this.$emit('on-query-change', val)
           if (!this.remoteNoQuery) {
             this.broadcastQuery(val)
           }
+
         }else {
           // 非自动匹配到的值手动清空后绑定的model没清空问题
           if(val === '') {
@@ -1385,32 +1226,22 @@ export default {
     this.modelToQuery()
     // 处理 remote 初始值
     this.updateLabel()
-//    this.$nextTick(() => {
-//      if (!this.isSingleSelect)
-//        this.broadcastQuery('')
-//    })
     this.updateOptions(true)
     this.$on('append', () => {
       this.slotChange()
       this.updateOptions(true, true)
     })
     this.$on('remove', () => {
-      // this.findChild(child => {
-      //   child.selected = this.multiple ? this.model.indexOf(child.value) > -1 : this.model === child.value;
-      // });
-
       this.slotChange()
       this.updateOptions(true, true)
     })
     on(this.$refs.select, 'keydown', this.handleKeydown)
-
     this.$on('on-select-selected', (value, status) => {
       value = this.isBlock ? value : this.getFormatValue(value)
       if (this.model === value && !this.isSingleSelect) {
         this.hideMenu()
       } else {
         this.model = value
-
         if (this.filterable) {
           this.findChild(child => {
             if (child.value === value) {
@@ -1423,13 +1254,9 @@ export default {
         this.hideMenu()
       }
     })
-
     this.$nextTick(() => {
       this.searchStyle()
     })
-    // if (this.disabled) {
-    //   this.tabIndex = -1
-    // }
 
 //    this.setPlacement()
 //    this.$on('on-visible-change', (val, top) => {
@@ -1547,15 +1374,15 @@ export default {
         this.$emit('on-input-focus')
       }
     },
-    options(val, old) {
-      if (this.remote && this.autoFocus && this.isBlock) {
-        this.findChild(child => {
-          this.focusValue = ''
-          this.focusIndex = 1
-          return true
-        })
-      }
-    }
+//    options(val, old) {
+//      if (this.remote && this.isBlock) {
+//        this.findChild(child => {
+//          this.focusValue = ''
+//          this.focusIndex = 1
+//          return true
+//        })
+//      }
+//    }
   }
 }
 </script>

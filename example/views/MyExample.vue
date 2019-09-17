@@ -8,9 +8,9 @@
           {{formValidate.city}}
           <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass"
                            remote filterable :loading="isLoading" :remote-method="remoteMethod1"
-                           widthAdaption  transfer showFirstLabelOnly autoPlacement
+                           widthAdaption :maxDropWidth="330" transfer autoPlacement
                            :animated="false" @on-keydown="handlekeydown">
-            <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
+            <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
           </h-single-select>
         </h-form-item>
         <h-form-item label="input" prop="name" required>
@@ -29,11 +29,11 @@
         <h-form-item prop="date" label="data">
           <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
         </h-form-item>
-        <h-form-item label="valueRemote1" prop="valueRemote1" required>
-          <h-multi-select v-model="formValidate.valueRemote1" :isString="isstring" class="curItemClass" specialVal="value1" accuFilter newSearchModel>
-            <h-multi-block :data="remotebigData"></h-multi-block>
-          </h-multi-select>
-        </h-form-item>
+        <!--<h-form-item label="valueRemote1" prop="valueRemote1" required>-->
+          <!--<h-multi-select v-model="formValidate.valueRemote1" :isString="isstring" class="curItemClass" specialVal="value1" accuFilter newSearchModel>-->
+            <!--<h-multi-block :data="remotebigData"></h-multi-block>-->
+          <!--</h-multi-select>-->
+        <!--</h-form-item>-->
         <h-form-item prop="time" label="time">
           <h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time" class="curItemClass" ></h-time-picker>
         </h-form-item>
@@ -55,39 +55,39 @@
     </h-msg-box>
 
     <h1>form</h1>
-    <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
-      <h-form-item label="股票代码" prop="stockCode">
-        <h-single-select class="curItemClass" v-model="formCustom.stockCode" placeholder="请选择..."
-                         filterable widthAdaption autoPlacement keepInputValue
-                         fastMatch>
-          <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
-        </h-single-select>
-        {{formCustom.stockCode}}
-      </h-form-item>
-      <h-form-item label="金额框" prop="face_balance">
-        <h-typefield class="curItemClass" v-model="formCustom.face_balance"
-                     nonNegative divided focusAllSelect :min="0" :max="1000000"
-                     integerNum="10" suffixNum="2"  type="money" :step="10">
-        </h-typefield>
-      </h-form-item>
-      <h-form-item label="密码" prop="passwd">
-        <h-input class="curItemClass" type="password" v-model="formCustom.passwd"></h-input>
-      </h-form-item>
-      <h-form-item label="确认密码" prop="passwdCheck">
-        <h-input class="curItemClass" type="password" v-model="formCustom.passwdCheck"></h-input>
-      </h-form-item>
-      <h-form-item label="年龄" prop="age">
-        <h-input type="text" v-model="formCustom.age" number></h-input>
-      </h-form-item>
-      <h-form-item label="日期">
-        <h-date-picker type="date" placeholder="选择日期" showToday autoPlacement v-model="formCustom.date" class="curItemClass"></h-date-picker>
-      </h-form-item>
+    <!--<h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">-->
+      <!--<h-form-item label="股票代码" prop="stockCode">-->
+        <!--<h-single-select class="curItemClass" v-model="formCustom.stockCode" placeholder="请选择..."-->
+                         <!--filterable widthAdaption autoPlacement keepInputValue-->
+                         <!--&gt;-->
+          <!--<h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>-->
+        <!--</h-single-select>-->
+        <!--{{formCustom.stockCode}}-->
+      <!--</h-form-item>-->
+      <!--<h-form-item label="金额框" prop="face_balance">-->
+        <!--<h-typefield class="curItemClass" v-model="formCustom.face_balance"-->
+                     <!--nonNegative divided focusAllSelect :min="0" :max="1000000"-->
+                     <!--integerNum="10" suffixNum="2"  type="money" :step="10">-->
+        <!--</h-typefield>-->
+      <!--</h-form-item>-->
+      <!--<h-form-item label="密码" prop="passwd">-->
+        <!--<h-input class="curItemClass" type="password" v-model="formCustom.passwd"></h-input>-->
+      <!--</h-form-item>-->
+      <!--<h-form-item label="确认密码" prop="passwdCheck">-->
+        <!--<h-input class="curItemClass" type="password" v-model="formCustom.passwdCheck"></h-input>-->
+      <!--</h-form-item>-->
+      <!--<h-form-item label="年龄" prop="age">-->
+        <!--<h-input type="text" v-model="formCustom.age" number></h-input>-->
+      <!--</h-form-item>-->
+      <!--<h-form-item label="日期">-->
+        <!--<h-date-picker type="date" placeholder="选择日期" showToday autoPlacement v-model="formCustom.date" class="curItemClass"></h-date-picker>-->
+      <!--</h-form-item>-->
 
-      <h-form-item>
-        <h-button type="primary" @click="handleSubmit('formCustom')">提交</h-button>
-        <h-button type="ghost" @click="handleReset('formCustom')" style="margin-left: 8px">重置</h-button>
-      </h-form-item>
-    </h-form>
+      <!--<h-form-item>-->
+        <!--<h-button type="primary" @click="handleSubmit('formCustom')">提交</h-button>-->
+        <!--<h-button type="ghost" @click="handleReset('formCustom')" style="margin-left: 8px">重置</h-button>-->
+      <!--</h-form-item>-->
+    <!--</h-form>-->
 
   </div>
 </template>
@@ -164,7 +164,7 @@ export default {
         desc: "",
         valueRemote1: [],
       },
-      colWidth:['150','150'],
+      colWidth:['120','150'],
       showCol:['label1'],
       bigData: [
         { value: "1", label: "1",label1: "多列01"},
@@ -266,8 +266,8 @@ export default {
       }
     },
     handlekeydown(val, e) {
-      console.log(val)
-      console.log(e)
+//      console.log(val)
+//      console.log(e)
     },
     clear(){
       this.formValidate.city=''
@@ -285,7 +285,8 @@ export default {
   },
   mounted() {
     document.addEventListener("keydown", event => {
-      enterHandler1(this.$refs.formCustom, event);
+      enterHandler1(this.$refs.formValidate, event);
+//      enterHandler1(this.$refs.formCustom, event);
     })
   },
 }
