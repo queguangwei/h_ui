@@ -145,8 +145,10 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
   &-cell{
     width: 100%;
     padding: $editgrid-cell-padding;
-    white-space: normal;
+    white-space: nowrap;
     word-break: break-all;
+    text-overflow: ellipsis;
+    overflow: hidden;
 
     &-ellipsis {
       word-break: keep-all;

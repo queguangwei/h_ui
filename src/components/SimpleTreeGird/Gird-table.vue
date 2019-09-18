@@ -77,6 +77,44 @@
           </Tree-table>
         </div>
       </div>
+      <div :class="[prefixCls + '-fixed-right']" :style="rightFixedTableStyle" v-if="isRightFixed" ref="rightF">
+        <div :class="fixedHeaderClasses" v-if="showHeader">
+          <gird-head
+            fixed="right"
+            :prefix-cls="prefixCls"
+            :styleObject="tableStyle"
+            :columns="rightFixedColumns"
+            :columns-width="columnsWidth"
+            :dataLength="data.length"
+            :headSelection ="headSelection"
+            :canDrag="canDrag"
+          ></gird-head>
+        </div>
+        <div :class="[prefixCls + '-fixed-body']" :style="fixedBodyStyle" ref="fixedRightBody" v-show="!(!!localeNoDataText && (!data || data.length === 0))" @mousewheel="handleFixedMousewheel" @DOMMouseScroll="handleFixedMousewheel">
+          <Tree-table
+            ref="tbody"
+            fixed="right"
+            :styleObject ="tableStyle"
+            :indent ="Number(0)"
+            :data="rebuildData"
+            :prefix-cls="prefixCls"
+            :columns="rightFixedColumns"
+            :columnsWidth="columnsWidth"
+            :checkStrictly="checkStrictly"
+            :checkedObj="checkedObj"
+            :indexAndId="indexAndId"
+            :selectRoot="selectRoot"
+            :isCheckbox="isCheckbox"
+            :bodyRealHeight="bodyRealHeight"
+            :tableWidth="tableWidth"
+            :initWidth="initWidth"
+            :rowSelect="rowSelect"
+            :scrollBarWidth="scrollBarWidth"
+            :headSelection="headSelection"
+            :height="height">
+          </Tree-table>
+        </div>
+      </div>
       <div :class="[prefixCls + '-tip']"
         v-show="((!!localeNoDataText && (!data || data.length === 0)))" :style="bodyStyle" @scroll="handleBodyScroll">
         <div class="h-table-tiptext" :style="textStyle" >
@@ -87,6 +125,7 @@
       </div>
       <div class="h-table__column-resize-proxy" ref="resizeProxy" v-show="resizeProxyVisible"> </div>
       <div class="h-table__column-move-proxy h-table-cell" ref="moveProxy" v-show="moveProxyVisible"></div>
+      <div :class="[prefixCls + '-fixed-right-patch']" :style="fixedRightPatchStyle" v-if="isRightFixed && showScroll" ref="rightPatch"></div>
     </div>
     <Spin fix size="large" v-if="loading">
       <slot name="loading">
@@ -289,10 +328,48 @@ export default {
     isLeftFixed () {
       return this.columns.some(col => col.fixed && col.fixed === 'left');
     },
+    /* right */
+    fixedRightPatchStyle() {
+      let style = {}
+      style.width = `${this.scrollBarWidth}px`
+      style.height = `${this.headerRealHeight}px`
+      style.top = '0'
+      return style
+    },
+    rightFixedTableStyle() {
+      let style = {}
+      let width = 0
+      this.rightFixedColumns.forEach((col) => {
+        if (col.fixed && col.fixed === 'right') width += col._width
+      })
+      if (this.bodyRealHeight > this.height) {
+        style.marginRight = `${this.scrollBarWidth}px`
+        this.showScroll = true
+      } else {
+        width = width==0?0:width
+      }
+      style.width = `${width}px`
+      return style
+    },
+    rightFixedColumns() {
+      let right = []
+      let other = []
+      this.cloneColumns.forEach((col) => {
+        if (col.fixed && col.fixed === 'right') {
+          right.push(col)
+        } else {
+          other.push(col)
+        }
+      })
+      return right.concat(other)
+    },
+    isRightFixed() {
+      return this.columns.some(col => col.fixed && col.fixed === 'right');
+    },
     loadingText(){
       return this.t('i.table.loadingText');
     },
-    localeNoDataText () {
+    localeNoDataText() {
       if (this.noDataText === undefined) {
         return this.t('i.table.noDataText');
       } else {
@@ -631,6 +708,7 @@ export default {
       this.buttomNum = getBarBottom(event.target,this.scrollBarWidth);
       if (this.showHeader) this.$refs.header.scrollLeft = event.target.scrollLeft;
       if (this.isLeftFixed) this.$refs.fixedBody.scrollTop = event.target.scrollTop;
+      if (this.isRightFixed) this.$refs.fixedRightBody.scrollTop = event.target.scrollTop
     },
     // 将数据转换成objData,同时rebuild
     makeColumns () {
