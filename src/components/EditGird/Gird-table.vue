@@ -833,7 +833,8 @@ export default {
       } else {
         this.$emit('on-row-click', [
           JSON.parse(JSON.stringify(this.cloneData[_index])),
-          _index
+          _index,
+          this.objData[_index]._isHighlight
         ])
       }
       if (!this.rowSelect || !this.selectType) {
