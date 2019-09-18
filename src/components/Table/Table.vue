@@ -104,7 +104,6 @@
         <div :class="fixedHeaderClasses" v-if="showHeader">
           <table-head
             fixed="left"
-            :theadHeight = "fixedLeftTheadHeight"
             :prefix-cls="prefixCls"
             :styleObject="fixedTableStyle"
             :columns="leftFixedColumns"
@@ -153,7 +152,6 @@
         <div :class="fixedHeaderClasses" v-if="showHeader">
           <table-head
             fixed="right"
-            :theadHeight = "fixedRightTheadHeight"
             :prefix-cls="prefixCls"
             :styleObject="fixedRightTableStyle"
             :columns="rightFixedColumns"
@@ -457,8 +455,6 @@ export default {
   },
   data() {
     return {
-      fixedLeftTheadHeight: null,
-      fixedRightTheadHeight: null,
       ready: false,
       tableWidth: 0,
       dragWidth: 0,

@@ -149,13 +149,14 @@
                    :key="index">
             </colgroup>
             <thead>
-              <tr :style = "{height: fixedTheadHeight + 'px'}">
+              <tr>
                 <th v-for="(column, index) in leftFixedColumns"
                     :key="index"
                     v-on:mousedown="mousedown($event,column,index,'left')"
                     v-on:mouseout="mouseout($event,column,index,'left')"
                     v-on:mousemove="mousemove($event,column,index,'left')"
-                    :class="alignCls(column,{},'left')">
+                    :class="alignCls(column,{},'left')"
+                    :style="{height: column.fixedTheadHeight + 'px'}" >
                   <table-cell :column="column"
                               :index="index"
                               :checked="isSelectAll"
@@ -508,7 +509,6 @@ export default {
   },
   data() {
     return {
-      fixedTheadHeight: null, // 冻结列高度（多级表头冻结时有问题）
       ready: false,
       tableWidth: 0,
       dragWidth: 0,

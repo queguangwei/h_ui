@@ -5,12 +5,12 @@
       <col v-for="(column, index) in columns" :width="setCellWidth(column, index, true)" :key="index">
     </colgroup>
     <thead>
-      <tr v-if="multiLevel" v-for="(colItem,inx) in multiData" :key="inx">
-        <th v-for="(multi, index) in colItem" :colspan="multi.cols||1" :rowspan="multi.rows||1" :key="index" :class="aliCls(multi)">
+      <tr v-if="multiLevel" v-for="(colItem,inx) in multiData" :key="inx"  >
+        <th v-for="(multi, index) in colItem" :colspan="multi.cols||1" :rowspan="multi.rows||1" :key="index" :class="aliCls(multi)" :style="{height: multi.fixedTheadHeight + 'px'}" >
           <div :class="[prefixCls+'-cell']"><span>{{multi.title}}</span></div>
         </th>
       </tr>
-      <tr class="cur-th" :style="{height: theadHeight + 'px'}">
+      <tr class="cur-th" >
         <th v-for="(column, index) in columns"
           v-on:mousedown="mousedown($event,column,index)"
           v-on:mouseout="mouseout($event,column,index)"
@@ -98,7 +98,6 @@ export default {
     objData: Object,
     data: Array,    // rebuildData for sort or filter
     columnsWidth: Object,
-    theadHeight: Number,
     fixed: {
       type: [Boolean, String],
       default: false

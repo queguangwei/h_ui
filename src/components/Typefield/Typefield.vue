@@ -332,10 +332,16 @@ export default {
             val = this.max;
           }
         } else if (type === "down") {
-          if (addNum(targetVal, -step) >= this.min) {
-            val = addNum(val, -step);
+          // 左右键减少步长时，考虑nonNegative 非负配置
+          let newVal = addNum(targetVal, -step)
+          if (this.nonNegative && newVal < 0) {
+            val = 0
+            return 
+          }
+          if (newVal >= this.min) {
+            val = newVal
           } else {
-            val = this.min;
+            val = this.min
           }
         }
       }
