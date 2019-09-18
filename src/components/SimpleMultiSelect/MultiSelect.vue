@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import Emitter from "../../mixins/emitter";
 import Locale from "../../mixins/locale";
 import { SimpleMultiSelectApi } from "./Api";
 import ClickOutside from "../../directives/clickoutside";
@@ -62,7 +63,7 @@ import _ from "../..//util";
 export default {
   components: { Drop, Icon },
   directives: { ClickOutside, TransferDom },
-  mixins: [Locale, SimpleMultiSelectApi],
+  mixins: [Emitter, Locale, SimpleMultiSelectApi],
   data() {
     return {
       prefixCls: "h-selectTable",
@@ -234,6 +235,12 @@ export default {
       if (this.isDropdownVisible) {
         if (_.isKeyMatch(e, "Esc") || _.isKeyMatch(e, "Enter")) {
           this.isDropdownVisible = false;
+
+          // 处理与 MsgBox 的 Esc 事件冲突，处理地并不够好
+          this.dispatch("Msgbox", "on-esc-real-close", false);
+          setTimeout(() => {
+            this.dispatch("Msgbox", "on-esc-real-close", true);
+          }, 0);
         } else if (this.blockVm) {
           if (_.isKeyMatch(e, "Up")) {
             e.preventDefault();
