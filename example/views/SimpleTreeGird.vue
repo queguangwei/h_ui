@@ -14,7 +14,7 @@
     <h-button @click="modify">修改数据</h-button>
     <!-- isCheckbox checkStrictly -->
     <!-- selectRoot -->
-    <h-simple-tree-gird :showHeader="false" canDrag canMove @on-expand="load" ref="treeGird" selectRoot :columns="columns1" isCheckbox :data="treedata" :height="400" @on-select-root="selectChange" >
+    <h-simple-tree-gird canDrag canMove @on-expand="load" ref="treeGird" selectRoot :columns="columns1" isCheckbox :data="treedata" :height="400" @on-select-root="selectChange" >
       <span slot="loading">1244</span>
     </h-simple-tree-gird>
   </div>
