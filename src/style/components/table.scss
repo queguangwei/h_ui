@@ -317,6 +317,12 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
       padding-left:$table-fixed-cell-padding-left;
       padding-right: $table-fixed-cell-padding-left;
     }
+    .#{$table-prefix-cls}-hidden {
+      .#{$table-prefix-cls}-cell{
+        padding-left:$table-cell-padding-left;
+        padding-right: $table-cell-padding-left;
+      }
+    }
   }
   &-fixed-right-patch{
     position: absolute;
