@@ -309,13 +309,13 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
     left: $table-fixed-left;
     border-bottom:none;
   }
-  &-fixed-right{
+  &-fixed-right {
     top: $table-fixed-fixedright-top;
     left: auto;
     right: $table-fixed-fixedright-right;
-    .#{$table-prefix-cls}-cell{
-      padding-left:$table-fixed-cell-padding-left;
-      padding-right: $table-fixed-cell-padding-left;
+    .#{$table-prefix-cls}-cell {
+      padding-left: $table-fixed-cell-padding-left;
+      padding-right: $table-fixed-cell-padding-right;
     }
   }
   &-fixed-right-patch{
