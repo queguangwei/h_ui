@@ -10,7 +10,7 @@
                            remote filterable :loading="isLoading" :remote-method="remoteMethod1"
                            widthAdaption :maxDropWidth="330" transfer autoPlacement
                            :animated="false" @on-keydown="handlekeydown">
-            <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
+            <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
           </h-single-select>
         </h-form-item>
         <h-form-item label="input" prop="name" required>
