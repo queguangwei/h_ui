@@ -472,7 +472,9 @@ export default{
     },
     hideMenu() {
       this.visible = false
-      // this.focusIndex = 0;
+      if (this.filterable) {
+        this.clearFilter()
+      }
       this.broadcast('Option', 'on-select-close')
     },
     handleClose() {
@@ -505,10 +507,15 @@ export default{
         // this.query = this.filterable?this.selectedSingle:'';
         this.model = val.length!=0?val[0][strModel]:''
         this.hideMenu()
-        this.findQuery(this.baseDate,'')
-        this.filterData = this.$refs.tree.getFilterNodes()
-        this.setFocus(this.focusIndex = -1)
       }
+    },
+    /**
+     * 清除过滤高亮
+     */
+    clearFilter() {
+      this.findQuery(this.baseDate,'')
+      this.filterData = []
+      this.setFocus(this.focusIndex = -1)
     },
     checkChange(val){
       let strModel = this.formatValue
@@ -556,7 +563,7 @@ export default{
         }
         if (this.filterable&& !this.showBottom) {
           this.query = ''
-          this.findQuery(this.baseDate,'')
+          this.clearFilter()
         }
         if (this.remote) {
           this.lastquery = ''
@@ -584,6 +591,17 @@ export default{
       this.$emit('on-focus')
     },
     handleBlur() {
+      // 单选，回填input值
+      if (this.query !== this.model && !this.showCheckbox && !this.showBottom) {
+        if (this.query === '') {
+          this.model = ''
+          if (this.remote) {
+            this.lastquery = ''
+          }
+        } else {
+          this.query = this.model
+        }
+      }
       this.$emit('on-blur')
     },
     handleInputDown() {
@@ -817,7 +835,7 @@ export default{
         }, 0)
       } else {
         if (this.filterable) {
-          if (this.showBottom) {
+          if (this.showBottom || this.showCheckbox) {
             this.query = ''
           }
           if (this.remote) {
