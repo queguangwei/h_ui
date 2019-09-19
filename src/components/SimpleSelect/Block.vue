@@ -203,9 +203,7 @@ export default {
         if(hidden){
           hidden=!new RegExp(parsedQuery, 'i').test(col.value)
         }
-
         this.$set(col, 'hidden', hidden)
-
         if (status && !hidden) {
           status = false
         }
@@ -413,7 +411,7 @@ export default {
         this.$parent.$parent.updateOptions(true)
         if(this.lastScollTop > val.length*this.itemHeight){
           this.lastScollTop = val.length*this.itemHeight-210
-          }
+        }
         this.updateVisibleData()
 
         // })
