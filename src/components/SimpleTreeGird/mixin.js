@@ -30,7 +30,10 @@ export default {
                 width = this.columnsWidth[column._index].width;
             }
             if (this.columns.length === index + 1 && this.$parent.bodyHeight !== 0&& width!='') {
-                if(this.$parent.tableWidth+1>=this.$parent.initWidth-this.$parent.scrollBarWidth&&!top&&this.$parent.bodyRealHeight>this.$parent.height){
+                if(this.$parent.tableWidth + 1 >= this.$parent.initWidth - this.$parent.scrollBarWidth
+                  && !top && this.$parent.bodyRealHeight > this.$parent.height
+                  && this.fixed !== 'left'
+                  && this.fixed !== 'right'){
                     width = width-this.$parent.scrollBarWidth;
                 }
                 // else if(this.$parent.bodyRealHeight>this.$parent.height){

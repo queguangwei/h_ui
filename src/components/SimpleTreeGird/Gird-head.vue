@@ -14,7 +14,7 @@
           :class="alignCls(column)"
           >
           <div>
-            <Checkbox v-if="headSelection&&!index" @mousedown.native.stop="handleClick" @on-change="selectAll" :value="isSelectAll" class="asyc-check"></Checkbox>
+            <Checkbox v-if="headSelection&&!index&&fixed !== 'right'" @mousedown.native.stop="handleClick" @on-change="selectAll" :value="isSelectAll" class="asyc-check"></Checkbox>
             <template>
               <span v-if="!column.renderHeader" @click="handleSortByHead(index)">{{ column.title || '#' }}</span>
               <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
@@ -27,14 +27,14 @@
 </template>
 <script>
 import Icon from '../Icon/Icon.vue'
-import CheckboxGroup from '../Checkbox/CheckboxGroup.vue';
-import Checkbox from '../Checkbox/Checkbox.vue';
-import hButton from '../Button/Button.vue';
-import renderHeader from './header';
-import { on, off } from '../../util/dom';
-import {getScrollBarSize,hasClass,addClass,removeClass} from '../../util/tools';
-import Mixin from './mixin';
-import Locale from '../../mixins/locale';
+import CheckboxGroup from '../Checkbox/CheckboxGroup.vue'
+import Checkbox from '../Checkbox/Checkbox.vue'
+import hButton from '../Button/Button.vue'
+import renderHeader from './header'
+import { on, off } from '../../util/dom'
+import {getScrollBarSize,hasClass,addClass,removeClass} from '../../util/tools'
+import Mixin from './mixin'
+import Locale from '../../mixins/locale'
 
 export default {
   name: 'TableHead',
@@ -63,93 +63,93 @@ export default {
     }
   },
   computed: {
-    isSelectAll () {
-      let isSelectAll = true;
-      if (this.dataLength<1) isSelectAll = false;
+    isSelectAll() {
+      let isSelectAll = true
+      if (this.dataLength<1) isSelectAll = false
       let data = this.$parent.checkedObj
       for (let i = 0; i < data.length; i++) {
         if (!data[i].checked) {
-          isSelectAll = false;
+          isSelectAll = false
           break;
         }
       }
-      return isSelectAll;
+      return isSelectAll
     }
   },
   watch: {
     columns: {
       deep:true,
       handler(){
-        this.getLeftWidth();
+        this.getLeftWidth()
       }
     }
   },
   mounted(){
-    this.getLeftWidth();
-    on(window, 'resize', this.getLeftWidth);
+    this.getLeftWidth()
+    on(window, 'resize', this.getLeftWidth)
   },
   beforeDestroy(){
-    off(window, 'resize', this.getLeftWidth);
+    off(window, 'resize', this.getLeftWidth)
   },
   methods: {
-    selectAll (event) {
-      const status = !this.isSelectAll;
+    selectAll(event) {
+      const status = !this.isSelectAll
       this.$parent.isSelectAll = status
       // this.$parent.selectAll(this.isSelectAll);
     },
-    handleSortByHead (index) {
+    handleSortByHead(index) {
     },
-    getLeftWidth (){
+    getLeftWidth(){
       this.$nextTick(()=>{
-        const columns = this.columns;
+        const columns = this.columns
         for (let i = 0; i < columns.length; i++) {
-          let leftWidth = 0;
+          let leftWidth = 0
           for (let j = 0; j<i; j++) {
-            leftWidth = leftWidth + columns[j]._width;
+            leftWidth = leftWidth + columns[j]._width
           }
-          this.cloumnsLeft[i] = leftWidth;
+          this.cloumnsLeft[i] = leftWidth
         }
       })
     },
     mousedown(event,column,index){
-      if (this.$isServer) return;
-      if (!column) return;
-      if (!this.canDrag && !this.canMove) return;
-      let _this = this;
+      if (this.$isServer) return
+      if (!column) return
+      if (!this.canDrag && !this.canMove) return
+      let _this = this
       if (this.draggingColumn) {
-        this.dragging = true;
-        this.$parent.resizeProxyVisible = true;
-        const table = this.$parent;
-        const tableEl = table.$el;
-        const tableLeft = tableEl.getBoundingClientRect().left;
-        const columnEl = this.$el.querySelector(`th.h-ui-${column.key}`);
-        const columnRect = columnEl.getBoundingClientRect();
-        const minLeft = columnRect.left - tableLeft + 30;
-        let lastWidth =this.findObj(event,"TR").lastChild.offsetWidth;
+        this.dragging = true
+        this.$parent.resizeProxyVisible = true
+        const table = this.$parent
+        const tableEl = table.$el
+        const tableLeft = tableEl.getBoundingClientRect().left
+        const columnEl = this.$el.querySelector(`th.h-ui-${column.key}`)
+        const columnRect = columnEl.getBoundingClientRect()
+        const minLeft = columnRect.left - tableLeft + 30
+        let lastWidth =this.findObj(event,'TR').lastChild.offsetWidth
         // if(this.$parent.tableWidth<this.$parent.initWidth-this.$parent.scrollBarWidth){
         //   lastWidth = lastWidth+this.$parent.initWidth-this.$parent.tableWidth-this.$parent.scrollBarWidth;
         // }
-        let tableWidth = this.$parent.initWidth;
-        let headWidth = this.$el.offsetWidth;
-        addClass(columnEl, 'noclick');
+        let tableWidth = this.$parent.initWidth
+        let headWidth = this.$el.offsetWidth
+        addClass(columnEl, 'noclick')
         this.dragState = {
           startMouseLeft: event.clientX,
           startLeft: columnRect.right - tableLeft,
           startColumnLeft: columnRect.left - tableLeft,
           tableLeft
-        };
+        }
 
-        const resizeProxy = table.$refs.resizeProxy;
-        resizeProxy.style.left = this.dragState.startLeft + 'px';
+        const resizeProxy = table.$refs.resizeProxy
+        resizeProxy.style.left = this.dragState.startLeft + 'px'
 
-        document.onselectstart = function() { return false; };
-        document.ondragstart = function() { return false; };
+        document.onselectstart = function() { return false };
+        document.ondragstart = function() { return false };
 
         const handleMouseMove = (event) => {
-          const deltaLeft = event.clientX - this.dragState.startMouseLeft;
-          const proxyLeft = this.dragState.startLeft + deltaLeft;
+          const deltaLeft = event.clientX - this.dragState.startMouseLeft
+          const proxyLeft = this.dragState.startLeft + deltaLeft
 
-          resizeProxy.style.left = Math.max(minLeft, proxyLeft) + 'px';
+          resizeProxy.style.left = Math.max(minLeft, proxyLeft) + 'px'
         };
 
         const handleMouseUp = () => {
@@ -157,19 +157,19 @@ export default {
             const {
               startColumnLeft,
               startLeft
-            } = _this.dragState;
-            const finalLeft = parseInt(resizeProxy.style.left, 10);
-            const columnWidth = finalLeft - startColumnLeft;
-            let dragWidth = finalLeft - startLeft;//>0为输入框增大，<0为减小
+            } = _this.dragState
+            const finalLeft = parseInt(resizeProxy.style.left, 10)
+            const columnWidth = finalLeft - startColumnLeft
+            let dragWidth = finalLeft - startLeft//>0为输入框增大，<0为减小
             if (dragWidth>=0) {
-              lastWidth = (lastWidth-dragWidth)>=80?(lastWidth-dragWidth):80;
+              lastWidth = (lastWidth-dragWidth)>=80?(lastWidth-dragWidth):80
             }else{
               if (headWidth>=tableWidth) {//此时有滚动条
                 if (headWidth+dragWidth<=tableWidth) {
-                  lastWidth =lastWidth+tableWidth-headWidth-dragWidth-1;
+                  lastWidth =lastWidth+tableWidth-headWidth-dragWidth-1
                 }
               }else{
-                lastWidth = lastWidth-dragWidth;
+                lastWidth = lastWidth-dragWidth
               }
             }
             // if (this.$parent.bodyHeight!=0&&!this.$parent.notAdaptive) {
@@ -177,107 +177,107 @@ export default {
             // }
             table.changeWidth(columnWidth, column.key,lastWidth)
 
-            document.body.style.cursor = '';
-            _this.dragging = false;
-             _this.draggingColumn = false;
-            _this.dragState = {};
+            document.body.style.cursor = ''
+            _this.dragging = false
+             _this.draggingColumn = false
+            _this.dragState = {}
 
-            table.resizeProxyVisible = false;
+            table.resizeProxyVisible = false
           }
 
-          document.removeEventListener('mousemove', handleMouseMove);
-          document.removeEventListener('mouseup', handleMouseUp);
-          document.onselectstart = null;
-          document.ondragstart = null;
+          document.removeEventListener('mousemove', handleMouseMove)
+          document.removeEventListener('mouseup', handleMouseUp)
+          document.onselectstart = null
+          document.ondragstart = null
 
           setTimeout(function() {
-            removeClass(columnEl, 'noclick');
-          }, 0);
+            removeClass(columnEl, 'noclick')
+          }, 0)
         };
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', handleMouseUp);
+        document.addEventListener('mousemove', handleMouseMove)
+        document.addEventListener('mouseup', handleMouseUp)
       }
       if (this.movingColumn) {
-        this.moving = true;
-        addClass(document.body, 'useSelect');
-        this.$parent.moveProxyVisible = true;
-        let dom = this.findObj(event,'TH').cloneNode(true);
-        dom.childNodes[0].style.width = column._width + "px";
-        addClass(dom,'move-proxy-th');
-        const table = this.$parent;
-        const tableEl = table.$el;
-        const tableLeft = tableEl.getBoundingClientRect().left;
-        const tableTop = tableEl.getBoundingClientRect().top;
-        const columnEl = this.$el.querySelector(`th.h-ui-${column.key}`);
-        const columnRect = columnEl.getBoundingClientRect();
-        addClass(columnEl, 'noclick');
+        this.moving = true
+        addClass(document.body, 'useSelect')
+        this.$parent.moveProxyVisible = true
+        let dom = this.findObj(event,'TH').cloneNode(true)
+        dom.childNodes[0].style.width = column._width + 'px';
+        addClass(dom,'move-proxy-th')
+        const table = this.$parent
+        const tableEl = table.$el
+        const tableLeft = tableEl.getBoundingClientRect().left
+        const tableTop = tableEl.getBoundingClientRect().top
+        const columnEl = this.$el.querySelector(`th.h-ui-${column.key}`)
+        const columnRect = columnEl.getBoundingClientRect()
+        addClass(columnEl, 'noclick')
         this.moveState = {
           startMouseLeft: event.clientX,
           startLeft: columnRect.left - tableLeft - 1,
           tableLeft
-        };
-        const moveProxy = table.$refs.moveProxy;
-        const resizeProxy = table.$refs.resizeProxy;
-        moveProxy.style.left = this.moveState.startLeft + 'px';
-        moveProxy.style.top = event.clientY - tableTop - 20 + 'px';
-        moveProxy.appendChild(dom);
-        let resizeIndex = Number(index);
-        let resizeLeft;
+        }
+        const moveProxy = table.$refs.moveProxy
+        const resizeProxy = table.$refs.resizeProxy
+        moveProxy.style.left = this.moveState.startLeft + 'px'
+        moveProxy.style.top = event.clientY - tableTop - 20 + 'px'
+        moveProxy.appendChild(dom)
+        let resizeIndex = Number(index)
+        let resizeLeft
         const handleMouseMove = (event) => {
-          table.resizeProxyVisible = true;
-          const deltaLeft = event.clientX - _this.moveState.startMouseLeft;
-          const moveLeft = _this.moveState.startLeft + deltaLeft;
+          table.resizeProxyVisible = true
+          const deltaLeft = event.clientX - _this.moveState.startMouseLeft
+          const moveLeft = _this.moveState.startLeft + deltaLeft
           if (deltaLeft > 0) {
-            let changeRight = _this.cloumnsLeft[index]+deltaLeft;
-            changeRight = changeRight+column._width;
+            let changeRight = _this.cloumnsLeft[index]+deltaLeft
+            changeRight = changeRight+column._width
             for (let i in _this.cloumnsLeft) {
-              if (changeRight >_this.cloumnsLeft[i]+30) resizeIndex = Number(i);
+              if (changeRight >_this.cloumnsLeft[i]+30) resizeIndex = Number(i)
             }
-            resizeLeft = _this.$el.querySelectorAll(`th`)[resizeIndex].getBoundingClientRect().right - tableLeft -1;
+            resizeLeft = _this.$el.querySelectorAll('th')[resizeIndex].getBoundingClientRect().right - tableLeft -1
           }
           if (deltaLeft < 0){
-            let changeLeft = _this.cloumnsLeft[index]+deltaLeft;
+            let changeLeft = _this.cloumnsLeft[index]+deltaLeft
             for (let i in _this.cloumnsLeft) {
-              if (changeLeft >_this.cloumnsLeft[i]-50) resizeIndex = Number(i);
+              if (changeLeft >_this.cloumnsLeft[i]-50) resizeIndex = Number(i)
             }
-            resizeLeft = _this.$el.querySelectorAll(`th`)[resizeIndex].getBoundingClientRect().left - tableLeft -1;
+            resizeLeft = _this.$el.querySelectorAll('th')[resizeIndex].getBoundingClientRect().left - tableLeft -1
           }
-          moveProxy.style.left = moveLeft + 'px';
-          moveProxy.style.top = event.clientY-tableTop-20 + 'px';
-          resizeProxy.style.left = resizeLeft + 'px';
+          moveProxy.style.left = moveLeft + 'px'
+          moveProxy.style.top = event.clientY-tableTop-20 + 'px'
+          resizeProxy.style.left = resizeLeft + 'px'
         };
 
         const handleMouseUp = () => {
           if (_this.moving) {
-            _this.sortCloumn(index,resizeIndex,column._index);
-            document.body.style.cursor = '';
-            removeClass(document.body, 'useSelect');
-            _this.moving = false;
-            _this.movingColumn = null;
-            _this.moveState = {};
-            moveProxy.removeChild(dom);
-            table.resizeProxyVisible = false;
-            table.moveProxyVisible = false;
+            _this.sortCloumn(index,resizeIndex,column._index)
+            document.body.style.cursor = ''
+            removeClass(document.body, 'useSelect')
+            _this.moving = false
+            _this.movingColumn = null
+            _this.moveState = {}
+            moveProxy.removeChild(dom)
+            table.resizeProxyVisible = false
+            table.moveProxyVisible = false
           }
 
-          document.removeEventListener('mousemove', handleMouseMove);
-          document.removeEventListener('mouseup', handleMouseUp);
+          document.removeEventListener('mousemove', handleMouseMove)
+          document.removeEventListener('mouseup', handleMouseUp)
 
           setTimeout(function() {
-            removeClass(columnEl, 'noclick');
-          }, 0);
+            removeClass(columnEl, 'noclick')
+          }, 0)
         };
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', handleMouseUp);
+        document.addEventListener('mousemove', handleMouseMove)
+        document.addEventListener('mouseup', handleMouseUp)
       }
     },
     mousemove(event,column,index){
-      if (!column ) return;
-      if (column.children && column.children.length > 0) return;
-      let target = this.findObj(event,"TH");
+      if (!column ) return
+      if (column.children && column.children.length > 0) return
+      let target = this.findObj(event,'TH')
       if(this.canDrag){
         // moveDrag需传入event win7下FF60版本不可拖拽
-        this.moveDrag(event, target,column);
+        this.moveDrag(event, target,column)
       }
       if(this.canMove) {
         this.moveMove(event, target,column)
@@ -285,52 +285,52 @@ export default {
     },
     moveDrag(event, target,column){
       if (!this.dragging) {
-        let rect = target.getBoundingClientRect();
-        const bodyStyle = document.body.style;
+        let rect = target.getBoundingClientRect()
+        const bodyStyle = document.body.style
         if (rect.width > 12 && rect.right - event.pageX < 8) {
-          bodyStyle.cursor = 'col-resize';
-          this.draggingColumn = true;
+          bodyStyle.cursor = 'col-resize'
+          this.draggingColumn = true
         } else if (!this.dragging) {
-          bodyStyle.cursor = '';
-          this.draggingColumn = false;
+          bodyStyle.cursor = ''
+          this.draggingColumn = false
         }
       }
     },
     moveMove(event, target,column){
       if (!this.moving && !this.dragging) {
-        let rect = target.getBoundingClientRect();
-        const bodyStyle = document.body.style;
+        let rect = target.getBoundingClientRect()
+        const bodyStyle = document.body.style
         if (rect.right - event.pageX > 8 && rect.right - event.pageX < rect.width && !column.fixed) {
-          bodyStyle.cursor = 'pointer';
-          this.movingColumn = column;
+          bodyStyle.cursor = 'pointer'
+          this.movingColumn = column
         } else if (!this.moving) {
-          if(!this.canDrag) bodyStyle.cursor = '';
-          this.movingColumn = null;
+          if(!this.canDrag) bodyStyle.cursor = ''
+          this.movingColumn = null
         }
       }
     },
     findObj(e,name){
-      var obj=e.target;
+      var obj=e.target
       while(obj&&obj.tagName!=name){
         obj=obj.parentElement
       }
-      return obj;
+      return obj
     },
     mouseout() {
-      if (this.$isServer) return;
-      document.body.style.cursor = '';
+      if (this.$isServer) return
+      document.body.style.cursor = ''
     },
-    sortCloumn (curIndex, insertIndex, _index){
+    sortCloumn(curIndex, insertIndex, _index){
       if (this.columns[insertIndex].fixed) return
-      const columns = this.columns;
-      const item = columns[curIndex];;
-      columns.splice(curIndex,1);
-      columns.splice(insertIndex,0,item);
-      this.$emit('on-move', _index, insertIndex);
+      const columns = this.columns
+      const item = columns[curIndex];
+      columns.splice(curIndex,1)
+      columns.splice(insertIndex,0,item)
+      this.$emit('on-move', _index, insertIndex)
     },
-    handleClick (event) {
-      event.stopPropagation();
+    handleClick(event) {
+      event.stopPropagation()
     },
   }
-};
+}
 </script>

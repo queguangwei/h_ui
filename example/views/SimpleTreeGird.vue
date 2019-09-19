@@ -11,20 +11,21 @@
     <h-button @on-click="checkedData(false)">多选不选择某行</h-button>
     <h-button @on-click="selectAll(true)">全选</h-button>
     <h-button @on-click="selectAll(false)">非全选</h-button>
+    <h-button @click="modify">修改数据</h-button>
     <!-- isCheckbox checkStrictly -->
     <!-- selectRoot -->
-    <h-simple-tree-gird ref="treeGird" selectRoot :columns="columns1" isCheckbox :data="treedata" :height="400" @on-select-root="selectChange" >
+    <h-simple-tree-gird canDrag canMove @on-expand="load" ref="treeGird" selectRoot :columns="columns1" isCheckbox :data="treedata" :height="400" @on-select-root="selectChange" >
       <span slot="loading">1244</span>
     </h-simple-tree-gird>
   </div>
 </template>
 <script>
-let tData =require('../assets/simpleTreeGird.json');
-let bigData = [];
+let tData =require('../assets/simpleTreeGird.json')
+let bigData = []
 for(var i=0;i<5;i++){
   let obj =  {
     id: i,
-    expand: "false",
+    expand: 'false',
     name: '王小明'+i,
     age: 18,
     address: '北京市朝阳区芍药居',
@@ -49,64 +50,12 @@ for(var i=50;i<100;i++){
     city: '北京',
     dating:'2018',
     timing:'16',
-    _parentId:parseInt(Math.random()*5,10)
+    _parentId:parseInt(Math.random()*5,10),
+    leaf: 'false',
+    expand: 'false'
   }
   bigData.push(obj)
 }
-// for(var i=100;i<200;i++){
-//   let obj =  {
-//     id: i,
-//     name: '王小明'+i,
-//     age: 18,
-//     address: '北京市朝阳区芍药居',
-//     money: '120.00',
-//     cardId: '6223 ',
-//     city: '北京',
-//     dating:'2018',
-//     timing:'16',
-//     _parentId:Math.ceil(Math.random()*100),
-//   }
-//   bigData.push(obj)
-// }
-let bigData1 = [{
-  id:0,
-  expand:true,
-  name: '王小明',
-  age: 18,
-  address: '北京市朝阳区芍药居',
-  money: '120.00',
-  cardId: '6223 ',
-  city: '北京',
-  dating:'2018',
-  timing:'16',
-  tree: '345',
-  children:[{
-    id:1,
-    parentId:0,
-    name: '王小明',
-    age: 18,
-    address: '北京市朝阳区芍药居',
-    money: '120.00',
-    cardId: '6223 ',
-    city: '北京',
-    dating:'2018',
-    timing:'16',
-    tree: '345',
-    children:[{
-      id:2,
-      parentId:1,
-      name: '王小明',
-      age: 18,
-      address: '北京市朝阳区芍药居',
-      money: '120.00',
-      cardId: ' 6223 ',
-      city: '北京',
-      dating:'2018',
-      timing:'16',
-      tree: '345',
-    }]
-  }]
-}]
 
 export default {
   data() {
@@ -117,16 +66,19 @@ export default {
         {
           title:'index',
           key: 'index',
+          type: 'index'
         },
         {
           title: 'name',
           key: 'name',
           width: 200,
+          fixed: 'left'
         },
         {
           title: 'age',
           width: 100,
           key: 'age',
+          fixed: 'left'
         },
         {
           title: 'address',
@@ -138,12 +90,14 @@ export default {
           title: 'money',
           width: 200,
           key: 'money',
+          fixed: 'right'
         },
         {
           title: 'cardId',
           width: 100,
           key: 'cardId',
           hiddenCol: false,
+          fixed: 'right'
         },
         {
           title: 'city',
@@ -160,28 +114,56 @@ export default {
     }
   },
   methods: {
+    load(item, status) {
+      if (item.leaf + '' === 'false' && status) {
+        this.$set(item, 'loading', true)
+        setTimeout(() => {
+          item.children = [{
+            id: item.id * 100 + Math.random() + '',
+            name: '王小明xx',
+            age: 18,
+            address: '北京市朝阳区芍药居',
+            money: '666.00',
+            cardId: '6223 ',
+            city: '北京',
+            dating:'2018',
+            timing:'16',
+            _parentId: item.id
+          }]
+          this.$set(item, 'loading', false)
+          item.leaf = 'true'
+        },3000)
+      }
+    },
+    modify() {
+      let c = JSON.parse(JSON.stringify(this.treedata))
+      c[0].expand = false
+      c[0].checked = true
+      c[0].name = 'sss'
+      this.treedata = c
+    },
     move(i,j){
       console.log(i,j)
     },
     convertTreeData(rows, attributes) {
-      var keyNodes = {}, parentKeyNodes = {};
-        for (var i = 0; i < rows.length; i++) {
-          var row = rows[i];
-          row.id = row[attributes.keyField];
-          row.parentId = row[attributes.parentKeyField];
-          // row.expanded = row[attributes.expanded]?true:false
-          // row.checked = row[attributes.checked]?true:false
-          // row.indeterminate = row[attributes.indeterminate]?true:false
-          row.children = [];
-          keyNodes[row.id] = row;
-          if (parentKeyNodes[row.parentId]) { parentKeyNodes[row.parentId].push(row); }
-          else { parentKeyNodes[row.parentId] = [row]; }
-          var children = parentKeyNodes[row.id];
-          if (children) { row.children = children; }
-          var pNode = keyNodes[row.parentId];
-          if (pNode) { pNode.children.push(row); }
-        }
-      return parentKeyNodes[attributes.rootParentId];
+      var keyNodes = {}, parentKeyNodes = {}
+      for (var i = 0; i < rows.length; i++) {
+        var row = rows[i]
+        row.id = row[attributes.keyField]
+        row.parentId = row[attributes.parentKeyField]
+        // row.expanded = row[attributes.expanded]?true:false
+        // row.checked = row[attributes.checked]?true:false
+        // row.indeterminate = row[attributes.indeterminate]?true:false
+        row.children = []
+        keyNodes[row.id] = row
+        if (parentKeyNodes[row.parentId]) { parentKeyNodes[row.parentId].push(row) }
+        else { parentKeyNodes[row.parentId] = [row] }
+        var children = parentKeyNodes[row.id]
+        if (children) { row.children = children }
+        var pNode = keyNodes[row.parentId]
+        if (pNode) { pNode.children.push(row) }
+      }
+      return parentKeyNodes[attributes.rootParentId]
     },
     removeData() {
       this.treedata = []
@@ -189,12 +171,12 @@ export default {
     },
     loadData(){
       let old = new Date().getTime()
-      this.treedata=this.baseData;
+      this.treedata=this.baseData
       // this.treedata=bigData;
       // this.treedata = jsonData.slice(0, 100);
       this.$nextTick(() => {
         let newDate = new Date().getTime() - old
-//        console.log(newDate)
+        //        console.log(newDate)
       })
       // setTimeout(() => {
       //   // this.$refs.treeGird.selectRow(51, true)
@@ -202,7 +184,7 @@ export default {
       // }, 1000)
     },
     selectChange(data) {
-      console.log(data);
+      console.log(data)
     },
     expand(data,status){
       console.log(data)
@@ -215,21 +197,21 @@ export default {
       this.$refs.treeGird.expandRow(1,true)
     },
     clearData(){
-      this.$refs.treeGird.clearSelected();
+      this.$refs.treeGird.clearSelected()
     },
     selectData(status){
-      this.$refs.treeGird.selectRow(0,status);
+      this.$refs.treeGird.selectRow(0,status)
       console.log(this.$refs.treeGird.getSelection())
     },
     checkedData(status){
-      this.$refs.treeGird.checkedRow(0,status);
+      this.$refs.treeGird.checkedRow(0,status)
       console.log(this.$refs.treeGird.getSelection())
     },
     rowClassName(row,id){
       if (id === 1||id===50) {
-        return 'demo-table-info-row';
+        return 'demo-table-info-row'
       }
-      return '';
+      return ''
     },
     selectAll(status){
       this.$refs.treeGird.selectAll(status)
@@ -244,7 +226,7 @@ export default {
       checked: 'indeterminate',
       rootKey: 'root'
     }
-    this.baseData = this.convertTreeData(bigData, attributes);
+    this.baseData = this.convertTreeData(bigData, attributes)
   }
 }
 </script>
