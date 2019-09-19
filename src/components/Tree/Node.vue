@@ -135,6 +135,7 @@ export default {
           [`${prefixCls}-title-selected`]:
             this.data.selected || (this.selectToCheck && this.data.checked),
           [`${prefixCls}-title-filterable`]: this.data.filterable,
+          [`${prefixCls}-title-focus`]: this.data.focus,
           [`${prefixCls}-title-parent`]: this.showArrow
         }
       ]

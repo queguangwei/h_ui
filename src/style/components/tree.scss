@@ -44,6 +44,10 @@ $tree-prefix-cls: "#{$css-prefix}tree";
     &-filterable{
       color: darken($error-color, 10%);
     }
+    &-focus {
+      background-color: $tree-title-focus-bgcolor;
+      color: $tree-title-focus-color;
+    }
     // &-parent {
     //   margin-top: 4px;
     // }
