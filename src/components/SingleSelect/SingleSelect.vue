@@ -1,7 +1,6 @@
 <template>
   <div :class="classes"
        v-clickoutside="{trigger: 'mousedown', handler: handleClose}"
-       :style="multiplestyle"
        ref="select">
     <div :class="selectionCls"
          ref="reference"
@@ -13,7 +12,7 @@
       <span :class="[prefixCls + '-placeholder']"
             v-show="showPlaceholder && (!filterable&&!newSearchModel||showBottom)">{{ localePlaceholder }}</span>
       <span :class="[prefixCls + '-selected-value']"
-            v-show="!showPlaceholder && !multiple && !(filterable && !showBottom)">{{ selectedSingle }}</span>
+            v-show="!showPlaceholder && !(filterable && !showBottom)">{{ selectedSingle }}</span>
       <!-- 下拉输入框(远程搜索时渲染) -->
       <input type="text"
              v-if="filterable && !showBottom &&!newSearchModel"
@@ -43,7 +42,6 @@
       <transition :name="transitionName">
         <Drop :class="dropdownCls"
               :dropWidth="dropWidth"
-              :multiple="multiple"
               v-show="dropVisible"
               :placement="fPlacement"
               :data-transfer="transfer"
@@ -97,7 +95,6 @@
     <div v-else>
       <Drop :class="dropdownCls"
             :dropWidth="dropWidth"
-            :multiple="multiple"
             v-show="dropVisible"
             :placement="fPlacement"
             :data-transfer="transfer"
@@ -197,10 +194,6 @@ export default {
     label: {
       type: [String, Number, Array],
       default: ''
-    },
-    multiple: {
-      type: Boolean,
-      default: false
     },
     clearable: {
       type: Boolean,
@@ -427,7 +420,6 @@ export default {
           [`${prefixCls}-disabled`]: this.disabled,
           [`${prefixCls}-readonly`]: this.readonly,
           [`${prefixCls}-editable`]: !this.editable,
-          [`${prefixCls}-multiple`]: this.multiple,
           [`${prefixCls}-show-clear`]: this.showCloseIcon,
           [`${prefixCls}-${this.size}`]: !!this.size
         }
@@ -463,12 +455,10 @@ export default {
       } else if (this.model === null) {
         status = true
       }
-
       return status
     },
     showCloseIcon() {
       return (
-        !this.multiple &&
         this.clearable &&
         !this.showPlaceholder &&
         !this.readonly &&
@@ -514,11 +504,6 @@ export default {
       if (!this.loading && this.remote && this.query === '' && !options.length)
         status = false
       return this.visible && status
-    },
-    multiplestyle() {
-      return {
-        width: `${this.width}px`
-      }
     },
     selectTabindex() {
       return this.disabled
@@ -648,7 +633,7 @@ export default {
           this.updateSingleSelected(true, slot)
         }
         if(this.remote){
-          this.$refs.dropdown.setWidthAdaption();
+          this.$refs.dropdown.setWidthAdaption()
         }
       }
     },
@@ -675,13 +660,26 @@ export default {
             }
           }
         }else if(this.model !== '') {
-          for (let k in this.options) {
-            if (this.model === this.options[k].value) {
-              curSingle = this.options[k].label
-              findModel = true
-              break
+          //O45刷新新增下拉项导致显示中文被清空，O45client测试通过，本地测试却有问题
+          this.findChild(child => {
+            if(this.remote && child.showCol.length > 0) {
+              for (let k in this.options) {
+                if (this.model === this.options[k].value) {
+                  curSingle = this.options[k].label + ' ' + this.options[k][child.showCol[0]]
+                  findModel = true
+                  break
+                }
+              }
+            }else {
+              for (let k in this.options) {
+                if (this.model === this.options[k].value) {
+                  curSingle = this.options[k].label
+                  findModel = true
+                  break
+                }
+              }
             }
-          }
+          })
         }
         if (this.model === '') {
           this.selectedSingle = ''
@@ -696,7 +694,6 @@ export default {
           this.query = ''
         }
       }
-
       this.toggleSingleSelected(this.model, init)
     },
 //    clearSingleSelect() {
@@ -964,7 +961,7 @@ export default {
       }
     },
     broadcastQuery(val) {
-      this.focusIndex = this.focusInit
+//      this.focusIndex = this.focusInit
       if (this.isBlock) {
         this.broadcast('Block', 'on-query-change', val)
       } else {
@@ -974,7 +971,7 @@ export default {
     // 处理 remote 初始值
     updateLabel() {
       if (this.remote) {
-        if (!this.multiple && this.model !== '') {
+        if (this.model !== '') {
           this.selectToChangeQuery = true
           if (this.currentLabel === '') this.currentLabel = this.model
           this.lastQuery = this.currentLabel
@@ -1124,14 +1121,12 @@ export default {
             })
           }
         })
-        //下拉框不弹出，仅使用左右键切换选值，要求带出中文
-        if(!this.visible) {
-          if(this.showFirstLabelOnly) {
-            let ind = curlabel.indexOf(' ')
-            curlabel = curlabel.substring(0, ind)
-          }
-          this.selectedSingle = curlabel
+        //下拉框不弹出，仅使用左右键切换选值，要求带出中文,弹出不带中文
+        if(this.visible || this.showFirstLabelOnly) {
+          let ind = curlabel.indexOf(' ')
+          curlabel = curlabel.substring(0, ind)
         }
+        this.selectedSingle = curlabel
       }else {
         this.findChild(child => {
           if(child.showCol.length > 0) {
@@ -1154,9 +1149,9 @@ export default {
           let ind = curlabel.indexOf(' ')
           curlabel = curlabel.substring(0, ind)
         }else {
-          this.selectedSingle = curlabel
 //          this.query = curlabel
         }
+        this.selectedSingle = curlabel
         //o45 证券代码控件 模糊输入，不匹配下拉项保留输入值
         if(curlabel == '' && this.keepInputValue && this.model) {
           this.query = this.model
@@ -1361,6 +1356,7 @@ export default {
     },
     focusIndex: {
       handler(nv) {
+        console.log(nv)
         if (this.isBlock) {
           this.broadcast('Block', 'on-focus-index-change', nv - 1)
         }
