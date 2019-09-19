@@ -2,10 +2,9 @@
   <div :class="classes"
        v-clickoutside="{trigger: 'mousedown', handler: handleClose}"
        ref="select">
-    <div :class="selectionCls"
+    <div :class="[prefixCls + '-selection']"
          ref="reference"
          :tabindex="selectTabindex"
-         @keyup="keyup"
          @keydown="keydown"
          @click="showdrop">
       <!-- 下拉输入框模拟（非远程搜索时渲染）  -->
@@ -28,10 +27,6 @@
              :tabindex="tabindex"
              :title="selectedSingle"
              ref="input">
-      <!--<Icon name="close"-->
-            <!--:class="[prefixCls + '-arrow']"-->
-            <!--v-if="showCloseIcon"-->
-            <!--@click.native.stop="clearSingleSelect"></Icon>-->
       <Icon name="unfold"
             :class="[prefixCls + '-arrow']"
             v-if="!searchIcon && (!remote || showArrow ||newSearchModel)"
@@ -55,7 +50,7 @@
             <span :class="searchClass"
                   ref='search'
                   v-if="filterable && showBottom">
-            <input type="text"
+              <input type="text"
                    v-model="query"
                    :disabled="disabled"
                    :readonly="!editable||readonly"
@@ -65,29 +60,15 @@
                    @keydown="resetInputState"
                    :tabindex="tabindex"
                    ref="input">
-          </span>
-            <div v-if="!isBlock"
-                 v-show="(!notFound && !remote) || (remote && !loading && !notFound)"
-                 :class="[prefixCls + '-dropdown-list']"
-                 :style="listStyle"
-                 ref='list'
-                 @scroll="handleSelectScroll">
-              <slot></slot>
-              <ul v-show="isComputed"
-                  :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>
-            </div>
-            <div v-if="isBlock"
-                 id="blockWrapper"
+            </span>
+            <div id="blockWrapper"
                  v-show="(!notFound && !remote) || (remote && !notFound)"
                  :class="[prefixCls + '-dropdown-list']"
                  :style="listStyle"
                  ref='blockWrapper'>
               <slot></slot>
             </div>
-            <div v-show="loading && isBlock"
-                 :class="[prefixCls+'-block-loading']">{{localeLoadingText}}</div>
-            <ul v-show="loading && !isBlock"
-                :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
+            <div v-show="loading" :class="[prefixCls+'-block-loading']">{{localeLoadingText}}</div>
           </div>
         </Drop>
       </transition>
@@ -119,28 +100,14 @@
                    :tabindex="tabindex"
                    ref="input">
           </span>
-          <div v-if="!isBlock"
-               v-show="(!notFound && !remote) || (remote && !loading && !notFound)"
-               :class="[prefixCls + '-dropdown-list']"
-               :style="listStyle"
-               ref='list'
-               @scroll="handleSelectScroll">
-            <slot></slot>
-            <ul v-show="isComputed"
-                :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>
-          </div>
-          <div v-if="isBlock"
-               id="blockWrapper"
+          <div id="blockWrapper"
                v-show="(!notFound && !remote) || (remote && !notFound)"
                :class="[prefixCls + '-dropdown-list']"
                :style="listStyle"
                ref='blockWrapper'>
             <slot></slot>
           </div>
-          <div v-show="loading && isBlock"
-               :class="[prefixCls+'-block-loading']">{{localeLoadingText}}</div>
-          <ul v-show="loading && !isBlock"
-              :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
+          <div v-show="loading" :class="[prefixCls+'-block-loading']">{{localeLoadingText}}</div>
         </div>
       </Drop>
     </div>
@@ -165,10 +132,6 @@ export default {
     animated: {
       type: Boolean,
       default: true
-    },
-    block:{
-      type: Boolean,
-      default: true,
     },
     isSingleSelect:{
       type:Boolean,
@@ -265,14 +228,6 @@ export default {
     transfer: {
       type: Boolean,
       default: false
-    },
-    autoComplete: {
-      type: Boolean,
-      default: false
-    },
-    noMoreText: {
-      //下拉加载完成数据提示
-      type: String
     },
     isComputed: {
       //是否显示加载完成数据提示
@@ -393,7 +348,7 @@ export default {
       scrollBarWidth: getScrollBarSize(),
       tabIndex: 0,
       fPlacement: this.placement,
-      isBlock: false,
+      isBlock: true,
       isQuerySelect: false,
     }
   },
@@ -420,26 +375,19 @@ export default {
           [`${prefixCls}-disabled`]: this.disabled,
           [`${prefixCls}-readonly`]: this.readonly,
           [`${prefixCls}-editable`]: !this.editable,
-          [`${prefixCls}-show-clear`]: this.showCloseIcon,
           [`${prefixCls}-${this.size}`]: !!this.size
         }
       ]
     },
     dropdownCls() {
       return {
-        ['h-select-dropdown-transfer']: this.transfer,
-        ['h-auto-complete']: this.autoComplete
+        ['h-select-dropdown-transfer']: this.transfer
       }
     },
     content() {
       return {
         [`${prefixCls}-dropdown-content`]: this.showBorder,
         [`${prefixCls}-dropdown-noline-content`]: !this.showBorder
-      }
-    },
-    selectionCls() {
-      return {
-        [`${prefixCls}-selection`]: !this.autoComplete
       }
     },
     showPlaceholder() {
@@ -456,15 +404,6 @@ export default {
         status = true
       }
       return status
-    },
-    showCloseIcon() {
-      return (
-        this.clearable &&
-        !this.showPlaceholder &&
-        !this.readonly &&
-        !this.disabled &&
-        !this.isSingleSelect
-      )
     },
     localePlaceholder() {
       if (this.placeholder === undefined) {
@@ -487,13 +426,6 @@ export default {
         return this.loadingText
       }
     },
-    localeNoMoreText() {
-      if (this.noMoreText === undefined) {
-        return this.t('i.select.noMoreData')
-      } else {
-        return this.noMoreText
-      }
-    },
     transitionName() {
       const bottomPlaced = this.fPlacement.match(/^bottom/)
       return bottomPlaced ? 'slide-up' : 'slide-down'
@@ -506,8 +438,7 @@ export default {
       return this.visible && status
     },
     selectTabindex() {
-      return this.disabled
-        ? -1
+      return this.disabled ? -1
         : this.tabindex + '' !== '-1'
           ? this.filterable
             ? -1
@@ -525,16 +456,8 @@ export default {
     handleclick(e) {
       e.stopPropagation()
     },
-    keyup(event) {
-      if (this.disabled || this.readonly || !this.editable) {
-        return false
-      }
-      if (event.keyCode == 9 && !this.isSingleSelect) {
-        this.toggleMenu()
-      }
-    },
     keydown(event) {
-      if (event.keyCode == 9) {
+      if (event.keyCode === 9) {
         this.hideMenu()
       }
     },
@@ -559,7 +482,6 @@ export default {
         return false
       }
       this.visible = !this.visible
-      // this.isInputFocus = false
       if (this.newSearchModel) {
         this.isInputFocus = true
       }
@@ -572,7 +494,20 @@ export default {
     },
     hideMenu() {
       this.visible = false
-      this.broadcast('TabelOption', 'on-select-close')
+//      this.broadcast('TabelOption', 'on-select-close')
+    },
+    clearSingleSelect() {
+      if (this.readonly || this.disabled) return
+      let result = this.value
+      this.toggleSingleSelected('')
+      this.model = ''
+      if (this.filterable) {
+        this.query = ''
+        this.selectedSingle = ''
+      }
+      this.hideMenu()
+      this.isInputFocus = true
+      this.$emit('on-clear-select', result)
     },
     findChild(cb) {
       const find = function(child) {
@@ -596,40 +531,24 @@ export default {
       }
     },
     updateOptions(init, slot = false) {
-      let _this = this
       let options = []
       this.findChild(child => {
-        let data = []
-        if (_this.isBlock) {
-          data = child.cloneData
-          data.forEach((col, i) => {
-            options.push({
-              value: col.value,
-              label: col.label || col.value,
-              label1: col[child.showCol[0]],
-              disabled: col.disabled || false,
-              index: i
-            })
+        let data = child.cloneData
+        data.forEach((col, i) => {
+          options.push({
+            value: col.value,
+            label: col.label || col.value,
+            label1: col[child.showCol[0]],
+            disabled: col.disabled || false,
+            index: i
           })
-        } else {
-          data = child.rebuildData
-          data.forEach((col, i) => {
-            options.push({
-              value: _this.getFormatValue(col),
-              label: _this.getFormatValue(col),
-              index: i
-            })
-          })
-          if (init) {
-            this.optionInstances.push(child)
-          }
-        }
+        })
       })
       this.options = options
       this.availableOptions = options
       this.broadcast('Drop', 'on-update-popper')
       if (init) {
-        if (!this.remote || this.isBlock) {
+        if (!this.remote) {
           this.updateSingleSelected(true, slot)
         }
         if(this.remote){
@@ -696,28 +615,6 @@ export default {
       }
       this.toggleSingleSelected(this.model, init)
     },
-//    clearSingleSelect() {
-//      if (this.readonly || this.disabled) return
-//      let result = this.value
-//      if (this.showCloseIcon) {
-//        if (this.isBlock) {
-//          this.toggleSingleSelected('')
-//        } else {
-//          this.findChild(child => {
-//            child.$refs.table.clearAllRow()
-//          })
-//        }
-//        this.model = ''
-//
-//        if (this.filterable) {
-//          this.query = ''
-//          this.selectedSingle = ''
-//        }
-//        this.hideMenu()
-//        this.isInputFocus = true
-//        this.$emit('on-clear-select', result)
-//      }
-//    },
     removeTag(index) {
       if (this.disabled || !this.editable || this.readonly) {
         return false
@@ -744,32 +641,17 @@ export default {
           label = option.label
         }
       }
-      if (this.isBlock) {
-        this.findChild(child => {
-          this.options.forEach((col, i) => {
-            if (value == col.value) {
-              this.$set(child.cloneData[i], 'selected', true)
-              this.$set(child.cloneData[i], 'focus', true)
-            } else {
-              this.$set(child.cloneData[i], 'selected', false)
-              this.$set(child.cloneData[i], 'focus', false)
-            }
-          })
+      this.findChild(child => {
+        this.options.forEach((col, i) => {
+          if (value == col.value) {
+            this.$set(child.cloneData[i], 'selected', true)
+            this.$set(child.cloneData[i], 'focus', true)
+          } else {
+            this.$set(child.cloneData[i], 'selected', false)
+            this.$set(child.cloneData[i], 'focus', false)
+          }
         })
-      } else {
-        this.findChild(child => {
-          this.options.forEach(col => {
-            let index = value.indexOf(col.value)
-            if (index >= 0) {
-              child.$refs.table.clearSelect(col.index, true)
-              child.$refs.table.clearSingle(col.index, true)
-            } else {
-              child.$refs.table.clearSelect(col.index, false)
-              child.$refs.table.clearSingle(col.index, false)
-            }
-          })
-        })
-      }
+      })
       // o45开启keepInputValue默认初始值
       if (init) {
         if(this.keepInputValue) {
@@ -837,64 +719,34 @@ export default {
           this.focus()
         }
       }
-      if (this.isSingleSelect) {
-        // right
-        if (keyCode === 39) {
-          e.preventDefault()
-          this.navigateOptions('next')
-        }
-        // left
-        if (keyCode === 37) {
-          e.preventDefault()
-          this.navigateOptions('prev')
-        }
-        return false
+      // right
+      if (keyCode === 39) {
+        e.preventDefault()
+        this.navigateOptions('next')
       }
-      //实际不会进入判断
-      if (this.visible || this.isInputFocus) {
-        this.handleBack(e)
+      // left
+      if (keyCode === 37) {
+        e.preventDefault()
+        this.navigateOptions('prev')
       }
     },
     navigateOptions(direction) {
-      if (this.isBlock) {
-        if (direction === 'next') {
-          const next = this.focusIndex + 1
-          this.focusIndex = this.focusIndex >= this.availableOptions.length ? 1 : next
-        } else if (direction === 'prev') {
-          const prev = this.focusIndex - 1
-          this.focusIndex = this.focusIndex <= 1 ? this.availableOptions.length : prev
-        }
-        this.focusValue = this.availableOptions[this.focusIndex - 1].value
-        // 处理滚动条
-        this.findChild(child => {
-          // let curTop = child.$el.scrollTop
-          let itemHeight = child.itemHeight
-          let top = itemHeight * (this.focusIndex - 1)
-          child.$el.scrollTop = top
-        })
-        this.selectBlockSingle(this.focusValue)
-        return
-      }
-
-      let curTop = this.$refs.list.scrollTop
-      if (this.focusIndex - 1 >= 0) {
-        this.findChild(child => {
-          child.$refs.table.changeHover(this.focusIndex - 1, false)
-        })
-      }
       if (direction === 'next') {
         const next = this.focusIndex + 1
-        this.focusIndex = this.focusIndex === this.options.length ? 1 : next
+        this.focusIndex = this.focusIndex >= this.availableOptions.length ? 1 : next
       } else if (direction === 'prev') {
         const prev = this.focusIndex - 1
-        this.focusIndex = this.focusIndex <= 1 ? this.options.length : prev
+        this.focusIndex = this.focusIndex <= 1 ? this.availableOptions.length : prev
       }
-      let top = this.$refs.list.children[0].querySelectorAll('.h-table-row')[this.focusIndex - 1].offsetTop
+      this.focusValue = this.availableOptions[this.focusIndex - 1].value
+      // 处理滚动条
       this.findChild(child => {
-        child.$refs.table.changeHover(this.focusIndex - 1, true)
+        // let curTop = child.$el.scrollTop
+        let itemHeight = child.itemHeight
+        let top = itemHeight * (this.focusIndex - 1)
+        child.$el.scrollTop = top
       })
-      // this.$refs.list.scrollTop = top;
-      scrollAnimate(this.$refs.list, curTop, top)
+      this.selectBlockSingle(this.focusValue)
     },
     resetScrollTop() {
       const index = this.focusIndex - 1
@@ -962,11 +814,7 @@ export default {
     },
     broadcastQuery(val) {
 //      this.focusIndex = this.focusInit
-      if (this.isBlock) {
-        this.broadcast('Block', 'on-query-change', val)
-      } else {
-        this.broadcast('TabelOption', 'on-query-change', val)
-      }
+      this.broadcast('Block', 'on-query-change', val)
     },
     // 处理 remote 初始值
     updateLabel() {
@@ -977,13 +825,6 @@ export default {
           this.lastQuery = this.currentLabel
           this.query = this.currentLabel
         }
-      }
-    },
-    handleBack(e) {
-      if (!this.isBackClear || this.readonly || this.disable) return
-      if (e.keyCode === 8 && this.value !== null && this.value!== '') {
-        this.model = ''
-        this.$emit('on-clear-select', this.value)
       }
     },
     getFormatValue(value) {
@@ -997,23 +838,14 @@ export default {
     },
     searchStyle() {
       if (this.filterable && this.showBottom) {
-        if (this.isBlock) {
-          this.$refs.search.style.width = '100%'
-          this.$refs.input.style.width = '100%'
-        } else {
-          let width = this.dropWidth > 0 ? this.dropWidth : parseInt(getStyle(this.$el, 'width'))
-          width = width - getScrollBarSize() + 'px'
-          this.$refs.search.style.width = width
-        }
+        this.$refs.search.style.width = '100%'
+        this.$refs.input.style.width = '100%'
       }
     },
     focus() {
       if (this.disabled || this.readonly) return
       this.$nextTick(() => {
         this.isInputFocus = true
-        if (!this.isSingleSelect) {
-          this.visible = true
-        }
         if (this.filterable) {
           this.$refs.input.focus()
         } else {
@@ -1078,11 +910,12 @@ export default {
 //        this.isInputFocus = false
         this.focus()
       }
+//      console.log('selectBlockSingle:::'+value)
       //不匹配到任何项时选中筛选第一项
       if(value === '' && this.accuFilter && !this.keepInputValue) {
-        this.$nextTick(() => {
-          this.focusIndex = 1
-        })
+//        this.$nextTick(() => {
+//          this.focusIndex = 1
+//        })
       }
     },
     setPlacement() {
@@ -1184,25 +1017,6 @@ export default {
           child.isFocus = false
         })
       } else {
-        if (this.filterable) {
-          let focusIndex = this.focusIndex
-          this.$nextTick(() => {
-            this.findChild(child => {
-              if (!this.isBlock && val && focusIndex > 0) {
-                child.$refs.table.changeHover(focusIndex - 1, false)
-              }
-              if(!this.isSingleSelect) {
-                // SimpleSelect默认光标聚焦第一个选项
-                if (this.isBlock && this.autoFocus) {
-                  this.focusValue = ''
-                  this.focusIndex = 1
-                  return true
-                }
-                this.focusIndex = this.focusInit
-              }
-            })
-          })
-        }
         if (!this.selectToChangeQuery) {
           if (!this.visible && val) {
             this.visible = true
@@ -1217,7 +1031,7 @@ export default {
     }
   },
   mounted() {
-    this.isBlock = this.block ? true : false
+    on(this.$refs.select, 'keydown', this.handleKeydown)
     this.modelToQuery()
     // 处理 remote 初始值
     this.updateLabel()
@@ -1230,24 +1044,25 @@ export default {
       this.slotChange()
       this.updateOptions(true, true)
     })
-    on(this.$refs.select, 'keydown', this.handleKeydown)
     this.$on('on-select-selected', (value, status) => {
-      value = this.isBlock ? value : this.getFormatValue(value)
-      if (this.model === value && !this.isSingleSelect) {
-        this.hideMenu()
-      } else {
-        this.model = value
-        if (this.filterable) {
-          this.findChild(child => {
-            if (child.value === value) {
-              if (this.query !== '') this.selectToChangeQuery = true
-              this.lastQuery = this.query =
-                child.label === undefined ? child.searchLabel : child.label
-            }
-          })
-        }
-        this.hideMenu()
+      this.model = value
+      if (this.filterable) {
+        this.findChild(child => {
+          if (child.value === value) {
+            if (this.query !== '') this.selectToChangeQuery = true
+            this.lastQuery = this.query =
+              child.label === undefined ? child.searchLabel : child.label
+          }
+        })
       }
+      this.hideMenu()
+    })
+    this.$on('on-options-visible-change', arg => {
+      this.availableOptions = arg.data.filter(option => !option.hidden)
+      // 筛选后的options写入index 左右切换使用
+      this.availableOptions.forEach((col, i) => {
+        this.$set(this.availableOptions[i], 'index', i)
+      })
     })
     this.$nextTick(() => {
       this.searchStyle()
@@ -1261,16 +1076,6 @@ export default {
 //        })
 //      }
 //    })
-
-    if (this.isBlock) {
-      this.$on('on-options-visible-change', arg => {
-        this.availableOptions = arg.data.filter(option => !option.hidden)
-        // 筛选后的options写入index 左右切换使用
-        this.availableOptions.forEach((col, i) => {
-          this.$set(this.availableOptions[i], 'index', i)
-        })
-      })
-    }
   },
   beforeDestroy() {
     off(this.$refs.select, 'keydown', this.handleKeydown)
@@ -1356,10 +1161,7 @@ export default {
     },
     focusIndex: {
       handler(nv) {
-        console.log(nv)
-        if (this.isBlock) {
-          this.broadcast('Block', 'on-focus-index-change', nv - 1)
-        }
+        this.broadcast('Block', 'on-focus-index-change', nv - 1)
       }
     },
     isInputFocus(val) {
@@ -1371,7 +1173,7 @@ export default {
       }
     },
 //    options(val, old) {
-//      if (this.remote && this.isBlock) {
+//      if (this.remote) {
 //        this.findChild(child => {
 //          this.focusValue = ''
 //          this.focusIndex = 1
