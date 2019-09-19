@@ -265,8 +265,8 @@ export default {
       let j = this.start
       // 如果存在表头，添加初始偏移量
       let offset = 0
-      if (this.start > 0) offset = -this.offset
-
+      if (this.start > 0)
+        offset = -this.offset
       while (i < this.visibleCount) {
         if (!this.cloneData[j]) {
           i = this.visibleCount
