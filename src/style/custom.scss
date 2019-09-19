@@ -1623,10 +1623,12 @@ $typefield-tip-border-radius:$border-radius-small;
 
 //tree
 $tree-title-font-size:$font-size-small;
-$tree-title-hover-bgcolor:lighten($primary-color, 50%);
-$tree-title-hover-color:$text-color;
+$tree-title-hover-bgcolor: lighten($primary-color, 50%);
+$tree-title-hover-color: $text-color;
 $tree-title-selected-bgcolor:#EAF5FF;
-$tree-title-selected-color:$text-color;
+$tree-title-selected-color: $text-color;
+$tree-title-focus-bgcolor: lighten($primary-color, 35%);
+$tree-title-focus-color: $text-color;
 $tree-ul-margin:0;
 $tree-ul-padding:0;
 $tree-ul-li-margin:8px 0;
@@ -1640,6 +1642,7 @@ $tree-arrow-i-font-size:14px;
 $tree-empty-padding:5px 0;
 $tree-isBoxRight-checkbox-margin-top:2px;
 $tree-title-vertical-align:middle;
+$tree-node-focus-border: 1px dashed $primary-color;
 
 
 //upload

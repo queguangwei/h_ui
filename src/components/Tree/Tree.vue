@@ -258,6 +258,11 @@ export default {
         .filter(obj => obj.node.indeterminate)
         .map(obj => obj.node)
     },
+    getFilterNodes() {
+      return this.flatState
+        .filter(obj => obj.node.filterable + '' === 'true')
+        .map(obj => obj.node)
+    },
     updateTreeDown(node, changes = {}) {
       for (let key in changes) {
         this.$set(node, key, changes[key])

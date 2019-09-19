@@ -547,7 +547,8 @@ $typefield-tip-border-radius:2px;
 //typefield-range 
 
 //tree
-
+$tree-title-focus-bgcolor: lighten($primary-color, 35%);
+$tree-title-focus-color: $text-color;
 
 //upload
 
