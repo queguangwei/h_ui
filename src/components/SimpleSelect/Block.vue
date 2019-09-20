@@ -170,7 +170,7 @@ export default {
       if (this.multiple) {
         this.$parent.$parent.selectBlockMultiple(item.value,item)
       } else {
-        this.$parent.$parent.selectBlockSingle(item.value,false,'click')
+        this.$parent.$parent.selectBlockSingle(item.value, false, 'click', false)
       }
     },
     checkChange(val, item) {
@@ -222,8 +222,10 @@ export default {
       //      }catch (e) {
       //        if(e.message != 'EndIterative') throw e
       //      }
-      if(this.$parent.$parent.isSingleSelect&&!isEffective&&!states){
-        this.$parent.$parent.selectBlockSingle('',true)
+      if(val===''&&this.$parent.$parent.isSingleSelect&&!isEffective&&!states){
+        this.$parent.$parent.selectBlockSingle('', true, '', true)
+      }else if(val !==''&&this.$parent.$parent.isSingleSelect&&!isEffective&&!states) {
+        this.$parent.$parent.selectBlockSingle('', true)
       }
       this.dispatch('SimpleSelect', 'on-options-visible-change', { data: this.cloneData })
       this.dispatch('SingleSelect', 'on-options-visible-change', { data: this.cloneData })

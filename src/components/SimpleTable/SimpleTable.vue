@@ -1443,7 +1443,7 @@ export default {
       const oldData = oldIndex < 0 ? null : JSON.parse(JSON.stringify(this.cloneData[oldIndex]))
       if (curStatus && !this.selectOption) {
         this.objData[_index]._isHighlight = false
-        this.objData[_index]._isChecked = false``
+        this.objData[_index]._isChecked = false
         // this.$emit('on-current-change-cancle',JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
         this.$nextTick(() => {
           this.$emit('on-current-change', null, null)
