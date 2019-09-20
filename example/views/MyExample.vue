@@ -58,9 +58,9 @@
     <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
       <h-form-item label="股票代码" prop="stockCode">
         <h-single-select class="curItemClass" v-model="formCustom.stockCode" placeholder="请选择..."
-                         filterable widthAdaption autoPlacement
+                         filterable widthAdaption autoPlacement remote :remote-method="remoteMethod1"
                          ref="single">
-          <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
+          <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
         </h-single-select>
         {{formCustom.stockCode}}
       </h-form-item>
@@ -247,8 +247,8 @@ export default {
       })
     },
     handleReset (name) {
-      this.$refs.single.clearSingleSelect()
-//      this.$refs[name].resetFields();
+//      this.$refs.single.clearSingleSelect()
+      this.$refs[name].resetFields();
     },
     remoteMethod1(query) {
       if (query !== "") {

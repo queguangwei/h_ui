@@ -185,7 +185,10 @@ export default {
       default: false
     },
     remoteMethod: {
-      type: Function
+      type: Function,
+      default(key, done) {
+        done()
+      }
     },
     loading: {
       type: Boolean,
@@ -291,12 +294,6 @@ export default {
       type: Boolean,
       default: true
     },
-    // 需求 148437 特殊属性
-    // 远程搜索不需要执行 query
-    remoteNoQuery: {
-      type: Boolean,
-      default: false
-    },
     isBackClear: {
       type: Boolean,
       default: false
@@ -333,14 +330,13 @@ export default {
       options: [],
       optionInstances: [],
       selectedSingle: '',
-      // focusInit 不为 0 时触发 watch，这里不用 immediate 的原因是，一开始渲染就触发 on-focus-index-change block 不会有选中状态
       focusIndex: 0,
-      focusValue: '', // simple select 用于选值
+      focusValue: '',
       model: null,
       query: '',
       lastQuery: '',
       selectToChangeQuery: false, // 选择一个值后执行过滤，false: 不执行 true: 执行
-      availableOptions: [], // simple select 用于上下键选择时选择可用（过滤后）的options
+      availableOptions: [], // simple select 用于左右键选择时选择可用（过滤后）的options
       inputLength: 56,
       notFound: false,
       currentLabel: this.label,
@@ -813,7 +809,6 @@ export default {
       }
     },
     broadcastQuery(val) {
-//      this.focusIndex = this.focusInit
       this.broadcast('Block', 'on-query-change', val)
     },
     // 处理 remote 初始值
@@ -895,7 +890,7 @@ export default {
       }
     },
     //左右键、点选选中options中value值
-    selectBlockSingle(value, status = false, str) {
+    selectBlockSingle(value, status = false, str, nullValue = false) {
       this.isQuerySelect = status
       //焦点未离开勿更新可选options
       if(!this.isInputFocus) {
@@ -907,16 +902,26 @@ export default {
       }
       if (str === 'click') {
         this.hideMenu()
-//        this.isInputFocus = false
         this.focus()
       }
-//      console.log('selectBlockSingle:::'+value)
-      //不匹配到任何项时选中筛选第一项
-      if(value === '' && this.accuFilter && !this.keepInputValue) {
-//        this.$nextTick(() => {
-//          this.focusIndex = 1
-//        })
+      if(nullValue) {
+        this.$nextTick(() => {
+          this.focusIndex = 0
+        })
+        this.selectToChangeQuery = false
+      }else {
+        //不匹配到任何项时选中筛选第一项
+        if(value === '' && !this.keepInputValue) {
+          this.$nextTick(() => {
+            this.focusIndex = 0
+            this.$nextTick(() => {
+              this.focusIndex = 1
+            })
+          })
+        }
+        this.selectToChangeQuery = false
       }
+
     },
     setPlacement() {
       if (this.autoPlacement) {
@@ -1001,12 +1006,12 @@ export default {
           if (!this.visible && val) {
             this.visible = true
           }
-          this.remoteMethod(val)
+          this.remoteMethod(val, () => {
+            this.$nextTick(() => {
+              this.broadcast('Block', 'on-query-change', val)
+            })
+          })
           this.$emit('on-query-change', val)
-          if (!this.remoteNoQuery) {
-            this.broadcastQuery(val)
-          }
-
         }else {
           // 非自动匹配到的值手动清空后绑定的model没清空问题
           if(val === '') {
