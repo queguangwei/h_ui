@@ -148,6 +148,10 @@ export const SimpleMultiSelectApi = {
     // 手动取消输入框焦点(this.$refs.xxx.blur())
     blur() {
       this.$refs.input.blur();
+    },
+    // 外部调用主动发起折叠下拉面板的行为
+    fold() {
+      this.isDropdownVisible = false;
     }
   }
 };
