@@ -207,7 +207,9 @@ export default {
     isDropdownVisible(newVal) {
       this.$emit("on-drop-change", newVal);
       this.dropVisible = newVal; // 仅供外部调用，兼容老版本
-      if (!newVal) {
+      if (newVal) {
+        this.$refs.input.focus();
+      } else {
         const { magicString: originalMagicString } = this;
         this.updateMagicString(true, magicString => {
           this.$refs.input.blur();
