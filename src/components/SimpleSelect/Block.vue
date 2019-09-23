@@ -222,9 +222,10 @@ export default {
       //      }catch (e) {
       //        if(e.message != 'EndIterative') throw e
       //      }
-      if(val===''&&this.$parent.$parent.isSingleSelect&&!isEffective&&!states){
+
+      if(val===''&&this.$parent.$parent.isSingleSelect&&!isEffective&&!states){// 清空query值情况下
         this.$parent.$parent.selectBlockSingle('', true, '', true)
-      }else if(val !==''&&this.$parent.$parent.isSingleSelect&&!isEffective&&!states) {
+      }else if(val !==''&&this.$parent.$parent.isSingleSelect&&!isEffective&&!states) {//query不为空但未匹配到任何项
         this.$parent.$parent.selectBlockSingle('', true)
       }
       this.dispatch('SimpleSelect', 'on-options-visible-change', { data: this.cloneData })
