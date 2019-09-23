@@ -126,7 +126,7 @@ export default {
       this.updateVisualData();
     },
     updateVisualData() {
-      // 再谈前端虚拟列表的实现https://juejin.im/entry/5aaf66f56fb9a028c71e403e
+      // 再谈前端虚拟列表的实现 https://juejin.im/entry/5aaf66f56fb9a028c71e403e
       const scrollTop = this.lastScollTop || 0;
       const start = Math.floor(scrollTop / this.itemHeight);
       const end = start + this.visualCount;
@@ -146,15 +146,14 @@ export default {
       ];
     },
     onItemClick(item) {
-      const { _index, disabled, selected, label, value } = item;
-      if (disabled) {
-        return false;
-      }
+      if (!item || item.disabled) return false;
 
       // 关于为什么要加这个状态，这是个很玄学的问题 ～～
       // 它是用在查询操作里面的
       // 不妨这样理解，在选择过程中分发出来的查询请求一律打回
       this.isSelecting = true;
+
+      const { _index, selected, value } = item;
 
       // specialIndex && specialVal
       if (this.specialIndex && this.specialVal) {
