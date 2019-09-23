@@ -311,7 +311,7 @@ export default {
         }
 
         const last = splitMagicString[splitMagicString.length - 1];
-        if (!selectedRecords.includes(last)) {
+        if (!selectedRecords.some(({ label }) => label === last)) {
           keyword = last; // only consider the last split magic string
         }
       }
