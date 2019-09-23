@@ -141,7 +141,7 @@
           <table cellspacing="0"
                  cellpadding="0"
                  border="0"
-                 :style="headStyles"
+                 :style="fixedHeadStyles"
                  ref="leftF">
             <colgroup>
               <col v-for="(column, index) in leftFixedColumns"
@@ -604,10 +604,8 @@ export default {
       let isSelectAll = true
       if (!this.visibleData.length || !this.objData[0]) return false
       for (let i = 0; i < this.visibleData.length; i++) {
-        if (
-          !this.objData[this.visibleData[i]._index]._isChecked &&
-          !this.objData[this.visibleData[i]._index]._isDisabled
-        ) {
+        if (!this.objData[this.visibleData[i]._index]._isChecked &&
+            !this.objData[this.visibleData[i]._index]._isDisabled) {
           isSelectAll = false
           break
         }
@@ -615,10 +613,8 @@ export default {
       if (isSelectAll && !this.allclick) {
         this.allclick = false
         for (let i = 0; i < this.rebuildData.length; i++) {
-          if (
-            !this.objData[this.rebuildData[i]._index]._isChecked &&
-            !this.objData[this.rebuildData[i]._index]._isDisabled
-          ) {
+          if (!this.objData[this.rebuildData[i]._index]._isChecked &&
+              !this.objData[this.rebuildData[i]._index]._isDisabled) {
             isSelectAll = false
             break
           }
@@ -715,6 +711,13 @@ export default {
         ? parseInt(this.tableStyle.width)
         : parseInt(this.tableStyle.width) + this.scrollBarWidth
       style.width = `${width}px`
+      return style
+    },
+    fixedHeadStyles() {
+      const style = this.headStyles;
+      if(this.noNeedOtherCol) {
+        style.width = this.fixedTableStyle.width;
+      }
       return style
     },
     fixedTableStyle() {

@@ -1,8 +1,52 @@
 <template>
   <div>
+    <h1>Grid</h1>
+    <h-row>
+      <h-col span="12" style="background:red">col-12</h-col>
+      <h-col span="12" style="background:blue">col-12</h-col>
+    </h-row>
+    <br>
+    <h-row>
+      <h-col span="8" style="background:yellow">col-8</h-col>
+      <h-col span="8" style="background:green">col-8</h-col>
+      <h-col span="8" style="background:pink">col-8</h-col>
+    </h-row>
+    <br>
+    <h-row>
+      <h-col span="6" style="background:gray">col-6</h-col>
+      <h-col span="6" style="background:black">col-6</h-col>
+      <h-col span="6" style="background:grey">col-6</h-col>
+      <h-col span="6" style="background:black">col-6</h-col>
+    </h-row>
+    <br>
     <h1>msgbox</h1>
-    <Button @on-click="changeShow">打开弹框</Button>
-    <h-msg-box v-model="show" escClose :mask-closable="false" @on-cancel="cancel" width="580" height="700">
+    <h-button-group>
+      <h-button @click="showBox = true" style="margin-right: 10px;">打开弹窗</h-button>
+      <h-button type="primary" @on-click="changeShow">打开弹框</h-button>
+    </h-button-group>
+    <h-checkbox-group v-model="btncheck">
+      <h-checkbtn value="twitter" label="Twitter" disabled>
+      </h-checkbtn>
+      <h-checkbtn value="facebook" label="facebook">
+        <span>Facebook</span>
+      </h-checkbtn>
+      <h-checkbtn value="github" label="github" icon="close">
+        <span>Github</span>
+      </h-checkbtn>
+      <h-checkbtn value="snapchat" label="snapchat">
+        <span>Snapchat</span>
+      </h-checkbtn>
+    </h-checkbox-group>
+    <h-msg-box
+      v-model="showBox"
+      title="普通的Modal对话框标题"
+      @on-ok="ok"
+      @on-cancel="cancel">
+      <p>对话框内容</p>
+      <p>对话框内容</p>
+      <p>对话框内容</p>
+    </h-msg-box>
+    <h-msg-box v-model="show" escClose :mask-closable="false" @on-cancel="cancel1" width="580" height="400">
       <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
         <h-form-item label="singleSelect" prop="city" required>
           {{formValidate.city}}
@@ -53,14 +97,14 @@
         </h-form-item>
       </h-form>
     </h-msg-box>
-
+    <br>
     <h1>form</h1>
     <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
       <h-form-item label="股票代码" prop="stockCode">
         <h-single-select class="curItemClass" v-model="formCustom.stockCode" placeholder="请选择..."
-                         filterable widthAdaption autoPlacement remote :remote-method="remoteMethod1"
+                         filterable widthAdaption autoPlacement
                          ref="single">
-          <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
+          <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
         </h-single-select>
         {{formCustom.stockCode}}
       </h-form-item>
@@ -70,13 +114,13 @@
                      integerNum="10" suffixNum="2"  type="money" :step="10">
         </h-typefield>
       </h-form-item>
-      <h-form-item label="密码" prop="passwd">
+      <h-form-item label="密码" prop="passwd" required>
         <h-input class="curItemClass" type="password" v-model="formCustom.passwd"></h-input>
       </h-form-item>
-      <h-form-item label="确认密码" prop="passwdCheck">
+      <h-form-item label="确认密码" prop="passwdCheck" required>
         <h-input class="curItemClass" type="password" v-model="formCustom.passwdCheck"></h-input>
       </h-form-item>
-      <h-form-item label="年龄" prop="age">
+      <h-form-item label="年龄" prop="age" required>
         <h-input type="text" v-model="formCustom.age" number></h-input>
       </h-form-item>
       <h-form-item label="日期">
@@ -88,7 +132,15 @@
         <h-button type="ghost" @click="handleReset('formCustom')" style="margin-left: 8px">重置</h-button>
       </h-form-item>
     </h-form>
-
+    <h1>table</h1>
+    <h-table :columns="columns" :data="data0" :summationData="summationData1" height="300"
+             border :highlight-row="true" :loading="loading" headAlgin="center" bodyAlgin="right"
+             canDrag :lastColWidth="150"
+             @on-sort-change="sortchange">
+      <span slot="loading">我是自定义加载！！！</span>
+    </h-table>
+    <h1>tree</h1>
+    <h-tree :data="baseData" show-checkbox></h-tree>
   </div>
 </template>
 <script>
@@ -99,6 +151,7 @@
     obj.label=i;
     bigData.push(obj);
   }
+  var num = 0;
 import { enterHandler1 } from "../../src/util/tools.js"
 export default {
   data () {
@@ -131,6 +184,7 @@ export default {
       }
     };
     const validateAge = (rule, value, callback) => {
+      console.log('age', value)
       if (!value) {
         return callback(new Error('年龄不能为空'));
       }
@@ -149,6 +203,9 @@ export default {
     };
 
     return {
+      btncheck:[],
+      loading: false,
+      showBox: false,
       show:false,
       isLoading: false,
       value:'value0',
@@ -156,7 +213,7 @@ export default {
         name: "",
         mail: "",
         city1:'',
-        city: 'value1',
+        city: '',
         gender: "",
         interest: [],
         date: "",
@@ -195,6 +252,8 @@ export default {
         { value: "value16", label: "501009",label1: "生物科技" },
         { value: "value17", label: "502014",label1: "一带一A" },
         { value: "value18", label: "513660",label1: "恒生通" },
+        { value: "100", label: "100",label1: "label100" },
+        { value: "1000", label: "1000",label1: "label1000" },
       ],
       remoteData:[],
       isstring:false,
@@ -233,10 +292,198 @@ export default {
         age: [
           { validator: validateAge, trigger: 'blur' }
         ]
-      }
+      },
+      columns: [
+        {
+          title: '姓名',
+          key: 'name',
+          width: 100,
+          render: (h, params) => {
+            return h('div', [
+              h('Icon', {
+                props: {
+                  name: 'person'
+                }
+              }),
+              h('strong', params.row.name)
+            ])
+          }
+        },
+        {
+          title: '年龄',
+          key: 'age',
+          width: 100,
+          ellipsis:true,
+          sortable: true
+        },
+        {
+          title: '省份',
+          key: 'province',
+          width: 150,
+          ellipsis:true,
+          type: 'html'
+        },
+        {
+          title: '市区',
+          key: 'city',
+          width: 100,
+          ellipsis:true,
+        },{
+          title: '市区1',
+          key: 'city',
+          ellipsis:true
+        },
+        {
+          type: 'text',
+          title: '地址',
+          key: 'address',
+          width: 200,
+          ellipsis:true
+        },{
+          type: 'text',
+          title: '地址1',
+          key: 'address',
+          ellipsis:true
+        },
+        {
+          title: '邮编',
+          key: 'zip',
+          width: 120,
+          ellipsis:true,
+          headerTooltip: true
+        },{
+          title: '邮编1',
+          key: 'zip',
+          ellipsis:true,
+          headerTooltip: true
+        },
+        {
+          title: '操作',
+          key: 'action',
+          render: (h, params) => {
+            return h('div', [
+              h('h-button', {
+                props: {
+                  type: 'info',
+                  size: 'small'
+                }
+              }, '查看'),
+              h('h-button', {
+                props: {
+                  type: 'text',
+                  size: 'small'
+                }
+              }, '编辑')
+            ]);
+          },
+          ellipsis:true
+        }
+      ],
+      data0: [
+        {
+          name: '王小明',
+          age: 18,
+          address: '北京市朝阳区芍药居',
+          province: '<a href="javascript:alert(123456);">北京市</a>',
+          city: '朝阳区',
+          zip: 100000
+        },
+        {
+          name: '张小刚',
+          age: 25,
+          address: '北京市海淀区西二旗',
+          province: '北京市',
+          city: '海淀区',
+          zip: 100000
+        },
+        {
+          name: '李小红',
+          age: 30,
+          address: '上海市浦东新区世纪大道',
+          province: '上海市',
+          city: '浦东新区',
+          zip: 100000
+        },
+        {
+          name: '周小伟',
+          age: 26,
+          address: '深圳市南山区深南大道',
+          province: '广东',
+          city: '南山区',
+          zip: 100000
+        },
+        {
+          name: '王小明',
+          age: 18,
+          address: '北京市朝阳区芍药居',
+          province: '北京市',
+          city: '朝阳区',
+          zip: 100000
+        },
+        {
+          name: '张小刚',
+          age: 25,
+          address: '北京市海淀区西二旗',
+          province: '北京市',
+          city: '海淀区',
+          zip: 100000
+        },
+        {
+          name: '李小红',
+          age: 30,
+          address: '上海市浦东新区世纪大道',
+          province: '上海市',
+          city: '浦东新区',
+          zip: 100000
+        },
+        {
+          name: '周小伟',
+          age: 26,
+          address: '深圳市南山区深南大道',
+          province: '广东',
+          city: '南山区',
+          zip: 100000
+        }
+      ],
+      summationData1: [{
+        name: 'qeqweqw',
+        age: 123123123,
+        address: 'qqweqwe'
+      }],
+      baseData: [{
+        expand: true,
+        checked: true,
+        title: 'parent 1',
+        children: [{
+          title: 'parent 1-0',
+          expand: true,
+          disabled: true,
+          children: [{
+            expand: true,
+            checked: true,
+            disabled: true,
+            title: 'leaf',
+            disableCheckbox: true
+          }, {
+            title: 'leaf',
+          }]
+        }, {
+          title: 'parent 1-1',
+          expand: true,
+          checked: true,
+          children: [{
+            title: '<span style="color: red">leaf</span>',
+          }, {
+            title: 'leaf2',
+          }]
+        }]
+      }]
     }
   },
   methods: {
+    sortchange(e) {
+      console.log(e)
+    },
     handleSubmit (name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
@@ -251,6 +498,8 @@ export default {
       this.$refs[name].resetFields();
     },
     remoteMethod1(query) {
+      num = num + 1
+      console.log('触发远程搜索:::' + num)
       if (query !== "") {
         this.isLoading = true;
         setTimeout(() => {
@@ -277,8 +526,14 @@ export default {
       this.show=true
       this.$refs.formValidate.firstNodeFocused()
     },
-    cancel() {
+    cancel1() {
       this.$refs.formValidate.resetFields()
+    },
+    ok () {
+      this.$hMessage.info('点击了确定');
+    },
+    cancel () {
+      this.$hMessage.info('点击了取消');
     }
   },
   created() {

@@ -336,7 +336,7 @@ export default {
           let newVal = addNum(targetVal, -step)
           if (this.nonNegative && newVal < 0) {
             val = 0
-            return 
+            return
           }
           if (newVal >= this.min) {
             val = newVal

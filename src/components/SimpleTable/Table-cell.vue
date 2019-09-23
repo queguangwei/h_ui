@@ -33,9 +33,9 @@ export default {
   },
   components:{renderHeader},
   computed: {
-    sortCellCls () {
+    sortCellCls() {
       // o45 排序图标右浮动
-       return [
+      return [
         {
           [`${this.prefixCls}-sortSimp`] : window.isO45,
           [`${this.prefixCls}-sort`]: !window.isO45
