@@ -805,6 +805,10 @@ export default {
           this.$set(this.checkedObj[index],'checked',status)
         }
       }
+
+      this.$nextTick(()=>{
+        this.$emit('on-select-change',this.getSelection(),this.getSelection(true));
+      })
     },
     linkageChecked(row,status){
       let index = this.indexAndId[row.id];
