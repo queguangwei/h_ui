@@ -158,6 +158,29 @@
                      @on-editarea-blur="editAreaBlur"></gird-body>
         </div>
       </div>
+      <div
+        :class="[prefixCls + '-summation']"
+        :style="summationStyle"
+        v-if="isSummation && data && data.length > 0"
+        ref="summation"
+      >
+        <gird-body ref="sumBody"
+                   :prefix-cls="prefixCls"
+                   :styleObject="tableStyle"
+                   :sum="isSummation"
+                   :columns="summationColumns"
+                   :data="makeSumData()"
+                   :columns-width="columnsWidth"
+                   :obj-data="makeObjData(makeSumData())"
+                   :showEditInput="false"
+                   typeName="editGird"
+                   :option="options"
+                   :treeOption="treeOptions"
+                   :cascaderOption="cascaderOption"
+                   :isCheckbox="false"
+                   :clickToSelect="false"
+                   :height="Number(height)"></gird-body>
+      </div>
       <div class="h-table__column-resize-proxy"
            ref="resizeProxy"
            v-show="resizeProxyVisible"> </div>
@@ -352,6 +375,10 @@ export default {
       type: Boolean,
       default: false
     },
+    summationData: {
+      type: Array,
+      default: () => []
+    }
   },
   data() {
     return {
@@ -380,7 +407,8 @@ export default {
       /* 保存垂直滚动距离，用于判断垂直滚动方向 */
       scrollTop: 0,
       resizeProxyVisible: false,
-      moveProxyVisible: false
+      moveProxyVisible: false,
+      sumMarginLeft: 0
     }
   },
   computed: {
@@ -467,10 +495,10 @@ export default {
     },
     styles() {
       let style = {}
-      if (this.height) {
-        const height = parseInt(this.height) + 2
-        style.height = `${height}px`
-      }
+      // if (this.height) {
+      //   const height = parseInt(this.height) + 2
+      //   style.height = `${height}px`
+      // }
       if (this.width) style.width = `${this.width}px`
       return style
     },
@@ -600,6 +628,27 @@ export default {
         (this.columns && this.columns[0] && this.columns[0].type === 'radio') ||
         false
       return this.highlightRow || isRadio
+    },
+    summationStyle() {
+      return {
+        marginLeft: `${0 - this.sumMarginLeft}px`
+      }
+    },
+    isSummation() {
+      return this.summationData.length > 0
+    },
+    summationColumns() {
+      let columns = deepCopy(this.cloneColumns)
+      return columns.map(col => {
+        if (['index', 'selection'].indexOf(col.type) > -1) {
+          this.$set(col, 'render', h => {
+            return h('span', ['汇总'])
+          })
+          this.$set(col, 'hiddenOther', true)
+        }
+        delete col.type
+        return col
+      })
     }
   },
   methods: {
@@ -691,7 +740,7 @@ export default {
               }
               this.cloneColumns[i]._width = width || ''
               //
-              this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)||this.tableWidth;
+              this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)||this.tableWidth
               columnsWidth[column._index] = {
                 width: width
               }
@@ -929,12 +978,12 @@ export default {
       }
       return str != 'transfer'
         ? JSON.parse(
-            JSON.stringify(
-              this.cloneData.filter(
-                (data, index) => selectionIndexes.indexOf(index) > -1
-              )
+          JSON.stringify(
+            this.cloneData.filter(
+              (data, index) => selectionIndexes.indexOf(index) > -1
             )
           )
+        )
         : selectionIndexes
     },
     getGroupSelection() {
@@ -1124,6 +1173,7 @@ export default {
         this.$refs.fixedBody.scrollTop = event.target.scrollTop
       if (this.isRightFixed)
         this.$refs.fixedRightBody.scrollTop = event.target.scrollTop
+      if (this.isSummation) this.sumMarginLeft = event.target.scrollLeft
       const verifyTips = this.$refs.tbody.$el.querySelectorAll('.verify-tip')
       if (verifyTips && verifyTips.length > 0) {
         for (let i = 0; i < verifyTips.length; i++) {
@@ -1201,6 +1251,18 @@ export default {
       })
       return data
     },
+    makeSumData() {
+      let data =
+        this.summationData && this.summationData.length > 0
+          ? [deepCopy(this.summationData[0])]
+          : []
+      if (data.length === 1) {
+        let summation = data[0]
+        this.$set(summation, '_index', 0)
+        this.$set(summation, '_rowKey', rowKey++)
+      }
+      return data
+    },
     handleSort(_index, type) {
       let index
       this.cloneColumns.forEach((col, i) => {
@@ -1266,9 +1328,9 @@ export default {
       }
       return data
     },
-    makeObjData() {
+    makeObjData(rowData) {
       let data = {}
-      this.data.forEach((row, index) => {
+      rowData || this.data.forEach((row, index) => {
         const newRow = deepCopy(row) // todo 直接替换
         if (this.typeName == 'groupTable' && newRow.item) {
           if (newRow._checked) {
