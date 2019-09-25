@@ -437,6 +437,9 @@ export default {
         this.$refs.year1.focus();
       }
     },
+    fold() {
+      this.opened = false
+    },
     handleClose(){
       this.opened = false;
       if(this.isFocus){
