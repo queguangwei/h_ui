@@ -48,14 +48,14 @@
       <p>对话框内容</p>
       <p>对话框内容</p>
     </h-msg-box>
-    <h-msg-box v-model="show" escClose :mask-closable="false" @on-cancel="cancel1" width="600" height="400">
+    <h-msg-box v-model="show" escClose :mask-closable="false" maximize @on-cancel="cancel1" width="600" height="400">
       <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
         <h-form-item label="singleSelect" prop="city" required>
           {{formValidate.city}}
           <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass"
                            remote filterable :loading="isLoading" :remote-method="remoteMethod1"
                            widthAdaption :maxDropWidth="330" transfer autoPlacement
-                           :animated="false" @on-keydown="handlekeydown">
+                           @on-keydown="handlekeydown">
             <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
           </h-single-select>
         </h-form-item>
@@ -95,7 +95,7 @@
     <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
       <h-form-item label="股票代码" prop="stockCode">
         <h-single-select class="curItemClass" v-model="formCustom.stockCode" placeholder="请选择..."
-                          widthAdaption autoPlacement
+                          widthAdaption autoPlacement :animated="false"
                          ref="single">
           <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
         </h-single-select>
@@ -521,7 +521,7 @@ export default {
 //      this.$refs.datepicker.fold()
       this.$refs[name].resetFields();
     },
-    remoteMethod1(query) {
+    remoteMethod1(query, done) {
       num = num + 1
       console.log('触发远程搜索:::' + num)
       if (query !== "") {
@@ -535,6 +535,7 @@ export default {
             item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1
           );
         }, 200);
+        done()
       } else {
         this.remoteData = [];
       }

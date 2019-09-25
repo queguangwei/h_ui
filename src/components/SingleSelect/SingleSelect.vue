@@ -1,6 +1,5 @@
 <template>
-  <div :class="classes" ref="select"
-       v-clickoutside="{trigger: 'mousedown', handler: handleClose}">
+  <div :class="classes" ref="select" v-clickoutside="{trigger: 'mousedown', handler: handleClose}">
     <div :class="[prefixCls + '-selection']" ref="reference" :tabindex="selectTabindex" @click="showdrop">
       <!-- 下拉输入框模拟（非远程搜索时渲染）  -->
       <span :class="[prefixCls + '-selected-value']"
@@ -32,10 +31,7 @@
               ref="dropdown"
               v-transfer-dom>
           <div :class="[`${prefixCls}-dropdown-noline-content`]" ref="content">
-            <div id="blockWrapper"
-                 v-show="(!notFound && !remote) || (remote && !notFound)"
-                 :class="[prefixCls + '-dropdown-list']"
-                 ref='blockWrapper'>
+            <div id="blockWrapper" :class="[prefixCls + '-dropdown-list']" ref='blockWrapper'>
               <slot></slot>
             </div>
             <div v-show="loading" :class="[prefixCls+'-block-loading']">{{localeLoadingText}}</div>
@@ -54,10 +50,7 @@
             ref="dropdown"
             v-transfer-dom>
         <div :class="[`${prefixCls}-dropdown-noline-content`]" ref="content">
-          <div id="blockWrapper"
-               v-show="(!notFound && !remote) || (remote && !notFound)"
-               :class="[prefixCls + '-dropdown-list']"
-               ref='blockWrapper'>
+          <div :class="[prefixCls + '-dropdown-list']" ref='blockWrapper'>
             <slot></slot>
           </div>
           <div v-show="loading" :class="[prefixCls+'-block-loading']">{{localeLoadingText}}</div>
@@ -72,7 +65,7 @@ import Drop from '../Select/Dropdown.vue'
 import clickoutside from '../../directives/clickoutside'
 import TransferDom from '../../directives/transfer-dom'
 import { on, off } from '../../util/dom'
-import { oneOf, getScrollBarSize, getStyle, getBarBottom, scrollAnimate } from '../../util/tools'
+import { oneOf, getScrollBarSize, getStyle } from '../../util/tools'
 import Emitter from '../../mixins/emitter'
 import Locale from '../../mixins/locale'
 const prefixCls = 'h-selectTable'
@@ -110,7 +103,6 @@ export default {
       type: [String, Number],
       default: ''
     },
-    // 使用时，也得设置 value 才行
     label: {
       type: [String, Number, Array],
       default: ''
@@ -121,14 +113,6 @@ export default {
     filterable: {
       type: Boolean,
       default: true
-    },
-    focusSelect: {
-      type: Boolean,
-      default: true
-    },
-    matchable: {
-      type: Boolean,
-      default: false
     },
     remote: {
       type: Boolean,
@@ -182,31 +166,6 @@ export default {
       type: Boolean,
       default: false
     },
-    isComputed: {
-      //是否显示加载完成数据提示
-      type: Boolean,
-      default: false
-    },
-    dropWidth: {
-      //下拉框的宽度
-      type: [String, Number]
-    },
-    format: {
-      type: [Array, String],
-      default: function() {
-        return ['name,age', '_']
-      }
-    },
-    matchWay: {
-      validator(value) {
-        return oneOf(value, ['left', 'blurry', 'all'])
-      },
-      default: 'blurry'
-    },
-    matchCol: {
-      type: [String, Array, Number],
-      default: ''
-    },
     autoPlacement: {
       type: Boolean,
       default: false
@@ -214,6 +173,9 @@ export default {
     widthAdaption: {
       type: Boolean,
       default: false
+    },
+    dropWidth: {
+      type: [String, Number]
     },
     maxDropWidth: {
       type: [String, Number],
@@ -241,7 +203,7 @@ export default {
       prefixCls: prefixCls,
       visible: false,
       options: [],
-      optionInstances: [],
+//      optionInstances: [],
       selectedSingle: '',
       focusIndex: 0,
       focusValue: '',
@@ -250,12 +212,9 @@ export default {
       lastQuery: '',
       selectToChangeQuery: false, // 选择一个值后执行过滤，false: 不执行 true: 执行
       availableOptions: [], // simple select 用于左右键选择时选择可用（过滤后）的options
-      inputLength: 56,
-      notFound: false,
       currentLabel: this.label,
       isInputFocus: false, //是否焦点，为false时触发blur校验
       scrollBarWidth: getScrollBarSize(),
-      tabIndex: 0,
       fPlacement: this.placement,
       isQuerySelect: false,
     }
@@ -477,15 +436,16 @@ export default {
           })
         }
       }
-      if (this.optionInstances.length) {
-        this.optionInstances.forEach(child => {
-          find(child)
-        })
-      } else {
-        this.$children.forEach(child => {
-          find(child)
-        })
-      }
+      this.$children.forEach(child => {
+        find(child)
+      })
+//      if (this.optionInstances.length) {
+//        this.optionInstances.forEach(child => {
+//          find(child)
+//        })
+//      } else {
+//
+//      }
     },
     updateOptions(init, slot = false) {
       let options = []
@@ -626,10 +586,6 @@ export default {
           this.$nextTick(() => {
             this.focus()
           })
-//          this.dispatch("Msgbox", "on-esc-real-close", false);
-//          setTimeout(() => {
-//            this.dispatch("Msgbox", "on-esc-real-close", true);
-//          }, 0);
         }
       }
       // right
@@ -669,7 +625,6 @@ export default {
     },
 
     resetInputState(e) {
-      this.inputLength = this.$refs.input.value.length * 12 + 56
       if (this.visible && e.keyCode == 9) {
         //153789 【TS:201907180097-资管业委会（资管）_贺文能-【需求类型】需求【需求描述】simple-select tab切换时失去焦点，不会将下拉框收起， 详见附件】
         this.fold()
@@ -679,11 +634,6 @@ export default {
         this.isInputFocus = true
       }
       this.$emit('on-keydown', this.query, e)
-    },
-    // use when slot changed
-    slotChange() {
-      this.options = []
-      this.optionInstances = []
     },
     modelToQuery() {
       if (this.filterable && this.model !== undefined) {
@@ -864,29 +814,30 @@ export default {
     // 处理 remote 初始值
     this.updateLabel()
     this.updateOptions(true)
-    this.$on('append', () => {
-      this.slotChange()
-      this.updateOptions(true, true)
-    })
-    this.$on('remove', () => {
-      this.slotChange()
-      this.updateOptions(true, true)
-    })
-    this.$on('on-select-selected', (value, status) => {
-      this.model = value
-      if (this.filterable) {
-        this.findChild(child => {
-          if (child.value === value) {
-            if (this.query !== '') {
-              this.selectToChangeQuery = true
-            }
-            this.lastQuery = this.query =
-              child.label === undefined ? child.searchLabel : child.label
-          }
-        })
-      }
-      this.fold()
-    })
+//    this.$on('append', () => {
+//      this.slotChange()
+//      this.updateOptions(true, true)
+//    })
+//    this.$on('remove', () => {
+//      this.slotChange()
+//      this.updateOptions(true, true)
+//    })
+//    this.$on('on-select-selected', (value, status) => {
+//      console.log('onselect')
+//      this.model = value
+//      if (this.filterable) {
+//        this.findChild(child => {
+//          if (child.value === value) {
+//            if (this.query !== '') {
+//              this.selectToChangeQuery = true
+//            }
+//            this.lastQuery = this.query =
+//              child.label === undefined ? child.searchLabel : child.label
+//          }
+//        })
+//      }
+//      this.fold()
+//    })
     this.$on('on-options-visible-change', arg => {
       this.availableOptions = arg.data.filter(option => !option.hidden)
       // 筛选后的options写入index 左右切换使用
