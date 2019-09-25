@@ -23,14 +23,14 @@
              v-if="maximize"
              @click="switchSize">
             <slot name="maximize">
-              <Icon :name="maxName"></Icon>
+              <Icon :name="maxName" :title="[this.isMax?'还原':'最大化']"></Icon>
             </slot>
           </a>
           <a :class="[prefixCls + '-close']"
              v-if="closable"
              @click="close">
             <slot name="close">
-              <Icon name="close"></Icon>
+              <Icon name="close" :title="'关闭'"></Icon>
             </slot>
           </a>
           <div :class="[prefixCls + '-header']"

@@ -199,10 +199,19 @@ export default {
         let targetValue =col.value
         let selected=col.selected
         // let targetoption=this.$parent.$parent.filterBy=="label"||this.$parent.$parent.filterBy==undefined?targetLabel:targetValue;
-        let hidden = !new RegExp(parsedQuery, 'i').test(col.label)
-        if(hidden){
-          hidden=!new RegExp(parsedQuery, 'i').test(col.value)
+        let hidden
+        let checkLabel = !new RegExp(parsedQuery, 'i').test(col.label)
+        let checkValue = !new RegExp(parsedQuery, 'i').test(col.value)
+        if(col.label1) {
+          let checkLabel1 = !new RegExp(parsedQuery, 'i').test(col.label1)
+          hidden = checkLabel && checkLabel1 && checkValue
+        }else {
+          hidden = checkValue && checkLabel
         }
+//        let hidden = !new RegExp(parsedQuery, 'i').test(col.label)
+//        if(hidden){
+//          hidden=!new RegExp(parsedQuery, 'i').test(col.value)
+//        }
         this.$set(col, 'hidden', hidden)
         if (status && !hidden) {
           status = false
