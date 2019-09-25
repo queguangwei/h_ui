@@ -162,25 +162,29 @@ export default {
       });
 
       this.$nextTick(() => {
-        this.updateMagicString(false);
+        this.updateMagicString();
       });
     },
     magicString(newVal) {
-      if (this.remote && this.remoteMethod) {
-        const { selectedRecords: originalSelectedRecords, keywords: originalKeywords } = this.resolveMagicString();
-        if (this.isKeyDown) {
+      if (this.isKeyDown) {
+        const { keyboardEvent: e } = this;
+        if (!_.isKeyMatch(e, "Esc") && !_.isKeyMatch(e, "Enter")) {
           this.isDropdownVisible = true;
-          this.isKeyDown = false;
         }
+        this.isInputting = true; // switch on input status, this is a big difference
+        this.isKeyDown = false; // switch off key down status
+      }
 
-        if (originalKeywords.length > 0) {
-          this.$emit("on-query-change", originalKeywords[originalKeywords.length - 1]);
-          this.remoteMethod(originalKeywords[originalKeywords.length - 1], () => {
+      if (this.remote && this.remoteMethod) {
+        const { selectedRecords: originalSelectedRecords, keyword: originalKeyword } = this.resolveMagicString();
+        if (originalKeyword !== null) {
+          this.$emit("on-query-change", originalKeyword);
+          this.remoteMethod(originalKeyword, () => {
             this.$nextTick(() => {
-              const { selectedRecords, keywords } = this.resolveMagicString();
+              const { selectedRecords, keyword } = this.resolveMagicString();
               this.selectedRecords = selectedRecords;
               this.$nextTick(() => {
-                this.blockVm.onQuery(keywords.length > 0 ? keywords[keywords.length - 1] : "");
+                this.blockVm.onQuery(keyword === null ? "" : keyword);
               });
             });
           });
@@ -192,31 +196,23 @@ export default {
           });
         }
       } else {
-        const { selectedRecords, keywords } = this.resolveMagicString();
+        const { selectedRecords, keyword } = this.resolveMagicString();
         this.selectedRecords = selectedRecords;
         this.$nextTick(() => {
-          if (this.isKeyDown) {
-            this.isDropdownVisible = true;
-            this.isKeyDown = false;
-          }
-          this.$emit("on-query-change", keywords.length > 0 ? keywords[keywords.length - 1] : "");
-          this.blockVm.onQuery(keywords.length > 0 ? keywords[keywords.length - 1] : "");
+          this.$emit("on-query-change", keyword === null ? "" : keyword);
+          this.blockVm.onQuery(keyword === null ? "" : keyword);
         });
       }
     },
     isDropdownVisible(newVal) {
       this.$emit("on-drop-change", newVal);
       this.dropVisible = newVal; // 仅供外部调用，兼容老版本
-      if (newVal) {
-        this.$refs.input.focus();
-      } else {
+      if (newVal) this.$refs.input.focus();
+      else {
         const { magicString: originalMagicString } = this;
-        this.updateMagicString(true, magicString => {
-          this.$refs.input.blur();
-          this.$nextTick(() => {
-            this.$refs.input.focus();
-          });
-
+        this.isInputting = false; // switch off input status
+        this.updateMagicString(magicString => {
+          this.$refs.input.select();
           if (originalMagicString === magicString) {
             this.$emit("on-query-change", "");
             if (this.remote && this.remoteMethod) {
@@ -234,6 +230,9 @@ export default {
       this.isDropdownVisible = false;
     },
     onContainerKeyDown(e) {
+      this.isKeyDown = true; // switch on key down status
+      this.keyboardEvent = e; // cache current keyboard event
+
       if (this.isDropdownVisible) {
         if (_.isKeyMatch(e, "Esc") || _.isKeyMatch(e, "Enter")) {
           this.isDropdownVisible = false;
@@ -261,15 +260,12 @@ export default {
             this.toggleSelect(false);
           }
         }
-      } else {
-        this.isKeyDown = true; // I gotta know what happened when magic string changes
       }
     },
     onInputFocus(e) {
-      e.target.selectionStart = 0;
-      e.target.selectionEnd = this.magicString.length;
       this.$emit("on-focus");
       this.$emit("on-input-focus");
+      this.$refs.input.select();
     },
     onInputBlur() {
       this.$emit("on-blur");
@@ -292,26 +288,31 @@ export default {
 
     /**
      * @description 魔法字符串的解析逻辑
-     * @returns {Object} { selectedRecords, model, keywords }
+     * @returns {Object} { selectedRecords, model, keyword }
      */
     resolveMagicString() {
       const splitMagicString = this.magicString === "" ? [] : this.magicString.split(",");
       let selectedRecords = [],
         model = [],
-        keywords = [];
+        keyword = null;
 
-      for (const label of splitMagicString) {
-        const matched = this.blockVm.blockData.filter(item => item.label === label);
-        if (matched.length > 0) {
-          for (const blockRecord of matched) {
-            if (selectedRecords.some(item => item.label === blockRecord.label && item.value === blockRecord.value)) {
-              continue; // make sure there are no repeated selected record
+      if (splitMagicString.length > 0) {
+        for (const label of splitMagicString) {
+          const matched = this.blockVm.blockData.filter(item => item.label === label);
+          if (matched.length > 0) {
+            for (const blockRecord of matched) {
+              if (selectedRecords.some(item => item.label === blockRecord.label && item.value === blockRecord.value)) {
+                continue; // make sure there are no repeated selected record
+              }
+              selectedRecords.push(blockRecord);
+              model.push(blockRecord.value);
             }
-            selectedRecords.push(blockRecord);
-            model.push(blockRecord.value);
           }
-        } else {
-          keywords.push(label);
+        }
+
+        const last = splitMagicString[splitMagicString.length - 1];
+        if (!selectedRecords.some(({ label }) => label === last)) {
+          keyword = last; // only consider the last split magic string
         }
       }
 
@@ -319,35 +320,19 @@ export default {
         splitMagicString,
         selectedRecords: selectedRecords.map(item => _.deepCloneAs(item, ["label", "value", ...this.blockVm.showCol])),
         model,
-        keywords
+        keyword
       };
     },
     /**
      * @description 监听 model 的变化，更新魔法字符串
-     * @todo 这里有个小问题，这个更新逻辑会导致绑定的值改变两次
-     * @param {Boolean} forceUpdate 是否强制更新，开启后将与已选项同步，否则将保留当前的查询关键字
      * @param {Function} cb callback 回调函数
      */
-    updateMagicString(forceUpdate = true, cb) {
-      if (forceUpdate) this.magicString = this.selectedRecords.map(item => item.label).join();
-      else {
-        const { splitMagicString, selectedRecords, keywords } = this.resolveMagicString();
-        let newSplitMagicString = [];
-        for (const label of splitMagicString) {
-          if (!keywords.includes(label) && selectedRecords.some(item => item.label === label) && this.selectedRecords.every(item => item.label !== label)) {
-            continue;
-          }
-          newSplitMagicString.push(label);
-        }
-
-        for (let index = this.selectedRecords.length - 1; index >= 0; index--) {
-          const { label } = this.selectedRecords[index];
-          !newSplitMagicString.includes(label) && newSplitMagicString.unshift(label);
-        }
-
-        this.magicString = newSplitMagicString.join();
+    updateMagicString(cb) {
+      if (this.isInputting) {
+        return false; // on isInputting, reject changes to magic string
       }
 
+      this.magicString = this.selectedRecords.map(item => item.label).join();
       this.$nextTick(() => {
         cb && cb(this.magicString);
       });
@@ -356,19 +341,28 @@ export default {
   created() {
     this.$on("on-ready", (blockVm, records) => {
       this.blockVm = blockVm; // block instance
-      this.selectedRecords = records.filter(({ value }) => this.model.includes(value)); // on block ready, sync selectedRecords with model
+      this.isInputting = false; // switch off input status
+      this.selectedRecords = records.filter(({ value }) => this.model.includes(value));
     });
     this.$on("on-data-change", (blockVm, records) => {
-      this.selectedRecords = records.filter(({ value }) => this.model.includes(value)); // on block data change, sync selectedRecords with model again
+      this.selectedRecords = records.filter(({ value }) => this.model.includes(value));
     });
     this.$on("on-selected", (blockVm, record) => {
       if (this.selectedRecords.some(item => item.label === record.label && item.value === record.value)) return false;
       else {
+        this.isInputting = false;
         this.selectedRecords.push(record);
+        this.$nextTick(() => {
+          this.$refs.input.focus();
+        });
       }
     });
     this.$on("on-cancel-selected", (blockVm, record) => {
+      this.isInputting = false;
       this.selectedRecords = this.selectedRecords.filter(item => item.label !== record.label && item.value !== record.value);
+      this.$nextTick(() => {
+        this.$refs.input.focus();
+      });
     });
   }
 };

@@ -47,7 +47,7 @@ export default {
   methods: {
     update() {
       const _this = this;
-      setStyle(this.$el, { display: "block", visibility: "hidden", top: "0", left: "0" }); // make sure popper calc exactly
+      setStyle(this.$el, { display: "block", visibility: "hidden", width: "", top: "0", left: "0" }); // make sure popper calc exactly
 
       if (this.popper) {
         this.popper.scheduleUpdate();
@@ -93,6 +93,8 @@ export default {
                 if (widthAdaption) {
                   if (parseFloat(dropWidth) > 0) {
                     styles["min-width"] = parseFloat(dropWidth);
+                  } else {
+                    styles["min-width"] = pWidth;
                   }
                   if (parseFloat(maxDropWidth) > 0 && parseFloat(maxDropWidth) > parseFloat(dropWidth)) {
                     styles["max-width"] = Math.max(parseFloat(maxDropWidth), pWidth);

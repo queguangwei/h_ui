@@ -111,7 +111,11 @@ export default {
           title: '地址',
           ellipsis:true,
           key: 'securityCode',
-          sortable:true
+          sortable:true,
+//          render: (h, params) => {
+//            this.$set(params.row, '_isDisabled', true)
+//            return h('span',params.row.securityCode)
+//          },
         },
         {
           title: '银行',
@@ -540,9 +544,9 @@ export default {
       console.log(row);
     },
     selsetChange (selection,inx,i){//选项发生变化时触发已选择的项
-      console.log(selection);
-      console.log(inx);
-      console.log(i);
+//      console.log(selection);
+//      console.log(inx);
+//      console.log(i);
     },
     selsetChange1 (selection,inx,i){//选项发生变化时触发已选择的项
       console.log("1  "+selection);

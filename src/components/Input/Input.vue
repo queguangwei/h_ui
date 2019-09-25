@@ -29,6 +29,7 @@
              :readonly="autocomplete === 'off' || autocomplete === 'on' && (!editable || readonly)"
              :name="name"
              :value="currentValue"
+             :title="currentValue"
              :number="number"
              :autofocus="autofocus"
              :spellcheck="spellcheck"

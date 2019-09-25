@@ -457,6 +457,10 @@ export default {
         this.hideMenu()
       }
     },
+    //外部调用主动发起折叠下拉面板的行为
+    fold() {
+      this.visible = false
+    },
     handleSelectScroll(event) {
       let num = getBarBottom(event.target, this.scrollBarWidth)
       this.$emit('on-scroll', num)
@@ -641,13 +645,12 @@ export default {
         this.options.forEach((col, i) => {
           if (value == col.value) {
             this.$set(child.cloneData[i], 'selected', true)
-            this.$set(child.cloneData[i], 'focus', true)
           } else {
             this.$set(child.cloneData[i], 'selected', false)
-            this.$set(child.cloneData[i], 'focus', false)
           }
         })
       })
+
       // o45开启keepInputValue默认初始值
       if (init) {
         if(this.keepInputValue) {
@@ -724,6 +727,12 @@ export default {
       if (keyCode === 37) {
         e.preventDefault()
         this.navigateOptions('prev')
+      }
+      //delete
+      if (keyCode === 46) {
+        e.preventDefault()
+        this.model = ''
+        this.query = ''
       }
     },
     navigateOptions(direction) {
@@ -910,7 +919,8 @@ export default {
         })
         this.selectToChangeQuery = false
       }else {
-        //不匹配到任何项时选中筛选第一项
+        //value有值表示精确匹配，无值不匹配，但是无论是否精确匹配都要选中筛选第一项 是cloneData中focus=true
+        //但是使用nextTick会出现一种特殊情况第一项模糊匹配focus，第二项精确匹配selected,所以还是判断value
         if(value === '' && !this.keepInputValue) {
           this.$nextTick(() => {
             this.focusIndex = 0
@@ -921,7 +931,6 @@ export default {
         }
         this.selectToChangeQuery = false
       }
-
     },
     setPlacement() {
       if (this.autoPlacement) {
@@ -1013,6 +1022,11 @@ export default {
           })
           this.$emit('on-query-change', val)
         }else {
+          this.remoteMethod(val, () => {
+            this.$nextTick(() => {
+              this.broadcast('Block', 'on-query-change', val)
+            })
+          })
           // 非自动匹配到的值手动清空后绑定的model没清空问题
           if(val === '') {
             this.model = ''
@@ -1054,7 +1068,9 @@ export default {
       if (this.filterable) {
         this.findChild(child => {
           if (child.value === value) {
-            if (this.query !== '') this.selectToChangeQuery = true
+            if (this.query !== '') {
+              this.selectToChangeQuery = true
+            }
             this.lastQuery = this.query =
               child.label === undefined ? child.searchLabel : child.label
           }
@@ -1156,8 +1172,9 @@ export default {
     selectedSingle(val) {
       if (this.filterable && !this.showBottom && !this.isQuerySelect) {
         this.query = val
-        if (this.query !== '')
+        if (this.query !== '') {
           this.selectToChangeQuery = true
+        }
       }
       this.setSingleSelect()
     },
