@@ -197,6 +197,10 @@
         titleRender:Function,
         height: Number,
         clickToSelect:Boolean,
+        sum: {
+          type: Boolean,
+          default: false
+        }
       },
       data(){
         return{
@@ -250,12 +254,15 @@
            return this.objData[k].item[m] && this.objData[k].item[m]._isExpanded;
         },
         handleMouseIn (_index) {
+          if (this.sum) return
           this.$parent.handleMouseIn(_index);
         },
         handleMouseOut (_index) {
+          if (this.sum) return
           this.$parent.handleMouseOut(_index);
         },
         clickCurrentRow (_index) {
+          if (this.sum) return
           this.$parent.clickCurrentRow(_index);
           if(this.rowSelect){
             // this.objData[_index]._isChecked=!this.objData[_index]._isChecked;
@@ -263,9 +270,11 @@
           }
         },
         dblclickCurrentRow (_index){
+          if (this.sum) return
           this.$parent.dblclickCurrentRow(_index);
         },
         cellCkick (key){
+          if (this.sum) return
           this.$parent.curKey = key;
         },
         toggleExpand (index,e) {
