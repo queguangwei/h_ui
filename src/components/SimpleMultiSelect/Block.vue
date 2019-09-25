@@ -85,19 +85,7 @@ export default {
     data: {
       deep: true,
       handler(newVal) {
-        let blockData = [];
-        if (this.selectedRecords) {
-          blockData = blockData.concat(this.selectedRecords.map(item => ({ ...item, selected: true })));
-        }
-
-        for (const item of newVal) {
-          if (blockData.some(({ label, value }) => label === item.label && value === item.value)) {
-            continue;
-          }
-          blockData.push({ ...item, selected: false });
-        }
-
-        this.blockData = blockData.map((item, index) => ({
+        this.blockData = newVal.map((item, index) => ({
           ...item,
           _index: index,
           focus: false,
@@ -148,11 +136,6 @@ export default {
     onItemClick(item) {
       if (!item || item.disabled) return false;
 
-      // 关于为什么要加这个状态，这是个很玄学的问题 ～～
-      // 它是用在查询操作里面的
-      // 不妨这样理解，在选择过程中分发出来的查询请求一律打回
-      this.isSelecting = true;
-
       const { _index, selected, value } = item;
 
       // specialIndex && specialVal
@@ -173,17 +156,11 @@ export default {
     },
 
     onQuery(keyword = "") {
-      // 再一次说，在选择过程中分发出来的查询请求一律打回
-      if (this.isSelecting) {
-        this.isSelecting = false;
-        return false;
-      }
-
       keyword = keyword.replace(/(\^|\(|\)|\[|\]|\$|\*|\+|\.|\?|\\|\{|\}|\|)/g, "\\$1");
       for (const item of this.blockData) {
         const { _index, selected, label, value } = item;
-        if (keyword === "" || selected) {
-          this.$set(this.blockData[_index], "hidden", false); // 已选项默认不参加模糊查询
+        if (keyword === "") {
+          this.$set(this.blockData[_index], "hidden", false);
         } else {
           this.$set(this.blockData[_index], "hidden", !new RegExp(keyword, "i").test(label) && !new RegExp(keyword, "i").test(value));
         }

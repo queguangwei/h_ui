@@ -162,7 +162,10 @@ export default {
       });
 
       this.$nextTick(() => {
-        this.updateMagicString();
+        if (this.isInputting) return false;
+        else {
+          this.magicString = newVal.map(item => item.label).join();
+        }
       });
     },
     magicString(newVal) {
@@ -171,57 +174,65 @@ export default {
         if (!_.isKeyMatch(e, "Esc") && !_.isKeyMatch(e, "Enter")) {
           this.isDropdownVisible = true;
         }
-        this.isInputting = true; // switch on input status, this is a big difference
+        if (_.isKeyMatch(e, "Space") || (_.isKeyMatch(e, "A") && e.ctrlKey) || (_.isKeyMatch(e, "D") && e.ctrlKey)) _.noop();
+        else {
+          this.isInputting = true; // switch on input status, this is a big difference
+        }
         this.isKeyDown = false; // switch off key down status
       }
 
-      if (this.remote && this.remoteMethod) {
-        const { selectedRecords: originalSelectedRecords, keyword: originalKeyword } = this.resolveMagicString();
-        if (originalKeyword !== null) {
-          this.$emit("on-query-change", originalKeyword);
-          this.remoteMethod(originalKeyword, () => {
+      if (this.isInputting) {
+        if (this.remote && this.remoteMethod) {
+          const { selectedRecords: originalSelectedRecords, keyword: originalKeyword } = this.resolveMagicString();
+          this.selectedRecords = originalSelectedRecords;
+          this.remoteMethod(originalKeyword === null ? "" : originalKeyword, () => {
             this.$nextTick(() => {
               const { selectedRecords, keyword } = this.resolveMagicString();
               this.selectedRecords = selectedRecords;
               this.$nextTick(() => {
+                this.$emit("on-query-change", originalKeyword === null ? "" : originalKeyword);
                 this.blockVm.onQuery(keyword === null ? "" : keyword);
               });
             });
           });
         } else {
-          this.$emit("on-query-change", "");
-          this.selectedRecords = originalSelectedRecords;
+          const { selectedRecords, keyword } = this.resolveMagicString();
+          this.selectedRecords = selectedRecords;
           this.$nextTick(() => {
-            this.blockVm.onQuery();
+            this.$emit("on-query-change", keyword === null ? "" : keyword);
+            this.blockVm.onQuery(keyword === null ? "" : keyword);
           });
         }
-      } else {
-        const { selectedRecords, keyword } = this.resolveMagicString();
-        this.selectedRecords = selectedRecords;
-        this.$nextTick(() => {
-          this.$emit("on-query-change", keyword === null ? "" : keyword);
-          this.blockVm.onQuery(keyword === null ? "" : keyword);
-        });
       }
     },
     isDropdownVisible(newVal) {
       this.$emit("on-drop-change", newVal);
       this.dropVisible = newVal; // 仅供外部调用，兼容老版本
-      if (newVal) this.$refs.input.focus();
-      else {
+      if (newVal) {
+        this.$refs.input.focus();
+      } else {
         const { magicString: originalMagicString } = this;
+        this.blockVm && this.blockVm.reset(); // reset block vm
+        this.isKeyDown = false; // switch off key down status
         this.isInputting = false; // switch off input status
-        this.updateMagicString(magicString => {
-          this.$refs.input.select();
-          if (originalMagicString === magicString) {
-            this.$emit("on-query-change", "");
-            if (this.remote && this.remoteMethod) {
-              this.remoteMethod("", () => this.$nextTick(this.blockVm.onQuery));
-            } else {
+        this.$emit("on-query-change", "");
+        if (this.remote && this.remoteMethod) {
+          this.remoteMethod("", () => {
+            this.$nextTick(() => {
+              this.magicString = this.selectedRecords.map(item => item.label).join();
               this.blockVm.onQuery();
-            }
-          }
-        });
+              this.$nextTick(() => {
+                this.$refs.input.select();
+              });
+            });
+          });
+        } else {
+          this.magicString = this.selectedRecords.map(item => item.label).join();
+          this.blockVm.onQuery();
+          this.$nextTick(() => {
+            this.$refs.input.select();
+          });
+        }
       }
     }
   },
@@ -310,10 +321,7 @@ export default {
           }
         }
 
-        const last = splitMagicString[splitMagicString.length - 1];
-        if (!selectedRecords.some(({ label }) => label === last)) {
-          keyword = last; // only consider the last split magic string
-        }
+        keyword = splitMagicString[splitMagicString.length - 1]; // only consider the last split magic string
       }
 
       return {
@@ -322,20 +330,6 @@ export default {
         model,
         keyword
       };
-    },
-    /**
-     * @description 监听 model 的变化，更新魔法字符串
-     * @param {Function} cb callback 回调函数
-     */
-    updateMagicString(cb) {
-      if (this.isInputting) {
-        return false; // on isInputting, reject changes to magic string
-      }
-
-      this.magicString = this.selectedRecords.map(item => item.label).join();
-      this.$nextTick(() => {
-        cb && cb(this.magicString);
-      });
     }
   },
   created() {

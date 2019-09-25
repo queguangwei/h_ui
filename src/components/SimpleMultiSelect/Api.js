@@ -128,6 +128,7 @@ export const SimpleMultiSelectApi = {
      */
     toggleSelect(status) {
       if (this.blockVm) {
+        this.isInputting = false;
         this.selectedRecords = status
           ? this.blockVm.blockData
               .filter(({ disabled, value }) => {
