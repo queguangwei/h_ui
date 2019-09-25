@@ -612,11 +612,22 @@ export default {
       }
       if (isSelectAll && !this.allclick) {
         this.allclick = false
-        for (let i = 0; i < this.rebuildData.length; i++) {
-          if (!this.objData[this.rebuildData[i]._index]._isChecked &&
+        let count = 0
+        //o45那边会在render里使用$set方法改变disabled让其不可选，这时全选状态应该不勾选
+        for(let ind = 0; ind < this.rebuildData.length; ind ++) {
+          if(this.objData[this.rebuildData[ind]._index]._isDisabled) {
+            count ++
+          }
+        }
+        if(count === this.rebuildData.length) {
+          isSelectAll = false
+        }else {
+          for (let i = 0; i < this.rebuildData.length; i++) {
+            if (!this.objData[this.rebuildData[i]._index]._isChecked &&
               !this.objData[this.rebuildData[i]._index]._isDisabled) {
-            isSelectAll = false
-            break
+              isSelectAll = false
+              break
+            }
           }
         }
         return isSelectAll
@@ -1519,6 +1530,9 @@ export default {
       }
     },
     clickCurrentRow(_index,curIndex) {
+      if(this.objData[_index]._disabled) {
+        return
+      }
       this.baseInx = curIndex
       this.offsetInx = curIndex
       if (!this.rowSelect) {
@@ -1579,6 +1593,9 @@ export default {
         )
     },
     toggleSelect(_index, curIndex) {
+      if(this.objData[_index]._disabled) {
+        return
+      }
       if(this.highlightRow){
         this.focusIndex = curIndex
       }

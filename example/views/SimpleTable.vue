@@ -112,10 +112,12 @@ export default {
           ellipsis:true,
           key: 'securityCode',
           sortable:true,
-//          render: (h, params) => {
-//            this.$set(params.row, '_isDisabled', true)
-//            return h('span',params.row.securityCode)
-//          },
+          render: (h, params) => {
+            if(params.row.securityCode === '600000') {
+              this.$set(this.bigData[params.index], '_disabled', true)
+            }
+            return h('span',params.row.securityCode)
+          },
         },
         {
           title: '银行',

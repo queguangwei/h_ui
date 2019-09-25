@@ -16,7 +16,7 @@
         <div class="verify-tip verify-bottom"
              v-if="isShowError&&showModal"
              :style="{left: `${msgOffset}px`}">
-          <div class="verify-tip-arrow"></div>
+          <div class="verify-tip-arrow" :style="verifyTipArrowStyle"></div>
           <div class="verify-tip-inner" :style="verifyTipStyle" :title="validateMessage">
             <h-icon v-if="showCloseIcon" :name="closeName" @on-click="closeTip" :size="12"></h-icon>
             {{validateMessage}}
@@ -129,6 +129,10 @@ export default {
     showCloseIcon:{
       type: Boolean,
       default: false
+    },
+    tipWidth: {
+      type: [Number, String],
+      default: 0
     }
   },
   data() {
@@ -264,8 +268,26 @@ export default {
     },
     verifyTipStyle(){
       let style={}
-      style.maxWidth=(this.$children[0].$el.clientWidth-15)+"px"
+      if(window.isO45 && this.tipWidth) {
+        console.log(this.$children[0].$el.clientWidth)
+        style.width = this.tipWidth + 'px'
+        style.maxWidth = this.tipWidth + 'px'
+      }else {
+        style.maxWidth=(this.$children[0].$el.clientWidth - 15) + 'px'
+      }
       return  style
+    },
+    verifyTipArrowStyle() {
+      let style={}
+      if(window.isO45 && this.tipWidth) {
+        let cwidth = this.$children[0].$el.clientWidth
+        if(cwidth <= this.tipWidth) {
+          style.left = this.$children[0].$el.clientWidth / 2 + 'px'
+        }else {
+          style.left = this.tipWidth / 2 + 'px'
+        }
+      }
+      return style
     }
   },
   methods: {

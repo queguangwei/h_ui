@@ -20,10 +20,12 @@
     </h-row>
     <br>
     <h1>msgbox</h1>
+    <h2>buttonGroup</h2>
     <h-button-group>
       <h-button @click="showBox = true" style="margin-right: 10px;">打开弹窗</h-button>
       <h-button type="primary" @on-click="changeShow">打开弹框</h-button>
     </h-button-group>
+    <h2>checkboxGroup</h2>
     <h-checkbox-group v-model="btncheck">
       <h-checkbtn value="twitter" label="Twitter" disabled>
       </h-checkbtn>
@@ -46,7 +48,7 @@
       <p>对话框内容</p>
       <p>对话框内容</p>
     </h-msg-box>
-    <h-msg-box v-model="show" escClose :mask-closable="false" @on-cancel="cancel1" width="580" height="400">
+    <h-msg-box v-model="show" escClose :mask-closable="false" @on-cancel="cancel1" width="600" height="400">
       <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
         <h-form-item label="singleSelect" prop="city" required>
           {{formValidate.city}}
@@ -57,27 +59,18 @@
             <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
           </h-single-select>
         </h-form-item>
-        <h-form-item label="input" prop="name" required>
+        <h-form-item label="input" prop="name" required :tipWidth="300">
           <h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>
         </h-form-item>
         <h-form-item label="typefield" prop="mail">
           <h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >
         </h-form-item>
-        <h-form-item label="select" prop="city1">
-          <h-select v-model="formValidate.city1"  multiple placeholder="请选择所在地" class="curItemClass" >
-            <h-option value="beijing">北京市</h-option>
-            <h-option value="shanghai">上海市</h-option>
-            <h-option value="shenzhen">深圳市</h-option>
-          </h-select>
+        <h-form-item label="tree">
+          <h-select-tree v-model="formValidate.tree" :data="treeData" ref="tree" filterable></h-select-tree>
         </h-form-item>
         <h-form-item prop="date" label="data">
           <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
         </h-form-item>
-        <!--<h-form-item label="valueRemote1" prop="valueRemote1" required>-->
-          <!--<h-multi-select v-model="formValidate.valueRemote1" :isString="isstring" class="curItemClass" specialVal="value1" accuFilter newSearchModel>-->
-            <!--<h-multi-block :data="remotebigData"></h-multi-block>-->
-          <!--</h-multi-select>-->
-        <!--</h-form-item>-->
         <h-form-item prop="time" label="time">
           <h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time" class="curItemClass" ></h-time-picker>
         </h-form-item>
@@ -102,7 +95,7 @@
     <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
       <h-form-item label="股票代码" prop="stockCode">
         <h-single-select class="curItemClass" v-model="formCustom.stockCode" placeholder="请选择..."
-                         filterable widthAdaption autoPlacement
+                          widthAdaption autoPlacement
                          ref="single">
           <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
         </h-single-select>
@@ -124,12 +117,14 @@
         <h-input type="text" v-model="formCustom.age" number></h-input>
       </h-form-item>
       <h-form-item label="日期">
-        <h-date-picker type="date" placeholder="选择日期" showToday autoPlacement v-model="formCustom.date" class="curItemClass"></h-date-picker>
+        <h-date-picker type="date" ref="datepicker" placeholder="选择日期" showToday autoPlacement v-model="formCustom.date" class="curItemClass"></h-date-picker>
       </h-form-item>
-
+      <h-form-item label="fastdate">
+        <h-fast-date type="date" placeholder="选择日期" ref="datepicker" class="curItemClass"></h-fast-date>
+      </h-form-item>
       <h-form-item>
         <h-button type="primary" @click="handleSubmit('formCustom')">提交</h-button>
-        <h-button type="ghost" @click="handleReset('formCustom')" style="margin-left: 8px">重置</h-button>
+        <h-button type="ghost" @click="handleReset('formCustom')" style="margin-left: 8px;float: right;">重置</h-button>
       </h-form-item>
     </h-form>
     <h1>table</h1>
@@ -212,7 +207,6 @@ export default {
       formValidate: {
         name: "",
         mail: "",
-        city1:'',
         city: '',
         gender: "",
         interest: [],
@@ -220,6 +214,7 @@ export default {
         time: "",
         desc: "",
         valueRemote1: [],
+        tree: ''
       },
       colWidth:['120','150'],
       showCol:['label1'],
@@ -265,8 +260,36 @@ export default {
         passwd: '',
         passwdCheck: '',
         age: '',
-        stockCode: ''
+        stockCode: '',
       },
+      treeData: [
+        {
+          title: 'parent',
+          id: '1-0',
+          expand: true,
+          children: [
+            {
+              title: 'child1',
+              id: '1-1',
+              expand: true,
+              children: [
+                {
+                  title: 'child1-1-1',
+                  id: '1-1-1'
+                },
+                {
+                  title: 'child1-1-2',
+                  id: '1-1-2'
+                }
+              ]
+            },
+            {
+              title: 'child2',
+              id: '1-2',
+              children: []
+            }
+          ] }
+      ],
       ruleCustom: {
         face_balance: [{
           validator: (rule, value, callback)=>{
@@ -495,6 +518,7 @@ export default {
     },
     handleReset (name) {
 //      this.$refs.single.clearSingleSelect()
+//      this.$refs.datepicker.fold()
       this.$refs[name].resetFields();
     },
     remoteMethod1(query) {
@@ -523,8 +547,11 @@ export default {
       this.formValidate.city=''
     },
     changeShow(){
-      this.show=true
-      this.$refs.formValidate.firstNodeFocused()
+      this.$refs.formValidate.resetFields()
+      setTimeout(() =>{
+        this.show=true
+        this.$refs.formValidate.firstNodeFocused()
+      },300)
     },
     cancel1() {
       this.$refs.formValidate.resetFields()
