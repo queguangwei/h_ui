@@ -19,6 +19,7 @@
         v-show="!(!!localeNoDataText && (!data || data.length === 0))">
         <Tree-table
           ref="tbody"
+          :key="updateKey"
           :styleObject ="tableBodyStyle"
           :indent ="Number(0)"
           :data="rebuildData"
@@ -54,6 +55,7 @@
         </div>
         <div :class="[prefixCls + '-fixed-body']" :style="fixedBodyStyle" ref="fixedBody" v-show="!(!!localeNoDataText && (!data || data.length === 0))" @mousewheel="handleFixedMousewheel" @DOMMouseScroll="handleFixedMousewheel">
           <Tree-table
+            :key="updateKey"
             ref="tbody"
             fixed="left"
             :styleObject ="tableStyle"
@@ -92,6 +94,7 @@
         </div>
         <div :class="[prefixCls + '-fixed-body']" :style="fixedBodyStyle" ref="fixedRightBody" v-show="!(!!localeNoDataText && (!data || data.length === 0))" @mousewheel="handleFixedMousewheel" @DOMMouseScroll="handleFixedMousewheel">
           <Tree-table
+            :key="updateKey"
             ref="tbody"
             fixed="right"
             :styleObject ="tableStyle"
@@ -289,7 +292,8 @@ export default {
       selection:{},
       buttomNum:null,
       rebuildData:[],
-      isSelectAll:null
+      isSelectAll:null,
+      updateKey: 1
     };
   },
   computed: {
@@ -826,15 +830,15 @@ export default {
     },
     setStatus(col,status){
       if(!this.indexAndId[col.id]){
-        this.indexAndId[col.id]= this.checkedObj.length;
+        this.indexAndId[col.id]= this.checkedObj.length
         this.checkedObj.push({
           id:col.id,
-          checked:status,
-          _isExpand:col.expand||null,
+          checked: typeof status !== 'undefined' ? status : (col.checked + '') === 'true',
+          _isExpand: (col.expand + '') === 'true' || null,
           _collectionState: col.expand||false,
           _parentId:col._parentId,
           _isHighlight:col.highlight||false,
-           _isHover:false,
+          _isHover:false,
           row:col,
         })
       }
@@ -856,7 +860,15 @@ export default {
       findRow(data,id)
       return result
     },
-
+    /**
+     * 强制刷新表格状态
+     */
+    forceUpdate() {
+      this.indexAndId = {}
+      this.checkedObj = []
+      this.isSelectAll = null
+      this.updateKey++
+    }
   },
   created () {
     if (!this.context) this.currentContext = this.$parent;
