@@ -175,10 +175,6 @@ export default {
     height: {
       type: [Number, String]
     },
-    stripe: {
-      type: Boolean,
-      default: false
-    },
     border: {
       type: Boolean,
       default: true
@@ -262,7 +258,7 @@ export default {
       default () {
         return '';
       }
-    },
+    }
   },
   data () {
     return {
@@ -392,8 +388,7 @@ export default {
           [`${prefixCls}-${this.size}`]: !!this.size,
           [`${prefixCls}-border`]: this.border,
           [`${prefixCls}-with-fixed-top`]: !!this.height,
-          [`${prefixCls}-can-hover`]: !this.disabledHover,
-          [`${prefixCls}-can-stripe`]: this.stripe
+          [`${prefixCls}-can-hover`]: !this.disabledHover
         }
       ];
     },
@@ -776,6 +771,11 @@ export default {
         }
         this.$set(this.checkedObj[index],'_isExpand',status)
       }
+    },
+    expandAll(status) {
+      this.checkedObj.forEach((col, inx) => {
+        this.$set(col,'_isExpand',status)
+      })
     },
     selectRow(id,status=true){
       if(!this.data || this.data.length==0) return;

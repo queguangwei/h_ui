@@ -130,15 +130,81 @@
     <h1>table</h1>
     <h-table :columns="columns" :data="data0" :summationData="summationData1" height="300"
              border :highlight-row="true" :loading="loading" headAlgin="center" bodyAlgin="right"
-             canDrag :lastColWidth="150"
+             canDrag :lastColWidth="150" :minDragWidth="40" :minColWidth="60"
              @on-sort-change="sortchange">
       <span slot="loading">我是自定义加载！！！</span>
     </h-table>
     <h1>tree</h1>
     <h-tree :data="baseData" show-checkbox></h-tree>
+    <h1>simpleTreeGrid</h1>
+    <h-button type="primary" @click="expandAll">展开</h-button>
+    <h-button @click="fold">收起</h-button>
+    <h-simple-tree-gird :columns="columns1" ref="treeGrid" :data="treedata" canDrag :height="500" @on-expand="expand"></h-simple-tree-gird>
   </div>
 </template>
 <script>
+  let bigTreeData = [];
+  for(var i=0;i<30;i++){
+    let obj =  {
+      id: i,
+      name: '王小明'+i,
+      age: 18,
+      address: '北京市朝阳区芍药居',
+      money: '120.00',
+      cardId: '6223 ',
+      city: '北京',
+      dating:'2018',
+      timing:'16',
+      tree: '345',
+    }
+    bigTreeData.push(obj)
+  }
+  for(var i=30;i<100;i++){
+    let obj =  {
+      id: i,
+      name: '王小明'+i,
+      age: 18,
+      address: '北京市朝阳区芍药居',
+      money: '120.00',
+      cardId: '6223 ',
+      city: '北京',
+      dating:'2018',
+      timing:'16',
+      _parentId:parseInt(Math.random()*30,10)
+    }
+    bigTreeData.push(obj)
+  }
+  for(var i=100;i<200;i++){
+    let obj =  {
+      id: i,
+      name: '王小明'+i,
+      age: 18,
+      address: '北京市朝阳区芍药居',
+      money: '120.00',
+      cardId: '6223 ',
+      city: '北京',
+      dating:'2018',
+      timing:'16',
+      _parentId:Math.ceil(Math.random()*100),
+    }
+    bigTreeData.push(obj)
+  }
+  for(var i=200;i<400;i++){
+    let obj =  {
+      id: i,
+      name: '王小明'+i,
+      age: 18,
+      address: '北京市朝阳区芍药居',
+      money: '120.00',
+      cardId: '6223 ',
+      city: '北京',
+      dating:'2018',
+      timing:'16',
+      _parentId:Math.ceil(Math.random()*200),
+    }
+    bigTreeData.push(obj)
+  }
+
   let bigData = [];
   for(let i=0;i<2000;i++){
     let obj={};
@@ -147,6 +213,7 @@
     bigData.push(obj);
   }
   var num = 0;
+
 import { enterHandler1 } from "../../src/util/tools.js"
 export default {
   data () {
@@ -335,21 +402,18 @@ export default {
         {
           title: '年龄',
           key: 'age',
-          width: 100,
           ellipsis:true,
           sortable: true
         },
         {
           title: '省份',
           key: 'province',
-          width: 150,
           ellipsis:true,
           type: 'html'
         },
         {
           title: '市区',
           key: 'city',
-          width: 100,
           ellipsis:true,
         },{
           title: '市区1',
@@ -360,7 +424,6 @@ export default {
           type: 'text',
           title: '地址',
           key: 'address',
-          width: 200,
           ellipsis:true
         },{
           type: 'text',
@@ -371,7 +434,6 @@ export default {
         {
           title: '邮编',
           key: 'zip',
-          width: 120,
           ellipsis:true,
           headerTooltip: true
         },{
@@ -397,7 +459,7 @@ export default {
                   size: 'small'
                 }
               }, '编辑')
-            ]);
+            ])
           },
           ellipsis:true
         }
@@ -469,8 +531,10 @@ export default {
         }
       ],
       summationData1: [{
-        name: 'qeqweqw',
+        name: '汇总',
         age: 123123123,
+        city: 'gtryjuyhgfg',
+        province: 'fsegergeryh',
         address: 'qqweqwe'
       }],
       baseData: [{
@@ -500,7 +564,52 @@ export default {
             title: 'leaf2',
           }]
         }]
-      }]
+      }],
+      columns1: [
+        {
+          title: '姓名',
+          key: 'name',
+          width: 300,
+          ellipsis:true,
+          // hiddenCol:true,
+        },
+        {
+          title: '年龄',
+          width: 200,
+          key: 'age',
+          align: 'center',
+        },
+        {
+          width: 100,
+          title: '地址',
+          ellipsis: true,
+          key: 'address',
+          align: 'right',
+        },
+        {
+          title: '金额',
+          width: 200,
+          key: 'money',
+        },
+        {
+          title: '卡号',
+          width: 200,
+          key: 'cardId',
+        },
+        {
+          title: '地区',
+          width: 200,
+          key: 'city',
+          multiple:false,
+        },
+        {
+          title: '下拉树',
+          width: 200,
+          key: 'tree',
+        }
+      ],
+      baseTreeData: [],
+      treedata: [],
     }
   },
   methods: {
@@ -562,6 +671,33 @@ export default {
     },
     cancel () {
       this.$hMessage.info('点击了取消');
+    },
+    convertTreeData(rows, attributes) {
+      var keyNodes = {}, parentKeyNodes = {};
+      for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        row.id = row[attributes.keyField];
+        row.parentId = row[attributes.parentKeyField];
+        row.children = [];
+        keyNodes[row.id] = row;
+        if (parentKeyNodes[row.parentId]) { parentKeyNodes[row.parentId].push(row); }
+        else { parentKeyNodes[row.parentId] = [row]; }
+        var children = parentKeyNodes[row.id];
+        if (children) { row.children = children; }
+        var pNode = keyNodes[row.parentId];
+        if (pNode) { pNode.children.push(row); }
+      }
+      return parentKeyNodes[attributes.rootParentId];
+    },
+    expandAll(){
+      this.$refs.treeGrid.expandAll(true)
+    },
+    fold() {
+      this.$refs.treeGrid.expandAll(false)
+    },
+    expand(data,status){
+      console.log(data)
+      console.log(status)
     }
   },
   created() {
@@ -572,6 +708,15 @@ export default {
       enterHandler1(this.$refs.formValidate, event);
 //      enterHandler1(this.$refs.formCustom, event);
     })
+    let attributes = {
+      keyField: 'id',
+      parentKeyField: '_parentId',
+      expanded: 'expand',
+      checked: 'checked',
+      rootKey: 'root'
+    }
+    this.baseTreeData = this.convertTreeData(bigTreeData, attributes);
+    this.treedata=this.baseTreeData;
   },
 }
 </script>
