@@ -1,6 +1,7 @@
 <template>
   <div>
     <h-button @on-click="loadData">加载数据</h-button>
+    <h-button @on-click="loadDataAndResetChecked">重置勾选，加载数据</h-button>
     <h-button @on-click="removeData">清空数据</h-button>
     <h-button @on-click="changeData1('1103')">展开第一层</h-button>
     <h-button @on-click="changeData('1103')">展开关闭某行</h-button>
@@ -12,9 +13,10 @@
     <h-button @on-click="selectAll(true)">全选</h-button>
     <h-button @on-click="selectAll(false)">非全选</h-button>
     <h-button @click="modify">修改数据</h-button>
+    <h-button @click="getSelection">获取选中行</h-button>
     <!-- isCheckbox checkStrictly -->
     <!-- selectRoot -->
-    <h-simple-tree-gird canDrag canMove @on-expand="load" ref="treeGird" selectRoot :columns="columns1" isCheckbox :data="treedata" :height="400" @on-select-root="selectChange" >
+    <h-simple-tree-gird stripe canDrag headSelection canMove @on-expand="load" ref="treeGird" selectRoot :columns="columns1" isCheckbox :data="treedata" :height="400" @on-select-root="selectChange" >
       <span slot="loading">1244</span>
     </h-simple-tree-gird>
   </div>
@@ -171,7 +173,7 @@ export default {
     },
     loadData(){
       let old = new Date().getTime()
-      this.treedata=this.baseData
+      this.treedata = this.baseData
       // this.treedata=bigData;
       // this.treedata = jsonData.slice(0, 100);
       this.$nextTick(() => {
@@ -183,8 +185,16 @@ export default {
       //   this.$refs.treeGird.checkedRow(3, true)
       // }, 1000)
     },
+    loadDataAndResetChecked() {
+      this.$refs.treeGird.clearSelected()
+      this.treedata = this.baseData.slice(1,2)
+      this.$refs.treeGird.forceUpdate()
+    },
     selectChange(data) {
       console.log(data)
+    },
+    getSelection() {
+      console.log(this.$refs.treeGird.getSelection())
     },
     expand(data,status){
       console.log(data)

@@ -39,11 +39,12 @@
                   v-on:mouseout="mouseout($event,column,index)"
                   v-on:mousemove="mousemove($event,column,index)"
                   v-on:mouseup="mouseup($event,column,index)"
-                  :class="alignCls(column)"   style="position:relative">
+                  :class="alignCls(column)"   :style="{position: newSort ? 'relative' : 'static'}">
                 <table-cell :column="column"
                             :index="index"
                             :checked="isSelectAll"
                             :prefixCls="prefixCls"
+                            :isFilter = "isFilter"
                             :titleEllipsis="titleEllipsis">
                 </table-cell>
               </th>
@@ -161,6 +162,7 @@
                               :index="index"
                               :checked="isSelectAll"
                               :prefixCls="prefixCls"
+                              :isFilter = "isFilter"
                               :titleEllipsis="titleEllipsis">
                   </table-cell>
                 </th>
@@ -505,6 +507,11 @@ export default {
     noNeedOtherCol: {
       type: Boolean,
       default: false
+    },
+    // 是否进行过滤，无限滚动加载数据的场景不适用， 仅支持通过simpleTable显式分页的场景
+    isFilter: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -646,7 +653,7 @@ export default {
       }
     },
     localeNoFilteredDataText() {
-      if (this.noFilteredDataText === undefined) {
+      if (this.noFilteredDataText === undefined && this.t) {
         return this.t('i.table.noFilteredDataText')
       } else {
         return this.noFilteredDataText
@@ -1833,10 +1840,105 @@ export default {
         this.updateVisibleData()
       })
     },
+    /* 
+     * Function: 过滤数据
+     */
+    filterData(data, column) {
+      return data.filter(row => {
+        //如果定义了远程过滤方法则忽略此方法
+        if (typeof column.filterRemote === 'function') return true
+
+        let status = !column._filterChecked.length
+        for (let i = 0; i < column._filterChecked.length; i++) {
+          status = column.filterMethod(column._filterChecked[i], row)
+          if (status) break
+        }
+        return status
+      })
+    },
+    filterOtherData(data, index) {
+      let column = this.cloneColumns[index]
+      if (typeof column.filterRemote === 'function') {
+        column.filterRemote.call(
+          this.$parent,
+          column._filterChecked,
+          column.key,
+          column
+        )
+      }
+
+      this.cloneColumns.forEach((col, colIndex) => {
+        if (colIndex !== index) {
+          data = this.filterData(data, col)
+        }
+      })
+      return data
+    },
+    handleFilter(_index, isIndex) {
+      let index
+      if (isIndex) {
+        index = _index
+      } else {
+        index = this.getIndex(_index)
+      }
+      const column = this.cloneColumns[index]
+      let filterData = this.makeDataWithSort()
+
+      // filter others first, after filter this column
+      filterData = this.filterOtherData(filterData, index)
+      this.rebuildData = this.filterData(filterData, column)
+      this.focusIndex = -1
+      this.updateVisibleData(0)
+      this.cloneColumns[index]._isFiltered = true
+      this.cloneColumns[index]._filterVisible = false
+    },
+    // 隐藏过滤
+    handleFilterHide(_index) {
+      // clear checked that not filter now
+      let index = this.getIndex(_index)
+      if (!this.cloneColumns[index]._isFiltered) this.cloneColumns[index]._filterChecked = []
+      this.focusIndex = -1
+      this.updateVisibleData(0)
+    },
+    // 过滤项选中
+    handleFilterSelect(_index, value) {
+      let index = this.getIndex(_index)
+      this.cloneColumns[index]._filterChecked = [value]
+      this.handleFilter(index, true)
+    },
+    // filter 重置
+    handleFilterReset(_index) {
+      let index = this.getIndex(_index)
+      this.cloneColumns[index]._isFiltered = false
+      this.cloneColumns[index]._filterVisible = false
+      this.cloneColumns[index]._filterChecked = []
+
+      let filterData = this.makeDataWithSort()
+      filterData = this.filterOtherData(filterData, index)
+      this.rebuildData = filterData
+      this.focusIndex = -1
+      this.updateVisibleData(0)
+    },
+    /* 
+     * 获取过滤数据， 仅在配置isFilter后生效
+     */
     makeDataWithFilter() {
       let data = this.makeData()
-      // this.cloneColumns.forEach(col => data = this.filterData(data, col));
+      if (this.isFilter) this.cloneColumns.forEach(col => data = this.filterData(data, col));
       return data
+    },
+    /**
+     * 获取所有列选中的过滤条件
+     */
+    getFilters() {
+      const cloneColumns = this.cloneColumns
+      const filters = {}
+      cloneColumns.forEach(col => {
+        if (col.filters && (col.filterMethod || col.filterRemote) && col.key) {
+          filters[col.key] = col._filterChecked
+        }
+      })
+      return filters
     },
     selectRange() {
       // this.$nextTick(()=>{
@@ -2100,6 +2202,7 @@ export default {
     makeDataWithSortAndFilter() {
       // let data = this.makeData();
       let data = this.makeDataWithSort()
+      if (this.isFilter) this.cloneColumns.forEach(col => (data = this.filterData(data, col)))
       return data
     },
     makeObjData() {
