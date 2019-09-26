@@ -128,7 +128,9 @@ export const SimpleMultiSelectApi = {
      */
     toggleSelect(status) {
       if (this.blockVm) {
-        this.isInputting = false;
+        this.isKeyDown = false; // switch off key down status
+        this.isInputting = false; // switch off input status
+        this.keyboardEvent = null; // reset keyboard event
         this.selectedRecords = status
           ? this.blockVm.blockData
               .filter(({ disabled, value }) => {
