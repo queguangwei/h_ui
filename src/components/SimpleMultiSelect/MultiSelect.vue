@@ -191,7 +191,11 @@ export default {
               this.selectedRecords = selectedRecords;
               this.$nextTick(() => {
                 this.$emit("on-query-change", originalKeyword === null ? "" : originalKeyword);
-                this.blockVm.onQuery(keyword === null ? "" : keyword);
+                if (this.clipboardEvent && this.clipboardEvent.type === "paste") {
+                  this.clipboardEvent = null;
+                } else {
+                  this.blockVm.onQuery(keyword === null ? "" : keyword);
+                }
               });
             });
           });
@@ -200,7 +204,11 @@ export default {
           this.selectedRecords = selectedRecords;
           this.$nextTick(() => {
             this.$emit("on-query-change", keyword === null ? "" : keyword);
-            this.blockVm.onQuery(keyword === null ? "" : keyword);
+            if (this.clipboardEvent && this.clipboardEvent.type === "paste") {
+              this.clipboardEvent = null;
+            } else {
+              this.blockVm.onQuery(keyword === null ? "" : keyword);
+            }
           });
         }
       }
@@ -215,6 +223,7 @@ export default {
         this.blockVm && this.blockVm.reset(); // reset block vm
         this.isKeyDown = false; // switch off key down status
         this.isInputting = false; // switch off input status
+        this.keyboardEvent = null; // reset keyboard event
         this.$emit("on-query-change", "");
         if (this.remote && this.remoteMethod) {
           this.remoteMethod("", () => {
@@ -288,6 +297,7 @@ export default {
       this.$emit("on-keydown", this.magicString, e);
     },
     onInputPaste(e) {
+      this.clipboardEvent = e; // cache current clipboard event
       this.$emit("on-paste", { oldval: this.magicString, newval: e.clipboardData.getData("text/plain") });
     },
     onArrowClick() {
@@ -335,7 +345,9 @@ export default {
   created() {
     this.$on("on-ready", (blockVm, records) => {
       this.blockVm = blockVm; // block instance
+      this.isKeyDown = false; // switch off key down status
       this.isInputting = false; // switch off input status
+      this.keyboardEvent = null; // reset keyboard event
       this.selectedRecords = records.filter(({ value }) => this.model.includes(value));
     });
     this.$on("on-data-change", (blockVm, records) => {
@@ -344,7 +356,9 @@ export default {
     this.$on("on-selected", (blockVm, record) => {
       if (this.selectedRecords.some(item => item.label === record.label && item.value === record.value)) return false;
       else {
+        this.isKeyDown = false;
         this.isInputting = false;
+        this.keyboardEvent = null;
         this.selectedRecords.push(record);
         this.$nextTick(() => {
           this.$refs.input.focus();
@@ -352,7 +366,9 @@ export default {
       }
     });
     this.$on("on-cancel-selected", (blockVm, record) => {
+      this.isKeyDown = false;
       this.isInputting = false;
+      this.keyboardEvent = null;
       this.selectedRecords = this.selectedRecords.filter(item => item.label !== record.label && item.value !== record.value);
       this.$nextTick(() => {
         this.$refs.input.focus();
