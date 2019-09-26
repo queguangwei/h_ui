@@ -11,7 +11,7 @@ $loading-bar-prefix-cls: "#{$css-prefix}loading-bar";
   &-inner {
     transition: width $transition-time linear;
     &-color-primary {
-      background-color: $primary-color;
+      background-color: $loading-bar-normal-color;
     }
     &-failed-color-error {
       background-color: $error-color;
