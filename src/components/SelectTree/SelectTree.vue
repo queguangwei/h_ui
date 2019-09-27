@@ -592,14 +592,14 @@ export default{
     },
     handleBlur() {
       // 单选，回填input值
-      if (this.query !== this.model && !this.showCheckbox && !this.showBottom) {
+      if (this.query !== this.viewValue && !this.showCheckbox && !this.showBottom) {
         if (this.query === '') {
           this.model = ''
           if (this.remote) {
             this.lastquery = ''
           }
         } else {
-          this.query = this.model
+          this.query = this.viewValue
         }
       }
       this.$emit('on-blur')
