@@ -205,7 +205,7 @@
                         :class="alignCls(column, row,'left')"
                         :data-index="row._index+1"
                         :key="column._index">
-                      <div :class="classesTd(column)">
+                      <div :class="classesTd(column)" :title="column.showTitle?row[column.key]:null">
                         <template v-if="column.type === 'index'&&!splitIndex">{{row._index+1}}</template>
                         <template v-if="column.type === 'selection'">
                           <Checkbox :size="calcCheckboxSize(column.checkboxSize)"
@@ -424,10 +424,6 @@ export default {
       default: null
     },
     selectOption: {
-      type: Boolean,
-      default: false
-    },
-    showTitle: {
       type: Boolean,
       default: false
     },
@@ -1840,7 +1836,7 @@ export default {
         this.updateVisibleData()
       })
     },
-    /* 
+    /*
      * Function: 过滤数据
      */
     filterData(data, column) {
@@ -1919,7 +1915,7 @@ export default {
       this.focusIndex = -1
       this.updateVisibleData(0)
     },
-    /* 
+    /*
      * 获取过滤数据， 仅在配置isFilter后生效
      */
     makeDataWithFilter() {

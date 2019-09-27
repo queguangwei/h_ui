@@ -81,12 +81,10 @@ export default {
       addData:[],
       bigData:[],
       columnsBig1:[
-//        {
-//          type: 'index',
-//          align: 'center',
-//          width:200,
-//          fixed:'left',
-//        },
+        {
+          type: 'index',
+          align: 'center',
+        },
         {
           type: 'selection',
           align: 'center',
@@ -123,6 +121,8 @@ export default {
           title: '银行',
           key: 'securityName',
           minWidth:200,
+          fixed:'left',
+          showTitle:true
         },
         {
           title: '年龄',

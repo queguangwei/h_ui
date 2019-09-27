@@ -426,7 +426,6 @@ export default {
           // esc 关闭前判断 beforeEscClose 函数返回
           let flag = this.beforeEscClose && this.beforeEscClose()
           if (!flag) return
-
           this.$emit('on-cancel')
           this.close()
         }

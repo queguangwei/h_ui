@@ -124,13 +124,13 @@
       </h-form-item>
       <h-form-item>
         <h-button type="primary" @click="handleSubmit('formCustom')">提交</h-button>
-        <h-button type="ghost" @click="handleReset('formCustom')" style="margin-left: 8px;float: right;">重置</h-button>
+        <h-button type="ghost" @click="handleReset('formCustom')" style="margin-left: 8px;">重置</h-button>
       </h-form-item>
     </h-form>
     <h1>table</h1>
-    <h-table :columns="columns" :data="data0" :summationData="summationData1" height="300"
-             border :highlight-row="true" :loading="loading" headAlgin="center" bodyAlgin="right"
-             canDrag :lastColWidth="150" :minDragWidth="40" :minColWidth="60"
+    <h-table :columns="columns" :data="data0" :summationData="summationData1" :loading="loading"
+             border :highlight-row="true"  headAlgin="center" bodyAlgin="left"
+             canDrag :lastColWidth="150" :minDragWidth="40" :minColWidth="60" notSetWidth autoHeadWidth
              @on-sort-change="sortchange">
       <span slot="loading">我是自定义加载！！！</span>
     </h-table>
@@ -401,43 +401,40 @@ export default {
         },
         {
           title: '年龄',
+          width:150,
           key: 'age',
           ellipsis:true,
           sortable: true
         },
         {
           title: '省份',
+          width:150,
           key: 'province',
           ellipsis:true,
           type: 'html'
         },
         {
           title: '市区',
+          width:150,
           key: 'city',
           ellipsis:true,
-        },{
-          title: '市区1',
-          key: 'city',
-          ellipsis:true
         },
         {
           type: 'text',
+          width: 150,
           title: '地址',
-          key: 'address',
-          ellipsis:true
-        },{
-          type: 'text',
-          title: '地址1',
           key: 'address',
           ellipsis:true
         },
         {
           title: '邮编',
+          width:150,
           key: 'zip',
           ellipsis:true,
           headerTooltip: true
         },{
           title: '邮编1',
+          width:150,
           key: 'zip',
           ellipsis:true,
           headerTooltip: true
@@ -460,8 +457,7 @@ export default {
                 }
               }, '编辑')
             ])
-          },
-          ellipsis:true
+          }
         }
       ],
       data0: [
@@ -511,22 +507,6 @@ export default {
           address: '北京市海淀区西二旗',
           province: '北京市',
           city: '海淀区',
-          zip: 100000
-        },
-        {
-          name: '李小红',
-          age: 30,
-          address: '上海市浦东新区世纪大道',
-          province: '上海市',
-          city: '浦东新区',
-          zip: 100000
-        },
-        {
-          name: '周小伟',
-          age: 26,
-          address: '深圳市南山区深南大道',
-          province: '广东',
-          city: '南山区',
           zip: 100000
         }
       ],
@@ -658,10 +638,8 @@ export default {
     },
     changeShow(){
       this.$refs.formValidate.resetFields()
-      setTimeout(() =>{
-        this.show=true
-        this.$refs.formValidate.firstNodeFocused()
-      },300)
+      this.show=true
+      this.$refs.formValidate.firstNodeFocused()
     },
     cancel1() {
       this.$refs.formValidate.resetFields()

@@ -577,17 +577,6 @@ export default {
     },
     handleKeydown(e) {
       const keyCode = e.keyCode
-      if (this.visible) {
-        // Esc slide-up
-        if (keyCode === 27) {
-          e.preventDefault()
-          this.fold()
-          //下拉框弹出，ESC收起面板后，焦点在输入框，内容全选
-          this.$nextTick(() => {
-            this.focus()
-          })
-        }
-      }
       // right
       if (keyCode === 39) {
         e.preventDefault()
@@ -603,6 +592,19 @@ export default {
         e.preventDefault()
         this.model = ''
         this.query = ''
+      }
+      // Esc
+      if (keyCode === 27) {
+        e.preventDefault()
+        if (this.visible) {
+          this.fold()
+          //下拉框弹出，ESC收起面板后，焦点在输入框，内容全选
+          this.$nextTick(() => {
+            this.focus()
+          })
+        }else {
+          this.blur()
+        }
       }
     },
     navigateOptions(direction) {
@@ -623,7 +625,6 @@ export default {
       })
       this.selectBlockSingle(this.focusValue)
     },
-
     resetInputState(e) {
       if (this.visible && e.keyCode == 9) {
         //153789 【TS:201907180097-资管业委会（资管）_贺文能-【需求类型】需求【需求描述】simple-select tab切换时失去焦点，不会将下拉框收起， 详见附件】
@@ -845,7 +846,6 @@ export default {
         this.$set(this.availableOptions[i], 'index', i)
       })
     })
-
   },
   beforeDestroy() {
     off(this.$refs.select, 'keydown', this.handleKeydown)
@@ -860,7 +860,6 @@ export default {
         }
         this.model = val
         // TODO
-
         if (val === '' && !this.visible) {
           this.query = ''
         }
@@ -897,7 +896,6 @@ export default {
           if (this.$refs.input) {
             this.$refs.input.blur()
           }
-
           setTimeout(() => {
             if (this.remote && this.remoteMethod) return
             this.broadcast('Block', 'on-query-change', '', true)
