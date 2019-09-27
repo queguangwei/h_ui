@@ -269,7 +269,6 @@ export default {
     verifyTipStyle(){
       let style={}
       if(window.isO45 && this.tipWidth) {
-        console.log(this.$children[0].$el.clientWidth)
         style.width = this.tipWidth + 'px'
         style.maxWidth = this.tipWidth + 'px'
       }else {
