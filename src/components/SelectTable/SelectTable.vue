@@ -17,7 +17,7 @@
         <div class="h-tag" v-for="(item, index) in selectedMultiple" v-show="item.label&&!showTotal" :key="index">
           <span class="h-tag-text" v-if="!showValue">{{ item.label }}</span>
           <span class="h-tag-text" v-if="showValue">{{ item.value }}</span>
-          <Icon name="close" @click.native.stop="removeTag(index)"></Icon>
+          <Icon name="close" @click.native.stop="removeTag(index, item)"></Icon>
         </div>
       </div>
       <!-- 下拉输入框模拟（非远程搜索时渲染）  -->
@@ -1001,9 +1001,14 @@ export default {
       }
       this.toggleMultipleSelected(this.model, init)
     },
-    removeTag(index) {
+    removeTag(index, item) {
       if (this.disabled || !this.editable || this.readonly) {
         return false
+      }
+
+      if(item) {
+        // 修正 index 与 item 不匹配的问题
+        index = this.model.findIndex(value => value === item.value)
       }
 
       if (this.remote) {
@@ -1957,7 +1962,7 @@ export default {
           selectedResult = selectedResult === '' ? item : `${selectedResult},${item}`
         }
       }
-      this.tooltip = selectedResult
+      this.tooltip = splitSelectedMultiple.join();
       this.selectedResult = selectedResult
       this.$nextTick(() => {
         this.offsetArrow()
