@@ -477,6 +477,10 @@ export default{
       }
       this.broadcast('Option', 'on-select-close')
     },
+    //对外暴露收起弹出框fold方法
+    fold() {
+      this.visible = false
+    },
     handleClose() {
       this.hideMenu()
       if (this.isFocus) {

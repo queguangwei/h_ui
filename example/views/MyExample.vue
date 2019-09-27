@@ -20,10 +20,12 @@
     </h-row>
     <br>
     <h1>msgbox</h1>
+    <h2>buttonGroup</h2>
     <h-button-group>
       <h-button @click="showBox = true" style="margin-right: 10px;">打开弹窗</h-button>
       <h-button type="primary" @on-click="changeShow">打开弹框</h-button>
     </h-button-group>
+    <h2>checkboxGroup</h2>
     <h-checkbox-group v-model="btncheck">
       <h-checkbtn value="twitter" label="Twitter" disabled>
       </h-checkbtn>
@@ -46,38 +48,29 @@
       <p>对话框内容</p>
       <p>对话框内容</p>
     </h-msg-box>
-    <h-msg-box v-model="show" escClose :mask-closable="false" @on-cancel="cancel1" width="580" height="400">
+    <h-msg-box v-model="show" escClose :mask-closable="false" maximize @on-cancel="cancel1" width="600" height="400">
       <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
         <h-form-item label="singleSelect" prop="city" required>
           {{formValidate.city}}
           <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass"
                            remote filterable :loading="isLoading" :remote-method="remoteMethod1"
                            widthAdaption :maxDropWidth="330" transfer autoPlacement
-                           :animated="false" @on-keydown="handlekeydown">
+                           @on-keydown="handlekeydown">
             <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
           </h-single-select>
         </h-form-item>
-        <h-form-item label="input" prop="name" required>
+        <h-form-item label="input" prop="name" required :tipWidth="300">
           <h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>
         </h-form-item>
         <h-form-item label="typefield" prop="mail">
           <h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >
         </h-form-item>
-        <h-form-item label="select" prop="city1">
-          <h-select v-model="formValidate.city1"  multiple placeholder="请选择所在地" class="curItemClass" >
-            <h-option value="beijing">北京市</h-option>
-            <h-option value="shanghai">上海市</h-option>
-            <h-option value="shenzhen">深圳市</h-option>
-          </h-select>
+        <h-form-item label="tree">
+          <h-select-tree v-model="formValidate.tree" :data="treeData" ref="tree" filterable></h-select-tree>
         </h-form-item>
         <h-form-item prop="date" label="data">
           <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
         </h-form-item>
-        <!--<h-form-item label="valueRemote1" prop="valueRemote1" required>-->
-          <!--<h-multi-select v-model="formValidate.valueRemote1" :isString="isstring" class="curItemClass" specialVal="value1" accuFilter newSearchModel>-->
-            <!--<h-multi-block :data="remotebigData"></h-multi-block>-->
-          <!--</h-multi-select>-->
-        <!--</h-form-item>-->
         <h-form-item prop="time" label="time">
           <h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time" class="curItemClass" ></h-time-picker>
         </h-form-item>
@@ -102,7 +95,7 @@
     <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
       <h-form-item label="股票代码" prop="stockCode">
         <h-single-select class="curItemClass" v-model="formCustom.stockCode" placeholder="请选择..."
-                         filterable widthAdaption autoPlacement
+                          widthAdaption autoPlacement :animated="false"
                          ref="single">
           <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
         </h-single-select>
@@ -124,26 +117,94 @@
         <h-input type="text" v-model="formCustom.age" number></h-input>
       </h-form-item>
       <h-form-item label="日期">
-        <h-date-picker type="date" placeholder="选择日期" showToday autoPlacement v-model="formCustom.date" class="curItemClass"></h-date-picker>
+        <h-date-picker type="date" ref="datepicker" placeholder="选择日期" showToday autoPlacement v-model="formCustom.date" class="curItemClass"></h-date-picker>
       </h-form-item>
-
+      <h-form-item label="fastdate">
+        <h-fast-date type="date" placeholder="选择日期" ref="datepicker" class="curItemClass"></h-fast-date>
+      </h-form-item>
       <h-form-item>
         <h-button type="primary" @click="handleSubmit('formCustom')">提交</h-button>
-        <h-button type="ghost" @click="handleReset('formCustom')" style="margin-left: 8px">重置</h-button>
+        <h-button type="ghost" @click="handleReset('formCustom')" style="margin-left: 8px;float: right;">重置</h-button>
       </h-form-item>
     </h-form>
     <h1>table</h1>
     <h-table :columns="columns" :data="data0" :summationData="summationData1" height="300"
              border :highlight-row="true" :loading="loading" headAlgin="center" bodyAlgin="right"
-             canDrag :lastColWidth="150"
+             canDrag :lastColWidth="150" :minDragWidth="40" :minColWidth="60"
              @on-sort-change="sortchange">
       <span slot="loading">我是自定义加载！！！</span>
     </h-table>
     <h1>tree</h1>
     <h-tree :data="baseData" show-checkbox></h-tree>
+    <h1>simpleTreeGrid</h1>
+    <h-button type="primary" @click="expandAll">展开</h-button>
+    <h-button @click="fold">收起</h-button>
+    <h-simple-tree-gird :columns="columns1" ref="treeGrid" :data="treedata" canDrag :height="500" @on-expand="expand"></h-simple-tree-gird>
   </div>
 </template>
 <script>
+  let bigTreeData = [];
+  for(var i=0;i<30;i++){
+    let obj =  {
+      id: i,
+      name: '王小明'+i,
+      age: 18,
+      address: '北京市朝阳区芍药居',
+      money: '120.00',
+      cardId: '6223 ',
+      city: '北京',
+      dating:'2018',
+      timing:'16',
+      tree: '345',
+    }
+    bigTreeData.push(obj)
+  }
+  for(var i=30;i<100;i++){
+    let obj =  {
+      id: i,
+      name: '王小明'+i,
+      age: 18,
+      address: '北京市朝阳区芍药居',
+      money: '120.00',
+      cardId: '6223 ',
+      city: '北京',
+      dating:'2018',
+      timing:'16',
+      _parentId:parseInt(Math.random()*30,10)
+    }
+    bigTreeData.push(obj)
+  }
+  for(var i=100;i<200;i++){
+    let obj =  {
+      id: i,
+      name: '王小明'+i,
+      age: 18,
+      address: '北京市朝阳区芍药居',
+      money: '120.00',
+      cardId: '6223 ',
+      city: '北京',
+      dating:'2018',
+      timing:'16',
+      _parentId:Math.ceil(Math.random()*100),
+    }
+    bigTreeData.push(obj)
+  }
+  for(var i=200;i<400;i++){
+    let obj =  {
+      id: i,
+      name: '王小明'+i,
+      age: 18,
+      address: '北京市朝阳区芍药居',
+      money: '120.00',
+      cardId: '6223 ',
+      city: '北京',
+      dating:'2018',
+      timing:'16',
+      _parentId:Math.ceil(Math.random()*200),
+    }
+    bigTreeData.push(obj)
+  }
+
   let bigData = [];
   for(let i=0;i<2000;i++){
     let obj={};
@@ -152,6 +213,7 @@
     bigData.push(obj);
   }
   var num = 0;
+
 import { enterHandler1 } from "../../src/util/tools.js"
 export default {
   data () {
@@ -212,7 +274,6 @@ export default {
       formValidate: {
         name: "",
         mail: "",
-        city1:'',
         city: '',
         gender: "",
         interest: [],
@@ -220,6 +281,7 @@ export default {
         time: "",
         desc: "",
         valueRemote1: [],
+        tree: ''
       },
       colWidth:['120','150'],
       showCol:['label1'],
@@ -265,8 +327,36 @@ export default {
         passwd: '',
         passwdCheck: '',
         age: '',
-        stockCode: ''
+        stockCode: '',
       },
+      treeData: [
+        {
+          title: 'parent',
+          id: '1-0',
+          expand: true,
+          children: [
+            {
+              title: 'child1',
+              id: '1-1',
+              expand: true,
+              children: [
+                {
+                  title: 'child1-1-1',
+                  id: '1-1-1'
+                },
+                {
+                  title: 'child1-1-2',
+                  id: '1-1-2'
+                }
+              ]
+            },
+            {
+              title: 'child2',
+              id: '1-2',
+              children: []
+            }
+          ] }
+      ],
       ruleCustom: {
         face_balance: [{
           validator: (rule, value, callback)=>{
@@ -312,21 +402,18 @@ export default {
         {
           title: '年龄',
           key: 'age',
-          width: 100,
           ellipsis:true,
           sortable: true
         },
         {
           title: '省份',
           key: 'province',
-          width: 150,
           ellipsis:true,
           type: 'html'
         },
         {
           title: '市区',
           key: 'city',
-          width: 100,
           ellipsis:true,
         },{
           title: '市区1',
@@ -337,7 +424,6 @@ export default {
           type: 'text',
           title: '地址',
           key: 'address',
-          width: 200,
           ellipsis:true
         },{
           type: 'text',
@@ -348,7 +434,6 @@ export default {
         {
           title: '邮编',
           key: 'zip',
-          width: 120,
           ellipsis:true,
           headerTooltip: true
         },{
@@ -374,7 +459,7 @@ export default {
                   size: 'small'
                 }
               }, '编辑')
-            ]);
+            ])
           },
           ellipsis:true
         }
@@ -446,8 +531,10 @@ export default {
         }
       ],
       summationData1: [{
-        name: 'qeqweqw',
+        name: '汇总',
         age: 123123123,
+        city: 'gtryjuyhgfg',
+        province: 'fsegergeryh',
         address: 'qqweqwe'
       }],
       baseData: [{
@@ -477,7 +564,52 @@ export default {
             title: 'leaf2',
           }]
         }]
-      }]
+      }],
+      columns1: [
+        {
+          title: '姓名',
+          key: 'name',
+          width: 300,
+          ellipsis:true,
+          // hiddenCol:true,
+        },
+        {
+          title: '年龄',
+          width: 200,
+          key: 'age',
+          align: 'center',
+        },
+        {
+          width: 100,
+          title: '地址',
+          ellipsis: true,
+          key: 'address',
+          align: 'right',
+        },
+        {
+          title: '金额',
+          width: 200,
+          key: 'money',
+        },
+        {
+          title: '卡号',
+          width: 200,
+          key: 'cardId',
+        },
+        {
+          title: '地区',
+          width: 200,
+          key: 'city',
+          multiple:false,
+        },
+        {
+          title: '下拉树',
+          width: 200,
+          key: 'tree',
+        }
+      ],
+      baseTreeData: [],
+      treedata: [],
     }
   },
   methods: {
@@ -495,9 +627,10 @@ export default {
     },
     handleReset (name) {
 //      this.$refs.single.clearSingleSelect()
+//      this.$refs.datepicker.fold()
       this.$refs[name].resetFields();
     },
-    remoteMethod1(query) {
+    remoteMethod1(query, done) {
       num = num + 1
       console.log('触发远程搜索:::' + num)
       if (query !== "") {
@@ -511,6 +644,7 @@ export default {
             item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1
           );
         }, 200);
+        done()
       } else {
         this.remoteData = [];
       }
@@ -523,8 +657,11 @@ export default {
       this.formValidate.city=''
     },
     changeShow(){
-      this.show=true
-      this.$refs.formValidate.firstNodeFocused()
+      this.$refs.formValidate.resetFields()
+      setTimeout(() =>{
+        this.show=true
+        this.$refs.formValidate.firstNodeFocused()
+      },300)
     },
     cancel1() {
       this.$refs.formValidate.resetFields()
@@ -534,6 +671,33 @@ export default {
     },
     cancel () {
       this.$hMessage.info('点击了取消');
+    },
+    convertTreeData(rows, attributes) {
+      var keyNodes = {}, parentKeyNodes = {};
+      for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        row.id = row[attributes.keyField];
+        row.parentId = row[attributes.parentKeyField];
+        row.children = [];
+        keyNodes[row.id] = row;
+        if (parentKeyNodes[row.parentId]) { parentKeyNodes[row.parentId].push(row); }
+        else { parentKeyNodes[row.parentId] = [row]; }
+        var children = parentKeyNodes[row.id];
+        if (children) { row.children = children; }
+        var pNode = keyNodes[row.parentId];
+        if (pNode) { pNode.children.push(row); }
+      }
+      return parentKeyNodes[attributes.rootParentId];
+    },
+    expandAll(){
+      this.$refs.treeGrid.expandAll(true)
+    },
+    fold() {
+      this.$refs.treeGrid.expandAll(false)
+    },
+    expand(data,status){
+      console.log(data)
+      console.log(status)
     }
   },
   created() {
@@ -544,6 +708,15 @@ export default {
       enterHandler1(this.$refs.formValidate, event);
 //      enterHandler1(this.$refs.formCustom, event);
     })
+    let attributes = {
+      keyField: 'id',
+      parentKeyField: '_parentId',
+      expanded: 'expand',
+      checked: 'checked',
+      rootKey: 'root'
+    }
+    this.baseTreeData = this.convertTreeData(bigTreeData, attributes);
+    this.treedata=this.baseTreeData;
   },
 }
 </script>

@@ -474,6 +474,9 @@ export default {
       this.visible = status
       this.$refs.pickerPanel.onToggleVisibility(status)
     },
+    fold() {
+      this.visible = false
+    },
     focus() {
       if (this.disabled) return false
       //       this.$nextTick(()=>{
