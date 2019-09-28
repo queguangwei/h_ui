@@ -103,6 +103,11 @@ export const SimpleMultiSelectApi = {
       type: String,
       default: ""
     },
+    // 是否开启下拉框动画效果
+    animated: {
+      type: Boolean,
+      default: true
+    },
 
     // 设置输入框为禁用状态
     disabled: {

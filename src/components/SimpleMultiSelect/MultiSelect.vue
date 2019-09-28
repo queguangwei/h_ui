@@ -33,6 +33,7 @@
       ref="dropdown"
       v-transfer-dom
       :show="isDropdownVisible"
+      :animated="animated"
       :dropWidth="dropWidth"
       :maxDropWidth="maxDropWidth"
       :placement="placement"
