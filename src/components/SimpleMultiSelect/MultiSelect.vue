@@ -284,11 +284,13 @@ export default {
       }
     },
     onInputFocus(e) {
+      this.dispatch("FormItem", "on-form-focus");
       this.$emit("on-focus");
       this.$emit("on-input-focus");
       this.$refs.input.select();
     },
     onInputBlur() {
+      this.dispatch("FormItem", "on-form-blur");
       this.$emit("on-blur");
     },
     onInputKeyup(e) {
