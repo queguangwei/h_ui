@@ -120,7 +120,9 @@ export default {
       const end = start + this.visualCount;
       this.visualData = this.filteredData.slice(start, end);
       // 修复下拉时列表闪动的问题
-      this.$refs.content.setAttribute("style", `transition: transform 2ms; transform: translateY(${start * this.itemHeight}px);`);
+      this.$nextTick(() => {
+        this.$refs.content.style.transform = `translateY(${start * this.itemHeight}px)`;
+      });
       this.emit(-1, "on-static-update"); // update dropdown panel
     },
     genItemCls(item) {
