@@ -49,7 +49,7 @@
       <p>对话框内容</p>
     </h-msg-box>
     <h-msg-box v-model="show" escClose :mask-closable="false" maximize @on-cancel="cancel1" width="600" height="400">
-      <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
+      <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80" showTipsOnlyFocus>
         <h-form-item label="singleSelect" prop="city" required>
           {{formValidate.city}}
           <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass"
@@ -59,16 +59,16 @@
             <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
           </h-single-select>
         </h-form-item>
-        <h-form-item label="input" prop="name" required :tipWidth="300">
+        <h-form-item label="input" prop="name" required :tipWidth="200">
           <h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>
         </h-form-item>
-        <h-form-item label="typefield" prop="mail">
+        <h-form-item label="typefield" prop="mail" required>
           <h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >
         </h-form-item>
         <h-form-item label="tree">
           <h-select-tree v-model="formValidate.tree" :data="treeData" ref="tree" filterable></h-select-tree>
         </h-form-item>
-        <h-form-item prop="date" label="data">
+        <h-form-item prop="date" label="data" required>
           <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
         </h-form-item>
         <h-form-item prop="time" label="time">
