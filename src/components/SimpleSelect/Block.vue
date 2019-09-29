@@ -294,9 +294,12 @@ export default {
       this.visibleData = this.cloneData
         .filter(item => !item.hidden)
         .slice(this.start, this.end)
-      this.$refs.content.style.transform = `translateY(${this.start *
+      this.$nextTick(() => {
+        this.$refs.content.style.transform = `translateY(${this.start *
         itemHeight +
         offset}px)`
+      })
+
     },
     selectedTop(status) {
       if(status){

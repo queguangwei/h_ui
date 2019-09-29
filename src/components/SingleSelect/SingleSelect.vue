@@ -1,9 +1,8 @@
 <template>
   <div :class="classes" ref="select" v-clickoutside="{trigger: 'mousedown', handler: handleClose}">
-    <div :class="[prefixCls + '-selection']" ref="reference" :tabindex="selectTabindex" @click="showdrop">
-      <!-- 下拉输入框模拟（非远程搜索时渲染）  -->
-      <span :class="[prefixCls + '-selected-value']"
-            v-show="!showPlaceholder && !filterable">{{ selectedSingle }}</span>
+    <div :class="[prefixCls + '-selection']" ref="reference" @click="showdrop">
+      <!--<span :class="[prefixCls + '-selected-value']"-->
+            <!--v-show="!showPlaceholder && !filterable">{{ selectedSingle }}</span>-->
       <input type="text"
              v-model="query"
              :disabled="disabled"
@@ -109,10 +108,6 @@ export default {
     },
     placeholder: {
       type: String
-    },
-    filterable: {
-      type: Boolean,
-      default: true
     },
     remote: {
       type: Boolean,
@@ -277,14 +272,14 @@ export default {
         status = false
       return this.visible && status
     },
-    selectTabindex() {
-      return this.disabled ? -1
-        : this.tabindex + '' !== '-1'
-          ? this.filterable
-            ? -1
-            : this.tabindex
-          : 0
-    }
+//    selectTabindex() {
+//      return this.disabled ? -1
+//        : this.tabindex + '' !== '-1'
+//          ? this.filterable
+//            ? -1
+//            : this.tabindex
+//          : 0
+//    }
   },
   methods: {
     //外部调用收起下拉面板
@@ -297,10 +292,8 @@ export default {
       let result = this.value
       this.toggleSingleSelected('')
       this.model = ''
-      if (this.filterable) {
-        this.query = ''
-        this.selectedSingle = ''
-      }
+      this.query = ''
+      this.selectedSingle = ''
       this.fold()
       this.isInputFocus = true
       this.$emit('on-clear-select', result)
@@ -309,24 +302,14 @@ export default {
       if (this.disabled || this.readonly) return
       this.$nextTick(() => {
         this.isInputFocus = true
-        if (this.filterable) {
-          this.$refs.input.focus()
-        } else {
-          this.$refs.reference.focus()
-        }
+        this.$refs.input.focus()
       })
     },
     select() {
-      if (this.filterable) {
-        this.$refs.input.select()
-      }
+      this.$refs.input.select()
     },
     blur() {
-      if (this.filterable) {
-        this.$refs.input.blur()
-      } else {
-        this.$refs.reference.blur()
-      }
+      this.$refs.input.blur()
       this.visible = false
       this.isInputFocus = false
       this.isQuerySelect = false
@@ -355,8 +338,7 @@ export default {
       }
 //      this.availableOptions = this.options
 //      this.broadcast('Block', 'on-query-change', this.query)
-
-      this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
+      this.dispatch('FormItem', 'on-form-blur')
     },
     handleClose() {
       this.fold()
@@ -386,7 +368,7 @@ export default {
           this.setSingleSelect()
         }
         this.isInputFocus = false
-        this.dispatch('FormItem', 'on-form-blur', this.selectedSingle)
+        this.dispatch('FormItem', 'on-form-blur')
       }
     },
     showdrop() {
@@ -404,7 +386,7 @@ export default {
       }
       this.visible = !this.visible
       this.isInputFocus = true
-      if (this.visible && this.filterable && this.$refs.input) {
+      if (this.visible && this.$refs.input) {
         this.$nextTick(() => {
           this.isInputFocus = true
           this.$refs.input.focus()
@@ -550,7 +532,6 @@ export default {
           }
         })
       })
-
       // o45开启keepInputValue默认初始值
       if (init) {
         if(this.keepInputValue) {
@@ -574,7 +555,6 @@ export default {
           this.dispatch('FormItem', 'on-form-change', value)
         }
       }
-
     },
     handleKeydown(e) {
       const keyCode = e.keyCode
@@ -638,7 +618,7 @@ export default {
       this.$emit('on-keydown', this.query, e)
     },
     modelToQuery() {
-      if (this.filterable && this.model !== undefined) {
+      if (this.model !== undefined) {
         this.findChild(child => {
           if (this.model === child.value) {
             if (child.label) {
@@ -893,15 +873,13 @@ export default {
         }, 0)
         this.broadcast('Drop', 'on-update-popper')
       } else {
-        if (this.filterable) {
-          if (this.$refs.input) {
-            this.$refs.input.blur()
-          }
-          setTimeout(() => {
-            if (this.remote && this.remoteMethod) return
-            this.broadcast('Block', 'on-query-change', '', true)
-          }, 300)
+        if (this.$refs.input) {
+          this.$refs.input.blur()
         }
+        setTimeout(() => {
+          if (this.remote && this.remoteMethod) return
+          this.broadcast('Block', 'on-query-change', '', true)
+        }, 300)
         setTimeout(() => {
           this.dispatch('Msgbox', 'on-esc-real-close', true)
         }, 0)
