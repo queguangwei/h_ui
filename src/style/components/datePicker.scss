@@ -242,6 +242,17 @@ $date-picker-cells-width-with-weeknumbers: 226px;
     z-index: $zindex-transfer;
     max-height: none;
     width: auto;
+
+    span.h-date-picker-cells-cell-disabled,
+    span.h-date-picker-cells-cell-disabled:hover{
+        cursor: $cursor-disabled;
+        background: $btn-disable-bg;
+        color: $btn-disable-color;
+        em{
+            color: inherit;
+            background: inherit;
+        }
+    }
   }
 }
 .#{$picker-prefix-cls} {
