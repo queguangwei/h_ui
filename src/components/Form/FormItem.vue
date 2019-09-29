@@ -438,13 +438,13 @@ export default {
       if (cb) cb()
     },
     onFieldFocus() {
-      if(this.form.showTipsOnlyFocus) {
+      if(this.form.showTipsOnlyFocus || window.isO45) {
         this.forcePass = false
       }
     },
     onFieldBlur(val) {
       this.validate('blur', () => {})
-      if(this.form.showTipsOnlyFocus) {
+      if(this.form.showTipsOnlyFocus || window.isO45) {
         this.forcePass = true
       }
     },
