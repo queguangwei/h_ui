@@ -403,6 +403,7 @@ export default {
         this.hasvalue=true;
       }
       this.$emit('on-focus', event)
+      this.dispatch('FormItem', 'on-form-focus')
     },
     handleBlur(event) {
       let value = event.target.value

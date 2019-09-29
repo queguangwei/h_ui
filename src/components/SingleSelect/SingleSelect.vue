@@ -415,6 +415,7 @@ export default {
       e.target.selectionStart = 0
       e.target.selectionEnd = this.query.length
       this.$emit('on-focus')
+      this.dispatch('FormItem', 'on-form-focus')
     },
     handleBlur() {
       this.$emit('on-blur')

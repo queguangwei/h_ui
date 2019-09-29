@@ -593,6 +593,7 @@ export default{
     },
     handleFocus(){
       this.$emit('on-focus')
+      this.dispatch('FormItem', 'on-form-focus')
     },
     handleBlur() {
       // 单选，回填input值

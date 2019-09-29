@@ -43,7 +43,8 @@
           </div>
           <div :class="[prefixCls + '-body']"
                :style="contentStyle"
-               ref="box">
+               ref="box"
+               @scroll="onScroll">
             <slot></slot>
           </div>
           <div :class="[prefixCls + '-footer']"
@@ -328,6 +329,9 @@ export default {
     }
   },
   methods: {
+    onScroll(e) {
+      this.$emit('on-scroll', e)
+    },
     close() {
       // 如果是 js 调用的 msgbox 则调用 Msgbox-js 的 cancel
       if (
