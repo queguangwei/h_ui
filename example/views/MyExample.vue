@@ -53,8 +53,8 @@
         <h-form-item label="singleSelect" prop="city" required>
           {{formValidate.city}}
           <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass"
-                           remote filterable :loading="isLoading" :remote-method="remoteMethod1"
-                           widthAdaption :maxDropWidth="330" transfer autoPlacement
+                           remote :loading="isLoading" :remote-method="remoteMethod1"
+                           widthAdaption :maxDropWidth="330" transfer autoPlacement :width="200" :dropWidth="220"
                            @on-keydown="handlekeydown">
             <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
           </h-single-select>
@@ -65,9 +65,7 @@
         <h-form-item label="typefield" prop="mail" required>
           <h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >
         </h-form-item>
-        <h-form-item label="tree">
-          <h-select-tree v-model="formValidate.tree" :data="treeData" ref="tree" filterable></h-select-tree>
-        </h-form-item>
+
         <h-form-item prop="date" label="data" required>
           <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
         </h-form-item>
@@ -95,7 +93,7 @@
     <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
       <h-form-item label="股票代码" prop="stockCode">
         <h-single-select class="curItemClass" v-model="formCustom.stockCode" placeholder="请选择..."
-                          widthAdaption autoPlacement :animated="false"
+                          widthAdaption autoPlacement :animated="false" keepInputValue
                          ref="single">
           <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
         </h-single-select>
@@ -106,6 +104,9 @@
                      nonNegative divided focusAllSelect :min="0" :max="1000000"
                      integerNum="10" suffixNum="2"  type="money" :step="10">
         </h-typefield>
+      </h-form-item>
+      <h-form-item label="tree">
+        <h-select-tree v-model="formCustom.tree" :data="treeData" ref="tree" filterable></h-select-tree>
       </h-form-item>
       <h-form-item label="密码" prop="passwd" required>
         <h-input class="curItemClass" type="password" v-model="formCustom.passwd"></h-input>
@@ -281,7 +282,6 @@ export default {
         time: "",
         desc: "",
         valueRemote1: [],
-        tree: ''
       },
       colWidth:['120','150'],
       showCol:['label1'],
@@ -328,6 +328,7 @@ export default {
         passwdCheck: '',
         age: '',
         stockCode: '',
+        tree: ''
       },
       treeData: [
         {
@@ -639,6 +640,7 @@ export default {
     changeShow(){
       this.$refs.formValidate.resetFields()
       this.show=true
+//      this.formValidate.city = 'value1'
       this.$refs.formValidate.firstNodeFocused()
     },
     cancel1() {
