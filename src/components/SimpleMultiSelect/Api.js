@@ -161,6 +161,44 @@ export const SimpleMultiSelectApi = {
     fold() {
       this.isDropdownVisible = false;
     }
+  },
+  events: {
+    "on-change": {
+      description: "选中的 Option变化时触发，默认返回 value，如需返回 label，详见 label-in-value 属性",
+      args: "当前选中项"
+    },
+    "on-query-change": {
+      description: "搜索词改变时触发，伴随可选项发生变化",
+      args: "搜索值"
+    },
+    "on-drop-change": {
+      description: "弹框关闭/展开时触发",
+      args: "弹窗状态"
+    },
+    "on-focus": {
+      description: "获取焦点时触发",
+      args: ""
+    },
+    "on-input-focus": {
+      description: "获取焦点时触发",
+      args: ""
+    },
+    "on-blur": {
+      description: "失去焦点时触发",
+      args: ""
+    },
+    "on-keyup": {
+      description: "原生的 keyup 事件",
+      args: "第一个参数为当前输入框的值，第二个参数为原生的事件对象"
+    },
+    "on-keydown": {
+      description: "原生的 keydown 事件",
+      args: "第一个参数为当前输入框的值，第二个参数为原生的事件对象"
+    },
+    "on-paste": {
+      description: "输入框粘贴时触发",
+      args: "返回obj对象包括oldval旧值，newval新值"
+    }
   }
 };
 
@@ -187,6 +225,12 @@ export const SimpleMultiSelectBlockApi = {
       default: () => {
         return [];
       }
+    }
+  },
+  events: {
+    "on-scroll": {
+      description: "下拉框滚动时触发",
+      args: "第一个参数为滚动条距离底部的高度，当滚动条到底时，返回值小于列表的一个行高约30；第二个参数是列表的scrollTop；第三个参数为滚动方向（x代表水平滚动，y代表垂直滚动）"
     }
   }
 };
