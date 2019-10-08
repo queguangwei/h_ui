@@ -290,6 +290,10 @@ export default {
     }
   },
   methods: {
+    // 供外部调用点击确认时显示全部errorTip
+    resetErrorTip() {
+      this.forcePass = false
+    },
     // rules为String类型时，自定义rules
     customRules() {
       for (let rule of this.validRules) {
@@ -443,10 +447,10 @@ export default {
       }
     },
     onFieldBlur(val) {
-      this.validate('blur', () => {})
       if(this.form.showTipsOnlyFocus || window.isO45) {
         this.forcePass = true
       }
+      this.validate('blur', () => {})
     },
     onFieldChange(val) {
       if (this.validateDisabled) {

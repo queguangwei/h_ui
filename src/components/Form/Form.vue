@@ -102,6 +102,11 @@ export default {
     }
   },
   methods: {
+    resetAllErrorTips() {
+      this.fields.forEach(field => {
+        field.resetErrorTip()
+      })
+    },
     resetFields(isResetReadonlyOrDisabled = false) {
       this.fields.forEach(field => {
         field.resetField(isResetReadonlyOrDisabled)

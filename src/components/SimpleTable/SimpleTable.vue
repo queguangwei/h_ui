@@ -1438,12 +1438,10 @@ export default {
           this.objData[_index]._isChecked = true
         }
         this.$nextTick(() => {
-          this.$emit(
-            'on-selection-change',
+          this.$emit('on-selection-change',
             this.getSelection(),
             this.getSelection(true),
-            _index
-          )
+            _index)
         })
         return
       }
@@ -1461,7 +1459,10 @@ export default {
       if (curStatus && !this.selectOption) {
         this.objData[_index]._isHighlight = false
         this.objData[_index]._isChecked = false
-        // this.$emit('on-current-change-cancle',JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
+        this.$emit('on-current-change-cancel',
+          JSON.parse(JSON.stringify(this.cloneData[_index])),
+          oldData,
+          _index)
         this.$nextTick(() => {
           this.$emit('on-current-change', null, null)
         })

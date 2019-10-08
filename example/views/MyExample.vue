@@ -48,13 +48,13 @@
       <p>对话框内容</p>
       <p>对话框内容</p>
     </h-msg-box>
-    <h-msg-box v-model="show" escClose :mask-closable="false" maximize @on-cancel="cancel1" width="600" height="400">
+    <h-msg-box v-model="show" escClose :mask-closable="false" maximize width="600" height="400">
       <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80" showTipsOnlyFocus>
         <h-form-item label="singleSelect" prop="city" required>
           {{formValidate.city}}
           <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass"
-                           remote :loading="isLoading" :remote-method="remoteMethod1"
-                           widthAdaption :maxDropWidth="330" transfer autoPlacement :width="200" :dropWidth="220"
+                           remote :loading="isLoading" :remote-method="remoteMethod1" transfer autoPlacement
+                           :width="200" widthAdaption :dropWidth="220" :maxDropWidth="320"
                            @on-keydown="handlekeydown">
             <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
           </h-single-select>
@@ -87,6 +87,10 @@
           </h-checkbox-group>
         </h-form-item>
       </h-form>
+      <div slot="footer">
+        <h-button type="ghost" @click="reset">重置</h-button>
+        <h-button type="primary" @click="submit">提交</h-button>
+      </div>
     </h-msg-box>
     <br>
     <h1>form</h1>
@@ -283,10 +287,10 @@ export default {
         desc: "",
         valueRemote1: [],
       },
-      colWidth:['120','150'],
+      colWidth:['150','150'],
       showCol:['label1'],
       bigData: [
-        { value: "1", label: "1",label1: "多列01"},
+        { value: "1", label: "1",label1: "多列00000000000000000000000000000000000001"},
         { value: "2", label: "2",label1: "多列02"},
         { value: "3", label: "3",label1: "多列03"},
         { value: "11", label: "11",label1: "多列11"},
@@ -388,6 +392,7 @@ export default {
         {
           title: '姓名',
           key: 'name',
+          fixed: 'left',
           width: 100,
           render: (h, params) => {
             return h('div', [
@@ -443,6 +448,7 @@ export default {
         {
           title: '操作',
           key: 'action',
+//          fixed: 'right',
           render: (h, params) => {
             return h('div', [
               h('h-button', {
@@ -643,7 +649,18 @@ export default {
 //      this.formValidate.city = 'value1'
       this.$refs.formValidate.firstNodeFocused()
     },
-    cancel1() {
+    submit() {
+      this.$refs.formValidate.resetAllErrorTips()
+      let _this = this
+      this.$refs.formValidate.validate((valid) => {
+        if (valid) {
+          _this.$hMessage.success('提交成功!');
+        } else {
+          _this.$hMessage.error('表单验证失败!');
+        }
+      })
+    },
+    reset() {
       this.$refs.formValidate.resetFields()
     },
     ok () {

@@ -60,7 +60,7 @@
 </template>
 <script>
 import Icon from '../Icon/Icon.vue'
-import Drop from '../Select/Dropdown.vue'
+import Drop from './Dropdown.vue'
 import clickoutside from '../../directives/clickoutside'
 import TransferDom from '../../directives/transfer-dom'
 import { on, off } from '../../util/dom'
@@ -316,7 +316,9 @@ export default {
         this.setSingleSelect()
       }
 //      this.broadcast('Block', 'on-query-change', this.query)
-      this.dispatch('FormItem', 'on-form-blur')
+      this.$nextTick(() => {
+        this.dispatch('FormItem', 'on-form-blur', this.model)
+      })
     },
     handleClose() {
       this.fold()
@@ -348,7 +350,9 @@ export default {
           this.setSingleSelect()
         }
         this.isInputFocus = false
-        this.dispatch('FormItem', 'on-form-blur')
+        this.$nextTick(() => {
+          this.dispatch('FormItem', 'on-form-blur', this.model)
+        })
       }
     },
     showdrop() {
@@ -491,13 +495,13 @@ export default {
       this.toggleSingleSelected(this.model, init)
     },
     toggleSingleSelected(value, init = false) {
-      let label = value
-      if (this.options.length) {
-        let option = this.options.filter(opt => opt.value === value)[0]
-        if (option) {
-          label = option.label
-        }
-      }
+//      let label = value
+//      if (this.options.length) {
+//        let option = this.options.filter(opt => opt.value === value)[0]
+//        if (option) {
+//          label = option.label
+//        }
+//      }
       this.findChild(child => {
         this.options.forEach((col, i) => {
           if (value == col.value) {
@@ -522,13 +526,9 @@ export default {
         if(this.keepInputValue) {
           this.selected = this.model
         }
-        if (this.labelInValue) {
-          this.$emit('on-change', { value: value, label: label })
-          this.dispatch('FormItem', 'on-form-change', { value: value, label: label })
-        } else {
-          this.$emit('on-change', value)
-          this.dispatch('FormItem', 'on-form-change', value)
-        }
+
+        this.$emit('on-change', value)
+//        this.dispatch('FormItem', 'on-form-change', value)
       }
     },
     handleKeydown(e) {
