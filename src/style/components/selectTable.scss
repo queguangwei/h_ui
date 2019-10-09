@@ -399,6 +399,7 @@ $select-group-prefix-cls:  "#{$css-prefix}selectTable-group";
         height: $input-height-base - 2px;
         line-height: $input-height-base - 2px;
         padding-left: 8px;
+        font-size: $font-size-small;
     }
 
   &-btnToTop {
