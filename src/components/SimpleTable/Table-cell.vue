@@ -26,7 +26,7 @@
       <span :class="[prefixCls + '-filter']">
         <Icon name="keyboard" @mousedown.native.stop="handleClick" :class="{on: column._isFiltered}"></Icon>
       </span>
-       <render-header slot="content" v-if="column.renderFilter" :render="column.renderFilter" :column="column" :index="index"></render-header> 
+      <render-header slot="content" v-if="column.renderFilter" :render="column.renderFilter" :column="column" :index="index"></render-header> 
       <div slot="content" :class="[prefixCls + '-filter-list']" v-else-if="column._filterMultiple" @mousedown.native.stop="handleClick">
         <div :class="[prefixCls + '-filter-list-item']">
           <checkbox-group v-model="column._filterChecked">
@@ -73,7 +73,8 @@ export default {
     isFilter: {
       type: Boolean,
       default: false
-    }
+    },
+    fixed: String
   },
   // components:{renderHeader},
   mixins: [Locale ],
@@ -176,7 +177,11 @@ export default {
      * 是否显示过滤pop
     */
     isPopperShow (column) {
-      return this.isFilter && column.filters && ((!this.fixed && !column.fixed) || (this.fixed === 'left' && column.fixed === 'left') || (this.fixed === 'right' && column.fixed === 'right'));
+      if (this.fixed) {
+        return this.isFilter && column.filters && column.filters.length > 0
+      } else {
+        return false
+      }
     },
     // 隐藏过滤输入
     handleFilterHide (index) {

@@ -160,6 +160,7 @@
                     :style="{height: column.fixedTheadHeight + 'px'}" >
                   <table-cell :column="column"
                               :index="index"
+                              :fixed="column.fixed"
                               :checked="isSelectAll"
                               :prefixCls="prefixCls"
                               :isFilter = "isFilter"
