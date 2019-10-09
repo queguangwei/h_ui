@@ -6,7 +6,7 @@
 
     <h2>自定义图标</h2>
     <h-backtop bottom="80" height="300">
-      <h-icon name="chevron-up"></h-icon>
+      <h-icon name="chevron-up">1111</h-icon>
     </h-backtop>
 
     <h2>基本用法 (只显示文字)</h2>
