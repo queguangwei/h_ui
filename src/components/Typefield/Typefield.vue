@@ -443,6 +443,7 @@ export default {
         });
       }
       this.$emit("on-focus", e);
+      this.dispatch('FormItem', 'on-form-focus')
     },
     focus() {
       this.$refs.input.focus();

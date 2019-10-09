@@ -23,14 +23,14 @@
              v-if="maximize"
              @click="switchSize">
             <slot name="maximize">
-              <Icon :name="maxName"></Icon>
+              <Icon :name="maxName" :title="[this.isMax?'还原':'最大化']"></Icon>
             </slot>
           </a>
           <a :class="[prefixCls + '-close']"
              v-if="closable"
              @click="close">
             <slot name="close">
-              <Icon name="close"></Icon>
+              <Icon name="close" :title="'关闭'"></Icon>
             </slot>
           </a>
           <div :class="[prefixCls + '-header']"
@@ -43,7 +43,8 @@
           </div>
           <div :class="[prefixCls + '-body']"
                :style="contentStyle"
-               ref="box">
+               ref="box"
+               @scroll="onScroll">
             <slot></slot>
           </div>
           <div :class="[prefixCls + '-footer']"
@@ -328,6 +329,9 @@ export default {
     }
   },
   methods: {
+    onScroll(e) {
+      this.$emit('on-scroll', e)
+    },
     close() {
       // 如果是 js 调用的 msgbox 则调用 Msgbox-js 的 cancel
       if (
@@ -426,7 +430,6 @@ export default {
           // esc 关闭前判断 beforeEscClose 函数返回
           let flag = this.beforeEscClose && this.beforeEscClose()
           if (!flag) return
-
           this.$emit('on-cancel')
           this.close()
         }

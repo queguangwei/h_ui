@@ -27,7 +27,7 @@
         @mouseenter.native="handleMouseenter"
         @mouseleave.native="handleMouseleave"
         :data-transfer="transfer"
-        v-transfer-dom><slot name="list"></slot></Drop>  
+        v-transfer-dom><slot name="list"></slot></Drop>
   </div>
 </template>
 <script>
@@ -141,6 +141,9 @@
         } else {
             return false;
         }
+      },
+      fold() {
+        this.currentVisible = false
       }
     },
     mounted () {

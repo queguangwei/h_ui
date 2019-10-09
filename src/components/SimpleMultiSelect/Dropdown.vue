@@ -36,11 +36,15 @@ export default {
     widthAdaption: {
       type: Boolean,
       default: false
+    },
+    animated: {
+      type: Boolean,
+      default: true
     }
   },
   watch: {
     show(newVal) {
-      this.allowAnimation = true;
+      this.allowAnimation = this.animated;
       this.update();
     }
   },

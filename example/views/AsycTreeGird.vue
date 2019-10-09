@@ -9,7 +9,7 @@
     <p>外部可以在data中设置checked标识当前行节点是否选中(isCheckbox为true时设置)</p>
   <p>外部可以在data中设置leaf标识当前行是否是叶子节点</p>
   <p>外部可以在data中设置expand标识当前行是否展开</p>
-  <h-asyc-tree-gird headSelection :columns="columns1" :data="data1" size="small" @on-row-click="click2" isCheckbox :load-data = 'loaddataMethod' ref="asyctreegird" @on-select-all="selectAll"></h-asyc-tree-gird>
+  <h-asyc-tree-gird headSelection :columns="columns1" stripe :data="data1" size="small" @on-row-click="click2" isCheckbox :load-data = 'loaddataMethod' ref="asyctreegird" @on-select-all="selectAll"></h-asyc-tree-gird>
   <p>父节点expand为false时,父、子节点autoLoad无用</p>
   <h-asyc-tree-gird :columns="columns1" :data="datatest1" size="small" @on-row-click="click2" isCheckbox :load-data = 'loaddataMethod' ref="asyctreegird"></h-asyc-tree-gird>
   <p>父节点expand为true时,无loading设置时，有子节点则显示子节点</p>
