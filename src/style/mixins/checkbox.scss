@@ -139,6 +139,21 @@
     }
   }
 
+
+  .#{$form-item-prefix-cls}-changed{
+    .#{$checkbox-prefix-cls}-checked {
+        &:hover {
+          .#{$checkbox-inner-prefix-cls} {
+            border-color: $changed-color;
+          }
+        }
+      .#{$checkbox-inner-prefix-cls} {
+        border-color: $changed-color;
+        background-color: $changed-color;
+      }
+    }
+  }
+
   // 禁用
   .#{$checkbox-prefix-cls}-disabled {
     &.#{$checkbox-prefix-cls}-checked {
