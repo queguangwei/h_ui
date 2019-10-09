@@ -37,6 +37,10 @@ export default {
       type: Boolean,
       default: true
     },
+    showTipsOnlyFocus: {
+      type: Boolean,
+      default: false
+    },
     cols: {
       type: [String, Number]
     },

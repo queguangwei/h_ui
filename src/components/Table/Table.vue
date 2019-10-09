@@ -438,9 +438,9 @@ export default {
       type: Boolean,
       default: false
     },
-    minWidth: {
+    minColWidth: {
       type: Number,
-      default: 100
+      default: 90
     },
     isMulitSort: {
       //多列排序
@@ -941,9 +941,8 @@ export default {
             if (column.width) {
               width = column.width || width
             } else {
-              let min = column.minWidth ? column.minWidth : 100
+              let min = column.minWidth ? column.minWidth : this.minColWidth
               if (width < min) width = min
-              // if (width < this.minWidth) width = this.minWidth;
             }
             this.cloneColumns[i]._width = width || ''
             tableWidth =
@@ -1024,9 +1023,8 @@ export default {
               if (column.width) {
                 width = column.width || ''
               } else {
-                let min = column.minWidth ? column.minWidth : 100
+                let min = column.minWidth ? column.minWidth : this.minColWidth
                 if (width < min) width = min
-                // if (width < this.minWidth) width = this.minWidth;
               }
               this.cloneColumns[i]._width = this.hasWidth ? width : width || ''
               this.tableWidth =
@@ -1054,7 +1052,7 @@ export default {
               if (column.width) {
                 width = column.width || ''
               } else {
-                let min = column.minWidth ? column.minWidth : 100
+                let min = column.minWidth ? column.minWidth : this.minColWidth
                 if (width < min) width = min
                 // if (width < this.minWidth) width = this.minWidth;
               }

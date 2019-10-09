@@ -231,7 +231,6 @@ export default {
       //      }catch (e) {
       //        if(e.message != 'EndIterative') throw e
       //      }
-
       if(val===''&&this.$parent.$parent.isSingleSelect&&!isEffective&&!states){// 清空query值情况下
         this.$parent.$parent.selectBlockSingle('', true, '', true)
       }else if(val !==''&&this.$parent.$parent.isSingleSelect&&!isEffective&&!states) {//query不为空但未匹配到任何项
@@ -251,7 +250,6 @@ export default {
         }
         this.$refs.block.scrollTop = 0
       })
-
     },
     handleclick() {},
     handleBodyScroll(event) {
@@ -294,9 +292,9 @@ export default {
       this.visibleData = this.cloneData
         .filter(item => !item.hidden)
         .slice(this.start, this.end)
-      this.$refs.content.style.transform = `translateY(${this.start *
-        itemHeight +
-        offset}px)`
+      this.$nextTick(() => {
+        this.$refs.content.style.transform = `translateY(${this.start * itemHeight + offset}px)`
+      })
     },
     selectedTop(status) {
       if(status){

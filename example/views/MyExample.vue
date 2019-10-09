@@ -49,26 +49,24 @@
       <p>对话框内容</p>
     </h-msg-box>
     <h-msg-box v-model="show" escClose :mask-closable="false" maximize @on-cancel="cancel1" width="600" height="400">
-      <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80">
+      <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80" showTipsOnlyFocus>
         <h-form-item label="singleSelect" prop="city" required>
           {{formValidate.city}}
           <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass"
-                           remote filterable :loading="isLoading" :remote-method="remoteMethod1"
-                           widthAdaption :maxDropWidth="330" transfer autoPlacement
+                           remote :loading="isLoading" :remote-method="remoteMethod1"
+                           widthAdaption :maxDropWidth="330" transfer autoPlacement :width="200" :dropWidth="220"
                            @on-keydown="handlekeydown">
             <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
           </h-single-select>
         </h-form-item>
-        <h-form-item label="input" prop="name" required :tipWidth="300">
+        <h-form-item label="input" prop="name" required :tipWidth="200">
           <h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>
         </h-form-item>
-        <h-form-item label="typefield" prop="mail">
+        <h-form-item label="typefield" prop="mail" required>
           <h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >
         </h-form-item>
-        <h-form-item label="tree">
-          <h-select-tree v-model="formValidate.tree" :data="treeData" ref="tree" filterable></h-select-tree>
-        </h-form-item>
-        <h-form-item prop="date" label="data">
+
+        <h-form-item prop="date" label="data" required>
           <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
         </h-form-item>
         <h-form-item prop="time" label="time">
@@ -95,7 +93,7 @@
     <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
       <h-form-item label="股票代码" prop="stockCode">
         <h-single-select class="curItemClass" v-model="formCustom.stockCode" placeholder="请选择..."
-                          widthAdaption autoPlacement :animated="false"
+                          widthAdaption autoPlacement :animated="false" keepInputValue
                          ref="single">
           <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
         </h-single-select>
@@ -106,6 +104,9 @@
                      nonNegative divided focusAllSelect :min="0" :max="1000000"
                      integerNum="10" suffixNum="2"  type="money" :step="10">
         </h-typefield>
+      </h-form-item>
+      <h-form-item label="tree">
+        <h-select-tree v-model="formCustom.tree" :data="treeData" ref="tree" filterable></h-select-tree>
       </h-form-item>
       <h-form-item label="密码" prop="passwd" required>
         <h-input class="curItemClass" type="password" v-model="formCustom.passwd"></h-input>
@@ -124,21 +125,87 @@
       </h-form-item>
       <h-form-item>
         <h-button type="primary" @click="handleSubmit('formCustom')">提交</h-button>
-        <h-button type="ghost" @click="handleReset('formCustom')" style="margin-left: 8px;float: right;">重置</h-button>
+        <h-button type="ghost" @click="handleReset('formCustom')" style="margin-left: 8px;">重置</h-button>
       </h-form-item>
     </h-form>
     <h1>table</h1>
-    <h-table :columns="columns" :data="data0" :summationData="summationData1" height="300"
-             border :highlight-row="true" :loading="loading" headAlgin="center" bodyAlgin="right"
-             canDrag :lastColWidth="150"
+    <h-table :columns="columns" :data="data0" :summationData="summationData1" :loading="loading"
+             border :highlight-row="true"  headAlgin="center" bodyAlgin="left"
+             canDrag :lastColWidth="150" :minDragWidth="40" :minColWidth="60" notSetWidth autoHeadWidth
              @on-sort-change="sortchange">
       <span slot="loading">我是自定义加载！！！</span>
     </h-table>
     <h1>tree</h1>
     <h-tree :data="baseData" show-checkbox></h-tree>
+    <h1>simpleTreeGrid</h1>
+    <h-button type="primary" @click="expandAll">展开</h-button>
+    <h-button @click="fold">收起</h-button>
+    <h-simple-tree-gird :columns="columns1" ref="treeGrid" :data="treedata" canDrag :height="500" @on-expand="expand"></h-simple-tree-gird>
   </div>
 </template>
 <script>
+  let bigTreeData = [];
+  for(var i=0;i<30;i++){
+    let obj =  {
+      id: i,
+      name: '王小明'+i,
+      age: 18,
+      address: '北京市朝阳区芍药居',
+      money: '120.00',
+      cardId: '6223 ',
+      city: '北京',
+      dating:'2018',
+      timing:'16',
+      tree: '345',
+    }
+    bigTreeData.push(obj)
+  }
+  for(var i=30;i<100;i++){
+    let obj =  {
+      id: i,
+      name: '王小明'+i,
+      age: 18,
+      address: '北京市朝阳区芍药居',
+      money: '120.00',
+      cardId: '6223 ',
+      city: '北京',
+      dating:'2018',
+      timing:'16',
+      _parentId:parseInt(Math.random()*30,10)
+    }
+    bigTreeData.push(obj)
+  }
+  for(var i=100;i<200;i++){
+    let obj =  {
+      id: i,
+      name: '王小明'+i,
+      age: 18,
+      address: '北京市朝阳区芍药居',
+      money: '120.00',
+      cardId: '6223 ',
+      city: '北京',
+      dating:'2018',
+      timing:'16',
+      _parentId:Math.ceil(Math.random()*100),
+    }
+    bigTreeData.push(obj)
+  }
+  for(var i=200;i<400;i++){
+    let obj =  {
+      id: i,
+      name: '王小明'+i,
+      age: 18,
+      address: '北京市朝阳区芍药居',
+      money: '120.00',
+      cardId: '6223 ',
+      city: '北京',
+      dating:'2018',
+      timing:'16',
+      _parentId:Math.ceil(Math.random()*200),
+    }
+    bigTreeData.push(obj)
+  }
+
   let bigData = [];
   for(let i=0;i<2000;i++){
     let obj={};
@@ -147,6 +214,7 @@
     bigData.push(obj);
   }
   var num = 0;
+
 import { enterHandler1 } from "../../src/util/tools.js"
 export default {
   data () {
@@ -214,7 +282,6 @@ export default {
         time: "",
         desc: "",
         valueRemote1: [],
-        tree: ''
       },
       colWidth:['120','150'],
       showCol:['label1'],
@@ -261,6 +328,7 @@ export default {
         passwdCheck: '',
         age: '',
         stockCode: '',
+        tree: ''
       },
       treeData: [
         {
@@ -334,48 +402,40 @@ export default {
         },
         {
           title: '年龄',
+          width:150,
           key: 'age',
-          width: 100,
           ellipsis:true,
           sortable: true
         },
         {
           title: '省份',
+          width:150,
           key: 'province',
-          width: 150,
           ellipsis:true,
           type: 'html'
         },
         {
           title: '市区',
+          width:150,
           key: 'city',
-          width: 100,
           ellipsis:true,
-        },{
-          title: '市区1',
-          key: 'city',
-          ellipsis:true
         },
         {
           type: 'text',
+          width: 150,
           title: '地址',
-          key: 'address',
-          width: 200,
-          ellipsis:true
-        },{
-          type: 'text',
-          title: '地址1',
           key: 'address',
           ellipsis:true
         },
         {
           title: '邮编',
+          width:150,
           key: 'zip',
-          width: 120,
           ellipsis:true,
           headerTooltip: true
         },{
           title: '邮编1',
+          width:150,
           key: 'zip',
           ellipsis:true,
           headerTooltip: true
@@ -397,9 +457,8 @@ export default {
                   size: 'small'
                 }
               }, '编辑')
-            ]);
-          },
-          ellipsis:true
+            ])
+          }
         }
       ],
       data0: [
@@ -450,27 +509,13 @@ export default {
           province: '北京市',
           city: '海淀区',
           zip: 100000
-        },
-        {
-          name: '李小红',
-          age: 30,
-          address: '上海市浦东新区世纪大道',
-          province: '上海市',
-          city: '浦东新区',
-          zip: 100000
-        },
-        {
-          name: '周小伟',
-          age: 26,
-          address: '深圳市南山区深南大道',
-          province: '广东',
-          city: '南山区',
-          zip: 100000
         }
       ],
       summationData1: [{
-        name: 'qeqweqw',
+        name: '汇总',
         age: 123123123,
+        city: 'gtryjuyhgfg',
+        province: 'fsegergeryh',
         address: 'qqweqwe'
       }],
       baseData: [{
@@ -500,7 +545,52 @@ export default {
             title: 'leaf2',
           }]
         }]
-      }]
+      }],
+      columns1: [
+        {
+          title: '姓名',
+          key: 'name',
+          width: 300,
+          ellipsis:true,
+          // hiddenCol:true,
+        },
+        {
+          title: '年龄',
+          width: 200,
+          key: 'age',
+          align: 'center',
+        },
+        {
+          width: 100,
+          title: '地址',
+          ellipsis: true,
+          key: 'address',
+          align: 'right',
+        },
+        {
+          title: '金额',
+          width: 200,
+          key: 'money',
+        },
+        {
+          title: '卡号',
+          width: 200,
+          key: 'cardId',
+        },
+        {
+          title: '地区',
+          width: 200,
+          key: 'city',
+          multiple:false,
+        },
+        {
+          title: '下拉树',
+          width: 200,
+          key: 'tree',
+        }
+      ],
+      baseTreeData: [],
+      treedata: [],
     }
   },
   methods: {
@@ -549,10 +639,9 @@ export default {
     },
     changeShow(){
       this.$refs.formValidate.resetFields()
-      setTimeout(() =>{
-        this.show=true
-        this.$refs.formValidate.firstNodeFocused()
-      },300)
+      this.show=true
+//      this.formValidate.city = 'value1'
+      this.$refs.formValidate.firstNodeFocused()
     },
     cancel1() {
       this.$refs.formValidate.resetFields()
@@ -562,6 +651,33 @@ export default {
     },
     cancel () {
       this.$hMessage.info('点击了取消');
+    },
+    convertTreeData(rows, attributes) {
+      var keyNodes = {}, parentKeyNodes = {};
+      for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        row.id = row[attributes.keyField];
+        row.parentId = row[attributes.parentKeyField];
+        row.children = [];
+        keyNodes[row.id] = row;
+        if (parentKeyNodes[row.parentId]) { parentKeyNodes[row.parentId].push(row); }
+        else { parentKeyNodes[row.parentId] = [row]; }
+        var children = parentKeyNodes[row.id];
+        if (children) { row.children = children; }
+        var pNode = keyNodes[row.parentId];
+        if (pNode) { pNode.children.push(row); }
+      }
+      return parentKeyNodes[attributes.rootParentId];
+    },
+    expandAll(){
+      this.$refs.treeGrid.expandAll(true)
+    },
+    fold() {
+      this.$refs.treeGrid.expandAll(false)
+    },
+    expand(data,status){
+      console.log(data)
+      console.log(status)
     }
   },
   created() {
@@ -572,6 +688,15 @@ export default {
       enterHandler1(this.$refs.formValidate, event);
 //      enterHandler1(this.$refs.formCustom, event);
     })
+    let attributes = {
+      keyField: 'id',
+      parentKeyField: '_parentId',
+      expanded: 'expand',
+      checked: 'checked',
+      rootKey: 'root'
+    }
+    this.baseTreeData = this.convertTreeData(bigTreeData, attributes);
+    this.treedata=this.baseTreeData;
   },
 }
 </script>

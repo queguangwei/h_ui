@@ -8,7 +8,9 @@
     </label>
     <div :class="[prefixCls + '-requiredIcon']"
          v-else
-         v-show="isRequired"><span>*</span></div>
+         v-show="isRequired">
+      <span>*</span>
+    </div>
     <div :class="[prefixCls + '-content']"
          :style="contentStyles">
       <slot></slot>
@@ -252,9 +254,7 @@ export default {
     isShowError() {
       return this.mustShowError
         ? this.mustShowError
-        : this.validateState === 'error' &&
-            this.showMessage &&
-            this.form.showMessage
+        : this.validateState === 'error' && this.showMessage && this.form.showMessage && !this.forcePass
     },
     isOnlyBlurRequire() {
       return this.onlyBlurRequire
@@ -269,7 +269,6 @@ export default {
     verifyTipStyle(){
       let style={}
       if(window.isO45 && this.tipWidth) {
-        console.log(this.$children[0].$el.clientWidth)
         style.width = this.tipWidth + 'px'
         style.maxWidth = this.tipWidth + 'px'
       }else {
@@ -436,11 +435,18 @@ export default {
     resetValidate(cb) {
       this.validateState = ''
       this.validateMessage = ''
-
       if (cb) cb()
+    },
+    onFieldFocus() {
+      if(this.form.showTipsOnlyFocus || window.isO45) {
+        this.forcePass = false
+      }
     },
     onFieldBlur(val) {
       this.validate('blur', () => {})
+      if(this.form.showTipsOnlyFocus || window.isO45) {
+        this.forcePass = true
+      }
     },
     onFieldChange(val) {
       if (this.validateDisabled) {
@@ -516,6 +522,7 @@ export default {
             return false
           }
         })
+        this.$off('on-form-focus').$on('on-form-focus', this.onFieldFocus)
         this.$off('on-form-blur').$on('on-form-blur', this.onFieldBlur)
         this.$off('on-form-change').$on('on-form-change', this.onFieldChange)
       }

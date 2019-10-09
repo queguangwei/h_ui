@@ -56,6 +56,7 @@ export default {
         if (this.width)
           style.width = `${this.width}px`
       }
+      // o45需求搜索过程中下拉框宽度忽长忽短
       if(this.$parent.isSingleSelect) {
         let maxWidth = Math.max(parseInt(this.maxDropWidth),parseInt(this.parentWidth))
         style.width = `${maxWidth}px`

@@ -119,8 +119,10 @@ export default {
       const start = Math.floor(scrollTop / this.itemHeight);
       const end = start + this.visualCount;
       this.visualData = this.filteredData.slice(start, end);
-      this.$refs.content.style.transform = `translate3d(0, ${start * this.itemHeight}px, 0)`;
-      this.$refs.content.style.webkitTransform = `translate3d(0, ${start * this.itemHeight}px, 0)`;
+      // 修复下拉时列表闪动的问题
+      this.$nextTick(() => {
+        this.$refs.content.style.transform = `translateY(${start * this.itemHeight}px)`;
+      });
       this.emit(-1, "on-static-update"); // update dropdown panel
     },
     genItemCls(item) {
