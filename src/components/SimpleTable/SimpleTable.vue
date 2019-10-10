@@ -39,11 +39,12 @@
                   v-on:mouseout="mouseout($event,column,index)"
                   v-on:mousemove="mousemove($event,column,index)"
                   v-on:mouseup="mouseup($event,column,index)"
-                  :class="alignCls(column)"   style="position:relative">
+                  :class="alignCls(column)"   :style="{position: newSort ? 'relative' : 'static'}">
                 <table-cell :column="column"
                             :index="index"
                             :checked="isSelectAll"
                             :prefixCls="prefixCls"
+                            :isFilter = "isFilter"
                             :titleEllipsis="titleEllipsis">
                 </table-cell>
               </th>
@@ -159,8 +160,10 @@
                     :style="{height: column.fixedTheadHeight + 'px'}" >
                   <table-cell :column="column"
                               :index="index"
+                              :fixed="column.fixed"
                               :checked="isSelectAll"
                               :prefixCls="prefixCls"
+                              :isFilter = "isFilter"
                               :titleEllipsis="titleEllipsis">
                   </table-cell>
                 </th>
@@ -203,7 +206,7 @@
                         :class="alignCls(column, row,'left')"
                         :data-index="row._index+1"
                         :key="column._index">
-                      <div :class="classesTd(column)">
+                      <div :class="classesTd(column)" :title="column.showTitle?row[column.key]:null">
                         <template v-if="column.type === 'index'&&!splitIndex">{{row._index+1}}</template>
                         <template v-if="column.type === 'selection'">
                           <Checkbox :size="calcCheckboxSize(column.checkboxSize)"
@@ -425,10 +428,6 @@ export default {
       type: Boolean,
       default: false
     },
-    showTitle: {
-      type: Boolean,
-      default: false
-    },
     itemHeight: {
       type: Number,
       default: 40
@@ -503,6 +502,11 @@ export default {
     },
     // 会在冻结列的表格中渲染所有的列（隐藏），影响性能，当每列设置宽度并...显示时，设置该属性可以提升性能，不能保证每列不换行时，不设置该属性
     noNeedOtherCol: {
+      type: Boolean,
+      default: false
+    },
+    // 是否进行过滤，无限滚动加载数据的场景不适用， 仅支持通过simpleTable显式分页的场景
+    isFilter: {
       type: Boolean,
       default: false
     }
@@ -612,11 +616,22 @@ export default {
       }
       if (isSelectAll && !this.allclick) {
         this.allclick = false
-        for (let i = 0; i < this.rebuildData.length; i++) {
-          if (!this.objData[this.rebuildData[i]._index]._isChecked &&
+        let count = 0
+        //o45那边会在render里使用$set方法改变disabled让其不可选，这时全选状态应该不勾选
+        for(let ind = 0; ind < this.rebuildData.length; ind ++) {
+          if(this.objData[this.rebuildData[ind]._index]._isDisabled) {
+            count ++
+          }
+        }
+        if(count === this.rebuildData.length) {
+          isSelectAll = false
+        }else {
+          for (let i = 0; i < this.rebuildData.length; i++) {
+            if (!this.objData[this.rebuildData[i]._index]._isChecked &&
               !this.objData[this.rebuildData[i]._index]._isDisabled) {
-            isSelectAll = false
-            break
+              isSelectAll = false
+              break
+            }
           }
         }
         return isSelectAll
@@ -635,7 +650,7 @@ export default {
       }
     },
     localeNoFilteredDataText() {
-      if (this.noFilteredDataText === undefined) {
+      if (this.noFilteredDataText === undefined && this.t) {
         return this.t('i.table.noFilteredDataText')
       } else {
         return this.noFilteredDataText
@@ -1519,6 +1534,9 @@ export default {
       }
     },
     clickCurrentRow(_index,curIndex) {
+      if(this.objData[_index]._disabled) {
+        return
+      }
       this.baseInx = curIndex
       this.offsetInx = curIndex
       if (!this.rowSelect) {
@@ -1579,6 +1597,9 @@ export default {
         )
     },
     toggleSelect(_index, curIndex) {
+      if(this.objData[_index]._disabled) {
+        return
+      }
       if(this.highlightRow){
         this.focusIndex = curIndex
       }
@@ -1816,10 +1837,105 @@ export default {
         this.updateVisibleData()
       })
     },
+    /*
+     * Function: 过滤数据
+     */
+    filterData(data, column) {
+      return data.filter(row => {
+        //如果定义了远程过滤方法则忽略此方法
+        if (typeof column.filterRemote === 'function') return true
+
+        let status = !column._filterChecked.length
+        for (let i = 0; i < column._filterChecked.length; i++) {
+          status = column.filterMethod(column._filterChecked[i], row)
+          if (status) break
+        }
+        return status
+      })
+    },
+    filterOtherData(data, index) {
+      let column = this.cloneColumns[index]
+      if (typeof column.filterRemote === 'function') {
+        column.filterRemote.call(
+          this.$parent,
+          column._filterChecked,
+          column.key,
+          column
+        )
+      }
+
+      this.cloneColumns.forEach((col, colIndex) => {
+        if (colIndex !== index) {
+          data = this.filterData(data, col)
+        }
+      })
+      return data
+    },
+    handleFilter(_index, isIndex) {
+      let index
+      if (isIndex) {
+        index = _index
+      } else {
+        index = this.getIndex(_index)
+      }
+      const column = this.cloneColumns[index]
+      let filterData = this.makeDataWithSort()
+
+      // filter others first, after filter this column
+      filterData = this.filterOtherData(filterData, index)
+      this.rebuildData = this.filterData(filterData, column)
+      this.focusIndex = -1
+      this.updateVisibleData(0)
+      this.cloneColumns[index]._isFiltered = true
+      this.cloneColumns[index]._filterVisible = false
+    },
+    // 隐藏过滤
+    handleFilterHide(_index) {
+      // clear checked that not filter now
+      let index = this.getIndex(_index)
+      if (!this.cloneColumns[index]._isFiltered) this.cloneColumns[index]._filterChecked = []
+      this.focusIndex = -1
+      this.updateVisibleData(0)
+    },
+    // 过滤项选中
+    handleFilterSelect(_index, value) {
+      let index = this.getIndex(_index)
+      this.cloneColumns[index]._filterChecked = [value]
+      this.handleFilter(index, true)
+    },
+    // filter 重置
+    handleFilterReset(_index) {
+      let index = this.getIndex(_index)
+      this.cloneColumns[index]._isFiltered = false
+      this.cloneColumns[index]._filterVisible = false
+      this.cloneColumns[index]._filterChecked = []
+
+      let filterData = this.makeDataWithSort()
+      filterData = this.filterOtherData(filterData, index)
+      this.rebuildData = filterData
+      this.focusIndex = -1
+      this.updateVisibleData(0)
+    },
+    /*
+     * 获取过滤数据， 仅在配置isFilter后生效
+     */
     makeDataWithFilter() {
       let data = this.makeData()
-      // this.cloneColumns.forEach(col => data = this.filterData(data, col));
+      if (this.isFilter) this.cloneColumns.forEach(col => data = this.filterData(data, col));
       return data
+    },
+    /**
+     * 获取所有列选中的过滤条件
+     */
+    getFilters() {
+      const cloneColumns = this.cloneColumns
+      const filters = {}
+      cloneColumns.forEach(col => {
+        if (col.filters && (col.filterMethod || col.filterRemote) && col.key) {
+          filters[col.key] = col._filterChecked
+        }
+      })
+      return filters
     },
     selectRange() {
       // this.$nextTick(()=>{
@@ -2083,6 +2199,7 @@ export default {
     makeDataWithSortAndFilter() {
       // let data = this.makeData();
       let data = this.makeDataWithSort()
+      if (this.isFilter) this.cloneColumns.forEach(col => (data = this.filterData(data, col)))
       return data
     },
     makeObjData() {

@@ -119,15 +119,15 @@
 
     <p>showValue为true，输入框显示value值，下拉框显示label+value、开启accuFilter完全匹配，并且搜到的结果自动勾选</p>
     <span>#149105需求  select和SimpleSelect 控件多选时 如果搜索时输入的信息完全匹配到 value或者label的时候 自动勾上；</span>
-    <h-simple-select v-model="valuetest" ref="test" filterable  multiple  buttonToTop style="width:300px">
+    <h-simple-select v-model="valuetest" ref="test" filterable  multiple  buttonToTop showBottom style="width:300px">
       <h-select-block :data="bigDatatest"></h-select-block>
     </h-simple-select>
     <h-button @click="enable">enable</h-button>
-    <h2>o45专用</h2>
-    <h-simple-select v-model="valueRemote" newSearchModel multiple accuFilter filterBy="label" remote :remote-method="remoteMethod" widthAdaption  width="200" @on-paste="copying" @on-input-focus="focusing">
-      <!-- <h-select-block :data="bigData" :showCol="showCol1"></h-select-block> -->
-      <h-select-block :data="remoteData" :showCol="showCol1"></h-select-block>
-    </h-simple-select>
+    <!--<h2>o45专用</h2>-->
+    <!--<h-simple-select v-model="valueRemote" newSearchModel multiple accuFilter filterBy="label" remote :remote-method="remoteMethod" widthAdaption  width="200" @on-paste="copying" @on-input-focus="focusing">-->
+      <!--&lt;!&ndash; <h-select-block :data="bigData" :showCol="showCol1"></h-select-block> &ndash;&gt;-->
+      <!--<h-select-block :data="remoteData" :showCol="showCol1"></h-select-block>-->
+    <!--</h-simple-select>-->
     <br><br><br><br><br><br><br><br><br><br><br><br><br>
   </div>
 </template>

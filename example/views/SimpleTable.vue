@@ -81,12 +81,10 @@ export default {
       addData:[],
       bigData:[],
       columnsBig1:[
-//        {
-//          type: 'index',
-//          align: 'center',
-//          width:200,
-//          fixed:'left',
-//        },
+        {
+          type: 'index',
+          align: 'center',
+        },
         {
           type: 'selection',
           align: 'center',
@@ -112,15 +110,19 @@ export default {
           ellipsis:true,
           key: 'securityCode',
           sortable:true,
-//          render: (h, params) => {
-//            this.$set(params.row, '_isDisabled', true)
-//            return h('span',params.row.securityCode)
-//          },
+          render: (h, params) => {
+            if(params.row.securityCode === '600000') {
+              this.$set(this.bigData[params.index], '_disabled', true)
+            }
+            return h('span',params.row.securityCode)
+          },
         },
         {
           title: '银行',
           key: 'securityName',
           minWidth:200,
+          fixed:'left',
+          showTitle:true
         },
         {
           title: '年龄',
