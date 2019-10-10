@@ -16,7 +16,8 @@ function getTarget (node) {
 
 const directive = {
   inserted (el, { value }, vnode) {
-    if (!el.dataset || el.dataset.transfer !== 'true') return false;
+    // 兼容IE10及以下版本（因未支持dataset特性）
+    if (Array.prototype.every.call(el.attributes, attr => attr.nodeName !== 'data-transfer' || attr.nodeValue + '' !== 'true')) return false;
     el.className = el.className ? el.className + ' v-transfer-dom' : 'v-transfer-dom';
     const parentNode = el.parentNode;
     if (!parentNode) return;
@@ -38,7 +39,7 @@ const directive = {
     }
   },
   componentUpdated (el, { value }) {
-    if (!el.dataset || el.dataset.transfer !== 'true') return false;
+    if (Array.prototype.every.call(el.attributes, attr => attr.nodeName !== 'data-transfer' || attr.nodeValue + '' !== 'true')) return false;
     // need to make sure children are done updating (vs. `update`)
     const ref$1 = el.__transferDomData;
     if (!ref$1) return;
@@ -63,7 +64,7 @@ const directive = {
     }
   },
   unbind (el) {
-    if (!el.dataset || el.dataset.transfer !== 'true') return false;
+    if (Array.prototype.every.call(el.attributes, attr => attr.nodeName !== 'data-transfer' || attr.nodeValue + '' !== 'true')) return false;
     el.className = el.className.replace('v-transfer-dom', '');
     const ref$1 = el.__transferDomData;
     if (!ref$1) return;
