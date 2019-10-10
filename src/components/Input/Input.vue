@@ -390,8 +390,8 @@ export default {
     handleFocus(event) {
       // IPMS 167437 屏蔽浏览器的记住密码功能，禁止密码回填或者点击选择
       // 这个功能本是浏览器的安全策略行为，如果要生效，需要 Web 端应用程序首次启动前关闭浏览器的记住密码设置
-      if(this.editable && !this.readonly && this.autocomplete === "off" && this.type === 'text') {
-        this.$refs.input.removeAttribute("readonly")
+      if(this.editable && !this.readonly && this.autocomplete === "off") {
+        this.$refs.input && this.$refs.input.removeAttribute("readonly")
       }
       if (this.focusAllSelect && this.type === 'text') {
         this.$refs.input.select()
