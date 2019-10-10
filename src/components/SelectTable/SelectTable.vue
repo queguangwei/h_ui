@@ -915,7 +915,7 @@ export default {
 
       if (this.filterable && this.visible && this.$refs.input) {
         this.$nextTick(() => {
-          this.$refs.input.focus();
+          this.$refs.input && this.$refs.input.focus();
         });
       }
     },
@@ -1101,7 +1101,7 @@ export default {
             }
             if (this.filterable) {
               this.$nextTick(() => {
-                this.$refs.input.focus();
+                this.$refs.input && this.$refs.input.focus();
               });
             }
             return;
@@ -1422,7 +1422,7 @@ export default {
         }
         this.model.push(value);
         this.$nextTick(() => {
-          this.$refs.input.focus();
+          this.$refs.input && this.$refs.input.focus();
         });
       }
     },
