@@ -74,7 +74,7 @@ export default {
       type: Boolean,
       default: false
     },
-    fixed: String
+    fixed: [Boolean, String]
   },
   // components:{renderHeader},
   mixins: [Locale ],
@@ -162,7 +162,8 @@ export default {
         [`${this.prefixCls}-cell-ellipsis`]: titleEllipsis && titleEllipsis != 'false'
       }
     },
-    handleClick(){
+    handleClick(event){
+      event.stopPropagation();
     },
     selectAll(status){
       this.$parent.selectAll(status)
@@ -177,11 +178,7 @@ export default {
      * 是否显示过滤pop
     */
     isPopperShow (column) {
-      if (this.fixed) {
-        return this.isFilter && column.filters && column.filters.length > 0
-      } else {
-        return false
-      }
+      return this.isFilter && column.filters && ((!this.fixed && !column.fixed) || (this.fixed === 'left' && column.fixed === 'left') || (this.fixed === 'right' && column.fixed === 'right'));
     },
     // 隐藏过滤输入
     handleFilterHide (index) {
