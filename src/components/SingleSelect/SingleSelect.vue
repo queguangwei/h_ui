@@ -192,7 +192,12 @@ export default {
           }
           this.remoteMethod(querySingle, () => {
             this.$nextTick(() => {
-              this.broadcast('Block', 'on-query-change', this.querySingle)
+              // o45业务代码会默认绑定model值为下拉选项第一个
+              if(this.firstInit) {
+                this.broadcast('Block', 'on-query-change', '',true)
+              }else {
+                this.broadcast('Block', 'on-query-change', this.querySingle)
+              }
             })
           })
           this.$emit('on-query-change', querySingle)
