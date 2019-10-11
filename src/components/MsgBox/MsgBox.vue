@@ -1,5 +1,6 @@
 <template>
   <div v-transfer-dom
+      v-if="isRealVisible"
        :data-transfer="transfer">
     <transition :name="transitionNames[1]">
       <div :class="maskClasses"
@@ -217,7 +218,8 @@ export default {
         //记录拖动后的位置，用于最大化后的还原
         top: 0,
         left: 0
-      }
+      },
+      isRealVisible: true
     }
   },
   computed: {
@@ -483,6 +485,7 @@ export default {
       handler(val) {
         this.visible = val
         if (val) {
+          this.isRealVisible = true
           this.$nextTick(() => {
             if (this.showHead) {
               this.headerHeight = this.$refs.msgHeader.offsetHeight
