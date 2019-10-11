@@ -59,6 +59,10 @@
             <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
           </h-single-select>
         </h-form-item>
+        <h-form-item label="fastdate" prop="fastdate" required>
+          {{formValidate.fastdate}}
+          <h-fast-date class="curItemClass" v-model="formValidate.fastdate" format="yyyy-MM-dd"></h-fast-date>
+        </h-form-item>
         <h-form-item label="input" prop="name" required :tipWidth="200">
           <h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>
         </h-form-item>
@@ -66,7 +70,7 @@
           <h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >
         </h-form-item>
 
-        <h-form-item prop="date" label="data" required>
+        <h-form-item prop="date" label="date" required>
           <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
         </h-form-item>
         <h-form-item prop="time" label="time">
@@ -283,6 +287,7 @@ export default {
         gender: "",
         interest: [],
         date: "",
+        fastDate: "",
         time: "",
         desc: "",
         valueRemote1: [],
@@ -650,7 +655,7 @@ export default {
       this.$refs.formValidate.firstNodeFocused()
     },
     submit() {
-      this.$refs.formValidate.resetAllErrorTips()
+//      this.$refs.formValidate.resetAllErrorTips()
       let _this = this
       this.$refs.formValidate.validate((valid) => {
         if (valid) {

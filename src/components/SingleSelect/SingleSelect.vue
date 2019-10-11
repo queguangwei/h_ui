@@ -78,18 +78,18 @@ export default {
     return {
       prefixCls: prefixCls,
       visible: false,
-      options: [],
-      availableOptions: [], // simple select 用于左右键选择时选择可用（过滤后）的options
-      isInputFocus: false, //是否焦点，为false时触发blur校验
-      focusIndex: 0,
-      focusValue: '',
-      model: null,
-      query: '',
-      selected: '',
-      selectToChangeQuery: false, // 选择一个值后执行过滤，false: 不执行 true: 执行
-      scrollBarWidth: getScrollBarSize(),
       fPlacement: this.placement,
-      isQuerySelect: false,
+      options: [],
+      availableOptions: [], // 用于左右键选择时选择可用（过滤后）的options
+      isInputFocus: false, //是否焦点，为false时触发blur校验
+      focusIndex: 0,// 当前选中项在当前下拉选项列表中的序号
+      model: null,// 组件双向绑定的值
+      query: '',// 输入框内的值
+      querySingle: '',
+      selected: '',// 已选记录
+      isQuerySelect: false, // 是否点选选中 false点选 true模糊匹配选中
+      selectToChangeQuery: false, // 选择一个值后执行过滤，false: 不执行 true: 执行
+      scrollBarWidth: getScrollBarSize()
     }
   },
   computed: {
@@ -156,15 +156,69 @@ export default {
     value: {
       immediate: true,
       handler(val) {
-        if (this.model == !val) {
-          this.isQuerySelect = false
-        }
+//        if (this.model == !val) {
+//          this.isQuerySelect = false
+//        }
         this.model = val
-        // TODO
-//        if (val === '' && !this.visible) {
-//          this.query = ''
+//        if (val !== '' && !this.visible) {
+//          this.isQuerySelect = false
 //        }
       }
+    },
+    model(val) {
+//      this.modelToQuery()
+      this.updateSingleSelected()
+    },
+    selected(val) {
+      this.$emit('input', this.model)
+      if (!this.isQuerySelect) {// 选中内容是点选而非模糊匹配到的
+        this.query = val
+        if (this.query !== '') {
+          this.selectToChangeQuery = true
+        }else {
+          this.selectToChangeQuery = false
+        }
+      }
+      this.setSingleSelect()
+    },
+    query(val) {
+      let querySingle = val.toString().split(' ')[0] //此处改变query
+      this.querySingle = querySingle
+      if (this.remote && this.remoteMethod) {
+        if (!this.selectToChangeQuery) {
+          // 解决当通过表单方法firstNodeFocused定位到SimpleSelect时只能输入但不展示下拉选项的问题
+          if (!this.visible && querySingle) {
+            this.visible = true
+          }
+          this.remoteMethod(querySingle, () => {
+            this.$nextTick(() => {
+              this.broadcast('Block', 'on-query-change', this.querySingle)
+            })
+          })
+          this.$emit('on-query-change', querySingle)
+        }else {
+          // 非自动匹配到的值手动清空后绑定的model没清空问题
+          if(querySingle === '') {
+            this.model = ''
+          }
+        }
+//        this.findChild(child => {
+//          child.isFocus = false
+//        })
+      }else {
+        if (!this.selectToChangeQuery) {
+          if (!this.visible && querySingle) {
+            this.visible = true
+          }
+          this.$emit('on-query-change', querySingle)
+          this.broadcast('Block', 'on-query-change', querySingle)
+        } else if (this.isQuerySelect) {
+          this.broadcast('Block', 'on-query-change', querySingle)
+        }
+      }
+      this.selectToChangeQuery = false
+
+      this.broadcast('Drop', 'on-update-popper')
     },
     visible(val) {
       if (val) {
@@ -196,58 +250,6 @@ export default {
       }
       this.$emit('on-drop-change', val)
     },
-    model() {
-      this.$emit('input', this.model)
-//      this.modelToQuery()
-      this.updateSingleSelected()
-    },
-    query(val) {
-      let querySingle = val.toString().split(' ')[0] //此处改变query
-      if (this.remote && this.remoteMethod) {
-        if (!this.selectToChangeQuery) {
-          // 解决当通过表单方法firstNodeFocused定位到SimpleSelect时只能输入但不展示下拉选项的问题
-          if (!this.visible && querySingle) {
-            this.visible = true
-          }
-          this.remoteMethod(querySingle, () => {
-            this.$nextTick(() => {
-              this.broadcast('Block', 'on-query-change', querySingle)
-            })
-          })
-          this.$emit('on-query-change', querySingle)
-        }else {
-          // 非自动匹配到的值手动清空后绑定的model没清空问题
-          if(querySingle === '') {
-            this.model = ''
-          }
-        }
-        this.findChild(child => {
-          child.isFocus = false
-        })
-      }else {
-        if (!this.selectToChangeQuery) {
-          if (!this.visible && querySingle) {
-            this.visible = true
-          }
-          this.$emit('on-query-change', querySingle)
-          this.broadcast('Block', 'on-query-change', querySingle)
-        } else if (this.isQuerySelect) {
-          this.broadcast('Block', 'on-query-change', querySingle)
-        }
-      }
-      this.selectToChangeQuery = false
-
-      this.broadcast('Drop', 'on-update-popper')
-    },
-    selected(val) {
-      if (!this.isQuerySelect) {
-        this.query = val
-        if (this.query !== '') {
-          this.selectToChangeQuery = true
-        }
-      }
-      this.setSingleSelect()
-    },
     placement(val) {
       this.fPlacement = val
     },
@@ -256,11 +258,11 @@ export default {
         this.broadcast('Block', 'on-focus-index-change', nv - 1)
       }
     },
-    isInputFocus(val) {
-      if (!val) {
-        this.setSingleSelect()
-      }
-    }
+//    isInputFocus(val) {
+//      if (!val) {
+//        this.setSingleSelect()
+//      }
+//    }
   },
   methods: {
     setPlacement() {
@@ -526,7 +528,6 @@ export default {
         if(this.keepInputValue) {
           this.selected = this.model
         }
-
         this.$emit('on-change', value)
 //        this.dispatch('FormItem', 'on-form-change', value)
       }
@@ -556,8 +557,6 @@ export default {
           this.fold()
           //下拉框弹出，ESC收起面板后，焦点在输入框，内容全选
           this.focus()
-        }else {
-          this.blur()
         }
       }
     },
@@ -569,7 +568,7 @@ export default {
         const prev = this.focusIndex - 1
         this.focusIndex = this.focusIndex <= 1 ? this.availableOptions.length : prev
       }
-      this.focusValue = this.availableOptions[this.focusIndex - 1].value
+      let focusValue = this.availableOptions[this.focusIndex - 1].value
       // 处理滚动条
       this.findChild(child => {
         // let curTop = child.$el.scrollTop
@@ -577,24 +576,24 @@ export default {
         let top = itemHeight * (this.focusIndex - 1)
         child.$el.scrollTop = top
       })
-      this.selectBlockSingle(this.focusValue)
+      this.selectBlockSingle(focusValue)
     },
-    modelToQuery() {
-      if (this.model !== undefined) {
-        this.findChild(child => {
-          if (this.model === child.value) {
-            if (child.label) {
-              this.query = child.label
-            } else if (child.searchLabel) {
-              this.query = child.searchLabel
-            } else {
-              this.query = child.value
-            }
-            this.selectToChangeQuery = true
-          }
-        })
-      }
-    },
+//    modelToQuery() {
+//      if (this.model !== undefined) {
+//        this.findChild(child => {
+//          if (this.model === child.value) {
+//            if (child.label) {
+//              this.query = child.label
+//            } else if (child.searchLabel) {
+//              this.query = child.searchLabel
+//            } else {
+//              this.query = child.value
+//            }
+//            this.selectToChangeQuery = true
+//          }
+//        })
+//      }
+//    },
     //左右键、点选选中options中value值
     selectBlockSingle(value, status = false, str, nullValue = false) {
       this.isQuerySelect = status
@@ -602,7 +601,7 @@ export default {
       if(!this.isInputFocus) {
         this.availableOptions = this.options
       }
-      this.selectToChangeQuery = true
+//      this.selectToChangeQuery = true
       if (this.model !== value) {
         this.model = value
       }

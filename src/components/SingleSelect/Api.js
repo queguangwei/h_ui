@@ -125,3 +125,41 @@ export const SingleSelectApi = {
     }
   }
 }
+
+export const SingleSelectBlockApi = {
+  props: {
+    data: {
+      type: Array,
+      default: () => {
+        return []
+      }
+    },
+    itemHeight: {
+      type: [Number, String],
+      default: 30
+    },
+    // 显示多列
+    showCol: {
+      type: Array,
+      default: () => {
+        return []
+      }
+    },
+    // 显示多列的表头，表头高度默认 30，宽度默认 100
+    showHeader: {
+      type: Array,
+      default: () => [],
+    },
+    colWidth:{
+      type: Array,
+      default: () => [],
+    }
+    // disabled: {
+    //   type: Boolean,
+    //   default: false
+    // }
+  },
+  events: {
+
+  }
+}

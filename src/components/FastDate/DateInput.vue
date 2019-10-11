@@ -2,18 +2,19 @@
   <input
   ref="inputEl"
   v-model="inputValue"
-  :class="classes" 
+  :class="classes"
   :readonly="readonly"
   :disabled="disabled"
   :tabindex="tabindex"
   @input="val"
-  @blur="blur" 
+  @blur="blur"
   @focus="focuser"
   @keydown="changeValue"
   @mousewheel="handleMouseWheel"
    />
 </template>
 <script>
+const prefixCls = 'h-fast-date-input'
 export default {
   name: 'DateInput',
   props: {
@@ -50,6 +51,7 @@ export default {
   },
   computed:{
     classes(){
+      return [`${prefixCls}`]
     },
   },
   methods: {
@@ -102,9 +104,11 @@ export default {
       let code = event.keyCode
       // let curValue;
       if (code == 38){
+        event.stopPropagation()
         this.decValue();
       }
       if(code == 40){
+        event.stopPropagation()
         this.addValue();
       }
       this.$emit('input', this.inputValue);

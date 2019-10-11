@@ -102,11 +102,6 @@ export default {
     }
   },
   methods: {
-    resetAllErrorTips() {
-      this.fields.forEach(field => {
-        field.resetErrorTip()
-      })
-    },
     resetFields(isResetReadonlyOrDisabled = false) {
       this.fields.forEach(field => {
         field.resetField(isResetReadonlyOrDisabled)
@@ -133,6 +128,7 @@ export default {
             }
           }
         }
+        field.resetErrorTip()
         field.commonRule()
         field.validate('', errors => {
           if (errors) {
