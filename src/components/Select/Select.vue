@@ -122,6 +122,7 @@ import { on, off } from '../../util/dom';
 import { oneOf, findComponentChildren, getScrollBarSize, getStyle,getBarBottom,scrollAnimate,typeOf, findInx} from '../../util/tools';
 import Emitter from '../../mixins/emitter';
 import Locale from '../../mixins/locale';
+import _ from "../..//util";
 const prefixCls = 'h-select';
 export default {
   name: 'Select',
@@ -981,6 +982,9 @@ export default {
         }
     },
     handleKeydown (e) {
+      this.isKeyDown = true; // switch on key down status
+      this.keyboardEvent = e; // cache current keyboard event
+
       if (this.visible) {
         const keyCode = e.keyCode;
         // Esc slide-up
@@ -1515,6 +1519,9 @@ export default {
           this.dispatch('Msgbox', 'on-esc-real-close', false);
         }, 0);
       } else {
+        this.isKeyDown = false; // switch off key down status
+        this.keyboardEvent = null; // reset keyboard event
+        
         if (this.filterable) {
           this.$refs.input.blur();
           // #566 reset options visible
@@ -1540,11 +1547,17 @@ export default {
             this.visible = false
           }
         } else {
-          this.visible = true
-          this.$refs.input.focus()
-          this.$nextTick(() => {
-            this.$refs.input.setSelectionRange(9999, 9999)
-          })
+          if (this.isKeyDown) {
+            const { keyboardEvent: e } = this;
+            if (!_.isKeyMatch(e, "Esc") && !_.isKeyMatch(e, "Enter")) {
+              this.visible = true
+              this.$refs.input.focus()
+              this.$nextTick(() => {
+                this.$refs.input.setSelectionRange(9999, 9999)
+              })
+            }
+            this.isKeyDown = false; // switch off key down status
+          }
         }
         if (!this.selectToChangeQuery) {
           this.$emit('on-query-change', val);

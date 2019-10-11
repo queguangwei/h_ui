@@ -915,7 +915,7 @@ export default {
 
       if (this.filterable && this.visible && this.$refs.input) {
         this.$nextTick(() => {
-          this.$refs.input.focus();
+          this.$refs.input && this.$refs.input.focus();
         });
       }
     },
@@ -1101,7 +1101,7 @@ export default {
             }
             if (this.filterable) {
               this.$nextTick(() => {
-                this.$refs.input.focus();
+                this.$refs.input && this.$refs.input.focus();
               });
             }
             return;
@@ -1422,7 +1422,7 @@ export default {
         }
         this.model.push(value);
         this.$nextTick(() => {
-          this.$refs.input.focus();
+          this.$refs.input && this.$refs.input.focus();
         });
       }
     },
@@ -1657,6 +1657,8 @@ export default {
         this.broadcast("Drop", "on-update-popper");
       } else {
         if (this.filterable) {
+          this.$refs.reference.scrollTop = 0; // reference element scroll to 0
+
           if (this.$refs.input) {
             this.$refs.input.blur();
           }
@@ -1666,7 +1668,6 @@ export default {
               this.query = "";
             }
             if (this.remote && this.remoteMethod) return;
-            // if(!window.isO45){
             if (!this.isSingleSelect) {
               this.broadcastQuery("");
             } else {
@@ -1697,6 +1698,7 @@ export default {
         if (this.query !== "") this.selectToChangeQuery = true;
       }
       this.viewValue = val;
+      this.tooltip = val + '';
       if (this.isSingleSelect && !this.isInputFocus) {
         this.setSingleSelect();
       }
