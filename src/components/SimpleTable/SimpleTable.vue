@@ -41,7 +41,7 @@
                   v-on:mouseup="mouseup($event,column,index)"
                   :class="alignCls(column)"   :style="{position: newSort ? 'relative' : 'static'}">
                 <table-cell :column="column"
-                            :index="index"
+                            :index="column._index"
                             :checked="isSelectAll"
                             :prefixCls="prefixCls"
                             :isFilter = "isFilter"
@@ -159,8 +159,8 @@
                     :class="alignCls(column,{},'left')"
                     :style="{height: column.fixedTheadHeight + 'px'}" >
                   <table-cell :column="column"
-                              :index="index"
-                              :fixed="column.fixed"
+                              :index="column._index"
+                              :fixed="column.fixed || true"
                               :checked="isSelectAll"
                               :prefixCls="prefixCls"
                               :isFilter = "isFilter"
@@ -1439,12 +1439,10 @@ export default {
           this.objData[_index]._isChecked = true
         }
         this.$nextTick(() => {
-          this.$emit(
-            'on-selection-change',
+          this.$emit('on-selection-change',
             this.getSelection(),
             this.getSelection(true),
-            _index
-          )
+            _index)
         })
         return
       }
@@ -1462,7 +1460,10 @@ export default {
       if (curStatus && !this.selectOption) {
         this.objData[_index]._isHighlight = false
         this.objData[_index]._isChecked = false
-        // this.$emit('on-current-change-cancle',JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
+        this.$emit('on-current-change-cancel',
+          JSON.parse(JSON.stringify(this.cloneData[_index])),
+          oldData,
+          _index)
         this.$nextTick(() => {
           this.$emit('on-current-change', null, null)
         })

@@ -1,5 +1,5 @@
 <template>
-  <div class="h-select-dropdown" :style="styles" @click="handleClick" @mousedown.stop="handleMouseDown" ref="selectdrop">
+  <div class="h-select-dropdown" :style="styles" @click="handleClick" @mousedown.stop ref="selectdrop">
     <slot></slot>
   </div>
 </template>
@@ -15,7 +15,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    adaptParentWidth: Boolean,
     maxDropWidth: {
       type:[String,Number],
     },
@@ -39,24 +38,36 @@ export default {
     };
   },
   computed: {
-    styles () {
-      let style = {
-        transition: "width 210ms"
-      }
+    styles() {
+      let style = {}
       if (this.widthAdaption) {
         if (this.dropWidth || this.maxDropWidth) {
-          if (this.dropWidth)
-            style.minWidth = `${this.dropWidth}px`
-          if (this.maxDropWidth) {
-            let maxWidth = Math.max(parseInt(this.maxDropWidth),parseInt(this.parentWidth))
+          if (parseFloat(this.dropWidth) > 0) {
+            style.minWidth = `${parseFloat(this.dropWidth)}px`
+          }else {
+            style.minWidth = `${parseFloat(this.parentWidth)}px`
+          }
+
+          if (parseFloat(this.maxDropWidth) > 0 && parseFloat(this.maxDropWidth) > parseFloat(this.dropWidth)) {
+            let maxWidth = Math.max(parseFloat(this.maxDropWidth), parseFloat(this.parentWidth))
+            style.maxWidth = `${maxWidth}px`
+          }else {
+            let maxWidth = Math.max(parseFloat(this.dropWidth), parseFloat(this.parentWidth))
             style.maxWidth = `${maxWidth}px`
           }
-          if (this.width)
+
+          if (this.width) {
             style.width = `${this.width}px`
+          }else {
+            style.width = `${this.dropWidth}px`
+          }
         }
       } else {
-        if (this.width)
+        if (this.width) {
           style.width = `${this.width}px`
+        }else {
+          style.width = `${this.dropWidth}px`
+        }
       }
       return style
     }
@@ -68,20 +79,17 @@ export default {
     setWidthAdaption(){
       setTimeout(()=>{
         let content = this.$refs.selectdrop
-        if(this.$parent.$options.name ==='SimpleSelect'||this.$parent.$options.name ==='SingleSelect'||this.$parent.$options.name ==='SimpleMultiSelect'){
-          content = content.querySelectorAll('.h-selectTable-dropdown-list')[0].children[0]
-        }else{
-          content = content.children[0]
-        }
+        content = content.querySelectorAll('.h-selectTable-dropdown-list')[0].children[0]
         // 横向或者纵向滚动条导致的像素偏移的问题
         // 是否有纵向滚动条
         let isScrollY = parseInt(this.$refs.selectdrop.clientWidth) > parseInt(content.clientWidth) ? true : false
         // 是否有横向滚动条
         let isScrollX = parseInt(this.$refs.selectdrop.clientHeight) > parseInt(content.clientHeight) ? true : false
-        this.width = parseInt(content.scrollWidth) + this.scrollBarWidth
-        // if (isScrollX) {
-        // 	this.width = isScrollY ? parseInt(content.scrollWidth) + this.scrollBarWidth : content.scrollWidth
-        // }
+//        this.width = parseInt(content.scrollWidth) + this.scrollBarWidth
+        this.width = isScrollY ? parseInt(content.scrollWidth) + this.scrollBarWidth : content.scrollWidth
+//        if(isScrollX) {
+//
+//        }
       },0)
     },
     update () {
@@ -117,20 +125,14 @@ export default {
           }
         });
       }
-      if (this.$parent.$options.name === 'Select'|| this.$parent.$options.name === 'SelectTree' || this.$parent.$options.name === 'SelectTable'|| this.$parent.$options.name ==='SimpleSelect'|| this.$parent.$options.name ==='SingleSelect'|| this.$parent.$options.name ==='SimpleMultiSelect') {
-        if (!this.dropWidth) {
-          let width = parseInt(getStyle(this.$parent.$el, 'width'));
-          this.width = width
-          this.parentWidth = width
-        }else{
-          this.width = this.dropWidth;
-          this.parentWidth = this.dropWidth;
-        }
-      }
-      if(this.$parent.$options.name === 'Dropdown' && this.adaptParentWidth){
+
+      if (!this.dropWidth) {
         let width = parseInt(getStyle(this.$parent.$el, 'width'));
         this.width = width
         this.parentWidth = width
+      }else{
+        this.width = this.dropWidth;
+        this.parentWidth = this.dropWidth;
       }
     },
     destroy () {
@@ -147,11 +149,6 @@ export default {
       let placement = popper._popper.getAttribute('x-placement').split('-')[0];
       let origin = placementMap[placement];
       popper._popper.style.transformOrigin = `center ${ origin }`;
-    },
-    handleMouseDown() {
-    // TS201903110540
-    // prevent mousedown event from bubbling up and being caught by handlers on document
-    // which were added in directive v-clickoutside
     }
   },
   created () {

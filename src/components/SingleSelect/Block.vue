@@ -15,8 +15,8 @@
          :style="phantomStl"></div>
     <ul :class="[prefixCls+'block-content']"
         ref="content">
-      <li v-for="item in visibleData"
-          :key="item.value"
+      <li v-for="(item,inx) in visibleData"
+          :key="inx"
           v-show="!item.hidden"
           :class="classes(item)"
           @click.stop="select(item)"
@@ -39,7 +39,6 @@
               :style="styleArr[index + 1]"
               :title="item[col]">{{item[col]}}</span>
       </li>
-      <!-- <li v-if="showEmpty" :class="[prefixCls+'-empty']">{{localeNoMatch}}</li> -->
     </ul>
     <div v-if="showEmpty && !loading"
          :class="[prefixCls+'-empty']">{{localeNoMatch}}</div>
@@ -48,57 +47,17 @@
   </div>
 </template>
 <script>
-import Emitter from '../../mixins/emitter'
 import Locale from '../../mixins/locale'
 import Checkbox from '../Checkbox/Checkbox.vue'
-import {
-  // hasClass,
-  deepCopy,
-  getBarBottom,
-  getScrollBarSize
-} from '../../util/tools'
+import { SingleSelectBlockApi } from './Api'
+import { deepCopy, getBarBottom, getScrollBarSize} from '../../util/tools'
 const prefixCls = 'h-select-block'
 
 export default {
-  name: 'Block',
-  componentName: 'select-block',
-  mixins: [Emitter, Locale],
+  mixins: [Locale, SingleSelectBlockApi],
   components: { Checkbox },
-  props: {
-    data: {
-      type: Array,
-      default: () => {
-        return []
-      }
-    },
-    itemHeight: {
-      type: [Number, String],
-      default: 30
-    },
-    // 显示多列
-    showCol: {
-      type: Array,
-      default: () => {
-        return []
-      }
-    },
-    // 显示多列的表头，表头高度默认 30，宽度默认 100
-    showHeader: {
-      type: Array,
-      default: () => [],
-    },
-    colWidth:{
-      type: Array,
-      default: () => [],
-    }
-    // disabled: {
-    //   type: Boolean,
-    //   default: false
-    // }
-  },
   data() {
     return {
-      prefixCls: prefixCls,
       multiple: false,
       hideMult: false,
       visibleData: [],
@@ -186,12 +145,13 @@ export default {
       )
       let status = true
       let isEffective = false
-      // if(!this.$parent.$parent.accuFilter){
       // 149105 【TS:201906280063-资管业委会（资管）_钱佳华-【需求类型】需求【需求描述】select和SimpleSelect 控件多选时 如果搜索时输入的信息完全匹配到 value或者label的时候 自动勾上；对接开发：郑海华【事业部】资管业委会【项目名称】HUNDSUN投资交易管理系统软件V4.5【产品负责人】孔磊【需求提出人】钱佳华
+      // singleSelect自动勾选，多个label匹配是选第一个，foreach无法break
+      //      try{
       this.cloneData.forEach(col => {
         let targetLabel = col.label
         // 如果存在多列，则匹配目标为多列所有列
-        if (this.showCol.length&&!this.$parent.$parent.isSingleSelect) {
+        if (this.showCol.length&&!this.$parent.$parent.newSearchModel&&!this.$parent.$parent.isSingleSelect) {
           targetLabel = targetLabel + ' ' + this.getTargetLabel(col).join(' ')
         }
         let targetValue =col.value
@@ -206,10 +166,6 @@ export default {
         }else {
           hidden = checkValue && checkLabel
         }
-//        let hidden = !new RegExp(parsedQuery, 'i').test(col.label)
-//        if(hidden){
-//          hidden=!new RegExp(parsedQuery, 'i').test(col.value)
-//        }
         this.$set(col, 'hidden', hidden)
         if (status && !hidden) {
           status = false
@@ -219,18 +175,16 @@ export default {
             if(this.$parent.$parent.isSingleSelect){
               isEffective = true
               this.$parent.$parent.selectBlockSingle(targetValue,true)
+              //                throw new Error('EndIterative')
             }else{
               this.$parent.$parent.selectBlockMultiple(targetValue)
             }
           }
-          else if((parsedQuery===targetLabel)&&selected) {
-            if(this.$parent.$parent.isSingleSelect){
-              isEffective = true
-              this.$parent.$parent.selectBlockSingle(targetValue,true)
-            }
-          }
         }
       })
+      //      }catch (e) {
+      //        if(e.message != 'EndIterative') throw e
+      //      }
       if(val===''&&this.$parent.$parent.isSingleSelect&&!isEffective&&!states){// 清空query值情况下
         this.$parent.$parent.selectBlockSingle('', true, '', true)
       }else if(val !==''&&this.$parent.$parent.isSingleSelect&&!isEffective&&!states) {//query不为空但未匹配到任何项
@@ -275,7 +229,8 @@ export default {
       let j = this.start
       // 如果存在表头，添加初始偏移量
       let offset = 0
-      if (this.start > 0) offset = -this.offset
+      if (this.start > 0)
+        offset = -this.offset
       while (i < this.visibleCount) {
         if (!this.cloneData[j]) {
           i = this.visibleCount

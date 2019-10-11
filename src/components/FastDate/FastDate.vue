@@ -81,28 +81,28 @@ export default {
       type: [Date, String, Array,Number]
     },
     readonly: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false
     },
     disabled: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false
     },
     editable: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
     confirm: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
     open: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
     transfer: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false
     },
     setDefault:{
       type:Boolean,
@@ -124,7 +124,7 @@ export default {
       type:[Object]
     },
     placement: {
-      validator (value) {
+      validator(value) {
         return oneOf(value, ['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left', 'left-start', 'left-end', 'right', 'right-start', 'right-end']);
       },
       default: 'bottom-start'
@@ -242,6 +242,17 @@ export default {
     }
   },
   methods: {
+    focus(){
+      if(!window.isO45) {
+        this.opened = true;
+      }
+      this.$refs.year.focus();
+    },
+    blur() {
+    },
+    fold() {
+      this.opened = false
+    },
     editBlur(event,str,isRange){
       let value = event.target.value.trim().replace(/[^0-9]/ig,"");
       if (!value || value.length==0){
@@ -364,11 +375,11 @@ export default {
     yearInput(value,isrange){
       let pos = value.length;
       if (pos!=0 &&!this.months&&!this.day) {
-          this.year = this.year1 = value;
-          this.months = getCurrentMonth();
-          this.day = getCurrentDay();
-          this.months1 = getCurrentMonth();
-          this.day1 = getCurrentDay();
+        this.year = this.year1 = value;
+        this.months = getCurrentMonth();
+        this.day = getCurrentDay();
+        this.months1 = getCurrentMonth();
+        this.day1 = getCurrentDay();
       }
     },
     closeClick(){
@@ -437,9 +448,6 @@ export default {
         this.$refs.year1.focus();
       }
     },
-    fold() {
-      this.opened = false
-    },
     handleClose(){
       this.opened = false;
       if(this.isFocus){
@@ -500,7 +508,6 @@ export default {
         arr[2] = str.slice(6,8)
         return arr;
       }
-
     },
     getDateSplit(format){
       if (format.indexOf('/')!=-1) {
@@ -510,12 +517,6 @@ export default {
       }else{
         return '';
       }
-    },
-    focus(){
-      if(!window.isO45) {
-        this.opened = true;
-      }
-      this.$refs.year.focus();
     },
     isClear(){
       if (this.type!='daterange') {
@@ -538,8 +539,8 @@ export default {
       const keyCode = e.keyCode;
       // Esc slide-up
       if (keyCode === 27) {
-          e.preventDefault();
-          this.opened=false;
+        e.preventDefault();
+        this.opened=false;
       }
     }
   },
