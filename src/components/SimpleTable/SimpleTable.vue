@@ -1906,7 +1906,6 @@ export default {
     },
     // filter 重置
     handleFilterReset(_index) {
-      debugger
       let index = this.getIndex(_index)
       this.cloneColumns[index]._isFiltered = false
       this.cloneColumns[index]._filterVisible = false
