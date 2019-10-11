@@ -75,7 +75,6 @@ import Locale from '../../mixins/locale'
 import Emitter from '../../mixins/emitter'
 import Drag from '../../directives/drag.js'
 import { on, off } from '../../util/dom'
-import { findComponentChildren } from '../../util/tools'
 const prefixCls = 'h-modal'
 
 export default {
@@ -310,7 +309,7 @@ export default {
       } else {
         if (this.height) {
           style.overflowY = 'auto'
-          style.height = this.height <= 100 ? `auto` : `${this.height}px`
+          style.height = this.height <= 100 ? 'auto' : `${this.height}px`
         }
         if (this.maxHeight) {
           style.overflowY = 'auto'
@@ -381,9 +380,6 @@ export default {
     backOrigin() {
       const obj = this.$refs.content
       const width = parseInt(this.curWidth)
-      const styleWidth = {
-        width: width <= 100 ? `${width}%` : `${width}px`
-      }
       if (this.allHeight >= this.WindosInnerHeight) {
         this.$refs.wrap.style.display = 'block'
       } else if (Number(this.top) <= 0) {
@@ -482,28 +478,31 @@ export default {
     }
   },
   watch: {
-    value(val) {
-      this.visible = val
-      if (val) {
-        this.$nextTick(() => {
-          if (this.showHead) {
-            this.headerHeight = this.$refs.msgHeader.offsetHeight
-          }
-          if (!this.footerHide) {
-            this.footerHeight = this.$refs.msgFooter.offsetHeight
-          }
-        })
-      }
-
-      if (val && this.isOriginal) {
-        // 开启了懒加载以后首次渲染时需要在nextTick中执行
-        if (!this.rendered && this.lazyload) {
+    value: {
+      immediate: true,
+      handler(val) {
+        this.visible = val
+        if (val) {
           this.$nextTick(() => {
-            this.backOrigin()
+            if (this.showHead) {
+              this.headerHeight = this.$refs.msgHeader.offsetHeight
+            }
+            if (!this.footerHide) {
+              this.footerHeight = this.$refs.msgFooter.offsetHeight
+            }
           })
-          return
         }
-        this.backOrigin()
+
+        if (val && this.isOriginal) {
+          // 开启了懒加载以后首次渲染时需要在nextTick中执行
+          if (!this.rendered && this.lazyload) {
+            this.$nextTick(() => {
+              this.backOrigin()
+            })
+            return
+          }
+          this.backOrigin()
+        }
       }
     },
     visible(val) {

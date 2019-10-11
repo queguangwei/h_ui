@@ -40,7 +40,9 @@ export default {
   },
   computed: {
     styles () {
-      let style = {}
+      let style = {
+        transition: "width 210ms"
+      }
       if (this.widthAdaption) {
         if (this.dropWidth || this.maxDropWidth) {
           if (this.dropWidth)

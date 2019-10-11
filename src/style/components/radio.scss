@@ -139,6 +139,23 @@ $radio-group-button-prefix-cls: "#{$radio-group-prefix-cls}-button";
     }
 }
 
+.#{$form-item-prefix-cls}-changed{
+    // 选中状态
+    .#{$radio-prefix-cls}-checked {
+        .#{$radio-inner-prefix-cls} {
+            border-color: $changed-color;
+            &:after {
+                background: $changed-color;
+            }
+        }
+        &:hover {
+            .#{$radio-inner-prefix-cls} {
+                border-color: $changed-color;
+            }
+        }
+    }
+}
+
 .#{$radio-prefix-cls}-disabled {
     cursor: $cursor-disabled;
     .#{$radio-prefix-cls}-input {
