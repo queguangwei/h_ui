@@ -128,6 +128,7 @@ export default {
             }
           }
         }
+        field.resetErrorTip()
         field.commonRule()
         field.validate('', errors => {
           if (errors) {
