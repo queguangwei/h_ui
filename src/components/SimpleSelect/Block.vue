@@ -231,7 +231,6 @@ export default {
           }
         }
       })
-      debugger
       if(val===''&&this.$parent.$parent.isSingleSelect&&!isEffective&&!states){// 清空query值情况下
         this.$parent.$parent.selectBlockSingle('', true, '', true)
       }else if(val !==''&&this.$parent.$parent.isSingleSelect&&!isEffective&&!states) {//query不为空但未匹配到任何项
