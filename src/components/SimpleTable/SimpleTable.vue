@@ -41,7 +41,7 @@
                   v-on:mouseup="mouseup($event,column,index)"
                   :class="alignCls(column)"   :style="{position: newSort ? 'relative' : 'static'}">
                 <table-cell :column="column"
-                            :index="index"
+                            :index="column._index"
                             :checked="isSelectAll"
                             :prefixCls="prefixCls"
                             :isFilter = "isFilter"
@@ -159,7 +159,7 @@
                     :class="alignCls(column,{},'left')"
                     :style="{height: column.fixedTheadHeight + 'px'}" >
                   <table-cell :column="column"
-                              :index="index"
+                              :index="column._index"
                               :fixed="column.fixed || true"
                               :checked="isSelectAll"
                               :prefixCls="prefixCls"
@@ -1906,6 +1906,7 @@ export default {
     },
     // filter 重置
     handleFilterReset(_index) {
+      debugger
       let index = this.getIndex(_index)
       this.cloneColumns[index]._isFiltered = false
       this.cloneColumns[index]._filterVisible = false
