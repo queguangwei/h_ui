@@ -15,8 +15,8 @@
          :style="phantomStl"></div>
     <ul :class="[prefixCls+'block-content']"
         ref="content">
-      <li v-for="(item,inx) in visibleData"
-          :key="inx"
+      <li v-for="item in visibleData"
+          :key="item.value"
           v-show="!item.hidden"
           :class="classes(item)"
           @click.stop="select(item)"
