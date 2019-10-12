@@ -8,6 +8,10 @@ export const SingleSelectApi = {
       type: [String, Number, Array],
       default: ''
     },
+    firstInit: {
+      type: Boolean,
+      default: false
+    },
     // 是否开启下拉框动画效果
     animated: {
       type: Boolean,

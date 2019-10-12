@@ -294,6 +294,9 @@ export default {
     resetErrorTip() {
       this.forcePass = false
     },
+    setErrorTip() {
+      this.forcePass = true
+    },
     // rules为String类型时，自定义rules
     customRules() {
       for (let rule of this.validRules) {
@@ -444,6 +447,7 @@ export default {
     onFieldFocus() {
       if(this.form.showTipsOnlyFocus || window.isO45) {
         this.forcePass = false
+        this.dispatch('Form', 'on-form-item-hide-tip', this)
       }
     },
     onFieldBlur(val) {

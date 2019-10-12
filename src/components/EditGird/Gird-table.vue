@@ -210,16 +210,7 @@ import GirdBody from './Gird-body.vue'
 import Spin from '../Spin/Spin.vue'
 import Mixin from './mixin'
 import Emitter from '../../mixins/emitter'
-import {
-  oneOf,
-  getStyle,
-  deepCopy,
-  getScrollBarSize,
-  getBarBottom,
-  findInx,
-  typeOf,
-  cmp
-} from '../../util/tools'
+import { oneOf, getStyle, deepCopy, getScrollBarSize, getBarBottom, findInx, typeOf, cmp } from '../../util/tools'
 import { on, off } from '../../util/dom'
 import Locale from '../../mixins/locale'
 

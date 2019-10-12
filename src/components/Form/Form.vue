@@ -284,6 +284,12 @@ export default {
     })
   },
   mounted() {
+    this.$on('on-form-item-hide-tip', thisField => {
+      this.fields.forEach(field => {
+        field.setErrorTip()
+      })
+      thisField.resetErrorTip()
+    })
     if (this.placement != 'null') {
       this.setPlacement()
     }
