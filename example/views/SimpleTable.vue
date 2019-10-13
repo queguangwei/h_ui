@@ -84,23 +84,26 @@ export default {
         {
           type: 'index',
           align: 'center',
+          width: 200
         },
         {
           type: 'selection',
           align: 'center',
           key:'select',
+          width: 200,
           sortable: true
         },
         {
           title: '姓名姓名姓名姓名姓名姓名姓名姓名',
           key: 'fundId',
+          width: 300,
           showTitle:true,
           ellipsis:true,
         },
         {
           title: '今日开盘价(元)',
           key: 'tradeDate',
-//          width: 80,
+          width: 200,
           sortable:true,
           ellipsis:true,
           align:'right'
@@ -109,6 +112,7 @@ export default {
           title: '地址',
           ellipsis:true,
           key: 'securityCode',
+          width: 200,
           sortable:true,
           render: (h, params) => {
             if(params.row.securityCode === '600000') {
@@ -127,12 +131,12 @@ export default {
         {
           title: '年龄',
           key: 'tradeDir',
-          minWidth:200,
+          width: 200,
         },
         {
           title: '数量',
           ellipsis:true,
-          minWidth:200,
+          width: 200,
           key: 'tradeQuantity',
         },
       ],
