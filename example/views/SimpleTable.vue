@@ -14,6 +14,7 @@
     <!--</h-simple-table>-->
     <h-button @click="setLoading">切换状态</h-button>
     <h-button @click="clearData">清除数据</h-button>
+    <h-button @click="delSelected">删除所选</h-button>
     <h2>不带边线 单选 on-current-change</h2>
     <!-- :multiLevel="multiLevel1" -->
     <!-- <h-msg-box v-model="showmsg" :width="1000"> -->
@@ -84,23 +85,27 @@ export default {
         {
           type: 'index',
           align: 'center',
+          fixed:'left',
+          width: 100
         },
         {
           type: 'selection',
           align: 'center',
           key:'select',
+          width: 200,
           sortable: true
         },
         {
           title: '姓名姓名姓名姓名姓名姓名姓名姓名',
           key: 'fundId',
+          width: 300,
           showTitle:true,
           ellipsis:true,
         },
         {
           title: '今日开盘价(元)',
           key: 'tradeDate',
-//          width: 80,
+          width: 200,
           sortable:true,
           ellipsis:true,
           align:'right'
@@ -109,6 +114,7 @@ export default {
           title: '地址',
           ellipsis:true,
           key: 'securityCode',
+          width: 200,
           sortable:true,
           render: (h, params) => {
             if(params.row.securityCode === '600000') {
@@ -121,18 +127,18 @@ export default {
           title: '银行',
           key: 'securityName',
           minWidth:200,
-          fixed:'left',
+
           showTitle:true
         },
         {
           title: '年龄',
           key: 'tradeDir',
-          minWidth:200,
+          width: 200,
         },
         {
           title: '数量',
           ellipsis:true,
-          minWidth:200,
+          sortable:true,
           key: 'tradeQuantity',
         },
       ],
@@ -499,6 +505,16 @@ export default {
       this.$set(this.bigData[0],'fundId','sheishi')
       // this.loading = !this.loading;
     },
+    delSelected() {
+      for(let i in this.bigData) {
+        if(this.bigData[i].securityCode !== '600000') {
+          delete this.bigData[i]
+        }
+      }
+      this.bigData = this.bigData.filter((val) => {
+        return val
+      })
+    },
     click1 (selection) {
       console.log(selection);
     },
@@ -584,8 +600,10 @@ export default {
       }
     }
   },
+  created() {
+    window.isO45 = true
+  },
   mounted(){
-    window.isO45 = false
     this.bigData = jsonData
   }
 }

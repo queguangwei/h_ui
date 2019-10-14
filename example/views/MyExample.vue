@@ -69,7 +69,9 @@
         <h-form-item label="typefield" prop="mail" required>
           <h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >
         </h-form-item>
-
+        <h-form-item label="tree" required>
+          <h-select-tree v-model="formValidate.tree" class="curItemClass" :data="treeData" ref="tree" filterable></h-select-tree>
+        </h-form-item>
         <h-form-item prop="date" label="date" required>
           <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
         </h-form-item>
@@ -101,7 +103,7 @@
     <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
       <h-form-item label="股票代码" prop="stockCode">
         <h-single-select class="curItemClass" v-model="formCustom.stockCode" placeholder="请选择..."
-                          widthAdaption autoPlacement :animated="false" keepInputValue
+                         widthAdaption autoPlacement :animated="false" keepInputValue
                          ref="single">
           <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
         </h-single-select>
@@ -286,6 +288,7 @@ export default {
         city: '',
         gender: "",
         interest: [],
+        tree: '',
         date: "",
         fastDate: "",
         time: "",

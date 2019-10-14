@@ -566,6 +566,9 @@ export default {
       }
     },
     navigateOptions(direction) {
+      if(this.readonly) {
+        return false
+      }
       if (direction === 'next') {
         const next = this.focusIndex + 1
         this.focusIndex = this.focusIndex >= this.availableOptions.length ? 1 : next
