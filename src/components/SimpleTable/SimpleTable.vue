@@ -549,7 +549,8 @@ export default {
       isHorizontal:false,
       lastScrollTop: 0,
       beginLocation: {},
-      isCtrlDown: false
+      isCtrlDown: false,
+      curShowFiltersIdx: null,// 当前展示filter的列，防止拖拽滚动条时不隐藏filter poptip
     }
   },
   computed: {
@@ -1970,6 +1971,8 @@ export default {
       }
     },
     handleBodyScroll(event) {
+      // 修复：拖动滚动条时，无法隐藏显示过滤项
+      if (this.curShowFiltersIdx !== null) this.cloneColumns[this.curShowFiltersIdx]._filterVisible = false
       if (window.requestAnimationFrame) { // 该特性有浏览器限制
         this.updateVisibleAnimate(event)
       } else {
@@ -2610,6 +2613,13 @@ export default {
     cloneColumns: {
       deep: true,
       handler() {
+        // 有过滤项时，实时修改当前显示index,防止滚动是不隐藏
+        if (this.isFilter) {
+          this.cloneColumns.some((item, index) => {
+            this.curShowFiltersIdx = item._filterVisible == true ? index : null
+            return item._filterVisible
+          })
+        }
         this.getLeftWidth()
       }
     },
