@@ -1654,6 +1654,7 @@ export default {
         setTimeout(() => {
           this.dispatch("Msgbox", "on-esc-real-close", false);
         }, 0);
+        this.setPlacement();
         this.broadcast("Drop", "on-update-popper");
       } else {
         if (this.filterable) {
