@@ -16,7 +16,7 @@
     <h-button @click="getSelection">获取选中行</h-button>
     <!-- isCheckbox checkStrictly -->
     <!-- selectRoot -->
-    <h-simple-tree-gird stripe canDrag headSelection canMove @on-expand="load" ref="treeGird" selectRoot :columns="columns1" isCheckbox :data="treedata" :height="400" @on-select-root="selectChange" >
+    <h-simple-tree-gird stripe canDrag headSelection canMove @on-expand="load" ref="treeGird" selectRoot :columns="columns1" isCheckbox :data="treedata" :height="400" @on-row-click="selectChange" @on-select-root="selectChange" >
       <span slot="loading">1244</span>
     </h-simple-tree-gird>
   </div>
@@ -37,7 +37,7 @@ for(var i=0;i<5;i++){
     dating:'2018',
     timing:'16',
     tree: '345',
-    
+
   }
   bigData.push(obj)
 }
@@ -74,13 +74,12 @@ export default {
           title: 'name',
           key: 'name',
           width: 200,
-          fixed: 'left'
+//          fixed: 'left'
         },
         {
           title: 'age',
           width: 100,
           key: 'age',
-          fixed: 'left'
         },
         {
           title: 'address',
@@ -92,7 +91,6 @@ export default {
           title: 'money',
           width: 200,
           key: 'money',
-          fixed: 'right'
         },
         {
           title: 'cardId',
@@ -190,8 +188,9 @@ export default {
       this.treedata = this.baseData.slice(1,2)
       this.$refs.treeGird.forceUpdate()
     },
-    selectChange(data) {
+    selectChange(data, index) {
       console.log(data)
+      console.log(index)
     },
     getSelection() {
       console.log(this.$refs.treeGird.getSelection())

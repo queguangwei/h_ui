@@ -303,21 +303,7 @@
 <script>
 import renderHeader from './header'
 import Spin from '../Spin/Spin.vue'
-import {
-  oneOf,
-  getStyle,
-  deepCopy,
-  getScrollBarSize,
-  findInx,
-  getBarBottomS,
-  hasClass,
-  addClass,
-  removeClass,
-  typeOf,
-  getScrollBarSizeHeight,
-  scrollAnimate,
-  debounceWithImmediate
-} from '../../util/tools'
+import { oneOf, getStyle, deepCopy, getScrollBarSize, findInx, getBarBottomS, addClass, removeClass, typeOf, getScrollBarSizeHeight, debounceWithImmediate} from '../../util/tools'
 import { on, off } from '../../util/dom'
 import Locale from '../../mixins/locale'
 import Mixin from './mixin'
@@ -327,16 +313,14 @@ import TableTr from './Table-tr.vue'
 import TableCell from './Table-cell.vue'
 import Cell from './Cell.vue'
 import Checkbox from '../Checkbox/Checkbox.vue'
-
 const prefixCls = 'h-table'
-
 let rowKey = 1
 let columnKey = 1
 
 export default {
   name: 'Table',
   mixins: [Locale, Mixin],
-  components: { Cell, Checkbox, renderHeader, TableTr, Cell, TableCell },
+  components: { Cell, Checkbox, renderHeader, TableTr, TableCell },
   props: {
     data: {
       type: Array,
@@ -634,10 +618,19 @@ export default {
             }
           }
         }
-        return isSelectAll
       } else {
-        return isSelectAll
+        // 再次判断是否有外部强行删除数据导致全选框仍勾选
+        let count = 0
+        for(let ind = 0; ind < this.rebuildData.length; ind ++) {
+          if(this.objData[this.rebuildData[ind]._index]._isDisabled) {
+            count ++
+          }
+        }
+        if(count === this.rebuildData.length) {
+          isSelectAll = false
+        }
       }
+      return isSelectAll
     },
     loadingText() {
       return this.t('i.table.loadingText')
@@ -729,13 +722,13 @@ export default {
       return style
     },
     fixedHeadStyles() {
-      const style = this.headStyles;
+      const style = this.headStyles
       if(this.noNeedOtherCol) {
-        style.width = this.fixedTableStyle.width;
+        style.width = this.fixedTableStyle.width
       }
       return style
     },
-    fixedTableStyle() {
+    fixedTableStyle() {// 拖拽切换屏幕大小重新计算宽度时冻结列未触发重新计算
       if(this.isLeftFixed){
         let style = {}
         let width = 0
@@ -743,6 +736,7 @@ export default {
           if (col.fixed && col.fixed === 'left') width += col._width
         })
         style.width = `${width}px`
+//        console.log(width)
         return style
       }
       if(this.isRightFixed){
@@ -809,6 +803,7 @@ export default {
       if(this.isLeftFixed){
         let left = []
         let other = []
+//        console.log(this.cloneColumns)
         this.cloneColumns.forEach(col => {
           if (col.fixed && col.fixed === 'left') {
             left.push(col)
@@ -819,6 +814,8 @@ export default {
             }
           }
         })
+//        console.log(left)
+//        console.log(other)
         return left.concat(other)
       }
       if(this.isRightFixed){
@@ -1260,8 +1257,7 @@ export default {
 
         let width = this.$refs.body.getBoundingClientRect().width
         let conentWidth = this.$refs.body.scrollWidth
-        this.isScrollX =
-          conentWidth + this.scrollBarWidth > width ? true : false
+        this.isScrollX = conentWidth + this.scrollBarWidth > width ? true : false
         if (this.cloneColumns.length == 0) return
         const allWidth = !this.columns.some(
           cell => !cell.width && cell.width !== 0
@@ -1281,9 +1277,7 @@ export default {
           if (allWidth)
             autoWidthIndex = findInx(this.cloneColumns, cell => !cell.width)
           if (this.data.length) {
-            const $td = this.$refs.tbody
-              .querySelectorAll('tbody tr')[0]
-              .querySelectorAll('td')
+            const $td = this.$refs.tbody.querySelectorAll('tbody tr')[0].querySelectorAll('td')
             let errorNum = 0
             for (let i = 0; i < $td.length; i++) {
               // can not use forEach in Firefox
@@ -1300,24 +1294,19 @@ export default {
               }
               if (column.width) {
                 width = column.width || ''
-              } else {
+              } else {  // 自适应列设置最小宽度100（拖拽后除外）
                 let min = column.minWidth?column.minWidth:100
                 if (width < min) width = min
-                // if (width < 100) width = 100
               }
               this.cloneColumns[i]._width = width || ''
-              this.tableWidth = this.cloneColumns
-                .map(cell => cell._width)
-                .reduce((a, b) => a + b)
+              this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)
               columnsWidth[column._index] = {
                 width: width
               }
             }
             this.columnsWidth = columnsWidth
           } else {
-            const $th = this.$refs.thead
-              .querySelectorAll('thead .cur-th')[0]
-              .querySelectorAll('th')
+            const $th = this.$refs.thead.querySelectorAll('thead .cur-th')[0].querySelectorAll('th')
             for (let i = 0; i < $th.length; i++) {
               // can not use forEach in Firefox
               const column = this.cloneColumns[i]
@@ -1333,9 +1322,7 @@ export default {
                 if (width < min) width = min
               }
               this.cloneColumns[i]._width = width || ''
-              this.tableWidth = this.cloneColumns
-                .map(cell => cell._width)
-                .reduce((a, b) => a + b)
+              this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)
               columnsWidth[column._index] = {
                 width: width
               }
@@ -1343,7 +1330,6 @@ export default {
             // this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b);
             this.columnsWidth = columnsWidth
           }
-
           // get table real height,for fixed when set height prop,but height < table's height,show scrollBarWidth
           this.bodyRealHeight =
             parseInt(getStyle(this.$refs.tbody, 'height')) || 0

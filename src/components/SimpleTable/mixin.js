@@ -37,9 +37,10 @@ export default {
       }
       // when browser has scrollBar,set a width to resolve scroll position bug
       if (lastInx === index&& this.bodyHeight !== 0&& width!='') {
-        if(this.tableWidth+1>=this.initWidth-this.scrollBarWidth&&top){
+        if(!this.data.length) return
+        if(this.tableWidth+1>=this.initWidth-this.scrollBarWidth&&top) {
           width += this.scrollBarWidth
-        }else if(this.contentHeight<this.height){
+        }else if(this.contentHeight<this.height) {
           width += this.scrollBarWidth
         }
       }

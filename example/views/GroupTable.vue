@@ -2,18 +2,16 @@
   <div>
     <h2>基础</h2>
     <h3>单选分组组件</h3>
-    <!-- :multiLevel="multiLevel2" -->
-    <h-group-table :columns="columns1" childHighlightRow :height="300" width="600" :data="data1" size="small" @on-expand="expand"  @on-child-change="click1" ref="groupTable" :loading="loading">
-      <P slot="loading">我是自定义de</P>
-    </h-group-table>
-    <Button @click="setLoad">切换loading</Button>
-    <h-group-table :columns="columns1" :data="data1" @on-row-dblclick="dblClick" :loading="loading"></h-group-table>
-    <h-group-table :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" stripe :loading="loading"></h-group-table>
-    <h-group-table :columns="columns1" :data="[]" no-data-text="哎呀你好" :loading="loading"></h-group-table>
-    <Button @click="getDate">获取数据</Button>
+    <!--<h-group-table :columns="columns1" childHighlightRow :height="300" width="600" :data="data1" size="small" @on-expand="expand"  @on-child-change="click1" ref="groupTable" :loading="loading">-->
+      <!--<P slot="loading">我是自定义de</P>-->
+    <!--</h-group-table>-->
+    <!--<Button @click="setLoad">切换loading</Button>-->
+    <!--<h-group-table :columns="columns1" :data="data1" @on-row-dblclick="dblClick" :loading="loading"></h-group-table>-->
+    <h-group-table :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" cancelSelection @on-current-change="click1" stripe :loading="loading"></h-group-table>
+    <!--<h-group-table :columns="columns1" :data="[]" no-data-text="哎呀你好" :loading="loading"></h-group-table>-->
     <h3>多选分组组件</h3>
     <h-group-table :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading"></h-group-table>
-    <h-group-table :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" @on-selection-change="selsetChange" :loading="loading"></h-group-table>
+    <!--<h-group-table :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" @on-selection-change="selsetChange" :loading="loading"></h-group-table>-->
   </div>
 </template>
 
@@ -523,9 +521,6 @@ export default {
     },
     selsetChange (selection){//选项发生变化时触发已选择的项
       console.log(selection);
-    },
-    getDate(){
-      console.log(this.$refs.groupTable.cloneData);
     },
     addDate(){
       tData = this.data1.push({
