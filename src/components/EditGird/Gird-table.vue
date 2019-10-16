@@ -798,30 +798,34 @@ export default {
       if (this.typeName == 'groupTable' && String(_index).indexOf('.') != -1) {
         var k = String(_index).split('.')[0]
         var m = Number(String(_index).split('.')[1]) - 1
-        let highlight = this.objData[k].item[m]._isHighlight
+        let highlight = this.objData[k] && this.objData[k].item && this.objData[k].item[m] ? this.objData[k].item[m]._isHighlight : false
         let oldIndexI = -1
         let oldIndexJ = -1
         for (let i in this.objData) {
-          this.objData[i].item.forEach((col, j) => {
-            if (col._isHighlight) {
-              oldIndexI = i
-              oldIndexJ = j
-              col._isHighlight = false
-            }
-          })
-          // async cloneData
-          this.cloneData[i].item.forEach((col, j) => {
-            if (col.hasOwnProperty('_highlight')) {
-              col._highlight = false
-            }
-          })
+          if (this.objData[i] && this.objData[i].item && this.objData[i].item.length > 0) {
+            this.objData[i].item.forEach((col, j) => {
+              if (col._isHighlight) {
+                oldIndexI = i
+                oldIndexJ = j
+                col._isHighlight = false
+              }
+            })
+            // async cloneData
+            this.cloneData[i].item.forEach((col, j) => {
+              if (col.hasOwnProperty('_highlight')) {
+                col._highlight = false
+              }
+            })
+          }
         }
-        if (this.cancelSelection && highlight === true) {
-          this.$set(this.objData[k].item[m], '_isHighlight', false)
-          this.$set(this.cloneData[k].item[m], '_highlight', false)
-        } else {
-          this.$set(this.objData[k].item[m], '_isHighlight', true)
-          this.$set(this.cloneData[k].item[m], '_highlight', true)
+        if (this.objData[k] && this.objData[k].item && this.objData[k].item[m]) {
+          if (this.cancelSelection && highlight === true) {
+            this.$set(this.objData[k].item[m], '_isHighlight', false)
+            this.$set(this.cloneData[k].item[m], '_highlight', false)
+          } else {
+            this.$set(this.objData[k].item[m], '_isHighlight', true)
+            this.$set(this.cloneData[k].item[m], '_highlight', true)
+          }
         }
         const oldData =
           oldIndexJ < 0 ? null : this.getGroupData(oldIndexI, oldIndexJ)
