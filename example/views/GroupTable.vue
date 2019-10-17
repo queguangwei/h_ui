@@ -7,7 +7,8 @@
     <!--</h-group-table>-->
     <!--<Button @click="setLoad">切换loading</Button>-->
     <!--<h-group-table :columns="columns1" :data="data1" @on-row-dblclick="dblClick" :loading="loading"></h-group-table>-->
-    <h-group-table :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" cancelSelection @on-current-change="click1" stripe :loading="loading"></h-group-table>
+    <h-group-table :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" cancelSelection
+                   @on-row-click="click1" @on-current-change="click2" stripe :loading="loading"></h-group-table>
     <!--<h-group-table :columns="columns1" :data="[]" no-data-text="哎呀你好" :loading="loading"></h-group-table>-->
     <h3>多选分组组件</h3>
     <h-group-table :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading"></h-group-table>
@@ -394,6 +395,7 @@ export default {
           type: 'text',
           title: '姓名',
           key: 'name',
+//          fixed:'left',
           width: 200
         },
         {
@@ -507,7 +509,11 @@ export default {
     setLoad(){
       this.loading = !this.loading;
     },
-    click1(s,j,i){
+    click1(s,i) {
+      console.log(s)
+      console.log(i)
+    },
+    click2(s,j,i){
       console.log(s);
       console.log(j);
       console.log(i);

@@ -834,7 +834,8 @@ export default {
           'on-current-change',
           JSON.parse(JSON.stringify(currentData)),
           oldData,
-          { k: Number(k), m: m, key: this.curKey }
+          { k: Number(k), m: m, key: this.curKey },
+
         )
       } else {
         if (!this.isHighlightRow || this.objData[_index]._isHighlight) return
@@ -873,7 +874,11 @@ export default {
         let i = arr[0]
         let j = Number(arr[1]) - 1
         let currentData = this.getGroupData(i, j)
-        this.$emit('on-row-click', JSON.parse(JSON.stringify(currentData)))
+        let checkStatus = !currentData.item._highlight ? true : false
+        this.$emit('on-row-click',
+          JSON.parse(JSON.stringify(currentData)),
+          checkStatus
+        )
       } else {
         this.$emit('on-row-click', [
           JSON.parse(JSON.stringify(this.cloneData[_index])),

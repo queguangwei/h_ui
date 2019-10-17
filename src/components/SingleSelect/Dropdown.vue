@@ -1,13 +1,13 @@
 <template>
   <div class="h-select-dropdown" :style="styles" @click="handleClick" @mousedown.stop ref="selectdrop">
+  <!--<div class="h-select-dropdown" style="display: none;" @click="handleClick" @mousedown.stop ref="selectdrop">-->
     <slot></slot>
   </div>
 </template>
 <script>
-import Vue from 'vue';
-const isServer = Vue.prototype.$isServer;
+//import { Popper } from "../../util";
 import { getStyle, getScrollBarSize } from '../../util/tools';
-const Popper = isServer ? function() {} : require('../../util/popper.js');
+const Popper = require('../../util/popper.js');
 export default {
   name: 'Drop',
   props: {
@@ -17,6 +17,7 @@ export default {
     },
     maxDropWidth: {
       type:[String,Number],
+      default: 500
     },
     placement: {
       type: String,
@@ -29,7 +30,7 @@ export default {
       type:[String,Number]
     }
   },
-  data () {
+  data() {
     return {
       popper: null,
       width: '',
@@ -41,26 +42,26 @@ export default {
     styles() {
       let style = {}
       if (this.widthAdaption) {
-        if (this.dropWidth || this.maxDropWidth) {
-          if (parseFloat(this.dropWidth) > 0) {
-            style.minWidth = `${parseFloat(this.dropWidth)}px`
-          }else {
-            style.minWidth = `${parseFloat(this.parentWidth)}px`
-          }
-
-          if (parseFloat(this.maxDropWidth) > 0 && parseFloat(this.maxDropWidth) > parseFloat(this.dropWidth)) {
-            let maxWidth = Math.max(parseFloat(this.maxDropWidth), parseFloat(this.parentWidth))
-            style.maxWidth = `${maxWidth}px`
-          }else {
-            let maxWidth = Math.max(parseFloat(this.dropWidth), parseFloat(this.parentWidth))
-            style.maxWidth = `${maxWidth}px`
-          }
-
-          if (this.width) {
-            style.width = `${this.width}px`
-          }else {
-            style.width = `${this.dropWidth}px`
-          }
+        if (parseFloat(this.dropWidth) > 0) {
+          style.minWidth = `${parseFloat(this.dropWidth)}px`
+        }else {
+          style.minWidth = `${parseFloat(this.parentWidth)}px`
+        }
+        if (parseFloat(this.maxDropWidth) > 0 && parseFloat(this.dropWidth) > 0
+          && parseFloat(this.maxDropWidth) > parseFloat(this.dropWidth)) {
+          let maxWidth = Math.max(parseFloat(this.maxDropWidth), parseFloat(this.parentWidth))
+          style.maxWidth = `${maxWidth}px`
+        }else if(parseFloat(this.maxDropWidth) > 0 && parseFloat(this.dropWidth) > 0
+          && parseFloat(this.maxDropWidth) <= parseFloat(this.dropWidth)) {
+          let maxWidth = Math.max(parseFloat(this.dropWidth), parseFloat(this.parentWidth))
+          style.maxWidth = `${maxWidth}px`
+        }else {
+          style.maxWidth = `${this.maxDropWidth}px`
+        }
+        if (this.width) {
+          style.width = `${this.width}px`
+        }else {
+          style.width = `${this.dropWidth}px`
         }
       } else {
         if (this.width) {
@@ -92,9 +93,104 @@ export default {
 //        }
       },0)
     },
-    update () {
-      if (isServer)
-        return;
+    update() {
+//      function setStyle(element, styles) {
+//        function is_numeric(n) {
+//          return n !== "" && !isNaN(parseFloat(n)) && isFinite(n);
+//        }
+//        Object.keys(styles).forEach(function(prop) {
+//          var unit = "";
+//          // add unit if the value is numeric and is one of the following
+//          if (["width", "max-width", "min-width", "height", "top", "right", "bottom", "left"].indexOf(prop) !== -1 && is_numeric(styles[prop])) {
+//            unit = "px";
+//          }
+//          element.style[prop] = styles[prop] + unit;
+//        })
+//      }
+//      const _this = this
+//      // make sure popper calc exactly
+//      setStyle(this.$el, { display: "block", visibility: "hidden", width: "", top: "0", left: "0" })
+//      if (this.popper) {
+//        this.popper.scheduleUpdate()
+//        return
+//      }
+//      this.$nextTick(() => {
+//        const placement = (() => {
+//          if (this.autoPlacement) {
+//            const { top, bottom, height } = this.$parent.$el.getBoundingClientRect();
+//            const wh = window.innerHeight;
+//            return wh - top - height < 210 ? "top-start" : "bottom-start";
+//          } else {
+//            return ["top", "bottom"].includes(this.placement) ? `${this.placement}-start` : this.placement;
+//          }
+//        })();
+//
+//        this.popper = new Popper(this.$parent.$refs.reference, this.$el, {
+//          placement,
+//          eventsEnabled: false, // Whether events (resize, scroll) are initially enabled.
+//          modifiers: {
+//            preventOverflow: {
+//              escapeWithReference: true // When escapeWithReference is set totrue and reference is completely outside its boundaries, the popper will overflow (or completely leave) the boundaries in order to remain attached to the edge of the reference.
+//            },
+//            flip: { enabled: false }, // Modifier used to flip the popper’s placement when it starts to overlap its reference element.
+//            computeStyle: {
+//              gpuAcceleration: false // If true, it uses the CSS 3D transformation to position the popper. Otherwise, it will use the top and left properties
+//            },
+//            applyStyle: { enabled: false },
+//            applyVueStyle: {
+//              enabled: true,
+//              fn(data) {
+//                const { show, allowAnimation, dropWidth, maxDropWidth, widthAdaption } = _this;
+//                const {
+//                  instance: { popper: el },
+//                  offsets: {
+//                    popper: { width: cWidth },
+//                    reference: { width: pWidth }
+//                  },
+//                  styles
+//                } = data;
+//                if (widthAdaption) {
+//                  if (parseFloat(dropWidth) > 0) {
+//                    styles["min-width"] = parseFloat(dropWidth);
+//                  } else {
+//                    styles["min-width"] = pWidth;
+//                  }
+//                  if (parseFloat(maxDropWidth) > 0 && parseFloat(maxDropWidth) > parseFloat(dropWidth)) {
+//                    styles["max-width"] = Math.max(parseFloat(maxDropWidth), pWidth);
+//                  } else {
+//                    styles["max-width"] = Math.max(parseFloat(dropWidth), pWidth);
+//                  }
+//                  styles.width = cWidth;
+//                } else {
+//                  styles.width = parseFloat(dropWidth) || pWidth;
+//                }
+//                setStyle(el, { display: "block", visibility: "visible", ...styles }); // make sure animation is possible
+//                if (allowAnimation) {
+//                  show
+//                    ? el.classList.add(placement.includes("top") ? "slide-down-enter-active" : placement.includes("bottom") && "slide-up-enter-active")
+//                    : el.classList.add(placement.includes("top") ? "slide-down-leave-active" : placement.includes("bottom") && "slide-up-leave-active");
+//                  function onAnimationEnd() {
+//                    el.removeEventListener("animationend", onAnimationEnd);
+//                    el.classList.remove("slide-up-enter-active", "slide-up-leave-active", "slide-down-enter-active", "slide-down-leave-active");
+//                    if (!show) {
+//                      setStyle(el, { display: "none" });
+//                      _this.$emit("on-hide"); // emit on animation end and dropdown panel hidden
+//                    }
+//                  }
+//                  el.addEventListener("animationend", onAnimationEnd);
+//                } else {
+//                  if (!show) {
+//                    setStyle(el, { display: "none" });
+//                    _this.$emit("on-hide");
+//                  }
+//                }
+//              },
+//              order: 900
+//            }
+//          }
+//        })
+//      })
+
       if (this.popper) {
         this.$nextTick(() => {
           // select 组件 placement 改变后同步改变 popper 实例

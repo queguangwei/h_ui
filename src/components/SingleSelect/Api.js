@@ -112,6 +112,10 @@ export const SingleSelectApi = {
       type: Boolean,
       default: false
     },
+    hiddenEmpty: {
+      type: Boolean,
+      default: false
+    },
     // 设置输入框 tabindex
     tabindex: {
       type: [String, Number],

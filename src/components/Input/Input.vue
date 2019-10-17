@@ -382,10 +382,10 @@ export default {
       this.$emit('on-click', event)
     },
     handleClear(event){
-     this.currentValue='';
-     this.$emit('input', "")
-     this.$emit('on-input-change', event)
-     this.$emit('on-clear',event)
+      this.currentValue='';
+      this.$emit('input', "")
+      this.$emit('on-input-change', event)
+      this.$emit('on-clear',event)
     },
     handleFocus(event) {
       // IPMS 167437 屏蔽浏览器的记住密码功能，禁止密码回填或者点击选择

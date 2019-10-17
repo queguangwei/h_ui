@@ -163,6 +163,10 @@ export default {
     }
   },
   methods: {
+    // 对外暴露方法一键取消已选中日期
+    cancelAllSelected() {
+      this.selectedDate = []
+    },
     handleCellLeftClick(dateObj) {
       const date = dateObj.date
       this.$emit('on-click', date.getMonth() + 1, date.getDate())
@@ -182,6 +186,7 @@ export default {
         selectedDate.push(dateObj)
       }
       this.$emit('on-select', date.getMonth() + 1, date.getDate())
+      console.log(selectedDate)
     },
     handleCtxMenu(event) {
       if (this.enableCtxMenu) {

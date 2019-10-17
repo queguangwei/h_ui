@@ -92,7 +92,8 @@ export default {
           type: 'selection',
           align: 'center',
           key:'select',
-          width: 200,
+          fixed:'left',
+          width: 100,
           sortable: true
         },
         {
@@ -108,13 +109,13 @@ export default {
           width: 200,
           sortable:true,
           ellipsis:true,
-          align:'right'
         },
         {
           title: '地址',
           ellipsis:true,
           key: 'securityCode',
           width: 200,
+          align:'right',
           sortable:true,
           render: (h, params) => {
             if(params.row.securityCode === '600000') {
@@ -126,8 +127,7 @@ export default {
         {
           title: '银行',
           key: 'securityName',
-          minWidth:200,
-
+          width:200,
           showTitle:true
         },
         {

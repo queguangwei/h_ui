@@ -305,6 +305,7 @@ export default {
           type: 'text',
           title: '姓名',
           key: 'name',
+          fixed: 'left',
           width: 200,
           filterRE:/[^\d]/g,
           sortable:true,

@@ -31,7 +31,7 @@
               :showEditInput="showEditInput"
               :option="selectOption[inx]"
               :treeOption="treeOption[inx] ? treeOption[inx] : []"
-              :cascaderOption="cascaderOption[inx] ? cascaderOption[inx] : []" 
+              :cascaderOption="cascaderOption[inx] ? cascaderOption[inx] : []"
               :height="height"
               @on-editselect-change="editselectChange"
               @on-editinput-change="editinputChange"
@@ -359,7 +359,7 @@
         },
         /**
          * 添加visibleKey属性（一个递增的数值，只有可见行才会被添加，收缩行不会被添加）
-         * 
+         *
          * @param index 原始数据所在下标，非nodeKey
          */
         addVisibleKey(index = -1) {

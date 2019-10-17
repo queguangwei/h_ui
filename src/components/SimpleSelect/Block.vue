@@ -15,14 +15,14 @@
          :style="phantomStl"></div>
     <ul :class="[prefixCls+'block-content']"
         ref="content">
-      <li v-for="item in visibleData"
-          :key="item.value"
+      <li v-for="(item, index) in visibleData"
+          :key="typeof item.value === 'undefined' ? item.value : index"
           v-show="!item.hidden"
           :class="classes(item)"
           @click.stop="select(item)"
           @mouseout.stop="blur">
-
-        <slot><span :style="showCol.length ? styleArr[0] : ''"
+        <slot>
+          <span :style="showCol.length ? styleArr[0] : ''"
                 :class="showCol.length ? 'itemcol' : ''"
                 :title="showCol.length || hideMult ? showLabel(item) : ''">
             <checkbox v-show="multiple&&!hideMult"
@@ -32,7 +32,8 @@
                       :disabled="item.disabled"
                       @on-change="checkChange($event,item)"></checkbox>
             {{showLabel(item)}}
-          </span></slot>
+          </span>
+        </slot>
         <span class="itemcol"
               v-for="(col, index) in showCol"
               :key="col"
@@ -41,8 +42,7 @@
       </li>
       <!-- <li v-if="showEmpty" :class="[prefixCls+'-empty']">{{localeNoMatch}}</li> -->
     </ul>
-    <div v-if="showEmpty && !loading"
-         :class="[prefixCls+'-empty']">{{localeNoMatch}}</div>
+    <div v-if="showEmpty && !loading" :class="[prefixCls+'-empty']">{{localeNoMatch}}</div>
     <!-- 用于撑开高度 -->
     <div v-show="loading && visibleData.length === 0" :class="[prefixCls+'-loading-placeholder']">&nbsp;</div>
   </div>
@@ -405,11 +405,16 @@ export default {
     data: {
       deep: true,
       handler: function(val) {
-        if (val.length == 0) {
-          this.showEmpty = true
-        } else {
+        if(this.$parent.$parent.hiddenEmpty) {
           this.showEmpty = false
+        }else {
+          if (val.length == 0) {
+            this.showEmpty = true
+          } else {
+            this.showEmpty = false
+          }
         }
+
 
         // this.$nextTick(() => {//viewValue获取时机
         this.cloneData = deepCopy(this.data)

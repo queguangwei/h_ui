@@ -48,6 +48,7 @@
                             :titleEllipsis="titleEllipsis">
                 </table-cell>
               </th>
+              <!--<th style="width:0;"></th>-->
             </tr>
           </thead>
         </table>
@@ -107,6 +108,7 @@
                       </template>
                     </div>
                   </td>
+                  <!--<td style="width:0;"></td>-->
                 </table-tr>
               </template>
             </tbody>
@@ -167,6 +169,7 @@
                               :titleEllipsis="titleEllipsis">
                   </table-cell>
                 </th>
+                <!--<th style="width:0;"></th>-->
               </tr>
             </thead>
           </table>
@@ -234,6 +237,7 @@
                         :disabled="rowDisabled(row._index)"
                       ></Cell> -->
                     </td>
+                    <!--<td style="width:0;"></td>-->
                   </table-tr>
                 </template>
               </tbody>
@@ -274,6 +278,7 @@
                           v-text="row[column.key]"></span>
                   </div>
                 </td>
+                <!--<td style="width:0;"></td>-->
               </table-tr>
             </template>
           </tbody>
@@ -709,6 +714,7 @@ export default {
             width = this.tableWidth - this.scrollBarWidth
           }
         }
+//        console.log(this.tableWidth)
         style.width = `${width}px`
       }
       return style
@@ -716,8 +722,7 @@ export default {
     headStyles() {
       //深拷贝
       const style = Object.assign({}, this.tableStyle)
-      const width = this.data.length == 0
-        ? parseInt(this.tableStyle.width)
+      const width = this.data.length == 0 ? parseInt(this.tableStyle.width)
         : parseInt(this.tableStyle.width) + this.scrollBarWidth
       style.width = `${width}px`
       return style
@@ -815,8 +820,6 @@ export default {
             }
           }
         })
-//        console.log(left)
-//        console.log(other)
         return left.concat(other)
       }
       if(this.isRightFixed){
@@ -943,6 +946,7 @@ export default {
       if (this.tableWidth < this.initWidth && !that.notAdaptive) {
         this.tableWidth = this.initWidth - 1
       }
+//      console.log(this.tableWidth)
       this.$nextTick(() => {
         this.$emit('on-drag', width, key)
         if(this.$refs.content){
@@ -1010,6 +1014,7 @@ export default {
             let columnWidth = finalLeft - startColumnLeft
             //拖拽的宽度 >0为增大，<0为减小
             let dragWidth = finalLeft - startLeft
+//            console.log(dragWidth)
             if (dragWidth >= 0) {
               //o45需求最后一列可拖动变宽，这样这里的代码没有意义，原本是为了限制最后一列宽度
               lastWidth = lastWidth - dragWidth >= this.lastColWidth
