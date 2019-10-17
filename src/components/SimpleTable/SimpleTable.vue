@@ -1881,6 +1881,8 @@ export default {
       this.updateVisibleData(0)
       this.cloneColumns[index]._isFiltered = true
       this.cloneColumns[index]._filterVisible = false
+      // 筛选后返回数据-汇总使用
+      this.$emit('on-filter', this.rebuildData)
     },
     // 隐藏过滤
     handleFilterHide(_index) {
@@ -1908,6 +1910,8 @@ export default {
       this.rebuildData = filterData
       this.focusIndex = -1
       this.updateVisibleData(0)
+      // 筛选后返回数据-汇总使用
+      this.$emit('on-filter', this.rebuildData)
     },
     /*
      * 获取过滤数据， 仅在配置isFilter后生效

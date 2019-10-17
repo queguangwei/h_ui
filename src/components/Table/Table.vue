@@ -1680,6 +1680,8 @@ export default {
 
       this.cloneColumns[index]._isFiltered = true
       this.cloneColumns[index]._filterVisible = false
+      // 筛选后返回数据-汇总使用
+      this.$emit('on-filter', this.rebuildData)
     },
     handleFilterSelect(_index, value) {
       let index = this.getIndex(_index)
@@ -1695,6 +1697,8 @@ export default {
       let filterData = this.makeDataWithSort()
       filterData = this.filterOtherData(filterData, index)
       this.rebuildData = filterData
+       // 筛选后返回数据-汇总使用
+      this.$emit('on-filter', this.rebuildData)
     },
     makeData() {
       let data = deepCopy(this.data)
