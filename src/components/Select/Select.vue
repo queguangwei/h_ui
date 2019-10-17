@@ -568,6 +568,7 @@ export default {
       if (event.keyCode == 9) {
         this.hideMenu();
       }
+      this.handleKeydown(event);
     },
     focus(){
       this.isInputFocus = true;
@@ -1330,7 +1331,6 @@ export default {
     });
     this.updateOptions(true);
     this.updateLabel();
-    on(document,'keydown', this.handleKeydown);
     this.$on('append', () => {
       if (!this.remote) {
         this.modelToQuery();
@@ -1432,7 +1432,6 @@ export default {
     });
   },
   beforeDestroy () {
-    off(document,'keydown',this.handleKeydown)
     this.broadcast('Drop', 'on-destroy-popper');
   },
   watch: {
@@ -1606,9 +1605,6 @@ export default {
       this.broadcast('Drop', 'on-update-popper');
     },
     selectedSingle(val){
-      // if(!window.isO45){
-      //   this.hideMenu();
-      // }
       if (val&&this.showTitle) {
         this.titleTip=val
       }
