@@ -921,7 +921,7 @@ export default {
         return this.objData[_index]._isDisabled
       }
     },
-    changeWidth(width, key, lastWidth) {
+    changeWidth(width, dragWidth, index, key, lastWidth) {
       let that = this
       let lastInx = this.cloneColumns.length - 1
       let totalWidth = 0
@@ -930,28 +930,39 @@ export default {
           that.$set(col, 'width', width)
           that.$set(col, '_width', width)
         }
-        // 限制最后一列拖拽改变宽度
-        //        if (i == lastInx && !that.notAdaptive) {
-        //          that.$set(col, 'width', lastWidth)
-        //          that.$set(col, '_width', lastWidth)
-        //        }
-        var colWidth = col.width || col._width
+        // 缩短当前列增宽最后一列
+        if(index != lastInx ) {
+          if (i == lastInx && !that.notAdaptive) {
+            let sum
+            // 当最后一列宽度不够缩小时
+            if(lastWidth >= that.lastColWidth) {
+              if(dragWidth < 0) {
+                sum = col._width + Math.abs(dragWidth)
+              }else {
+                sum = col._width - Math.abs(dragWidth)
+              }
+              that.$set(col, 'width', sum)
+              that.$set(col, '_width', sum)
+            }
+          }
+        }
+        var colWidth = col._width
         totalWidth = totalWidth + colWidth
       })
       if (this.rebuildData.length != 0 && !that.notAdaptive) {
         totalWidth = totalWidth + this.scrollBarWidth
       }
       this.tableWidth = totalWidth
-      // && !that.notAdaptive
       if (this.tableWidth < this.initWidth && !that.notAdaptive) {
         this.tableWidth = this.initWidth - 1
       }
-//      console.log(this.tableWidth)
       this.$nextTick(() => {
         this.$emit('on-drag', width, key)
         if(this.$refs.content){
           this.isHorizontal = this.$refs.content.scrollWidth > this.$refs.content.clientWidth?true:false
         }
+        // 触发改变整体宽度
+        this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)
       })
     },
     getLeftWidth() {
@@ -973,7 +984,6 @@ export default {
       if (!column) return
       if (!this.canDrag && !this.canMove) return
       let _this = this
-
       if (this.draggingColumn) {
         this.dragging = true
         this.resizeProxyVisible = true
@@ -1014,9 +1024,7 @@ export default {
             let columnWidth = finalLeft - startColumnLeft
             //拖拽的宽度 >0为增大，<0为减小
             let dragWidth = finalLeft - startLeft
-//            console.log(dragWidth)
             if (dragWidth >= 0) {
-              //o45需求最后一列可拖动变宽，这样这里的代码没有意义，原本是为了限制最后一列宽度
               lastWidth = lastWidth - dragWidth >= this.lastColWidth
                 ? lastWidth - dragWidth : this.lastColWidth
             } else {
@@ -1032,13 +1040,13 @@ export default {
             if (table.bodyHeight !== 0&&!this.isRightFixed) {
               lastWidth = lastWidth - getScrollBarSize()
             }
-            //表头最小宽度 (o45： padding 8、 一个文字... 24、 排序 16+4)
+            // 设置表头最小宽度 (o45： padding 8、 一个文字... 24、 排序 16+4)
             if(window.isO45) {
               columnWidth = columnWidth <= 60 ? 60 : columnWidth
             }else {
               columnWidth = columnWidth <= 74 ? 74 : columnWidth
             }
-            _this.changeWidth(columnWidth, column.key, lastWidth)
+            _this.changeWidth(columnWidth, dragWidth, index, column.key, lastWidth)
             document.body.style.cursor = ''
             _this.dragging = false
             _this.draggingColumn = false
@@ -1245,9 +1253,8 @@ export default {
     },
     handleResize() {
       this.$nextTick(() => {
-        let transformTop =
-          Math.floor(this.$refs.body.scrollTop / this.itemHeight) *
-          this.itemHeight
+        console.log("resize")
+        let transformTop = Math.floor(this.$refs.body.scrollTop / this.itemHeight) * this.itemHeight
         if(this.$refs.fixedBody){
           this.$refs.fixedBody.scrollTop =this.$refs.body.scrollTop
         }
@@ -1260,18 +1267,13 @@ export default {
         if (this.$refs.leftContent) {
           this.$refs.leftContent.style.transform = `translateY(${transformTop}px))`
         }
-
         let width = this.$refs.body.getBoundingClientRect().width
         let conentWidth = this.$refs.body.scrollWidth
         this.isScrollX = conentWidth + this.scrollBarWidth > width ? true : false
         if (this.cloneColumns.length == 0) return
-        const allWidth = !this.columns.some(
-          cell => !cell.width && cell.width !== 0
-        ) // each column set a width
+        const allWidth = !this.columns.some(cell => !cell.width && cell.width !== 0) // each column set a width
         if (allWidth) {
-          this.tableWidth = this.columns
-            .map(cell => cell.width)
-            .reduce((a, b) => a + b)
+          this.tableWidth = this.columns.map(cell => cell.width).reduce((a, b) => a + b)
         } else {
           this.tableWidth = parseInt(getStyle(this.$el, 'width')) - 1
         }
@@ -1719,9 +1721,7 @@ export default {
         this.cloneColumns[index]._sortType = type
         this.$nextTick(() => {
           this.$emit('on-sort-change', {
-            column: JSON.parse(
-              JSON.stringify(this.columns[this.cloneColumns[index]._index])
-            ),
+            column: JSON.parse(JSON.stringify(this.columns[this.cloneColumns[index]._index])),
             key: key,
             order: type
           })
