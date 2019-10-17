@@ -117,6 +117,7 @@ export default {
       let valid = true
       let count = 0
       this.fields.forEach(field => {
+        field.resetErrorTip()
         if (field.$children && field.$children.length > 0) {
           for (let fidleChild of field.$children) {
             if (fidleChild.disabled) {
@@ -128,7 +129,6 @@ export default {
             }
           }
         }
-        field.resetErrorTip()
         field.commonRule()
         field.validate('', errors => {
           if (errors) {

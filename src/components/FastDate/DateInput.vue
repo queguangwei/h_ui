@@ -14,9 +14,11 @@
    />
 </template>
 <script>
+import Emitter from '../../mixins/emitter'
 const prefixCls = 'h-fast-date-input'
 export default {
   name: 'DateInput',
+  mixins: [Emitter],
   props: {
     value: {
       type: [String,Number]
@@ -91,10 +93,12 @@ export default {
     blur(event){
       this.isFocus = false;
       this.$emit('blur', event);
+      this.dispatch('FormItem', 'on-form-blur')
     },
     focuser(event){
       this.isFocus = true;
       this.$emit('focus', event);
+      this.dispatch('FormItem', 'on-form-focus')
     },
     focus(){
       this.$refs.inputEl.focus();

@@ -50,48 +50,54 @@
     </h-msg-box>
     <h-msg-box v-model="show" escClose :mask-closable="false" maximize width="600" height="400">
       <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80" showTipsOnlyFocus>
-        <h-form-item label="singleSelect" prop="city" required>
-          {{formValidate.city}}
-          <h-single-select v-model="formValidate.city" placeholder="请选择所在地" class="curItemClass"
+        <h-form-item label="singleSelect" prop="stockCode" required>
+          {{formValidate.stockCode}}
+          <h-single-select v-model="formValidate.stockCode" placeholder="请选择所在地" class="curItemClass"
                            remote :loading="isLoading" :remote-method="remoteMethod1" transfer autoPlacement
-                           :width="200" widthAdaption :dropWidth="220" :maxDropWidth="320"
-                           @on-keydown="handlekeydown">
+                           :width="200" widthAdaption :dropWidth="220" :maxDropWidth="250"
+                           @on-keydown="handlekeydown" @on-change="handlevaluechange">
             <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
           </h-single-select>
         </h-form-item>
-        <h-form-item label="fastdate" prop="fastdate" required>
-          {{formValidate.fastdate}}
-          <h-fast-date class="curItemClass" v-model="formValidate.fastdate" format="yyyy-MM-dd"></h-fast-date>
-        </h-form-item>
-        <h-form-item label="input" prop="name" required :tipWidth="200">
-          <h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>
-        </h-form-item>
-        <h-form-item label="typefield" prop="mail" required>
-          <h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >
-        </h-form-item>
-        <h-form-item label="tree" required>
-          <h-select-tree v-model="formValidate.tree" class="curItemClass" :data="treeData" ref="tree" filterable></h-select-tree>
-        </h-form-item>
+
         <h-form-item prop="date" label="date" required>
           <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
         </h-form-item>
-        <h-form-item prop="time" label="time">
-          <h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time" class="curItemClass" ></h-time-picker>
+        <h-form-item label="fastdate" prop="fastdate" required>
+          <h-fast-date class="curItemClass" v-model="formValidate.fastdate" format="yyyy-MM-dd"></h-fast-date>
         </h-form-item>
-        <h-form-item label="radio" prop="gender">
-          <h-radio-group v-model="formValidate.gender">
-            <h-radio label="male" class="curItemClass" >男</h-radio>
-            <h-radio label="female" class="curItemClass" >女</h-radio>
-          </h-radio-group>
-        </h-form-item>
-        <h-form-item label="checkbox" prop="interest">
-          <h-checkbox-group v-model="formValidate.interest">
-            <h-checkbox label="吃饭" class="curItemClass" ></h-checkbox>
-            <h-checkbox label="睡觉" class="curItemClass" ></h-checkbox>
-            <h-checkbox label="跑步" class="curItemClass" ></h-checkbox>
-            <h-checkbox label="看电影" class="curItemClass" ></h-checkbox>
-          </h-checkbox-group>
-        </h-form-item>
+        <!--<h-form-item label="input" prop="name" required :tipWidth="200">-->
+          <!--<h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>-->
+        <!--</h-form-item>-->
+        <!--<h-form-item label="typefield" prop="mail" required>-->
+          <!--<h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >-->
+        <!--</h-form-item>-->
+        <!--<h-form-item label="select" prop="city">-->
+          <!--<h-select v-model="formValidate.city" class="curItemClass" placement="top">-->
+            <!--<h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>-->
+          <!--</h-select>-->
+        <!--</h-form-item>-->
+        <!--<h-form-item label="tree" prop="tree">-->
+          <!--<h-select-tree v-model="formValidate.tree" class="curItemClass" :data="treeData" ref="tree" filterable></h-select-tree>-->
+        <!--</h-form-item>-->
+        <!--<h-form-item prop="time" label="time" required>-->
+          <!--<h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time" class="curItemClass" ></h-time-picker>-->
+        <!--</h-form-item>-->
+
+        <!--<h-form-item label="radio" prop="gender">-->
+          <!--<h-radio-group v-model="formValidate.gender">-->
+            <!--<h-radio label="male" class="curItemClass" >男</h-radio>-->
+            <!--<h-radio label="female" class="curItemClass" >女</h-radio>-->
+          <!--</h-radio-group>-->
+        <!--</h-form-item>-->
+        <!--<h-form-item label="checkbox" prop="interest">-->
+          <!--<h-checkbox-group v-model="formValidate.interest">-->
+            <!--<h-checkbox label="吃饭" class="curItemClass" ></h-checkbox>-->
+            <!--<h-checkbox label="睡觉" class="curItemClass" ></h-checkbox>-->
+            <!--<h-checkbox label="跑步" class="curItemClass" ></h-checkbox>-->
+            <!--<h-checkbox label="看电影" class="curItemClass" ></h-checkbox>-->
+          <!--</h-checkbox-group>-->
+        <!--</h-form-item>-->
       </h-form>
       <div slot="footer">
         <h-button type="ghost" @click="reset">重置</h-button>
@@ -282,14 +288,25 @@ export default {
       show:false,
       isLoading: false,
       value:'value0',
+      cityList: [
+        {value: 'beijing', label: '北京市'},
+        {value: 'shanghai', label: '上海市'},
+        {value: 'shenzhen', label: '深圳市'},
+        {value: 'hangzhou', label: '杭州市'},
+        {value: 'nanjing', label: '南京市'},
+        {value: 'chongqing', label: '重庆市'},
+        {value: 'chengdu', label: '成都'},
+        {value: 'xiamen', label: '厦门'}
+      ],
       formValidate: {
+        stockCode: "",
         name: "",
         mail: "",
         city: '',
         gender: "",
         interest: [],
         tree: '',
-        date: "",
+        date: "20191015",
         fastDate: "",
         time: "",
         desc: "",
@@ -335,7 +352,7 @@ export default {
       list: [],
       formCustom: {
         date: '',
-        face_balance: '0.00',
+        face_balance: '',
         passwd: '',
         passwdCheck: '',
         age: '',
@@ -446,7 +463,8 @@ export default {
           key: 'zip',
           ellipsis:true,
           headerTooltip: true
-        },{
+        },
+        {
           title: '邮编1',
           width:150,
           key: 'zip',
@@ -457,6 +475,7 @@ export default {
           title: '操作',
           key: 'action',
 //          fixed: 'right',
+          hiddenCol: true,
           render: (h, params) => {
             return h('div', [
               h('h-button', {
@@ -639,22 +658,23 @@ export default {
             item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1
           );
         }, 200);
-        done()
+
       } else {
         this.remoteData = [];
       }
+      done()
     },
     handlekeydown(val, e) {
 //      console.log(val)
 //      console.log(e)
     },
-    clear(){
-      this.formValidate.city=''
+    handlevaluechange(val) {
+      console.log('v-model:::'+this.formValidate.stockCode)
+      console.log('onchange:::'+val)
     },
     changeShow(){
       this.$refs.formValidate.resetFields()
       this.show=true
-//      this.formValidate.city = 'value1'
       this.$refs.formValidate.firstNodeFocused()
     },
     submit() {

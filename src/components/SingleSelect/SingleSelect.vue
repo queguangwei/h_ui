@@ -1,6 +1,6 @@
 <template>
   <div :class="classes" ref="select" :style="singleStyle" v-clickoutside="{trigger: 'mousedown', handler: handleClose}">
-    <div :class="[prefixCls + '-selection']" ref="reference" @click="showdrop">
+    <div :class="selectionClass" ref="reference" >
       <!--<span :class="[prefixCls + '-selected-value']"-->
             <!--v-show="!showPlaceholder && !filterable">{{ selectedSingle }}</span>-->
       <input type="text"
@@ -89,7 +89,7 @@ export default {
       selected: '',// 已选记录
       isQuerySelect: false, // 是否点选选中 false点选 true模糊匹配选中
       selectToChangeQuery: false, // 选择一个值后执行过滤，false: 不执行 true: 执行
-      scrollBarWidth: getScrollBarSize()
+      scrollBarWidth: getScrollBarSize(),
     }
   },
   computed: {
@@ -108,6 +108,11 @@ export default {
           [`${prefixCls}-editable`]: !this.editable,
           [`${prefixCls}-${this.size}`]: !!this.size
         }
+      ]
+    },
+    selectionClass() {
+      return [
+        `${prefixCls}-selection`,'single-selection'
       ]
     },
     dropdownCls() {
@@ -156,7 +161,7 @@ export default {
     value: {
       immediate: true,
       handler(val) {
-//        if (this.model == !val) {
+//        if(val === '' && this.query !== '') {
 //          this.isQuerySelect = false
 //        }
         this.model = val
@@ -171,6 +176,7 @@ export default {
     },
     selected(val) {
       this.$emit('input', this.model)
+      this.$emit('on-change', this.model)
       if (!this.isQuerySelect) {// 选中内容是点选而非模糊匹配到的
         this.query = val
         if (this.query !== '') {
@@ -182,6 +188,10 @@ export default {
       this.setSingleSelect()
     },
     query(val) {
+      if(val === '' ) {
+//        this.$emit('input', val)
+        this.$emit('on-change', val)
+      }
       let querySingle = val.toString().split(' ')[0] //此处改变query
       this.querySingle = querySingle
       if (this.remote && this.remoteMethod) {
@@ -212,7 +222,8 @@ export default {
 //        })
       }else {
         if (!this.selectToChangeQuery) {
-          if (!this.visible && querySingle) {
+          // o45指令备注框赋默认值时不应该弹出框
+          if (!this.visible && querySingle && !this.firstInit) {
             this.visible = true
           }
           this.$emit('on-query-change', querySingle)
@@ -222,7 +233,6 @@ export default {
         }
       }
       this.selectToChangeQuery = false
-
       this.broadcast('Drop', 'on-update-popper')
     },
     visible(val) {
@@ -362,12 +372,6 @@ export default {
         })
       }
     },
-    showdrop() {
-      if (this.disabled || !this.editable || this.readonly) {
-        return false
-      }
-      this.isInputFocus = true
-    },
     arrowClick() {
       if (this.disabled || !this.editable || this.readonly) {
         return false
@@ -376,6 +380,8 @@ export default {
       this.focus()
     },
     handleFocus(e) {
+      this.isInputFocus = true
+      // 获取焦点全选内容
       e.target.selectionStart = 0
       e.target.selectionEnd = this.query.length
       this.$emit('on-focus')
@@ -383,7 +389,9 @@ export default {
       this.dispatch('FormItem', 'on-form-focus')
     },
     handleBlur() {
+      this.isInputFocus = false
       this.$emit('on-blur')
+      this.dispatch('FormItem', 'on-form-blur')
     },
     handleInputKeyDown(e) {
       if (this.visible && e.keyCode == 9) {
@@ -418,6 +426,7 @@ export default {
     },
     updateOptions(init, slot = false) {
       let options = []
+      debugger
       this.findChild(child => {
         let data = child.cloneData
         data.forEach((col, i) => {
@@ -533,7 +542,7 @@ export default {
         if(this.keepInputValue) {
           this.selected = this.model
         }
-        this.$emit('on-change', value)
+//        this.$emit('on-change', value)
 //        this.dispatch('FormItem', 'on-form-change', value)
       }
     },
@@ -586,22 +595,22 @@ export default {
       })
       this.selectBlockSingle(focusValue)
     },
-//    modelToQuery() {
-//      if (this.model !== undefined) {
-//        this.findChild(child => {
-//          if (this.model === child.value) {
-//            if (child.label) {
-//              this.query = child.label
-//            } else if (child.searchLabel) {
-//              this.query = child.searchLabel
-//            } else {
-//              this.query = child.value
-//            }
-//            this.selectToChangeQuery = true
-//          }
-//        })
-//      }
-//    },
+    modelToQuery() {
+      if (this.model !== undefined) {
+        this.findChild(child => {
+          if (this.model === child.value) {
+            if (child.label) {
+              this.query = child.label
+            } else if (child.searchLabel) {
+              this.query = child.searchLabel
+            } else {
+              this.query = child.value
+            }
+            this.selectToChangeQuery = true
+          }
+        })
+      }
+    },
     //左右键、点选选中options中value值
     selectBlockSingle(value, status = false, str, nullValue = false) {
       this.isQuerySelect = status
@@ -615,7 +624,11 @@ export default {
       }
       if (str === 'click') {
         this.fold()
-        this.focus()
+        this.blur()
+        // o45要求点选完焦点不移开与formitem焦点所在位置显示errorTip冲突，当前次为空重新选值时如果不失焦下errorTip会显示
+        this.$nextTick(() => {
+          this.focus()
+        })
       }
       if(nullValue) {
         this.$nextTick(() => {

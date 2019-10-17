@@ -510,6 +510,7 @@ export default {
       this.reset()
       this.$refs.pickerPanel.onToggleVisibility(false)
       this.$emit('on-blur')
+      this.dispatch('FormItem', 'on-form-blur')
     },
     reset() {
       this.$refs.pickerPanel.reset && this.$refs.pickerPanel.reset()
