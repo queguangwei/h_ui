@@ -32,8 +32,10 @@ export default {
       }
       if (column.width) {
         width = column.width
-      } else if (this.columnsWidth[column._index]) {
-        width = this.columnsWidth[column._index].width
+      } else if (this.cloneColumns[column._index]) {
+        width = this.cloneColumns[column._index]._width
+        // else if (this.columnsWidth[column._index]) {
+        // width = this.columnsWidth[column._index].width
       }
       // when browser has scrollBar,set a width to resolve scroll position bug
       if (lastInx === index&& this.bodyHeight !== 0&& width!='') {
