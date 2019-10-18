@@ -52,7 +52,7 @@
       <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80" showTipsOnlyFocus>
         <h-form-item label="singleSelect" prop="stockCode" required>
           {{formValidate.stockCode}}
-          <h-single-select v-model="formValidate.stockCode" placeholder="请选择所在地" class="curItemClass"
+          <h-single-select ref="stockCode" v-model="formValidate.stockCode" placeholder="请选择所在地" class="curItemClass"
                            remote :loading="isLoading" :remote-method="remoteMethod1" transfer autoPlacement
                            :width="200" widthAdaption :dropWidth="220" :maxDropWidth="250"
                            @on-keydown="handlekeydown" @on-change="handlevaluechange">
@@ -66,23 +66,23 @@
         <h-form-item label="fastdate" prop="fastdate" required>
           <h-fast-date class="curItemClass" v-model="formValidate.fastdate" format="yyyy-MM-dd"></h-fast-date>
         </h-form-item>
-        <!--<h-form-item label="input" prop="name" required :tipWidth="200">-->
-          <!--<h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>-->
-        <!--</h-form-item>-->
-        <!--<h-form-item label="typefield" prop="mail" required>-->
-          <!--<h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >-->
-        <!--</h-form-item>-->
-        <!--<h-form-item label="select" prop="city">-->
-          <!--<h-select v-model="formValidate.city" class="curItemClass" placement="top">-->
-            <!--<h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>-->
-          <!--</h-select>-->
-        <!--</h-form-item>-->
-        <!--<h-form-item label="tree" prop="tree">-->
-          <!--<h-select-tree v-model="formValidate.tree" class="curItemClass" :data="treeData" ref="tree" filterable></h-select-tree>-->
-        <!--</h-form-item>-->
-        <!--<h-form-item prop="time" label="time" required>-->
-          <!--<h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time" class="curItemClass" ></h-time-picker>-->
-        <!--</h-form-item>-->
+        <h-form-item label="input" prop="name" required :tipWidth="200">
+          <h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>
+        </h-form-item>
+        <h-form-item label="typefield" prop="mail" required>
+          <h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >
+        </h-form-item>
+        <h-form-item label="select" prop="city">
+          <h-select v-model="formValidate.city" class="curItemClass" placement="top">
+            <h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>
+          </h-select>
+        </h-form-item>
+        <h-form-item label="tree" prop="tree">
+          <h-select-tree v-model="formValidate.tree" class="curItemClass" :data="treeData" ref="tree" filterable></h-select-tree>
+        </h-form-item>
+        <h-form-item prop="time" label="time" required>
+          <h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time" class="curItemClass" ></h-time-picker>
+        </h-form-item>
 
         <!--<h-form-item label="radio" prop="gender">-->
           <!--<h-radio-group v-model="formValidate.gender">-->
@@ -148,7 +148,7 @@
     <h-table :columns="columns" :data="data0" :summationData="summationData1" :loading="loading"
              border :highlight-row="true"  headAlgin="center" bodyAlgin="left"
              canDrag :lastColWidth="150" :minDragWidth="40" :minColWidth="60" notSetWidth autoHeadWidth
-             @on-sort-change="sortchange">
+             @on-sort-change="sortchange" @on-table-width-change="widthChange">
       <span slot="loading">我是自定义加载！！！</span>
     </h-table>
     <h1>tree</h1>
@@ -157,6 +157,11 @@
     <h-button type="primary" @click="expandAll">展开</h-button>
     <h-button @click="fold">收起</h-button>
     <h-simple-tree-gird :columns="columns1" ref="treeGrid" :data="treedata" canDrag :height="500" @on-expand="expand"></h-simple-tree-gird>
+    <h1>editGird</h1>
+    <!--<h-edit-gird ref="repoEditGrid" border height="400" size="small" showEditInput-->
+                 <!--:columns="columnsEdit" :data="dataEdit" :disabled-hover="true" :highlight-row="true"-->
+                 <!--@on-money-blur="on_money_blur">-->
+    <!--</h-edit-gird>-->
   </div>
 </template>
 <script>
@@ -418,7 +423,7 @@ export default {
           title: '姓名',
           key: 'name',
           fixed: 'left',
-          width: 100,
+          width: 150,
           render: (h, params) => {
             return h('div', [
               h('Icon', {
@@ -475,7 +480,7 @@ export default {
           title: '操作',
           key: 'action',
 //          fixed: 'right',
-          hiddenCol: true,
+//          hiddenCol: true,
           render: (h, params) => {
             return h('div', [
               h('h-button', {
@@ -624,13 +629,175 @@ export default {
       ],
       baseTreeData: [],
       treedata: [],
+      columns2: [],
+      data1: [{id: 0}, {id:1}, {id:2}],
+      columnsEdit: [
+        {
+          type: "money",
+          placeholder: "请输入",
+          title: "质押数量(万元)",
+          key: "mortgage_amount",
+          width: 150,
+          align: 'center'
+        },
+        {
+          type: "money",
+          placeholder: "请输入",
+          title: "折算比例(%)",
+          key: "mortgage_ratio",
+          width: 150,
+          align: 'center'
+        },
+        {
+          title: "折算金额(万元)",
+          key: "mortgage_balance",
+          width: 120,
+          align: 'center',
+          hiddenOther: true,
+          render(h, params) {
+            const {
+              mortgage_amount,
+              mortgage_ratio
+            } = params.row
+            let deal_balance = "--"
+            deal_balance = +mortgage_amount * +mortgage_ratio
+            return h('p', deal_balance)
+          }
+        },
+        {
+          type: 'text',
+          title: '姓名',
+          key: 'name',
+          width: 200,
+          filterRE:/[^\d]/g,
+          sortable:true,
+          rule: { required: true, message: '姓名不能为空'},
+        },
+        {
+          width:220,
+          title: '年龄',
+          key: 'age',
+          render: (h, params) => {
+            return h('div', [
+              h('h-simple-select', {
+                props: {
+                  transfer: true,
+                  filterable: true,
+                },
+                on: {
+                  'on-change': (e) => {
+                    console.log(e)
+                  },
+                  'on-blur': (e) => {
+                    console.log(e)
+                  },
+                }
+              }, [h('h-select-block', {
+                props: {
+                  data:this.selectList
+                }
+              })])
+            ]);
+          }
+        },
+        {
+          type: 'card',
+          title: '卡号',
+          // width: 200,
+          key: 'cardId',
+          rule: { required: true, message: '卡号不能为空'},
+        },
+        {
+          type: 'date',
+          title: '日期',
+          // width: 200,
+          key: 'dating',
+          dateType:'date',
+          placement:'top',
+          transfer:true,
+          format: 'yyyy-MM-dd',
+          rule:{ required: true, message: '请选择日期', trigger: 'blur,change' }
+        },
+        {
+          type: 'time',
+          title: '时间',
+          // width: 200,
+//          transfer:true,
+          placement:'top',
+          key: 'timing',
+          dateType:'time',
+          format: 'HH:mm:ss',
+          steps: [2,2,2],
+          rule:{ required: true, message: '请选择时间', trigger: 'blur,change' }
+        }
+      ],
+      dataEdit: [
+        {
+          name: '王小明',
+          age: 18,
+          address: '北京市朝阳区芍药居',
+          money: '120.00',
+          cardId: '6223 5678 1234 5678',
+          city: '北京',
+          dating:'2018-03-07',
+          timing:'16:00:00.00',
+          tree:'leaf1',
+        },
+        {
+          name: '张小刚',
+          age: 25,
+          address: '北京市海淀区西二旗',
+          money: '130.00',
+          cardId: '6223 5678 1234 5678',
+          city: '北京',
+          dating:'2018-03-07',
+          timing:'16:00:00.00',
+          tree:'leaf1'
+        },
+        {
+          name: '李小红',
+          age: 30,
+          address: '上海市浦东新区世纪大道',
+          money: '140.00',
+          cardId: '6223 5678 1234 5678',
+          city: '北京',
+          dating:'2018-03-07',
+          timing:'16:00:00.00',
+          tree:'leaf1'
+        },
+        {
+          name: '周小伟',
+          age: 26,
+          address: '深圳市南山区深南大道',
+          money: '150.00',
+          cardId: '6223 5678 1234 5678',
+          city: '北京',
+          dating:'2018-03-07',
+          timing:'16:00:00.00',
+          tree:'leaf1'
+        },
+        {
+          name: '周小伟',
+          age: 26,
+          address: '深圳市南山区深南大道',
+          money: '150.00',
+          cardId: '6223 5678 1234 5678',
+          city: '北京',
+          dating:'2018-03-07',
+          timing:'16:00:00.00',
+          tree:'leaf1'
+        }
+      ]
     }
   },
   methods: {
     sortchange(e) {
       console.log(e)
     },
-    handleSubmit (name) {
+    widthChange(e) {
+      console.log(e)
+    },
+    handleSubmit(name) {
       this.$refs[name].validate((valid) => {
         if (valid) {
           this.$Message.success('提交成功!');
@@ -680,7 +847,7 @@ export default {
     submit() {
 //      this.$refs.formValidate.resetAllErrorTips()
       let _this = this
-      this.$refs.formValidate.validate((valid) => {
+      this.$refs.formValidate.validate((valid, unpass) => {
         if (valid) {
           _this.$hMessage.success('提交成功!');
         } else {
@@ -723,7 +890,22 @@ export default {
     expand(data,status){
       console.log(data)
       console.log(status)
-    }
+    },
+    on_money_blur(data, x, y) {
+      console.log(data, x, y)
+//      console.log(this.$refs.repoEditGrid.rebuildData)
+      if (typeof (this.$refs.repoEditGrid.rebuildData[y].mortgage_amount) == "number") {
+        data = data + '';
+      } else {
+        data = Number(data);
+      }
+      console.log(data)
+      if(x === 0){
+        this.$set(this.$refs.repoEditGrid.rebuildData[y], "mortgage_amount", data)
+      }else if(x === 1){
+        this.$set(this.$refs.repoEditGrid.rebuildData[y], "mortgage_ratio", data)
+      }
+    },
   },
   created() {
     window.isO45 = true

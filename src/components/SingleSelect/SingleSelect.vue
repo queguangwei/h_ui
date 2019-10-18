@@ -426,7 +426,6 @@ export default {
     },
     updateOptions(init, slot = false) {
       let options = []
-      debugger
       this.findChild(child => {
         let data = child.cloneData
         data.forEach((col, i) => {
