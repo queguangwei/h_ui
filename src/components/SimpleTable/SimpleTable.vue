@@ -714,7 +714,6 @@ export default {
             width = this.tableWidth - this.scrollBarWidth
           }
         }
-//        console.log(this.tableWidth)
         style.width = `${width}px`
       }
       return style
@@ -742,7 +741,6 @@ export default {
           if (col.fixed && col.fixed === 'left') width += col._width
         })
         style.width = `${width}px`
-//        console.log(width)
         return style
       }
       if(this.isRightFixed){
@@ -809,7 +807,6 @@ export default {
       if(this.isLeftFixed){
         let left = []
         let other = []
-//        console.log(this.cloneColumns)
         this.cloneColumns.forEach(col => {
           if (col.fixed && col.fixed === 'left') {
             left.push(col)
@@ -1253,7 +1250,6 @@ export default {
     },
     handleResize() {
       this.$nextTick(() => {
-        console.log("resize")
         let transformTop = Math.floor(this.$refs.body.scrollTop / this.itemHeight) * this.itemHeight
         if(this.$refs.fixedBody){
           this.$refs.fixedBody.scrollTop =this.$refs.body.scrollTop
@@ -1282,11 +1278,12 @@ export default {
           let columnsWidth = {}
           let autoWidthIndex = -1
           // if (allWidth) autoWidthIndex = this.cloneColumns.findIndex(cell => !cell.width);//todo 这行可能有问题
-          if (allWidth)
+//          if (allWidth) // 这边写的不理解每列都设置了width为何还找需要自动设宽的项
             autoWidthIndex = findInx(this.cloneColumns, cell => !cell.width)
           if (this.data.length) {
             const $td = this.$refs.tbody.querySelectorAll('tbody tr')[0].querySelectorAll('td')
             let errorNum = 0
+            let totalWidth = 0
             for (let i = 0; i < $td.length; i++) {
               // can not use forEach in Firefox
               const column = this.cloneColumns[i]
@@ -1307,7 +1304,14 @@ export default {
                 if (width < min) width = min
               }
               this.cloneColumns[i]._width = width || ''
-              this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)
+//              this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)
+              totalWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)
+              if(totalWidth < this.tableWidth) {
+                if(i === autoWidthIndex) {
+                  this.$set(this.cloneColumns[autoWidthIndex], 'width', this.tableWidth - totalWidth + width)
+                  this.$set(this.cloneColumns[autoWidthIndex], '_width', this.tableWidth - totalWidth + width)
+                }
+              }
               columnsWidth[column._index] = {
                 width: width
               }
@@ -2236,7 +2240,6 @@ export default {
       return data
     },
     makeColumns() {
-      var that = this
       let columns = deepCopy(this.columns)
       let left = []
       let right = []

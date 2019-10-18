@@ -116,6 +116,7 @@ export default {
       this.validMsgList = []
       let valid = true
       let count = 0
+      let unpass = []
       this.fields.forEach(field => {
         field.resetErrorTip()
         if (field.$children && field.$children.length > 0) {
@@ -133,12 +134,10 @@ export default {
         field.validate('', errors => {
           if (errors) {
             valid = false
+            unpass.push(field.prop)
           }
-          if (
-            typeof callback === 'function' &&
-            ++count === this.fields.length
-          ) {
-            callback(valid)
+          if (typeof callback === 'function' && ++count === this.fields.length) {
+            callback(valid, unpass)
           }
         })
       })

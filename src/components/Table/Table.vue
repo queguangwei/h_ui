@@ -976,6 +976,7 @@ export default {
             this.tableWidth = tableWidth
           }
           this.columnsWidth = columnsWidth
+          this.$emit('on-table-width-change', this.tableWidth)
         }, 0)
         return
       }
@@ -1066,6 +1067,7 @@ export default {
             }
             this.columnsWidth = columnsWidth
           }
+          this.$emit('on-table-width-change', this.tableWidth)
           this.initWidth =
             parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0
         })

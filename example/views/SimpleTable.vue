@@ -133,13 +133,15 @@ export default {
         {
           title: '年龄',
           key: 'tradeDir',
-          width: 200,
+//          width: 200,
         },
         {
           title: '数量',
           ellipsis:true,
           sortable:true,
           key: 'tradeQuantity',
+          width: 200,
+          fixed:'left'
         },
       ],
       columns1: [
