@@ -636,6 +636,7 @@ export default {
      */
     syncRebuildData() {
       const data = this.parent.rebuildData
+      if(this.typeName === 'editGird') return
       if (this.row[this.column.key] === this.normalDate) return
       if (!Array.isArray(data) || data.length === 0) return
       const find = (rows, id) => {
@@ -652,11 +653,9 @@ export default {
         return matched
       }
       let row = find(data, this.row.id)
-//      console.log(row)
       if (row) {
         row[this.column.key] = this.normalDate
       }
-//      console.log(this.parent.rebuildData)
     }
   },
   watch: {
