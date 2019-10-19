@@ -21,6 +21,7 @@
               :row="row"
               :key="column._columnKey"
               :parent="parent"
+              :typeName="typeName"
               :column="column"
               :naturalIndex="index"
               :columnIndex = "inx"

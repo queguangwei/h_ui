@@ -19,6 +19,15 @@
       <h-col span="6" style="background:black">col-6</h-col>
     </h-row>
     <br>
+    <h1>tabs</h1>
+    <h-tabs ref="remove" type="line" @on-tab-remove="handleTabRemove1" showArrow arrowOnRight closable v-model="key">
+      <h-tab-pane v-for="tab in tabs" :key="tab" :name="'标签' + tab" :label="'标签' + tab">
+        标签{{ tab }}的内容
+      </h-tab-pane>
+    </h-tabs>
+    <h-button type="ghost" @click="handleTabsAdd(true)" size="small" slot="extra">增加</h-button>
+    <h-button type="ghost" @click="handleTabsAdd(false)" size="small" slot="extra">减少</h-button>
+    <br>
     <h1>msgbox</h1>
     <h2>buttonGroup</h2>
     <h-button-group>
@@ -63,27 +72,26 @@
         <h-form-item prop="date" label="date" required>
           <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
         </h-form-item>
-        <h-form-item label="fastdate" prop="fastdate" required>
-          <h-fast-date class="curItemClass" v-model="formValidate.fastdate" format="yyyy-MM-dd"></h-fast-date>
-        </h-form-item>
-        <h-form-item label="input" prop="name" required :tipWidth="200">
-          <h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>
-        </h-form-item>
-        <h-form-item label="typefield" prop="mail" required>
-          <h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >
-        </h-form-item>
-        <h-form-item label="select" prop="city">
-          <h-select v-model="formValidate.city" class="curItemClass" placement="top">
-            <h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>
-          </h-select>
-        </h-form-item>
-        <h-form-item label="tree" prop="tree">
-          <h-select-tree v-model="formValidate.tree" class="curItemClass" :data="treeData" ref="tree" filterable></h-select-tree>
-        </h-form-item>
+        <!--<h-form-item label="fastdate" prop="fastdate" required>-->
+          <!--<h-fast-date class="curItemClass" v-model="formValidate.fastdate" format="yyyy-MM-dd"></h-fast-date>-->
+        <!--</h-form-item>-->
         <h-form-item prop="time" label="time" required>
           <h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time" class="curItemClass" ></h-time-picker>
         </h-form-item>
-
+        <!--<h-form-item label="input" prop="name" required :tipWidth="200">-->
+          <!--<h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>-->
+        <!--</h-form-item>-->
+        <!--<h-form-item label="typefield" prop="mail" required>-->
+          <!--<h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >-->
+        <!--</h-form-item>-->
+        <!--<h-form-item label="select" prop="city">-->
+          <!--<h-select v-model="formValidate.city" class="curItemClass" placement="top">-->
+            <!--<h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>-->
+          <!--</h-select>-->
+        <!--</h-form-item>-->
+        <!--<h-form-item label="tree" prop="tree">-->
+          <!--<h-select-tree v-model="formValidate.tree" class="curItemClass" :data="treeData" ref="tree" filterable></h-select-tree>-->
+        <!--</h-form-item>-->
         <!--<h-form-item label="radio" prop="gender">-->
           <!--<h-radio-group v-model="formValidate.gender">-->
             <!--<h-radio label="male" class="curItemClass" >男</h-radio>-->
@@ -158,10 +166,10 @@
     <h-button @click="fold">收起</h-button>
     <h-simple-tree-gird :columns="columns1" ref="treeGrid" :data="treedata" canDrag :height="500" @on-expand="expand"></h-simple-tree-gird>
     <h1>editGird</h1>
-    <!--<h-edit-gird ref="repoEditGrid" border height="400" size="small" showEditInput-->
-                 <!--:columns="columnsEdit" :data="dataEdit" :disabled-hover="true" :highlight-row="true"-->
-                 <!--@on-money-blur="on_money_blur">-->
-    <!--</h-edit-gird>-->
+    <h-edit-gird ref="repoEditGrid" border height="400" size="small" showEditInput
+                 :columns="columnsEdit" :data="dataEdit" :disabled-hover="true" :highlight-row="true"
+                 @on-money-blur="on_money_blur">
+    </h-edit-gird>
   </div>
 </template>
 <script>
@@ -292,6 +300,7 @@ export default {
       showBox: false,
       show:false,
       isLoading: false,
+      tabs:6,
       value:'value0',
       cityList: [
         {value: 'beijing', label: '北京市'},
@@ -311,7 +320,7 @@ export default {
         gender: "",
         interest: [],
         tree: '',
-        date: "20191015",
+        date: "",
         fastDate: "",
         time: "",
         desc: "",
@@ -791,6 +800,18 @@ export default {
     }
   },
   methods: {
+    handleTabRemove1(name){
+      console.log(this.tabs)
+    },
+    handleTabsAdd (status) {
+      if(status){
+        this.tabs ++;
+        this.key = "标签" + this.tabs;
+      }else{
+        this.tabs --;
+        this.$refs.remove.handleRemove(this.tabs,true);//this.tabs 表示tab的顺序数
+      }
+    },
     sortchange(e) {
       console.log(e)
     },
@@ -845,9 +866,9 @@ export default {
       this.$refs.formValidate.firstNodeFocused()
     },
     submit() {
-//      this.$refs.formValidate.resetAllErrorTips()
       let _this = this
       this.$refs.formValidate.validate((valid, unpass) => {
+        console.log(unpass)
         if (valid) {
           _this.$hMessage.success('提交成功!');
         } else {
@@ -892,14 +913,11 @@ export default {
       console.log(status)
     },
     on_money_blur(data, x, y) {
-      console.log(data, x, y)
-//      console.log(this.$refs.repoEditGrid.rebuildData)
       if (typeof (this.$refs.repoEditGrid.rebuildData[y].mortgage_amount) == "number") {
         data = data + '';
       } else {
         data = Number(data);
       }
-      console.log(data)
       if(x === 0){
         this.$set(this.$refs.repoEditGrid.rebuildData[y], "mortgage_amount", data)
       }else if(x === 1){
