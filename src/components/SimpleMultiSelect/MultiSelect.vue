@@ -6,7 +6,7 @@
     @keydown="onContainerKeyDown"
   >
     <!-- 可视区域 -->
-    <div ref="display" :title="title" :class="displayClass">
+    <div ref="reference" :title="title" :class="referenceClass">
       <!-- 搜索输入框 -->
       <input
         ref="input"
@@ -87,7 +87,7 @@ export default {
         }
       ];
     },
-    displayClass() {
+    referenceClass() {
       return [`${this.prefixCls}-selection`];
     },
     dropClass() {

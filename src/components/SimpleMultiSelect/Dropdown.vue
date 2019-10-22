@@ -9,6 +9,7 @@
 <script>
 import { Popper } from "../../util";
 export default {
+  name: "Dropdown",
   props: {
     show: {
       type: Boolean,
@@ -69,7 +70,7 @@ export default {
           }
         })();
 
-        this.popper = new Popper(this.$parent.$refs.display, this.$el, {
+        this.popper = new Popper(this.$parent.$refs.reference, this.$el, {
           placement,
           eventsEnabled: false, // Whether events (resize, scroll) are initially enabled.
           modifiers: {
