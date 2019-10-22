@@ -10,7 +10,13 @@
       </a>
     </h-splice-panel>
     {{valrange2}}
-    <h-splice-panel v-model="valrange2" controlRange :selectRange="2" showFormat></h-splice-panel>
+    <h-splice-panel 
+      v-model="valrange2" 
+      showFormat 
+      @on-change="onChange" 
+      @on-open-change="onOpenChange" 
+      >
+    </h-splice-panel>
   </div>
 </template>
 
@@ -24,7 +30,7 @@ export default {
       val4:'',
       val5:20180101,
       valrange1:['2018/01/03','2018/01/08'],
-      valrange2:['2018-01-03',''],
+      valrange2:['2019-01-03'],
       readonly:false,
       options1: {
         shortcuts: [
@@ -74,10 +80,10 @@ export default {
   },
   methods: {
     onChange (value) {
-        console.log(value);
+        // console.log(value);
     },
-    onOpenChange () {
-        console.log("触发了on-open-change");
+    onOpenChange (val) {
+        // console.log("触发了on-open-change", val);
     },
     onOk () {
         console.log("触发了on-ok");

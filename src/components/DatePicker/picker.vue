@@ -506,6 +506,7 @@ export default {
     handleBlur() {
       this.visible = false
       this.onSelectionModeChange(this.type)
+
       this.internalValue = this.internalValue.slice() // trigger panel watchers to reset views
       this.reset()
       this.$refs.pickerPanel.onToggleVisibility(false)
@@ -673,7 +674,6 @@ export default {
     },
     formatDate(value) {
       const format = DEFAULT_FORMATS[this.type]
-
       if (this.multiple) {
         const formatter = TYPE_VALUE_RESOLVER_MAP.multiple.formatter
         return formatter(value, this.format || format)
@@ -681,6 +681,7 @@ export default {
         const { formatter } =
           TYPE_VALUE_RESOLVER_MAP[this.type] ||
           TYPE_VALUE_RESOLVER_MAP['default']
+
         return formatter(value, this.format || format)
       }
     },
@@ -820,7 +821,13 @@ export default {
     },
     value: {
       handler(val) {
-        this.internalValue = this.parseDate(val)
+        // type === daterange 用户强制输入时间范围开始时间>结束时间，需要把连个时间点换一下
+        let internalValue = this.parseDate(val)
+        if (internalValue[1] !== null && internalValue[0] > internalValue [1]) {
+          this.internalValue =  internalValue.reverse()
+          return
+        }  
+        this.internalValue = internalValue
       }
     },
     open(val) {
@@ -837,6 +844,7 @@ export default {
       const strValue = this.showFormat == true ? this.visualValue : now
       if (shouldEmitInput) {
         this.$emit('input', strValue) // to update v-model
+        if (this.type === 'daterange') this.$emit('input', this.publicStringValue) 
         this.$emit('on-change', this.publicStringValue)
         // this.$emit('input', now); // to update v-model
       }
