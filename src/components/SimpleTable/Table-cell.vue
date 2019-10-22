@@ -26,7 +26,7 @@
       <span :class="[prefixCls + '-filter']">
         <Icon name="keyboard" @mousedown.native.stop="handleClick" :class="{on: column._isFiltered}"></Icon>
       </span>
-      <render-header slot="content" v-if="column.renderFilter" :render="column.renderFilter" :column="column" :index="index"></render-header> 
+      <render-header slot="content" v-if="column.renderFilter" :render="column.renderFilter" :column="column" :index="index"></render-header>
       <div slot="content" :class="[prefixCls + '-filter-list']" v-else-if="column._filterMultiple" @mousedown.native.stop="handleClick">
         <div :class="[prefixCls + '-filter-list-item']">
           <checkbox-group v-model="column._filterChecked">
@@ -61,6 +61,7 @@ import Checkbox from '../Checkbox/Checkbox.vue';
 import Poptip from '../Poptip/Poptip.vue';
 import hButton from '../Button/Button.vue';
 import Locale from '../../mixins/locale';
+import { getScrollBarSize } from '../../util/tools'
 export default {
   name: 'TableCell',
   props: {
@@ -139,12 +140,16 @@ export default {
       let style = {}
       let width = 0
       if(column._width && this.titleEllipsis && window.isO45) {
-          style.display = 'inline-block'
-          if(column.sortable) {
-            width = column._width - 36 <= 24 ? 24 : column._width - 36
-          }else {
-            width = column._width - 16 <= 24 ? 24 : column._width - 16
-          }
+        style.display = 'inline-block'
+        if(column.sortable) {
+          width = column._width - 36 <= 24 ? 24 : column._width - 36
+        }else {
+          width = column._width - 16 <= 24 ? 24 : column._width - 16
+        }
+        // o45最后一列不设置width
+        if(column.width === undefined ) {
+          width = width - getScrollBarSize()
+        }
         // if(window.isO45) {
         // }else {
         //   if(column.sortable) {
@@ -174,7 +179,7 @@ export default {
     handleSortByHead(index){
       this.$parent.handleSortByHead(index)
     },
-    /* 
+    /*
      * 是否显示过滤pop
     */
     isPopperShow (column) {
