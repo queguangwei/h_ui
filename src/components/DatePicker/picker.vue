@@ -586,6 +586,10 @@ export default {
       const valueToTest = isArrayValue ? newDate : newDate[0]
       const isDisabled = disabledDateFn && disabledDateFn(valueToTest)
       const isValidDate = this.checkLegality(newValue, newDate)
+
+      // type中含有ange 用户强制输入时间范围开始时间>结束时间，需要把连个时间点换一下
+      if ( this.type.indexOf('range') > -1 && newDate[0] > newDate[1]) newDate = newDate.reverse() 
+
       if (newValue !== oldValue && !isDisabled && isValidDate) {
         this.internalValue = newDate
         this.emitChange()
@@ -626,7 +630,7 @@ export default {
         500 // delay to improve dropdown close visual effect
       )
     },
-    emitChange() {
+    emitChange() {  //input输入框输入值时触发
       this.$nextTick(() => {
         // on-change事件触发移至watcher:publicVModelValue，用于v-model绑定值修改后触发on-change
         // this.$emit('on-change', this.publicStringValue);
@@ -820,14 +824,8 @@ export default {
       this.$emit('on-open-change', state)
     },
     value: {
-      handler(val) {
-        // type === daterange 用户强制输入时间范围开始时间>结束时间，需要把连个时间点换一下
-        let internalValue = this.parseDate(val)
-        if (internalValue[1] !== null && internalValue[0] > internalValue [1]) {
-          this.internalValue =  internalValue.reverse()
-          return
-        }  
-        this.internalValue = internalValue
+      handler(val) { 
+        this.internalValue = this.parseDate(val)
       }
     },
     open(val) {
