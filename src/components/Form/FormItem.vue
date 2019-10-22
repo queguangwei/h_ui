@@ -14,7 +14,18 @@
     <div :class="[prefixCls + '-content']"
          :style="contentStyles">
       <slot></slot>
-      <transition name="fade">
+      <transition name="fade" v-if="upward">
+        <div class="verify-tip verify-top"
+             v-if="isShowError&&showModal"
+             :style="{left: `${msgOffset}px`}">
+          <div class="verify-tip-arrow" :style="verifyTipArrowStyle"></div>
+          <div class="verify-tip-inner" :style="verifyTipStyle" :title="validateMessage">
+            <h-icon v-if="showCloseIcon" :name="closeName" @on-click="closeTip" :size="12"></h-icon>
+            {{validateMessage}}
+          </div>
+        </div>
+      </transition>
+      <transition name="fade" v-else>
         <div class="verify-tip verify-bottom"
              v-if="isShowError&&showModal"
              :style="{left: `${msgOffset}px`}">
@@ -25,6 +36,7 @@
           </div>
         </div>
       </transition>
+
     </div>
   </div>
 </template>
@@ -135,6 +147,10 @@ export default {
     tipWidth: {
       type: [Number, String],
       default: 0
+    },
+    upward: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -268,7 +284,7 @@ export default {
     },
     verifyTipStyle(){
       let style={}
-      if(window.isO45 && this.tipWidth) {
+      if(this.tipWidth) {
         style.width = this.tipWidth + 'px'
         style.maxWidth = this.tipWidth + 'px'
       }else {
@@ -278,7 +294,7 @@ export default {
     },
     verifyTipArrowStyle() {
       let style={}
-      if(window.isO45 && this.tipWidth) {
+      if(this.tipWidth) {
         let cwidth = this.$children[0].$el.clientWidth
         if(cwidth <= this.tipWidth) {
           style.left = this.$children[0].$el.clientWidth / 2 + 'px'
