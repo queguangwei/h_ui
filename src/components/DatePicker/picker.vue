@@ -6,7 +6,7 @@
          :class="[prefixCls + '-rel']">
       <slot>
         <h-input ref="input"
-        :tabindex="tabindex"
+                 :tabindex="tabindex"
                  :key="forceInputRerender"
                  :element-id="elementId"
                  :class="[prefixCls + '-editor']"
@@ -56,8 +56,7 @@
                      :showTwoPanel="this.showTwoPanel"
                      :range-num="controlRange?selectRange:0"
                      :pickMode="pickMode"
-       :tabindex="-1"
-
+                     :tabindex="-1"
                      v-bind="ownPickerProps"
                      @on-pick="onPick"
                      @on-pick-clear="handleClear"
@@ -466,13 +465,16 @@ export default {
       this.isFocus = true
       if (this.iconVisible) return
       this.handleVisible(true)
-
       this.$emit('on-focus')
+      this.dispatch('FormItem', 'on-form-focus')
     },
     handleVisible(status) {
       if (this.readonly || this.disabled) return
       this.visible = status
       this.$refs.pickerPanel.onToggleVisibility(status)
+    },
+    fold() {
+      this.visible = false
     },
     focus() {
       if (this.disabled) return false
@@ -508,6 +510,7 @@ export default {
       this.reset()
       this.$refs.pickerPanel.onToggleVisibility(false)
       this.$emit('on-blur')
+      this.dispatch('FormItem', 'on-form-blur')
     },
     reset() {
       this.$refs.pickerPanel.reset && this.$refs.pickerPanel.reset()

@@ -188,28 +188,7 @@
           ></table-body>
         </div>
       </div>
-      <div
-        :class="[prefixCls + '-summation']"
-        :style="summationStyle"
-        v-if="isSummation && !(!data || data.length === 0)"
-        ref="summation"
-      >
-        <table-body
-          ref="sumBody"
-          :sum="isSummation"
-          :prefix-cls="prefixCls"
-          :styleObject="tableStyle"
-          :columns="cloneColumns"
-          :data="makeSumData()"
-          :obj-data="makeSumObjData()"
-          :columns-width="columnsWidth"
-          :notSetWidth="notSetWidth"
-          :bodyAlgin="bodyAlgin"
-          :clickToSelect="clickToSelect"
-          :showTitle="showTitle"
-        ></table-body>
-        <!-- </div> -->
-      </div>
+      
 
       <div
         class="h-table__column-resize-proxy"
@@ -255,7 +234,6 @@ import {
 } from '../../util/tools'
 import { on, off } from '../../util/dom'
 import Csv from '../../util/csv'
-import ExportCsv from './export-csv'
 import Locale from '../../mixins/locale'
 
 const prefixCls = 'h-table'
@@ -264,7 +242,7 @@ let rowKey = 1
 let columnKey = 1
 
 export default {
-  name: 'Table',
+  name: 'TableMin',
   mixins: [Locale],
   components: { tableHead, tableBody },
   props: {
@@ -471,7 +449,7 @@ export default {
       bodyRealHeight: 0,
       scrollBarWidth: getScrollBarSize(),
       currentContext: this.context,
-      cloneData: deepCopy(this.data), // when Cell has a button to delete row data, clickCurrentRow will throw an error, so clone a data
+      // cloneData: deepCopy(this.data), // when Cell has a button to delete row data, clickCurrentRow will throw an error, so clone a data
       resizeProxyVisible: false,
       moveProxyVisible: false,
       showScroll: false,
@@ -976,7 +954,6 @@ export default {
             this.tableWidth = tableWidth
           }
           this.columnsWidth = columnsWidth
-          this.$emit('on-table-width-change', this.tableWidth)
         }, 0)
         return
       }
@@ -1067,7 +1044,6 @@ export default {
             }
             this.columnsWidth = columnsWidth
           }
-          this.$emit('on-table-width-change', this.tableWidth)
           this.initWidth =
             parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0
         })
@@ -1129,7 +1105,7 @@ export default {
       // this.$emit('on-right-click')
       this.$emit(
         'on-right-click',
-        JSON.parse(JSON.stringify(this.cloneData[_index])),
+        JSON.parse(JSON.stringify(this.data[_index])),
         _index
       )
     },
@@ -1159,13 +1135,13 @@ export default {
       const oldData =
         oldIndex < 0
           ? null
-          : JSON.parse(JSON.stringify(this.cloneData[oldIndex]))
+          : JSON.parse(JSON.stringify(this.data[oldIndex]))
       if (curStatus && !this.selectOption) {
         this.objData[_index]._isHighlight = false
         this.objData[_index]._isChecked = false
         this.$emit(
           'on-current-change-cancle',
-          JSON.parse(JSON.stringify(this.cloneData[_index])),
+          JSON.parse(JSON.stringify(this.data[_index])),
           oldData,
           _index
         )
@@ -1174,7 +1150,7 @@ export default {
         this.objData[_index]._isChecked = true
         this.$emit(
           'on-current-change',
-          JSON.parse(JSON.stringify(this.cloneData[_index])),
+          JSON.parse(JSON.stringify(this.data[_index])),
           oldData,
           _index
         )
@@ -1184,9 +1160,7 @@ export default {
         (this.columns[0].type == 'selection' ||
           this.columns[1].type == 'selection')
       ) {
-        const selection = this.getSelection()
-        const selectionInx = this.getSelection(true)
-        this.$emit('on-selection-change', selection, selectionInx)
+        this.$emit('on-selection-change', this.getSelection(), this.getSelection(true))
       }
     },
     clickCurrentRow(event, _index, curIndex) {
@@ -1230,14 +1204,14 @@ export default {
       //   this.highlightCurrentRow (_index);
       // }
       this.$emit('on-row-click', [
-        JSON.parse(JSON.stringify(this.cloneData[_index])),
+        JSON.parse(JSON.stringify(this.data[_index])),
         _index,
         this.objData[_index]._isHighlight
       ])
     },
     clickCurrentBtn(_index) {
       this.$emit('on-row-click', [
-        JSON.parse(JSON.stringify(this.cloneData[_index])),
+        JSON.parse(JSON.stringify(this.data[_index])),
         _index
       ])
     },
@@ -1247,7 +1221,7 @@ export default {
       }
       this.$emit(
         'on-row-dblclick',
-        JSON.parse(JSON.stringify(this.cloneData[_index]))
+        JSON.parse(JSON.stringify(this.data[_index]))
       )
     },
     getSelection(status = false) {
@@ -1301,16 +1275,14 @@ export default {
       } else {
         this.shiftSelect = []
       }
-      const selection = this.getSelection()
-      const selectionInx = this.getSelection(true)
       this.baseInx = curIndex
       this.offsetInx = curIndex
       this.$emit(
         status ? 'on-select' : 'on-select-cancel',
-        selection,
+        this.getSelection(),
         JSON.parse(JSON.stringify(this.data[_index]))
       )
-      this.$emit('on-selection-change', selection, selectionInx)
+      this.$emit('on-selection-change', this.getSelection(), this.getSelection(true))
     },
     clearAllRow() {
       for (let i in this.objData) {
@@ -1334,7 +1306,7 @@ export default {
         this.objData[_index]._isHighlight = status
         this.$emit(
           'on-current-change',
-          JSON.parse(JSON.stringify(this.cloneData[_index])),
+          JSON.parse(JSON.stringify(this.data[_index])),
           '',
           _index
         )
@@ -1343,10 +1315,9 @@ export default {
     enterSelect(_index, status) {
       this.$nextTick(() => {
         this.objData[_index]._isChecked = status
-        const selection = this.getSelection()
         this.$emit(
           'on-select',
-          selection,
+          this.getSelection(),
           JSON.parse(JSON.stringify(this.data[_index]))
         )
       })
@@ -1387,7 +1358,7 @@ export default {
       this.objData[_index]._isExpanded = status
       this.$emit(
         'on-expand',
-        JSON.parse(JSON.stringify(this.cloneData[_index])),
+        JSON.parse(JSON.stringify(this.data[_index])),
         status
       )
       this.$nextTick(() => {
@@ -1421,10 +1392,8 @@ export default {
           this.objData[data._index]._isChecked = status
         }
       }
-      const selection = this.getSelection()
-      const selectionInx = this.getSelection(true)
-      this.$emit('on-select-all', selection)
-      this.$emit('on-selection-change', selection, selectionInx)
+      this.$emit('on-select-all', this.getSelection())
+      this.$emit('on-selection-change',  this.getSelection(), this.getSelection(true))
     },
     fixedHeader() {
       // height与maxHeight不可同时存在，若同时存在则以height为准
@@ -1463,7 +1432,7 @@ export default {
       if (this.isRightFixed)
         this.$refs.fixedRightBody.scrollTop = event.target.scrollTop
       this.hideColumnFilter()
-      if (this.isSummation) this.sumMarginLeft = event.target.scrollLeft
+      
       let oldBottomNum = this.buttomNum
       this.buttomNum = getBarBottom(event.target, this.scrollBarWidth)
       this.topNum = event.target.scrollTop
@@ -1542,9 +1511,8 @@ export default {
      * 获取所有列选中的排序件
      */
     getSorts() {
-      const cloneColumns = this.cloneColumns
       const filters = {}
-      cloneColumns.forEach(col => {
+      this.cloneColumns.forEach(col => {
         if (col.sortable && col._sortType != 'normal') {
           filters[col.key] = col._sortType
         }
@@ -1682,8 +1650,6 @@ export default {
 
       this.cloneColumns[index]._isFiltered = true
       this.cloneColumns[index]._filterVisible = false
-      // 筛选后返回数据-汇总使用
-      this.$emit('on-filter', this.rebuildData)
     },
     handleFilterSelect(_index, value) {
       let index = this.getIndex(_index)
@@ -1691,6 +1657,7 @@ export default {
       this.handleFilter(index, true)
     },
     handleFilterReset(_index) {
+      debugger
       let index = this.getIndex(_index)
       this.cloneColumns[index]._isFiltered = false
       this.cloneColumns[index]._filterVisible = false
@@ -1699,14 +1666,28 @@ export default {
       let filterData = this.makeDataWithSort()
       filterData = this.filterOtherData(filterData, index)
       this.rebuildData = filterData
-       // 筛选后返回数据-汇总使用
-      this.$emit('on-filter', this.rebuildData)
     },
+    // makeData() {
+    //   let data = deepCopy(this.data)
+    //   data.forEach((row, index) => {
+    //     row._index = index
+    //     row._rowKey = rowKey++
+    //   })
+    //   return data
+    // },
     makeData() {
-      let data = deepCopy(this.data)
-      data.forEach((row, index) => {
-        row._index = index
-        row._rowKey = rowKey++
+      // frezz data数据
+      let data = []
+      this.data.forEach((row, index) => {
+        let itemData = {
+          _index: index,
+          _rowKey: rowKey++
+        }
+        // let itemData = deepCopy(row)
+        // itemData._index = index
+        // itemData._rowKey = rowKey++
+        data[index] = Object.freeze(Object.assign({}, itemData, row))
+        itemData = undefined
       })
       return data
     },
@@ -1741,71 +1722,31 @@ export default {
       this.cloneColumns.forEach(col => (data = this.filterData(data, col)))
       return data
     },
-    makeSumObjData() {
-      let data = {}
-      this.summationData.forEach((row, index) => {
-        data[index] = deepCopy(row)
-      })
-      return data
-    },
-    makeSumData() {
-      // 汇总数据只有一条，否则只获取第一条
-      let data =
-        this.summationData && this.summationData.length > 0
-          ? [deepCopy(this.summationData[0])]
-          : []
-      if (data.length < 1) {
-        let sumCol = this.cloneColumns.filter(
-          (data, index) => data.isSum && data.isSum == true
-        )
-        let sumObj = {}
-        sumCol.forEach((item, index) => {
-          sumObj[item.key] = this.summary(item.key, item.sumType)
-        })
-        data.push(sumObj)
-      }
-      data.forEach((row, index) => {
-        row._index = index
-        row._rowKey = rowKey++
-      })
-      return data
-    },
+    
+    
     makeObjData() {
+      // 构建一个对象，仅保存当前数据的选中、高亮等状态
       let data = {}
+      rowKey = 1
       this.data.forEach((row, index) => {
-        const newRow = deepCopy(row) // todo 直接替换
+        const newRow = {} // todo 直接替换
+        newRow._index = index
+        newRow._rowKey = rowKey++
         newRow._isHover = false
-        // ['_checked','_disabled','_expanded','_highlight','_isMatched'].forEach(col=>{
-        //   if(newRow[col]&&newRow[col]!='false'){
-        //     newRow[col]=newRow[col];
-        //   }else{
-        //     newRow[col]=false;
-        //   }
-        // })
-        if (newRow._disabled && newRow._disabled != 'false') {
-          newRow._isDisabled = newRow._disabled
+        if (row._disabled) {
+          newRow._isDisabled = row._disabled
         } else {
           newRow._isDisabled = false
         }
-        if (newRow._checked && newRow._checked != 'false') {
-          newRow._isChecked = newRow._checked
+        if (row._checked) {
+          newRow._isChecked = row._checked
         } else {
           newRow._isChecked = false
         }
-        if (newRow._expanded && newRow._expanded != 'false') {
-          newRow._isExpanded = newRow._expanded
-        } else {
-          newRow._isExpanded = false
-        }
-        if (newRow._highlight && newRow._highlight != 'false') {
-          newRow._isHighlight = newRow._highlight
+        if (row._highlight) {
+          newRow._isHighlight = row._highlight
         } else {
           newRow._isHighlight = false
-        }
-        if (newRow._isMatched && newRow._isMatched != 'fasle') {
-          newRow._isMatched = newRow._isMatched
-        } else {
-          newRow._isMatched = false
         }
         data[index] = newRow
       })
@@ -1861,31 +1802,6 @@ export default {
         this.selectType = curType
       })
       return left.concat(center).concat(right)
-    },
-    exportCsv(params = {}) {
-      if (params.filename) {
-        if (params.filename.indexOf('.csv') === -1) {
-          params.filename += '.csv'
-        }
-      } else {
-        params.filename = 'table.csv'
-      }
-      let columns = []
-      let datas = []
-      if (params.columns && params.data) {
-        columns = params.columns
-        datas = params.data
-      } else {
-        columns = this.columns
-        if (!('original' in params)) params.original = true
-        datas = params.original ? this.data : this.rebuildData
-      }
-
-      let noHeader = false
-      if ('noHeader' in params) noHeader = params.noHeader
-
-      const data = Csv(columns, datas, params, noHeader)
-      ExportCsv.download(params.filename, data)
     },
     moveUp(colIndex) {
       const curItem = this.rebuildData[colIndex]
@@ -1997,7 +1913,7 @@ export default {
         if (keyCode === 40) {
           e.preventDefault()
           e.stopPropagation()
-          if (this.offsetInx < this.cloneData.length - 1) {
+          if (this.offsetInx < this.data.length - 1) {
             this.offsetInx++
           }
           this.keySelectRange()
@@ -2017,9 +1933,9 @@ export default {
      * 获取所有列选中的过滤条件
      */
     getFilters() {
-      const cloneColumns = this.cloneColumns
+      // const cloneColumns = this.cloneColumns
       const filters = {}
-      cloneColumns.forEach(col => {
+      this.cloneColumns.forEach(col => {
         if (col.filters && (col.filterMethod || col.filterRemote) && col.key) {
           filters[col.key] = col._filterChecked
         }
@@ -2128,7 +2044,7 @@ export default {
         }
         // here will trigger before clickCurrentRow, so use async
         this.$nextTick(() => {
-          this.cloneData = deepCopy(this.data)
+          // this.cloneData = deepCopy(this.data)
           this.buttomNum = null
           // if(this.fixedAutoHeight){
           this.fixedBodyClientHeight = -1

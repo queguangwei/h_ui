@@ -299,10 +299,8 @@ export default {
             (this.column.fixed === 'left' || this.column.fixed === 'right'),
           [`${this.prefixCls}-cell-error`]: this.validateState === 'error',
           [`${this.prefixCls}-cell-with-expand`]: this.renderType === 'expand',
-          [`${this.prefixCls}-cell-with-render`]:
-            this.render && this.renderType != 'expand',
-          [`${this.prefixCls}-cell-ellipsis-with-render`]: this
-            .ellipsisAndRender
+          [`${this.prefixCls}-cell-with-render`]: this.render && this.renderType != 'expand',
+          [`${this.prefixCls}-cell-ellipsis-with-render`]: this.ellipsisAndRender
         }
       ]
     },
@@ -383,6 +381,7 @@ export default {
           case 'number':
             this.normalDate = this.columnNumber
             _parent.cloneData[this.index][this.column.key] = this.columnNumber
+            this.syncRebuildData()
             break
           case 'money':
             this.normalDate = this.columnMoney
@@ -391,30 +390,36 @@ export default {
           case 'card':
             this.normalDate = this.columnCard
             _parent.cloneData[this.index][this.column.key] = this.columnCard
+            this.syncRebuildData()
             break
           case 'select':
             if (this.column.multiple || this.column.singleShowLabel)
               this.isSelectTrans = true
             this.normalDate = this.columnSelect
             _parent.cloneData[this.index][this.column.key] = this.columnSelect
+            this.syncRebuildData()
             break
           case 'date':
             this.normalDate = this.columnDate
             _parent.cloneData[this.index][this.column.key] = this.columnDate
+            this.syncRebuildData()
             break
           case 'time':
             this.normalDate = this.columnTime
             _parent.cloneData[this.index][this.column.key] = this.columnTime
+            this.syncRebuildData()
             break
           case 'selectTree':
             this.normalDate = this.columnTree
             if (!_parent.cloneData[this.index]) return
             _parent.cloneData[this.index][this.column.key] = this.columnTree
+            this.syncRebuildData()
             break
           case 'cascader':
             this.normalDate = this.columnCascader
             // this.normalDate = this.$refs.cascader.displayRender // 类似于selectValToLabel
             _parent.cloneData[this.index][this.column.key] = this.columnCascader
+            this.syncRebuildData()
             break
         }
         if (this.rule) {
@@ -504,6 +509,7 @@ export default {
       )
     },
     editinputBlur() {
+      this.syncRebuildData()
       this.$emit(
         'on-editinput-blur',
         this.columnText,
@@ -526,6 +532,7 @@ export default {
       )
     },
     editAreaBlur() {
+      this.syncRebuildData()
       this.$emit(
         'on-editarea-blur',
         this.columnArea,
@@ -616,12 +623,39 @@ export default {
       }
     },
     typefieldBlur() {
+      this.syncRebuildData()
       this.$emit(
         'on-typefield-blur',
         this.columnMoney,
         this.columnIndex,
         this.index
       )
+    },
+    /**
+     * 同步单元格编辑内容到rebuildData
+     */
+    syncRebuildData() {
+      const data = this.parent.rebuildData
+      if(this.typeName === 'editGird') return
+      if (this.row[this.column.key] === this.normalDate) return
+      if (!Array.isArray(data) || data.length === 0) return
+      const find = (rows, id) => {
+        if (!Array.isArray(rows) || rows.length === 0) return null
+        let matched = null
+        rows.some(row => {
+          if (row.id === id) {
+            matched = row
+          } else {
+            matched = find(row.children, id)
+          }
+          return matched !== null
+        })
+        return matched
+      }
+      let row = find(data, this.row.id)
+      if (row) {
+        row[this.column.key] = this.normalDate
+      }
     }
   },
   watch: {
@@ -695,6 +729,26 @@ export default {
         }
       },
       deep: true
+    },
+    row: {
+      deep: true,
+      handler(newRow) {
+        const key = this.column.key
+        const val = newRow[key]
+        if (val !== this.normalDate) {
+          this.normalDate = val
+          this.columnText = val
+          this.columnArea = val
+          this.columnNumber = val
+          this.columnMoney = val
+          this.columnCard = val
+          this.columnDate = val
+          this.columnTime = val
+          this.columnSelect = val
+          this.columnTree = val
+          this.columnCascader = val
+        }
+      }
     }
   },
   created() {
@@ -722,7 +776,7 @@ export default {
     this.hiddenOther = this.column.hiddenOther ? true : false
 
     if (this.renderType !== 'normal' && this.column.rule) {
-      if ((this.column.fixed === 'left' && this.$parent.$parent.fixed === 'left') 
+      if ((this.column.fixed === 'left' && this.$parent.$parent.fixed === 'left')
       || (this.column.fixed === 'right' && this.$parent.$parent.fixed === 'right')
       || (this.column.fixed !== 'left' && this.column.fixed !== 'right' && !this.$parent.$parent.fixed) ) {
         this.dispatch('EditGird', 'on-rule-cell-add', this)
@@ -748,7 +802,7 @@ export default {
   },
   beforeDestroy() {
     if (this.renderType !== 'normal' && this.column.rule) {
-      if ((this.column.fixed === 'left' && this.$parent.$parent.fixed === 'left') 
+      if ((this.column.fixed === 'left' && this.$parent.$parent.fixed === 'left')
       || (this.column.fixed === 'right' && this.$parent.$parent.fixed === 'right')
       || (this.column.fixed !== 'left' && this.column.fixed !== 'right' && !this.$parent.$parent.fixed) ) {
         this.dispatch('EditGird', 'on-rule-cell-remove', this)

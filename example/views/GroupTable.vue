@@ -2,18 +2,19 @@
   <div>
     <h2>基础</h2>
     <h3>单选分组组件</h3>
-    <!-- :multiLevel="multiLevel2" -->
-    <h-group-table :columns="columns1" childHighlightRow :height="300" width="600" :data="data1" size="small" @on-expand="expand"  @on-child-change="click1" ref="groupTable" :loading="loading">
-      <P slot="loading">我是自定义de</P>
-    </h-group-table>
-    <Button @click="setLoad">切换loading</Button>
-    <h-group-table :columns="columns1" :data="data1" @on-row-dblclick="dblClick" :loading="loading"></h-group-table>
-    <h-group-table :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" @on-current-change="click1" stripe :loading="loading"></h-group-table>
-    <h-group-table :columns="columns1" :data="[]" no-data-text="哎呀你好" :loading="loading"></h-group-table>
-    <Button @click="getDate">获取数据</Button>
+    <!--<h-group-table :columns="columns1" childHighlightRow :height="300" width="600" :data="data1" size="small" @on-expand="expand"  @on-child-change="click1" ref="groupTable" :loading="loading">-->
+      <!--<P slot="loading">我是自定义de</P>-->
+    <!--</h-group-table>-->
+    <!--<Button @click="setLoad">切换loading</Button>-->
+    <!--<h-group-table :columns="columns1" :data="data1" @on-row-dblclick="dblClick" :loading="loading"></h-group-table>-->
+    <h-group-table :columns="columns1" :data="data1" size="small" :disabled-hover="true" :highlight-row="true" cancelSelection
+                   @on-row-click="click1" @on-current-change="click2" stripe :loading="loading"></h-group-table>
+    <!--<h-group-table :columns="columns1" :data="[]" no-data-text="哎呀你好" :loading="loading"></h-group-table>-->
     <h3>多选分组组件</h3>
     <h-group-table :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading"></h-group-table>
-    <h-group-table :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" @on-selection-change="selsetChange" :loading="loading"></h-group-table>
+    <!--<h-group-table :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" @on-selection-change="selsetChange" :loading="loading"></h-group-table>-->
+    <h3>simpleGroupTable</h3>
+    <h-simple-group-table :columns="columns1" :data="data1" highlight-row @on-row-click="handleClick"></h-simple-group-table>
   </div>
 </template>
 
@@ -358,33 +359,29 @@ export default {
         {
           title: '金额',
           key: 'money',
-          // width: 160
+          width: 200
         },
-        // {
-        //   title: '卡号',
-        //   width: 200,
-        //   key: 'cardId',
-        //   hiddenCol: true
-        // },
-        // {
-        //   title: '地区',
-        //   width: 200,
-        //   key: 'city',
-        // },
-        // {
-        //   title: '日期',
-        //   width: 200,
-        //   key: 'dating',
-        // },
-        // {
-        //   title: '时间',
-        //   width: 200,
-        //   key: 'timing',
-        // },
-        // {
-        //   title: '下拉树',
-        //   key: 'tree',
-        // }
+         {
+           title: '卡号',
+           width: 200,
+           key: 'cardId',
+           hiddenCol: true
+         },
+         {
+           title: '地区',
+           width: 200,
+           key: 'city',
+         },
+         {
+           title: '日期',
+           width: 200,
+           key: 'dating',
+         },
+         {
+           title: '时间',
+           width: 200,
+           key: 'timing',
+         }
       ],
       columns4: [
         {
@@ -396,6 +393,7 @@ export default {
           type: 'text',
           title: '姓名',
           key: 'name',
+//          fixed:'left',
           width: 200
         },
         {
@@ -503,13 +501,21 @@ export default {
     expand(data, status) {
       console.log(data, status)
     },
+    handleClick(row, status) {
+      console.log(row)
+      console.log(status)
+    },
     dblClick(e,curIndex){
       console.log(e,curIndex);
     },
     setLoad(){
       this.loading = !this.loading;
     },
-    click1(s,j,i){
+    click1(s,i) {
+      console.log(s)
+      console.log(i)
+    },
+    click2(s,j,i){
       console.log(s);
       console.log(j);
       console.log(i);
@@ -523,9 +529,6 @@ export default {
     },
     selsetChange (selection){//选项发生变化时触发已选择的项
       console.log(selection);
-    },
-    getDate(){
-      console.log(this.$refs.groupTable.cloneData);
     },
     addDate(){
       tData = this.data1.push({

@@ -235,7 +235,7 @@ $editgird-select-item-prefix-cls: "#{$editgird-prefix-cls}-filter-select-item";
     background-color: $table-td-stripe-bg;
   }
 
-  tr.#{$editgird-prefix-cls}-row-hover, 
+  tr.#{$editgird-prefix-cls}-row-hover,
   &-wrapper &-stripe &-body tr.#{$editgird-prefix-cls}-row-hover {
     td{
       background-color: $table-td-hover-bg;

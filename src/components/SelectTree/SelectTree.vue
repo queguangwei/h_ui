@@ -478,6 +478,10 @@ export default{
       }
       this.broadcast('Option', 'on-select-close')
     },
+    //对外暴露收起弹出框fold方法
+    fold() {
+      this.visible = false
+    },
     handleClose() {
       this.hideMenu()
       if (this.isFocus) {
@@ -590,17 +594,18 @@ export default{
     },
     handleFocus(){
       this.$emit('on-focus')
+      this.dispatch('FormItem', 'on-form-focus')
     },
     handleBlur() {
       // 单选，回填input值
-      if (this.query !== this.model && !this.showCheckbox && !this.showBottom) {
+      if (this.query !== this.viewValue && !this.showCheckbox && !this.showBottom) {
         if (this.query === '') {
           this.model = ''
           if (this.remote) {
             this.lastquery = ''
           }
         } else {
-          this.query = this.model
+          this.query = this.viewValue
         }
       }
       this.$emit('on-blur')

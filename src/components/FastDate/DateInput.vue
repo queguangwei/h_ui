@@ -2,20 +2,23 @@
   <input
   ref="inputEl"
   v-model="inputValue"
-  :class="classes" 
+  :class="classes"
   :readonly="readonly"
   :disabled="disabled"
   :tabindex="tabindex"
   @input="val"
-  @blur="blur" 
+  @blur="blur"
   @focus="focuser"
   @keydown="changeValue"
   @mousewheel="handleMouseWheel"
    />
 </template>
 <script>
+import Emitter from '../../mixins/emitter'
+const prefixCls = 'h-fast-date-input'
 export default {
   name: 'DateInput',
+  mixins: [Emitter],
   props: {
     value: {
       type: [String,Number]
@@ -50,6 +53,7 @@ export default {
   },
   computed:{
     classes(){
+      return [`${prefixCls}`]
     },
   },
   methods: {
@@ -89,10 +93,12 @@ export default {
     blur(event){
       this.isFocus = false;
       this.$emit('blur', event);
+      this.dispatch('FormItem', 'on-form-blur')
     },
     focuser(event){
       this.isFocus = true;
       this.$emit('focus', event);
+      this.dispatch('FormItem', 'on-form-focus')
     },
     focus(){
       this.$refs.inputEl.focus();
@@ -102,9 +108,11 @@ export default {
       let code = event.keyCode
       // let curValue;
       if (code == 38){
+        event.stopPropagation()
         this.decValue();
       }
       if(code == 40){
+        event.stopPropagation()
         this.addValue();
       }
       this.$emit('input', this.inputValue);

@@ -5,7 +5,7 @@
       <!-- <div :class="[prefixCls + '-bar']"> -->
       <div :class="barTop">
         <div :class="[prefixCls + '-nav-container']">
-          <div v-if="showArrow" :class="[prefixCls + '-return']" v-on:click = "leftClick($event)" >
+          <div v-if="showArrow&&!arrowOnRight" :class="[prefixCls + '-return']" v-on:click = "leftClick($event)" >
             <Icon name="return"></Icon>
           </div>
           <div :class="navWrap"  style="float:left">
@@ -22,8 +22,16 @@
               <div :class="[prefixCls + '-nav-right']" :style="scrollStyle" ref="extra" v-if="showSlot"><slot name="extra"></slot></div>
             </div>
           </div>
-          <div v-if="showArrow" :class="[prefixCls + '-enter']" v-on:click = "rightClick($event)">
+          <div v-if="showArrow&&!arrowOnRight" :class="[prefixCls + '-enter']" v-on:click = "rightClick($event)">
             <Icon name="enter"></Icon>
+          </div>
+          <div v-if="showArrow&&arrowOnRight&&mustShowArrow">
+            <div :class="[prefixCls + '-return']" v-on:click="leftClick($event)">
+              <Icon name="return"></Icon>
+            </div>
+            <div :class="[prefixCls + '-enter']" v-on:click="rightClick($event)">
+              <Icon name="enter"></Icon>
+            </div>
           </div>
         </div>
       </div>
@@ -47,7 +55,7 @@
     <template v-if="!panelAbove&&!panelRight">
       <div :class="[prefixCls + '-bar']">
         <div :class="[prefixCls + '-nav-container']">
-          <div v-if="showArrow" :class="[prefixCls + '-return']" v-on:click = "leftClick($event)" >
+          <div v-if="showArrow&&!arrowOnRight" :class="[prefixCls + '-return']" v-on:click = "leftClick($event)" >
             <Icon name="return"></Icon>
           </div>
           <div :class="navWrap"  style="float:left">
@@ -64,8 +72,16 @@
               <div :class="[prefixCls + '-nav-right']" ref="extra" :style="scrollStyle" v-if="showSlot"><slot name="extra"></slot></div>
             </div>
           </div>
-          <div v-if="showArrow" :class="[prefixCls + '-enter']" v-on:click = "rightClick($event)">
+          <div v-if="showArrow&&!arrowOnRight" :class="[prefixCls + '-enter']" v-on:click = "rightClick($event)">
             <Icon name="enter"></Icon>
+          </div>
+          <div v-if="showArrow&&arrowOnRight&&mustShowArrow">
+            <div :class="[prefixCls + '-return']" v-on:click="leftClick($event)">
+              <Icon name="return"></Icon>
+            </div>
+            <div :class="[prefixCls + '-enter']" v-on:click="rightClick($event)">
+              <Icon name="enter"></Icon>
+            </div>
           </div>
         </div>
       </div>
@@ -78,6 +94,7 @@ import Icon from '../Icon/Icon.vue';
 import Render from '../Notice/render';
 import { oneOf, getStyle, findInx} from '../../util/tools';
 import Emitter from '../../mixins/emitter';
+import { on, off } from '../../util/dom'
 
 const prefixCls = 'h-tabs';
 
@@ -111,6 +128,10 @@ export default {
     },
     showArrow:{
       type:Boolean,
+      default: false
+    },
+    arrowOnRight:{
+      type: Boolean,
       default: false
     },
     panelAbove:{
@@ -156,7 +177,8 @@ export default {
       barOffset: 0,
       activeKey: this.value,
       showSlot: false,
-      navOffset: 0
+      navOffset: 0,
+      mustShowArrow: false
     };
   },
   computed: {
@@ -445,11 +467,15 @@ export default {
         const navWidth = this.$refs.nav.offsetWidth;
         const extraWidth = this.$refs.extra ? this.$refs.extra.offsetWidth : 0;
         const scrollWidth = this.$refs.scrollCon.clientWidth;
-
         const currentOffset = this.navOffset;
         const offset = scrollWidth - (navWidth + extraWidth - Math.abs(currentOffset));
         if (offset > 0) {
           this.navOffset = Math.min(offset + currentOffset, 0);
+        }
+        if(this.$refs.nav.clientWidth < this.$refs.scrollCon.clientWidth) {
+          this.mustShowArrow = false
+        }else {
+          this.mustShowArrow = true
         }
       }
     }
@@ -470,7 +496,9 @@ export default {
     }
   },
   mounted () {
-    window.addEventListener('resize', this.updateScroll);
+//    window.addEventListener('resize', this.updateScroll);
+    this.updateScroll()
+    on(window, 'resize', this.updateScroll)
     this.showSlot = this.$slots.extra !== undefined;
     if (!this.panelRight && this.showArrow) {
       setTimeout(() => {
@@ -479,7 +507,8 @@ export default {
     }
   },
   beforeDestroy() {
-    window.removeEventListener('resize', this.updateScroll);
+//    window.removeEventListener('resize', this.updateScroll);
+    off(window, 'resize', this.updateScroll)
   }
 }
 </script>

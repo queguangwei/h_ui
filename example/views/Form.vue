@@ -1092,11 +1092,110 @@
         <h-input-number></h-input-number>
       </h-form-item>
     </h-form>
+    <h2>测试compareModel</h2>
+     <h-row>
+      <h-form :model="formItem" :compareModel="formItem2"
+              cols="3">
+        <h-form-item required
+                     prop="input">
+          <h-input v-model="formItem.input"
+                   placeholder="请输入"></h-input>
+        </h-form-item>
+        <h-form-item required
+                     prop="select">
+          <h-select v-model="formItem.select"
+                    placeholder="请选择">
+            <h-option value="beijing">北京市</h-option>
+            <h-option value="shanghai">上海市</h-option>
+            <h-option value="shenzhen">深圳市</h-option>
+          </h-select>
+        </h-form-item>
+        <h-form-item required 
+                     prop="selectMultiple">
+          <h-select v-model="formItem.selectMultiple" multiple filterable autoPlacement
+                    placeholder="请选择">
+            <h-option value="beijing">北京市</h-option>
+            <h-option value="shanghai">上海市</h-option>
+            <h-option value="shenzhen">深圳市</h-option>
+        </h-select>
+        </h-form-item>
+        <h-form-item required>
+          <h-row>
+            <h-col span="11">
+              <h-date-picker type="date"
+                             placeholder="选择日期"
+                             v-model="formItem.date"></h-date-picker>
+            </h-col>
+            <h-col span="2"
+                   style="text-align: center">-</h-col>
+            <h-col span="11">
+              <h-time-picker type="time"
+                             placeholder="选择时间"
+                             v-model="formItem.time"></h-time-picker>
+            </h-col>
+          </h-row>
+        </h-form-item>
+        <h-form-item required
+                     prop="radio">
+          <h-radio-group v-model="formItem.radio">
+            <h-radio label="male">男</h-radio>
+            <h-radio label="female">女</h-radio>
+          </h-radio-group>
+        </h-form-item>
+        <h-form-item required
+                     prop="checkbox">
+          <h-checkbox-group v-model="formItem.checkbox">
+            <h-checkbox label="吃饭"></h-checkbox>
+            <h-checkbox label="睡觉"></h-checkbox>
+            <h-checkbox label="跑步"></h-checkbox>
+            <h-checkbox label="看电影"></h-checkbox>
+          </h-checkbox-group>
+        </h-form-item>
+        <h-form-item required
+                     prop="textarea">
+          <h-input v-model="formItem.textarea"
+                   type="textarea"
+                   :autosize="{minRows: 2,maxRows: 5}"
+                   placeholder="请输入..."></h-input>
+        </h-form-item>
+        <h-form-item required
+                     prop="switch">
+          <h-switch v-model="formItem.switch"
+                    size="large">
+            <span slot="open">开启</span>
+            <span slot="close">关闭</span>
+          </h-switch>
+        </h-form-item>
+        <h-form-item required
+                     prop="slider">
+          <h-slider v-model="formItem.slider"
+                    range></h-slider>
+        </h-form-item>
+         <h-form-item prop="simpleSel">
+           <h-simple-select v-model="formItem.simpleSel" filterable multiple  showValue >
+            <h-select-block :data="bigData"></h-select-block>
+          </h-simple-select>
+         </h-form-item>
+        <h-form-item>
+          <h-button type="primary"
+                    @click="handleSubmit('formItem')">提交</h-button>
+          <h-button type="ghost"
+                    style="margin-left: 8px">取消</h-button>
+        </h-form-item>
+      </h-form>
+    </h-row>
   </div>
 </template>
 <script>
 export default {
   data() {
+    let bigData = [];
+    for(let i=0;i<200;i++){
+      let obj = {};
+      obj.value = "CD" + i + "Z";
+      obj.label = "CD" + i + "Z";
+      bigData.push(obj);
+    }
     const validatePass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入密码'))
@@ -1142,14 +1241,32 @@ export default {
       formItem: {
         input: '12',
         select: 'beijing',
-        radio: '',
-        checkbox: [],
+        radio: 'male',
+        checkbox: ['吃饭', '睡觉'],
+        selectMultiple: ['beijing'],
         switch: true,
         date: '2018-08-30',
         time: '01:00:00',
         slider: [20, 50],
-        textarea: '123'
+        textarea: '123',
+        inputNumbers: 1,
+        simpleSel: [],
       },
+      formItem2: {
+        input: '12',
+        select: 'beijing',
+        radio: 'male',
+        checkbox: ['吃饭', '睡觉'],
+        selectMultiple: ['beijing'],
+        switch: true,
+        date: '2018-08-30',
+        time: '01:00:00',
+        slider: [20, 50],
+        textarea: '123',
+        inputNumbers: 1,
+        simpleSel: [],
+      },
+      bigData: bigData,
       formLeft: {
         input1: '',
         input2: '',

@@ -1,5 +1,6 @@
 <template>
   <div v-transfer-dom
+      v-if="isRealVisible"
        :data-transfer="transfer">
     <transition :name="transitionNames[1]">
       <div :class="maskClasses"
@@ -23,14 +24,14 @@
              v-if="maximize"
              @click="switchSize">
             <slot name="maximize">
-              <Icon :name="maxName"></Icon>
+              <Icon :name="maxName" :title="[this.isMax?'还原':'最大化']"></Icon>
             </slot>
           </a>
           <a :class="[prefixCls + '-close']"
              v-if="closable"
              @click="close">
             <slot name="close">
-              <Icon name="close"></Icon>
+              <Icon name="close" :title="'关闭'"></Icon>
             </slot>
           </a>
           <div :class="[prefixCls + '-header']"
@@ -43,7 +44,8 @@
           </div>
           <div :class="[prefixCls + '-body']"
                :style="contentStyle"
-               ref="box">
+               ref="box"
+               @scroll="onScroll">
             <slot></slot>
           </div>
           <div :class="[prefixCls + '-footer']"
@@ -74,7 +76,6 @@ import Locale from '../../mixins/locale'
 import Emitter from '../../mixins/emitter'
 import Drag from '../../directives/drag.js'
 import { on, off } from '../../util/dom'
-import { findComponentChildren } from '../../util/tools'
 const prefixCls = 'h-modal'
 
 export default {
@@ -217,7 +218,8 @@ export default {
         //记录拖动后的位置，用于最大化后的还原
         top: 0,
         left: 0
-      }
+      },
+      isRealVisible: true
     }
   },
   computed: {
@@ -309,7 +311,7 @@ export default {
       } else {
         if (this.height) {
           style.overflowY = 'auto'
-          style.height = this.height <= 100 ? `auto` : `${this.height}px`
+          style.height = this.height <= 100 ? 'auto' : `${this.height}px`
         }
         if (this.maxHeight) {
           style.overflowY = 'auto'
@@ -328,6 +330,9 @@ export default {
     }
   },
   methods: {
+    onScroll(e) {
+      this.$emit('on-scroll', e)
+    },
     close() {
       // 如果是 js 调用的 msgbox 则调用 Msgbox-js 的 cancel
       if (
@@ -377,9 +382,6 @@ export default {
     backOrigin() {
       const obj = this.$refs.content
       const width = parseInt(this.curWidth)
-      const styleWidth = {
-        width: width <= 100 ? `${width}%` : `${width}px`
-      }
       if (this.allHeight >= this.WindosInnerHeight) {
         this.$refs.wrap.style.display = 'block'
       } else if (Number(this.top) <= 0) {
@@ -426,7 +428,6 @@ export default {
           // esc 关闭前判断 beforeEscClose 函数返回
           let flag = this.beforeEscClose && this.beforeEscClose()
           if (!flag) return
-
           this.$emit('on-cancel')
           this.close()
         }
@@ -479,28 +480,32 @@ export default {
     }
   },
   watch: {
-    value(val) {
-      this.visible = val
-      if (val) {
-        this.$nextTick(() => {
-          if (this.showHead) {
-            this.headerHeight = this.$refs.msgHeader.offsetHeight
-          }
-          if (!this.footerHide) {
-            this.footerHeight = this.$refs.msgFooter.offsetHeight
-          }
-        })
-      }
-
-      if (val && this.isOriginal) {
-        // 开启了懒加载以后首次渲染时需要在nextTick中执行
-        if (!this.rendered && this.lazyload) {
+    value: {
+      immediate: true,
+      handler(val) {
+        this.visible = val
+        if (val) {
+          this.isRealVisible = true
           this.$nextTick(() => {
-            this.backOrigin()
+            if (this.showHead) {
+              this.headerHeight = this.$refs.msgHeader.offsetHeight
+            }
+            if (!this.footerHide) {
+              this.footerHeight = this.$refs.msgFooter.offsetHeight
+            }
           })
-          return
         }
-        this.backOrigin()
+
+        if (val && this.isOriginal) {
+          // 开启了懒加载以后首次渲染时需要在nextTick中执行
+          if (!this.rendered && this.lazyload) {
+            this.$nextTick(() => {
+              this.backOrigin()
+            })
+            return
+          }
+          this.backOrigin()
+        }
       }
     },
     visible(val) {

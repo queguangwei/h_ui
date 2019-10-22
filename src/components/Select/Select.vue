@@ -14,14 +14,14 @@
         <div class="h-tag" v-for="(item, index) in selectedMultiple" :key="index">
           <span class="h-tag-text" v-if="showValue">{{ item.value }}</span>
            <span class="h-tag-text" v-if="!showValue">{{ item.label }}</span>
-          <Icon name="close" @click.native.stop="removeTag(index)"></Icon>
+          <Icon name="close" @click.native.stop="removeTag(index, item)"></Icon>
         </div>
       </template>
       <!-- 多选时输入框压缩展示个数 -->
       <template v-if="multiple && collapseTags && selectedMultiple.length > 0">
         <div class="h-tag">
           <span class="h-tag-text">{{ selectedMultiple[0].label }}</span>
-          <Icon name="close" @click.native.stop="removeTag(index)"></Icon>
+          <Icon name="close" @click.native.stop="removeTag(0, selectedMultiple[0])"></Icon>
         </div>
         <div class="h-tag" v-if="multiple && collapseTags && selectedMultiple && selectedMultiple.length > 1">
           <span class="h-tag-text">+{{ selectedMultiple.length - 1 }}</span>
@@ -122,6 +122,7 @@ import { on, off } from '../../util/dom';
 import { oneOf, findComponentChildren, getScrollBarSize, getStyle,getBarBottom,scrollAnimate,typeOf, findInx} from '../../util/tools';
 import Emitter from '../../mixins/emitter';
 import Locale from '../../mixins/locale';
+import _ from "../..//util";
 const prefixCls = 'h-select';
 export default {
   name: 'Select',
@@ -567,6 +568,7 @@ export default {
       if (event.keyCode == 9) {
         this.hideMenu();
       }
+      this.handleKeydown(event);
     },
     focus(){
       this.isInputFocus = true;
@@ -857,10 +859,16 @@ export default {
       }
       this.toggleMultipleSelected(init && this.multiple && this.model === "" ? [] : this.model, init);
     },
-    removeTag (index) {
+    removeTag (index, item) {
       if (this.disabled || this.readonly || !this.editable) {
         return false;
       }
+      
+      if(item) {
+        // 修正 index 与 item 不匹配的问题
+        index = this.model.findIndex(value => value === item.value)
+      }
+
       if (this.remote || this.enableCreate) {
         const tag = this.model[index];
         this.selectedMultiple = this.selectedMultiple.filter(item => item.value !== tag);
@@ -975,6 +983,9 @@ export default {
         }
     },
     handleKeydown (e) {
+      this.isKeyDown = true; // switch on key down status
+      this.keyboardEvent = e; // cache current keyboard event
+
       if (this.visible) {
         const keyCode = e.keyCode;
         // Esc slide-up
@@ -1320,7 +1331,6 @@ export default {
     });
     this.updateOptions(true);
     this.updateLabel();
-    on(document,'keydown', this.handleKeydown);
     this.$on('append', () => {
       if (!this.remote) {
         this.modelToQuery();
@@ -1422,7 +1432,6 @@ export default {
     });
   },
   beforeDestroy () {
-    off(document,'keydown',this.handleKeydown)
     this.broadcast('Drop', 'on-destroy-popper');
   },
   watch: {
@@ -1509,6 +1518,9 @@ export default {
           this.dispatch('Msgbox', 'on-esc-real-close', false);
         }, 0);
       } else {
+        this.isKeyDown = false; // switch off key down status
+        this.keyboardEvent = null; // reset keyboard event
+        
         if (this.filterable) {
           this.$refs.input.blur();
           // #566 reset options visible
@@ -1532,6 +1544,18 @@ export default {
           }
           if (this.visible && !this.isInputFocus) { //点击其他页面触发失去焦点事件
             this.visible = false
+          }
+        } else {
+          if (this.isKeyDown) {
+            const { keyboardEvent: e } = this;
+            if (!_.isKeyMatch(e, "Esc") && !_.isKeyMatch(e, "Enter")) {
+              this.visible = true
+              this.$refs.input.focus()
+              this.$nextTick(() => {
+                this.$refs.input.setSelectionRange(9999, 9999)
+              })
+            }
+            this.isKeyDown = false; // switch off key down status
           }
         }
         if (!this.selectToChangeQuery) {
@@ -1581,9 +1605,6 @@ export default {
       this.broadcast('Drop', 'on-update-popper');
     },
     selectedSingle(val){
-      // if(!window.isO45){
-      //   this.hideMenu();
-      // }
       if (val&&this.showTitle) {
         this.titleTip=val
       }

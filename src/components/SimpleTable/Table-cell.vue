@@ -18,10 +18,49 @@
         <Icon name="android-arrow-dropdo" :class="{on: column._sortType === 'desc'}" ></Icon>
       </span>
     </div>
+    <Poptip
+      v-if="isPopperShow(column)"
+      v-model="column._filterVisible"
+      placement="bottom"
+      @on-popper-hide="handleFilterHide(index)">
+      <span :class="[prefixCls + '-filter']">
+        <Icon name="keyboard" @mousedown.native.stop="handleClick" :class="{on: column._isFiltered}"></Icon>
+      </span>
+      <render-header slot="content" v-if="column.renderFilter" :render="column.renderFilter" :column="column" :index="index"></render-header> 
+      <div slot="content" :class="[prefixCls + '-filter-list']" v-else-if="column._filterMultiple" @mousedown.native.stop="handleClick">
+        <div :class="[prefixCls + '-filter-list-item']">
+          <checkbox-group v-model="column._filterChecked">
+            <checkbox v-for="(item,i) in column.filters" :key="column._columnKey+i" :label="item.value">{{ item.label }}</checkbox>
+          </checkbox-group>
+        </div>
+        <div :class="[prefixCls + '-filter-footer']">
+          <h-button type="text" size="small" :disabled="!column._filterChecked.length" @click.native="handleFilter(index)">{{ t('i.table.confirmFilter') }}</h-button>
+          <h-button type="text" size="small" @click.native="handleReset(index)">{{ t('i.table.resetFilter') }}</h-button>
+        </div>
+      </div>
+      <div slot="content" :class="[prefixCls + '-filter-list']" v-else @mousedown.native.stop="handleClick">
+        <ul :class="[prefixCls + '-filter-list-single']">
+          <li
+            :class="itemAllClasses(column)"
+            @click="handleReset(index)">{{ t('i.table.clearFilter') }}</li>
+          <li
+            :class="itemClasses(column, item)"
+            v-for="item in column.filters"
+            :key = "item.value"
+            @click="handleSelect(index, item.value)">{{ item.label }}</li>
+        </ul>
+      </div>
+    </Poptip>
   </div>
 </template>
 <script>
 import renderHeader from './header'
+import Icon from '../Icon/Icon.vue'
+import CheckboxGroup from '../Checkbox/CheckboxGroup.vue';
+import Checkbox from '../Checkbox/Checkbox.vue';
+import Poptip from '../Poptip/Poptip.vue';
+import hButton from '../Button/Button.vue';
+import Locale from '../../mixins/locale';
 export default {
   name: 'TableCell',
   props: {
@@ -29,9 +68,17 @@ export default {
     index:[Number,String],
     checked:Boolean,
     prefixCls:String,
-    titleEllipsis:Boolean
+    titleEllipsis:Boolean,
+     // 是否进行过滤，无限滚动加载数据的场景不适用， 仅支持通过simpleTable显式分页的场景
+    isFilter: {
+      type: Boolean,
+      default: false
+    },
+    fixed: [Boolean, String]
   },
-  components:{renderHeader},
+  // components:{renderHeader},
+  mixins: [Locale ],
+  components: {CheckboxGroup, Checkbox, Poptip, hButton, renderHeader,Icon},
   computed: {
     sortCellCls() {
       // o45 排序图标右浮动
@@ -63,6 +110,23 @@ export default {
     }
   },
   methods: {
+    // 过滤列表样式
+    itemClasses (column, item) {
+      return [
+        `${this.prefixCls}-filter-select-item`,
+        {
+          [`${this.prefixCls}-filter-select-item-selected`]: column  && column._filterChecked && column._filterChecked[0] === item.value
+        }
+      ];
+    },
+    itemAllClasses (column) {
+      return [
+        `${this.prefixCls}-filter-select-item`,
+        {
+          [`${this.prefixCls}-filter-select-item-selected`]:  column && column._filterChecked && !column._filterChecked.length
+        }
+      ];
+    },
     minWidthStyle(column) {
       let style = {}
       if(column.width === 60) {
@@ -98,7 +162,8 @@ export default {
         [`${this.prefixCls}-cell-ellipsis`]: titleEllipsis && titleEllipsis != 'false'
       }
     },
-    handleClick(){
+    handleClick(event){
+      event.stopPropagation();
     },
     selectAll(status){
       this.$parent.selectAll(status)
@@ -108,7 +173,26 @@ export default {
     },
     handleSortByHead(index){
       this.$parent.handleSortByHead(index)
-    }
+    },
+    /* 
+     * 是否显示过滤pop
+    */
+    isPopperShow (column) {
+      return this.isFilter && column.filters && ((!this.fixed && !column.fixed) || (this.fixed === 'left' && column.fixed === 'left') || (this.fixed === 'right' && column.fixed === 'right'));
+    },
+    // 隐藏过滤输入
+    handleFilterHide (index) {
+      this.$parent.handleFilterHide(index);
+    },
+    handleFilter (index) {
+      this.$parent.handleFilter(index);
+    },
+    handleSelect (index, value) {
+      this.$parent.handleFilterSelect(index, value);
+    },
+    handleReset (index) {
+      this.$parent.handleFilterReset(index);
+    },
   },
 }
 </script>

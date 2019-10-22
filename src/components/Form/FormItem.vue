@@ -8,7 +8,9 @@
     </label>
     <div :class="[prefixCls + '-requiredIcon']"
          v-else
-         v-show="isRequired"><span>*</span></div>
+         v-show="isRequired">
+      <span>*</span>
+    </div>
     <div :class="[prefixCls + '-content']"
          :style="contentStyles">
       <slot></slot>
@@ -16,7 +18,7 @@
         <div class="verify-tip verify-bottom"
              v-if="isShowError&&showModal"
              :style="{left: `${msgOffset}px`}">
-          <div class="verify-tip-arrow"></div>
+          <div class="verify-tip-arrow" :style="verifyTipArrowStyle"></div>
           <div class="verify-tip-inner" :style="verifyTipStyle" :title="validateMessage">
             <h-icon v-if="showCloseIcon" :name="closeName" @on-click="closeTip" :size="12"></h-icon>
             {{validateMessage}}
@@ -129,6 +131,10 @@ export default {
     showCloseIcon:{
       type: Boolean,
       default: false
+    },
+    tipWidth: {
+      type: [Number, String],
+      default: 0
     }
   },
   data() {
@@ -248,9 +254,7 @@ export default {
     isShowError() {
       return this.mustShowError
         ? this.mustShowError
-        : this.validateState === 'error' &&
-            this.showMessage &&
-            this.form.showMessage
+        : this.validateState === 'error' && this.showMessage && this.form.showMessage && !this.forcePass
     },
     isOnlyBlurRequire() {
       return this.onlyBlurRequire
@@ -264,11 +268,35 @@ export default {
     },
     verifyTipStyle(){
       let style={}
-      style.maxWidth=(this.$children[0].$el.clientWidth-15)+"px"
+      if(window.isO45 && this.tipWidth) {
+        style.width = this.tipWidth + 'px'
+        style.maxWidth = this.tipWidth + 'px'
+      }else {
+        style.maxWidth=(this.$children[0].$el.clientWidth - 15) + 'px'
+      }
       return  style
+    },
+    verifyTipArrowStyle() {
+      let style={}
+      if(window.isO45 && this.tipWidth) {
+        let cwidth = this.$children[0].$el.clientWidth
+        if(cwidth <= this.tipWidth) {
+          style.left = this.$children[0].$el.clientWidth / 2 + 'px'
+        }else {
+          style.left = this.tipWidth / 2 + 'px'
+        }
+      }
+      return style
     }
   },
   methods: {
+    // 供外部调用点击确认时显示全部errorTip
+    resetErrorTip() {
+      this.forcePass = false
+    },
+    setErrorTip() {
+      this.forcePass = true
+    },
     // rules为String类型时，自定义rules
     customRules() {
       for (let rule of this.validRules) {
@@ -414,10 +442,18 @@ export default {
     resetValidate(cb) {
       this.validateState = ''
       this.validateMessage = ''
-
       if (cb) cb()
     },
+    onFieldFocus() {
+      if(this.form.showTipsOnlyFocus || window.isO45) {
+        this.forcePass = false
+        this.dispatch('Form', 'on-form-item-hide-tip', this)
+      }
+    },
     onFieldBlur(val) {
+      if(this.form.showTipsOnlyFocus || window.isO45) {
+        this.forcePass = true
+      }
       this.validate('blur', () => {})
     },
     onFieldChange(val) {
@@ -494,6 +530,7 @@ export default {
             return false
           }
         })
+        this.$off('on-form-focus').$on('on-form-focus', this.onFieldFocus)
         this.$off('on-form-blur').$on('on-form-blur', this.onFieldBlur)
         this.$off('on-form-change').$on('on-form-change', this.onFieldChange)
       }

@@ -158,6 +158,29 @@
                      @on-editarea-blur="editAreaBlur"></gird-body>
         </div>
       </div>
+      <div
+        :class="[prefixCls + '-summation']"
+        :style="summationStyle"
+        v-if="isSummation && data && data.length > 0"
+        ref="summation"
+      >
+        <gird-body ref="sumBody"
+                   :prefix-cls="prefixCls"
+                   :styleObject="tableStyle"
+                   :sum="isSummation"
+                   :columns="summationColumns"
+                   :data="makeSumData()"
+                   :columns-width="columnsWidth"
+                   :obj-data="makeObjData(makeSumData())"
+                   :showEditInput="false"
+                   typeName="editGird"
+                   :option="options"
+                   :treeOption="treeOptions"
+                   :cascaderOption="cascaderOption"
+                   :isCheckbox="false"
+                   :clickToSelect="false"
+                   :height="Number(height)"></gird-body>
+      </div>
       <div class="h-table__column-resize-proxy"
            ref="resizeProxy"
            v-show="resizeProxyVisible"> </div>
@@ -187,16 +210,7 @@ import GirdBody from './Gird-body.vue'
 import Spin from '../Spin/Spin.vue'
 import Mixin from './mixin'
 import Emitter from '../../mixins/emitter'
-import {
-  oneOf,
-  getStyle,
-  deepCopy,
-  getScrollBarSize,
-  getBarBottom,
-  findInx,
-  typeOf,
-  cmp
-} from '../../util/tools'
+import { oneOf, getStyle, deepCopy, getScrollBarSize, getBarBottom, findInx, typeOf, cmp } from '../../util/tools'
 import { on, off } from '../../util/dom'
 import Locale from '../../mixins/locale'
 
@@ -352,6 +366,10 @@ export default {
       type: Boolean,
       default: false
     },
+    summationData: {
+      type: Array,
+      default: () => []
+    }
   },
   data() {
     return {
@@ -380,7 +398,8 @@ export default {
       /* 保存垂直滚动距离，用于判断垂直滚动方向 */
       scrollTop: 0,
       resizeProxyVisible: false,
-      moveProxyVisible: false
+      moveProxyVisible: false,
+      sumMarginLeft: 0
     }
   },
   computed: {
@@ -467,10 +486,10 @@ export default {
     },
     styles() {
       let style = {}
-      if (this.height) {
-        const height = parseInt(this.height) + 2
-        style.height = `${height}px`
-      }
+      // if (this.height) {
+      //   const height = parseInt(this.height) + 2
+      //   style.height = `${height}px`
+      // }
       if (this.width) style.width = `${this.width}px`
       return style
     },
@@ -600,6 +619,27 @@ export default {
         (this.columns && this.columns[0] && this.columns[0].type === 'radio') ||
         false
       return this.highlightRow || isRadio
+    },
+    summationStyle() {
+      return {
+        marginLeft: `${0 - this.sumMarginLeft}px`
+      }
+    },
+    isSummation() {
+      return this.summationData.length > 0
+    },
+    summationColumns() {
+      let columns = deepCopy(this.cloneColumns)
+      return columns.map(col => {
+        if (['index', 'selection'].indexOf(col.type) > -1) {
+          this.$set(col, 'render', h => {
+            return h('span', ['汇总'])
+          })
+          this.$set(col, 'hiddenOther', true)
+        }
+        delete col.type
+        return col
+      })
     }
   },
   methods: {
@@ -691,7 +731,7 @@ export default {
               }
               this.cloneColumns[i]._width = width || ''
               //
-              this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)||this.tableWidth;
+              this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)||this.tableWidth
               columnsWidth[column._index] = {
                 width: width
               }
@@ -758,30 +798,34 @@ export default {
       if (this.typeName == 'groupTable' && String(_index).indexOf('.') != -1) {
         var k = String(_index).split('.')[0]
         var m = Number(String(_index).split('.')[1]) - 1
-        let highlight = this.objData[k].item[m]._isHighlight
+        let highlight = this.objData[k] && this.objData[k].item && this.objData[k].item[m] ? this.objData[k].item[m]._isHighlight : false
         let oldIndexI = -1
         let oldIndexJ = -1
         for (let i in this.objData) {
-          this.objData[i].item.forEach((col, j) => {
-            if (col._isHighlight) {
-              oldIndexI = i
-              oldIndexJ = j
-              col._isHighlight = false
-            }
-          })
-          // async cloneData
-          this.cloneData[i].item.forEach((col, j) => {
-            if (col.hasOwnProperty('_highlight')) {
-              col._highlight = false
-            }
-          })
+          if (this.objData[i] && this.objData[i].item && this.objData[i].item.length > 0) {
+            this.objData[i].item.forEach((col, j) => {
+              if (col._isHighlight) {
+                oldIndexI = i
+                oldIndexJ = j
+                col._isHighlight = false
+              }
+            })
+            // async cloneData
+            this.cloneData[i].item.forEach((col, j) => {
+              if (col.hasOwnProperty('_highlight')) {
+                col._highlight = false
+              }
+            })
+          }
         }
-        if (this.cancelSelection && highlight === true) {
-          this.$set(this.objData[k].item[m], '_isHighlight', false)
-          this.$set(this.cloneData[k].item[m], '_highlight', false)
-        } else {
-          this.$set(this.objData[k].item[m], '_isHighlight', true)
-          this.$set(this.cloneData[k].item[m], '_highlight', true)
+        if (this.objData[k] && this.objData[k].item && this.objData[k].item[m]) {
+          if (this.cancelSelection && highlight === true) {
+            this.$set(this.objData[k].item[m], '_isHighlight', false)
+            this.$set(this.cloneData[k].item[m], '_highlight', false)
+          } else {
+            this.$set(this.objData[k].item[m], '_isHighlight', true)
+            this.$set(this.cloneData[k].item[m], '_highlight', true)
+          }
         }
         const oldData =
           oldIndexJ < 0 ? null : this.getGroupData(oldIndexI, oldIndexJ)
@@ -790,7 +834,8 @@ export default {
           'on-current-change',
           JSON.parse(JSON.stringify(currentData)),
           oldData,
-          { k: Number(k), m: m, key: this.curKey }
+          { k: Number(k), m: m, key: this.curKey },
+
         )
       } else {
         if (!this.isHighlightRow || this.objData[_index]._isHighlight) return
@@ -829,7 +874,11 @@ export default {
         let i = arr[0]
         let j = Number(arr[1]) - 1
         let currentData = this.getGroupData(i, j)
-        this.$emit('on-row-click', JSON.parse(JSON.stringify(currentData)))
+        let checkStatus = !currentData.item._highlight ? true : false
+        this.$emit('on-row-click',
+          JSON.parse(JSON.stringify(currentData)),
+          checkStatus
+        )
       } else {
         this.$emit('on-row-click', [
           JSON.parse(JSON.stringify(this.cloneData[_index])),
@@ -929,12 +978,12 @@ export default {
       }
       return str != 'transfer'
         ? JSON.parse(
-            JSON.stringify(
-              this.cloneData.filter(
-                (data, index) => selectionIndexes.indexOf(index) > -1
-              )
+          JSON.stringify(
+            this.cloneData.filter(
+              (data, index) => selectionIndexes.indexOf(index) > -1
             )
           )
+        )
         : selectionIndexes
     },
     getGroupSelection() {
@@ -1124,6 +1173,7 @@ export default {
         this.$refs.fixedBody.scrollTop = event.target.scrollTop
       if (this.isRightFixed)
         this.$refs.fixedRightBody.scrollTop = event.target.scrollTop
+      if (this.isSummation) this.sumMarginLeft = event.target.scrollLeft
       const verifyTips = this.$refs.tbody.$el.querySelectorAll('.verify-tip')
       if (verifyTips && verifyTips.length > 0) {
         for (let i = 0; i < verifyTips.length; i++) {
@@ -1201,6 +1251,18 @@ export default {
       })
       return data
     },
+    makeSumData() {
+      let data =
+        this.summationData && this.summationData.length > 0
+          ? [deepCopy(this.summationData[0])]
+          : []
+      if (data.length === 1) {
+        let summation = data[0]
+        this.$set(summation, '_index', 0)
+        this.$set(summation, '_rowKey', rowKey++)
+      }
+      return data
+    },
     handleSort(_index, type) {
       let index
       this.cloneColumns.forEach((col, i) => {
@@ -1266,9 +1328,9 @@ export default {
       }
       return data
     },
-    makeObjData() {
+    makeObjData(rowData) {
       let data = {}
-      this.data.forEach((row, index) => {
+      rowData || this.data.forEach((row, index) => {
         const newRow = deepCopy(row) // todo 直接替换
         if (this.typeName == 'groupTable' && newRow.item) {
           if (newRow._checked) {

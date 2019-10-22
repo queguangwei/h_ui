@@ -1,23 +1,14 @@
-import SimpleSelect from '../SelectTable/SelectTable.vue'
+import SimpleSelect from "../SelectTable/SelectTable.vue";
 export default {
-  name: 'SimpleSelect',
+  name: "SimpleSelect",
   mixins: [SimpleSelect],
   props: {
-    block:{
-      default: true,
+    block: {
+      default: true
     },
     autoFocus: {
       type: Boolean,
       default: false
     }
-  },
-  data() {
-    return {
-    }
-  },
-  methods: {},
-  mounted() {
-  },
-  beforeDestroy() {
   }
-}
+};

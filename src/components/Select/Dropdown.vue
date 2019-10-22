@@ -40,7 +40,9 @@ export default {
   },
   computed: {
     styles () {
-      let style = {}
+      let style = {
+        transition: "width 210ms"
+      }
       if (this.widthAdaption) {
         if (this.dropWidth || this.maxDropWidth) {
           if (this.dropWidth)
@@ -55,10 +57,6 @@ export default {
       } else {
         if (this.width)
           style.width = `${this.width}px`
-      }
-      if(this.$parent.isSingleSelect) {
-        let maxWidth = Math.max(parseInt(this.maxDropWidth),parseInt(this.parentWidth))
-        style.width = `${maxWidth}px`
       }
       return style
     }

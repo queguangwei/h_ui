@@ -37,6 +37,10 @@ export default {
       type: Boolean,
       default: true
     },
+    showTipsOnlyFocus: {
+      type: Boolean,
+      default: false
+    },
     cols: {
       type: [String, Number]
     },
@@ -112,7 +116,9 @@ export default {
       this.validMsgList = []
       let valid = true
       let count = 0
+      let unpass = []
       this.fields.forEach(field => {
+        field.resetErrorTip()
         if (field.$children && field.$children.length > 0) {
           for (let fidleChild of field.$children) {
             if (fidleChild.disabled) {
@@ -128,12 +134,10 @@ export default {
         field.validate('', errors => {
           if (errors) {
             valid = false
+            unpass.push(field.prop)
           }
-          if (
-            typeof callback === 'function' &&
-            ++count === this.fields.length
-          ) {
-            callback(valid)
+          if (typeof callback === 'function' && ++count === this.fields.length) {
+            callback(valid, unpass)
           }
         })
       })
@@ -209,6 +213,7 @@ export default {
         }
         this.changeObj[item] = status
       }
+      // console.log('this.fields------>', this.fields)
       this.fields.forEach(col => {
         col.modeChanged = this.changeObj[col.prop]
       })
@@ -278,6 +283,12 @@ export default {
     })
   },
   mounted() {
+    this.$on('on-form-item-hide-tip', thisField => {
+      this.fields.forEach(field => {
+        field.setErrorTip()
+      })
+      thisField.resetErrorTip()
+    })
     if (this.placement != 'null') {
       this.setPlacement()
     }

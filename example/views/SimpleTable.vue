@@ -14,13 +14,14 @@
     <!--</h-simple-table>-->
     <h-button @click="setLoading">切换状态</h-button>
     <h-button @click="clearData">清除数据</h-button>
+    <h-button @click="delSelected">删除所选</h-button>
     <h2>不带边线 单选 on-current-change</h2>
     <!-- :multiLevel="multiLevel1" -->
     <!-- <h-msg-box v-model="showmsg" :width="1000"> -->
       <!-- notAdaptive  -->
     <h-simple-table ref="simTable" canMove :summationRender="false" @on-right-click="rightClick" rowSelectOnly
                     :summationData="summationData" :columns="columnsBig1" border :data="bigData" height="300"
-                    highlight-row @on-sort-change="sortchange" @on-selection-change="selsetChange">
+                    highlight-row @on-sort-change="sortchange" @on-selection-change="selsetChange" @on-row-dblclick="dblclick">
     </h-simple-table>
     <!-- </h-msg-box> -->
     <h-button @click='changeClo'>改变冻结列</h-button>
@@ -81,57 +82,66 @@ export default {
       addData:[],
       bigData:[],
       columnsBig1:[
-//        {
-//          type: 'index',
-//          align: 'center',
-//          width:200,
-//          fixed:'left',
-//        },
+        {
+          type: 'index',
+          align: 'center',
+          fixed:'left',
+          width: 100
+        },
         {
           type: 'selection',
           align: 'center',
           key:'select',
+          fixed:'left',
+          width: 100,
           sortable: true
         },
         {
           title: '姓名姓名姓名姓名姓名姓名姓名姓名',
           key: 'fundId',
+          width: 300,
           showTitle:true,
           ellipsis:true,
         },
         {
           title: '今日开盘价(元)',
           key: 'tradeDate',
-//          width: 80,
+          width: 200,
           sortable:true,
           ellipsis:true,
-          align:'right'
         },
         {
           title: '地址',
           ellipsis:true,
           key: 'securityCode',
+          width: 200,
+          align:'right',
           sortable:true,
-//          render: (h, params) => {
-//            this.$set(params.row, '_isDisabled', true)
-//            return h('span',params.row.securityCode)
-//          },
+          render: (h, params) => {
+            if(params.row.securityCode === '600000') {
+              this.$set(this.bigData[params.index], '_disabled', true)
+            }
+            return h('span',params.row.securityCode)
+          },
         },
         {
           title: '银行',
           key: 'securityName',
-          minWidth:200,
+          width:200,
+          showTitle:true
         },
         {
           title: '年龄',
           key: 'tradeDir',
-          minWidth:200,
+//          width: 200,
         },
         {
           title: '数量',
           ellipsis:true,
-          minWidth:200,
+          sortable:true,
           key: 'tradeQuantity',
+          width: 200,
+          fixed:'left'
         },
       ],
       columns1: [
@@ -497,6 +507,16 @@ export default {
       this.$set(this.bigData[0],'fundId','sheishi')
       // this.loading = !this.loading;
     },
+    delSelected() {
+      for(let i in this.bigData) {
+        if(this.bigData[i].securityCode !== '600000') {
+          delete this.bigData[i]
+        }
+      }
+      this.bigData = this.bigData.filter((val) => {
+        return val
+      })
+    },
     click1 (selection) {
       console.log(selection);
     },
@@ -582,8 +602,10 @@ export default {
       }
     }
   },
+  created() {
+    window.isO45 = true
+  },
   mounted(){
-    window.isO45 = false
     this.bigData = jsonData
   }
 }

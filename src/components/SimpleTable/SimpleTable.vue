@@ -39,14 +39,16 @@
                   v-on:mouseout="mouseout($event,column,index)"
                   v-on:mousemove="mousemove($event,column,index)"
                   v-on:mouseup="mouseup($event,column,index)"
-                  :class="alignCls(column)"   style="position:relative">
+                  :class="alignCls(column)"   :style="{position: newSort ? 'relative' : 'static'}">
                 <table-cell :column="column"
-                            :index="index"
+                            :index="column._index"
                             :checked="isSelectAll"
                             :prefixCls="prefixCls"
+                            :isFilter = "isFilter"
                             :titleEllipsis="titleEllipsis">
                 </table-cell>
               </th>
+              <!--<th style="width:0;"></th>-->
             </tr>
           </thead>
         </table>
@@ -106,6 +108,7 @@
                       </template>
                     </div>
                   </td>
+                  <!--<td style="width:0;"></td>-->
                 </table-tr>
               </template>
             </tbody>
@@ -158,12 +161,15 @@
                     :class="alignCls(column,{},'left')"
                     :style="{height: column.fixedTheadHeight + 'px'}" >
                   <table-cell :column="column"
-                              :index="index"
+                              :index="column._index"
+                              :fixed="column.fixed || true"
                               :checked="isSelectAll"
                               :prefixCls="prefixCls"
+                              :isFilter = "isFilter"
                               :titleEllipsis="titleEllipsis">
                   </table-cell>
                 </th>
+                <!--<th style="width:0;"></th>-->
               </tr>
             </thead>
           </table>
@@ -203,7 +209,7 @@
                         :class="alignCls(column, row,'left')"
                         :data-index="row._index+1"
                         :key="column._index">
-                      <div :class="classesTd(column)">
+                      <div :class="classesTd(column)" :title="column.showTitle?row[column.key]:null">
                         <template v-if="column.type === 'index'&&!splitIndex">{{row._index+1}}</template>
                         <template v-if="column.type === 'selection'">
                           <Checkbox :size="calcCheckboxSize(column.checkboxSize)"
@@ -231,6 +237,7 @@
                         :disabled="rowDisabled(row._index)"
                       ></Cell> -->
                     </td>
+                    <!--<td style="width:0;"></td>-->
                   </table-tr>
                 </template>
               </tbody>
@@ -271,6 +278,7 @@
                           v-text="row[column.key]"></span>
                   </div>
                 </td>
+                <!--<td style="width:0;"></td>-->
               </table-tr>
             </template>
           </tbody>
@@ -300,21 +308,7 @@
 <script>
 import renderHeader from './header'
 import Spin from '../Spin/Spin.vue'
-import {
-  oneOf,
-  getStyle,
-  deepCopy,
-  getScrollBarSize,
-  findInx,
-  getBarBottomS,
-  hasClass,
-  addClass,
-  removeClass,
-  typeOf,
-  getScrollBarSizeHeight,
-  scrollAnimate,
-  debounceWithImmediate
-} from '../../util/tools'
+import { oneOf, getStyle, deepCopy, getScrollBarSize, findInx, getBarBottomS, addClass, removeClass, typeOf, getScrollBarSizeHeight, debounceWithImmediate} from '../../util/tools'
 import { on, off } from '../../util/dom'
 import Locale from '../../mixins/locale'
 import Mixin from './mixin'
@@ -324,16 +318,14 @@ import TableTr from './Table-tr.vue'
 import TableCell from './Table-cell.vue'
 import Cell from './Cell.vue'
 import Checkbox from '../Checkbox/Checkbox.vue'
-
 const prefixCls = 'h-table'
-
 let rowKey = 1
 let columnKey = 1
 
 export default {
   name: 'Table',
   mixins: [Locale, Mixin],
-  components: { Cell, Checkbox, renderHeader, TableTr, Cell, TableCell },
+  components: { Cell, Checkbox, renderHeader, TableTr, TableCell },
   props: {
     data: {
       type: Array,
@@ -425,10 +417,6 @@ export default {
       type: Boolean,
       default: false
     },
-    showTitle: {
-      type: Boolean,
-      default: false
-    },
     itemHeight: {
       type: Number,
       default: 40
@@ -505,6 +493,11 @@ export default {
     noNeedOtherCol: {
       type: Boolean,
       default: false
+    },
+    // 是否进行过滤，无限滚动加载数据的场景不适用， 仅支持通过simpleTable显式分页的场景
+    isFilter: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -561,7 +554,8 @@ export default {
       isHorizontal:false,
       lastScrollTop: 0,
       beginLocation: {},
-      isCtrlDown: false
+      isCtrlDown: false,
+      curShowFiltersIdx: null,// 当前展示filter的列，防止拖拽滚动条时不隐藏filter poptip
     }
   },
   computed: {
@@ -612,17 +606,37 @@ export default {
       }
       if (isSelectAll && !this.allclick) {
         this.allclick = false
-        for (let i = 0; i < this.rebuildData.length; i++) {
-          if (!this.objData[this.rebuildData[i]._index]._isChecked &&
-              !this.objData[this.rebuildData[i]._index]._isDisabled) {
-            isSelectAll = false
-            break
+        let count = 0
+        //o45那边会在render里使用$set方法改变disabled让其不可选，这时全选状态应该不勾选
+        for(let ind = 0; ind < this.rebuildData.length; ind ++) {
+          if(this.objData[this.rebuildData[ind]._index]._isDisabled) {
+            count ++
           }
         }
-        return isSelectAll
+        if(count === this.rebuildData.length) {
+          isSelectAll = false
+        }else {
+          for (let i = 0; i < this.rebuildData.length; i++) {
+            if (!this.objData[this.rebuildData[i]._index]._isChecked &&
+              !this.objData[this.rebuildData[i]._index]._isDisabled) {
+              isSelectAll = false
+              break
+            }
+          }
+        }
       } else {
-        return isSelectAll
+        // 再次判断是否有外部强行删除数据导致全选框仍勾选
+        let count = 0
+        for(let ind = 0; ind < this.rebuildData.length; ind ++) {
+          if(this.objData[this.rebuildData[ind]._index]._isDisabled) {
+            count ++
+          }
+        }
+        if(count === this.rebuildData.length) {
+          isSelectAll = false
+        }
       }
+      return isSelectAll
     },
     loadingText() {
       return this.t('i.table.loadingText')
@@ -635,7 +649,7 @@ export default {
       }
     },
     localeNoFilteredDataText() {
-      if (this.noFilteredDataText === undefined) {
+      if (this.noFilteredDataText === undefined && this.t) {
         return this.t('i.table.noFilteredDataText')
       } else {
         return this.noFilteredDataText
@@ -707,20 +721,19 @@ export default {
     headStyles() {
       //深拷贝
       const style = Object.assign({}, this.tableStyle)
-      const width = this.data.length == 0
-        ? parseInt(this.tableStyle.width)
+      const width = this.data.length == 0 ? parseInt(this.tableStyle.width)
         : parseInt(this.tableStyle.width) + this.scrollBarWidth
       style.width = `${width}px`
       return style
     },
     fixedHeadStyles() {
-      const style = this.headStyles;
+      const style = this.headStyles
       if(this.noNeedOtherCol) {
-        style.width = this.fixedTableStyle.width;
+        style.width = this.fixedTableStyle.width
       }
       return style
     },
-    fixedTableStyle() {
+    fixedTableStyle() {// 拖拽切换屏幕大小重新计算宽度时冻结列未触发重新计算
       if(this.isLeftFixed){
         let style = {}
         let width = 0
@@ -905,7 +918,7 @@ export default {
         return this.objData[_index]._isDisabled
       }
     },
-    changeWidth(width, key, lastWidth) {
+    changeWidth(width, dragWidth, index, key, lastWidth) {
       let that = this
       let lastInx = this.cloneColumns.length - 1
       let totalWidth = 0
@@ -914,19 +927,29 @@ export default {
           that.$set(col, 'width', width)
           that.$set(col, '_width', width)
         }
-        // 限制最后一列拖拽改变宽度
-        //        if (i == lastInx && !that.notAdaptive) {
-        //          that.$set(col, 'width', lastWidth)
-        //          that.$set(col, '_width', lastWidth)
-        //        }
-        var colWidth = col.width || col._width
+        // 缩短当前列增宽最后一列
+        if(index != lastInx ) {
+          if (i == lastInx && !that.notAdaptive) {
+            let sum
+            // 当最后一列宽度不够缩小时
+            if(lastWidth >= that.lastColWidth) {
+              if(dragWidth < 0) {
+                sum = col._width + Math.abs(dragWidth)
+              }else {
+                sum = col._width - Math.abs(dragWidth)
+              }
+              that.$set(col, 'width', sum)
+              that.$set(col, '_width', sum)
+            }
+          }
+        }
+        var colWidth = col._width
         totalWidth = totalWidth + colWidth
       })
       if (this.rebuildData.length != 0 && !that.notAdaptive) {
         totalWidth = totalWidth + this.scrollBarWidth
       }
       this.tableWidth = totalWidth
-      // && !that.notAdaptive
       if (this.tableWidth < this.initWidth && !that.notAdaptive) {
         this.tableWidth = this.initWidth - 1
       }
@@ -935,6 +958,8 @@ export default {
         if(this.$refs.content){
           this.isHorizontal = this.$refs.content.scrollWidth > this.$refs.content.clientWidth?true:false
         }
+        // 触发改变整体宽度
+        this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)
       })
     },
     getLeftWidth() {
@@ -956,7 +981,6 @@ export default {
       if (!column) return
       if (!this.canDrag && !this.canMove) return
       let _this = this
-
       if (this.draggingColumn) {
         this.dragging = true
         this.resizeProxyVisible = true
@@ -998,7 +1022,6 @@ export default {
             //拖拽的宽度 >0为增大，<0为减小
             let dragWidth = finalLeft - startLeft
             if (dragWidth >= 0) {
-              //o45需求最后一列可拖动变宽，这样这里的代码没有意义，原本是为了限制最后一列宽度
               lastWidth = lastWidth - dragWidth >= this.lastColWidth
                 ? lastWidth - dragWidth : this.lastColWidth
             } else {
@@ -1014,13 +1037,13 @@ export default {
             if (table.bodyHeight !== 0&&!this.isRightFixed) {
               lastWidth = lastWidth - getScrollBarSize()
             }
-            //表头最小宽度 (o45： padding 8、 一个文字... 24、 排序 16+4)
+            // 设置表头最小宽度 (o45： padding 8、 一个文字... 24、 排序 16+4)
             if(window.isO45) {
               columnWidth = columnWidth <= 60 ? 60 : columnWidth
             }else {
               columnWidth = columnWidth <= 74 ? 74 : columnWidth
             }
-            _this.changeWidth(columnWidth, column.key, lastWidth)
+            _this.changeWidth(columnWidth, dragWidth, index, column.key, lastWidth)
             document.body.style.cursor = ''
             _this.dragging = false
             _this.draggingColumn = false
@@ -1227,9 +1250,7 @@ export default {
     },
     handleResize() {
       this.$nextTick(() => {
-        let transformTop =
-          Math.floor(this.$refs.body.scrollTop / this.itemHeight) *
-          this.itemHeight
+        let transformTop = Math.floor(this.$refs.body.scrollTop / this.itemHeight) * this.itemHeight
         if(this.$refs.fixedBody){
           this.$refs.fixedBody.scrollTop =this.$refs.body.scrollTop
         }
@@ -1242,19 +1263,13 @@ export default {
         if (this.$refs.leftContent) {
           this.$refs.leftContent.style.transform = `translateY(${transformTop}px))`
         }
-
         let width = this.$refs.body.getBoundingClientRect().width
         let conentWidth = this.$refs.body.scrollWidth
-        this.isScrollX =
-          conentWidth + this.scrollBarWidth > width ? true : false
+        this.isScrollX = conentWidth + this.scrollBarWidth > width ? true : false
         if (this.cloneColumns.length == 0) return
-        const allWidth = !this.columns.some(
-          cell => !cell.width && cell.width !== 0
-        ) // each column set a width
+        const allWidth = !this.columns.some(cell => !cell.width && cell.width !== 0) // each column set a width
         if (allWidth) {
-          this.tableWidth = this.columns
-            .map(cell => cell.width)
-            .reduce((a, b) => a + b)
+          this.tableWidth = this.columns.map(cell => cell.width).reduce((a, b) => a + b)
         } else {
           this.tableWidth = parseInt(getStyle(this.$el, 'width')) - 1
         }
@@ -1263,13 +1278,12 @@ export default {
           let columnsWidth = {}
           let autoWidthIndex = -1
           // if (allWidth) autoWidthIndex = this.cloneColumns.findIndex(cell => !cell.width);//todo 这行可能有问题
-          if (allWidth)
+//          if (allWidth) // 这边写的不理解每列都设置了width为何还找需要自动设宽的项
             autoWidthIndex = findInx(this.cloneColumns, cell => !cell.width)
           if (this.data.length) {
-            const $td = this.$refs.tbody
-              .querySelectorAll('tbody tr')[0]
-              .querySelectorAll('td')
+            const $td = this.$refs.tbody.querySelectorAll('tbody tr')[0].querySelectorAll('td')
             let errorNum = 0
+            let totalWidth = 0
             for (let i = 0; i < $td.length; i++) {
               // can not use forEach in Firefox
               const column = this.cloneColumns[i]
@@ -1285,24 +1299,26 @@ export default {
               }
               if (column.width) {
                 width = column.width || ''
-              } else {
+              } else {  // 自适应列设置最小宽度100（拖拽后除外）
                 let min = column.minWidth?column.minWidth:100
                 if (width < min) width = min
-                // if (width < 100) width = 100
               }
               this.cloneColumns[i]._width = width || ''
-              this.tableWidth = this.cloneColumns
-                .map(cell => cell._width)
-                .reduce((a, b) => a + b)
+//              this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)
+              totalWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)
+              if(totalWidth < this.tableWidth) {
+                if(i === autoWidthIndex) {
+                  this.$set(this.cloneColumns[autoWidthIndex], 'width', this.tableWidth - totalWidth + width)
+                  this.$set(this.cloneColumns[autoWidthIndex], '_width', this.tableWidth - totalWidth + width)
+                }
+              }
               columnsWidth[column._index] = {
                 width: width
               }
             }
             this.columnsWidth = columnsWidth
           } else {
-            const $th = this.$refs.thead
-              .querySelectorAll('thead .cur-th')[0]
-              .querySelectorAll('th')
+            const $th = this.$refs.thead.querySelectorAll('thead .cur-th')[0].querySelectorAll('th')
             for (let i = 0; i < $th.length; i++) {
               // can not use forEach in Firefox
               const column = this.cloneColumns[i]
@@ -1318,9 +1334,7 @@ export default {
                 if (width < min) width = min
               }
               this.cloneColumns[i]._width = width || ''
-              this.tableWidth = this.cloneColumns
-                .map(cell => cell._width)
-                .reduce((a, b) => a + b)
+              this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)
               columnsWidth[column._index] = {
                 width: width
               }
@@ -1328,7 +1342,6 @@ export default {
             // this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b);
             this.columnsWidth = columnsWidth
           }
-
           // get table real height,for fixed when set height prop,but height < table's height,show scrollBarWidth
           this.bodyRealHeight =
             parseInt(getStyle(this.$refs.tbody, 'height')) || 0
@@ -1424,12 +1437,10 @@ export default {
           this.objData[_index]._isChecked = true
         }
         this.$nextTick(() => {
-          this.$emit(
-            'on-selection-change',
+          this.$emit('on-selection-change',
             this.getSelection(),
             this.getSelection(true),
-            _index
-          )
+            _index)
         })
         return
       }
@@ -1447,7 +1458,10 @@ export default {
       if (curStatus && !this.selectOption) {
         this.objData[_index]._isHighlight = false
         this.objData[_index]._isChecked = false
-        // this.$emit('on-current-change-cancle',JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
+        this.$emit('on-current-change-cancel',
+          JSON.parse(JSON.stringify(this.cloneData[_index])),
+          oldData,
+          _index)
         this.$nextTick(() => {
           this.$emit('on-current-change', null, null)
         })
@@ -1519,6 +1533,9 @@ export default {
       }
     },
     clickCurrentRow(_index,curIndex) {
+      if(this.objData[_index]._disabled) {
+        return
+      }
       this.baseInx = curIndex
       this.offsetInx = curIndex
       if (!this.rowSelect) {
@@ -1579,6 +1596,9 @@ export default {
         )
     },
     toggleSelect(_index, curIndex) {
+      if(this.objData[_index]._disabled) {
+        return
+      }
       if(this.highlightRow){
         this.focusIndex = curIndex
       }
@@ -1705,9 +1725,7 @@ export default {
         this.cloneColumns[index]._sortType = type
         this.$nextTick(() => {
           this.$emit('on-sort-change', {
-            column: JSON.parse(
-              JSON.stringify(this.columns[this.cloneColumns[index]._index])
-            ),
+            column: JSON.parse(JSON.stringify(this.columns[this.cloneColumns[index]._index])),
             key: key,
             order: type
           })
@@ -1816,10 +1834,109 @@ export default {
         this.updateVisibleData()
       })
     },
+    /*
+     * Function: 过滤数据
+     */
+    filterData(data, column) {
+      return data.filter(row => {
+        //如果定义了远程过滤方法则忽略此方法
+        if (typeof column.filterRemote === 'function') return true
+
+        let status = !column._filterChecked.length
+        for (let i = 0; i < column._filterChecked.length; i++) {
+          status = column.filterMethod(column._filterChecked[i], row)
+          if (status) break
+        }
+        return status
+      })
+    },
+    filterOtherData(data, index) {
+      let column = this.cloneColumns[index]
+      if (typeof column.filterRemote === 'function') {
+        column.filterRemote.call(
+          this.$parent,
+          column._filterChecked,
+          column.key,
+          column
+        )
+      }
+
+      this.cloneColumns.forEach((col, colIndex) => {
+        if (colIndex !== index) {
+          data = this.filterData(data, col)
+        }
+      })
+      return data
+    },
+    handleFilter(_index, isIndex) {
+      let index
+      if (isIndex) {
+        index = _index
+      } else {
+        index = this.getIndex(_index)
+      }
+      const column = this.cloneColumns[index]
+      let filterData = this.makeDataWithSort()
+
+      // filter others first, after filter this column
+      filterData = this.filterOtherData(filterData, index)
+      this.rebuildData = this.filterData(filterData, column)
+      this.focusIndex = -1
+      this.updateVisibleData(0)
+      this.cloneColumns[index]._isFiltered = true
+      this.cloneColumns[index]._filterVisible = false
+      // 筛选后返回数据-汇总使用
+      this.$emit('on-filter', this.rebuildData)
+    },
+    // 隐藏过滤
+    handleFilterHide(_index) {
+      // clear checked that not filter now
+      let index = this.getIndex(_index)
+      if (!this.cloneColumns[index]._isFiltered) this.cloneColumns[index]._filterChecked = []
+      this.focusIndex = -1
+      this.updateVisibleData(0)
+    },
+    // 过滤项选中
+    handleFilterSelect(_index, value) {
+      let index = this.getIndex(_index)
+      this.cloneColumns[index]._filterChecked = [value]
+      this.handleFilter(index, true)
+    },
+    // filter 重置
+    handleFilterReset(_index) {
+      let index = this.getIndex(_index)
+      this.cloneColumns[index]._isFiltered = false
+      this.cloneColumns[index]._filterVisible = false
+      this.cloneColumns[index]._filterChecked = []
+
+      let filterData = this.makeDataWithSort()
+      filterData = this.filterOtherData(filterData, index)
+      this.rebuildData = filterData
+      this.focusIndex = -1
+      this.updateVisibleData(0)
+      // 筛选后返回数据-汇总使用
+      this.$emit('on-filter', this.rebuildData)
+    },
+    /*
+     * 获取过滤数据， 仅在配置isFilter后生效
+     */
     makeDataWithFilter() {
       let data = this.makeData()
-      // this.cloneColumns.forEach(col => data = this.filterData(data, col));
+      if (this.isFilter) this.cloneColumns.forEach(col => data = this.filterData(data, col));
       return data
+    },
+    /**
+     * 获取所有列选中的过滤条件
+     */
+    getFilters() {
+      const cloneColumns = this.cloneColumns
+      const filters = {}
+      cloneColumns.forEach(col => {
+        if (col.filters && (col.filterMethod || col.filterRemote) && col.key) {
+          filters[col.key] = col._filterChecked
+        }
+      })
+      return filters
     },
     selectRange() {
       // this.$nextTick(()=>{
@@ -1867,6 +1984,8 @@ export default {
       }
     },
     handleBodyScroll(event) {
+      // 修复：拖动滚动条时，无法隐藏显示过滤项
+      if (this.curShowFiltersIdx !== null) this.cloneColumns[this.curShowFiltersIdx]._filterVisible = false
       if (window.requestAnimationFrame) { // 该特性有浏览器限制
         this.updateVisibleAnimate(event)
       } else {
@@ -2083,6 +2202,7 @@ export default {
     makeDataWithSortAndFilter() {
       // let data = this.makeData();
       let data = this.makeDataWithSort()
+      if (this.isFilter) this.cloneColumns.forEach(col => (data = this.filterData(data, col)))
       return data
     },
     makeObjData() {
@@ -2120,7 +2240,6 @@ export default {
       return data
     },
     makeColumns() {
-      var that = this
       let columns = deepCopy(this.columns)
       let left = []
       let right = []
@@ -2506,6 +2625,13 @@ export default {
     cloneColumns: {
       deep: true,
       handler() {
+        // 有过滤项时，实时修改当前显示index,防止滚动是不隐藏
+        if (this.isFilter) {
+          this.cloneColumns.some((item, index) => {
+            this.curShowFiltersIdx = item._filterVisible == true ? index : null
+            return item._filterVisible
+          })
+        }
         this.getLeftWidth()
       }
     },

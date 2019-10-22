@@ -21,6 +21,7 @@
               :row="row"
               :key="column._columnKey"
               :parent="parent"
+              :typeName="typeName"
               :column="column"
               :naturalIndex="index"
               :columnIndex = "inx"
@@ -31,7 +32,7 @@
               :showEditInput="showEditInput"
               :option="selectOption[inx]"
               :treeOption="treeOption[inx] ? treeOption[inx] : []"
-              :cascaderOption="cascaderOption[inx] ? cascaderOption[inx] : []" 
+              :cascaderOption="cascaderOption[inx] ? cascaderOption[inx] : []"
               :height="height"
               @on-editselect-change="editselectChange"
               @on-editinput-change="editinputChange"
@@ -197,6 +198,10 @@
         titleRender:Function,
         height: Number,
         clickToSelect:Boolean,
+        sum: {
+          type: Boolean,
+          default: false
+        }
       },
       data(){
         return{
@@ -250,12 +255,15 @@
            return this.objData[k].item[m] && this.objData[k].item[m]._isExpanded;
         },
         handleMouseIn (_index) {
+          if (this.sum) return
           this.$parent.handleMouseIn(_index);
         },
         handleMouseOut (_index) {
+          if (this.sum) return
           this.$parent.handleMouseOut(_index);
         },
         clickCurrentRow (_index) {
+          if (this.sum) return
           this.$parent.clickCurrentRow(_index);
           if(this.rowSelect){
             // this.objData[_index]._isChecked=!this.objData[_index]._isChecked;
@@ -263,9 +271,11 @@
           }
         },
         dblclickCurrentRow (_index){
+          if (this.sum) return
           this.$parent.dblclickCurrentRow(_index);
         },
         cellCkick (key){
+          if (this.sum) return
           this.$parent.curKey = key;
         },
         toggleExpand (index,e) {
@@ -350,7 +360,7 @@
         },
         /**
          * 添加visibleKey属性（一个递增的数值，只有可见行才会被添加，收缩行不会被添加）
-         * 
+         *
          * @param index 原始数据所在下标，非nodeKey
          */
         addVisibleKey(index = -1) {
