@@ -55,6 +55,7 @@
       <template v-if="renderType === 'money'">
         <Typefield :value="columnMoney"
                    ref="money"
+                   :algin='column.typefieldAlgin'
                    :placeholder="column.placeholder"
                    :integerNum="column.integerNum || '10'"
                    :suffixNum="column.suffixNum"

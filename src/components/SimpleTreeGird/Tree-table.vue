@@ -33,6 +33,10 @@
                         @click.native.stop="handleclick"></Checkbox>
             </span>
             <span v-if="column.type=='index'">{{Number(index)+1}}</span>
+            <template v-if="column.type==='selfText' && column.selfRender">
+              <span v-if="column.selfRender.click" :style="column.selfRender.style ? column.selfRender.style : {}" @click.stop="column.selfRender.click(row)">{{column.selfRender.text}}</span> 
+              <span v-else :style="column.selfRender.style ? column.selfRender.style : {}" >{{column.selfRender.text}}</span> 
+            </template>
             <Cell v-if="column.render"
                   :row="row"
                   :column="column"

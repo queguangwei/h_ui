@@ -5,7 +5,12 @@
       <col v-for="(column, index) in columns" :width="setCellWidth(column, index, true)" :key="index">
     </colgroup>
     <thead>
-      <tr>
+      <tr v-if="multiLevel" v-for="(colItem,inx) in multiData" :key="inx"  >
+        <th v-for="(multi, index) in colItem" :colspan="multi.cols||1" :rowspan="multi.rows||1" :key="index" :class="aliCls(multi)" :style="{height: multi.fixedTheadHeight + 'px'}" >
+          <div :class="[prefixCls+'-cell']"><span>{{multi.title}}</span></div>
+        </th>
+      </tr>
+      <tr class="cur-th">
         <th v-for="(column, index) in columns"
           v-on:mousedown="mousedown($event,column,index)"
           v-on:mouseout="mouseout($event,column,index)"
@@ -15,6 +20,9 @@
           >
           <div>
             <Checkbox v-if="headSelection&&!index&&fixed !== 'right'" @mousedown.native.stop="handleClick" @on-change="selectAll" :value="isSelectAll" class="asyc-check"></Checkbox>
+            <template v-if="column.type === 'selfText'">
+              <span :title="column.showTitle?column.title:null">{{column.title}}</span>
+            </template>
             <template>
               <span v-if="!column.renderHeader" @click="handleSortByHead(index)">{{ column.title || '#' }}</span>
               <render-header v-else :render="column.renderHeader" :column="column" :index="index"></render-header>
@@ -51,6 +59,7 @@ export default {
     canDrag:Boolean,
     canMove: Boolean,
     fixed:String,
+    multiLevel:Array,
   },
   data(){
     return{
@@ -60,6 +69,7 @@ export default {
       moving: false,
       movingColumn: null,
       cloumnsLeft: [],
+      multiData:null,
     }
   },
   computed: {
@@ -82,16 +92,28 @@ export default {
       handler(){
         this.getLeftWidth()
       }
+    },
+    multiLevel(val){
+      this.multiData = this.multiLevel;
     }
   },
   mounted(){
     this.getLeftWidth()
+    this.multiData = this.multiLevel;
     on(window, 'resize', this.getLeftWidth)
   },
   beforeDestroy(){
     off(window, 'resize', this.getLeftWidth)
   },
   methods: {
+    aliCls(item){
+      return[
+        {
+          [`${item.className}`]: item.className,
+          [`${this.prefixCls}-column-${item.align}`]: item.align,
+        }
+      ]
+    },
     selectAll(event) {
       const status = !this.isSelectAll
       this.$parent.isSelectAll = status
