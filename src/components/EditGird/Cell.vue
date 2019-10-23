@@ -299,10 +299,8 @@ export default {
             (this.column.fixed === 'left' || this.column.fixed === 'right'),
           [`${this.prefixCls}-cell-error`]: this.validateState === 'error',
           [`${this.prefixCls}-cell-with-expand`]: this.renderType === 'expand',
-          [`${this.prefixCls}-cell-with-render`]:
-            this.render && this.renderType != 'expand',
-          [`${this.prefixCls}-cell-ellipsis-with-render`]: this
-            .ellipsisAndRender
+          [`${this.prefixCls}-cell-with-render`]: this.render && this.renderType != 'expand',
+          [`${this.prefixCls}-cell-ellipsis-with-render`]: this.ellipsisAndRender
         }
       ]
     },
@@ -638,6 +636,7 @@ export default {
      */
     syncRebuildData() {
       const data = this.parent.rebuildData
+      if(this.typeName === 'editGird') return
       if (this.row[this.column.key] === this.normalDate) return
       if (!Array.isArray(data) || data.length === 0) return
       const find = (rows, id) => {
@@ -777,7 +776,7 @@ export default {
     this.hiddenOther = this.column.hiddenOther ? true : false
 
     if (this.renderType !== 'normal' && this.column.rule) {
-      if ((this.column.fixed === 'left' && this.$parent.$parent.fixed === 'left') 
+      if ((this.column.fixed === 'left' && this.$parent.$parent.fixed === 'left')
       || (this.column.fixed === 'right' && this.$parent.$parent.fixed === 'right')
       || (this.column.fixed !== 'left' && this.column.fixed !== 'right' && !this.$parent.$parent.fixed) ) {
         this.dispatch('EditGird', 'on-rule-cell-add', this)
@@ -803,7 +802,7 @@ export default {
   },
   beforeDestroy() {
     if (this.renderType !== 'normal' && this.column.rule) {
-      if ((this.column.fixed === 'left' && this.$parent.$parent.fixed === 'left') 
+      if ((this.column.fixed === 'left' && this.$parent.$parent.fixed === 'left')
       || (this.column.fixed === 'right' && this.$parent.$parent.fixed === 'right')
       || (this.column.fixed !== 'left' && this.column.fixed !== 'right' && !this.$parent.$parent.fixed) ) {
         this.dispatch('EditGird', 'on-rule-cell-remove', this)

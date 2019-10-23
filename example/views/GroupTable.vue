@@ -13,6 +13,8 @@
     <h3>多选分组组件</h3>
     <h-group-table :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading"></h-group-table>
     <!--<h-group-table :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" @on-selection-change="selsetChange" :loading="loading"></h-group-table>-->
+    <h3>simpleGroupTable</h3>
+    <h-simple-group-table :columns="columns1" :data="data1" highlight-row @on-row-click="handleClick"></h-simple-group-table>
   </div>
 </template>
 
@@ -357,33 +359,29 @@ export default {
         {
           title: '金额',
           key: 'money',
-          // width: 160
+          width: 200
         },
-        // {
-        //   title: '卡号',
-        //   width: 200,
-        //   key: 'cardId',
-        //   hiddenCol: true
-        // },
-        // {
-        //   title: '地区',
-        //   width: 200,
-        //   key: 'city',
-        // },
-        // {
-        //   title: '日期',
-        //   width: 200,
-        //   key: 'dating',
-        // },
-        // {
-        //   title: '时间',
-        //   width: 200,
-        //   key: 'timing',
-        // },
-        // {
-        //   title: '下拉树',
-        //   key: 'tree',
-        // }
+         {
+           title: '卡号',
+           width: 200,
+           key: 'cardId',
+           hiddenCol: true
+         },
+         {
+           title: '地区',
+           width: 200,
+           key: 'city',
+         },
+         {
+           title: '日期',
+           width: 200,
+           key: 'dating',
+         },
+         {
+           title: '时间',
+           width: 200,
+           key: 'timing',
+         }
       ],
       columns4: [
         {
@@ -502,6 +500,10 @@ export default {
   methods: {
     expand(data, status) {
       console.log(data, status)
+    },
+    handleClick(row, status) {
+      console.log(row)
+      console.log(status)
     },
     dblClick(e,curIndex){
       console.log(e,curIndex);

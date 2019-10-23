@@ -138,3 +138,10 @@ $form-item-prefix-cls: "#{$form-prefix-cls}-item";
 .#{$form-item-prefix-cls} .h-input {
   padding: $form-item-h-input-padding \0;
 }
+
+.#{$form-item-prefix-cls}-content {
+  & > .h-select, & > .h-selectTable, & > .h-input-wrapper, & > .h-date-picker,
+  & > .h-fast-date, & > .h-input-number, & > .h-selectTree, & > .h-typefield {
+    vertical-align: top;
+  }
+}

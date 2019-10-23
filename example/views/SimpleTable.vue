@@ -6,24 +6,25 @@
     <Button @click="loadData">加载数据</Button>
     <Button @click="changeData">切换数据</Button>
     <Button @click="adddata">添加数据</Button>
-    <!--<h-simple-table :columns="columnsBig1" :data="bigData" :addData="addData" border stripe rowSelectOnly-->
-                    <!--:loading="loading" headAlgin="right" bodyAlgin="left" width="1200" canDrag-->
-                    <!--@on-select="select" @on-select-cancel="select" @on-drag="onDrag" height="500"-->
-                    <!--@on-select-all='change' @on-scroll="change" @on-selection-change="change">-->
-      <!--<span slot="loading">我是自定义加载！！！</span>-->
-    <!--</h-simple-table>-->
+    <h-simple-table :columns="columnsBig1" :data="bigData" :addData="addData" :loading="loading" :row-class-name="rowClassName"
+                    bodyAlgin="left" width="1200" height="500" canDrag border stripe rowSelectOnly
+                    @on-select="select" @on-select-cancel="select" @on-drag="onDrag"
+                    @on-select-all='change' @on-scroll="change" @on-selection-change="change">
+      <span slot="loading">我是自定义加载！！！</span>
+    </h-simple-table>
     <h-button @click="setLoading">切换状态</h-button>
     <h-button @click="clearData">清除数据</h-button>
     <h-button @click="delSelected">删除所选</h-button>
     <h2>不带边线 单选 on-current-change</h2>
-    <!-- :multiLevel="multiLevel1" -->
-    <!-- <h-msg-box v-model="showmsg" :width="1000"> -->
-      <!-- notAdaptive  -->
-    <h-simple-table ref="simTable" canMove :summationRender="false" @on-right-click="rightClick" rowSelectOnly
-                    :summationData="summationData" :columns="columnsBig1" border :data="bigData" height="300"
-                    highlight-row @on-sort-change="sortchange" @on-selection-change="selsetChange" @on-row-dblclick="dblclick">
-    </h-simple-table>
-    <!-- </h-msg-box> -->
+
+    <div style="width: 1000px;overflow: hidden;">
+      <h-simple-table ref="simTable" canMove :summationRender="false" @on-right-click="rightClick" rowSelectOnly
+                      :summationData="summationData" :columns="columnsBig1" border :data="bigData2" height="300"
+                      highlight-row @on-sort-change="sortchange" @on-selection-change="selsetChange" @on-row-dblclick="dblclick">
+      </h-simple-table>
+      <h-button type="dashed" @click="addrow">新增一列</h-button>
+    </div>
+
     <h-button @click='changeClo'>改变冻结列</h-button>
     <h-button type="primary" size="large" @click="exportData(1)"><h-icon type="ios-download-outline"></h-icon> 导出原始数据</h-button>
     <h-button type="primary" size="large" @click="exportData(2)"><h-icon type="ios-download-outline"></h-icon> 导出排序和过滤后的数据</h-button>
@@ -68,19 +69,19 @@ import TexpandRow from './Texpand-row.vue'
 let jsonData=[]
 let tData =require('../assets/aa.json')
 for (let i = 0; i < 1; i++) {
-  jsonData =tData.slice(0,20)
+  jsonData =tData.slice(0,10)
 }
-
+let ind = 1
 export default {
   components:{TexpandRow},
   data() {
     return {
-      showmsg:false,
       checked:false,
       msgbox:false,
       loading:false,
       addData:[],
       bigData:[],
+      bigData2:[],
       columnsBig1:[
         {
           type: 'index',
@@ -92,7 +93,7 @@ export default {
           type: 'selection',
           align: 'center',
           key:'select',
-          fixed:'left',
+//          fixed:'left',
           width: 100,
           sortable: true
         },
@@ -115,6 +116,7 @@ export default {
           ellipsis:true,
           key: 'securityCode',
           width: 200,
+          showTitle: true,
           align:'right',
           sortable:true,
           render: (h, params) => {
@@ -140,6 +142,12 @@ export default {
           ellipsis:true,
           sortable:true,
           key: 'tradeQuantity',
+        },
+        {
+          title: '邀请人数',
+          key: 'investType',
+          width: 200,
+          fixed:'left'
         },
       ],
       columns1: [
@@ -441,6 +449,10 @@ export default {
     }
   },
   methods:{
+    addrow() {
+      this.bigData2 = tData.slice(0,ind)
+      ind++
+    },
     rightClick(e){
       console.log('right'+e)
     },
@@ -455,19 +467,18 @@ export default {
       this.$set(this.columnsBig1[1],'fixed','left')
     },
     loadData(){
-      this.showmsg = true;
-      this.columnsBig1.splice(2, 0, {
-        title: '交易市场',
-        key: 'securityName',
-        width: 80,
-        sortable:true,
-        ellipsis:true,
-        showTitle:true
-      })
-      this.columnsBig1.push({
-        title: '年龄年龄年龄年龄年龄年龄年龄1',
-        key: 'tradeDate'
-      })
+//      this.columnsBig1.splice(2, 0, {
+//        title: '交易市场',
+//        key: 'securityName',
+//        width: 80,
+//        sortable:true,
+//        ellipsis:true,
+//        showTitle:true
+//      })
+//      this.columnsBig1.push({
+//        title: '年龄年龄年龄年龄年龄年龄年龄1',
+//        key: 'tradeDate'
+//      })
 
       this.$nextTick(()=>{
         this.bigData = jsonData;
@@ -609,9 +620,6 @@ export default {
 }
 </script>
 <style type="text/css">
-/* th{
-  height: 32px !important;
-} */
 .h-table .demo-table-info-row td{
   background-color: #2db7f5 !important;
   color: #fff;

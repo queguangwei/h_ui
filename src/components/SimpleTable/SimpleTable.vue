@@ -48,7 +48,6 @@
                             :titleEllipsis="titleEllipsis">
                 </table-cell>
               </th>
-              <!--<th style="width:0;"></th>-->
             </tr>
           </thead>
         </table>
@@ -104,11 +103,11 @@
                         <Cell :row="row"
                               :key="column._columnKey"
                               :column="column"
-                              :index="row._index"></Cell>
+                              :index="row._index">
+                        </Cell>
                       </template>
                     </div>
                   </td>
-                  <!--<td style="width:0;"></td>-->
                 </table-tr>
               </template>
             </tbody>
@@ -169,7 +168,6 @@
                               :titleEllipsis="titleEllipsis">
                   </table-cell>
                 </th>
-                <!--<th style="width:0;"></th>-->
               </tr>
             </thead>
           </table>
@@ -237,7 +235,6 @@
                         :disabled="rowDisabled(row._index)"
                       ></Cell> -->
                     </td>
-                    <!--<td style="width:0;"></td>-->
                   </table-tr>
                 </template>
               </tbody>
@@ -278,7 +275,6 @@
                           v-text="row[column.key]"></span>
                   </div>
                 </td>
-                <!--<td style="width:0;"></td>-->
               </table-tr>
             </template>
           </tbody>
@@ -538,6 +534,7 @@ export default {
       moving: false,
       movingColumn: null,
       isScrollX: false, //是否有横向滚动
+      isScrollY: false,
       focusIndex: -1,
       curPageFirstIndex: 0,
       isFocusSelect: true,
@@ -714,7 +711,6 @@ export default {
             width = this.tableWidth - this.scrollBarWidth
           }
         }
-//        console.log(this.tableWidth)
         style.width = `${width}px`
       }
       return style
@@ -742,7 +738,6 @@ export default {
           if (col.fixed && col.fixed === 'left') width += col._width
         })
         style.width = `${width}px`
-//        console.log(width)
         return style
       }
       if(this.isRightFixed){
@@ -809,7 +804,6 @@ export default {
       if(this.isLeftFixed){
         let left = []
         let other = []
-//        console.log(this.cloneColumns)
         this.cloneColumns.forEach(col => {
           if (col.fixed && col.fixed === 'left') {
             left.push(col)
@@ -1253,7 +1247,6 @@ export default {
     },
     handleResize() {
       this.$nextTick(() => {
-        console.log("resize")
         let transformTop = Math.floor(this.$refs.body.scrollTop / this.itemHeight) * this.itemHeight
         if(this.$refs.fixedBody){
           this.$refs.fixedBody.scrollTop =this.$refs.body.scrollTop
@@ -1269,7 +1262,10 @@ export default {
         }
         let width = this.$refs.body.getBoundingClientRect().width
         let conentWidth = this.$refs.body.scrollWidth
+        let height = this.$refs.body.getBoundingClientRect().height
+        let conentHeight = this.$refs.body.scrollHeight
         this.isScrollX = conentWidth + this.scrollBarWidth > width ? true : false
+        this.isScrollY = conentHeight > height ? true : false
         if (this.cloneColumns.length == 0) return
         const allWidth = !this.columns.some(cell => !cell.width && cell.width !== 0) // each column set a width
         if (allWidth) {
@@ -1277,12 +1273,14 @@ export default {
         } else {
           this.tableWidth = parseInt(getStyle(this.$el, 'width')) - 1
         }
+//        console.log('开始设置总宽:::'+this.tableWidth)
         this.columnsWidth = {}
         this.$nextTick(() => {
           let columnsWidth = {}
           let autoWidthIndex = -1
+          let totalWidth = 0
           // if (allWidth) autoWidthIndex = this.cloneColumns.findIndex(cell => !cell.width);//todo 这行可能有问题
-          if (allWidth)
+//          if (allWidth) // 这边写的不理解每列都设置了width为何还找需要自动设宽的项
             autoWidthIndex = findInx(this.cloneColumns, cell => !cell.width)
           if (this.data.length) {
             const $td = this.$refs.tbody.querySelectorAll('tbody tr')[0].querySelectorAll('td')
@@ -1307,20 +1305,39 @@ export default {
                 if (width < min) width = min
               }
               this.cloneColumns[i]._width = width || ''
-              this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)
+
+//              this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)
+              totalWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)
+
+              if(totalWidth < this.tableWidth) {
+                if(i === autoWidthIndex) {
+                  let lastW = this.tableWidth - totalWidth + width
+//                  console.log('设置最后一列宽度:::'+ lastW)
+                  this.$set(this.cloneColumns[autoWidthIndex], 'width', this.tableWidth - totalWidth + width)
+                  this.$set(this.cloneColumns[autoWidthIndex], '_width', this.tableWidth - totalWidth + width)
+                }
+              }
+//              console.log('加载数据,totalW:::'+ totalWidth)
               columnsWidth[column._index] = {
                 width: width
               }
             }
             this.columnsWidth = columnsWidth
+            this.tableWidth = totalWidth
+            // 判断是否有滚动条
+            if(!this.isScrollY) {
+              this.tableWidth = this.tableWidth - this.scrollBarWidth
+            }
           } else {
+            // o45出现问题可先把上面注释掉只走下面的逻辑
             const $th = this.$refs.thead.querySelectorAll('thead .cur-th')[0].querySelectorAll('th')
             for (let i = 0; i < $th.length; i++) {
               // can not use forEach in Firefox
               const column = this.cloneColumns[i]
-              let width = parseInt(getStyle($th[i], 'width'))
+              let curWidth = parseInt(getStyle($th[i], 'width'))
+              let width = parseInt(curWidth)
               if (i === autoWidthIndex) {
-                width = parseInt(getStyle($th[i], 'width')) - 1
+                width = width - 1
               }
               // 自适应列在表格宽度较小时显示异常，为自适应列设置最小宽度100（拖拽后除外）
               if (column.width) {
@@ -1330,14 +1347,17 @@ export default {
                 if (width < min) width = min
               }
               this.cloneColumns[i]._width = width || ''
-              this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)
+              totalWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b)
               columnsWidth[column._index] = {
                 width: width
               }
             }
-            // this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b);
+
             this.columnsWidth = columnsWidth
+            this.tableWidth = totalWidth
+//            console.log('无数据时总宽:::'+this.tableWidth)
           }
+//          console.log('实际设置总宽:::'+this.tableWidth)
           // get table real height,for fixed when set height prop,but height < table's height,show scrollBarWidth
           this.bodyRealHeight =
             parseInt(getStyle(this.$refs.tbody, 'height')) || 0
@@ -2236,7 +2256,6 @@ export default {
       return data
     },
     makeColumns() {
-      var that = this
       let columns = deepCopy(this.columns)
       let left = []
       let right = []
@@ -2586,6 +2605,9 @@ export default {
         // }
         // 处理从无数据到有数据或者有数据到无数据时，表头和统计行水平位置没有归零的问题
         if (oldDataLen === 0 || val.length === 0) {
+          if(this.$refs.header) {
+            this.$refs.header.scrollLeft = 0
+          }
           if (this.$refs.body) {
             this.$refs.body.scrollLeft = 0
           }

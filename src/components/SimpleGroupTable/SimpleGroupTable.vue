@@ -88,7 +88,7 @@
                       <span :class="groupCls(Boolean(row.expand))">
                         <Icon name="enter"></Icon>
                       </span>
-                      <span :class="prefixCls+'-cell-title'">{{row.title}}</span> 
+                      <span :class="prefixCls+'-cell-title'">{{row.title}}</span>
                     </div>
                   </td>
                 </tr>
@@ -158,7 +158,7 @@
                     >
                     </table-cell> -->
                   <!-- <div :class="[prefixCls+'-cell']">
-                     <span>{{multi.title}}</span> 
+                     <span>{{multi.title}}</span>
                   </div> -->
                   <div :class="[prefixCls + '-cell']">
                     <template v-if="multi.type === 'selection'">
@@ -188,7 +188,7 @@
                     :index = "index"
                     :checked = "isSelectAll"
                     :prefixCls="prefixCls"
-                  > 
+                  >
                   </table-cell> -->
                   <!--table-cell  -->
                   <div :class="[prefixCls + '-cell']">
@@ -229,11 +229,11 @@
                         <span :class="groupCls(Boolean(row.expand))">
                           <Icon name="enter"></Icon>
                         </span>
-                        <span :class="prefixCls+'-cell-title'">{{row.title}}</span> 
+                        <span :class="prefixCls+'-cell-title'">{{row.title}}</span>
                       </div>
                     </td>
                   </tr>
-                  <!-- <group-tr v-if="row._isGroup" 
+                  <!-- <group-tr v-if="row._isGroup"
                     :key="row._rowKey"
                     :columns="columns"
                     :prefix-cls="prefixCls"
@@ -309,7 +309,7 @@ let columnKey = 1;
 export default {
   name: 'SimpleGroupTable',
   mixins: [ Locale,Mixin],
-  components: {Cell,Checkbox,renderHeader,TableTr,Cell,TableCell, 
+  components: {Cell,Checkbox,renderHeader,TableTr,Cell,TableCell,
     // GroupTr
   },
   props: {
@@ -561,7 +561,7 @@ export default {
       } else {
         return 0
       }
-      
+
     },
     multiData(){
       if (!this.multiLevel || this.multiLevel.length==0) return [];
@@ -798,7 +798,7 @@ export default {
       if (this.cellClick && column.type != 'index' && column.type != 'selection') {
         if (this.curCellCheck.length > 0 && (this.curCellCheck[0] !== rowIndex || this.curCellCheck[1] !== column.key)) {
           this.cellCheckObj[this.curCellCheck[0]][this.curCellCheck[1]] = false
-        } 
+        }
         this.curCellCheck = [rowIndex, column.key]
         const cellStatus = this.cellCheckObj[rowIndex][column.key]
         this.cellCheckObj[rowIndex][column.key]  = !cellStatus
@@ -1337,7 +1337,7 @@ export default {
         }else{
           this.getctrlSelect(_index);
         }
-      } 
+      }
     },
     dblclickCurrentRowTr (_index) {
       if (!this.rowSelect) {
@@ -1351,7 +1351,8 @@ export default {
       }
       this.$nextTick(()=>{
         if (this.cloneData[_index]){
-          this.$emit('on-row-click', [JSON.parse(JSON.stringify(this.cloneData[_index])),_index]);
+          let checkStatus = this.objData[_index]._isHighlight ? true : false
+          this.$emit('on-row-click', [JSON.parse(JSON.stringify(this.cloneData[_index])),_index], checkStatus);
         } else {
           this.$emit('on-current-change', null, null);
         }
@@ -1417,7 +1418,7 @@ export default {
           // }
         }
       }
-      
+
       this.$nextTick(()=>{
         const selection = this.getSelection();
         // this.$emit(status ? 'on-select' : 'on-select-cancel', selection, JSON.parse(JSON.stringify(this.data[_index])));
@@ -1554,7 +1555,7 @@ export default {
           this.$refs.leftContent.style.transform = `translate3d(0, ${curtop}px, 0)`
         }
       })
-      
+
     },
     /**
      * @description 防抖更新，滚动时调用，防止滚动卡顿
@@ -1641,12 +1642,12 @@ export default {
         // 是否主表
         newRow._isGroup = true
         // 每个子表的序号，主表为第几个主表
-        newRow._rowIndex = 'parent_' + index 
+        newRow._rowIndex = 'parent_' + index
         // 是否展开
         newRow._isExpand = row.expand || false
         // 子节点数量
         newRow.childNum = row.item && row.item.length > 0 ? row.item.length : 0
-        
+
         this.realRebuildData.push(newRow)
         newData.push(newRow)
         // 保存隐藏子节点，方便进行切换，而不是全部更新
@@ -1662,7 +1663,7 @@ export default {
             newRowItem._isExpand = false
             newRowItem.childNum = null
             // if (newRow.expand) {
-            //   newRowItem._isShow 
+            //   newRowItem._isShow
             // } else {
             //   newRowItem._isShow = false
             // }
@@ -1671,7 +1672,7 @@ export default {
             childData.push(newRowItem)
             if (newRow.expand) {
               this.realRebuildData.push(newRowItem)
-            } 
+            }
 
           })
         }
@@ -1935,7 +1936,7 @@ export default {
         handler () {
           // const oldDataLen = this.rebuildData.length;
           this.rebuildData = this.makeData();
-          // this.initCellClickStatus()                     
+          // this.initCellClickStatus()
           this.objData = this.makeObjData();
           this.updateVisibleData(0);
           this.handleResize();
@@ -1949,7 +1950,7 @@ export default {
       },
       columns: {
         handler () {
-          // this.initCellClickStatus()                     
+          // this.initCellClickStatus()
           // todo 这里有性能问题，可能是左右固定计算属性影响的
           this.cloneColumns = this.makeColumns();
           // this.rebuildData = this.makeData();
