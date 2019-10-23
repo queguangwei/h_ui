@@ -47,8 +47,10 @@
       通过设置属性 theme 为 light、dark 可以选择主题，侧栏菜单不支持 primary 主题。</p>
       <br>
       <h-row>
+
+
       <h-col span="8">
-        <h-menu  mode="vertical" :theme="theme2"  active-name="2" :open-names="openName" :accordion="true" @on-open-change="openChange" :width="120" @on-select="s">
+        <h-menu  mode="vertical" :theme="theme2"  :active-name="activedName" @updateActiveName="updateActiveNameTest" :open-names="openName" :accordion="true" @on-open-change="openChangeActived" :width="120" @on-select="s">
           <div>
           <h-submenu name="1">
               <template slot="title">
@@ -86,7 +88,11 @@
         </div>
         </h-menu>
           <Button @on-click="setOpen">动态设置openName</Button>
+          <Button @on-click="updateActiveNameTest('2-1')">动态设置openName</Button>
       </h-col>
+
+
+
       <h-col span="8">
           <h-menu :theme="theme2" active-name="1-2" :open-names="['1']">
               <h-submenu name="1">
@@ -370,7 +376,7 @@
           </h-submenu>
       </h-menu>
       <h1>测试</h1>
-      <h-menu mode="horizontal" :theme="theme1" :active-name="csName" ref="csMenu">
+      <h-menu mode="horizontal" :theme="theme1" :active-name="csName" ref="csMenu" @on-open-change="change">
         <h-menu-item v-for="(item,i) in cdata " :name="item.name" :key="item.name+i">
           <h-icon name="ios-paper"></h-icon>
           {{item.text}}
@@ -405,14 +411,35 @@ export default {
       cdata:cData,
       csName:'',
       openName:[],
+      activedName: '4'
     }
+  },
+  watch: {
+    //   activedName() {}
   },
   methods: {
     s (s) {
       console.log(s)
+    //   this.updateActiveNameTest(s)
+    },
+    updateActiveNameTest(val) {
+        this.$nextTick(()=>{
+            console.log('updateActiveNameTest')
+            this.activedName =  val
+        });
+    },
+    openChangeActived(s){
+        if (s && s.length>0) {
+            console.log('open-change------>', s, s + '-1')
+           this.updateActiveNameTest(`${s}-1`)
+        }
+        // console.log('open-change------>', s, typeof s, s.length)
     },
     openChange(s){
-        console.log(s)
+        // console.log('open-change------>', s, typeof s, s.length)
+    },
+    change(){
+        // this.update()
     },
     activetest() {
       // this.active = ["2"];
