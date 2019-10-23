@@ -21,19 +21,24 @@
           :class="classes(item)"
           @click.stop="select(item)"
           @mouseout.stop="blur">
-        <slot>
-          <span :style="showCol.length ? styleArr[0] : ''"
-                :class="showCol.length ? 'itemcol' : ''"
-                :title="showCol.length || hideMult ? showLabel(item) : ''">
-            <checkbox v-show="multiple&&!hideMult"
-                      size="large"
-                      :value="item.selected"
-                      @click.native.stop="handleclick"
-                      :disabled="item.disabled"
-                      @on-change="checkChange($event,item)"></checkbox>
-            {{showLabel(item)}}
-          </span>
-        </slot>
+        <template v-if="item.group">
+          <span>{{item.group}}</span>
+        </template>
+        <template v-else>
+          <slot>
+            <span :style="showCol.length ? styleArr[0] : ''"
+                  :class="showCol.length ? 'itemcol' : ''"
+                  :title="showCol.length || hideMult ? showLabel(item) : ''">
+              <checkbox v-show="multiple&&!hideMult"
+                        size="large"
+                        :value="item.selected"
+                        @click.native.stop="handleclick"
+                        :disabled="item.disabled"
+                        @on-change="checkChange($event,item)"></checkbox>
+              {{showLabel(item)}}
+            </span>
+          </slot>
+        </template>
         <span class="itemcol"
               v-for="(col, index) in showCol"
               :key="col"
@@ -114,9 +119,10 @@ export default {
   computed: {
     phantomStl() {
       let style = {}
-      let curData = this.cloneData.filter(col => {
-        return !col.hidden
-      })
+      let tmpData = this.cloneData
+        .filter(item => !item.hidden)
+      let curData = tmpData
+        .filter((d, index) => !d.group || (index !== tmpData.length - 1 && !tmpData[index + 1].group))
 
       let height = curData.length * 30
       if (this.offset && height < 210) {
@@ -151,8 +157,12 @@ export default {
   },
   methods: {
     classes(item) {
+      if (item.group) {
+        return [`${prefixCls}-item`, `${prefixCls}-group-item`]
+      }
       return [
         `${prefixCls}-item`,
+        `${prefixCls}-option-item`,
         {
           [`${prefixCls}-disabled`]: item.disabled || false,
           [`${prefixCls}-selected`]: item.selected || false,
@@ -164,7 +174,8 @@ export default {
       return item.label ? item.label : item.value
     },
     select(item) {
-      if (item.disabled) {
+      // 分组行或者选项禁用
+      if (item.group || item.disabled) {
         return false
       }
       if (this.multiple) {
@@ -189,6 +200,8 @@ export default {
       // if(!this.$parent.$parent.accuFilter){
       // 149105 【TS:201906280063-资管业委会（资管）_钱佳华-【需求类型】需求【需求描述】select和SimpleSelect 控件多选时 如果搜索时输入的信息完全匹配到 value或者label的时候 自动勾上；对接开发：郑海华【事业部】资管业委会【项目名称】HUNDSUN投资交易管理系统软件V4.5【产品负责人】孔磊【需求提出人】钱佳华
       this.cloneData.forEach(col => {
+        // 跳过分组行
+        if (col.group) return
         let targetLabel = col.label
         // 如果存在多列，则匹配目标为多列所有列
         if (this.showCol.length&&!this.$parent.$parent.isSingleSelect) {
@@ -236,8 +249,9 @@ export default {
       }else if(val !==''&&this.$parent.$parent.isSingleSelect&&!isEffective&&!states) {//query不为空但未匹配到任何项
         this.$parent.$parent.selectBlockSingle('', true)
       }
-      this.dispatch('SimpleSelect', 'on-options-visible-change', { data: this.cloneData })
-      this.dispatch('SingleSelect', 'on-options-visible-change', { data: this.cloneData })
+      let options = this.cloneData.filter(d => !d.group)
+      this.dispatch('SimpleSelect', 'on-options-visible-change', { data: options })
+      this.dispatch('SingleSelect', 'on-options-visible-change', { data: options })
       this.showEmpty = status
       if (val) {
         this.dispatch('Drop', 'on-update-popper')
@@ -288,8 +302,12 @@ export default {
         }
       }
       this.end = j
-      this.visibleData = this.cloneData
+
+      let tmpData = this.cloneData
         .filter(item => !item.hidden)
+
+      this.visibleData = tmpData
+        .filter((d, index) => !d.group || (index !== tmpData.length - 1 && !tmpData[index + 1].group))
         .slice(this.start, this.end)
       this.$nextTick(() => {
         this.$refs.content.style.transform = `translateY(${this.start * itemHeight + offset}px)`
@@ -346,6 +364,32 @@ export default {
       })
 
       return target
+    },
+    makeCloneData(rawData) {
+      const cloneRawData = deepCopy(rawData)
+      const cloneData = []
+      if (Array.isArray(cloneRawData)) {
+        let index = 0
+        cloneRawData.forEach(d => {
+          // 分组
+          if (d.group) {
+            this.$set(d, '_index', index - 0.5)
+            cloneData.push(d)
+            let options = d.options
+            if (Array.isArray(options) && options.length > 0) {
+              options.forEach(op => {
+                this.$set(op, '_index', index++)
+              })
+              cloneData.push(...options)
+              delete d.options
+            }
+          } else {
+            this.$set(d, 'index', index++)
+            cloneData.push(d)
+          }
+        })
+      }
+      return cloneData
     }
   },
   created() {
@@ -380,7 +424,7 @@ export default {
 
     // v20190321
     this.$on('on-focus-index-change', index => {
-      this.cloneData.filter(item => !item.hidden).forEach((item, i) => {
+      this.cloneData.filter(item => !item.hidden && !item.group).forEach((item, i) => {
         item.focus = false
         if (i === index) {
           item.focus = true
@@ -390,11 +434,10 @@ export default {
     this.multiple = this.$parent.$parent.multiple
     this.showBottom = this.$parent.$parent.showBottom
     this.hideMult = this.$parent.$parent.hideMult
-    this.cloneData = deepCopy(this.data)
+    this.cloneData = this.makeCloneData(this.data)
     // v20190321 添加focus
-    this.cloneData.forEach((item,i) => {
-      item._index = i
-      this.$set(item, 'focus', false)
+    this.cloneData.forEach(item => {
+      !item.group && this.$set(item, 'focus', false)
     })
     this.$nextTick(() => {
       this.visibleCount = Math.ceil(210 / Number(this.itemHeight)) + 1
@@ -417,10 +460,9 @@ export default {
 
 
         // this.$nextTick(() => {//viewValue获取时机
-        this.cloneData = deepCopy(this.data)
-        this.cloneData.forEach((item,i) => {
-          item._index = i
-          this.$set(item, 'focus', false)
+        this.cloneData = this.makeCloneData(this.data)
+        this.cloneData.forEach(item => {
+          !item.group && this.$set(item, 'focus', false)
         })
         this.$parent.$parent.updateOptions(true)
         if(this.lastScollTop > val.length*this.itemHeight){
@@ -430,15 +472,7 @@ export default {
 
         // })
       }
-    },
-    cloneData: {
-      deep: true,
-      handler: function() {
-        // this.$nextTick(()=>{
-        //   this.updateVisibleData();
-        // })
-      }
-    },
+    }
   },
   destroyed() {
     this.dispatch('Select', 'remove')

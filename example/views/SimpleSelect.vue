@@ -129,6 +129,11 @@
       <!--<h-select-block :data="remoteData" :showCol="showCol1"></h-select-block>-->
     <!--</h-simple-select>-->
     <br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <h2>分组</h2>
+    <h-simple-select ref="select2" v-model="val2" multiple filterable>
+      <h-select-block :data="cityList"></h-select-block>
+    </h-simple-select>
+    {{val2}}
   </div>
 </template>
 <script>
@@ -152,6 +157,68 @@ for(let i=0;i<20;i++){
 export default {
   data() {
     return {
+      cityList: [
+        {
+          group: '浙江省',
+          options: [
+            {
+              label: '杭州',
+              value: 'hz'
+            },
+            {
+              label: '丽水',
+              value: 'ls'
+            },
+            {
+              label: '金华',
+              value: 'jh'
+            },
+            {
+              label: '温州',
+              value: 'wz'
+            },
+            {
+              label: '绍兴',
+              value: 'sx'
+            }
+          ]
+        },
+        {
+          group: '江苏省',
+          options: [
+            {
+              label: '南京',
+              value: 'nj'
+            },
+            {
+              label: '苏州',
+              value: 'sz'
+            },
+            {
+              label: '无锡',
+              value: 'wx'
+            }
+          ]
+        },
+        {
+          group: '安徽省',
+          options: [
+            {
+              label: '马鞍山',
+              value: 'mas'
+            },
+            {
+              label: '合肥',
+              value: 'hf'
+            },
+            {
+              label: '芜湖',
+              value: 'wh'
+            }
+          ]
+        }
+      ],
+      val2: [],
       loading1: false,
       showCol:['label1','label2','label3'],
       matchCol: ['name', 'age'],

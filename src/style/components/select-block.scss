@@ -40,13 +40,13 @@ $selectBlock-prefix-cls:  "#{$css-prefix}select-block";
     position: relative;
     height: $selectBlock-item-height;
     line-height: $selectBlock-item-line-height;
-    padding:$selectBlock-item-padding;
+    padding: $selectBlock-item-padding;
     white-space: nowrap;
     font-size: 0;
     div,p,i,b {
       font-size: $select-block-item-font-size;
     }
-    &>span {
+    & > span {
       font-size: $select-block-item-font-size;
     }
     .itemcol {
@@ -58,9 +58,16 @@ $selectBlock-prefix-cls:  "#{$css-prefix}select-block";
         padding-right: 14px;
     }
 }
-.#{$selectBlock-prefix-cls}-item:hover{
+.#{$selectBlock-prefix-cls}-option-item:hover{
     background: $background-color-select-hover;
     cursor: pointer;
+}
+
+.#{$selectBlock-prefix-cls}-group-item {
+  padding: $selectBlock-group-item-padding;
+  & > span {
+    color: $selectBlock-group-item-color;
+  }
 }
 
 .#{$selectBlock-prefix-cls}{
