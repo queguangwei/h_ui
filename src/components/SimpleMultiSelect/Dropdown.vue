@@ -51,15 +51,17 @@ export default {
   },
   methods: {
     update() {
-      const _this = this;
-      setStyle(this.$el, { display: "block", visibility: "hidden", width: "", top: "0", left: "0" }); // make sure popper calc exactly
-
       if (this.popper) {
         this.popper.scheduleUpdate();
         return;
       }
 
+      if (this.show) {
+        setStyle(this.$el, { display: "block", visibility: "hidden", width: "", top: "0", left: "0" }); // make sure popper calc exactly
+      }
+
       this.$nextTick(() => {
+        const _this = this;
         const placement = (() => {
           if (this.autoPlacement) {
             const { top, bottom, height } = this.$parent.$el.getBoundingClientRect();
@@ -120,7 +122,7 @@ export default {
 
                   function onAnimationEnd() {
                     el.removeEventListener("animationend", onAnimationEnd);
-                    el.classList.remove("slide-up-enter-active", "slide-up-leave-active", "slide-down-enter-active", "slide-down-leave-active");
+                    el.setAttribute("class", "h-select-dropdown");
                     if (!show) {
                       setStyle(el, { display: "none" });
                       _this.$emit("on-hide"); // emit on animation end and dropdown panel hidden
