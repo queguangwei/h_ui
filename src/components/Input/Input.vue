@@ -512,7 +512,7 @@ export default {
       this.$emit('on-input-change', event)
     },
     handleSelect(event) {
-      console.log('sel')
+      // console.log('sel')
     },
     setCurrentValue(value) {
       if (value === this.currentValue) return

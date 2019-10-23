@@ -122,7 +122,12 @@ export default {
 
                   function onAnimationEnd() {
                     el.removeEventListener("animationend", onAnimationEnd);
-                    el.setAttribute("class", "h-select-dropdown");
+
+                    // IE doesn't support multiple arguments for add or remove method
+                    for (const item of ["slide-down-enter-active", "slide-up-enter-active", "slide-down-leave-active", "slide-up-leave-active"]) {
+                      el.classList.remove(item);
+                    }
+
                     if (!show) {
                       setStyle(el, { display: "none" });
                       _this.$emit("on-hide"); // emit on animation end and dropdown panel hidden

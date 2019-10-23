@@ -549,7 +549,6 @@ export default {
       let status = true;
       const options = this.$slots.default || [];
       if (!this.loading && this.remote && this.query === "" && !options.length) status = false;
-      console.log("visible: " + (this.visible && status));
       return this.visible && status;
     },
     multiplestyle() {
