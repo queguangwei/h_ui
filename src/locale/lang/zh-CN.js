@@ -116,7 +116,7 @@ export default {
         emptyText: '暂无数据'
     },
     typefield: {
-        placeholder: '请选择',
+        placeholder: '请输入',
         bigData: '无穷大',
         smallData: '无穷小'
     },
