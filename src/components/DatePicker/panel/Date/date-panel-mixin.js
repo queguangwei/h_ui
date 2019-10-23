@@ -1,6 +1,6 @@
 
 import { oneOf } from '../../../../util/tools';
-import {initTimeDate } from '../../util';
+import { initTimeDate } from '../../util';
 
 
 export default {
@@ -19,7 +19,7 @@ export default {
         },
         selectionMode: {
             type: String,
-            validator (value) {
+            validator(value) {
                 return oneOf(value, ['year', 'month', 'date', 'time']);
             },
             default: 'date'
@@ -47,22 +47,22 @@ export default {
             type: String,
             require: true
         },
-        showTwoPanel:Boolean,
-        longValue:{
+        showTwoPanel: Boolean,
+        longValue: {
             type: [Date, String, Array]
-       },
-       showToday: {
-        type: Boolean,
-        default: false
-    },
+        },
+        showToday: {
+            type: Boolean,
+            default: false
+        },
     },
     computed: {
-        isTime(){
+        isTime() {
             return this.currentView === 'time';
         }
     },
     methods: {
-        handleToggleTime(){
+        handleToggleTime() {
             this.currentView = this.currentView === 'time' ? 'date' : 'time';
         },
     }

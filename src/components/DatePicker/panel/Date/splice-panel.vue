@@ -151,6 +151,7 @@
           pickMode: String
       },
       data(){
+        console.log('this.value------>', this.value)
           const [minDate, maxDate] = this.value.map(date => date || initTimeDate());
           const leftPanelDate = this.startDate ? this.startDate : minDate;
           return {
