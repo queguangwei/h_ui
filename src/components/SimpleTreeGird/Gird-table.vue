@@ -10,6 +10,7 @@
           :columns-width="columnsWidth"
           :dataLength="data.length"
           :headSelection ="headSelection"
+          :multiLevel="cloneMultiLevel"
           :canDrag="canDrag"
           :canMove="canMove"
           @on-move="move"
@@ -50,6 +51,7 @@
             :columns-width="columnsWidth"
             :dataLength="data.length"
             :headSelection ="headSelection"
+            :multiLevel="leftCloneMultiLevel"
             :canDrag="canDrag"
           ></gird-head>
         </div>
@@ -83,6 +85,7 @@
         <div :class="fixedHeaderClasses" v-if="showHeader">
           <gird-head
             fixed="right"
+            :multiLevel="rightCloneMultiLevel"
             :prefix-cls="prefixCls"
             :styleObject="tableStyle"
             :columns="rightFixedColumns"
@@ -143,7 +146,7 @@ import GirdHead from './Gird-head.vue';
 import TreeTable from './Tree-table.vue';
 import Spin from '../Spin/Spin.vue';
 import Mixin from './mixin';
-import { oneOf, getStyle, deepCopy, deepCopyEx, getScrollBarSize,getBarBottom,findInx,IEVersion} from '../../util/tools';
+import { oneOf, getStyle, deepCopy, deepCopyEx, getScrollBarSize,getBarBottom,findInx,IEVersion, typeOf} from '../../util/tools';
 import { on, off } from '../../util/dom';
 import Locale from '../../mixins/locale';
 // import Csv from '../../util/csv';
@@ -155,6 +158,10 @@ export default {
   mixins: [ Locale,Mixin ],
   components: { GirdHead,TreeTable},
   props: {
+    multiLevel: {
+      type: Array,
+      default: null
+    },
     data: {
       type: Array,
       default () {
@@ -451,6 +458,75 @@ export default {
       style.lineHeight = this.height?Number(height-this.scrollBarWidth)+'px':null;
       return style;
     },
+    cloneMultiLevel() {
+      if (!this.multiLevel || this.multiLevel.length == 0) return null
+      let data = []
+      let left = [],
+        right = [],
+        center = []
+      if (typeOf(this.multiLevel[0]) != 'array') {
+        data[0] = []
+        this.multiLevel.forEach(cols => {
+          if (!cols.hiddenCol && cols.hiddenCol != 'false') {
+            if (cols.fixed && cols.fixed === 'left') {
+              left.push(cols)
+            } else if (cols.fixed && cols.fixed === 'right') {
+              right.push(cols)
+            } else {
+              center.push(cols)
+            }
+          }
+        })
+        data[0] = left.concat(center).concat(right)
+      } else {
+        this.multiLevel.forEach(cols => {
+          left = []
+          right = []
+          center = []
+          cols.forEach(item => {
+            if (!item.hiddenCol && item.hiddenCol != 'false') {
+              if (item.fixed && item.fixed === 'left') {
+                left.push(item)
+              } else if (item.fixed && item.fixed === 'right') {
+                right.push(item)
+              } else {
+                center.push(item)
+              }
+            }
+          })
+          data.push(left.concat(center).concat(right))
+        })
+      }
+      return data.length > 0 ? data : null
+    },
+    leftCloneMultiLevel() {
+      if (!this.cloneMultiLevel || this.cloneMultiLevel.length == 0) return null
+      let data = []
+      this.cloneMultiLevel.forEach(cols => {
+        let data2 = []
+        cols.forEach(item => {
+          if (item.fixed && item.fixed === 'left') {
+            data2.push(item)
+          }
+        })
+        data.push(data2)
+      })
+      return data
+    },
+    rightCloneMultiLevel() {
+      if (!this.cloneMultiLevel || this.cloneMultiLevel.length == 0) return null
+      let data = []
+      this.cloneMultiLevel.forEach(cols => {
+        let data2 = []
+        cols.forEach(item => {
+          if (item.fixed && item.fixed === 'right') {
+            data2.push(item)
+          }
+        })
+        data.push(data2)
+      })
+      return data
+    }
   },
   methods: {
     rowClsName (id,row) {
@@ -695,7 +771,9 @@ export default {
     fixedHeader () {
       if (this.height) {
           this.$nextTick(() => {
-              const headerHeight = this.headerRealHeight;
+              this.headerRealHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0
+              // const headerHeight = this.headerRealHeight;
+              const headerHeight = parseInt(getStyle(this.$refs.header, 'height')) || 0
               this.bodyHeight = this.height - headerHeight;
           });
       } else {
