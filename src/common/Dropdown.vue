@@ -52,7 +52,7 @@ export default {
   methods: {
     update() {
       if (this.show) {
-        setStyle(this.$el, { display: "block", visibility: "hidden", width: "", top: "0", left: "0" }); // make sure popper calc exactly
+        setStyle(this.$el, { display: "block", visibility: "hidden", width: "auto", top: "0", left: "0" }); // make sure popper calc exactly
       }
 
       if (this.popper) {

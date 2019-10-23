@@ -1599,7 +1599,7 @@ export default {
     selectHead(val){
       this.toggleSelect(val);
     },
-    dropVisible(val){ console.log(val);
+    dropVisible(val){
       this.$emit('on-drop-change',val)
     }
   }
