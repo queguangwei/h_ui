@@ -569,6 +569,7 @@ export default {
         if (this.visible) {
           this.fold()
           //下拉框弹出，ESC收起面板后，焦点在输入框，内容全选
+          this
           this.focus()
         }
       }

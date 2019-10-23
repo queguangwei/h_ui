@@ -5,8 +5,9 @@
       <!-- <div :class="[prefixCls + '-bar']"> -->
       <div :class="barTop">
         <div :class="[prefixCls + '-nav-container']">
-          <div v-if="showArrow&&!arrowOnRight" :class="[prefixCls + '-return']" v-on:click = "leftClick($event)" >
-            <Icon name="return"></Icon>
+          <div v-if="showArrow&&!arrowOnRight" :class="[prefixCls + '-return']" v-on:click = "leftClick($event)">
+            <i v-if="iconRightClassName" :class="iconRightClassName"></i>
+            <Icon v-else name="return"></Icon>
           </div>
           <div :class="navWrap"  style="float:left">
             <div :class="[prefixCls + '-nav-scroll']" ref="scrollCon">
@@ -23,14 +24,17 @@
             </div>
           </div>
           <div v-if="showArrow&&!arrowOnRight" :class="[prefixCls + '-enter']" v-on:click = "rightClick($event)">
-            <Icon name="enter"></Icon>
+            <i v-if="iconRightClassName" :class="iconRightClassName"></i>
+            <Icon v-else name="enter"></Icon>
           </div>
           <div v-if="showArrow&&arrowOnRight&&mustShowArrow">
             <div :class="[prefixCls + '-return']" v-on:click="leftClick($event)">
-              <Icon name="return"></Icon>
+              <i v-if="iconRightClassName" :class="iconRightClassName"></i>
+              <Icon v-else name="return"></Icon>
             </div>
             <div :class="[prefixCls + '-enter']" v-on:click="rightClick($event)">
-              <Icon name="enter"></Icon>
+              <i v-if="iconRightClassName" :class="iconRightClassName"></i>
+              <Icon v-else name="enter"></Icon>
             </div>
           </div>
         </div>
@@ -55,8 +59,9 @@
     <template v-if="!panelAbove&&!panelRight">
       <div :class="[prefixCls + '-bar']">
         <div :class="[prefixCls + '-nav-container']">
-          <div v-if="showArrow&&!arrowOnRight" :class="[prefixCls + '-return']" v-on:click = "leftClick($event)" >
-            <Icon name="return"></Icon>
+          <div v-if="showArrow&&!arrowOnRight" :class="[prefixCls + '-return']" v-on:click = "leftClick($event)">
+            <i v-if="iconLeftClassName" :class="iconLeftClassName"></i>
+            <Icon v-else name="return"></Icon>
           </div>
           <div :class="navWrap"  style="float:left">
             <div :class="[prefixCls + '-nav-scroll']" ref="scrollCon">
@@ -73,14 +78,17 @@
             </div>
           </div>
           <div v-if="showArrow&&!arrowOnRight" :class="[prefixCls + '-enter']" v-on:click = "rightClick($event)">
-            <Icon name="enter"></Icon>
+            <i v-if="iconRightClassName" :class="iconRightClassName"></i>
+            <Icon v-else name="enter"></Icon>
           </div>
           <div v-if="showArrow&&arrowOnRight&&mustShowArrow">
             <div :class="[prefixCls + '-return']" v-on:click="leftClick($event)">
-              <Icon name="return"></Icon>
+              <i v-if="iconLeftClassName" :class="iconLeftClassName"></i>
+              <Icon v-else name="return"></Icon>
             </div>
             <div :class="[prefixCls + '-enter']" v-on:click="rightClick($event)">
-              <Icon name="enter"></Icon>
+              <i v-if="iconRightClassName" :class="iconRightClassName"></i>
+              <Icon v-else name="enter"></Icon>
             </div>
           </div>
         </div>
@@ -107,13 +115,13 @@ export default {
       type: [String, Number]
     },
     type: {
-      validator (value) {
+      validator(value) {
         return oneOf(value, ['line', 'card']);
       },
       default: 'line'
     },
     size: {
-      validator (value) {
+      validator(value) {
         return oneOf(value, ['small', 'default']);
       },
       default: 'default'
@@ -155,8 +163,8 @@ export default {
       default:20,
     },
     alginDre:{
-      validator (value) {
-        return oneOf(value, ['left', 'right']);
+      validator(value) {
+        return oneOf(value, ['left', 'right'])
       },
       default: 'right'
     },
@@ -167,9 +175,15 @@ export default {
     lazy:{
       type:Boolean,
       default:false
+    },
+    iconLeftClassName: {
+      type:Function
+    },
+    iconRightClassName: {
+      type:Function
     }
   },
-  data () {
+  data() {
     return {
       prefixCls: prefixCls,
       navList: [],
@@ -179,10 +193,10 @@ export default {
       showSlot: false,
       navOffset: 0,
       mustShowArrow: false
-    };
+    }
   },
   computed: {
-    classes () {
+    classes() {
       return [
         `${prefixCls}`,
         {
@@ -219,7 +233,7 @@ export default {
         }
       ]
     },
-    contentClasses () {
+    contentClasses() {
       return [
         `${prefixCls}-content`,
         {
@@ -497,12 +511,12 @@ export default {
   },
   mounted () {
 //    window.addEventListener('resize', this.updateScroll);
-    this.updateScroll()
     on(window, 'resize', this.updateScroll)
     this.showSlot = this.$slots.extra !== undefined;
     if (!this.panelRight && this.showArrow) {
       setTimeout(() => {
         this.scrollToActiveTab();
+        this.updateScroll()
       }, 0)
     }
   },
