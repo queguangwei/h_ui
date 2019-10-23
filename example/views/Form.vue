@@ -5,6 +5,7 @@
     <h-form ref="formCustom"
             :model="formCustom"
             :rules="ruleCustom"
+            :showTipsOnlyFocus="true"
             :label-width="80">
       <h-form-item label="用户名"
                    prop="username">

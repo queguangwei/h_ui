@@ -42,6 +42,9 @@ export default {
   },
   methods: {
     handleClick(cell) {
+      //  当cell单元格不允许点击的时候（cell单元格置灰 不允许点击）
+      if ( cell.disabled || (this.spliceDirec == 'right' && cell.date < this.rangeState.from) || (this.maxDate && cell.date > this.maxDate)) return
+      
       if (this.pickMode !== 'click') return
       if (cell.disabled || cell.type === 'weekLabel') return;
       const newDate = new Date(clearHours(cell.date));
@@ -49,6 +52,7 @@ export default {
       this.$emit('on-pick-click');
     },
     handleMouseMove(cell) {
+      // console.log('----handleMouseMove----', this.pickMouseDown, cell)
       this.$emit('pickMouseMoveChange', false)
       if (this.pickMouseDown) {
         this.$emit('pickMouseMoveChange', true)
@@ -72,6 +76,7 @@ export default {
       }, 120)
     },
     handleMouseUp(cell) {
+      // console.log('pickMode----->', this.pickMode, cell)
       if (this.pickMode !== 'move') return
       this.$emit('pickMouseDownChange', false)
       if (!this.pickMouseMove) return

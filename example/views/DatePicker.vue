@@ -1,24 +1,29 @@
 <template>
   <div>
+
     <Button @on-click="testClick(true)">获取焦点</Button>
     <Button @on-click="testClick(false)">失去焦点</Button>
-    <h-date-picker v-model="model1" @on-blur="dateBlur" @on-focus="dateFocus" :options="options5" @on-illegal-input="handleIllegalInput" clearOnIllegal @on-change="handleChange1" confirm showTwoPanel format="yyyy-MM-dd" :showFormat="true" style="width:180px" :disabled="changeable" ref="test"></h-date-picker>
+    <h-date-picker v-model="model1" @on-blur="dateBlur" @on-focus="dateFocus" :options="options5" @on-illegal-input="handleIllegalInput" clearOnIllegal @on-change="handleChange1" confirm showTwoPanel format="yyyy-MMM-Do" :showFormat="true" style="width:180px" :disabled="changeable" ref="test"></h-date-picker>
     <span>{{formItem.date}}</span>
     <Button @click = "changedis">改变状态</Button>
+
+
+  
     <h-row>
       <h2>基本用法</h2>
       <p>设置属性 type 为 date 或 daterange 分别显示选择单日和选择范围类型。<br>
         设置属性 placement 可以更改选择器出现的方向</p>
       <h-col span="12">
-        <h-date-picker v-model="model1"  format="yyyy-MM-dd" type="date"  :options="options4"   style="width: 200px" @on-clickout="s" :showFormat="true" showToday></h-date-picker>{{model1}}
+        <!-- <h-date-picker v-model="model1"  format="yyyy-MM-dd" type="date"  :options="options4"   style="width: 200px" @on-clickout="s" :showFormat="true" showToday></h-date-picker>{{model1}} -->
       </h-col>
       <h-col span="12">
         {{model2}}
-        <h-date-picker v-model="model2" type="daterange" @on-change="handleChange1" format="yyyy-MM-dd" placement="bottom-end" placeholder="选择日期" showFormat>
+        <h-date-picker v-model="model2" type="daterange" @on-change="handleChange1" format="yyyy-MM-dd"  placement="bottom-end" placeholder="选择日期" showFormat>
           <span slot="footer">123</span>
         </h-date-picker>
       </h-col>
     </h-row>
+
     <h2>type: MonthRange</h2>
     <h-row>
       <h-col span="12">
@@ -26,17 +31,21 @@
         <h-date-picker v-model="monthRangeModel" type="monthrange" format="yyyy/MM" showFormat></h-date-picker>
       </h-col>
     </h-row>
-    <!-- <h-row> -->
+
+    <h-row>
       <h2>显示快捷方式</h2>
       <p>设置属性 format 可以改变日期的显示格式<br>
       注意，format 只是改变显示的格式，并非改变 value 值。</p>
-      <!-- <h-col span="12"> -->
+      <h-col span="12">
       <h-date-picker type="date" :options="options1" placeholder="选择日期" style="width: 200px"></h-date-picker>
-      <!-- </h-col> -->
-      <!-- <h-col span="12"> -->
+      </h-col>
+      <h-col span="12">
       <h-date-picker autoPlacement type="daterange" placeholder="选择日期" style="width: 200px"></h-date-picker>
-      <!-- </h-col> -->
-    <!-- </h-row> -->
+      </h-col>
+    </h-row>
+
+
+
     <h-row>
       <h2>日期格式</h2>
       <p>设置属性 options 对象中的 shortcuts 可以设置快捷选项<br>
@@ -140,6 +149,9 @@
         <h-date-picker type="daterange"  placeholder="选择日期" :value="value2" showLong :longValue="longdate"></h-date-picker>
       </h-col>
     </h-row>
+
+
+
   </div>
 </template>
 <script>
@@ -237,6 +249,7 @@
         value3:  [ "2018-08-16", "2018-08-23" ],
         model1:'',
         model2:["2018-08-16", "2018-08-23"],
+        // model2:'2018-08-16 - 2018-08-23',
         monthRangeModel: ["2019-03-01", "2020-06-01"],
         model3:'',
         model4:'',

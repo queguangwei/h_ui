@@ -40,6 +40,7 @@
           :disabled-date="disabledDate"
           :range-state="rangeState"
           :show-week-numbers="showWeekNumbers"
+          :pickMode="pickMode"
           spliceDirec = "left"
           :value="preSelecting.left ? [dates[0]] : dates"
           @on-change-range="handleChangeRange"
@@ -80,6 +81,7 @@
           :range-state="rangeState"
           :disabled-date="disabledDate"
           :show-week-numbers="showWeekNumbers"
+          :pickMode="pickMode"
           spliceDirec = "right"
           :maxDate = "maxDated"
           :value="preSelecting.right ? [dates[dates.length - 1]] : dates"
@@ -145,7 +147,8 @@
               type: Boolean,
               default: false
           },
-          rangeNum:[Number,String]
+          rangeNum:[Number,String],
+          pickMode: String
       },
       data(){
           const [minDate, maxDate] = this.value.map(date => date || initTimeDate());

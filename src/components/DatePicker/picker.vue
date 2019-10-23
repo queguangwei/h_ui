@@ -505,6 +505,7 @@ export default {
     handleBlur() {
       this.visible = false
       this.onSelectionModeChange(this.type)
+
       this.internalValue = this.internalValue.slice() // trigger panel watchers to reset views
       this.reset()
       this.$refs.pickerPanel.onToggleVisibility(false)
@@ -584,6 +585,10 @@ export default {
       const valueToTest = isArrayValue ? newDate : newDate[0]
       const isDisabled = disabledDateFn && disabledDateFn(valueToTest)
       const isValidDate = this.checkLegality(newValue, newDate)
+
+      // type中含有ange 用户强制输入时间范围开始时间>结束时间，需要把连个时间点换一下
+      if ( this.type.indexOf('range') > -1 && newDate[0] > newDate[1]) newDate = newDate.reverse() 
+
       if (newValue !== oldValue && !isDisabled && isValidDate) {
         this.internalValue = newDate
         this.emitChange()
@@ -624,7 +629,7 @@ export default {
         500 // delay to improve dropdown close visual effect
       )
     },
-    emitChange() {
+    emitChange() {  //input输入框输入值时触发
       this.$nextTick(() => {
         // on-change事件触发移至watcher:publicVModelValue，用于v-model绑定值修改后触发on-change
         // this.$emit('on-change', this.publicStringValue);
@@ -672,7 +677,6 @@ export default {
     },
     formatDate(value) {
       const format = DEFAULT_FORMATS[this.type]
-
       if (this.multiple) {
         const formatter = TYPE_VALUE_RESOLVER_MAP.multiple.formatter
         return formatter(value, this.format || format)
@@ -680,6 +684,7 @@ export default {
         const { formatter } =
           TYPE_VALUE_RESOLVER_MAP[this.type] ||
           TYPE_VALUE_RESOLVER_MAP['default']
+
         return formatter(value, this.format || format)
       }
     },
@@ -818,7 +823,7 @@ export default {
       this.$emit('on-open-change', state)
     },
     value: {
-      handler(val) {
+      handler(val) { 
         this.internalValue = this.parseDate(val)
       }
     },
@@ -836,6 +841,7 @@ export default {
       const strValue = this.showFormat == true ? this.visualValue : now
       if (shouldEmitInput) {
         this.$emit('input', strValue) // to update v-model
+        if (this.type === 'daterange') this.$emit('input', this.publicStringValue) 
         this.$emit('on-change', this.publicStringValue)
         // this.$emit('input', now); // to update v-model
       }
