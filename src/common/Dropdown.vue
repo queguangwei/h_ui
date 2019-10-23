@@ -7,9 +7,9 @@
 </template>
 
 <script>
-import { Popper } from "../../util";
+import { Popper } from "../util";
 export default {
-  name: "Dropdown",
+  name: "CommonDropdown",
   props: {
     show: {
       type: Boolean,
@@ -51,13 +51,13 @@ export default {
   },
   methods: {
     update() {
+      if (this.show) {
+        setStyle(this.$el, { display: "block", visibility: "hidden", width: "", top: "0", left: "0" }); // make sure popper calc exactly
+      }
+
       if (this.popper) {
         this.popper.scheduleUpdate();
         return;
-      }
-
-      if (this.show) {
-        setStyle(this.$el, { display: "block", visibility: "hidden", width: "", top: "0", left: "0" }); // make sure popper calc exactly
       }
 
       this.$nextTick(() => {

@@ -52,69 +52,69 @@
       <Icon name="unfold" :class="[prefixCls + '-arrow']" v-if="!remote && isArrow" ref="arrowb"></Icon>
       <Icon :name="remoteIcon" :class="[prefixCls + '-arrow']" v-if="showRemoteIcon" ref="searchb"></Icon>
     </div>
-    <transition :name="transitionName">
-      <Drop
-        :class="dropdownCls"
-        v-show="dropVisible"
-        :dropWidth="dropWidth"
-        :placement="fPlacement"
-        :data-transfer="transfer"
-        ref="dropdown"
-        :widthAdaption="widthAdaption"
-        :maxDropWidth="maxDropWidth"
-        v-transfer-dom>
-        <div :class="content" @scroll="handleSelectScroll" ref="content" @click="handleclick">
-          <span v-if="filterable && showBottom" :class="checkHeadClass">
-            <Checkbox v-model="selectHead" v-if="checkToHead&&multiple"></Checkbox>
-            <input
-              type="text"
-              v-model="query"
-              :disabled="disabled"
-              :readonly = "!editable||readonly"
-              :class="[prefixCls + '-content-input']"
-              :placeholder="localeSearchHolder"
-              autocomplete="off"
-              @blur="handleBlur"
-              @keydown.delete="handleInputDelete"
-              :tabindex="tabindex"
-              ref="input">
-          </span>
-          <span v-if="hideMult&&multiple" :class="hideMultHead" @click="toggleSelect(!isSelectAll)">全选</span>
-          <div v-if="showHeader">
-            <slot name="header">
-              <template v-if="buttonToTop&&multiple">
-                <span :class="[prefixCls + '-btnToTop']">
-                  <Checkbox v-model="selectHead" @click.native.stop="toggleSelect(!isSelectAll)">全选</Checkbox>
-                  <Button size="small" :class="[prefixCls + '-btnToTop-invert']" @click="toggleSelect(false)">全不选</Button>
-                </span>
-              </template>
-            </slot>
-          </div>
-          <ul v-show="notFoundShow && !enableCreate" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul>
-          <ul v-show="(!notFound && !remote) || (remote && !loading && !notFound) || enableCreate" :class="[prefixCls + '-dropdown-list']">
-            <!-- 多选、支持搜索和新建条目的情况下，如果检索词不匹配任何一个条目时，显示此项供用户选择 -->
-            <h-option ref="createdOption" v-if="enableCreate && showNewOption" :value="query" created>{{query}}</h-option>
-            <slot></slot>
-          </ul>
-          <ul v-show="loading" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
-          <ul v-show="isComputed" :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>
-        </div>
-        <div v-if="showFooter" :class="checkAll">
-          <slot name="footer">
-            <template  v-if="(isCheckall&&multiple&&!notFoundShow&&!buttonToTop) || (enableCreate && showNewOption)">
-              <Button size="small" @click="toggleSelect(false)">全不选</Button>
-              <Button type ="primary" size="small" @click="toggleSelect(true)">全选</Button>
+    <drop
+      ref="dropdown"
+      v-transfer-dom
+      :show="dropVisible"
+      :dropWidth="dropWidth"
+      :maxDropWidth="maxDropWidth"
+      :placement="placement"
+      :autoPlacement="autoPlacement"
+      :data-transfer="transfer"
+      :widthAdaption="widthAdaption"
+      :class="dropdownCls"
+      >
+      <div :class="content" @scroll="handleSelectScroll" ref="content" @click="handleclick">
+        <span v-if="filterable && showBottom" :class="checkHeadClass">
+          <Checkbox v-model="selectHead" v-if="checkToHead&&multiple"></Checkbox>
+          <input
+            type="text"
+            v-model="query"
+            :disabled="disabled"
+            :readonly = "!editable||readonly"
+            :class="[prefixCls + '-content-input']"
+            :placeholder="localeSearchHolder"
+            autocomplete="off"
+            @blur="handleBlur"
+            @keydown.delete="handleInputDelete"
+            :tabindex="tabindex"
+            ref="input">
+        </span>
+        <span v-if="hideMult&&multiple" :class="hideMultHead" @click="toggleSelect(!isSelectAll)">全选</span>
+        <div v-if="showHeader">
+          <slot name="header">
+            <template v-if="buttonToTop&&multiple">
+              <span :class="[prefixCls + '-btnToTop']">
+                <Checkbox v-model="selectHead" @click.native.stop="toggleSelect(!isSelectAll)">全选</Checkbox>
+                <Button size="small" :class="[prefixCls + '-btnToTop-invert']" @click="toggleSelect(false)">全不选</Button>
+              </span>
             </template>
           </slot>
         </div>
-      </Drop>
-    </transition>
+        <ul v-show="notFoundShow && !enableCreate" :class="[prefixCls + '-not-found']"><li>{{ localeNotFoundText }}</li></ul>
+        <ul v-show="(!notFound && !remote) || (remote && !loading && !notFound) || enableCreate" :class="[prefixCls + '-dropdown-list']">
+          <!-- 多选、支持搜索和新建条目的情况下，如果检索词不匹配任何一个条目时，显示此项供用户选择 -->
+          <h-option ref="createdOption" v-if="enableCreate && showNewOption" :value="query" created>{{query}}</h-option>
+          <slot></slot>
+        </ul>
+        <ul v-show="loading" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
+        <ul v-show="isComputed" :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>
+      </div>
+      <div v-if="showFooter" :class="checkAll">
+        <slot name="footer">
+          <template  v-if="(isCheckall&&multiple&&!notFoundShow&&!buttonToTop) || (enableCreate && showNewOption)">
+            <Button size="small" @click="toggleSelect(false)">全不选</Button>
+            <Button type ="primary" size="small" @click="toggleSelect(true)">全选</Button>
+          </template>
+        </slot>
+      </div>
+    </drop>
   </div>
 </template>
 <script>
 import Icon from '../Icon/Icon.vue';
 import Button from '../Button/Button.vue';
-import Drop from './Dropdown.vue';
+import Drop from '../../common/Dropdown.vue';
 import clickoutside from '../../directives/clickoutside';
 import TransferDom from '../../directives/transfer-dom';
 import Checkbox from '../Checkbox/Checkbox.vue';
@@ -373,7 +373,6 @@ export default {
       tabIndex: 0,
       selectHead:false,
       titleTip:'',
-      fPlacement:this.placement,
       isSelectAll:false,
       typeValue:'string',
       focusValue:'',
@@ -492,16 +491,11 @@ export default {
             return this.noMoreText;
         }
     },
-    transitionName () {
-      const bottomPlaced = this.fPlacement.match(/^bottom/);
-      return bottomPlaced ? 'slide-up' : 'slide-down';
-      // return this.placement === 'bottom' ? 'slide-up' : 'slide-down';
-    },
-    dropVisible () {
+    dropVisible () { 
       let status = true;
       const options = this.$slots.default || [];
       if (!this.loading && this.remote && this.query === '' && !options.length) status = false;
-      if(this.remote && this.showBottom) status =true;
+      if(this.remote && this.showBottom) status = true;
       return this.visible && status;
     },
     selectInputStyles () {
@@ -674,9 +668,6 @@ export default {
       if (this.disabled || this.readonly||!this.editable) {
           return false;
       }
-      // 展开时计算是否足够空间展开
-      if (!this.dropVisible) this.setPlacement()
-      // this.visible = !this.visible;
       // o45证券代码--点击时,若输入框值==当前选中value,则需要隐藏下拉列表
       if (this.model == this.query && this.model == this.value && typeof this.value == 'string' && this.remoteFocusNotShowList && !this.multiple) {
         this.visible = false;
@@ -881,7 +872,7 @@ export default {
       if (this.filterable && this.visible && !this.showBottom) {
         this.$refs.input.focus();
       }
-      this.broadcast('Drop', 'on-update-popper');
+      
       this.isInputFocus = true;
     },
     toggleSingleSelected (value, init = false) {
@@ -1306,18 +1297,6 @@ export default {
       this.findChild(child => {
         child.index = index++;
       })
-    },
-    setPlacement(top = 0){
-      if(this.autoPlacement){
-        let clientHeight = document.documentElement.clientHeight;
-        let rect = this.$refs.select.getBoundingClientRect()
-        let bottomNum = this.isCheckall ? 250 : 210;
-        if (clientHeight - rect.top - rect.height < bottomNum){
-          this.fPlacement = 'top';
-        } else {
-          this.fPlacement = 'bottom';
-        }
-      }
     }
   },
   mounted () {
@@ -1380,7 +1359,6 @@ export default {
               }
             }
             this.model.push(value);
-            this.broadcast('Drop', 'on-update-popper');
           }
           if (this.filterable && !this.showBottom) {
             // remote&filterable&multiple时，一次点多项，不应该设置true，因为无法置为false，下次的搜索会失效
@@ -1422,17 +1400,6 @@ export default {
         this.tabIndex = this.filterable ? -1 : this.tabindex;
       }
     }
-    // this.setPlacement();
-    this.$on('on-visible-change', (val,top) => {
-      if(val){
-        this.$nextTick(()=>{
-          this.setPlacement(parseInt(top));
-        })
-      }
-    });
-  },
-  beforeDestroy () {
-    this.broadcast('Drop', 'on-destroy-popper');
   },
   watch: {
     value:{
@@ -1513,7 +1480,6 @@ export default {
             }
           }
         }
-        this.broadcast('Drop', 'on-update-popper');
         setTimeout(() => {
           this.dispatch('Msgbox', 'on-esc-real-close', false);
         }, 0);
@@ -1532,7 +1498,6 @@ export default {
         setTimeout(() => {
           this.dispatch('Msgbox', 'on-esc-real-close', true);
         }, 0);
-        // this.broadcast('Drop', 'on-destroy-popper');
       }
     },
     query (val) {
@@ -1573,7 +1538,6 @@ export default {
             this.$emit('on-query-change', val);
             this.broadcastQuery(val);
           }
-          // if(val.trim()) this.broadcastQuery(val);
       }
       this.$nextTick(() => {
         this.enableCreate && this.checkOptionSelected();
@@ -1602,7 +1566,7 @@ export default {
         })
       }
       this.selectToChangeQuery = false;
-      this.broadcast('Drop', 'on-update-popper');
+      this.broadcast("CommonDropdown", "on-static-update");
     },
     selectedSingle(val){
       if (val&&this.showTitle) {
@@ -1630,17 +1594,12 @@ export default {
           }
         })
       }
+      this.broadcast("CommonDropdown", "on-static-update");
     },
     selectHead(val){
       this.toggleSelect(val);
     },
-    placement(val){
-      this.fPlacement = val;
-    },
-    fPlacement(val) {
-      this.$refs.dropdown.update()
-    },
-    dropVisible(val){
+    dropVisible(val){ console.log(val);
       this.$emit('on-drop-change',val)
     }
   }

@@ -58,7 +58,7 @@ import Locale from "../../mixins/locale";
 import { SimpleMultiSelectApi } from "./Api";
 import ClickOutside from "../../directives/clickoutside";
 import TransferDom from "../../directives/transfer-dom";
-import Drop from "./Dropdown.vue";
+import Drop from "../../common/Dropdown.vue";
 import Icon from "../Icon/Icon.vue";
 import _ from "../..//util";
 export default {
