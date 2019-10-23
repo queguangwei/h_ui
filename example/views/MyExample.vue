@@ -20,7 +20,7 @@
     </h-row>
     <br>
     <h1>tabs</h1>
-    <h-tabs ref="remove" type="line" @on-tab-remove="handleTabRemove1" showArrow arrowOnRight closable v-model="key">
+    <h-tabs ref="remove" type="line" @on-tab-remove="handleTabRemove1" showArrow arrowOnRight closable>
       <h-tab-pane v-for="tab in tabs" :key="tab" :name="'标签' + tab" :label="'标签' + tab">
         标签{{ tab }}的内容
       </h-tab-pane>
@@ -28,13 +28,12 @@
     <h-button type="ghost" @click="handleTabsAdd(true)" size="small" slot="extra">增加</h-button>
     <h-button type="ghost" @click="handleTabsAdd(false)" size="small" slot="extra">减少</h-button>
     <br>
-    <h1>msgbox</h1>
-    <h2>buttonGroup</h2>
+    <h1>buttonGroup</h1>
     <h-button-group>
       <h-button @click="showBox = true" style="margin-right: 10px;">打开弹窗</h-button>
       <h-button type="primary" @on-click="changeShow">打开弹框</h-button>
     </h-button-group>
-    <h2>checkboxGroup</h2>
+    <h1>checkboxGroup</h1>
     <h-checkbox-group v-model="btncheck">
       <h-checkbtn value="twitter" label="Twitter" disabled>
       </h-checkbtn>
@@ -68,27 +67,31 @@
             <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
           </h-single-select>
         </h-form-item>
-
+        <h-form-item label="selecttree" prop="selecttree">
+          {{formValidate.selecttree}}
+          <h-select-tree v-model="formValidate.selecttree" :data="selectTreeData" ref="selecttree" filterable	showCheckbox :firstValue="firstValue"></h-select-tree>
+        </h-form-item>
+        <h-form-item prop="time" label="time" required upward>
+          <h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time" class="curItemClass" ></h-time-picker>
+        </h-form-item>
         <h-form-item prop="date" label="date" required>
           <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
         </h-form-item>
         <!--<h-form-item label="fastdate" prop="fastdate" required>-->
           <!--<h-fast-date class="curItemClass" v-model="formValidate.fastdate" format="yyyy-MM-dd"></h-fast-date>-->
         <!--</h-form-item>-->
-        <h-form-item prop="time" label="time" required>
-          <h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time" class="curItemClass" ></h-time-picker>
+
+        <h-form-item label="input" prop="name" required :tipWidth="200">
+          <h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>
         </h-form-item>
-        <!--<h-form-item label="input" prop="name" required :tipWidth="200">-->
-          <!--<h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>-->
-        <!--</h-form-item>-->
-        <!--<h-form-item label="typefield" prop="mail" required>-->
-          <!--<h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >-->
-        <!--</h-form-item>-->
-        <!--<h-form-item label="select" prop="city">-->
-          <!--<h-select v-model="formValidate.city" class="curItemClass" placement="top">-->
-            <!--<h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>-->
-          <!--</h-select>-->
-        <!--</h-form-item>-->
+        <h-form-item label="typefield" prop="mail" required>
+          <h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >
+        </h-form-item>
+        <h-form-item label="select" prop="city">
+          <h-select v-model="formValidate.city" class="curItemClass" filterable transfer placement="top" @on-keyup="selectKeyup">
+            <h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>
+          </h-select>
+        </h-form-item>
         <!--<h-form-item label="tree" prop="tree">-->
           <!--<h-select-tree v-model="formValidate.tree" class="curItemClass" :data="treeData" ref="tree" filterable></h-select-tree>-->
         <!--</h-form-item>-->
@@ -108,6 +111,7 @@
         <!--</h-form-item>-->
       </h-form>
       <div slot="footer">
+        <h-button type="primary" @click="focusFirst">聚焦第一项输入框</h-button>
         <h-button type="ghost" @click="reset">重置</h-button>
         <h-button type="primary" @click="submit">提交</h-button>
       </div>
@@ -129,9 +133,7 @@
                      integerNum="10" suffixNum="2"  type="money" :step="10">
         </h-typefield>
       </h-form-item>
-      <h-form-item label="tree">
-        <h-select-tree v-model="formCustom.tree" :data="treeData" ref="tree" filterable></h-select-tree>
-      </h-form-item>
+
       <h-form-item label="密码" prop="passwd" required>
         <h-input class="curItemClass" type="password" v-model="formCustom.passwd"></h-input>
       </h-form-item>
@@ -164,7 +166,7 @@
     <h1>simpleTreeGrid</h1>
     <h-button type="primary" @click="expandAll">展开</h-button>
     <h-button @click="fold">收起</h-button>
-    <h-simple-tree-gird :columns="columns1" ref="treeGrid" :data="treedata" canDrag :height="500" @on-expand="expand"></h-simple-tree-gird>
+    <h-simple-tree-gird :columns="columns1" ref="treeGrid" :data="treedata" canDrag :height="400" @on-expand="expand"></h-simple-tree-gird>
     <h1>editGird</h1>
     <h-edit-gird ref="repoEditGrid" border height="400" size="small" showEditInput
                  :columns="columnsEdit" :data="dataEdit" :disabled-hover="true" :highlight-row="true"
@@ -300,20 +302,27 @@ export default {
       showBox: false,
       show:false,
       isLoading: false,
-      tabs:6,
+      tabs:15,
       value:'value0',
       cityList: [
-        {value: 'beijing', label: '北京市'},
-        {value: 'shanghai', label: '上海市'},
-        {value: 'shenzhen', label: '深圳市'},
-        {value: 'hangzhou', label: '杭州市'},
-        {value: 'nanjing', label: '南京市'},
-        {value: 'chongqing', label: '重庆市'},
-        {value: 'chengdu', label: '成都'},
-        {value: 'xiamen', label: '厦门'}
+//        {value: 'beijing', label: '北京市'},
+//        {value: 'shanghai', label: '上海市'},
+//        {value: 'shenzhen', label: '深圳市'},
+//        {value: 'hangzhou', label: '杭州市'},
+//        {value: 'nanjing', label: '南京市'},
+//        {value: 'chongqing', label: '重庆市'},
+//        {value: 'chengdu', label: '成都'},
+//        {value: 'xiamen', label: '厦门'},
+        {value: '379134', label: '内蒙古自治区农联社'},
+        {value: '382217', label: '广州证券王炽东'},
+        {value: '380870', label: '广州证券穗利5号'},
+        {value: '379482', label: '广州证券穗利2号'},
+        {value: '380257', label: '广州证券穗利10号'},
+        {value: '382296', label: '广州证券红棉安心回报半年盈'},
       ],
       formValidate: {
         stockCode: "",
+        selecttree: '',
         name: "",
         mail: "",
         city: '',
@@ -371,9 +380,8 @@ export default {
         passwdCheck: '',
         age: '',
         stockCode: '',
-        tree: ''
       },
-      treeData: [
+      selectTreeData: [
         {
           title: 'parent',
           id: '1-0',
@@ -397,7 +405,16 @@ export default {
             {
               title: 'child2',
               id: '1-2',
-              children: []
+              children: [
+                {
+                  title: 'child1-2-1',
+                  id: '1-2-1'
+                },
+                {
+                  title: 'child1-2-2',
+                  id: '1-2-2'
+                }
+              ]
             }
           ] }
       ],
@@ -800,6 +817,10 @@ export default {
     }
   },
   methods: {
+    selectKeyup(val, e) {
+      console.log(val)
+      console.log(e)
+    },
     handleTabRemove1(name){
       console.log(this.tabs)
     },
@@ -845,7 +866,7 @@ export default {
           this.remoteData = list.filter(
             item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1
           );
-        }, 200);
+        }, 800);
 
       } else {
         this.remoteData = [];
@@ -864,6 +885,11 @@ export default {
       this.$refs.formValidate.resetFields()
       this.show=true
       this.$refs.formValidate.firstNodeFocused()
+      this.firstValue = ['child1-1-1','child1-1-2','child1-2-1']
+    },
+    focusFirst() {
+      this.formValidate.stockCode = '1'
+      this.$refs.stockCode.focus()
     },
     submit() {
       let _this = this
@@ -926,7 +952,7 @@ export default {
     },
   },
   created() {
-    window.isO45 = true
+    window.isO45 = false
   },
   mounted() {
     document.addEventListener("keydown", event => {

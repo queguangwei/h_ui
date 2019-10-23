@@ -65,9 +65,19 @@
     word-wrap: nowrap;
     line-height: $input-height-small;
     z-index: 9;
+    &.verify-top {
+      top: -31px;
+    }
+    &.verify-top > .verify-tip-arrow {
+      border-top-color: $error-color;
+      border-width: 5px 5px 0;
+      left: 50%;
+      margin-left: -5px;
+      bottom: -5px;
+    }
     &.verify-bottom{
         margin-top: 2px;
-        padding: 5px 0; 
+        padding: 5px 0;
     }
     > .verify-tip-inner{
         @include verify-tip-inner()
@@ -75,7 +85,7 @@
     > .verify-tip-arrow{
         @include verify-tip-arrow()
     }
-    &.verify-bottom > .verify-tip-arrow  {
+    &.verify-bottom > .verify-tip-arrow {
         border-bottom-color: $error-color;
         border-width: 0 5px 5px;
         left: 50%;
@@ -93,5 +103,5 @@
     }
 }
 .verify-tip{
-    @include verify-tip() 
+    @include verify-tip()
 }
