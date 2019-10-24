@@ -79,40 +79,42 @@
           <h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time" class="curItemClass" ></h-time-picker>
         </h-form-item>
         <h-form-item prop="date" label="date" required>
-          <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
+          <h-date-picker type="date" placeholder="选择日期" showToday v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
         </h-form-item>
-        <h-form-item label="fastdate" prop="fastdate" required>
-          <h-fast-date class="curItemClass" v-model="formValidate.fastdate" format="yyyy-MM-dd"></h-fast-date>
-        </h-form-item>
-        <h-form-item label="typefield" prop="mail" required>
-          <h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >
-        </h-form-item>
-        <h-form-item label="select" prop="city">
-          <h-select v-model="formValidate.city" class="curItemClass" filterable transfer placement="top" @on-keyup="selectKeyup">
-            <h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>
-          </h-select>
-        </h-form-item>
+        <!--<h-form-item label="fastdate" prop="fastdate" required>-->
+          <!--<h-fast-date class="curItemClass" v-model="formValidate.fastdate" format="yyyy-MM-dd"></h-fast-date>-->
+        <!--</h-form-item>-->
+        <!--<h-form-item label="typefield" prop="mail" required>-->
+          <!--<h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >-->
+        <!--</h-form-item>-->
+        <!--<h-form-item label="select" prop="city">-->
+          <!--<h-select v-model="formValidate.city" class="curItemClass" filterable transfer placement="top" @on-keyup="selectKeyup">-->
+            <!--<h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>-->
+          <!--</h-select>-->
+        <!--</h-form-item>-->
         <h-form-item label="selecttree" prop="selecttree">
-          <h-select-tree v-model="formValidate.selecttree" :data="selectTreeData" ref="selecttree" filterable	showCheckbox :firstValue="firstValue"></h-select-tree>
+          <h-select-tree v-model="formValidate.selecttree" :data="selectTreeData" ref="selecttree"
+                         checkIndeter filterable	showCheckbox :firstValue="firstValue">
+          </h-select-tree>
           {{formValidate.selecttree}}
         </h-form-item>
-        <h-form-item label="tree" prop="tree">
-          <h-select-tree v-model="formValidate.tree" class="curItemClass" :data="treeData" ref="tree" filterable></h-select-tree>
-        </h-form-item>
-        <h-form-item label="radio" prop="gender">
-          <h-radio-group v-model="formValidate.gender">
-            <h-radio label="male" class="curItemClass" >男</h-radio>
-            <h-radio label="female" class="curItemClass" >女</h-radio>
-          </h-radio-group>
-        </h-form-item>
-        <h-form-item label="checkbox" prop="interest">
-          <h-checkbox-group v-model="formValidate.interest">
-            <h-checkbox label="吃饭" class="curItemClass" ></h-checkbox>
-            <h-checkbox label="睡觉" class="curItemClass" ></h-checkbox>
-            <h-checkbox label="跑步" class="curItemClass" ></h-checkbox>
-            <h-checkbox label="看电影" class="curItemClass" ></h-checkbox>
-          </h-checkbox-group>
-        </h-form-item>
+        <!--<h-form-item label="tree" prop="tree">-->
+          <!--<h-select-tree v-model="formValidate.tree" class="curItemClass" :data="treeData" ref="tree" filterable></h-select-tree>-->
+        <!--</h-form-item>-->
+        <!--<h-form-item label="radio" prop="gender">-->
+          <!--<h-radio-group v-model="formValidate.gender">-->
+            <!--<h-radio label="male" class="curItemClass" >男</h-radio>-->
+            <!--<h-radio label="female" class="curItemClass" >女</h-radio>-->
+          <!--</h-radio-group>-->
+        <!--</h-form-item>-->
+        <!--<h-form-item label="checkbox" prop="interest">-->
+          <!--<h-checkbox-group v-model="formValidate.interest">-->
+            <!--<h-checkbox label="吃饭" class="curItemClass" ></h-checkbox>-->
+            <!--<h-checkbox label="睡觉" class="curItemClass" ></h-checkbox>-->
+            <!--<h-checkbox label="跑步" class="curItemClass" ></h-checkbox>-->
+            <!--<h-checkbox label="看电影" class="curItemClass" ></h-checkbox>-->
+          <!--</h-checkbox-group>-->
+        <!--</h-form-item>-->
       </h-form>
       <div slot="footer">
         <h-button type="primary" @click="focusFirst">聚焦第一项输入框</h-button>
@@ -148,7 +150,7 @@
         <h-input type="text" v-model="formCustom.age" number></h-input>
       </h-form-item>
       <h-form-item label="日期">
-        <h-date-picker type="date" ref="datepicker" placeholder="选择日期" showToday autoPlacement v-model="formCustom.date" class="curItemClass"></h-date-picker>
+        <h-date-picker type="daterange" ref="datepicker" placeholder="选择日期" showToday autoPlacement v-model="formCustom.date" class="curItemClass"></h-date-picker>
       </h-form-item>
       <h-form-item label="fastdate">
         <h-fast-date type="date" placeholder="选择日期" ref="datepicker" class="curItemClass"></h-fast-date>

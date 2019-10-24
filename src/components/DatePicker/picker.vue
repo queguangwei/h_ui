@@ -587,7 +587,7 @@ export default {
       const isValidDate = this.checkLegality(newValue, newDate)
 
       // type中含有ange 用户强制输入时间范围开始时间>结束时间，需要把连个时间点换一下
-      if ( this.type.indexOf('range') > -1 && newDate[0] > newDate[1]) newDate = newDate.reverse() 
+      if ( this.type.indexOf('range') > -1 && newDate[0] > newDate[1]) newDate = newDate.reverse()
 
       if (newValue !== oldValue && !isDisabled && isValidDate) {
         this.internalValue = newDate
@@ -823,7 +823,7 @@ export default {
       this.$emit('on-open-change', state)
     },
     value: {
-      handler(val) { 
+      handler(val) {
         this.internalValue = this.parseDate(val)
       }
     },
@@ -842,7 +842,7 @@ export default {
       if (shouldEmitInput) {
         this.$emit('input', strValue) // to update v-model
         if (this.type.includes('range') && this.showFormat) {
-          this.$emit('input', this.publicStringValue) 
+          this.$emit('input', this.publicStringValue)
         }
         this.$emit('on-change', this.publicStringValue)
         // this.$emit('input', now); // to update v-model
