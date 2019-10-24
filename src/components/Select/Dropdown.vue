@@ -1,3 +1,7 @@
+<!-- There is a better choice for dropdown, src/common/dropdown.vue -->
+<!-- You need to do some adjustment in the reference element vue, I have finish it in the HSelect component -->
+<!-- It's worth to do, because you don't have to worry about logics inside the dropdown any more -->
+<!-- Good luck -->
 <template>
   <div class="h-select-dropdown" :style="styles" @click="handleClick" @mousedown.stop="handleMouseDown" ref="selectdrop">
     <slot></slot>

@@ -839,9 +839,11 @@ export default {
       const shouldEmitInput =
         newValue !== oldValue || typeof now !== typeof before
       let strValue =  this.showFormat == true ? this.visualValue : now
-      if (this.type === 'daterange' && !this.showFormat) strValue = now
       if (shouldEmitInput) {
         this.$emit('input', strValue) // to update v-model
+        if (this.type.includes('range') && this.showFormat) {
+          this.$emit('input', this.publicStringValue) 
+        }
         this.$emit('on-change', this.publicStringValue)
         // this.$emit('input', now); // to update v-model
       }
