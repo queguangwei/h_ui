@@ -64,82 +64,80 @@
         v-if="filterable && searchIcon && !showArrow"
       ></Icon>
     </div>
-    <transition :name="transitionName">
-      <Drop
-        :class="dropdownCls"
-        :dropWidth="dropWidth"
-        :multiple="multiple"
-        v-show="dropVisible"
-        :placement="fPlacement"
-        :data-transfer="transfer"
-        :widthAdaption="widthAdaption"
-        :maxDropWidth="maxDropWidth"
-        ref="dropdown"
-        v-transfer-dom
-      >
-        <div :class="content" ref="content" @click="handleclick">
-          <span :class="searchClass" ref="search" v-if="filterable && showBottom&&!hideMult">
-            <Checkbox v-model="selectHead" :size="checkboxSize" @on-change="toggleSelect" v-if="checkToHead&&multiple"></Checkbox>
-            <input
-              type="text"
-              v-model="query"
-              :disabled="disabled"
-              :readonly="!editable||readonly"
-              :class="[prefixCls + '-input']"
-              :placeholder="localeSearchHolder"
-              @blur="handleBlur"
-              @keydown="resetInputState"
-              @keydown.delete="handleInputDelete"
-              :tabindex="tabindex"
-              ref="input"
-            />
-          </span>
-          <span v-if="hideMult&&multiple" :class="hideMultHead" @click="toggleSelect(!isSelectAll)">全选</span>
-          <div v-if="showHeader" :class="headerSlotCls">
-            <slot name="header"></slot>
-          </div>
-          <div v-if="buttonToTop&&multiple" :class="[prefixCls + '-btnToTop']">
-            <Checkbox v-model="selectHead" @on-change="toggleSelect(!isSelectAll)">全选</Checkbox>
-            <Button size="small" :class="[prefixCls + '-btnToTop-invert']" @click="toggleSelect(false)">全不选</Button>
-          </div>
-          <div
-            v-if="!isBlock"
-            v-show="(!notFound && !remote) || (remote && !loading && !notFound)"
-            :class="[prefixCls + '-dropdown-list']"
-            :style="listStyle"
-            ref="list"
-            @scroll="handleSelectScroll"
-          >
-            <slot></slot>
-            <ul v-show="isComputed" :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>
-          </div>
-          <div
-            v-if="isBlock"
-            id="blockWrapper"
-            v-show="(!notFound && !remote) || (remote && !notFound)"
-            :class="[prefixCls + '-dropdown-list']"
-            :style="listStyle"
-            ref="blockWrapper"
-          >
-            <slot></slot>
-          </div>
-          <div v-show="loading && isBlock" :class="[prefixCls+'-block-loading']">{{localeLoadingText}}</div>
-          <ul v-show="loading && !isBlock" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
+    <Drop
+      ref="dropdown"
+      v-transfer-dom
+      :show="dropVisible"
+      :dropWidth="dropWidth"
+      :maxDropWidth="maxDropWidth"
+      :placement="placement"
+      :autoPlacement="autoPlacement"
+      :data-transfer="transfer"
+      :widthAdaption="widthAdaption"
+      :class="dropdownCls"
+    >
+      <div :class="content" ref="content" @click="handleclick">
+        <span :class="searchClass" ref="search" v-if="filterable && showBottom&&!hideMult">
+          <Checkbox v-model="selectHead" :size="checkboxSize" @on-change="toggleSelect" v-if="checkToHead&&multiple"></Checkbox>
+          <input
+            type="text"
+            v-model="query"
+            :disabled="disabled"
+            :readonly="!editable||readonly"
+            :class="[prefixCls + '-input']"
+            :placeholder="localeSearchHolder"
+            @blur="handleBlur"
+            @keydown="resetInputState"
+            @keydown.delete="handleInputDelete"
+            :tabindex="tabindex"
+            ref="input"
+          />
+        </span>
+        <span v-if="hideMult&&multiple" :class="hideMultHead" @click="toggleSelect(!isSelectAll)">全选</span>
+        <div v-if="showHeader" :class="headerSlotCls">
+          <slot name="header"></slot>
         </div>
-        <div v-if="showFooter" :class="checkAll">
-          <slot name="footer"></slot>
+        <div v-if="buttonToTop&&multiple" :class="[prefixCls + '-btnToTop']">
+          <Checkbox v-model="selectHead" @on-change="toggleSelect(!isSelectAll)">全选</Checkbox>
+          <Button size="small" :class="[prefixCls + '-btnToTop-invert']" @click="toggleSelect(false)">全不选</Button>
         </div>
-        <div v-if="isCheckall&&multiple&&!notFoundShow&&!buttonToTop" :class="checkAll">
-          <Button size="small" @click="toggleSelect(false)">全不选</Button>
-          <Button type="primary" size="small" @click="toggleSelect(true)">全选</Button>
+        <div
+          v-if="!isBlock"
+          v-show="(!notFound && !remote) || (remote && !loading && !notFound)"
+          :class="[prefixCls + '-dropdown-list']"
+          :style="listStyle"
+          ref="list"
+          @scroll="handleSelectScroll"
+        >
+          <slot></slot>
+          <ul v-show="isComputed" :class="[prefixCls + '-not-data']">{{ localeNoMoreText }}</ul>
         </div>
-      </Drop>
-    </transition>
+        <div
+          v-if="isBlock"
+          id="blockWrapper"
+          v-show="(!notFound && !remote) || (remote && !notFound)"
+          :class="[prefixCls + '-dropdown-list']"
+          :style="listStyle"
+          ref="blockWrapper"
+        >
+          <slot></slot>
+        </div>
+        <div v-show="loading && isBlock" :class="[prefixCls+'-block-loading']">{{localeLoadingText}}</div>
+        <ul v-show="loading && !isBlock" :class="[prefixCls + '-loading']">{{ localeLoadingText }}</ul>
+      </div>
+      <div v-if="showFooter" :class="checkAll">
+        <slot name="footer"></slot>
+      </div>
+      <div v-if="isCheckall&&multiple&&!notFoundShow&&!buttonToTop" :class="checkAll">
+        <Button size="small" @click="toggleSelect(false)">全不选</Button>
+        <Button type="primary" size="small" @click="toggleSelect(true)">全选</Button>
+      </div>
+    </Drop>
   </div>
 </template>
 <script>
 import Icon from "../Icon/Icon.vue";
-import Drop from "../Select/Dropdown.vue";
+import Drop from "../../common/Dropdown.vue";
 import clickoutside from "../../directives/clickoutside";
 import TransferDom from "../../directives/transfer-dom";
 import Checkbox from "../Checkbox/Checkbox.vue";
@@ -412,7 +410,6 @@ export default {
       highlightRow: false,
       tabIndex: 0,
       selectHead: false,
-      fPlacement: this.placement,
       isBlock: false,
       allClick: false,
       viewValue: null,
@@ -547,11 +544,6 @@ export default {
       } else {
         return this.noMoreText;
       }
-    },
-    transitionName() {
-      const bottomPlaced = this.fPlacement.match(/^bottom/);
-      return bottomPlaced ? "slide-up" : "slide-down";
-      // return this.placement === 'bottom' ? 'slide-up' : 'slide-down';
     },
     dropVisible() {
       let status = true;
@@ -796,10 +788,6 @@ export default {
         if (!this.remote || this.isBlock) {
           this.updateSingleSelected(true, slot);
           this.updateMultipleSelected(true, slot);
-        }
-
-        if (this.remote) {
-          this.$refs.dropdown.setWidthAdaption();
         }
       }
     },
@@ -1426,17 +1414,6 @@ export default {
         });
       }
     },
-    setPlacement(top = 0) {
-      if (this.autoPlacement) {
-        let obj = this.$refs.select;
-        let allHeight = window.innerHeight;
-        let curbottom = allHeight - obj.offsetTop - obj.clientHeight - top;
-        let bottomNum = this.isCheckall ? 250 : 210;
-        if (curbottom < bottomNum) {
-          this.fPlacement = "top";
-        }
-      }
-    },
     firstVisibleDom(doms) {
       for (let i = 0; i < doms.length; i++) {
         if (doms[i].style.display !== "none") return doms[i];
@@ -1535,7 +1512,6 @@ export default {
             this.removeTag(index);
           } else {
             this.model.push(value);
-            this.broadcast("Drop", "on-update-popper");
           }
           if (this.filterable) {
             // remote&filterable&multiple时，一次点多项，不应该设置true，因为无法置为false，下次的搜索会失效
@@ -1573,22 +1549,10 @@ export default {
         }
       }
     });
-    // this.swidth = parseInt(this.$refs.select.getBoundingClientRect().width)||0;
 
     this.$nextTick(() => {
       this.offsetArrow();
       this.searchStyle();
-    });
-    // if (this.disabled) {
-    //   this.tabIndex = -1
-    // }
-    this.setPlacement();
-    this.$on("on-visible-change", (val, top) => {
-      if (val) {
-        this.$nextTick(() => {
-          this.setPlacement(parseInt(top));
-        });
-      }
     });
 
     if (this.isBlock) {
@@ -1599,8 +1563,6 @@ export default {
   },
   beforeDestroy() {
     off(this.$refs.select, "keydown", this.handleKeydown);
-    // document.removeEventListener('keydown', this.handleKeydown);
-    this.broadcast("Drop", "on-destroy-popper");
   },
   watch: {
     value: {
@@ -1654,8 +1616,6 @@ export default {
         setTimeout(() => {
           this.dispatch("Msgbox", "on-esc-real-close", false);
         }, 0);
-        this.setPlacement();
-        this.broadcast("Drop", "on-update-popper");
       } else {
         if (this.filterable) {
           this.$refs.reference.scrollTop = 0; // reference element scroll to 0
@@ -1679,7 +1639,6 @@ export default {
         setTimeout(() => {
           this.dispatch("Msgbox", "on-esc-real-close", true);
         }, 0);
-        // this.broadcast('Drop', 'on-destroy-popper');
       }
       this.$emit("on-drop-change", val);
     },
@@ -1699,7 +1658,7 @@ export default {
         if (this.query !== "") this.selectToChangeQuery = true;
       }
       this.viewValue = val;
-      this.tooltip = val + '';
+      this.tooltip = val + "";
       if (this.isSingleSelect && !this.isInputFocus) {
         this.setSingleSelect();
       }
@@ -1726,9 +1685,6 @@ export default {
     },
     selectHead(val) {
       // this.toggleSelect(val)
-    },
-    placement(val) {
-      this.fPlacement = val;
     },
     focusIndex: {
       handler(nv) {

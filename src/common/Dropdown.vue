@@ -7,8 +7,9 @@
 </template>
 
 <script>
-import { Popper } from "../../util";
+import { Popper } from "../util";
 export default {
+  name: "CommonDropdown",
   props: {
     show: {
       type: Boolean,
@@ -50,8 +51,9 @@ export default {
   },
   methods: {
     update() {
-      const _this = this;
-      setStyle(this.$el, { display: "block", visibility: "hidden", width: "", top: "0", left: "0" }); // make sure popper calc exactly
+      if (this.show) {
+        setStyle(this.$el, { display: "block", visibility: "hidden", width: "auto", top: "0", left: "0" }); // make sure popper calc exactly
+      }
 
       if (this.popper) {
         this.popper.scheduleUpdate();
@@ -59,6 +61,7 @@ export default {
       }
 
       this.$nextTick(() => {
+        const _this = this;
         const placement = (() => {
           if (this.autoPlacement) {
             const { top, bottom, height } = this.$parent.$el.getBoundingClientRect();
@@ -69,7 +72,7 @@ export default {
           }
         })();
 
-        this.popper = new Popper(this.$parent.$refs.display, this.$el, {
+        this.popper = new Popper(this.$parent.$refs.reference, this.$el, {
           placement,
           eventsEnabled: false, // Whether events (resize, scroll) are initially enabled.
           modifiers: {
@@ -119,7 +122,12 @@ export default {
 
                   function onAnimationEnd() {
                     el.removeEventListener("animationend", onAnimationEnd);
-                    el.classList.remove("slide-up-enter-active", "slide-up-leave-active", "slide-down-enter-active", "slide-down-leave-active");
+
+                    // IE doesn't support multiple arguments for add or remove method
+                    for (const item of ["slide-down-enter-active", "slide-up-enter-active", "slide-down-leave-active", "slide-up-leave-active"]) {
+                      el.classList.remove(item);
+                    }
+
                     if (!show) {
                       setStyle(el, { display: "none" });
                       _this.$emit("on-hide"); // emit on animation end and dropdown panel hidden
