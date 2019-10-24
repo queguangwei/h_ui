@@ -637,8 +637,8 @@ export default {
      * 同步单元格编辑内容到rebuildData
      */
     syncRebuildData() {
+      if (this.typeName === 'editGird' || this.typeName === 'groupTable') return
       const data = this.parent.rebuildData
-      if(this.typeName === 'editGird') return
       if (this.row[this.column.key] === this.normalDate) return
       if (!Array.isArray(data) || data.length === 0) return
       const find = (rows, id) => {
