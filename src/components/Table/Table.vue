@@ -531,7 +531,7 @@ export default {
           [`${prefixCls}-border`]: this.border,
           [`${prefixCls}-stripe`]: this.stripe,
           [`${prefixCls}-with-fixed-top`]: !!this.height,
-          [`${prefixCls}-not-width`]: !!this.notSetWidth
+          [`${prefixCls}-not-width`]: this.notSetWidth && !this.autoHeadWidth
         }
       ]
     },
