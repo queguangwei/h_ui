@@ -280,7 +280,7 @@ export default {
       let flag = false
       if (this.model === '' && this.query !== '') {
         // o45证券代码不自动选择匹配项
-        if(!this.accuFilter) return
+        // if(!this.accuFilter) return
         // 先选值，左右键切换，再删除一个字符仍然有匹配项时
         for(let i in this.availableOptions) {
           if(this.query.toString().split(' ')[0] === this.availableOptions[i].label) {
