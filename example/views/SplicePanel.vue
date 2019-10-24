@@ -12,9 +12,9 @@
     {{valrange2}}
     <h-splice-panel 
       v-model="valrange2" 
-      showFormat 
       @on-change="onChange" 
       @on-open-change="onOpenChange" 
+      
       >
     </h-splice-panel>
   </div>
@@ -30,7 +30,7 @@ export default {
       val4:'',
       val5:20180101,
       valrange1:['2018/01/03','2018/01/08'],
-      valrange2:['2019-01-03'],
+      valrange2:['2019-01-03', '2019-01-06' ],
       readonly:false,
       options1: {
         shortcuts: [

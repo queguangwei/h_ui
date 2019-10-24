@@ -838,10 +838,12 @@ export default {
       const oldValue = JSON.stringify(before)
       const shouldEmitInput =
         newValue !== oldValue || typeof now !== typeof before
-      const strValue = this.showFormat == true ? this.visualValue : now
+      let strValue =  this.showFormat == true ? this.visualValue : now
       if (shouldEmitInput) {
         this.$emit('input', strValue) // to update v-model
-        if (this.type === 'daterange') this.$emit('input', this.publicStringValue) 
+        if (this.type.includes('range') && this.showFormat) {
+          this.$emit('input', this.publicStringValue) 
+        }
         this.$emit('on-change', this.publicStringValue)
         // this.$emit('input', now); // to update v-model
       }

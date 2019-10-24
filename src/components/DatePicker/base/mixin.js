@@ -52,7 +52,6 @@ export default {
       this.$emit('on-pick-click');
     },
     handleMouseMove(cell) {
-      // console.log('----handleMouseMove----', this.pickMouseDown, cell)
       this.$emit('pickMouseMoveChange', false)
       if (this.pickMouseDown) {
         this.$emit('pickMouseMoveChange', true)
@@ -76,7 +75,6 @@ export default {
       }, 120)
     },
     handleMouseUp(cell) {
-      // console.log('pickMode----->', this.pickMode, cell)
       if (this.pickMode !== 'move') return
       this.$emit('pickMouseDownChange', false)
       if (!this.pickMouseMove) return
