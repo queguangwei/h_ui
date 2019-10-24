@@ -437,7 +437,8 @@ export default {
         !this.column.type ||
         this.column.type === 'html' ||
         this.column.type === 'index' ||
-        this.column.type === 'selection'
+        this.column.type === 'selection' || 
+        this.column.viewValue
       ) {
         return false
       } else {
