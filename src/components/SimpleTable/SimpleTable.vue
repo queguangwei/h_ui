@@ -705,10 +705,10 @@ export default {
         if (this.bodyHeight === 0) {
           width = this.tableWidth
         } else {
-          if (this.data.length == 0) {
-            width = this.tableWidth
-          } else {
+          if (this.data.length !== 0 && this.isScrollY) {
             width = this.tableWidth - this.scrollBarWidth
+          } else {
+            width = this.tableWidth
           }
         }
         style.width = `${width}px`
@@ -717,9 +717,11 @@ export default {
     },
     headStyles() {
       //深拷贝
-      const style = Object.assign({}, this.tableStyle)
-      const width = this.data.length == 0 ? parseInt(this.tableStyle.width)
-        : parseInt(this.tableStyle.width) + this.scrollBarWidth
+//      const style = Object.assign({}, this.tableStyle)
+//      const width = this.data.length == 0 ? parseInt(this.tableStyle.width) : parseInt(this.tableStyle.width) + this.scrollBarWidth
+//      const width = parseInt(this.tableStyle.width)
+      let style = {}
+      let width = this.tableWidth
       style.width = `${width}px`
       return style
     },
@@ -1273,7 +1275,6 @@ export default {
         } else {
           this.tableWidth = parseInt(getStyle(this.$el, 'width')) - 1
         }
-//        console.log('开始设置总宽:::'+this.tableWidth)
         this.columnsWidth = {}
         this.$nextTick(() => {
           let columnsWidth = {}
@@ -1312,12 +1313,10 @@ export default {
               if(totalWidth < this.tableWidth) {
                 if(i === autoWidthIndex) {
                   let lastW = this.tableWidth - totalWidth + width
-//                  console.log('设置最后一列宽度:::'+ lastW)
                   this.$set(this.cloneColumns[autoWidthIndex], 'width', this.tableWidth - totalWidth + width)
                   this.$set(this.cloneColumns[autoWidthIndex], '_width', this.tableWidth - totalWidth + width)
                 }
               }
-//              console.log('加载数据,totalW:::'+ totalWidth)
               columnsWidth[column._index] = {
                 width: width
               }
@@ -1355,9 +1354,7 @@ export default {
 
             this.columnsWidth = columnsWidth
             this.tableWidth = totalWidth
-//            console.log('无数据时总宽:::'+this.tableWidth)
           }
-//          console.log('实际设置总宽:::'+this.tableWidth)
           // get table real height,for fixed when set height prop,but height < table's height,show scrollBarWidth
           this.bodyRealHeight =
             parseInt(getStyle(this.$refs.tbody, 'height')) || 0
@@ -2530,12 +2527,10 @@ export default {
     this.$nextTick(() => {
       this.ready = true
       this.initWidth = parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0
-      this.visibleCount =
-        Math.ceil(this.height / this.itemHeight) - (this.showHeader ? 0 : -1)
-        this.updateVisibleData()
+      this.visibleCount = Math.ceil(this.height / this.itemHeight) - (this.showHeader ? 0 : -1)
+      this.updateVisibleData()
       // this.focusIndex = this.defaultFocusIndex
     })
-    //window.addEventListener('resize', this.handleResize, false);
     on(window, 'resize', this.handleResize)
     on(window, 'resize', this.initResize)
     on(window, 'resize', this.getLeftWidth)
@@ -2550,7 +2545,6 @@ export default {
     on(document, 'keyup', this.keySelect)
   },
   beforeDestroy() {
-    //window.removeEventListener('resize', this.handleResize, false);
     off(window, 'resize', this.handleResize)
     off(window, 'resize', this.initResize)
     off(window, 'resize', this.getLeftWidth)
@@ -2559,6 +2553,20 @@ export default {
     off(document, 'keyup', this.keySelect)
   },
   watch: {
+//    bodyHeight(newVal, oldVal) {
+//      if(newVal !== oldVal) {
+//        let height = this.$refs.body.getBoundingClientRect().height
+//        let conentHeight = this.$refs.body.scrollHeight
+//        let oldIsScrollY = this.isScrollY
+//        if(!oldIsScrollY && conentHeight < height) {
+//          this.isScrollY = false
+//        }else if(oldIsScrollY && conentHeight > height) {
+//          this.isScrollY = true
+//        }else if(!oldIsScrollY && conentHeight > height) {
+//          this.isScrollY = true
+//        }
+//      }
+//    },
     toScrollTop() {
       this.privateToScrollTop = this.toScrollTop
     },

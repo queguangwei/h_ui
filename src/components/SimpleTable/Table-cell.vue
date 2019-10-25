@@ -147,7 +147,7 @@ export default {
           width = column._width - 16 <= 24 ? 24 : column._width - 16
         }
         // o45最后一列不设置width
-        if(column.width === undefined ) {
+        if(column.width === undefined || column.width === '') {
           width = width - getScrollBarSize()
         }
         // if(window.isO45) {
