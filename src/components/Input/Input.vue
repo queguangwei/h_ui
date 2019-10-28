@@ -9,7 +9,7 @@
       <Icon name="close" :style="clearstyle"
             :class="[prefixCls + '-icon',prefixCls + '-clear']"
             v-if="clearable&&type!='textarea'" v-show="hasvalue"
-            @on-click="handleClear"></Icon>
+            @on-mouse-down="handleClear"></Icon>
       <Icon :name="icon"
             :class="[prefixCls + '-icon',prefixCls + '-icon-normal']" :style="iconStyle"
             v-if="icon&&type!='textarea'"
