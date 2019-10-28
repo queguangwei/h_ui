@@ -58,7 +58,7 @@
                        widthAdaption filterable remote :remote-method="remoteMethod"
                        showFirstLabelOnly :accuFilter="false" :animated="false"
                        @on-keydown="handleKeyDown">
-        <h-select-block :data="dataList" :showCol="showCol" :colWidth="colWidth"></h-select-block>
+        <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
       </h-single-select>
     </h-msg-box>
     <h-msg-box v-model="show" escClose :mask-closable="false" maximize width="600" height="400">
@@ -150,16 +150,16 @@
         <h-input type="text" v-model="formCustom.age" number></h-input>
       </h-form-item>
       <h-form-item label="日期">
-        <h-date-picker type="daterange" ref="datepicker" placeholder="选择日期" showToday autoPlacement v-model="formCustom.date" class="curItemClass"></h-date-picker>
-      </h-form-item>
-      <h-form-item label="fastdate">
-        <h-fast-date type="date" placeholder="选择日期" ref="datepicker" class="curItemClass"></h-fast-date>
+        <h-date-picker type="daterange" ref="datepicker" placeholder="选择日期" :pickMode="'move'" autoPlacement v-model="formCustom.date" class="curItemClass"></h-date-picker>
       </h-form-item>
       <h-form-item>
         <h-button type="primary" @click="handleSubmit('formCustom')">提交</h-button>
         <h-button type="ghost" @click="handleReset('formCustom')" style="margin-left: 8px;">重置</h-button>
       </h-form-item>
     </h-form>
+    <h1>calendar</h1>
+    <h-calendar ref="calendar" :disableDate="disableDate" @on-select-change="getSelectDate">
+    </h-calendar>
     <h1>table</h1>
     <h-table :columns="columns" :data="data0" :summationData="summationData1" :loading="loading"
              border :highlight-row="true"  headAlgin="center" bodyAlgin="left"
@@ -1001,6 +1001,16 @@ export default {
         this.$set(this.$refs.repoEditGrid.rebuildData[y], "mortgage_ratio", data)
       }
     },
+    disableDate(date) {
+      return (
+        date &&
+        date.valueOf() < Date.now() &&
+        date.valueOf() >= Date.now() - 86400000
+      )
+    },
+    getSelectDate(e) {
+      console.log(e)
+    }
   },
   created() {
     window.isO45 = false

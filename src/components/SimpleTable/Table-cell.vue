@@ -70,7 +70,7 @@ export default {
     checked:Boolean,
     prefixCls:String,
     titleEllipsis:Boolean,
-     // 是否进行过滤，无限滚动加载数据的场景不适用， 仅支持通过simpleTable显式分页的场景
+    // 是否进行过滤，无限滚动加载数据的场景不适用， 仅支持通过simpleTable显式分页的场景
     isFilter: {
       type: Boolean,
       default: false
