@@ -128,6 +128,7 @@ export default {
     genItemCls(item) {
       return [
         `${this.prefixCls}-item`,
+        `${this.prefixCls}-option-item`,
         {
           [`${this.prefixCls}-disabled`]: item.disabled || false,
           [`${this.prefixCls}-selected`]: item.selected || false,
