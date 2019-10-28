@@ -7,7 +7,7 @@
       <li
         v-for="(item, inx) in visualData"
         v-show="!item.hidden"
-        :key="inx"
+        :key="item.value === undefined ? inx : item.value"
         :class="genItemCls(item)"
         @click.stop="onItemClick(item)"
       >
