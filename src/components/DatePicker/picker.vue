@@ -329,7 +329,6 @@ export default {
     },
     keyUpHandler(e) {
       let $input = this.$refs.input ? this.$refs.input.$el.querySelector('input') : null
-
       if (this.pickMode !== 'move' || $input === null) return
       switch (e.keyCode) {
         case 38:
@@ -755,13 +754,18 @@ export default {
       }
     },
     handleKeydown(e) {
+      const keyCode = e.keyCode
       if (this.visible) {
-        const keyCode = e.keyCode
         // Esc slide-up
         if (keyCode === 27) {
           e.preventDefault()
           this.visible = false
         }
+      }
+      // del
+      if(keyCode === 46) {
+        e.preventDefault()
+        this.handleClear()
       }
     },
     handleLongDate() {
