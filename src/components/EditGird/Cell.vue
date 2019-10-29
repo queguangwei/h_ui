@@ -432,7 +432,8 @@ export default {
       if (this.typeName != 'groupTable') {
         e.stopPropagation()
       }
-      if (this.showEditInput) return
+      // _disEdit 当前行不可编辑
+      if (this.showEditInput || this.row._disEdit) return
       if (
         !this.column.type ||
         this.column.type === 'html' ||
@@ -758,11 +759,13 @@ export default {
       this.renderType = 'normal'
     } else {
       if (
-        !this.showEditInput &&
+        // _disEdit 优先级高于showEditInput
+        this.row._disEdit || 
+        (!this.showEditInput &&
         this.column.type !== 'index' &&
         this.column.type !== 'selection' &&
         this.column.type !== 'expand' &&
-        this.column.type !== 'radio'
+        this.column.type !== 'radio')
       ) {
         this.renderType = 'normal'
       } else {
