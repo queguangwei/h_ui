@@ -240,7 +240,12 @@ export default {
     showToday:{
       type: Boolean,
       default: false
+    },
+    valueTypeArr: {
+      type: Boolean,
+      default: false,
     }
+
   },
   data() {
     const isRange = this.type.indexOf('range') > -1 ? true : false
@@ -329,7 +334,6 @@ export default {
     },
     keyUpHandler(e) {
       let $input = this.$refs.input ? this.$refs.input.$el.querySelector('input') : null
-
       if (this.pickMode !== 'move' || $input === null) return
       switch (e.keyCode) {
         case 38:
@@ -587,7 +591,7 @@ export default {
       const isValidDate = this.checkLegality(newValue, newDate)
 
       // type中含有ange 用户强制输入时间范围开始时间>结束时间，需要把连个时间点换一下
-      if ( this.type.indexOf('range') > -1 && newDate[0] > newDate[1]) newDate = newDate.reverse() 
+      if ( this.type.indexOf('range') > -1 && newDate[0] > newDate[1]) newDate = newDate.reverse()
 
       if (newValue !== oldValue && !isDisabled && isValidDate) {
         this.internalValue = newDate
@@ -755,13 +759,18 @@ export default {
       }
     },
     handleKeydown(e) {
+      const keyCode = e.keyCode
       if (this.visible) {
-        const keyCode = e.keyCode
         // Esc slide-up
         if (keyCode === 27) {
           e.preventDefault()
           this.visible = false
         }
+      }
+      // del
+      if(keyCode === 46) {
+        e.preventDefault()
+        this.handleClear()
       }
     },
     handleLongDate() {
@@ -823,7 +832,7 @@ export default {
       this.$emit('on-open-change', state)
     },
     value: {
-      handler(val) { 
+      handler(val) {
         this.internalValue = this.parseDate(val)
       }
     },
@@ -841,7 +850,7 @@ export default {
       let strValue =  this.showFormat == true ? this.visualValue : now
       if (shouldEmitInput) {
         this.$emit('input', strValue) // to update v-model
-        if (this.type.includes('range') && this.showFormat) {
+        if (this.type.includes('range') && this.showFormat && this.valueTypeArr) {
           this.$emit('input', this.publicStringValue) 
         }
         this.$emit('on-change', this.publicStringValue)
