@@ -240,7 +240,12 @@ export default {
     showToday:{
       type: Boolean,
       default: false
+    },
+    valueTypeArr: {
+      type: Boolean,
+      default: false,
     }
+
   },
   data() {
     const isRange = this.type.indexOf('range') > -1 ? true : false
@@ -841,8 +846,8 @@ export default {
       let strValue =  this.showFormat == true ? this.visualValue : now
       if (shouldEmitInput) {
         this.$emit('input', strValue) // to update v-model
-        if (this.type.includes('range') && this.showFormat) {
-          this.$emit('input', this.publicStringValue)
+        if (this.type.includes('range') && this.showFormat && this.valueTypeArr) {
+          this.$emit('input', this.publicStringValue) 
         }
         this.$emit('on-change', this.publicStringValue)
         // this.$emit('input', now); // to update v-model

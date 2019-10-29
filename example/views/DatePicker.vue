@@ -19,7 +19,7 @@
       </h-col>
       <h-col span="12">
         {{model2}}
-        <h-date-picker v-model="model2" type="daterange" @on-change="handleChange1" format="yyyy-MM-dd"  placement="bottom-end" placeholder="选择日期" showFormat>
+        <h-date-picker v-model="model2" type="daterange" @on-change="handleChange1" format="yyyy-MM-dd"  placement="bottom-end" placeholder="选择日期" showFormat valueTypeArr>
           <span slot="footer">123</span>
         </h-date-picker>
       </h-col>
