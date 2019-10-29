@@ -34,7 +34,7 @@
       </h-button-group>
       </br>
       </br>
-      <h-table :data="tData" :columns="columns" @on-row-click="rowClick"></h-table>
+      <h-table :data="[...tData, ...tData]" :columns="columns" @on-row-click="rowClick"></h-table>
       </br>
       <h-page :total="totalNum" @on-change="dataChange" show-sizer show-elevator show-total @on-page-size-change="pickerChange" :pageSizeOpts="pageSizeOpts"></h-page>
     </div>
