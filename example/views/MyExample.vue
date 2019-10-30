@@ -75,47 +75,49 @@
         <h-form-item label="input" prop="name" required :tipWidth="200">
           <h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>
         </h-form-item>
-        <h-form-item prop="date" label="date" required>
-          <h-date-picker type="date" placeholder="选择日期" showToday v-model="formValidate.date" class="curItemClass"></h-date-picker>
-        </h-form-item>
+
         <h-form-item prop="time" label="time" required upward>
           <h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time" class="curItemClass" ></h-time-picker>
         </h-form-item>
 
-        <!--<h-form-item label="fastdate" prop="fastdate" required>-->
-          <!--<h-fast-date class="curItemClass" v-model="formValidate.fastdate" format="yyyy-MM-dd"></h-fast-date>-->
-        <!--</h-form-item>-->
-        <!--<h-form-item label="typefield" prop="mail" required>-->
-          <!--<h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >-->
-        <!--</h-form-item>-->
-        <!--<h-form-item label="select" prop="city">-->
-          <!--<h-select v-model="formValidate.city" class="curItemClass" filterable transfer placement="top" @on-keyup="selectKeyup">-->
-            <!--<h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>-->
-          <!--</h-select>-->
-        <!--</h-form-item>-->
+        <h-form-item label="fastdate" prop="fastdate" required>
+          <h-fast-date class="curItemClass" v-model="formValidate.fastdate" format="yyyy-MM-dd"></h-fast-date>
+        </h-form-item>
+        <h-form-item label="typefield" prop="mail" required>
+          <h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >
+        </h-form-item>
+        <h-form-item label="select" prop="city">
+          <h-select v-model="formValidate.city" class="curItemClass" filterable remote :remote-method="remoteMethod1"
+                    :loading="isLoading" transfer placement="top">
+            <h-option v-for="item in remoteData" :value="item.value" :key="item.value">{{ item.label }}</h-option>
+          </h-select>
+        </h-form-item>
         <h-form-item label="selecttree" prop="selecttree">
           <h-select-tree v-model="formValidate.selecttree" :data="selectTreeData" ref="selecttree"
                          checkIndeter filterable	showCheckbox :firstValue="firstValue">
           </h-select-tree>
-          {{formValidate.selecttree}}
         </h-form-item>
-        <!--<h-form-item label="tree" prop="tree">-->
-          <!--<h-select-tree v-model="formValidate.tree" class="curItemClass" :data="treeData" ref="tree" filterable></h-select-tree>-->
-        <!--</h-form-item>-->
-        <!--<h-form-item label="radio" prop="gender">-->
-          <!--<h-radio-group v-model="formValidate.gender">-->
-            <!--<h-radio label="male" class="curItemClass" >男</h-radio>-->
-            <!--<h-radio label="female" class="curItemClass" >女</h-radio>-->
-          <!--</h-radio-group>-->
-        <!--</h-form-item>-->
-        <!--<h-form-item label="checkbox" prop="interest">-->
-          <!--<h-checkbox-group v-model="formValidate.interest">-->
-            <!--<h-checkbox label="吃饭" class="curItemClass" ></h-checkbox>-->
-            <!--<h-checkbox label="睡觉" class="curItemClass" ></h-checkbox>-->
-            <!--<h-checkbox label="跑步" class="curItemClass" ></h-checkbox>-->
-            <!--<h-checkbox label="看电影" class="curItemClass" ></h-checkbox>-->
-          <!--</h-checkbox-group>-->
-        <!--</h-form-item>-->
+        <h-form-item label="tree" prop="tree">
+          <h-select-tree v-model="formValidate.tree" class="curItemClass" :data="treeData" ref="tree" filterable></h-select-tree>
+        </h-form-item>
+        <h-form-item label="radio" prop="gender">
+          <h-radio-group v-model="formValidate.gender">
+            <h-radio label="male" class="curItemClass" >男</h-radio>
+            <h-radio label="female" class="curItemClass" >女</h-radio>
+          </h-radio-group>
+        </h-form-item>
+        <h-form-item label="checkbox" prop="interest">
+          <h-checkbox-group v-model="formValidate.interest">
+            <h-checkbox label="吃饭" class="curItemClass" ></h-checkbox>
+            <h-checkbox label="睡觉" class="curItemClass" ></h-checkbox>
+            <h-checkbox label="跑步" class="curItemClass" ></h-checkbox>
+            <h-checkbox label="看电影" class="curItemClass" ></h-checkbox>
+          </h-checkbox-group>
+        </h-form-item>
+        <h-form-item prop="date" label="date" required>
+          <h-date-picker type="date" placeholder="选择日期" showToday v-model="formValidate.date" class="curItemClass"
+                         :options="options3" autoPlacement></h-date-picker>
+        </h-form-item>
       </h-form>
       <div slot="footer">
         <h-button type="primary" @click="focusFirst">聚焦第一项输入框</h-button>
@@ -150,9 +152,9 @@
       <h-form-item label="年龄" prop="age" required>
         <h-input type="text" v-model="formCustom.age" number></h-input>
       </h-form-item>
-      <h-form-item label="日期">
-        <h-date-picker type="daterange" ref="datepicker" placeholder="选择日期" :pickMode="'move'" autoPlacement v-model="formCustom.date" class="curItemClass"></h-date-picker>
-      </h-form-item>
+      <!--<h-form-item label="日期">-->
+        <!--<h-date-picker type="daterange" ref="datepicker" placeholder="选择日期" :pickMode="'move'" autoPlacement v-model="formCustom.date" class="curItemClass"></h-date-picker>-->
+      <!--</h-form-item>-->
       <h-form-item>
         <h-button type="primary" @click="handleSubmit('formCustom')">提交</h-button>
         <h-button type="ghost" @click="handleReset('formCustom')" style="margin-left: 8px;">重置</h-button>
@@ -179,91 +181,9 @@
                  <!--:columns="columnsEdit" :data="dataEdit" :disabled-hover="true" :highlight-row="true"-->
                  <!--@on-money-blur="on_money_blur">-->
     <!--</h-edit-gird>-->
-    <h-edit-gird ref="editGird" :columns="columns2" :data="tData" size="small" :disabled-hover="true" :highlight-row="true"
-                 @on-current-change="click1" :showEditInput="true" height="200" :option="options1" :treeOption="treeOption" ></h-edit-gird>
   </div>
 </template>
 <script>
-  var tData= [
-    {
-      name: '王小明',
-      age: 18,
-      address: '北京市朝阳区芍药居',
-      money: '120.00',
-      cardId: '6223 5678 1234 5678',
-      city: '北京',
-      dating:'2018-01-09T16:00:00.000Z',
-      timing:'16:00:00.00',
-      tree:'leaf1'
-      // _highlight: true//默认选择当前项
-    },
-    {
-      name: '张小刚',
-      age: 25,
-      address: '北京市海淀区西二旗',
-      money: '130.00',
-      cardId: '6223 5678 1234 5678',
-      city: '北京',
-      dating:'2018-01-09T16:00:00.000Z',
-      timing:'16:00:00.00',
-      tree:'leaf1'
-    },
-    {
-      name: '李小红',
-      age: 30,
-      address: '上海市浦东新区世纪大道',
-      money: '140.00',
-      cardId: '6223 5678 1234 5678',
-      city: '北京',
-      dating:'2018-01-09T16:00:00.000Z',
-      timing:'16:00:00.00',
-      tree:'leaf1'
-    },
-    {
-      name: '周小伟',
-      age: 26,
-      address: '深圳市南山区深南大道',
-      money: '150.00',
-      cardId: '6223 5678 1234 5678',
-      city: '北京',
-      dating:'2018-01-09T16:00:00.000Z',
-      timing:'16:00:00.00',
-      tree:'leaf1'
-    },
-    {
-      name: '张小刚',
-      age: 25,
-      address: '北京市海淀区西二旗',
-      money: '130.00',
-      cardId: '6223 5678 1234 5678',
-      city: '北京',
-      dating:'2018-01-09T16:00:00.000Z',
-      timing:'16:00:00.00',
-      tree:'leaf1'
-    },
-    {
-      name: '李小红',
-      age: 30,
-      address: '上海市浦东新区世纪大道',
-      money: '140.00',
-      cardId: '6223 5678 1234 5678',
-      city: '北京',
-      dating:'2018-01-09T16:00:00.000Z',
-      timing:'16:00:00.00',
-      tree:'leaf1'
-    },
-    {
-      name: '周小伟',
-      age: 26,
-      address: '深圳市南山区深南大道',
-      money: '150.00',
-      cardId: '6223 5678 1234 5678',
-      city: '北京',
-      dating:'2018-01-09T16:00:00.000Z',
-      timing:'16:00:00.00',
-      tree:'leaf1'
-    }
-  ];
   let bigTreeData = [];
   for(var i=0;i<30;i++){
     let obj =  {
@@ -394,6 +314,11 @@ export default {
       show:false,
       isLoading: false,
       tabs:15,
+      options3: {
+        disabledDate (date) {
+          return date && date.valueOf() < Date.now() - 86400000;
+        }
+      },
       value:'value0',
       cityList: [
 //        {value: 'beijing', label: '北京市'},
@@ -752,126 +677,7 @@ export default {
       ],
       baseTreeData: [],
       treedata: [],
-//      columns2: [],
-      tData: tData,
-      columns2: [
-        {
-          type: 'text',
-          title: '姓名',
-          key: 'name',
-          width: 200,
-          rule: [{ required: true, message: '姓名不能为空'},
-            {validator:function (rule, val, callback) {
-              if(val == 'test'){
-                callback()
-              }else{
-                callback(new Error("不是test"))
-              }
-            }}
-          ]
-        },
-        {
-          type: 'text',
-          title: '年龄',
-          width: 200,
-          key: 'age',
-          hiddenCol:false,
-          rule:  [
-            { required: true, message: '姓名不能为空' },
-            { pattern: /^-?[1-9]\d*$|^0/, message: '只能输入数字格式' }
-          ],
-        },
-        {
-          type: 'textArea',
-          rows: 2,
-          width: 200,
-          title: '地址',
-          key: 'address',
-          rule: { required: true, message: '地址不能为空'},
-        },
-        {
-          type: 'money',
-          title: '金额',
-          width: 200,
-          integerNum: 3,
-          suffixNum: 2,
-          bigTips: true,
-          key: 'money',
-          rule: { required: true, message: '金额不能为空'},
-        },
-        {
-          type: 'card',
-          title: '卡号',
-          width: 200,
-          key: 'cardId',
-          rule: { required: true, message: '卡号不能为空'},
-        },
-        {
-          type: 'select',
-          title: '地区',
-          width: 200,
-          key: 'city',
-          multiple:false,
-          option: [
-            {value:"北京"},
-            {value:"上海"},
-            {value:"天津"},
-            {value:"沈阳"},
-            {value:"杭州"},
-            {value:"武汉"},
-          ],
-          rule:{ required: true, message: '请选择城市', trigger: 'blur,change' }
-        },
-        {
-          type: 'date',
-          title: '日期',
-          width: 200,
-          key: 'dating',
-          dateType:'date',
-          format: 'yyyy-MM-dd',
-          rule:{ required: true, message: '请选择日期', trigger: 'blur,change' }
-        },
-        {
-          type: 'time',
-          title: '时间',
-          width: 200,
-          key: 'timing',
-          dateType:'time',
-          format: 'HH:mm:ss',
-          steps: [],
-          rule:{ required: true, message: '请选择时间', trigger: 'blur,change' }
-        },
-        {
-          type: 'selectTree',
-          title: '下拉树',
-          width: 200,
-          key: 'tree',
-          treeData:[{
-            expand: true,
-            title: 'parent 1',
-            children: [{
-              title: 'parent 1-0',
-              expand: true,
-              children: [{
-                title: 'leaf1',
-                disableCheckbox: true
-              }, {
-                title: 'leaf2',
-              }]
-            }, {
-              title: 'parent 1-1',
-              expand: true,
-              checked: true,
-              children: [{
-                title: 'leaf3',
-              }]
-            }]
-          }],
-          showCheckbox: false,
-          checkStrictly: false,
-          rule:{ required: true, message: '请选择子节点', trigger: 'blur,change' }
-        }
-      ],
+      columns2: [],
       data1: [{id: 0}, {id:1}, {id:2}],
       columnsEdit: [
         {
@@ -1069,10 +875,6 @@ export default {
         this.$refs.select.blur();
       }
     },
-    selectKeyup(val, e) {
-      console.log(val)
-      console.log(e)
-    },
     handleTabRemove1(name){
       console.log(this.tabs)
     },
@@ -1118,12 +920,12 @@ export default {
           this.remoteData = list.filter(
             item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1
           );
-        }, 800);
+        }, 300);
 
       } else {
         this.remoteData = [];
       }
-      done()
+//      done()
     },
     handlekeydown(val, e) {
 //      console.log(val)
@@ -1231,6 +1033,7 @@ export default {
     }
     this.baseTreeData = this.convertTreeData(bigTreeData, attributes);
     this.treedata=this.baseTreeData;
+
   },
 }
 </script>

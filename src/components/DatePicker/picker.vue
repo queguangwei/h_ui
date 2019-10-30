@@ -771,6 +771,7 @@ export default {
       if(keyCode === 46) {
         e.preventDefault()
         this.handleClear()
+        this.focus()
       }
     },
     handleLongDate() {
@@ -851,7 +852,7 @@ export default {
       if (shouldEmitInput) {
         this.$emit('input', strValue) // to update v-model
         if (this.type.includes('range') && this.showFormat && this.valueTypeArr) {
-          this.$emit('input', this.publicStringValue) 
+          this.$emit('input', this.publicStringValue)
         }
         this.$emit('on-change', this.publicStringValue)
         // this.$emit('input', now); // to update v-model
@@ -866,9 +867,9 @@ export default {
       this.picker.$destroy()
     }
     this.$refs.drop.destroy()
-    off(document, 'keydown', this.handleKeydown)
+    off(this.$refs.reference, 'keydown', this.handleKeydown)
     if(!window.isO45) {
-      off(document, 'keyup', this.keyUpHandler)
+      off(this.$refs.reference, 'keyup', this.keyUpHandler)
     }
   },
   mounted() {
@@ -885,9 +886,9 @@ export default {
       }
     }
     if (this.open !== null) this.visible = this.open
-    on(document, 'keydown', this.handleKeydown)
+    on(this.$refs.reference, 'keydown', this.handleKeydown)
     if(!window.isO45) {
-      on(document, 'keyup', this.keyUpHandler)
+      on(this.$refs.reference, 'keyup', this.keyUpHandler)
     }
   }
 }
