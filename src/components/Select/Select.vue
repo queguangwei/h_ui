@@ -392,15 +392,15 @@ export default {
       return [
         `${prefixCls}`,
         {
-            [`${prefixCls}-visible`]: this.visible,
-            [`${prefixCls}-disabled`]: this.disabled,
-            [`${prefixCls}-editable`]: !this.editable,
-            [`${prefixCls}-readonly`]: this.readonly,
-            [`${prefixCls}-multiple`]: this.multiple,
-            [`${prefixCls}-single`]: !this.multiple,
-            [`${prefixCls}-show-clear`]: this.showCloseIcon,
-            [`${prefixCls}-${this.size}`]: !!this.size,
-            [`${prefixCls}-hideMult`]:this.hideMult&&this.multiple
+          [`${prefixCls}-visible`]: this.visible,
+          [`${prefixCls}-disabled`]: this.disabled,
+          [`${prefixCls}-editable`]: !this.editable,
+          [`${prefixCls}-readonly`]: this.readonly,
+          [`${prefixCls}-multiple`]: this.multiple,
+          [`${prefixCls}-single`]: !this.multiple,
+          [`${prefixCls}-show-clear`]: this.showCloseIcon,
+          [`${prefixCls}-${this.size}`]: !!this.size,
+          [`${prefixCls}-hideMult`]:this.hideMult&&this.multiple
         }
       ];
     },
@@ -432,28 +432,28 @@ export default {
       ];
     },
     showPlaceholder () {
-        let status = false;
-        if ((typeof this.model) === 'string') {
-            if (this.model === '') {
-                status = true;
-            }
-        } else if (Array.isArray(this.model)) {
-            if (!this.model.length) {
-                status = true;
-            }
-        } else if( this.model === null){
-            status = true;
-        }
-        return status;
+      let status = false;
+      if ((typeof this.model) === 'string') {
+          if (this.model === '') {
+              status = true;
+          }
+      } else if (Array.isArray(this.model)) {
+          if (!this.model.length) {
+              status = true;
+          }
+      } else if( this.model === null){
+          status = true;
+      }
+      return status;
     },
     showCloseIcon () {
-        return (!this.multiple && this.clearable||this.multiple&&this.multClearable) && !this.showPlaceholder;
+      return (!this.multiple && this.clearable||this.multiple&&this.multClearable) && !this.showPlaceholder;
     },
     showRemoteIcon(){
       if(this.remote&&this.remoteIcon!=""){
         return true;
       }else{
-          return false;
+        return false;
       }
     },
     localePlaceholder () {
@@ -491,7 +491,7 @@ export default {
             return this.noMoreText;
         }
     },
-    dropVisible () { 
+    dropVisible () {
       let status = true;
       const options = this.$slots.default || [];
       if (!this.loading && this.remote && this.query === '' && !options.length) status = false;
@@ -854,7 +854,7 @@ export default {
       if (this.disabled || this.readonly || !this.editable) {
         return false;
       }
-      
+
       if(item) {
         // 修正 index 与 item 不匹配的问题
         index = this.model.findIndex(value => value === item.value)
@@ -872,7 +872,7 @@ export default {
       if (this.filterable && this.visible && !this.showBottom) {
         this.$refs.input.focus();
       }
-      
+
       this.isInputFocus = true;
     },
     toggleSingleSelected (value, init = false) {
@@ -1145,7 +1145,6 @@ export default {
       // this.isInputFocus = false
       setTimeout(() => {
         const model = this.model;
-
         if (this.multiple) {
           this.query = '';
         } else {
@@ -1486,7 +1485,7 @@ export default {
       } else {
         this.isKeyDown = false; // switch off key down status
         this.keyboardEvent = null; // reset keyboard event
-        
+
         if (this.filterable) {
           this.$refs.input.blur();
           // #566 reset options visible
@@ -1505,7 +1504,7 @@ export default {
         // o45证券代码--点击时不显示下拉选项（手动隐藏），因此需要值改变后（手动显示）
         if (this.remoteFocusNotShowList && !this.multiple) { // 单选时适用，多选时query会清空，不适用
           if ( val != '' && !this.visible && val != this.value) {
-              this.visible = true
+            this.visible = true
           }
           if (this.visible && !this.isInputFocus) { //点击其他页面触发失去焦点事件
             this.visible = false
@@ -1534,10 +1533,10 @@ export default {
         }
         typeof this.$refs.createdOption !== 'undefined' && (this.$refs.createdOption.isFocus = false);
       } else {
-          if (!this.selectToChangeQuery) {
-            this.$emit('on-query-change', val);
-            this.broadcastQuery(val);
-          }
+        if (!this.selectToChangeQuery) {
+          this.$emit('on-query-change', val);
+          this.broadcastQuery(val);
+        }
       }
       this.$nextTick(() => {
         this.enableCreate && this.checkOptionSelected();

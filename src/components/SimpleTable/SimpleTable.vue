@@ -59,8 +59,7 @@
            @scroll="handleBodyScroll"
            v-show="!((!!localeNoDataText && (!data || data.length === 0)) || (!!localeNoFilteredDataText && (!rebuildData || rebuildData.length === 0)))">
         <div :class="[prefixCls + '-phantom']"
-             :style="{height: contentHeight + 'px'}">
-        </div>
+             :style="{height: contentHeight + 'px'}"></div>
         <div class="h-simple-content"
              ref="content">
           <table cellspacing="0"
@@ -2668,8 +2667,7 @@ export default {
     height() {
       this.fixedHeader()
       this.$nextTick(() => {
-        this.visibleCount =
-          Math.ceil(this.height / this.itemHeight) - (this.showHeader ? 0 : -1)
+        this.visibleCount = Math.ceil(this.height / this.itemHeight) - (this.showHeader ? 0 : -1)
         this.updateVisibleData()
       })
     },
