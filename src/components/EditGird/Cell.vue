@@ -197,7 +197,8 @@ import {
   deepCopy,
   getYMD,
   getHMS,
-  typeOf
+  typeOf,
+  divideNum
 } from '../../util/tools.js'
 import Emitter from '../../mixins/emitter'
 
@@ -659,6 +660,13 @@ export default {
       if (row) {
         row[this.column.key] = this.normalDate
       }
+    },
+     /**
+     * 格式化type=money时显示值
+     */
+    initMoneyViewValue () {
+      let val = this.normalDate ? this.normalDate.trim() : this.normalDate;
+      if (val != '') this.normalDate = divideNum(val);
     }
   },
   watch: {
@@ -751,6 +759,8 @@ export default {
           this.columnTree = val
           this.columnCascader = val
         }
+        // 格式化 type=money的千分符显示
+        if (this.type == 'money' && this.renderType =='normal' && (this.column.divided || this.column.immeDivided)) this.initMoneyViewValue()
       }
     }
   },
@@ -787,6 +797,9 @@ export default {
         this.dispatch('EditGird', 'on-rule-cell-add', this)
       }
     }
+    // 格式化 type=money的千分符显示
+    if (this.column.type == 'money' && this.renderType =='normal' && (this.column.divided || this.column.immeDivided)) {
+      this.initMoneyViewValue()}
   },
   mounted() {
     let index = this.index
