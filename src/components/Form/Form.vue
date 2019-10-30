@@ -149,7 +149,7 @@ export default {
           for (var i = 0; i < this.fields.length; i++) {
             if (hasClass(this.fields[i].$el, 'h-form-item-error')) {
               // 当formItem中有slot label时，输入类型组件是label总个数之后的children
-              let realFocusCom =  this.fields[i].label && this.fields[i].label.length > 0 ? this.fields[i].label.length : 0
+              let realFocusCom =  this.fields[i].$slots.label && this.fields[i].$slots.label.length > 0 ? this.fields[i].$slots.label.length : 0
               if (this.fields[i].$children[realFocusCom] && this.fields[i].$children[realFocusCom].focus)this.fields[i].$children[realFocusCom].focus()
               break
             }
