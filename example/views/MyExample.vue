@@ -150,7 +150,8 @@
         <h-input type="text" v-model="formCustom.age" number></h-input>
       </h-form-item>
       <h-form-item label="日期">
-        <h-date-picker type="daterange" ref="datepicker" placeholder="选择日期" :pickMode="'move'" autoPlacement v-model="formCustom.date" class="curItemClass"></h-date-picker>
+        <h-date-picker type="daterange" ref="datepicker" placeholder="选择日期" :pickMode="'move'"
+                       unlinkPanels autoPlacement v-model="formCustom.date" class="curItemClass"></h-date-picker>
       </h-form-item>
       <h-form-item>
         <h-button type="primary" @click="handleSubmit('formCustom')">提交</h-button>
@@ -161,12 +162,13 @@
     <h-calendar ref="calendar" :disableDate="disableDate" @on-select-change="getSelectDate">
     </h-calendar>
     <h1>table</h1>
-    <h-table :columns="columns" :data="data0" :summationData="summationData1" :loading="loading"
-             border :highlight-row="true"  headAlgin="center" bodyAlgin="left"
+    <h-table ref="table" :columns="columns" :data="data0" :summationData="summationData1" :loading="loading"
+             border :highlight-row="true"  headAlgin="center" bodyAlgin="left" clickHeadSort isMulitSort
              canDrag :lastColWidth="150" :minDragWidth="40" :minColWidth="60" notSetWidth autoHeadWidth
              @on-sort-change="sortchange" @on-table-width-change="widthChange">
       <span slot="loading">我是自定义加载！！！</span>
     </h-table>
+    <h-button @click="resetSort">重置排序</h-button>
     <h1>tree</h1>
     <h-tree :data="baseData" show-checkbox></h-tree>
     <h1>simpleTreeGrid</h1>
@@ -488,12 +490,14 @@
             width:150,
             key: 'province',
             ellipsis:true,
+            sortable: true,
             type: 'html'
           },
           {
             title: '市区',
             width:150,
             key: 'city',
+            sortable: true,
             ellipsis:true,
           },
           {
@@ -961,6 +965,9 @@
       },
       cancel () {
         this.$hMessage.info('点击了取消');
+      },
+      resetSort() {
+        this.$refs.table.resetAllSort()
       },
       convertTreeData(rows, attributes) {
         var keyNodes = {}, parentKeyNodes = {};

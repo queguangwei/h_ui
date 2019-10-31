@@ -1203,7 +1203,7 @@ export default {
       if(column.sortable) {
         const type = column._sortType
         // 【TS:201907290145-资管业委会（资管）_孔磊-【需求类型】需求【需求描述】表格2、点击列头时就可以进行排序】 按ctrl+鼠标点击可重置排序
-        if(window.isO45 && this.isCtrlDown) {
+        if(this.isCtrlDown) {
           this.handleSort(index, 'normal')
           return
         }
