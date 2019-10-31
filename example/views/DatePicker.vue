@@ -3,12 +3,13 @@
 
     <Button @on-click="testClick(true)">获取焦点</Button>
     <Button @on-click="testClick(false)">失去焦点</Button>
-    <h-date-picker v-model="model1" @on-blur="dateBlur" @on-focus="dateFocus" :options="options5" @on-illegal-input="handleIllegalInput" clearOnIllegal @on-change="handleChange1" confirm showTwoPanel format="yyyy-MMM-Do" :showFormat="true" style="width:180px" :disabled="changeable" ref="test"></h-date-picker>
+    <h-date-picker v-model="model1" :options="options5" clearOnIllegal confirm showTwoPanel format="yyyy-MMM-Do" :showFormat="true" style="width:180px" :disabled="changeable" ref="test"
+                   @on-blur="dateBlur" @on-focus="dateFocus" @on-illegal-input="handleIllegalInput" @on-change="handleChange1"></h-date-picker>
     <span>{{formItem.date}}</span>
     <Button @click = "changedis">改变状态</Button>
 
 
-  
+
     <h-row>
       <h2>基本用法</h2>
       <p>设置属性 type 为 date 或 daterange 分别显示选择单日和选择范围类型。<br>
@@ -18,7 +19,7 @@
       </h-col>
       <h-col span="12">
         {{model2}}
-        <h-date-picker v-model="model2" type="daterange" @on-change="handleChange1" format="yyyy-MM-dd"  placement="bottom-end" placeholder="选择日期" showFormat>
+        <h-date-picker v-model="model2" type="daterange" @on-change="handleChange1" format="yyyy-MM-dd"  placement="bottom-end" placeholder="选择日期" showFormat valueTypeArr>
           <span slot="footer">123</span>
         </h-date-picker>
       </h-col>

@@ -1,33 +1,33 @@
 <template>
   <div>
     <h1>Grid</h1>
-    <h-row>
-      <h-col span="12" style="background:red">col-12</h-col>
-      <h-col span="12" style="background:blue">col-12</h-col>
-    </h-row>
-    <br>
-    <h-row>
-      <h-col span="8" style="background:yellow">col-8</h-col>
-      <h-col span="8" style="background:green">col-8</h-col>
-      <h-col span="8" style="background:pink">col-8</h-col>
-    </h-row>
-    <br>
-    <h-row>
-      <h-col span="6" style="background:gray">col-6</h-col>
-      <h-col span="6" style="background:black">col-6</h-col>
-      <h-col span="6" style="background:grey">col-6</h-col>
-      <h-col span="6" style="background:black">col-6</h-col>
-    </h-row>
+    <!--<h-row>-->
+      <!--<h-col span="12" style="background:red">col-12</h-col>-->
+      <!--<h-col span="12" style="background:blue">col-12</h-col>-->
+    <!--</h-row>-->
+    <!--<br>-->
+    <!--<h-row>-->
+      <!--<h-col span="8" style="background:yellow">col-8</h-col>-->
+      <!--<h-col span="8" style="background:green">col-8</h-col>-->
+      <!--<h-col span="8" style="background:pink">col-8</h-col>-->
+    <!--</h-row>-->
+    <!--<br>-->
+    <!--<h-row>-->
+      <!--<h-col span="6" style="background:gray">col-6</h-col>-->
+      <!--<h-col span="6" style="background:black">col-6</h-col>-->
+      <!--<h-col span="6" style="background:grey">col-6</h-col>-->
+      <!--<h-col span="6" style="background:black">col-6</h-col>-->
+    <!--</h-row>-->
     <br>
     <h1>tabs</h1>
-    <h-tabs ref="remove" type="line" @on-tab-remove="handleTabRemove1" showArrow arrowOnRight closable :iconLeftClassName="'icon-left icon-arrow'">
-      <h-spin size="large"></h-spin>
-      <h-tab-pane v-for="tab in tabs" :key="tab" :name="'标签' + tab" :label="'标签' + tab">
-        标签{{ tab }}的内容
-      </h-tab-pane>
-    </h-tabs>
-    <h-button type="ghost" @click="handleTabsAdd(true)" size="small" slot="extra">增加</h-button>
-    <h-button type="ghost" @click="handleTabsAdd(false)" size="small" slot="extra">减少</h-button>
+    <!--<h-tabs ref="remove" type="line" @on-tab-remove="handleTabRemove1" showArrow arrowOnRight closable :iconLeftClassName="'icon-left icon-arrow'">-->
+      <!--<h-spin size="large"></h-spin>-->
+      <!--<h-tab-pane v-for="tab in tabs" :key="tab" :name="'标签' + tab" :label="'标签' + tab">-->
+        <!--标签{{ tab }}的内容-->
+      <!--</h-tab-pane>-->
+    <!--</h-tabs>-->
+    <!--<h-button type="ghost" @click="handleTabsAdd(true)" size="small" slot="extra">增加</h-button>-->
+    <!--<h-button type="ghost" @click="handleTabsAdd(false)" size="small" slot="extra">减少</h-button>-->
     <br>
     <h1>buttonGroup</h1>
     <h-button-group>
@@ -58,7 +58,7 @@
                        widthAdaption filterable remote :remote-method="remoteMethod"
                        showFirstLabelOnly :accuFilter="false" :animated="false"
                        @on-keydown="handleKeyDown">
-        <h-select-block :data="dataList" :showCol="showCol" :colWidth="colWidth"></h-select-block>
+        <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
       </h-single-select>
     </h-msg-box>
     <h-msg-box v-model="show" escClose :mask-closable="false" maximize width="600" height="400">
@@ -75,12 +75,11 @@
         <h-form-item label="input" prop="name" required :tipWidth="200">
           <h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>
         </h-form-item>
+
         <h-form-item prop="time" label="time" required upward>
           <h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time" class="curItemClass" ></h-time-picker>
         </h-form-item>
-        <h-form-item prop="date" label="date" required>
-          <h-date-picker type="date" placeholder="选择日期" v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
-        </h-form-item>
+
         <h-form-item label="fastdate" prop="fastdate" required>
           <h-fast-date class="curItemClass" v-model="formValidate.fastdate" format="yyyy-MM-dd"></h-fast-date>
         </h-form-item>
@@ -88,13 +87,15 @@
           <h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >
         </h-form-item>
         <h-form-item label="select" prop="city">
-          <h-select v-model="formValidate.city" class="curItemClass" filterable transfer placement="top" @on-keyup="selectKeyup">
-            <h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>
+          <h-select v-model="formValidate.city" class="curItemClass" filterable remote :remote-method="remoteMethod1"
+                    :loading="isLoading" transfer placement="top">
+            <h-option v-for="item in remoteData" :value="item.value" :key="item.value">{{ item.label }}</h-option>
           </h-select>
         </h-form-item>
         <h-form-item label="selecttree" prop="selecttree">
-          <h-select-tree v-model="formValidate.selecttree" :data="selectTreeData" ref="selecttree" filterable	showCheckbox :firstValue="firstValue"></h-select-tree>
-          {{formValidate.selecttree}}
+          <h-select-tree v-model="formValidate.selecttree" :data="selectTreeData" ref="selecttree"
+                         checkIndeter filterable	showCheckbox :firstValue="firstValue">
+          </h-select-tree>
         </h-form-item>
         <h-form-item label="tree" prop="tree">
           <h-select-tree v-model="formValidate.tree" class="curItemClass" :data="treeData" ref="tree" filterable></h-select-tree>
@@ -112,6 +113,10 @@
             <h-checkbox label="跑步" class="curItemClass" ></h-checkbox>
             <h-checkbox label="看电影" class="curItemClass" ></h-checkbox>
           </h-checkbox-group>
+        </h-form-item>
+        <h-form-item prop="date" label="date" required>
+          <h-date-picker type="date" placeholder="选择日期" showToday v-model="formValidate.date" class="curItemClass"
+                         :options="options3" autoPlacement></h-date-picker>
         </h-form-item>
       </h-form>
       <div slot="footer">
@@ -147,35 +152,35 @@
       <h-form-item label="年龄" prop="age" required>
         <h-input type="text" v-model="formCustom.age" number></h-input>
       </h-form-item>
-      <h-form-item label="日期">
-        <h-date-picker type="date" ref="datepicker" placeholder="选择日期" showToday autoPlacement v-model="formCustom.date" class="curItemClass"></h-date-picker>
-      </h-form-item>
-      <h-form-item label="fastdate">
-        <h-fast-date type="date" placeholder="选择日期" ref="datepicker" class="curItemClass"></h-fast-date>
-      </h-form-item>
+      <!--<h-form-item label="日期">-->
+        <!--<h-date-picker type="daterange" ref="datepicker" placeholder="选择日期" :pickMode="'move'" autoPlacement v-model="formCustom.date" class="curItemClass"></h-date-picker>-->
+      <!--</h-form-item>-->
       <h-form-item>
         <h-button type="primary" @click="handleSubmit('formCustom')">提交</h-button>
         <h-button type="ghost" @click="handleReset('formCustom')" style="margin-left: 8px;">重置</h-button>
       </h-form-item>
     </h-form>
+    <h1>calendar</h1>
+    <!--<h-calendar ref="calendar" :disableDate="disableDate" @on-select-change="getSelectDate">-->
+    <!--</h-calendar>-->
     <h1>table</h1>
-    <h-table :columns="columns" :data="data0" :summationData="summationData1" :loading="loading"
-             border :highlight-row="true"  headAlgin="center" bodyAlgin="left"
-             canDrag :lastColWidth="150" :minDragWidth="40" :minColWidth="60" notSetWidth autoHeadWidth
-             @on-sort-change="sortchange" @on-table-width-change="widthChange">
-      <span slot="loading">我是自定义加载！！！</span>
-    </h-table>
+    <!--<h-table :columns="columns" :data="data0" :summationData="summationData1" :loading="loading"-->
+             <!--border :highlight-row="true"  headAlgin="center" bodyAlgin="left"-->
+             <!--canDrag :lastColWidth="150" :minDragWidth="40" :minColWidth="60" notSetWidth autoHeadWidth-->
+             <!--@on-sort-change="sortchange" @on-table-width-change="widthChange">-->
+      <!--<span slot="loading">我是自定义加载！！！</span>-->
+    <!--</h-table>-->
     <h1>tree</h1>
-    <h-tree :data="baseData" show-checkbox></h-tree>
+    <!--<h-tree :data="baseData" show-checkbox></h-tree>-->
     <h1>simpleTreeGrid</h1>
-    <h-button type="primary" @click="expandAll">展开</h-button>
-    <h-button @click="fold">收起</h-button>
-    <h-simple-tree-gird :columns="columns1" ref="treeGrid" :data="treedata" canDrag :height="400" @on-expand="expand"></h-simple-tree-gird>
+    <!--<h-button type="primary" @click="expandAll">展开</h-button>-->
+    <!--<h-button @click="fold">收起</h-button>-->
+    <!--<h-simple-tree-gird :columns="columns1" ref="treeGrid" :data="treedata" canDrag :height="250" @on-expand="expand"></h-simple-tree-gird>-->
     <h1>editGird</h1>
-    <h-edit-gird ref="repoEditGrid" border height="400" size="small" showEditInput
-                 :columns="columnsEdit" :data="dataEdit" :disabled-hover="true" :highlight-row="true"
-                 @on-money-blur="on_money_blur">
-    </h-edit-gird>
+    <!--<h-edit-gird ref="repoEditGrid" border height="400" size="small" showEditInput-->
+                 <!--:columns="columnsEdit" :data="dataEdit" :disabled-hover="true" :highlight-row="true"-->
+                 <!--@on-money-blur="on_money_blur">-->
+    <!--</h-edit-gird>-->
   </div>
 </template>
 <script>
@@ -309,6 +314,11 @@ export default {
       show:false,
       isLoading: false,
       tabs:15,
+      options3: {
+        disabledDate (date) {
+          return date && date.valueOf() < Date.now() - 86400000;
+        }
+      },
       value:'value0',
       cityList: [
 //        {value: 'beijing', label: '北京市'},
@@ -628,7 +638,7 @@ export default {
           key: 'name',
           width: 300,
           ellipsis:true,
-          // hiddenCol:true,
+          fixed: 'left'
         },
         {
           title: '年龄',
@@ -865,10 +875,6 @@ export default {
         this.$refs.select.blur();
       }
     },
-    selectKeyup(val, e) {
-      console.log(val)
-      console.log(e)
-    },
     handleTabRemove1(name){
       console.log(this.tabs)
     },
@@ -914,12 +920,12 @@ export default {
           this.remoteData = list.filter(
             item => item.label.toLowerCase().indexOf(query.toLowerCase()) > -1
           );
-        }, 800);
+        }, 300);
 
       } else {
         this.remoteData = [];
       }
-      done()
+//      done()
     },
     handlekeydown(val, e) {
 //      console.log(val)
@@ -999,6 +1005,16 @@ export default {
         this.$set(this.$refs.repoEditGrid.rebuildData[y], "mortgage_ratio", data)
       }
     },
+    disableDate(date) {
+      return (
+        date &&
+        date.valueOf() < Date.now() &&
+        date.valueOf() >= Date.now() - 86400000
+      )
+    },
+    getSelectDate(e) {
+      console.log(e)
+    }
   },
   created() {
     window.isO45 = false
@@ -1017,6 +1033,7 @@ export default {
     }
     this.baseTreeData = this.convertTreeData(bigTreeData, attributes);
     this.treedata=this.baseTreeData;
+
   },
 }
 </script>

@@ -174,7 +174,7 @@ export default {
     this.$on("on-static-update", data => {
       if (this.show) {
         this.allowAnimation = false;
-        this.update();
+        this.popper ? this.popper.scheduleUpdate() : this.update();
       }
     });
   }

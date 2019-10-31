@@ -222,9 +222,6 @@ export default {
       } else {
         const { magicString: originalMagicString } = this;
         this.blockVm && this.blockVm.reset(); // reset block vm
-        this.isKeyDown = false; // switch off key down status
-        this.isInputting = false; // switch off input status
-        this.keyboardEvent = null; // reset keyboard event
         this.$emit("on-query-change", "");
         if (this.remote && this.remoteMethod) {
           this.remoteMethod("", () => {
@@ -232,7 +229,12 @@ export default {
               this.magicString = this.selectedRecords.map(item => item.label).join();
               this.blockVm.onQuery();
               this.$nextTick(() => {
-                this.$refs.input.select();
+                if (this.isKeyDown && (_.isKeyMatch(this.keyboardEvent, "Esc") || _.isKeyMatch(this, keyboardEvent, "Enter"))) {
+                  this.$refs.input.select();
+                }
+                this.isKeyDown = false; // switch off key down status
+                this.isInputting = false; // switch off input status
+                this.keyboardEvent = null; // reset keyboard event
               });
             });
           });
@@ -240,7 +242,12 @@ export default {
           this.magicString = this.selectedRecords.map(item => item.label).join();
           this.blockVm.onQuery();
           this.$nextTick(() => {
-            this.$refs.input.select();
+            if (this.isKeyDown && (_.isKeyMatch(this.keyboardEvent, "Esc") || _.isKeyMatch(this, keyboardEvent, "Enter"))) {
+              this.$refs.input.select();
+            }
+            this.isKeyDown = false; // switch off key down status
+            this.isInputting = false; // switch off input status
+            this.keyboardEvent = null; // reset keyboard event
           });
         }
       }
