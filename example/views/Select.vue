@@ -359,16 +359,18 @@
         <h-select v-model="model14"
                   width="200"
                   filterable
-                  :showBottom="false"
                   isBackClear
                   allowCreate
+                  searchHoldr
                   @on-change="handle"
                   label-in-value>
           <h-option v-for="(item, index) in uList"
                     :value="item.id"
                     :key="item.id">{{ item.name }}</h-option>
         </h-select>
+        <br>
         <span>{{JSON.stringify(model14)}}</span>
+        <br>
         <span>多选:</span>
         <h-select v-model="model15"
                   width="200"
