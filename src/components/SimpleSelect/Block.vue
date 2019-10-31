@@ -237,20 +237,24 @@ export default {
           }
         }
       })
-      if(val===''&&this.$parent.$parent.isSingleSelect&&!isEffective&&!states){// 清空query值情况下
-        this.$parent.$parent.selectBlockSingle('', true, '', true)
-      }else if(val !==''&&this.$parent.$parent.isSingleSelect&&!isEffective&&!states) {//query不为空但未匹配到任何项
-        this.$parent.$parent.selectBlockSingle('', true)
+      if (this.$parent.$parent.accuFilter) {
+        if(val===''&&this.$parent.$parent.isSingleSelect&&!isEffective&&!states){// 清空query值情况下
+          this.$parent.$parent.selectBlockSingle('', true, '', true)
+        }else if(val !==''&&this.$parent.$parent.isSingleSelect&&!isEffective&&!states) {//query不为空但未匹配到任何项
+          this.$parent.$parent.selectBlockSingle('', true)
+        }
       }
-      let options = this.cloneData.filter(d => !d.group)
-      this.dispatch('SimpleSelect', 'on-options-visible-change', { data: options })
-      this.dispatch('SingleSelect', 'on-options-visible-change', { data: options })
+      if(this.$parent.$parent.isSingleSelect) {
+        this.dispatch('SingleSelect', 'on-options-visible-change', { data: this.cloneData })
+        this.dispatch('StockSelect', 'on-options-visible-change', { data: this.cloneData })
+      }else {
+        let options = this.cloneData.filter(d => !d.group)
+        this.dispatch('SimpleSelect', 'on-options-visible-change', { data: options })
+      }
       this.showEmpty = status
       if (val) {
         this.dispatch('Drop', 'on-update-popper')
       }
-      this.dispatch("SimpleSelect", "on-options-visible-change", { data: this.cloneData });
-      this.dispatch("SingleSelect", "on-options-visible-change", { data: this.cloneData });
       this.showEmpty = status;
       this.$nextTick(() => {
         if (val) {

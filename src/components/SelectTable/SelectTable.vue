@@ -35,7 +35,7 @@
       <!-- 下拉输入框(远程搜索时渲染) -->
       <input
         type="text"
-        v-if="filterable && !showBottom"
+        v-if="filterable && !showBottom && inputVisible"
         v-model="query"
         :disabled="disabled"
         :readonly="!editable||readonly"
@@ -388,6 +388,7 @@ export default {
     return {
       prefixCls: prefixCls,
       visible: false,
+      inputVisible: false,
       options: [],
       optionInstances: [],
       selectedSingle: "",
@@ -1604,6 +1605,10 @@ export default {
     },
     visible(val) {
       if (val) {
+        this.inputVisible = true
+        this.$nextTick(() => {
+          this.$refs.input && this.$refs.input.focus()
+        })
         this.$nextTick(() => {
           let content = this.$refs.content;
           if (content.scrollHeight > content.clientHeight) {
@@ -1617,6 +1622,7 @@ export default {
           this.dispatch("Msgbox", "on-esc-real-close", false);
         }, 0);
       } else {
+        this.inputVisible = false
         if (this.filterable) {
           this.$refs.reference.scrollTop = 0; // reference element scroll to 0
 
