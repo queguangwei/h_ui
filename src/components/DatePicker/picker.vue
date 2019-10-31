@@ -50,7 +50,7 @@
                      :format="format"
                      :value="internalValue"
                      :start-date="startDate"
-                     :split-panels="splitPanels"
+                     :unlink-panels="unlinkPanels"
                      :show-week-numbers="showWeekNumbers"
                      :picker-type="type"
                      :showTwoPanel="this.showTwoPanel"
@@ -244,8 +244,11 @@ export default {
     valueTypeArr: {
       type: Boolean,
       default: false,
+    },
+    unlinkPanels: {
+      type: Boolean,
+      default: false
     }
-
   },
   data() {
     const isRange = this.type.indexOf('range') > -1 ? true : false
@@ -735,23 +738,21 @@ export default {
       // 自动适配逻辑调整
       if (this.autoPlacement) {
         let clientHeight = document.documentElement.clientHeight
-        let clienWidth = document.documentElement.clientWidth
+        let clientWidth = document.documentElement.clientWidth
         let rect = this.$refs.wrapper.getBoundingClientRect()
         let curbottom = clientHeight - rect.top - rect.height
-        let bottomNum = this.confirm ? 300 : 250
-
+        let bottomNum = (this.confirm || this.showToday) ? 300 : 250
         let rightNum = this.type.indexOf('range') > -1 ? 436 : 220
         let isShortcuts =
           this.options &&
           this.options.shortcuts &&
           this.options.shortcuts.length > 0
         rightNum = isShortcuts ? rightNum + 95 : rightNum
-
         if (curbottom < bottomNum && rect.right < rightNum && rect.top > bottomNum ) {
           this.fPlacement = 'top-end'
         } else if (curbottom < bottomNum && rect.top > bottomNum) {
           this.fPlacement = 'top-start'
-        } else if (clienWidth - rect.left < rightNum) {
+        } else if (clientWidth - rect.left < rightNum) {
           this.fPlacement = 'bottom-end'
         } else {
           this.fPlacement = 'bottom-start'

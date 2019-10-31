@@ -83,6 +83,8 @@
                   :not-found-text="column.notFoundText"
                   :multiple="column.multiple || false"
                   :filterable="column.filterable||false"
+                  :allowCreate="column.allowCreate || false"
+                  :showBottom="column.showBottom || false"
                   :filterMethod="filterMethod()"
                   :remote="column.remote || false"
                   :remoteMethod="remoteMethod()"

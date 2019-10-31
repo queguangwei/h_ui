@@ -1203,7 +1203,7 @@ export default {
       if(column.sortable) {
         const type = column._sortType
         // 【TS:201907290145-资管业委会（资管）_孔磊-【需求类型】需求【需求描述】表格2、点击列头时就可以进行排序】 按ctrl+鼠标点击可重置排序
-        if(window.isO45 && this.isCtrlDown) {
+        if(this.isCtrlDown) {
           this.handleSort(index, 'normal')
           return
         }
@@ -1263,7 +1263,6 @@ export default {
         if (this.$refs.leftContent) {
           this.$refs.leftContent.style.transform = `translateY(${transformTop}px))`
         }
-
         if (this.cloneColumns.length == 0) return
         const allWidth = !this.columns.some(cell => !cell.width && cell.width !== 0) // each column set a width
         if (allWidth) {
@@ -1272,11 +1271,14 @@ export default {
           this.tableWidth = parseInt(getStyle(this.$el, 'width')) - 1
         }
         this.columnsWidth = {}
+
         this.$nextTick(() => {
           let width = this.$refs.body.getBoundingClientRect().width
           let conentWidth = this.$refs.body.scrollWidth
           this.isScrollX = conentWidth + this.scrollBarWidth > width ? true : false
-          let height = this.$refs.body.getBoundingClientRect().height
+//          let height = this.$refs.body.getBoundingClientRect().height
+          // offset取值相对于父类，getBoundingClientRect的值只相对可视窗口，当表格放在msgBox中时取值有误差
+          let height = this.$refs.body.offsetHeight
           let conentHeight = this.$refs.body.scrollHeight
           this.isScrollY = conentHeight > height ? true : false
           let columnsWidth = {}
@@ -2555,20 +2557,6 @@ export default {
     off(document, 'keyup', this.keySelect)
   },
   watch: {
-//    bodyHeight(newVal, oldVal) {
-//      if(newVal !== oldVal) {
-//        let height = this.$refs.body.getBoundingClientRect().height
-//        let conentHeight = this.$refs.body.scrollHeight
-//        let oldIsScrollY = this.isScrollY
-//        if(!oldIsScrollY && conentHeight < height) {
-//          this.isScrollY = false
-//        }else if(oldIsScrollY && conentHeight > height) {
-//          this.isScrollY = true
-//        }else if(!oldIsScrollY && conentHeight > height) {
-//          this.isScrollY = true
-//        }
-//      }
-//    },
     toScrollTop() {
       this.privateToScrollTop = this.toScrollTop
     },
