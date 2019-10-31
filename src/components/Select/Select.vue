@@ -33,7 +33,7 @@
       <!-- 下拉输入框(远程搜索时渲染) -->
       <input
         type="text"
-        v-if="filterable && !showBottom"
+        v-if="filterable && !showBottom && inputVisible"
         v-model="query"
         :disabled="disabled"
         :readonly = "readonly || !editable"
@@ -354,6 +354,7 @@ export default {
     return {
       prefixCls: prefixCls,
       visible: false,
+      inputVisible: false,
       options: [],
       disabledOpts: [],
       optionInstances: [],
@@ -1466,7 +1467,10 @@ export default {
       if (val) {
         if (this.filterable) {
           if (this.multiple && !this.showBottom) {
-            this.$refs.input.focus();
+            this.inputVisible = true
+            this.$nextTick(() => {
+              this.$refs.input && this.$refs.input.focus()
+            })
           } else {
             if (this.focusSelect) this.$refs.input.select();
           }
@@ -1487,7 +1491,7 @@ export default {
       } else {
         this.isKeyDown = false; // switch off key down status
         this.keyboardEvent = null; // reset keyboard event
-
+        this.inputVisible = false
         if (this.filterable) {
           this.$refs.input.blur();
           // #566 reset options visible

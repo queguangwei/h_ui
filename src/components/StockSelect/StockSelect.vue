@@ -9,36 +9,18 @@
              @keydown="handleInputKeyDown" @keyup="handleInputKeyup">
       <Icon name="unfold" :class="[`${prefixCls}-arrow`]" @click.native.stop="arrowClick"></Icon>
     </div>
-    <div v-if="animated">
-      <transition :name="transitionName">
-        <Drop ref="dropdown" v-show="dropVisible"
-              :class="dropdownCls" :placement="fPlacement"
-              :dropWidth="dropWidth" :maxDropWidth="maxDropWidth"
-              :widthAdaption="widthAdaption" :data-transfer="transfer"
-              v-transfer-dom>
-          <div :class="[`${prefixCls}-dropdown-noline-content`]" ref="content">
-            <div id="blockWrapper" :class="[`${prefixCls}-dropdown-list`]" ref='blockWrapper'>
-              <slot></slot>
-            </div>
-            <div v-show="loading" :class="[`${prefixCls}-block-loading`]">{{localeLoadingText}}</div>
-          </div>
-        </Drop>
-      </transition>
-    </div>
-    <div v-else>
-      <Drop ref="dropdown" v-show="dropVisible"
-            :class="dropdownCls" :placement="fPlacement"
-            :dropWidth="dropWidth" :maxDropWidth="maxDropWidth"
-            :widthAdaption="widthAdaption" :data-transfer="transfer"
-            v-transfer-dom>
-        <div :class="[`${prefixCls}-dropdown-noline-content`]" ref="content">
-          <div :class="[`${prefixCls}-dropdown-list`]" ref='blockWrapper'>
-            <slot></slot>
-          </div>
-          <div v-show="loading" :class="[`${prefixCls}-block-loading`]">{{localeLoadingText}}</div>
+    <Drop ref="dropdown" v-show="dropVisible"
+          :class="dropdownCls" :placement="fPlacement"
+          :dropWidth="dropWidth" :maxDropWidth="maxDropWidth"
+          :widthAdaption="widthAdaption" :data-transfer="transfer"
+          v-transfer-dom>
+      <div :class="[`${prefixCls}-dropdown-noline-content`]" ref="content">
+        <div :class="[`${prefixCls}-dropdown-list`]" ref='blockWrapper'>
+          <slot></slot>
         </div>
-      </Drop>
-    </div>
+        <div v-show="loading" :class="[`${prefixCls}-block-loading`]">{{localeLoadingText}}</div>
+      </div>
+    </Drop>
   </div>
 </template>
 <script>
@@ -50,13 +32,120 @@ import { on, off } from '../../util/dom'
 import { getScrollBarSize, getStyle } from '../../util/tools'
 import Emitter from '../../mixins/emitter'
 import Locale from '../../mixins/locale'
-import { SingleSelectApi } from './Api'
 
 export default {
-  name: 'SingleSelect',
-  mixins: [Emitter, Locale, SingleSelectApi],
+  name: 'StockSelect',
+  mixins: [Emitter, Locale],
   components: { Icon, Drop },
   directives: { clickoutside, TransferDom },
+  props: {
+    value: {
+      type: [String, Number],
+      default: ''
+    },
+    firstInit: {
+      type: Boolean,
+      default: false
+    },
+    accuFilter: {
+      type: Boolean,
+      default: false
+    },
+    // Block中判断用
+    isSingleSelect:{
+      type:Boolean,
+      default:true,
+    },
+    // 设置输入框为禁用状态
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    // 设置输入框为只读
+    readonly: {
+      type: Boolean,
+      default: false
+    },
+    // 设置输入框为可编辑
+    editable: {
+      type: Boolean,
+      default: true
+    },
+    // 输入框默认的提示信息
+    placeholder: {
+      type: String
+    },
+    // 是否使用远程搜索
+    remote: {
+      type: Boolean,
+      default: true
+    },
+    // 远程搜索方法
+    remoteMethod: {
+      type: Function,
+      default(key, done) {
+        done()
+      }
+    },
+    // 配合远程搜索使用。loading设置为true时显示加载提示文字
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    // 加载中显示的文字
+    loadingText: {
+      type: String
+    },
+    // 设置输入框的宽度
+    width: {
+      type: [String, Number]
+    },
+    // 是否将弹层放置于 body 内，它将不受父级样式影响，从而达到更好的效果
+    transfer: {
+      type: Boolean,
+      default: false
+    },
+    // 下拉面板方向自适应，其相对于外部第一个非静态定位父元素开始定位
+    autoPlacement: {
+      type: Boolean,
+      default: false
+    },
+    // 弹窗的展开方向
+    placement: {
+      validator(value) {
+        return ['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end'].includes(value)
+      },
+      default: 'bottom'
+    },
+    // 下拉框的宽度是否随着内容自适应，以width设置的宽度为最小宽度，最大宽度取输入框宽度与 maxDropWidth 的最大值
+    widthAdaption: {
+      type: Boolean,
+      default: false
+    },
+    // 设置下拉框的宽度,不设置时下拉框的宽度等于输入框宽度
+    dropWidth: {
+      type: [String, Number]
+    },
+    // 下拉框的自适应时设置的最大宽度，实际值会取输入框宽度与 maxDropWidth 的最大值
+    maxDropWidth: {
+      type: [String, Number],
+      default: 500
+    },
+    // 开启自动匹配时当输入值不匹配保留输入值
+    keepInputValue: {
+      type: Boolean,
+      default: false
+    },
+    // 设置输入框 tabindex
+    tabindex: {
+      type: [String, Number],
+      default: 0,
+      validator(value) {
+        let num = parseInt(value)
+        return num <= 32767 && num >= -1
+      }
+    }
+  },
   data() {
     return {
       prefixCls: 'h-selectTable',
@@ -138,43 +227,114 @@ export default {
     value: {
       immediate: true,
       handler(val) {
-//        if(val === '' && this.query !== '') {
-//          this.isQuerySelect = false
-//        }
         this.model = val
       }
     },
-    model(val) {
-//      this.modelToQuery()
-      this.updateSingleSelected()
+    model(newVal) {
+//      this.updateSingleSelected()
+      const type = typeof newVal
+      if (type === 'string' || type === 'number') {
+        let findModel = false
+        let curSingle = ''
+//        if(newVal === '' && this.query !== '') {
+//          for (let j in this.options) {
+//            if (this.query === this.options[j].label) {
+//              curSingle = this.options[j].label
+//              findModel = true
+//              break
+//            }
+//          }
+//        }else
+        if(newVal !== '') {
+          for (let k in this.options) {
+            if (this.model === this.options[k].value) {
+              curSingle = this.options[k].label
+              findModel = true
+              break
+            }
+          }
+        }
+        if (newVal === '') {
+          this.selected = ''
+        } else if (this.remote && curSingle) {
+          this.selected = curSingle
+        }
+        //o45 证券代码控件需要
+//        if (slot && !findModel) {
+//          this.model = ''
+//          this.query = ''
+//        }
+      }
+
+      this.findChild(child => {
+        this.options.forEach((col, i) => {
+          if (newVal === col.value) {
+            this.$set(child.cloneData[i], 'selected', true)
+          } else {
+            this.$set(child.cloneData[i], 'selected', false)
+          }
+        })
+      })
+      // o45开启keepInputValue默认初始值 init=false
+//      if (init) {
+//        if(this.keepInputValue) {
+//          this.selected = this.model
+//        }
+//      }else {
+        for(let j in this.availableOptions) {
+          if(this.availableOptions[j].value === newVal) {
+            this.focusIndex = this.availableOptions[j].index + 1
+            break
+          }
+        }
+//        if(this.keepInputValue) {
+//          this.selected = this.model
+//        }
+//      }
+
+//      this.toggleSingleSelected(this.model, init)
     },
-    selected(val) {
+    selected(newVal) {
       this.$emit('input', this.model)
       this.$emit('on-change', this.model)
-      if (!this.isQuerySelect) {// 选中内容是点选而非模糊匹配到的
-        this.query = val
-        if (this.query !== '') {
-          this.selectToChangeQuery = true
-        }else {
-          this.selectToChangeQuery = false
-        }
-      }
-      this.setSingleSelect()
+//      if (!this.isQuerySelect) {// 选中内容是点选而非模糊匹配到的
+//        this.query = val
+//        if (this.query !== '') {
+//          this.selectToChangeQuery = true
+//        }else {
+//          this.selectToChangeQuery = false
+//        }
+//      }
+//      this.setSingleSelect()
+
+//      let curlabel = ''
+//      let index = 0
+//      this.findChild(child => {
+//        this.availableOptions.forEach((col, i) => {
+//          if (col.value === this.model) {
+//            curlabel = col.label
+//            index = col.index + 1
+//          }
+//        })
+//      })
+//      this.selected = curlabel
+//      this.focusIndex = index
+      this.$nextTick(() => {
+        this.query = newVal
+        this.selectToChangeQuery = true
+      })
     },
-    query(val) {
-      if(val === '' ) {
-//        this.$emit('input', val)
-        this.$emit('on-change', val)
-      }
-      let querySingle = val.toString().split(' ')[0] //此处改变query
-      this.querySingle = querySingle
-      if (this.remote && this.remoteMethod) {
+    query(newVal) {
+      let querySingle = newVal.toString().split(' ')[0] //此处改变query
+
+      this.querySingle = newVal
+//      if (this.remote && this.remoteMethod) {
         if (!this.selectToChangeQuery) {
           // 解决当通过表单方法firstNodeFocused定位到SimpleSelect时只能输入但不展示下拉选项的问题
-          if (!this.visible && querySingle) {
+          if (!this.visible && this.querySingle) {
             this.visible = true
           }
-          this.remoteMethod(querySingle, () => {
+          this.remoteMethod(this.querySingle, () => {
             this.$nextTick(() => {
               // o45业务代码会默认绑定model值为下拉选项第一个
               if(this.firstInit) {
@@ -184,28 +344,29 @@ export default {
               }
             })
           })
-          this.$emit('on-query-change', querySingle)
+
+          this.$emit('on-query-change', this.querySingle)
         }else {
           // 非自动匹配到的值手动清空后绑定的model没清空问题
-          if(querySingle === '') {
+          if(this.querySingle === '') {
             this.model = ''
           }
         }
 //        this.findChild(child => {
 //          child.isFocus = false
 //        })
-      }else {
-        if (!this.selectToChangeQuery) {
-          // o45指令备注框赋默认值时不应该弹出框
-          if (!this.visible && querySingle && !this.firstInit) {
-            this.visible = true
-          }
-          this.$emit('on-query-change', querySingle)
-          this.broadcast('Block', 'on-query-change', querySingle)
-        } else if (this.isQuerySelect) {
-          this.broadcast('Block', 'on-query-change', querySingle)
-        }
-      }
+//      }else {
+//        if (!this.selectToChangeQuery) {
+//          // o45指令备注框赋默认值时不应该弹出框
+//          if (!this.visible && this.querySingle && !this.firstInit) {
+//            this.visible = true
+//          }
+//          this.$emit('on-query-change', this.querySingle)
+//          this.broadcast('Block', 'on-query-change', this.querySingle)
+//        } else if (this.isQuerySelect) {
+//          this.broadcast('Block', 'on-query-change', this.querySingle)
+//        }
+//      }
       this.selectToChangeQuery = false
       this.broadcast('Drop', 'on-update-popper')
     },
@@ -244,14 +405,27 @@ export default {
       handler(nv) {
         this.broadcast('Block', 'on-focus-index-change', nv - 1)
       }
-    },
-//    isInputFocus(val) {
-//      if (!val) {
-//        this.setSingleSelect()
-//      }
-//    }
+    }
   },
   methods: {
+    findChild(cb) {
+      const find = function(child) {
+        const name = child.$options.componentName
+        if (name) {
+          cb(child)
+        } else if (child.$children.length) {
+          child.$children.forEach(innerChild => {
+            find(innerChild, cb)
+          })
+        }
+      }
+      this.$children.forEach(child => {
+        find(child)
+      })
+    },
+    fold() {
+      this.visible = false
+    },
     setPlacement() {
       if (this.autoPlacement) {
         let clientHeight = document.documentElement.clientHeight
@@ -276,12 +450,10 @@ export default {
       this.$refs.input.blur()
       this.visible = false
       this.isInputFocus = false
-      this.isQuerySelect = false
       let flag = false
-      if (this.model === '' && this.query !== '') {
-        // 先选值，左右键切换，再删除一个字符仍然有匹配项时
+      if(this.query !== '') {
         for(let i in this.availableOptions) {
-          if(this.query.toString().split(' ')[0] === this.availableOptions[i].label) {
+          if(this.querySingle === this.availableOptions[i].label) {
             this.model = this.availableOptions[i].value
             flag = true
             break
@@ -299,22 +471,22 @@ export default {
           }
         }
         flag = false
-      }else if(this.model !== '' && this.query !== '') { // 删除字符仍有匹配项但model未被清空
-        this.setSingleSelect()
+      }else {
+        this.model = ''
       }
-//      this.broadcast('Block', 'on-query-change', this.query)
       this.$nextTick(() => {
         this.dispatch('FormItem', 'on-form-blur', this.model)
       })
     },
     handleClose() {
       this.fold()
+      this.selectToChangeQuery = false
       if (this.isInputFocus) {
         let flag = false
-        if (this.model === '' && this.query !== '') {
+        if (this.query !== '') {
           // 先选值，左右键切换，再删除一个字符仍然有匹配项时
           for(let i in this.availableOptions) {
-            if(this.query.toString().split(' ')[0] === this.availableOptions[i].label) {
+            if(this.querySingle === this.availableOptions[i].label) {
               this.model = this.availableOptions[i].value
               flag = true
               break
@@ -331,10 +503,8 @@ export default {
               this.model = this.query
             }
           }
-          flag = false
-          this.isQuerySelect = false
         }else {
-          this.setSingleSelect()
+          this.model = ''
         }
         this.isInputFocus = false
         this.$nextTick(() => {
@@ -351,7 +521,6 @@ export default {
     },
     handleFocus(e) {
       this.isInputFocus = true
-      // 获取焦点全选内容
       e.target.selectionStart = 0
       e.target.selectionEnd = this.query.length
       this.$emit('on-focus')
@@ -364,7 +533,7 @@ export default {
       this.dispatch('FormItem', 'on-form-blur')
     },
     handleInputKeyDown(e) {
-      if (this.visible && e.keyCode == 9) {
+      if (this.visible && e.keyCode === 9) {
         this.fold()
         this.isInputFocus = false
       }
@@ -378,21 +547,6 @@ export default {
       if(e.keyCode !== 9) {
         this.$emit('on-keyup', this.query, e)
       }
-    },
-    findChild(cb) {
-      const find = function(child) {
-        const name = child.$options.componentName
-        if (name) {
-          cb(child)
-        } else if (child.$children.length) {
-          child.$children.forEach(innerChild => {
-            find(innerChild, cb)
-          })
-        }
-      }
-      this.$children.forEach(child => {
-        find(child)
-      })
     },
     updateOptions(init, slot = false) {
       let options = []
@@ -412,109 +566,97 @@ export default {
       this.availableOptions = options
       this.broadcast('Drop', 'on-update-popper')
       if (init) {
-        if (!this.remote) {
-          this.updateSingleSelected(true, slot)
-        }
-        if(this.remote){
-          this.$refs.dropdown.setWidthAdaption()
-        }
+        this.$refs.dropdown.setWidthAdaption()
       }
     },
-    updateSingleSelected(init = false, slot = false) {
-      // 赋值默认项是遍历选项绑定focusIndex
-      if(init) {
-        for(let i in this.availableOptions) {
-          if(this.availableOptions[i].value === this.model) {
-            this.focusIndex = this.availableOptions[i].index + 1
-            break
-          }
-        }
-      }
-      const type = typeof this.model
-      if (type === 'string' || type === 'number') {
-        let findModel = false
-        let curSingle = ''
-        if(this.model === '' && this.query !== '') {
-          for (let j in this.options) {
-            if (this.query === this.options[j].label) {
-              curSingle = this.options[j].label
-              findModel = true
-              break
-            }
-          }
-        }else if(this.model !== '') {
-          //O45刷新新增下拉项导致显示中文被清空，O45client测试通过，本地测试却有问题
-          this.findChild(child => {
-            if(this.remote && child.showCol.length > 0) {
-              for (let k in this.options) {
-                if (this.model === this.options[k].value) {
-                  curSingle = this.options[k].label + ' ' + this.options[k][child.showCol[0]]
-                  findModel = true
-                  break
-                }
-              }
-            }else {
-              for (let k in this.options) {
-                if (this.model === this.options[k].value) {
-                  curSingle = this.options[k].label
-                  findModel = true
-                  break
-                }
-              }
-            }
-          })
-        }
-        if (this.model === '') {
-          this.selected = ''
-        } else if (this.remote && curSingle) {
-          this.selected = curSingle
-        } else if (!this.remote) {
-          this.selected = curSingle
-        }
-        //o45 证券代码控件需要
-        if (slot && !findModel) {
-          this.model = ''
-          this.query = ''
-        }
-      }
-      this.toggleSingleSelected(this.model, init)
-    },
-    toggleSingleSelected(value, init = false) {
-//      let label = value
-//      if (this.options.length) {
-//        let option = this.options.filter(opt => opt.value === value)[0]
-//        if (option) {
-//          label = option.label
+//    updateSingleSelected(init = false, slot = false) {
+//      // 赋值默认项是遍历选项绑定focusIndex
+//      if(init) {
+//        for(let i in this.availableOptions) {
+//          if(this.availableOptions[i].value === this.model) {
+//            this.focusIndex = this.availableOptions[i].index + 1
+//            break
+//          }
 //        }
 //      }
-      this.findChild(child => {
-        this.options.forEach((col, i) => {
-          if (value == col.value) {
-            this.$set(child.cloneData[i], 'selected', true)
-          } else {
-            this.$set(child.cloneData[i], 'selected', false)
-          }
-        })
-      })
-      // o45开启keepInputValue默认初始值
-      if (init) {
-        if(this.keepInputValue) {
-          this.selected = this.model
-        }
-      }else {
-        for(let j in this.availableOptions) {
-          if(this.availableOptions[j].value === value) {
-            this.focusIndex = this.availableOptions[j].index + 1
-            break
-          }
-        }
-        if(this.keepInputValue) {
-          this.selected = this.model
-        }
-//        this.$emit('on-change', value)
-//        this.dispatch('FormItem', 'on-form-change', value)
-      }
-    },
+//      const type = typeof this.model
+//      if (type === 'string' || type === 'number') {
+//        let findModel = false
+//        let curSingle = ''
+//        if(this.model === '' && this.query !== '') {
+//          for (let j in this.options) {
+//            if (this.query === this.options[j].label) {
+//              curSingle = this.options[j].label
+//              findModel = true
+//              break
+//            }
+//          }
+//        }else if(this.model !== '') {
+//          //O45刷新新增下拉项导致显示中文被清空，O45client测试通过，本地测试却有问题
+//          this.findChild(child => {
+//            if(this.remote && child.showCol.length > 0) {
+//              for (let k in this.options) {
+//                if (this.model === this.options[k].value) {
+//                  curSingle = this.options[k].label + ' ' + this.options[k][child.showCol[0]]
+//                  findModel = true
+//                  break
+//                }
+//              }
+//            }else {
+//              for (let k in this.options) {
+//                if (this.model === this.options[k].value) {
+//                  curSingle = this.options[k].label
+//                  findModel = true
+//                  break
+//                }
+//              }
+//            }
+//          })
+//        }
+//        if (this.model === '') {
+//          this.selected = ''
+//        } else if (this.remote && curSingle) {
+//          this.selected = curSingle
+//        } else if (!this.remote) {
+//          this.selected = curSingle
+//        }
+//        //o45 证券代码控件需要
+//        if (slot && !findModel) {
+//          this.model = ''
+//          this.query = ''
+//        }
+//      }
+//      this.toggleSingleSelected(this.model, init)
+//    },
+//    toggleSingleSelected(value, init = false) {
+//      this.findChild(child => {
+//        this.options.forEach((col, i) => {
+//          if (value == col.value) {
+//            this.$set(child.cloneData[i], 'selected', true)
+//          } else {
+//            this.$set(child.cloneData[i], 'selected', false)
+//          }
+//        })
+//      })
+//      // o45开启keepInputValue默认初始值
+//      if (init) {
+//        if(this.keepInputValue) {
+//          this.selected = this.model
+//        }
+//      }else {
+//        for(let j in this.availableOptions) {
+//          if(this.availableOptions[j].value === value) {
+//            this.focusIndex = this.availableOptions[j].index + 1
+//            break
+//          }
+//        }
+//        if(this.keepInputValue) {
+//          this.selected = this.model
+//        }
+////        this.$emit('on-change', value)
+////        this.dispatch('FormItem', 'on-form-change', value)
+//      }
+//    },
     handleKeydown(e) {
       const keyCode = e.keyCode
       // right
@@ -565,25 +707,9 @@ export default {
       })
       this.selectBlockSingle(focusValue)
     },
-    modelToQuery() {
-      if (this.model !== undefined) {
-        this.findChild(child => {
-          if (this.model === child.value) {
-            if (child.label) {
-              this.query = child.label
-            } else if (child.searchLabel) {
-              this.query = child.searchLabel
-            } else {
-              this.query = child.value
-            }
-            this.selectToChangeQuery = true
-          }
-        })
-      }
-    },
     //左右键、点选选中options中value值
     selectBlockSingle(value, status = false, str, nullValue = false) {
-      this.isQuerySelect = status
+//      this.isQuerySelect = status
       //焦点未离开勿更新可选options
       if(!this.isInputFocus) {
         this.availableOptions = this.options
@@ -600,24 +726,24 @@ export default {
           this.focus()
         })
       }
-      if(nullValue) {
-        this.$nextTick(() => {
-          this.focusIndex = 0
-        })
-        this.selectToChangeQuery = false
-      }else {
-        //value有值表示精确匹配，无值不匹配，但是无论是否精确匹配都要选中筛选第一项 是cloneData中focus=true
-        //但是使用nextTick会出现一种特殊情况第一项模糊匹配focus，第二项精确匹配selected,所以还是判断value
-        if(value === '' && !this.keepInputValue) {
-          this.$nextTick(() => {
-            this.focusIndex = 0
-            this.$nextTick(() => {
-              this.focusIndex = 1
-            })
-          })
-        }
-        this.selectToChangeQuery = false
-      }
+//      if(nullValue) {
+//        this.$nextTick(() => {
+//          this.focusIndex = 0
+//        })
+//        this.selectToChangeQuery = false
+//      }else {
+//        //value有值表示精确匹配，无值不匹配，但是无论是否精确匹配都要选中筛选第一项 是cloneData中focus=true
+//        //但是使用nextTick会出现一种特殊情况第一项模糊匹配focus，第二项精确匹配selected,所以还是判断value
+//        if(value === '' && !this.keepInputValue) {
+//          this.$nextTick(() => {
+//            this.focusIndex = 0
+//            this.$nextTick(() => {
+//              this.focusIndex = 1
+//            })
+//          })
+//        }
+//        this.selectToChangeQuery = false
+//      }
     },
     setSingleSelect() {
       let curlabel = ''
@@ -625,53 +751,23 @@ export default {
       //焦点在输入框内
       if(this.isInputFocus) {
         this.findChild(child => {
-          // 多列、非多列显示selected值不一样需区分对待
-          if(child.showCol.length > 0) {
-            this.availableOptions.forEach((col, i) => {
-              if (col.value === this.model) {
-                curlabel = col.label + ' ' + col[child.showCol[0]]
-                index = col.index + 1
-              }
-            })
-          }else {
             this.availableOptions.forEach((col, i) => {
               if (col.value === this.model) {
                 curlabel = col.label
                 index = col.index + 1
               }
             })
-          }
         })
-        //下拉框不弹出，仅使用左右键切换选值，要求带出中文,弹出不带中文
-        if(this.visible || this.showFirstLabelOnly) {
-          let ind = curlabel.indexOf(' ')
-          curlabel = curlabel.substring(0, ind)
-        }
         this.selected = curlabel
       }else {
         this.findChild(child => {
-          if(child.showCol.length > 0) {
-            this.availableOptions.forEach((col, i) => {
-              if (col.value === this.model) {
-                curlabel = col.label + ' ' + col[child.showCol[0]]
-                index = col.index + 1
-              }
-            })
-          }else {
             this.availableOptions.forEach((col, i) => {
               if (col.value === this.model) {
                 curlabel = col.label
                 index = col.index + 1
               }
             })
-          }
         })
-        if(this.showFirstLabelOnly) {
-          let ind = curlabel.indexOf(' ')
-          curlabel = curlabel.substring(0, ind)
-        }else {
-//          this.query = curlabel
-        }
         this.selected = curlabel
         //o45 证券代码控件 模糊输入，不匹配下拉项保留输入值
         if(curlabel == '' && this.keepInputValue && this.model) {
@@ -679,13 +775,11 @@ export default {
           return
         }
       }
-//      this.isQuerySelect = false
       this.focusIndex = index
     }
   },
   mounted() {
     on(this.$refs.select, 'keydown', this.handleKeydown)
-//    this.modelToQuery()
     this.updateOptions(true)
     this.$on('on-options-visible-change', arg => {
       this.availableOptions = arg.data.filter(option => !option.hidden)
