@@ -559,6 +559,7 @@ export default {
       }
     },
     keydown(event){
+      // console.log('event.keyCode--->', event.keyCode)
       if (event.keyCode == 9) {
         this.hideMenu();
       }
@@ -1068,6 +1069,7 @@ export default {
           const prev = this.focusIndex - 1;
           this.focusIndex = (this.focusIndex <= 1) ? maxIndex : prev;
         }
+        // console.log('focusIndex----->', this.focusIndex)
         let child_status = {
           disabled: false,
           hidden: false
