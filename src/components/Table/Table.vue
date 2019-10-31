@@ -2083,7 +2083,7 @@ export default {
      I don't think this is good enough, for now, let's just keep this way util we find a better one.
      By the way, element-resize-detector is fast enough for detection, or we are dead.
      */
-    this.observer = elementResizeDetectorMaker();
+    this.observer = elementResizeDetectorMaker({ strategy: "scroll" });
     this.observer.listenTo(this.$el, () => {
       setTimeout(() => {
         this.handleResize();

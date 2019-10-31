@@ -1636,6 +1636,14 @@ export default {
             }
           }, 300);
         }
+
+        this.findChild(child => {
+          if (child && this.isBlock) {
+            child.updateVisibleData && child.updateVisibleData(0);
+            child.$el.scrollTop = 0;
+          }
+        });
+
         setTimeout(() => {
           this.dispatch("Msgbox", "on-esc-real-close", true);
         }, 0);
