@@ -1552,6 +1552,12 @@ export default {
       })
       return filters
     },
+    resetAllSort() {
+      if(!this.isMulitSort) return
+      this.cloneColumns.forEach((col, i) => {
+        col._sortType = 'normal'
+      })
+    },
     handleSort(_index, type) {
       if (_index == 'all') {
         this.rebuildData = this.makeDataWithFilter()

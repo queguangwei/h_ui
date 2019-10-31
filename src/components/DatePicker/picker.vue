@@ -50,7 +50,7 @@
                      :format="format"
                      :value="internalValue"
                      :start-date="startDate"
-                     :split-panels="splitPanels"
+                     :unlink-panels="unlinkPanels"
                      :show-week-numbers="showWeekNumbers"
                      :picker-type="type"
                      :showTwoPanel="this.showTwoPanel"
@@ -244,8 +244,11 @@ export default {
     valueTypeArr: {
       type: Boolean,
       default: false,
+    },
+    unlinkPanels: {
+      type: Boolean,
+      default: false
     }
-
   },
   data() {
     const isRange = this.type.indexOf('range') > -1 ? true : false
