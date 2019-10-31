@@ -354,7 +354,7 @@ export default {
     return {
       prefixCls: prefixCls,
       visible: false,
-      inputVisible: false,
+      inputVisible: true,
       options: [],
       disabledOpts: [],
       optionInstances: [],
@@ -1470,7 +1470,10 @@ export default {
               this.$refs.input && this.$refs.input.focus()
             })
           } else {
-            if (this.focusSelect) this.$refs.input.select();
+            this.inputVisible = true
+            this.$nextTick(() => {
+              if (this.focusSelect) this.$refs.input.select()
+            })
           }
           if (this.remote) {
             this.findChild(child => {
@@ -1489,9 +1492,11 @@ export default {
       } else {
         this.isKeyDown = false; // switch off key down status
         this.keyboardEvent = null; // reset keyboard event
-        this.inputVisible = false
         if (this.filterable) {
           this.$refs.input.blur();
+          if(this.multiple && !this.showBottom) {
+            this.inputVisible = false
+          }
           // #566 reset options visible
           setTimeout(() => {
             if (this.showBottom) {this.query='';}
