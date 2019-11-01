@@ -20,10 +20,10 @@
         <span
           v-for="col in showCol"
           :key="col"
-          :title="item[col] || item.label"
+          :title="item[col]"
           class="itemcol"
           style="width: 100px;"
-        >{{ item[col] || item.label }}</span>
+        >{{ item[col] }}</span>
       </li>
     </ul>
 
