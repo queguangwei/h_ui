@@ -59,24 +59,28 @@
     </h-msg-box>
     <h-msg-box v-model="show" escClose :mask-closable="false" isOriginal maximize width="600" height="400">
       <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80" showTipsOnlyFocus>
+
+        <h-form-item label="multiSelect" prop="stockInfo" required>
+          <h-multi-select ref="stockInfo" class="curItemClass" v-model="formValidate.stockInfo">
+            <h-multi-block :data="bigData" :showCol="showCol"></h-multi-block>
+          </h-multi-select>
+          {{formValidate.stockInfo}}
+        </h-form-item>
         <h-form-item label="stockCode" prop="stockCode" required>
-          <h-single-select ref="stockCode" v-model="formValidate.stockCode" placeholder="请选择所在地" class="curItemClass"
+          <h-single-select ref="stockCode" v-model="formValidate.stockCode" class="curItemClass"
                            remote :loading="isLoading" :remote-method="remoteMethod1" transfer autoPlacement
-                           :width="200" widthAdaption :dropWidth="220" :maxDropWidth="250"
+                           widthAdaption :dropWidth="220" :maxDropWidth="250"
                            @on-keydown="handlekeydown" @on-change="handlevaluechange">
             <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
           </h-single-select>
           {{formValidate.stockCode}}
         </h-form-item>
-        <h-form-item label="input" prop="name" required :tipWidth="200">
-          <h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>
-        </h-form-item>
         <h-form-item label="simpleSelect" prop="stockName" required>
-          <h-simple-select v-model="formValidate.stockName" filterable multiple >
+          <h-simple-select v-model="formValidate.stockName" class="curItemClass" filterable multiple >
             <h-select-block :data="bigData"></h-select-block>
           </h-simple-select>
         </h-form-item>
-        <h-form-item label="select" prop="city">
+        <h-form-item label="select" prop="city" required>
           <h-select v-model="formValidate.city" class="curItemClass" filterable multiple transfer @on-keyup="selectKeyup">
             <h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>
           </h-select>
@@ -90,7 +94,9 @@
         <h-form-item label="fastdate" prop="fastdate" required>
           <h-fast-date class="curItemClass" v-model="formValidate.fastdate" format="yyyy-MM-dd"></h-fast-date>
         </h-form-item>
-
+        <h-form-item label="input" prop="name" required :tipWidth="200">
+          <h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>
+        </h-form-item>
         <h-form-item label="typefield" prop="mail" required>
           <h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >
         </h-form-item>
@@ -332,6 +338,7 @@
         ],
         formValidate: {
           stockCode: "",
+          stockInfo: '',
           stockName: [],
           selecttree: '',
           name: "",
@@ -940,11 +947,14 @@
         this.show=true
 //      this.formValidate.stockCode = 'value1'
         this.$refs.formValidate.firstNodeFocused()
+        this.formValidate.stockInfo = '1,11'
         this.firstValue = ['child1-1-1','child1-1-2','child1-2-1']
       },
       focusFirst() {
-        this.formValidate.stockCode = '1'
-        this.$refs.stockCode.focus()
+//        this.formValidate.stockCode = '1'
+//        this.$refs.stockCode.focus()
+        this.formValidate.stockInfo = '1,11'
+        this.$refs.stockInfo.focus()
       },
       submit() {
         let _this = this

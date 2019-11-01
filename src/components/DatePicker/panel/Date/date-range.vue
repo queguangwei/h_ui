@@ -26,15 +26,10 @@
           <date-panel-label :date-panel-label="leftDatePanelLabel"
                             :current-view="leftDatePanelView"
                             :date-prefix-cls="datePrefixCls"></date-panel-label>
-          <span v-if="unlinkPanels || leftPickerTable !== 'date-table' && pickerType !== 'monthrange'"
-                :class="iconBtnCls('next', '-double')"
-                @click="nextYear('left')">
+          <span v-if="unlinkPanels || leftPickerTable !== 'date-table' && pickerType !== 'monthrange'" :class="iconBtnCls('next', '-double')" @click="nextYear('left')">
             <Icon name="arrow-r"></Icon>
           </span>
-          <span v-if="unlinkPanels && leftPickerTable === 'date-table'"
-                :class="iconBtnCls('next')"
-                @click="nextMonth('left')"
-                v-show="currentView === 'date'">
+          <span v-if="unlinkPanels && leftPickerTable === 'date-table'" :class="iconBtnCls('next')" @click="nextMonth('left')" v-show="currentView === 'date'">
             <Icon name="enter"></Icon>
           </span>
         </div>
@@ -61,15 +56,10 @@
            v-show="!isTime">
         <div :class="[datePrefixCls + '-header']"
              v-show="currentView !== 'time'">
-          <span v-if="unlinkPanels || rightPickerTable !== 'date-table' && pickerType !== 'monthrange'"
-                :class="iconBtnCls('prev', '-double')"
-                @click="prevYear('right')">
+          <span v-if="unlinkPanels || rightPickerTable !== 'date-table' && pickerType !== 'monthrange'" :class="iconBtnCls('prev', '-double')" @click="prevYear('right')">
             <Icon name="arrow-l"></Icon>
           </span>
-          <span v-if="unlinkPanels && rightPickerTable === 'date-table'"
-                :class="iconBtnCls('prev')"
-                @click="prevMonth('right')"
-                v-show="currentView === 'date'">
+          <span v-if="unlinkPanels && rightPickerTable === 'date-table'" :class="iconBtnCls('prev')" @click="prevMonth('right')" v-show="currentView === 'date'">
             <Icon name="return"></Icon>
           </span>
           <date-panel-label :date-panel-label="rightDatePanelLabel"
@@ -255,7 +245,6 @@ export default {
       const minDate = newVal[0] ? toDate(newVal[0]) : null
       const maxDate = newVal[1] ? toDate(newVal[1]) : null
       this.dates = [minDate, maxDate].sort(dateSorter)
-
       this.rangeState = {
         from: this.dates[0],
         to: this.dates[1],
@@ -265,15 +254,11 @@ export default {
       const leftPanelDate = this.startDate || this.dates[0] || new Date()
       this.leftPanelDate = leftPanelDate
       const rightPanelDate = new Date(
-        this.pickerType === 'monthrange'
-          ? leftPanelDate.getFullYear() + 1
-          : leftPanelDate.getFullYear(),
+        this.pickerType === 'monthrange' ? leftPanelDate.getFullYear() + 1 : leftPanelDate.getFullYear(),
         leftPanelDate.getMonth() + 1,
         1
       )
-      this.rightPanelDate = this.unlinkPanels
-        ? new Date(Math.max(this.dates[1], rightPanelDate))
-        : rightPanelDate
+      this.rightPanelDate = this.unlinkPanels ? new Date(Math.max(this.dates[1], rightPanelDate)) : rightPanelDate
     },
     currentView(currentView) {
       const leftMonth = this.leftPanelDate.getMonth()
@@ -308,7 +293,6 @@ export default {
         const fn = type == 'month' ? this.showMonthPicker : this.showYearPicker
         return () => fn(direction)
       }
-
       const date = this[`${direction}PanelDate`]
       const { labels, separator } = formatDateLabels(
         locale,
@@ -377,7 +361,6 @@ export default {
       if (currentViewType === 'year-table')
         this[`${panel}PickerTable`] = 'month-table'
       else this[`${panel}PickerTable`] = `${this.currentView}-table`
-
       if (!this.unlinkPanels) {
         const otherPanel = panel === 'left' ? 'right' : 'left'
         const type = currentViewType === 'year-table' ? 'FullYear' : 'Month'
