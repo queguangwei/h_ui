@@ -161,11 +161,15 @@ export default {
     onQuery(keyword = "") {
       keyword = keyword.replace(/(\^|\(|\)|\[|\]|\$|\*|\+|\.|\?|\\|\{|\}|\|)/g, "\\$1");
       for (const item of this.blockData) {
-        const { _index, selected, label, value } = item;
+        const { _index, selected, label, label1, value } = item;
         if (keyword === "") {
           this.$set(this.blockData[_index], "hidden", false);
         } else {
-          this.$set(this.blockData[_index], "hidden", !new RegExp(keyword, "i").test(label) && !new RegExp(keyword, "i").test(value));
+          if(label1 !== '') {
+            this.$set(this.blockData[_index], "hidden", !new RegExp(keyword, "i").test(label1) && !new RegExp(keyword, "i").test(label) && !new RegExp(keyword, "i").test(value))
+          }else {
+            this.$set(this.blockData[_index], "hidden", !new RegExp(keyword, "i").test(label) && !new RegExp(keyword, "i").test(value));
+          }
         }
       }
       this.reset() && this.updateVisualData();
