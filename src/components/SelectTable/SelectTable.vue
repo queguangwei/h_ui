@@ -388,7 +388,7 @@ export default {
     return {
       prefixCls: prefixCls,
       visible: false,
-      inputVisible: false,
+      inputVisible: true,
       options: [],
       optionInstances: [],
       selectedSingle: "",
@@ -1605,10 +1605,14 @@ export default {
     },
     visible(val) {
       if (val) {
-        this.inputVisible = true
-        this.$nextTick(() => {
-          this.$refs.input && this.$refs.input.focus()
-        })
+        if(this.filterable) {
+          if (this.multiple && !this.showBottom) {
+            this.inputVisible = true
+            this.$nextTick(() => {
+              this.$refs.input && this.$refs.input.focus()
+            })
+          }
+        }
         this.$nextTick(() => {
           let content = this.$refs.content;
           if (content.scrollHeight > content.clientHeight) {
@@ -1622,8 +1626,10 @@ export default {
           this.dispatch("Msgbox", "on-esc-real-close", false);
         }, 0);
       } else {
-        this.inputVisible = false
         if (this.filterable) {
+          if(this.multiple && !this.showBottom) {
+            this.inputVisible = false
+          }
           this.$refs.reference.scrollTop = 0; // reference element scroll to 0
 
           if (this.$refs.input) {
