@@ -132,7 +132,7 @@ export default {
         }
         field.commonRule()
         field.validate('', errors => {
-          if (errors) {
+          if (errors && !field.isNotValid) {
             valid = false
             unpass.push(field.prop)
           }
