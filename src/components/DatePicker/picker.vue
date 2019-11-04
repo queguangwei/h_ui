@@ -251,12 +251,21 @@ export default {
     }
   },
   data() {
+    let value = this.value; 
     const isRange = this.type.indexOf('range') > -1 ? true : false
+    if (typeof this.value === 'string' ) value = this.value.split(' - ')
+
     const emptyArray = isRange ? [null, null] : [null]
-    let initialValue = isEmptyArray((isRange ? this.value : [this.value]) || [])
+    let initialValue = isEmptyArray((isRange ? value : [value]) || [])
       ? emptyArray
-      : this.parseDate(this.value)
-    if (this.name == 'splicePanel') initialValue = this.parseDate(this.value)
+      : this.parseDate(value)
+    if (this.name == 'splicePanel') initialValue = this.parseDate(value)
+
+    // const emptyArray = isRange ? [null, null] : [null]
+    // let initialValue = isEmptyArray((isRange ? this.value : [this.value]) || [])
+    //   ? emptyArray
+    //   : this.parseDate(this.value)
+    // if (this.name == 'splicePanel') initialValue = this.parseDate(this.value)
     return {
       prefixCls: prefixCls,
       showClose: false,
