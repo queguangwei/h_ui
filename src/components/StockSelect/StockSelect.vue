@@ -236,15 +236,6 @@ export default {
       if (type === 'string' || type === 'number') {
         let findModel = false
         let curSingle = ''
-//        if(newVal === '' && this.query !== '') {
-//          for (let j in this.options) {
-//            if (this.query === this.options[j].label) {
-//              curSingle = this.options[j].label
-//              findModel = true
-//              break
-//            }
-//          }
-//        }else
         if(newVal !== '') {
           for (let k in this.options) {
             if (this.model === this.options[k].value) {
@@ -259,13 +250,7 @@ export default {
         } else if (this.remote && curSingle) {
           this.selected = curSingle
         }
-        //o45 证券代码控件需要
-//        if (slot && !findModel) {
-//          this.model = ''
-//          this.query = ''
-//        }
       }
-
       this.findChild(child => {
         this.options.forEach((col, i) => {
           if (newVal === col.value) {
@@ -325,8 +310,6 @@ export default {
       })
     },
     query(newVal) {
-      let querySingle = newVal.toString().split(' ')[0] //此处改变query
-
       this.querySingle = newVal
 //      if (this.remote && this.remoteMethod) {
         if (!this.selectToChangeQuery) {
@@ -709,7 +692,6 @@ export default {
     },
     //左右键、点选选中options中value值
     selectBlockSingle(value, status = false, str, nullValue = false) {
-//      this.isQuerySelect = status
       //焦点未离开勿更新可选options
       if(!this.isInputFocus) {
         this.availableOptions = this.options
@@ -726,24 +708,6 @@ export default {
           this.focus()
         })
       }
-//      if(nullValue) {
-//        this.$nextTick(() => {
-//          this.focusIndex = 0
-//        })
-//        this.selectToChangeQuery = false
-//      }else {
-//        //value有值表示精确匹配，无值不匹配，但是无论是否精确匹配都要选中筛选第一项 是cloneData中focus=true
-//        //但是使用nextTick会出现一种特殊情况第一项模糊匹配focus，第二项精确匹配selected,所以还是判断value
-//        if(value === '' && !this.keepInputValue) {
-//          this.$nextTick(() => {
-//            this.focusIndex = 0
-//            this.$nextTick(() => {
-//              this.focusIndex = 1
-//            })
-//          })
-//        }
-//        this.selectToChangeQuery = false
-//      }
     },
     setSingleSelect() {
       let curlabel = ''

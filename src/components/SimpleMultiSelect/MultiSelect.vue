@@ -260,11 +260,9 @@ export default {
     onContainerKeyDown(e) {
       this.isKeyDown = true; // switch on key down status
       this.keyboardEvent = e; // cache current keyboard event
-
       if (this.isDropdownVisible) {
         if (_.isKeyMatch(e, "Esc") || _.isKeyMatch(e, "Enter")) {
           this.isDropdownVisible = false;
-
           // 处理与 MsgBox 的 Esc 事件冲突，处理地并不够好
           this.dispatch("Msgbox", "on-esc-real-close", false);
           setTimeout(() => {
@@ -294,7 +292,9 @@ export default {
       this.dispatch("FormItem", "on-form-focus");
       this.$emit("on-focus");
       this.$emit("on-input-focus");
-      this.$refs.input.select();
+      setTimeout(() => {
+        this.$refs.input.select();
+      },0)
     },
     onInputBlur() {
       this.dispatch("FormItem", "on-form-blur");
@@ -316,7 +316,6 @@ export default {
         this.isDropdownVisible = !this.isDropdownVisible;
       }
     },
-
     /**
      * @description 魔法字符串的解析逻辑
      * @returns {Object} { selectedRecords, model, keyword }
