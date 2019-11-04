@@ -13,7 +13,7 @@
         <h-date-picker v-model="model2" type="daterange" format="yyyy-MM-dd HH:mm"   @on-change="handleChange1"  placement="bottom-end" placeholder="选择日期" valueTypeArr> </h-date-picker>
        <br><br><br>
        {{model3}}
-        <h-date-picker v-model="model3" type="daterange" @on-change="handleChange1" format="yyyy/MM/dd" showFormat valueTypeArr  placement="bottom-end" placeholder="选择日期"> </h-date-picker>     
+        <h-date-picker v-model="model3" type="date" @on-change="handleChange1" format="yyyy/MM/dd" showFormat valueTypeArr  placement="bottom-end" placeholder="选择日期"> </h-date-picker>     
       </h-col>
     </h-row>
 </div>
