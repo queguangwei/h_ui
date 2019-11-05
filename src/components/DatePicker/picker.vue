@@ -288,6 +288,7 @@ export default {
       if (this.multiple) {
         return this.internalValue.slice()
       } else {
+        if (isEmptyArray(this.internalValue)) return []
         // const isRange = this.type.includes('range');
         const isRange = this.type.indexOf('range') > -1 ? true : false
         let val = this.internalValue.map(date =>
@@ -300,8 +301,9 @@ export default {
     publicStringValue() {
       const { formatDate, publicVModelValue, type } = this
       if (type.match(/^time/)) return publicVModelValue
+      const arr = publicVModelValue.map(formatDate)
       return Array.isArray(publicVModelValue)
-        ? publicVModelValue.map(formatDate)
+        ? isEmptyArray(arr) ? [] : arr
         : formatDate(publicVModelValue)
     },
     //    opened() {

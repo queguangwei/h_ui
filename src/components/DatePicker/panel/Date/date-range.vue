@@ -350,11 +350,9 @@ export default {
       }
     },
     showYearPicker(panel) {
-      // this.currentView = 'year'
       this[`${panel}PickerTable`] = 'year-table'
     },
     showMonthPicker(panel) {
-      // this.currentView = 'month'
       this[`${panel}PickerTable`] = 'month-table'
     },
     handlePreSelection(panel, value) {
