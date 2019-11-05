@@ -253,7 +253,7 @@ export default {
   data() {
     let value = this.value; 
     const isRange = this.type.indexOf('range') > -1 ? true : false
-    if (typeof this.value === 'string' ) value = this.value.split(' - ')
+    if (typeof this.value === 'string' && this.type.includes('range') ) value = this.value.split(' - ')
 
     const emptyArray = isRange ? [null, null] : [null]
     let initialValue = isEmptyArray((isRange ? value : [value]) || [])

@@ -12,8 +12,9 @@
         {{model2}}
         <h-date-picker v-model="model2" type="daterange" format="yyyy-MM-dd HH:mm"   @on-change="handleChange1"  placement="bottom-end" placeholder="选择日期" valueTypeArr> </h-date-picker>
        <br><br><br>
-       {{model3}}
-        <h-date-picker v-model="model3" type="date" @on-change="handleChange1" format="yyyy/MM/dd" showFormat valueTypeArr  placement="bottom-end" placeholder="选择日期"> </h-date-picker>     
+       {{value1}}
+        <h-date-picker :value="value1" format="yyyy年MM月dd日" type="date" placeholder="选择日期" style="width: 200px"></h-date-picker>
+        <!-- <h-date-picker :value="model3" type="date"  placeholder="选择日期"> </h-date-picker>      -->
       </h-col>
     </h-row>
 </div>
@@ -22,10 +23,10 @@
     export default {
         data () {
             return {
-                //  model2:["2018-08-16", "2018-08-23 "],
-                 model2:"2017-11-13 00:00:00 - 2018-08-23 00:00:00 ",
-                 model3:["2018-08-16", "2018-08-24"],
-                //  model3:"2018-08-16 - 2018-08-24",
+                 model2:["2018-08-16", "2018-08-23"],
+                //  model2:"2017-11-13 00:00:00 - 2018-08-23 00:00:00 ",
+                 value1: '2016-01-01',
+                 model3:"2018-08-16 - 2018-08-24",
 
             }
         },
