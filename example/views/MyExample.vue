@@ -62,16 +62,16 @@
 
         <h-form-item label="multiSelect" prop="stockInfo" required>
           <h-multi-select ref="stockInfo" class="curItemClass" v-model="formValidate.stockInfo">
-            <h-multi-block :data="bigData" :showCol="showCol"></h-multi-block>
+            <h-multi-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-multi-block>
           </h-multi-select>
           {{formValidate.stockInfo}}
         </h-form-item>
         <h-form-item label="stockCode" prop="stockCode" required>
           <h-single-select ref="stockCode" v-model="formValidate.stockCode" class="curItemClass"
                            remote :loading="isLoading" :remote-method="remoteMethod1" transfer autoPlacement
-                           widthAdaption :dropWidth="220" :maxDropWidth="250"
+                           widthAdaption :width="200" :dropWidth="220" :maxDropWidth="250"
                            @on-keydown="handlekeydown" @on-change="handlevaluechange">
-            <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
+            <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth" @on-scroll="onscroll"></h-select-block>
           </h-single-select>
           {{formValidate.stockCode}}
         </h-form-item>
@@ -81,7 +81,7 @@
           </h-simple-select>
         </h-form-item>
         <h-form-item label="select" prop="city" required>
-          <h-select v-model="formValidate.city" class="curItemClass" filterable multiple transfer @on-keyup="selectKeyup">
+          <h-select v-model="formValidate.city" class="curItemClass" filterable  transfer @on-keyup="selectKeyup">
             <h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>
           </h-select>
         </h-form-item>
@@ -147,7 +147,9 @@
       </h-form-item>
 
       <h-form-item label="密码" prop="passwd" required>
+        <h-poptip trigger="focus" title="提示标题" content="提示内容">
         <h-input class="curItemClass" type="password" v-model="formCustom.passwd"></h-input>
+        </h-poptip>
       </h-form-item>
       <h-form-item label="确认密码" prop="passwdCheck" required>
         <h-input class="curItemClass" type="password" v-model="formCustom.passwdCheck"></h-input>
@@ -165,18 +167,16 @@
       </h-form-item>
     </h-form>
     <h1>calendar</h1>
-    <h-calendar ref="calendar" :disableDate="disableDate" @on-select-change="getSelectDate">
-    </h-calendar>
+    <!--<h-calendar ref="calendar" :disableDate="disableDate" @on-select-change="getSelectDate">-->
+    <!--</h-calendar>-->
     <h1>table</h1>
-    <h-table ref="table" :columns="columns" :data="data0" :summationData="summationData1" :loading="loading"
-             border :highlight-row="true"  headAlgin="center" bodyAlgin="left" clickHeadSort isMulitSort
-             canDrag :lastColWidth="150" :minDragWidth="40" :minColWidth="60" notSetWidth autoHeadWidth
-             @on-sort-change="sortchange" @on-table-width-change="widthChange">
-      <span slot="loading">我是自定义加载！！！</span>
-    </h-table>
+    <h-table ref="table" :columns="columnsMulti" :data="dataMulti" :multiLevel="multiTitle"
+             canDrag border :loading="loading" clickHeadSort isMulitSort
+             highlight-row :lastColWidth="150" :minDragWidth="40" :minColWidth="60"
+             @on-sort-change="sortchange"></h-table>
     <h-button @click="resetSort">重置排序</h-button>
     <h1>tree</h1>
-    <h-tree :data="baseData" show-checkbox></h-tree>
+    <!--<h-tree :data="baseData" show-checkbox></h-tree>-->
     <h1>simpleTreeGrid</h1>
     <h-button type="primary" @click="expandAll">展开</h-button>
     <h-button @click="fold">收起</h-button>
@@ -321,14 +321,14 @@
         tabs:15,
         value:'value0',
         cityList: [
-//        {value: 'beijing', label: '北京市'},
-//        {value: 'shanghai', label: '上海市'},
-//        {value: 'shenzhen', label: '深圳市'},
-//        {value: 'hangzhou', label: '杭州市'},
-//        {value: 'nanjing', label: '南京市'},
-//        {value: 'chongqing', label: '重庆市'},
-//        {value: 'chengdu', label: '成都'},
-//        {value: 'xiamen', label: '厦门'},
+        {value: 'beijing', label: '北京市'},
+        {value: 'shanghai', label: '上海市'},
+        {value: 'shenzhen', label: '深圳市'},
+        {value: 'hangzhou', label: '杭州市'},
+        {value: 'nanjing', label: '南京市'},
+        {value: 'chongqing', label: '重庆市'},
+        {value: 'chengdu', label: '成都'},
+        {value: 'xiamen', label: '厦门'},
           {value: '379134', label: '内蒙古自治区农联社'},
           {value: '382217', label: '广州证券王炽东'},
           {value: '380870', label: '广州证券穗利5号'},
@@ -353,7 +353,7 @@
           desc: "",
           valueRemote1: [],
         },
-        colWidth:['150','150'],
+        colWidth:['120','120'],
         showCol:['label1'],
         bigData: [
           { value: "1", label: "lab1",label1: "多列00000000000000000000000000000000000001"},
@@ -463,151 +463,75 @@
             { validator: validateAge, trigger: 'blur' }
           ]
         },
-        columns: [
-          {
-            title: '',
-            key: 'index',
-            type: 'index'
-          },
+        columnsMulti: [
           {
             title: '姓名',
             key: 'name',
-            fixed: 'left',
-            width: 150,
-            render: (h, params) => {
-              return h('div', [
-                h('Icon', {
-                  props: {
-                    name: 'person'
-                  }
-                }),
-                h('strong', params.row.name)
-              ])
-            }
           },
           {
             title: '年龄',
-            width:150,
             key: 'age',
-            ellipsis:true,
             sortable: true
           },
           {
-            title: '省份',
-            width:150,
-            key: 'province',
-            ellipsis:true,
-            sortable: true,
-            type: 'html'
-          },
-          {
-            title: '市区',
-            width:150,
-            key: 'city',
-            sortable: true,
-            ellipsis:true,
-          },
-          {
-            type: 'text',
-            width: 150,
             title: '地址',
-            key: 'address',
-            ellipsis:true
+            key: 'address'
           },
           {
-            title: '邮编',
-            width:150,
-            key: 'zip',
-            ellipsis:true,
-            headerTooltip: true
-          },
-          {
-            title: '邮编1',
-            width:150,
-            key: 'zip',
-            ellipsis:true,
-            headerTooltip: true
-          },
-          {
-            title: '操作',
-            key: 'action',
-//          fixed: 'right',
-//          hiddenCol: true,
+            title: '城市',
+            key: 'city',
             render: (h, params) => {
-              return h('div', [
-                h('h-button', {
+              return h('h-simple-select', {
                   props: {
-                    type: 'info',
-                    size: 'small'
+                    autoPlacement: true,
+                    filterable: true,
+//                    transfer: true
                   }
-                }, '查看'),
-                h('h-button', {
+                },
+                [h('h-select-block', {
                   props: {
-                    type: 'text',
-                    size: 'small'
+                    data: this.cityList
                   }
-                }, '编辑')
-              ])
+                })])
             }
+          },
+          {
+            title: '备注',
+            key: 'status'
           }
         ],
-        data0: [
+        dataMulti: [
           {
             name: '王小明',
             age: 18,
-            address: '北京市朝阳区芍药居',
-            province: '<a href="javascript:alert(123456);">北京市</a>',
-            city: '朝阳区',
-            zip: 100000
+            address: '北京市朝阳区\r芍药居',
+            // _disabled:true,
+            status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
           },
           {
             name: '张小刚',
             age: 25,
             address: '北京市海淀区西二旗',
-            province: '北京市',
-            city: '海淀区',
-            zip: 100000
+            status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
           },
           {
             name: '李小红',
             age: 30,
             address: '上海市浦东新区世纪大道',
-            province: '上海市',
-            city: '浦东新区',
-            zip: 100000
+            status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
           },
           {
             name: '周小伟',
             age: 26,
             address: '深圳市南山区深南大道',
-            province: '广东',
-            city: '南山区',
-            zip: 100000
-          },
-          {
-            name: '王小明',
-            age: 18,
-            address: '北京市朝阳区芍药居',
-            province: '北京市',
-            city: '朝阳区',
-            zip: 100000
-          },
-          {
-            name: '张小刚',
-            age: 25,
-            address: '北京市海淀区西二旗',
-            province: '北京市',
-            city: '海淀区',
-            zip: 100000
+            status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
           }
         ],
-        summationData1: [{
-          name: '汇总',
-          age: 123123123,
-          city: 'gtryjuyhgfg',
-          province: 'fsegergeryh',
-          address: 'qqweqwe'
-        }],
+        multiTitle:[
+          {title:'姓名信息',cols:1,rows:1,align:'center',hiddenCol:false},
+          {title:'基本信息',cols:3,align:'center'},
+          {title:'详情',cols:1,align:'center'},
+        ],
         baseData: [{
           expand: true,
           checked: true,
@@ -843,6 +767,11 @@
       }
     },
     methods: {
+      onscroll(x,y,z) {
+        console.log(x)
+        console.log(y)
+        console.log(z)
+      },
       handleShowBox() {
         this.showBox = true
 //        this.curValue = 'value1'
@@ -852,6 +781,7 @@
       remoteMethod(query, done) {
         let reqTime = new Date().getTime();
         this.reqTime = reqTime;
+        console.log(query)
         setTimeout(()=>{
           if(this.reqTime != reqTime) {
             return;
@@ -866,10 +796,16 @@
                 value: '010007',
                 label: '010007',
                 label1: '国债010007',
-              } ];
+              },{
+                value: '011002',
+                label: '0110002',
+                label1: '国债0110002'
+              }];
               done();
-              this.$nextTick(()=>{ this.curValue = '110002'; })
-            }, 800)
+              this.$nextTick(()=>{
+                this.curValue = '110002';
+              })
+            }, 600)
           })
         }, 600)
       },
@@ -895,9 +831,6 @@
         }
       },
       sortchange(e) {
-        console.log(e)
-      },
-      widthChange(e) {
         console.log(e)
       },
       handleSubmit(name) {

@@ -6,8 +6,8 @@
     <Button @click="loadData">加载数据</Button>
     <Button @click="changeData">切换数据</Button>
     <Button @click="adddata">添加数据</Button>
-    <h-simple-table :columns="columnsBig1" :data="bigData" :addData="addData" :loading="loading" :row-class-name="rowClassName"
-                    bodyAlgin="left" height="500" canDrag border stripe rowSelectOnly :summationData="summationData"
+    <h-simple-table :columns="columnsBig1" :data="bigData" :addData="addData"  :summationData="summationData"
+                    :loading="loading" :row-class-name="rowClassName" bodyAlgin="left" height="500" canDrag border stripe rowSelectOnly
                     @on-select="select" @on-select-cancel="select" @on-drag="onDrag"
                     @on-select-all='change' @on-selection-change="change">
       <span slot="loading">我是自定义加载！！！</span>
@@ -86,14 +86,13 @@ export default {
         {
           type: 'index',
           align: 'center',
-          fixed:'left',
+//          fixed:'left',
           width: 100
         },
         {
           type: 'selection',
           align: 'center',
           key:'select',
-//          fixed:'left',
           width: 100,
           sortable: true
         },
@@ -129,27 +128,32 @@ export default {
         {
           title: '银行',
           key: 'securityName',
-//          width:200,
+          width:200,
           showTitle:true
         },
-//        {
-//          title: '年龄',
-//          key: 'tradeDir',
+        {
+          title: '年龄',
+          key: 'tradeDir',
+          width: 200,
+        },
+        {
+          title: '数量',
+          ellipsis:true,
+          sortable:true,
+          width: 200,
+          key: 'tradeQuantity',
+        },
+        {
+          title: '邀请人数',
+          key: 'investType',
 //          width: 200,
-//        },
-//        {
-//          title: '数量',
-//          ellipsis:true,
-//          sortable:true,
-//          width: 200,
-//          key: 'tradeQuantity',
-//        },
-//        {
-//          title: '邀请人数',
-//          key: 'investType',
-////          width: 200,
-////          fixed:'left'
-//        },
+//          fixed:'left'
+        },
+      ],
+      multiTitle:[
+        {title:'信息',cols:2,rows:1,align:'center'},
+        {title:'基本信息',cols:2,align:'center'},
+        {title:'详情',cols:4,align:'center'},
       ],
       columns1: [
         {
