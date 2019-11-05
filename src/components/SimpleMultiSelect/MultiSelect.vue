@@ -181,7 +181,6 @@ export default {
         }
         this.isKeyDown = false; // switch off key down status
       }
-
       if (this.isInputting) {
         if (this.remote && this.remoteMethod) {
           const { selectedRecords: originalSelectedRecords, keyword: originalKeyword } = this.resolveMagicString();
@@ -229,7 +228,7 @@ export default {
               this.magicString = this.selectedRecords.map(item => item.label).join();
               this.blockVm.onQuery();
               this.$nextTick(() => {
-                if (this.isKeyDown && (_.isKeyMatch(this.keyboardEvent, "Esc") || _.isKeyMatch(this, keyboardEvent, "Enter"))) {
+                if (this.isKeyDown && (_.isKeyMatch(this.keyboardEvent, "Esc") || _.isKeyMatch(this.keyboardEvent, "Enter"))) {
                   this.$refs.input.select();
                 }
                 this.isKeyDown = false; // switch off key down status
@@ -242,7 +241,7 @@ export default {
           this.magicString = this.selectedRecords.map(item => item.label).join();
           this.blockVm.onQuery();
           this.$nextTick(() => {
-            if (this.isKeyDown && (_.isKeyMatch(this.keyboardEvent, "Esc") || _.isKeyMatch(this, keyboardEvent, "Enter"))) {
+            if (this.isKeyDown && (_.isKeyMatch(this.keyboardEvent, "Esc") || _.isKeyMatch(this.keyboardEvent, "Enter"))) {
               this.$refs.input.select();
             }
             this.isKeyDown = false; // switch off key down status
