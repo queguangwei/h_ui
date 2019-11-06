@@ -43,7 +43,9 @@ import {
   changeTipsVal,
   cutNum,
   divideNum,
-  changeTipsNum
+  changeTipsNum,
+  BIGNUMBER_DEFAULT_FORMAT,
+  BIGNUMBER_GROUPING_FORMAT
 } from "../../util/tools";
 import Emitter from "../../mixins/emitter";
 import Locale from "../../mixins/locale";
@@ -51,6 +53,7 @@ import Drop from "../Select/Dropdown.vue";
 import TransferDom from "../../directives/transfer-dom";
 const prefixCls = "h-typefield";
 import { on, off } from "../../util/dom";
+import BigNumber from 'bignumber.js'
 
 function addNum(num1, num2) {
   let sq1, sq2, m;
@@ -252,6 +255,12 @@ export default {
       } else {
         return this.placeholder;
       }
+    },
+    maxNum() {
+      return new BigNumber(this.max)
+    },
+    minNum() {
+      return new BigNumber(this.min)
     }
   },
   watch: {
@@ -365,21 +374,15 @@ export default {
       }
       let val = this.inputValue ? this.inputValue.trim() : this.inputValue;
       if (val && val !== "") {
-        val = this.notFormat
-          ? e.target.value
-          : this.formatNum(
-              e.target.value.trim().replace(/,/g, ""),
-              this.integerNum,
-              this.suffixNum
-            );
-        if (val > this.max) val = this.max;
-        if (val < this.min) val = this.min;
-        if ((this.divided || this.immeDivided) && this.type === "money") {
-          this.inputValue = divideNum(val);
-        } else {
-          this.inputValue = val;
+        if (!this.notFormat) {
+          if (this.type === 'cardNo') {
+            val = this.formatCardNo(val)
+          }
+          if (this.type === 'money') {
+            val = this.formatNum(e.target.value, this.integerNum, this.suffixNum)
+          }
         }
-        e.target.value = this.inputValue;
+        e.target.value = this.inputValue = val
       } else {
         if (this.setNull && this.type == "money") {
           val = this.setNullStr();
@@ -419,7 +422,13 @@ export default {
             !this.immeDivided &&
             !this.divided
           ) {
-            this.inputValue = String(parseFloat(this.inputValue));
+            let bn = new BigNumber(this.inputValue.trim().replace(/[^0-9\.-]/g, ''))
+            let numStr = bn.toFormat(null, null, BIGNUMBER_DEFAULT_FORMAT)
+            if (numStr.indexOf('.') > -1) {
+              numStr = numStr.replace(/0+?$/g, '')
+              numStr = numStr.replace(/[.]$/g, '')
+            }
+            this.inputValue = numStr
           }
           if (!this.immeDivided) {
             this.currentValue = this.inputValue
@@ -488,7 +497,7 @@ export default {
       if (!this.immeDivided) {
         this.inputValue = value;
       } else {
-        this.inputValue = divideNum(value);
+        value = this.inputValue = divideNum(value)
       }
       this.bigShow(this.type, value);
       this.$emit("input", value);
@@ -552,10 +561,9 @@ export default {
       }
       return result;
     },
-    formatNum(value, integerNum, suffixNum) {
+    formatCardNo(value) {
       value = value.trim().replace(/,/g, "");
       value = value.replace(/[^0-9\.-]/g, "") || "";
-      var firstChar = value.substring(0, 1) || "";
       if (this.type == "cardNo") {
         value = value.replace("-", "").replace(".", "");
         if (value != null && value != "") {
@@ -565,44 +573,36 @@ export default {
           value = value ? value.match(/\d{1,4}/g).join("  ") : "";
         }
       }
-      if (this.type == "money") {
-        if (firstChar == "-") {
-          value = value.substring(1) || "";
+      return value
+    },
+    formatNum(value, integerNum, suffixNum) {
+      value = value.trim().replace(/,/g, "");
+      value = value.replace(/[^0-9\.-]/g, "") || "";
+      if (this.type == 'money') {
+        let splitArr = value.split('.')
+        // 整数部分
+        let integer = splitArr.length > 0 ? splitArr[0] : value
+        // 小数部分
+        let fraction = splitArr.length > 1 ? splitArr[1] : ''
+        let isNegative = value[0] === '-'
+        // 按整数位数分割整数部分
+        integer = cutNum(integer.replace('-', ''), integerNum)
+
+        let bn = new BigNumber((isNegative ? '-' + integer : integer) + '.' + fraction)
+        if (bn.isLessThan(this.minNum)) bn = this.minNum
+        if (bn.isGreaterThan(this.maxNum)) bn = this.maxNum
+        if (this.nonNegative && bn.isNegative()) {
+          bn = bn.absoluteValue()
         }
-        var valArr = value.split(".");
-        var intLength = valArr.length > 0 ? valArr[0].length : value;
-        if (integerNum < 16 || intLength < 16) {
-          value = value.replace("-", "");
-          value = cutNum(value, integerNum);
-          if (value == "") return;
-          if (this.isround) {
-            // 7位小数Number会转成科学计数法
-            // value = Number(value).toFixedSelf(suffixNum);
-            let result = this.changeRexNum(Number(value));
-            value = this.toFixed(result, suffixNum);
-          } else {
-            value = this.fillZero(value, Number(suffixNum));
-          }
-          value = this.setNum(value, suffixNum, integerNum);
-          if (firstChar == "-") {
-            value = "-" + value;
-          }
-          if (value.substring(value.length - 1, value.length) == ".") {
-            value = value.substring(0, value.length - 1);
-          }
-        } else {
-          value = this.setBigData(value, valArr);
-          if (firstChar == "-") {
-            value = "-" + value;
-          }
+        let format = this.divided || this.immeDivided ? BIGNUMBER_GROUPING_FORMAT : BIGNUMBER_DEFAULT_FORMAT
+        value = this.isround ? bn.toFormat(Number(suffixNum), BigNumber.ROUND_HALF_UP, format)
+          : bn.toFormat(Number(suffixNum), null, format)
+        if (this.notFillin && value.indexOf('.') > -1) {
+          value = value.replace(/0+?$/g, '')
+          value = value.replace(/[.]$/g, '')
         }
       }
-
-      if (this.nonNegative) {
-        value = value.replace(/-/, "");
-      }
-
-      return value;
+      return value
     },
     setBigData(value, arr) {
       let curInt, curSuffix, val1, val2;
@@ -697,7 +697,7 @@ export default {
       return str;
     },
     initValue(val) {
-      let formatVal;
+      let formatVal
       if (
         (!val || Number(val) == 0) &&
         this.setNull &&
@@ -708,26 +708,17 @@ export default {
         formatVal = this.inputValue;
       } else {
         // 失焦的时候才格式化，避免不能增删小数位的问题
-        formatVal =
-          this.notFormat || this.havefocused || !val
-            ? val
-            : this.formatNum(
-                val.replace(/,/g, ""),
-                this.integerNum,
-                this.suffixNum
-              );
-        if (
-          formatVal &&
-          this.divided &&
-          this.type == "money" &&
-          !this.havefocused
-        ) {
-          this.inputValue = divideNum(formatVal);
-        } else if (this.immeDivided && formatVal && this.type == "money") {
-          this.inputValue = divideNum(formatVal);
+        if (this.notFormat || this.havefocused || !val) {
+          formatVal = val
         } else {
-          this.inputValue = formatVal;
+          if (this.type === 'cardNo') {
+            formatVal = this.formatCardNo(val)
+          }
+          if (this.type === 'money') {
+            formatVal = this.formatNum(val, this.integerNum, this.suffixNum)
+          }
         }
+        this.inputValue = formatVal
       }
       // 失焦的时候才更新v-model绑定值，避免不能输入的问题
       !this.havefocused && this.$emit("input", this.cardFormatValue(formatVal));
