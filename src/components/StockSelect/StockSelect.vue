@@ -231,15 +231,15 @@ export default {
       }
     },
     model(newVal) {
-//      this.updateSingleSelected()
+      console.log('model:'+newVal)
       const type = typeof newVal
       if (type === 'string' || type === 'number') {
         let findModel = false
-        let curSingle = ''
+        let curValue = ''
         if(newVal !== '') {
           for (let k in this.options) {
             if (this.model === this.options[k].value) {
-              curSingle = this.options[k].label
+              curValue = this.options[k].value
               findModel = true
               break
             }
@@ -247,8 +247,8 @@ export default {
         }
         if (newVal === '') {
           this.selected = ''
-        } else if (this.remote && curSingle) {
-          this.selected = curSingle
+        } else if (this.remote && findModel) {
+          this.selected = curValue
         }
       }
       this.findChild(child => {
@@ -260,56 +260,28 @@ export default {
           }
         })
       })
-      // o45开启keepInputValue默认初始值 init=false
-//      if (init) {
-//        if(this.keepInputValue) {
-//          this.selected = this.model
-//        }
-//      }else {
-        for(let j in this.availableOptions) {
-          if(this.availableOptions[j].value === newVal) {
-            this.focusIndex = this.availableOptions[j].index + 1
-            break
-          }
-        }
-//        if(this.keepInputValue) {
-//          this.selected = this.model
-//        }
-//      }
-
-//      this.toggleSingleSelected(this.model, init)
     },
     selected(newVal) {
-      this.$emit('input', this.model)
-      this.$emit('on-change', this.model)
-//      if (!this.isQuerySelect) {// 选中内容是点选而非模糊匹配到的
-//        this.query = val
-//        if (this.query !== '') {
-//          this.selectToChangeQuery = true
-//        }else {
-//          this.selectToChangeQuery = false
-//        }
-//      }
-//      this.setSingleSelect()
+      console.log('selected:'+newVal)
+      this.$emit('input', newVal)
+      this.$emit('on-change', newVal)
+      let curlabel = ''
+      let index = 0
+      this.availableOptions.forEach((col, i) => {
+        if (col.value === newVal) {
+          curlabel = col.label
+          index = col.index + 1
+        }
+      })
+      this.focusIndex = index
 
-//      let curlabel = ''
-//      let index = 0
-//      this.findChild(child => {
-//        this.availableOptions.forEach((col, i) => {
-//          if (col.value === this.model) {
-//            curlabel = col.label
-//            index = col.index + 1
-//          }
-//        })
-//      })
-//      this.selected = curlabel
-//      this.focusIndex = index
       this.$nextTick(() => {
-        this.query = newVal
+        this.query = curlabel
         this.selectToChangeQuery = true
       })
     },
     query(newVal) {
+      console.log('query:'+newVal)
       this.querySingle = newVal
 //      if (this.remote && this.remoteMethod) {
         if (!this.selectToChangeQuery) {
@@ -552,94 +524,6 @@ export default {
         this.$refs.dropdown.setWidthAdaption()
       }
     },
-//    updateSingleSelected(init = false, slot = false) {
-//      // 赋值默认项是遍历选项绑定focusIndex
-//      if(init) {
-//        for(let i in this.availableOptions) {
-//          if(this.availableOptions[i].value === this.model) {
-//            this.focusIndex = this.availableOptions[i].index + 1
-//            break
-//          }
-//        }
-//      }
-//      const type = typeof this.model
-//      if (type === 'string' || type === 'number') {
-//        let findModel = false
-//        let curSingle = ''
-//        if(this.model === '' && this.query !== '') {
-//          for (let j in this.options) {
-//            if (this.query === this.options[j].label) {
-//              curSingle = this.options[j].label
-//              findModel = true
-//              break
-//            }
-//          }
-//        }else if(this.model !== '') {
-//          //O45刷新新增下拉项导致显示中文被清空，O45client测试通过，本地测试却有问题
-//          this.findChild(child => {
-//            if(this.remote && child.showCol.length > 0) {
-//              for (let k in this.options) {
-//                if (this.model === this.options[k].value) {
-//                  curSingle = this.options[k].label + ' ' + this.options[k][child.showCol[0]]
-//                  findModel = true
-//                  break
-//                }
-//              }
-//            }else {
-//              for (let k in this.options) {
-//                if (this.model === this.options[k].value) {
-//                  curSingle = this.options[k].label
-//                  findModel = true
-//                  break
-//                }
-//              }
-//            }
-//          })
-//        }
-//        if (this.model === '') {
-//          this.selected = ''
-//        } else if (this.remote && curSingle) {
-//          this.selected = curSingle
-//        } else if (!this.remote) {
-//          this.selected = curSingle
-//        }
-//        //o45 证券代码控件需要
-//        if (slot && !findModel) {
-//          this.model = ''
-//          this.query = ''
-//        }
-//      }
-//      this.toggleSingleSelected(this.model, init)
-//    },
-//    toggleSingleSelected(value, init = false) {
-//      this.findChild(child => {
-//        this.options.forEach((col, i) => {
-//          if (value == col.value) {
-//            this.$set(child.cloneData[i], 'selected', true)
-//          } else {
-//            this.$set(child.cloneData[i], 'selected', false)
-//          }
-//        })
-//      })
-//      // o45开启keepInputValue默认初始值
-//      if (init) {
-//        if(this.keepInputValue) {
-//          this.selected = this.model
-//        }
-//      }else {
-//        for(let j in this.availableOptions) {
-//          if(this.availableOptions[j].value === value) {
-//            this.focusIndex = this.availableOptions[j].index + 1
-//            break
-//          }
-//        }
-//        if(this.keepInputValue) {
-//          this.selected = this.model
-//        }
-////        this.$emit('on-change', value)
-////        this.dispatch('FormItem', 'on-form-change', value)
-//      }
-//    },
     handleKeydown(e) {
       const keyCode = e.keyCode
       // right
@@ -715,22 +599,22 @@ export default {
       //焦点在输入框内
       if(this.isInputFocus) {
         this.findChild(child => {
-            this.availableOptions.forEach((col, i) => {
-              if (col.value === this.model) {
-                curlabel = col.label
-                index = col.index + 1
-              }
-            })
+          this.availableOptions.forEach((col, i) => {
+            if (col.value === this.model) {
+              curlabel = col.label
+              index = col.index + 1
+            }
+          })
         })
         this.selected = curlabel
       }else {
         this.findChild(child => {
-            this.availableOptions.forEach((col, i) => {
-              if (col.value === this.model) {
-                curlabel = col.label
-                index = col.index + 1
-              }
-            })
+          this.availableOptions.forEach((col, i) => {
+            if (col.value === this.model) {
+              curlabel = col.label
+              index = col.index + 1
+            }
+          })
         })
         this.selected = curlabel
         //o45 证券代码控件 模糊输入，不匹配下拉项保留输入值
