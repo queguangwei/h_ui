@@ -1,14 +1,7 @@
 <template>
   <div :class="classes" v-clickoutside="{trigger: 'mousedown', handler: handleClose}" :style="multiplestyle" ref="select">
-    <div
-      :title="titleTip"
-      :class="selectionCls"
-      ref="reference"
-      :tabindex="tabIndex"
-      :style="selectInputStyles"
-      @click="toggleMenu"
-      @keyup="keyup"
-      @keydown="keydown">
+    <div ref="reference" :title="titleTip" :class="selectionCls" :style="selectInputStyles"
+      @click="toggleMenu" @keyup="keyup" @keydown="keydown">
       <!-- 多选时输入框内选中值模拟 -->
       <template  v-if="multiple && !collapseTags">
         <div class="h-tag" v-for="(item, index) in selectedMultiple" :key="index">
@@ -31,22 +24,14 @@
       <span :class="[prefixCls + '-placeholder']" v-show="showPlaceholder && (!filterable || showBottom)">{{ localePlaceholder }}</span>
       <span :class="[prefixCls + '-selected-value']" v-show="!showPlaceholder && !multiple && !(filterable && !showBottom)">{{ selectedSingle }}</span>
       <!-- 下拉输入框(远程搜索时渲染) -->
-      <input
-        type="text"
-        v-if="filterable && !showBottom && inputVisible"
-        v-model="query"
-        :disabled="disabled"
-        :readonly = "readonly || !editable"
-        :class="[prefixCls + '-input']"
-        :placeholder="showPlaceholder?localePlaceholder:''"
-        autocomplete="off"
-        @focus="handleFocus"
-        @blur="handleBlur"
-        @keyup="handleInputKeyup($event)"
-        @keydown="handleInputKeydown($event)"
-        @keydown.delete="handleInputDelete"
-        :tabindex="tabindex"
-        ref="input">
+      <input ref="input" type="text" v-model="query" autocomplete="off"
+             :class="[prefixCls + '-input']" :style="inputVisibleStyle"
+             :disabled="disabled" :readonly = "readonly || !editable"
+             :placeholder="showPlaceholder?localePlaceholder:''" :tabindex="tabindex"
+             v-if="filterable && !showBottom"
+             @focus="handleFocus" @blur="handleBlur"
+             @keyup="handleInputKeyup($event)" @keydown="handleInputKeydown($event)"
+             @keydown.delete="handleInputDelete">
       <!-- 单选时清空按钮 -->
       <Icon name="close" :class="[prefixCls + '-arrow']" v-if="showCloseIcon" @click.native.stop="handleIconClose" ref="close"></Icon>
       <Icon name="unfold" :class="[prefixCls + '-arrow']" v-if="!remote && isArrow" ref="arrowb"></Icon>
@@ -371,7 +356,6 @@ export default {
       isLi:true,
       scrollBarWidth: getScrollBarSize(),
       isfirstSelect: false,
-      tabIndex: 0,
       selectHead:false,
       titleTip:'',
       isSelectAll:false,
@@ -508,6 +492,20 @@ export default {
       return {
           width: `${this.width}px`,
       };
+    },
+    inputVisibleStyle() {
+      if(this.filterable && this.multiple) {
+        let style =  {}
+        if(!this.inputVisible && this.selectedMultiple.length !== 0) {
+          style.height = '1px'
+          style.position = 'absolute'
+          style.bottom = 0
+          style.opacity = 0
+        }else {
+          style.height =  '29px'
+        }
+        return style
+      }
     },
     checkAll(){
       return `${prefixCls}-checkall`
@@ -1395,13 +1393,6 @@ export default {
     this.$nextTick(()=>{
       this.offsetArrow();
     });
-    if (this.disabled) {
-      this.tabIndex = -1;
-    } else {
-      if (("" + this.tabindex) !== '-1') {
-        this.tabIndex = this.filterable ? -1 : this.tabindex;
-      }
-    }
   },
   watch: {
     value:{

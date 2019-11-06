@@ -1,19 +1,7 @@
 <template>
-  <div
-    :class="classes"
-    v-clickoutside="{trigger: 'mousedown', handler: handleClose}"
-    :style="multiplestyle"
-    ref="select"
-  >
-    <div
-      :class="selectionCls"
-      ref="reference"
-      :tabindex="selectTabindex"
-      :title="tooltip"
-      @keyup="keyup"
-      @keydown="keydown"
-      @click="showdrop"
-    >
+  <div ref="select" :class="classes" v-clickoutside="{trigger: 'mousedown', handler: handleClose}" :style="multiplestyle">
+    <div ref="reference" :class="selectionCls" :title="tooltip"
+      @keyup="keyup" @keydown="keydown" @click="showdrop">
       <span v-if="showTotal" :class="[prefixCls + '-selected-num']">共选择 {{selectedMultiple.length}} 项</span>
       <!-- 多选时输入框内选中值模拟 -->
       <div>
@@ -34,8 +22,9 @@
       >{{ selectedSingle }}</span>
       <!-- 下拉输入框(远程搜索时渲染) -->
       <input
+        ref="input"
         type="text"
-        v-if="filterable && !showBottom && inputVisible"
+        v-if="filterable && !showBottom"
         v-model="query"
         :disabled="disabled"
         :readonly="!editable||readonly"
@@ -47,7 +36,7 @@
         @keydown.delete="handleInputDelete"
         @keyup="handleInputKeyup($event)"
         :tabindex="tabindex"
-        ref="input"
+        :style="inputVisibleStyle"
       />
       <Icon name="close" :class="[prefixCls + '-arrow']" v-if="showCloseIcon" @click.native.stop="clearSingleSelect"></Icon>
       <Icon
@@ -409,7 +398,6 @@ export default {
       isLi: true,
       scrollBarWidth: getScrollBarSize(),
       highlightRow: false,
-      tabIndex: 0,
       selectHead: false,
       isBlock: false,
       allClick: false,
@@ -560,8 +548,19 @@ export default {
     checkAll() {
       return "h-select-checkall";
     },
-    selectTabindex() {
-      return this.disabled ? -1 : this.tabindex + "" !== "-1" ? (this.filterable ? -1 : this.tabindex) : 0;
+    inputVisibleStyle() {
+      if(this.filterable && this.multiple) {
+        let style =  {}
+        if(!this.inputVisible && this.selectedMultiple.length !== 0) {
+          style.height = '1px'
+          style.position = 'absolute'
+          style.bottom = 0
+          style.opacity = 0
+        }else {
+          style.height =  '29px'
+        }
+        return style
+      }
     },
     notFoundShow() {
       let options = this.options;

@@ -51,92 +51,74 @@ export default {
       type: Boolean,
       default: false
     },
-    // Block中判断用
     isSingleSelect:{
       type:Boolean,
       default:true,
     },
-    // 设置输入框为禁用状态
     disabled: {
       type: Boolean,
       default: false
     },
-    // 设置输入框为只读
     readonly: {
       type: Boolean,
       default: false
     },
-    // 设置输入框为可编辑
     editable: {
       type: Boolean,
       default: true
     },
-    // 输入框默认的提示信息
     placeholder: {
       type: String
     },
-    // 是否使用远程搜索
     remote: {
       type: Boolean,
       default: true
     },
-    // 远程搜索方法
     remoteMethod: {
       type: Function,
       default(key, done) {
         done()
       }
     },
-    // 配合远程搜索使用。loading设置为true时显示加载提示文字
     loading: {
       type: Boolean,
       default: false
     },
-    // 加载中显示的文字
     loadingText: {
       type: String
     },
-    // 设置输入框的宽度
     width: {
       type: [String, Number]
     },
-    // 是否将弹层放置于 body 内，它将不受父级样式影响，从而达到更好的效果
     transfer: {
       type: Boolean,
       default: false
     },
-    // 下拉面板方向自适应，其相对于外部第一个非静态定位父元素开始定位
     autoPlacement: {
       type: Boolean,
       default: false
     },
-    // 弹窗的展开方向
     placement: {
       validator(value) {
         return ['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end'].includes(value)
       },
       default: 'bottom'
     },
-    // 下拉框的宽度是否随着内容自适应，以width设置的宽度为最小宽度，最大宽度取输入框宽度与 maxDropWidth 的最大值
     widthAdaption: {
       type: Boolean,
       default: false
     },
-    // 设置下拉框的宽度,不设置时下拉框的宽度等于输入框宽度
     dropWidth: {
       type: [String, Number]
     },
-    // 下拉框的自适应时设置的最大宽度，实际值会取输入框宽度与 maxDropWidth 的最大值
     maxDropWidth: {
       type: [String, Number],
       default: 500
     },
-    // 开启自动匹配时当输入值不匹配保留输入值
     keepInputValue: {
       type: Boolean,
       default: false
     },
-    // 设置输入框 tabindex
     tabindex: {
       type: [String, Number],
       default: 0,
@@ -231,7 +213,6 @@ export default {
       }
     },
     model(newVal) {
-      console.log('model:'+newVal)
       const type = typeof newVal
       if (type === 'string' || type === 'number') {
         let findModel = false
@@ -262,7 +243,6 @@ export default {
       })
     },
     selected(newVal) {
-      console.log('selected:'+newVal)
       this.$emit('input', newVal)
       this.$emit('on-change', newVal)
       let curlabel = ''
@@ -281,47 +261,30 @@ export default {
       })
     },
     query(newVal) {
-      console.log('query:'+newVal)
       this.querySingle = newVal
-//      if (this.remote && this.remoteMethod) {
-        if (!this.selectToChangeQuery) {
-          // 解决当通过表单方法firstNodeFocused定位到SimpleSelect时只能输入但不展示下拉选项的问题
-          if (!this.visible && this.querySingle) {
-            this.visible = true
-          }
-          this.remoteMethod(this.querySingle, () => {
-            this.$nextTick(() => {
-              // o45业务代码会默认绑定model值为下拉选项第一个
-              if(this.firstInit) {
-                this.broadcast('Block', 'on-query-change', '',true)
-              }else {
-                this.broadcast('Block', 'on-query-change', this.querySingle)
-              }
-            })
-          })
-
-          this.$emit('on-query-change', this.querySingle)
-        }else {
-          // 非自动匹配到的值手动清空后绑定的model没清空问题
-          if(this.querySingle === '') {
-            this.model = ''
-          }
+      if (!this.selectToChangeQuery) {
+        // 解决当通过表单方法firstNodeFocused定位到SimpleSelect时只能输入但不展示下拉选项的问题
+        if (!this.visible && this.querySingle) {
+          this.visible = true
         }
-//        this.findChild(child => {
-//          child.isFocus = false
-//        })
-//      }else {
-//        if (!this.selectToChangeQuery) {
-//          // o45指令备注框赋默认值时不应该弹出框
-//          if (!this.visible && this.querySingle && !this.firstInit) {
-//            this.visible = true
-//          }
-//          this.$emit('on-query-change', this.querySingle)
-//          this.broadcast('Block', 'on-query-change', this.querySingle)
-//        } else if (this.isQuerySelect) {
-//          this.broadcast('Block', 'on-query-change', this.querySingle)
-//        }
-//      }
+        this.remoteMethod(this.querySingle, () => {
+          this.$nextTick(() => {
+            // o45业务代码会默认绑定model值为下拉选项第一个
+            if(this.firstInit) {
+              this.broadcast('Block', 'on-query-change', '',true)
+            }else {
+              this.broadcast('Block', 'on-query-change', this.querySingle)
+            }
+          })
+        })
+
+        this.$emit('on-query-change', this.querySingle)
+      }else {
+        // 非自动匹配到的值手动清空后绑定的model没清空问题
+        if(this.querySingle === '') {
+          this.model = ''
+        }
+      }
       this.selectToChangeQuery = false
       this.broadcast('Drop', 'on-update-popper')
     },
@@ -592,38 +555,6 @@ export default {
           this.focus()
         })
       }
-    },
-    setSingleSelect() {
-      let curlabel = ''
-      let index = 0
-      //焦点在输入框内
-      if(this.isInputFocus) {
-        this.findChild(child => {
-          this.availableOptions.forEach((col, i) => {
-            if (col.value === this.model) {
-              curlabel = col.label
-              index = col.index + 1
-            }
-          })
-        })
-        this.selected = curlabel
-      }else {
-        this.findChild(child => {
-          this.availableOptions.forEach((col, i) => {
-            if (col.value === this.model) {
-              curlabel = col.label
-              index = col.index + 1
-            }
-          })
-        })
-        this.selected = curlabel
-        //o45 证券代码控件 模糊输入，不匹配下拉项保留输入值
-        if(curlabel == '' && this.keepInputValue && this.model) {
-          this.query = this.model
-          return
-        }
-      }
-      this.focusIndex = index
     }
   },
   mounted() {
