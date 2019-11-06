@@ -76,12 +76,12 @@
           {{formValidate.stockCode}}
         </h-form-item>
         <h-form-item label="simpleSelect" prop="stockName" required>
-          <h-simple-select v-model="formValidate.stockName" class="curItemClass" filterable multiple >
+          <h-simple-select v-model="formValidate.stockName" class="curItemClass" :tabindex="2" filterable multiple >
             <h-select-block :data="bigData"></h-select-block>
           </h-simple-select>
         </h-form-item>
         <h-form-item label="select" prop="city" required>
-          <h-select v-model="formValidate.city" class="curItemClass" filterable  transfer @on-keyup="selectKeyup">
+          <h-select v-model="formValidate.city" class="curItemClass" filterable multiple transfer @on-keyup="selectKeyup">
             <h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>
           </h-select>
         </h-form-item>

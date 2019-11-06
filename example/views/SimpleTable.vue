@@ -6,8 +6,10 @@
     <Button @click="loadData">加载数据</Button>
     <Button @click="changeData">切换数据</Button>
     <Button @click="adddata">添加数据</Button>
+    <Button @click="scroll20">scrollTo0</Button>
     <h-simple-table :columns="columnsBig1" :data="bigData" :addData="addData"  :summationData="summationData"
-                    :loading="loading" :row-class-name="rowClassName" bodyAlgin="left" height="500" canDrag border stripe rowSelectOnly
+                    :loading="loading" :row-class-name="rowClassName" bodyAlgin="left" height="500"
+                    canDrag border stripe rowSelectOnly :toScrollTop="scrollTop" :scrollTopSet="200"
                     @on-select="select" @on-select-cancel="select" @on-drag="onDrag"
                     @on-select-all='change' @on-selection-change="change">
       <span slot="loading">我是自定义加载！！！</span>
@@ -69,7 +71,7 @@ import TexpandRow from './Texpand-row.vue'
 let jsonData=[]
 let tData =require('../assets/aa.json')
 for (let i = 0; i < 1; i++) {
-  jsonData =tData.slice(0,5)
+  jsonData =tData.slice(0,45)
 }
 let ind = 1
 export default {
@@ -79,6 +81,7 @@ export default {
       checked:false,
       msgbox:false,
       loading:false,
+      scrollTop: false,
       addData:[],
       bigData:[],
       bigData2:[],
@@ -464,6 +467,12 @@ export default {
     }
   },
   methods:{
+    scroll20() {
+      this.scrollTop = true;
+      this.$nextTick(() => {
+        this.scrollTop = false;
+      });
+    },
     addrow() {
       this.bigData2 = tData.slice(0,ind)
       ind++

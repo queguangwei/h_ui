@@ -161,7 +161,6 @@ export default {
       this.blockVm.blockData.forEach(({ _index, label, value }) => {
         this.blockVm.$set(this.blockVm.blockData[_index], "selected", newVal.some(item => item.label === label && item.value === value));
       });
-
       this.$nextTick(() => {
         if (this.isInputting) return false;
         else {
@@ -172,12 +171,12 @@ export default {
     magicString(newVal) {
       if (this.isKeyDown) {
         const { keyboardEvent: e } = this;
-        if (!_.isKeyMatch(e, "Esc") && !_.isKeyMatch(e, "Enter")) {
+        if (!_.isKeyMatch(e, "Tab") && !_.isKeyMatch(e, "Esc") && !_.isKeyMatch(e, "Enter")) {
           this.isDropdownVisible = true;
         }
         if (_.isKeyMatch(e, "Space") || (_.isKeyMatch(e, "A") && e.ctrlKey) || (_.isKeyMatch(e, "D") && e.ctrlKey)) _.noop();
         else {
-          this.isInputting = true; // switch on input status, this is a big difference
+          if (!_.isKeyMatch(e, "Esc")) this.isInputting = true; // switch on input status, this is a big difference
         }
         this.isKeyDown = false; // switch off key down status
       }

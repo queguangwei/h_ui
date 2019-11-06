@@ -112,7 +112,6 @@ export default {
                 } else {
                   styles.width = parseFloat(dropWidth) || pWidth;
                 }
-
                 setStyle(el, { display: "block", visibility: "visible", ...styles }); // make sure animation is possible
 
                 if (allowAnimation) {
