@@ -2172,6 +2172,11 @@ export default {
         this.handleResize();
       }, 0);
     });
+    this.observer.listenTo(this.$refs.thead.$el, () => {
+      setTimeout(() => {
+        this.handleResize();
+      }, 0);
+    });
     if(this.notSetWidth) {
       this.observer.listenTo(this.$refs.tbody.$el, () => {
         setTimeout(() => {
