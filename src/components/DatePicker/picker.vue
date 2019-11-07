@@ -1,5 +1,5 @@
 <template>
-  <div :class="[prefixCls]"
+  <div :class="{[prefixCls]: true, [prefixCls + '-small']: size === 'small', [prefixCls + '-large']: size === 'large'}"
        v-clickoutside="handleClose"
        ref='wrapper'>
     <div ref="reference"
