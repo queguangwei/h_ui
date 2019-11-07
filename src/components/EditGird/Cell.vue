@@ -390,7 +390,7 @@ export default {
             break
           case 'money':
             this.normalDate = this.columnMoney
-            _parent.cloneData[this.index][this.column.key] = this.columnMoney
+            if (_parent.cloneData[this.index])_parent.cloneData[this.index][this.column.key] = this.columnMoney
             break
           case 'card':
             this.normalDate = this.columnCard
