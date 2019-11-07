@@ -1220,6 +1220,7 @@ export default {
     },
     highlightCurrentRow(_index) {
       if (!this.highlightRow) return
+      if (this.objData[_index]._isDisabled) return 
       const curStatus = this.objData[_index]._isHighlight
       if (this.objData[_index]._isChecked && this.rowSelectOnly) {
         return
@@ -1312,6 +1313,7 @@ export default {
       ])
     },
     clickCurrentBtn(_index) {
+      if (this.objData[_index]._isDisabled) return
       this.$emit('on-row-click', [
         JSON.parse(JSON.stringify(this.cloneData[_index])),
         _index
