@@ -1,6 +1,6 @@
 <template>
   <div ref="select" :class="classes" v-clickoutside="{trigger: 'mousedown', handler: handleClose}" :style="multiplestyle">
-    <div ref="reference" :class="selectionCls" :title="tooltip"
+    <div ref="reference" :class="selectionCls" :title="tooltip" :tabindex="selectTabindex"
       @keyup="keyup" @keydown="keydown" @click="showdrop">
       <span v-if="showTotal" :class="[prefixCls + '-selected-num']">共选择 {{selectedMultiple.length}} 项</span>
       <!-- 多选时输入框内选中值模拟 -->
@@ -75,6 +75,7 @@
             :readonly="!editable||readonly"
             :class="[prefixCls + '-input']"
             :placeholder="localeSearchHolder"
+            @focus="handleFocus"
             @blur="handleBlur"
             @keydown="resetInputState"
             @keydown.delete="handleInputDelete"
@@ -377,7 +378,7 @@ export default {
     return {
       prefixCls: prefixCls,
       visible: false,
-      inputVisible: true,
+      selectTabindex: 0,
       options: [],
       optionInstances: [],
       selectedSingle: "",
@@ -551,7 +552,7 @@ export default {
     inputVisibleStyle() {
       if(this.filterable && this.multiple) {
         let style =  {}
-        if(!this.inputVisible && this.selectedMultiple.length !== 0) {
+        if(!this.isInputFocus && this.selectedMultiple.length !== 0) {
           style.height = '1px'
           style.position = 'absolute'
           style.bottom = 0
@@ -582,6 +583,9 @@ export default {
     }
   },
   methods: {
+    fold() {
+      this.visible = false
+    },
     handleInputKeyup(event) {
       this.$emit("on-keyup", this.query, event);
     },
@@ -1166,9 +1170,11 @@ export default {
     handleFocus(e) {
       e.target.selectionStart = 0;
       e.target.selectionEnd = this.query.length;
+      this.isInputFocus = true
       this.$emit("on-focus");
     },
     handleBlur() {
+      this.isInputFocus = false
       this.$emit("on-blur");
     },
     resetInputState(e) {
@@ -1605,12 +1611,8 @@ export default {
     visible(val) {
       if (val) {
         if(this.filterable) {
-          if (this.multiple && !this.showBottom) {
-            this.inputVisible = true
-            this.$nextTick(() => {
-              this.$refs.input && this.$refs.input.focus()
-            })
-          }
+          this.isInputFocus = true
+          this.$refs.input.focus()
         }
         this.$nextTick(() => {
           let content = this.$refs.content;
@@ -1626,15 +1628,9 @@ export default {
         }, 0);
       } else {
         if (this.filterable) {
-          if(this.multiple && !this.showBottom) {
-            this.inputVisible = false
-          }
+          this.isInputFocus = false
           this.$refs.reference.scrollTop = 0; // reference element scroll to 0
-
-          if (this.$refs.input) {
-            this.$refs.input.blur();
-          }
-
+          this.$refs.input.blur()
           setTimeout(() => {
             if (this.showBottom || this.multiple) {
               this.query = "";
@@ -1647,14 +1643,12 @@ export default {
             }
           }, 300);
         }
-
         this.findChild(child => {
           if (child && this.isBlock) {
             child.updateVisibleData && child.updateVisibleData(0);
             child.$el.scrollTop = 0;
           }
         });
-
         setTimeout(() => {
           this.dispatch("Msgbox", "on-esc-real-close", true);
         }, 0);
@@ -1727,6 +1721,17 @@ export default {
       }
       if (this.isSingleSelect && val) {
         this.$emit("on-input-focus");
+      }
+      if(val) {
+        if(this.filterable) {
+          this.selectTabindex = null
+        }else {
+          this.selectTabindex = this.tabindex
+        }
+      }else {
+        setTimeout(() => {
+          this.selectTabindex = 0
+        },1)
       }
     },
     options(val, old) {

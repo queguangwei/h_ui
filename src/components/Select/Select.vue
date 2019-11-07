@@ -1,6 +1,6 @@
 <template>
   <div :class="classes" v-clickoutside="{trigger: 'mousedown', handler: handleClose}" :style="multiplestyle" ref="select">
-    <div ref="reference" :title="titleTip" :class="selectionCls" :style="selectInputStyles"
+    <div ref="reference" :title="titleTip" :class="selectionCls" :style="selectInputStyles" :tabindex="selectTabindex"
       @click="toggleMenu" @keyup="keyup" @keydown="keydown">
       <!-- 多选时输入框内选中值模拟 -->
       <template  v-if="multiple && !collapseTags">
@@ -60,6 +60,7 @@
             :class="[prefixCls + '-content-input']"
             :placeholder="localeSearchHolder"
             autocomplete="off"
+            @focus="handleFocus"
             @blur="handleBlur"
             @keydown.delete="handleInputDelete"
             :tabindex="tabindex"
@@ -339,7 +340,7 @@ export default {
     return {
       prefixCls: prefixCls,
       visible: false,
-      inputVisible: true,
+      selectTabindex: 0,
       options: [],
       disabledOpts: [],
       optionInstances: [],
@@ -496,7 +497,7 @@ export default {
     inputVisibleStyle() {
       if(this.filterable && this.multiple) {
         let style =  {}
-        if(!this.inputVisible && this.selectedMultiple.length !== 0) {
+        if(!this.isInputFocus && this.selectedMultiple.length !== 0) {
           style.height = '1px'
           style.position = 'absolute'
           style.bottom = 0
@@ -678,6 +679,9 @@ export default {
       }
       this.isInputFocus = true
     },
+    fold() {
+      this.visible = false
+    },
     hideMenu () {
         this.visible = false;
         if(!window.isO45){
@@ -854,12 +858,10 @@ export default {
       if (this.disabled || this.readonly || !this.editable) {
         return false;
       }
-
       if(item) {
         // 修正 index 与 item 不匹配的问题
         index = this.model.findIndex(value => value === item.value)
       }
-
       if (this.remote || this.enableCreate) {
         const tag = this.model[index];
         this.selectedMultiple = this.selectedMultiple.filter(item => item.value !== tag);
@@ -872,7 +874,6 @@ export default {
       if (this.filterable && this.visible && !this.showBottom) {
         this.$refs.input.focus();
       }
-
       this.isInputFocus = true;
     },
     toggleSingleSelected (value, init = false) {
@@ -1137,13 +1138,14 @@ export default {
       }
     },
     handleFocus() {
+      this.isInputFocus = true
       this.$emit('on-focus')
     },
-    handleBlur () {
+    handleBlur() {
       if (this.multiple && this.filterable) this.$refs.reference.scrollTop = 0
+      this.isInputFocus = false
       this.$emit('on-blur');
       if (this.showBottom) return false;
-      // this.isInputFocus = false
       setTimeout(() => {
         const model = this.model;
         if (this.multiple) {
@@ -1457,16 +1459,11 @@ export default {
     visible (val) {
       if (val) {
         if (this.filterable) {
+          this.isInputFocus = true
           if (this.multiple && !this.showBottom) {
-            this.inputVisible = true
-            this.$nextTick(() => {
-              this.$refs.input && this.$refs.input.focus()
-            })
+            this.$refs.input && this.$refs.input.focus()
           } else {
-            this.inputVisible = true
-            this.$nextTick(() => {
-              if (this.focusSelect) this.$refs.input.select()
-            })
+            if (this.focusSelect) this.$refs.input.select()
           }
           if (this.remote) {
             this.findChild(child => {
@@ -1486,10 +1483,8 @@ export default {
         this.isKeyDown = false; // switch off key down status
         this.keyboardEvent = null; // reset keyboard event
         if (this.filterable) {
-          this.$refs.input.blur();
-          if(this.multiple && !this.showBottom) {
-            this.inputVisible = false
-          }
+          this.isInputFocus = false
+          this.$refs.input.blur()
           // #566 reset options visible
           setTimeout(() => {
             if (this.showBottom) {this.query='';}
@@ -1501,7 +1496,7 @@ export default {
         }, 0);
       }
     },
-    query (val) {
+    query(val) {
       if (this.remote && this.remoteMethod) {
         // o45证券代码--点击时不显示下拉选项（手动隐藏），因此需要值改变后（手动显示）
         if (this.remoteFocusNotShowList && !this.multiple) { // 单选时适用，多选时query会清空，不适用
@@ -1602,6 +1597,19 @@ export default {
     },
     dropVisible(val){
       this.$emit('on-drop-change',val)
+    },
+    isInputFocus(val) {
+      if(val) {
+        if(this.filterable) {
+          this.selectTabindex = null
+        }else {
+          this.selectTabindex = this.tabindex
+        }
+      }else {
+        setTimeout(() => {
+          this.selectTabindex = 0
+        },1)
+      }
     }
   }
 };

@@ -1,5 +1,5 @@
 <template>
-  <div :class="[prefixCls]"
+  <div :class="{[prefixCls]: true, [prefixCls + '-small']: size === 'small', [prefixCls + '-large']: size === 'large'}"
        v-clickoutside="handleClose"
        ref='wrapper'>
     <div ref="reference"
@@ -541,7 +541,6 @@ export default {
      */
     checkLegality(text, date) {
       if (
-        this.clearOnIllegal &&
         ['date', 'daterange', 'datetime', 'datetimerange'].indexOf(this.type) >
           -1
       ) {
@@ -583,19 +582,11 @@ export default {
       }
     },
     handleInputChange(event) {
-      // if (value==''||String(value).length==0) {
-      //   this.handleClear();
-      //   return false;
-      // }
-      // const isArrayValue = this.type.includes('range') || this.multiple;
       const isArrayValue =
         this.type.indexOf('range') > -1 ? true : false || this.multiple
       const oldValue = this.visualValue
       const newValue = event.target.value
       let newDate = this.parseDate(newValue)
-      // if(newDate[0] == null || !newDate || newDate == []) {
-      //   newDate = this.internalValue
-      // }
       const disabledDateFn =
         this.options &&
         typeof this.options.disabledDate === 'function' &&
