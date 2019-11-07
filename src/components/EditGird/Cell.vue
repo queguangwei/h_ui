@@ -377,14 +377,17 @@ export default {
         switch (str) {
           case 'text':
             this.normalDate = this.columnText
+            if (!_parent.cloneData[this.index]) return
             _parent.cloneData[this.index][this.column.key] = this.columnText
             break
           case 'textArea':
             this.normalDate = this.columnArea
+            if (!_parent.cloneData[this.index]) return
             _parent.cloneData[this.index][this.column.key] = this.columnArea
             break
           case 'number':
             this.normalDate = this.columnNumber
+            if (!_parent.cloneData[this.index]) return
             _parent.cloneData[this.index][this.column.key] = this.columnNumber
             this.syncRebuildData()
             break
@@ -394,6 +397,7 @@ export default {
             break
           case 'card':
             this.normalDate = this.columnCard
+            if (!_parent.cloneData[this.index]) return
             _parent.cloneData[this.index][this.column.key] = this.columnCard
             this.syncRebuildData()
             break
@@ -401,16 +405,19 @@ export default {
             if (this.column.multiple || this.column.singleShowLabel)
               this.isSelectTrans = true
             this.normalDate = this.columnSelect
+            if (!_parent.cloneData[this.index]) return
             _parent.cloneData[this.index][this.column.key] = this.columnSelect
             this.syncRebuildData()
             break
           case 'date':
             this.normalDate = this.columnDate
+            if (!_parent.cloneData[this.index]) return
             _parent.cloneData[this.index][this.column.key] = this.columnDate
             this.syncRebuildData()
             break
           case 'time':
             this.normalDate = this.columnTime
+            if (!_parent.cloneData[this.index]) return
             _parent.cloneData[this.index][this.column.key] = this.columnTime
             this.syncRebuildData()
             break
@@ -422,6 +429,7 @@ export default {
             break
           case 'cascader':
             this.normalDate = this.columnCascader
+            if (!_parent.cloneData[this.index]) return
             // this.normalDate = this.$refs.cascader.displayRender // 类似于selectValToLabel
             _parent.cloneData[this.index][this.column.key] = this.columnCascader
             this.syncRebuildData()
