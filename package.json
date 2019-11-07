@@ -27,6 +27,7 @@
   ],
   "dependencies": {
     "async-validator": "^1.6.7",
+    "bignumber.js": "9.0.0",
     "core-js": "^2.4.1",
     "deepmerge": "^1.4.3",
     "element-resize-detector": "^1.1.15",

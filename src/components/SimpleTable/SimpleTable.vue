@@ -476,7 +476,11 @@ export default {
       type:Boolean,
       default:false
     },
-    isMulitSort: {  //多列排序
+    clickHeadToSort: { //点击单元格头部触发排序
+      type: Boolean,
+      default: false
+    },
+    isMulitSort: { //多列排序
       type:Boolean,
       default:false,
     },
@@ -1196,7 +1200,7 @@ export default {
     mouseup(event, column, index) {
       //拖拽表头排序不触发
       // 仅045使用
-      if (!window.isO45) return
+      if (!this.clickHeadToSort || !window.isO45) return
       if(this.isDrag(this.beginLocation.clientX, this.beginLocation.clientY, event.clientX, event.clientY)) {
         return
       }

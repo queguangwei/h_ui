@@ -306,11 +306,11 @@ export default {
       }
     },
     prevYear(panel) {
-      const increment = this.currentView === 'year' ? -10 : -1
+      const increment = (this.currentView === 'year' || this[`${panel}PickerTable`] === 'year-table')? -10 : -1
       this.changePanelDate(panel, 'FullYear', increment)
     },
     nextYear(panel) {
-      const increment = this.currentView === 'year' ? 10 : 1
+      let increment = (this.currentView === 'year' || this[`${panel}PickerTable`] === 'year-table') ? 10 : 1
       this.changePanelDate(panel, 'FullYear', increment)
     },
     prevMonth(panel) {

@@ -77,6 +77,8 @@ import Schedule from '../views/Schedule.vue'
 
 import DownLoad from '../views/DownLoad.vue'
 
+import Test from '../views/Test.vue'
+
 // const hyh = resolve=>{
 //     import(xxx.js).then(module=>{//import 实现异步加载
 //         resolve(module)
@@ -786,6 +788,11 @@ const router = new Router({
         name: 'Schedule',
         path: '/schedule',
         component: Schedule
+      },
+      {
+        name: 'Test',
+        path: '/test',
+        component: Test,
       }
   ]
 })

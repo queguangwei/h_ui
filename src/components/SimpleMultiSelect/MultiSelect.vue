@@ -161,7 +161,6 @@ export default {
       this.blockVm.blockData.forEach(({ _index, label, value }) => {
         this.blockVm.$set(this.blockVm.blockData[_index], "selected", newVal.some(item => item.label === label && item.value === value));
       });
-
       this.$nextTick(() => {
         if (this.isInputting) return false;
         else {
@@ -172,16 +171,15 @@ export default {
     magicString(newVal) {
       if (this.isKeyDown) {
         const { keyboardEvent: e } = this;
-        if (!_.isKeyMatch(e, "Esc") && !_.isKeyMatch(e, "Enter")) {
+        if (!_.isKeyMatch(e, "Tab") && !_.isKeyMatch(e, "Esc") && !_.isKeyMatch(e, "Enter")) {
           this.isDropdownVisible = true;
         }
         if (_.isKeyMatch(e, "Space") || (_.isKeyMatch(e, "A") && e.ctrlKey) || (_.isKeyMatch(e, "D") && e.ctrlKey)) _.noop();
         else {
-          this.isInputting = true; // switch on input status, this is a big difference
+          if (!_.isKeyMatch(e, "Esc")) this.isInputting = true; // switch on input status, this is a big difference
         }
         this.isKeyDown = false; // switch off key down status
       }
-
       if (this.isInputting) {
         if (this.remote && this.remoteMethod) {
           const { selectedRecords: originalSelectedRecords, keyword: originalKeyword } = this.resolveMagicString();
@@ -229,7 +227,7 @@ export default {
               this.magicString = this.selectedRecords.map(item => item.label).join();
               this.blockVm.onQuery();
               this.$nextTick(() => {
-                if (this.isKeyDown && (_.isKeyMatch(this.keyboardEvent, "Esc") || _.isKeyMatch(this, keyboardEvent, "Enter"))) {
+                if (this.isKeyDown && (_.isKeyMatch(this.keyboardEvent, "Esc") || _.isKeyMatch(this.keyboardEvent, "Enter"))) {
                   this.$refs.input.select();
                 }
                 this.isKeyDown = false; // switch off key down status
@@ -242,7 +240,7 @@ export default {
           this.magicString = this.selectedRecords.map(item => item.label).join();
           this.blockVm.onQuery();
           this.$nextTick(() => {
-            if (this.isKeyDown && (_.isKeyMatch(this.keyboardEvent, "Esc") || _.isKeyMatch(this, keyboardEvent, "Enter"))) {
+            if (this.isKeyDown && (_.isKeyMatch(this.keyboardEvent, "Esc") || _.isKeyMatch(this.keyboardEvent, "Enter"))) {
               this.$refs.input.select();
             }
             this.isKeyDown = false; // switch off key down status
