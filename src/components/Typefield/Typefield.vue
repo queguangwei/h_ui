@@ -386,7 +386,7 @@ export default {
       } else {
         if (this.setNull && this.type == "money") {
           val = this.setNullStr();
-          e.target.value = val;
+          e.target.value = this.inputValue = val
         }
       }
       // this.$refs.input.blur();
