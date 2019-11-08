@@ -497,7 +497,7 @@ export default {
       if (!this.immeDivided) {
         this.inputValue = value;
       } else {
-        value = this.inputValue = divideNum(value)
+        this.inputValue = divideNum(value)
       }
       this.bigShow(this.type, value);
       this.$emit("input", value);
