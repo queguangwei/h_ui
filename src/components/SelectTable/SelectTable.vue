@@ -135,10 +135,11 @@ import { on, off } from "../../util/dom";
 import { oneOf, getScrollBarSize, getStyle, getBarBottom, scrollAnimate } from "../../util/tools";
 import Emitter from "../../mixins/emitter";
 import Locale from "../../mixins/locale";
+import CloseDropdown from "../../mixins/closeDropdown";
 const prefixCls = "h-selectTable";
 export default {
   name: "SelectTable",
-  mixins: [Emitter, Locale],
+  mixins: [Emitter, Locale, CloseDropdown],
   components: { Icon, Drop, Checkbox },
   directives: { clickoutside, TransferDom },
   props: {

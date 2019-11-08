@@ -82,7 +82,7 @@ import { on, off } from '../../util/dom'
 import { DEFAULT_FORMATS, TYPE_VALUE_RESOLVER_MAP, formatDate } from './util'
 import Emitter from '../../mixins/emitter'
 import Locale from '../../mixins/locale'
-
+import CloseDropdown from '../../mixins/closeDropdown'
 const prefixCls = 'h-date-picker'
 const isEmptyArray = val =>
   val.reduce(
@@ -93,7 +93,7 @@ const isEmptyArray = val =>
 
 export default {
   name: 'CalendarPicker',
-  mixins: [Emitter, Locale],
+  mixins: [Emitter, Locale, CloseDropdown],
   components: { hInput, Drop },
   directives: { clickoutside, TransferDom },
   props: {

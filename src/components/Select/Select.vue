@@ -108,11 +108,12 @@ import { on, off } from '../../util/dom';
 import { oneOf, findComponentChildren, getScrollBarSize, getStyle,getBarBottom,scrollAnimate,typeOf, findInx} from '../../util/tools';
 import Emitter from '../../mixins/emitter';
 import Locale from '../../mixins/locale';
+import CloseDropdown from '../../mixins/closeDropdown';
 import _ from "../..//util";
 const prefixCls = 'h-select';
 export default {
   name: 'Select',
-  mixins: [ Emitter, Locale ],
+  mixins: [ Emitter, Locale, CloseDropdown ],
   components: { Icon, Drop, Checkbox},
   directives: { clickoutside,TransferDom},
   props: {
