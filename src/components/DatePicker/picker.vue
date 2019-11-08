@@ -301,10 +301,11 @@ export default {
     publicStringValue() {
       const { formatDate, publicVModelValue, type } = this
       if (type.match(/^time/)) return publicVModelValue
-      const arr = publicVModelValue.map(formatDate)
-      return Array.isArray(publicVModelValue)
-        ? (isEmptyArray(arr) && this.type.includes('range')) ? [] : arr
-        : formatDate(publicVModelValue)
+      if (Array.isArray(publicVModelValue)){
+        const arr = publicVModelValue.map(formatDate)
+        return (isEmptyArray(arr) && this.type.includes('range')) ? [] : arr
+      }
+      return formatDate(publicVModelValue)
     },
     //    opened() {
     //      return this.open === null ? this.visible : this.open
