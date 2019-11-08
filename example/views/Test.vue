@@ -1,7 +1,13 @@
 
 <template>
 <div>
-    <h-table ref="table" :columns="columns10" :data="data9" @on-expand="expand" @on-row-click="rowClick"></h-table>
+    <!-- <h-table ref="table" :columns="columns10" :data="data9" @on-expand="expand" @on-row-click="rowClick"></h-table> -->
+        <h-select v-model="model"  filterable
+                >
+        <h-option v-for="(item,index) in cityList"
+                  :value="item.value"
+                  :key="index">{{ item.label }}</h-option>
+      </h-select>
 </div>
 </template>
 <script>
@@ -40,7 +46,7 @@
                         key: 'address'
                     }
                 ],
-                  data9: [
+                data9: [
                     {
                         name: '王小明',
                         age: 18,
@@ -87,20 +93,49 @@
                         movie: '倩女幽魂',
                         music: '演员'
                     }
-                ]
+                ],
+                model: 2,
+                cityList: [
+                    {
+                        value: 'beijing',
+                        label: '北京市'
+                    },
+                    {
+                        value: 'shanghai',
+                        label: '上海市'
+                    },
+                    {
+                        value: 'shenzhen',
+                        label: '深圳市'
+                    },
+                    {
+                        value: 'hangzhou',
+                        label: '杭州市'
+                    },
+                    {
+                        value: "1",
+                        label: '南京市'
+                    },
+                    {
+                        value: "2",
+                        label: '重庆市'
+                    }
+
+
+    ]
             }
         },
         methods: {
           rowClick(row, index) {
             console.log(row)
           },
-          expand(row, status) {
-              if (!status) return
-              let objData = this.$refs['table'].objData
-              for (let i in objData) {
-                objData[i]._isExpanded = true
-                i != index && (objData[i]._isExpanded = false)
-              }
+          expand(row, status, index) {
+              // if (!status) return
+              // let objData = this.$refs['table'].objData
+              // for (let i in objData) {
+              //   objData[i]._isExpanded = true
+              //   i != index && (objData[i]._isExpanded = false)
+              // }
           }
         }
     }

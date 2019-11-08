@@ -886,7 +886,7 @@ export default {
           }
         }
         this.findChild((child) => {
-            if (child.value === value) {
+            if (child.value == value) {
                 child.selected = true;
                 // label: (child.label === undefined) ? child.$el.innerHTML.slice(Number(child.$el.innerHTML.indexOf('</label>')+8)) : child.label
                 label = (child.label === undefined) ? child.$el.innerText.replace(/\s*\w{4,5} /, '') : child.label;
@@ -1190,9 +1190,12 @@ export default {
       this.query = query;
     },
     modelToQuery() {
+      
       if (!this.multiple && this.filterable && this.model !== undefined &&!this.showBottom) {
-        this.findChild((child) => {
-          if (this.model === child.value) {
+        console.log('modelToQuery', this.model, '  1111')
+        this.findChild((child) => {  
+          console.log(child.value) 
+          if (this.model == child.value) {
               if (child.label) {
                   this.query = child.label.trim();
               } else if (child.searchLabel) {
