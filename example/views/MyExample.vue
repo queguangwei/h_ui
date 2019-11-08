@@ -862,12 +862,6 @@
 //        console.log(x)
 //        console.log(y)
 //        console.log(z)
-        let event = new Event('closeDropdown')
-        if(window.dispatchEvent) {
-          window.dispatchEvent(event)
-        } else {
-          window.fireEvent(event)
-        }
       },
       handleSubmit(name) {
         this.$refs[name].validate((valid) => {

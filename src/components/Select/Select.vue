@@ -108,12 +108,11 @@ import { on, off } from '../../util/dom';
 import { oneOf, findComponentChildren, getScrollBarSize, getStyle,getBarBottom,scrollAnimate,typeOf, findInx} from '../../util/tools';
 import Emitter from '../../mixins/emitter';
 import Locale from '../../mixins/locale';
-import CloseDropdown from '../../mixins/closeDropdown';
 import _ from "../..//util";
 const prefixCls = 'h-select';
 export default {
   name: 'Select',
-  mixins: [ Emitter, Locale, CloseDropdown ],
+  mixins: [ Emitter, Locale ],
   components: { Icon, Drop, Checkbox},
   directives: { clickoutside,TransferDom},
   props: {
@@ -560,7 +559,6 @@ export default {
       }
     },
     keydown(event){
-      // console.log('event.keyCode--->', event.keyCode)
       if (event.keyCode == 9) {
         this.hideMenu();
       }
@@ -1070,7 +1068,6 @@ export default {
           const prev = this.focusIndex - 1;
           this.focusIndex = (this.focusIndex <= 1) ? maxIndex : prev;
         }
-        // console.log('focusIndex----->', this.focusIndex)
         let child_status = {
           disabled: false,
           hidden: false

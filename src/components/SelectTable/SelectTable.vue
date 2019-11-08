@@ -39,13 +39,8 @@
         :style="inputVisibleStyle"
       />
       <Icon name="close" :class="[prefixCls + '-arrow']" v-if="showCloseIcon" @click.native.stop="clearSingleSelect"></Icon>
-      <Icon
-        name="unfold"
-        :class="[prefixCls + '-arrow']"
-        v-if="!searchIcon && (!remote || showArrow)"
-        @click.native.stop="arrowClick"
-        ref="arrowb"
-      ></Icon>
+      <Icon name="unfold" :class="[prefixCls + '-arrow']" v-if="!searchIcon && (!remote || showArrow)"
+        @click.native.stop="arrowClick" ref="arrowb"></Icon>
       <Icon
         ref="searchIcon"
         :name="searchIcon"
@@ -135,11 +130,10 @@ import { on, off } from "../../util/dom";
 import { oneOf, getScrollBarSize, getStyle, getBarBottom, scrollAnimate } from "../../util/tools";
 import Emitter from "../../mixins/emitter";
 import Locale from "../../mixins/locale";
-import CloseDropdown from "../../mixins/closeDropdown";
 const prefixCls = "h-selectTable";
 export default {
   name: "SelectTable",
-  mixins: [Emitter, Locale, CloseDropdown],
+  mixins: [Emitter, Locale],
   components: { Icon, Drop, Checkbox },
   directives: { clickoutside, TransferDom },
   props: {
