@@ -36,7 +36,7 @@
       </br>
       <h-table :data="[...tData, ...tData]" :columns="columns" @on-row-click="rowClick"></h-table>
       </br>
-      <h-page :total="totalNum" @on-change="dataChange" show-sizer show-elevator show-total @on-page-size-change="pickerChange" :pageSizeOpts="pageSizeOpts"></h-page>
+      <h-page :total="totalNum" @on-change="dataChange" show-sizer show-elevator show-total @on-page-size-change="pickerChange" :pageSizeOpts="pageSizeOpts" :isLoadAll="true"></h-page>
     </div>
     <h-msg-box v-model="addMsg" width="800" >
       <p slot="header">

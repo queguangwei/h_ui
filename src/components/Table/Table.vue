@@ -865,6 +865,10 @@ export default {
     rowClsName(index) {
       return this.rowClassName(this.data[index], index)
     },
+    /**
+     * @description handleResize
+     * @todo refactoring but tricky
+     */
     changeWidth(width, key, lastWidth, lastInx) {
       var that = this
       var totalWidth = 0
@@ -898,7 +902,74 @@ export default {
       })
     },
     handleMouseLeave() {},
+    /**
+     * @description handleResize
+     * @todo refactoring but tricky
+     */
     handleResize() {
+      // notSetWidth 的含义是“表格宽度根据内容宽度自适应，且内容不换行，只在当前列不设置宽度时有效”
+      // 如果 tbody 的渲染没有完成，应该还是根据表头内容自适应宽度
+      // if (this.notSetWidth) {
+      //   const { thead, tbody } = this.$refs;
+      //   let _th = null,
+      //     _td = null,
+      //     _els = null,
+      //     columnsWidth = {};
+      //   if (thead && thead.$el.offsetParent) {
+      //     _th = thead.$el.querySelectorAll("thead .cur-th")[0].querySelectorAll(".h-table-cell > .span-cell");
+      //   }
+      //   if (tbody && tbody.$el.offsetParent) {
+      //     _td = tbody.$el.querySelectorAll("tbody tr")[0].querySelectorAll("td");
+      //   }
+
+      //   if (!this.autoHeadWidth && _td) {
+      //     _els = _td;
+      //   } else {
+      //     _els = _th;
+      //   }
+
+      //   if (_els) {
+      //     // can not use forEach in Firefox
+      //     for (let i = 0; i < _els.length; i++) {
+      //       const _el = _els[i],
+      //         _column = this.cloneColumns[i],
+      //         _minWidth = _column.minWidth || this.minColWidth;
+      //       let columnWidth = _el.offsetWidth;
+      //       if (_column.width) {
+      //         columnWidth = _column.width;
+      //       }
+      //       if (columnsWidth < _minWidth) {
+      //         columnWidth = _minWidth;
+      //       }
+
+      //       this.cloneColumns[i]._width = columnWidth;
+      //       columnsWidth[i] = {
+      //         width: columnWidth
+      //       };
+      //     }
+      //   }
+
+      //   this.initWidth = parseInt(getStyle(this.$refs.tableInner, "width")) || 0;
+      //   this.bodyRealHeight = parseInt(getStyle(this.$refs.tbody.$el, "height")) || 0;
+      //   this.headerRealHeight = parseInt(getStyle(this.$refs.header, "height")) || 0;
+
+      //   const scrollWidth = this.bodyHeight < this.bodyRealHeight ? this.scrollBarWidth : 0;
+      //   let tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b, 0) || 0;
+      //   if (tableWidth > 0 && tableWidth < this.initWidth) {
+      //     const lastInx = this.cloneColumns[this.cloneColumns.length - 1]._index;
+      //     if (columnsWidth[lastInx]) {
+      //       const lastWidth = columnsWidth[lastInx].width + this.initWidth - tableWidth - scrollWidth;
+      //       columnsWidth[lastInx] = { width: lastWidth };
+      //     }
+      //     this.tableWidth = this.initWidth;
+      //   } else {
+      //     this.tableWidth = tableWidth;
+      //   }
+      //   this.columnsWidth = columnsWidth;
+      //   this.$emit("on-table-width-change", this.tableWidth);
+      //   return;
+      // }
+
       // keep-alive时，页面改变大小会不断触发resize【非本组件页面】
       if (this.notSetWidth) {
         if (!this.autoHeadWidth) {
@@ -915,7 +986,7 @@ export default {
           if (
             this.autoHeadWidth ||
             this.data.length == 0 ||
-            !this.$refs.tbody
+            this.$refs.tbody.$el.offsetParent === null
           ) {
             num = 30
             if (!this.$refs.thead) return
@@ -928,10 +999,14 @@ export default {
                 .querySelectorAll('thead .cur-th')[0]
                 .querySelectorAll('.h-table-cell>.span-cell')
             }
-            $td = this.$refs.tbody.$el
-              .querySelectorAll('tbody tr')[0]
-              .querySelectorAll('td')
+            if(this.$refs.tbody.$el.offsetParent) {
+              $td = this.$refs.tbody.$el
+                .querySelectorAll('tbody tr')[0]
+                .querySelectorAll('td')
+            }
           }
+          if (!$td || $td.length < 1) return
+
           for (let i = 0; i < $td.length; i++) {
             // can not use forEach in Firefox
             const column = this.cloneColumns[i]
@@ -960,7 +1035,7 @@ export default {
             parseInt(getStyle(this.$refs.tbody.$el, 'height')) || 0
           this.headerRealHeight =
             parseInt(getStyle(this.$refs.header, 'height')) || 0
-          if (!$td || $td.length < 1) return
+          
           let lastInx = this.cloneColumns[$td.length - 1]._index
           let scrollWidth =
             this.bodyHeight < this.bodyRealHeight ? this.scrollBarWidth : 0
@@ -984,7 +1059,7 @@ export default {
 
       this.$nextTick(() => {
         // tab 中 $el 报错问题
-        if (!this.$refs.tbody) return
+        if (this.$refs.tbody.$el.offsetParent === null) return
 
         if (this.cloneColumns.length == 0) return
         const allWidth = !this.cloneColumns.some(
@@ -1009,7 +1084,7 @@ export default {
           if (allWidth)
             autoWidthIndex = findInx(this.cloneColumns, cell => !cell.width)
           if (this.data.length && this.$refs.tbody) {
-            if (!this.$refs.tbody.$el) return
+            if (this.$refs.tbody.$el.offsetParent === null) return
             const $td = this.$refs.tbody.$el
               .querySelectorAll('tbody tr')[0]
               .querySelectorAll('td')
@@ -1145,6 +1220,7 @@ export default {
     },
     highlightCurrentRow(_index) {
       if (!this.highlightRow) return
+      if (this.objData[_index]._isDisabled) return 
       const curStatus = this.objData[_index]._isHighlight
       if (this.objData[_index]._isChecked && this.rowSelectOnly) {
         return
@@ -1237,6 +1313,7 @@ export default {
       ])
     },
     clickCurrentBtn(_index) {
+      if (this.objData[_index]._isDisabled) return
       this.$emit('on-row-click', [
         JSON.parse(JSON.stringify(this.cloneData[_index])),
         _index
@@ -2095,8 +2172,15 @@ export default {
         this.handleResize();
       }, 0);
     });
+    if(this.$refs.thead) {
+      this.observer.listenTo(this.$refs.thead.$el, () => {
+        setTimeout(() => {
+          this.handleResize();
+        }, 0);
+      });
+    }
     if(this.notSetWidth) {
-      this.observer.listenTo(this.showHeader ? this.$refs.thead.$el : this.$refs.tbody.$el, () => {
+      this.observer.listenTo(this.$refs.tbody.$el, () => {
         setTimeout(() => {
           this.handleResize();
         }, 0);
