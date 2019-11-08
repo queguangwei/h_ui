@@ -82,7 +82,6 @@ import { on, off } from '../../util/dom'
 import { DEFAULT_FORMATS, TYPE_VALUE_RESOLVER_MAP, formatDate } from './util'
 import Emitter from '../../mixins/emitter'
 import Locale from '../../mixins/locale'
-
 const prefixCls = 'h-date-picker'
 const isEmptyArray = val =>
   val.reduce(
@@ -251,7 +250,7 @@ export default {
     }
   },
   data() {
-    let value = this.value; 
+    let value = this.value;
     const isRange = this.type.indexOf('range') > -1 ? true : false
     if (typeof this.value === 'string' && this.type.includes('range') ) value = this.value.split(' - ')
 

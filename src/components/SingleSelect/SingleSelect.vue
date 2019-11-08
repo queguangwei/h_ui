@@ -1,21 +1,16 @@
 <template>
-  <div :class="classes" ref="select" :style="singleStyle" v-clickoutside="{trigger: 'mousedown', handler: handleClose}">
+  <div :class="classes" ref="select" :style="singleWidth" v-clickoutside="{trigger: 'mousedown', handler: handleClose}">
     <div :class="[`${prefixCls}-selection`, 'single-selection']" ref="reference" >
-      <input ref="input" type="text" v-model="query"
-             :disabled="disabled" :readonly="!editable||readonly"
-             :class="[`${prefixCls}-input`]" :title="selected"
-             :placeholder="showPlaceholder?localePlaceholder:''" :tabindex="tabindex"
-             @focus="handleFocus" @blur="handleBlur"
-             @keydown="handleInputKeyDown" @keyup="handleInputKeyup">
+      <input ref="input" type="text" v-model="query" :disabled="disabled" :readonly="!editable||readonly"
+             :class="[`${prefixCls}-input`]" :title="selected" :placeholder="showPlaceholder?localePlaceholder:''" :tabindex="tabindex"
+             @focus="handleFocus" @blur="handleBlur" @keydown="handleInputKeyDown" @keyup="handleInputKeyup">
       <Icon name="unfold" :class="[`${prefixCls}-arrow`]" @click.native.stop="arrowClick"></Icon>
     </div>
     <div v-if="animated">
       <transition :name="transitionName">
-        <Drop ref="dropdown" v-show="dropVisible"
-              :class="dropdownCls" :placement="fPlacement"
-              :dropWidth="dropWidth" :maxDropWidth="maxDropWidth"
-              :widthAdaption="widthAdaption" :data-transfer="transfer"
-              v-transfer-dom>
+        <Drop ref="dropdown" v-show="dropVisible" :class="dropdownCls" :placement="fPlacement"
+              :dropWidth="dropWidth" :maxDropWidth="maxDropWidth" :widthAdaption="widthAdaption"
+              :data-transfer="transfer" v-transfer-dom>
           <div :class="[`${prefixCls}-dropdown-noline-content`]" ref="content">
             <div id="blockWrapper" :class="[`${prefixCls}-dropdown-list`]" ref='blockWrapper'>
               <slot></slot>
@@ -26,11 +21,9 @@
       </transition>
     </div>
     <div v-else>
-      <Drop ref="dropdown" v-show="dropVisible"
-            :class="dropdownCls" :placement="fPlacement"
-            :dropWidth="dropWidth" :maxDropWidth="maxDropWidth"
-            :widthAdaption="widthAdaption" :data-transfer="transfer"
-            v-transfer-dom>
+      <Drop ref="dropdown" v-show="dropVisible" :class="dropdownCls" :placement="fPlacement"
+            :dropWidth="dropWidth" :maxDropWidth="maxDropWidth" :widthAdaption="widthAdaption"
+            :data-transfer="transfer" v-transfer-dom>
         <div :class="[`${prefixCls}-dropdown-noline-content`]" ref="content">
           <div :class="[`${prefixCls}-dropdown-list`]" ref='blockWrapper'>
             <slot></slot>
@@ -76,7 +69,7 @@ export default {
     }
   },
   computed: {
-    singleStyle() {
+    singleWidth() {
       return {
         width: `${this.width}px`
       }
@@ -138,9 +131,6 @@ export default {
     value: {
       immediate: true,
       handler(val) {
-//        if(val === '' && this.query !== '') {
-//          this.isQuerySelect = false
-//        }
         this.model = val
       }
     },

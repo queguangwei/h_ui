@@ -39,13 +39,8 @@
         :style="inputVisibleStyle"
       />
       <Icon name="close" :class="[prefixCls + '-arrow']" v-if="showCloseIcon" @click.native.stop="clearSingleSelect"></Icon>
-      <Icon
-        name="unfold"
-        :class="[prefixCls + '-arrow']"
-        v-if="!searchIcon && (!remote || showArrow)"
-        @click.native.stop="arrowClick"
-        ref="arrowb"
-      ></Icon>
+      <Icon name="unfold" :class="[prefixCls + '-arrow']" v-if="!searchIcon && (!remote || showArrow)"
+        @click.native.stop="arrowClick" ref="arrowb"></Icon>
       <Icon
         ref="searchIcon"
         :name="searchIcon"
