@@ -12,17 +12,17 @@
         @click.stop="onItemClick(item)"
       >
         <slot>
-          <span :title="item.label || ''" :class="{itemcol: showCol.length > 0}" style="width: 100px;">
+          <span :title="item.label || ''" :class="{itemcol: showCol.length > 0}" :style="showCol.length ? colStyle[0] : 'width: 100px;'">
             <checkbox size="large" :value="item.selected" :disabled="item.disabled"></checkbox>
             {{item.label || item.value}}
           </span>
         </slot>
         <span
-          v-for="col in showCol"
+          v-for="(col, ind) in showCol"
           :key="col"
           :title="item[col]"
           class="itemcol"
-          style="width: 100px;"
+          :style="showCol.length ? colStyle[ind + 1] : 'width: 100px;'"
         >{{ item[col] }}</span>
       </li>
     </ul>
@@ -270,6 +270,15 @@ export default {
         return _.deepCloneAs(item, ["label", "value", ...this.showCol]);
       })
     );
+
+    if(this.showCol.length) {
+      this.colStyle = []
+      for (let i = 0; i < this.showCol.length + 1; i++) {
+        let style = {}
+        style.width = this.colWidth[i] ? this.colWidth[i]+'px' : '100px'
+        this.colStyle.push(style)
+      }
+    }
   }
 };
 </script>

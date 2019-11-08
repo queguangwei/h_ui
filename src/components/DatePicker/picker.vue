@@ -1,5 +1,5 @@
 <template>
-  <div :class="[prefixCls]"
+  <div :class="{[prefixCls]: true, [prefixCls + '-small']: size === 'small', [prefixCls + '-large']: size === 'large'}"
        v-clickoutside="handleClose"
        ref='wrapper'>
     <div ref="reference"
@@ -251,12 +251,21 @@ export default {
     }
   },
   data() {
+    let value = this.value; 
     const isRange = this.type.indexOf('range') > -1 ? true : false
+    if (typeof this.value === 'string' && this.type.includes('range') ) value = this.value.split(' - ')
+
     const emptyArray = isRange ? [null, null] : [null]
-    let initialValue = isEmptyArray((isRange ? this.value : [this.value]) || [])
+    let initialValue = isEmptyArray((isRange ? value : [value]) || [])
       ? emptyArray
-      : this.parseDate(this.value)
-    if (this.name == 'splicePanel') initialValue = this.parseDate(this.value)
+      : this.parseDate(value)
+    if (this.name == 'splicePanel') initialValue = this.parseDate(value)
+
+    // const emptyArray = isRange ? [null, null] : [null]
+    // let initialValue = isEmptyArray((isRange ? this.value : [this.value]) || [])
+    //   ? emptyArray
+    //   : this.parseDate(this.value)
+    // if (this.name == 'splicePanel') initialValue = this.parseDate(this.value)
     return {
       prefixCls: prefixCls,
       showClose: false,
@@ -279,6 +288,7 @@ export default {
       if (this.multiple) {
         return this.internalValue.slice()
       } else {
+        if (isEmptyArray(this.internalValue) && this.type.includes('range')) return []
         // const isRange = this.type.includes('range');
         const isRange = this.type.indexOf('range') > -1 ? true : false
         let val = this.internalValue.map(date =>
@@ -291,9 +301,11 @@ export default {
     publicStringValue() {
       const { formatDate, publicVModelValue, type } = this
       if (type.match(/^time/)) return publicVModelValue
-      return Array.isArray(publicVModelValue)
-        ? publicVModelValue.map(formatDate)
-        : formatDate(publicVModelValue)
+      if (Array.isArray(publicVModelValue)){
+        const arr = publicVModelValue.map(formatDate)
+        return (isEmptyArray(arr) && this.type.includes('range')) ? [] : arr
+      }
+      return formatDate(publicVModelValue)
     },
     //    opened() {
     //      return this.open === null ? this.visible : this.open
@@ -530,7 +542,6 @@ export default {
      */
     checkLegality(text, date) {
       if (
-        this.clearOnIllegal &&
         ['date', 'daterange', 'datetime', 'datetimerange'].indexOf(this.type) >
           -1
       ) {
@@ -572,19 +583,11 @@ export default {
       }
     },
     handleInputChange(event) {
-      // if (value==''||String(value).length==0) {
-      //   this.handleClear();
-      //   return false;
-      // }
-      // const isArrayValue = this.type.includes('range') || this.multiple;
       const isArrayValue =
         this.type.indexOf('range') > -1 ? true : false || this.multiple
       const oldValue = this.visualValue
       const newValue = event.target.value
       let newDate = this.parseDate(newValue)
-      // if(newDate[0] == null || !newDate || newDate == []) {
-      //   newDate = this.internalValue
-      // }
       const disabledDateFn =
         this.options &&
         typeof this.options.disabledDate === 'function' &&
