@@ -87,7 +87,8 @@ export default {
       currentValue: String(this.value),
       prepend: true,
       append: true,
-      viewValue: ""
+      viewValue: "",
+      formatNumber: '',
     };
   },
   mixins: [Emitter, Locale],
@@ -389,9 +390,12 @@ export default {
           e.target.value = this.inputValue = val
         }
       }
+      const isValueChange = this.formatNumber !== val  // 判断format后数据是否变化
+      this.formatNumber = val
       // this.$refs.input.blur();
       this.$emit("input", this.cardFormatValue(val));
-      this.$emit("on-blur", e);
+      this.$emit("on-blur", e, isValueChange);
+      isValueChange && this.$emit('on-change', val)
       this.dispatch("FormItem", "on-form-blur", val);
     },
     cardFormatValue(val) {
