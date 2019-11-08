@@ -390,9 +390,9 @@ export default {
         }
       }
       // this.$refs.input.blur();
-      this.$emit("input", this.cardFormatValue(val));
+      this.$emit("input", this.cardFormatValue(val.replace(/,/g, '')))
       this.$emit("on-blur", e);
-      this.dispatch("FormItem", "on-form-blur", val);
+      this.dispatch("FormItem", "on-form-blur", val.replace(/,/g, ''))
     },
     cardFormatValue(val) {
       if (!this.cardFormat && this.type == "cardNo") {
@@ -497,7 +497,7 @@ export default {
       if (!this.immeDivided) {
         this.inputValue = value;
       } else {
-        value = this.inputValue = divideNum(value)
+        this.inputValue = divideNum(value)
       }
       this.bigShow(this.type, value);
       this.$emit("input", value);
@@ -721,7 +721,7 @@ export default {
         this.inputValue = formatVal
       }
       // 失焦的时候才更新v-model绑定值，避免不能输入的问题
-      !this.havefocused && this.$emit("input", this.cardFormatValue(formatVal));
+      !this.havefocused && this.$emit('input', this.cardFormatValue(formatVal.replace(/,/g, '')))
     },
     hover() {
       if (!this.hoverTips || !this.value || this.tipShow) return;
