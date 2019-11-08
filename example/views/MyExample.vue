@@ -171,21 +171,21 @@
     <!--</h-calendar>-->
     <h1>table</h1>
     <h-table ref="table" :columns="columnsMulti" :data="dataMulti" :multiLevel="multiTitle"
-             canDrag border :loading="loading" clickHeadSort isMulitSort
+             canDrag border :loading="loading" clickHeadSort isMulitSort height="300"
              highlight-row :lastColWidth="150" :minDragWidth="40" :minColWidth="60"
-             @on-sort-change="sortchange"></h-table>
+             @on-sort-change="sortchange" @on-scroll="scrollchange"></h-table>
     <h-button @click="resetSort">重置排序</h-button>
-    <h1>tree</h1>
+    <!--<h1>tree</h1>-->
     <!--<h-tree :data="baseData" show-checkbox></h-tree>-->
-    <h1>simpleTreeGrid</h1>
-    <h-button type="primary" @click="expandAll">展开</h-button>
-    <h-button @click="fold">收起</h-button>
-    <h-simple-tree-gird :columns="columns1" ref="treeGrid" :data="treedata" canDrag :height="400" @on-expand="expand"></h-simple-tree-gird>
-    <h1>editGird</h1>
-    <h-edit-gird ref="repoEditGrid" border height="400" size="small" showEditInput
-                 :columns="columnsEdit" :data="dataEdit" :disabled-hover="true" :highlight-row="true"
-                 @on-money-blur="on_money_blur">
-    </h-edit-gird>
+    <!--<h1>simpleTreeGrid</h1>-->
+    <!--<h-button type="primary" @click="expandAll">展开</h-button>-->
+    <!--<h-button @click="fold">收起</h-button>-->
+    <!--<h-simple-tree-gird :columns="columns1" ref="treeGrid" :data="treedata" canDrag :height="400" @on-expand="expand"></h-simple-tree-gird>-->
+    <!--<h1>editGird</h1>-->
+    <!--<h-edit-gird ref="repoEditGrid" border height="400" size="small" showEditInput-->
+                 <!--:columns="columnsEdit" :data="dataEdit" :disabled-hover="true" :highlight-row="true"-->
+                 <!--@on-money-blur="on_money_blur">-->
+    <!--</h-edit-gird>-->
   </div>
 </template>
 <script>
@@ -483,9 +483,9 @@
             render: (h, params) => {
               return h('h-simple-select', {
                   props: {
-                    autoPlacement: true,
                     filterable: true,
-//                    transfer: true
+                    transfer: true,
+                    autoPlacement: true
                   }
                 },
                 [h('h-select-block', {
@@ -493,6 +493,18 @@
                     data: this.cityList
                   }
                 })])
+            }
+          },
+          {
+            title: '日期',
+            key: 'date',
+            render: (h, params) => {
+              return h('h-date-picker', {
+                props: {
+                  transfer: true,
+                  autoPlacement: true
+                }
+              })
             }
           },
           {
@@ -518,6 +530,18 @@
             name: '李小红',
             age: 30,
             address: '上海市浦东新区世纪大道',
+            status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
+          },
+          {
+            name: '周小伟',
+            age: 26,
+            address: '深圳市南山区深南大道',
+            status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
+          },
+          {
+            name: '周小伟',
+            age: 26,
+            address: '深圳市南山区深南大道',
             status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
           },
           {
@@ -768,9 +792,10 @@
     },
     methods: {
       onscroll(x,y,z) {
-        console.log(x)
-        console.log(y)
-        console.log(z)
+//        console.log(x)
+//        console.log(y)
+//        console.log(z)
+
       },
       handleShowBox() {
         this.showBox = true
@@ -832,6 +857,11 @@
       },
       sortchange(e) {
         console.log(e)
+      },
+      scrollchange(x, y, z) {
+//        console.log(x)
+//        console.log(y)
+//        console.log(z)
       },
       handleSubmit(name) {
         this.$refs[name].validate((valid) => {
@@ -964,6 +994,7 @@
     },
     created() {
       window.isO45 = false
+      window.isOIS = true
     },
     mounted() {
       document.addEventListener("keydown", event => {
