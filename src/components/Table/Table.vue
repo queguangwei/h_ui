@@ -986,7 +986,7 @@ export default {
           if (
             this.autoHeadWidth ||
             this.data.length == 0 ||
-            !this.$refs.tbody
+            this.$refs.tbody.$el.offsetParent === null
           ) {
             num = 30
             if (!this.$refs.thead) return
@@ -1059,7 +1059,7 @@ export default {
 
       this.$nextTick(() => {
         // tab 中 $el 报错问题
-        if (!this.$refs.tbody) return
+        if (this.$refs.tbody.$el.offsetParent === null) return
 
         if (this.cloneColumns.length == 0) return
         const allWidth = !this.cloneColumns.some(
@@ -1084,7 +1084,7 @@ export default {
           if (allWidth)
             autoWidthIndex = findInx(this.cloneColumns, cell => !cell.width)
           if (this.data.length && this.$refs.tbody) {
-            if (!this.$refs.tbody.$el) return
+            if (this.$refs.tbody.$el.offsetParent === null) return
             const $td = this.$refs.tbody.$el
               .querySelectorAll('tbody tr')[0]
               .querySelectorAll('td')
