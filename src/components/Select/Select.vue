@@ -886,7 +886,7 @@ export default {
           }
         }
         this.findChild((child) => {
-            if (child.value == value) {
+            if (child.value === value) {
                 child.selected = true;
                 // label: (child.label === undefined) ? child.$el.innerHTML.slice(Number(child.$el.innerHTML.indexOf('</label>')+8)) : child.label
                 label = (child.label === undefined) ? child.$el.innerText.replace(/\s*\w{4,5} /, '') : child.label;
@@ -1190,12 +1190,9 @@ export default {
       this.query = query;
     },
     modelToQuery() {
-      
       if (!this.multiple && this.filterable && this.model !== undefined &&!this.showBottom) {
-        console.log('modelToQuery', this.model, '  1111')
-        this.findChild((child) => {  
-          console.log(child.value) 
-          if (this.model == child.value) {
+        this.findChild((child) => {   
+          if (this.model.toString() === child.value) {
               if (child.label) {
                   this.query = child.label.trim();
               } else if (child.searchLabel) {
@@ -1305,6 +1302,8 @@ export default {
     }
   },
   mounted () {
+    (typeof this.value === 'number'  && !this.multiple)&& (this.model = this.value.toString())
+
     if (!this.multiple && this.setDefSelect && this.value == ''){
       this.isfirstSelect = true;
     }

@@ -2,7 +2,7 @@
 <template>
 <div>
     <!-- <h-table ref="table" :columns="columns10" :data="data9" @on-expand="expand" @on-row-click="rowClick"></h-table> -->
-        <h-select v-model="model"  filterable
+        <h-select v-model="model"  filterable  multiple
                 >
         <h-option v-for="(item,index) in cityList"
                   :value="item.value"
@@ -94,7 +94,7 @@
                         music: '演员'
                     }
                 ],
-                model: 2,
+                model: [2],
                 cityList: [
                     {
                         value: 'beijing',
