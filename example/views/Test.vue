@@ -1,13 +1,13 @@
 
 <template>
 <div>
-    <!-- <h-table ref="table" :columns="columns10" :data="data9" @on-expand="expand" @on-row-click="rowClick"></h-table> -->
-        <h-select v-model="model"  filterable  multiple
+    <h-table ref="table" :columns="columns10" :data="data9" @on-expand="expand" @on-row-click="rowClick"></h-table>
+        <!-- <h-select v-model="model"  filterable  multiple
                 >
         <h-option v-for="(item,index) in cityList"
                   :value="item.value"
                   :key="index">{{ item.label }}</h-option>
-      </h-select>
+      </h-select> -->
 </div>
 </template>
 <script>
@@ -120,9 +120,7 @@
                         value: "2",
                         label: '重庆市'
                     }
-
-
-    ]
+                ]
             }
         },
         methods: {

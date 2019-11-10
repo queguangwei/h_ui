@@ -393,10 +393,10 @@ export default {
       const isValueChange = this.formatNumber !== val  // 判断format后数据是否变化
       this.formatNumber = val
       // this.$refs.input.blur();
-      this.$emit("input", this.cardFormatValue(val));
+      his.$emit("input", this.cardFormatValue(val.replace(/,/g, '')))
       this.$emit("on-blur", e, isValueChange);
-      isValueChange && this.$emit('on-change', val)
-      this.dispatch("FormItem", "on-form-blur", val);
+      isValueChange && this.$emit('on-change', val.replace(/,/g, ''))
+      this.dispatch("FormItem", "on-form-blur", val.replace(/,/g, ''));
     },
     cardFormatValue(val) {
       if (!this.cardFormat && this.type == "cardNo") {
@@ -501,7 +501,7 @@ export default {
       if (!this.immeDivided) {
         this.inputValue = value;
       } else {
-        value = this.inputValue = divideNum(value)
+        this.inputValue = divideNum(value)
       }
       this.bigShow(this.type, value);
       this.$emit("input", value);
@@ -593,6 +593,7 @@ export default {
         integer = cutNum(integer.replace('-', ''), integerNum)
 
         let bn = new BigNumber((isNegative ? '-' + integer : integer) + '.' + fraction)
+        if (bn.isNaN()) return ''
         if (bn.isLessThan(this.minNum)) bn = this.minNum
         if (bn.isGreaterThan(this.maxNum)) bn = this.maxNum
         if (this.nonNegative && bn.isNegative()) {
@@ -713,7 +714,11 @@ export default {
       } else {
         // 失焦的时候才格式化，避免不能增删小数位的问题
         if (this.notFormat || this.havefocused || !val) {
-          formatVal = val
+          if (this.havefocused && this.immeDivided && !this.notFormat && val) {
+            formatVal = divideNum(val)
+          } else {
+            formatVal = val
+          }
         } else {
           if (this.type === 'cardNo') {
             formatVal = this.formatCardNo(val)
@@ -725,7 +730,7 @@ export default {
         this.inputValue = formatVal
       }
       // 失焦的时候才更新v-model绑定值，避免不能输入的问题
-      !this.havefocused && this.$emit("input", this.cardFormatValue(formatVal));
+      !this.havefocused && this.$emit('input', this.cardFormatValue(formatVal.replace(/,/g, '')))
     },
     hover() {
       if (!this.hoverTips || !this.value || this.tipShow) return;
