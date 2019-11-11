@@ -181,11 +181,11 @@
     <!--<h-button type="primary" @click="expandAll">展开</h-button>-->
     <!--<h-button @click="fold">收起</h-button>-->
     <!--<h-simple-tree-gird :columns="columns1" ref="treeGrid" :data="treedata" canDrag :height="400" @on-expand="expand"></h-simple-tree-gird>-->
-    <!--<h1>editGird</h1>-->
-    <!--<h-edit-gird ref="repoEditGrid" border height="400" size="small" showEditInput-->
-                 <!--:columns="columnsEdit" :data="dataEdit" :disabled-hover="true" :highlight-row="true"-->
-                 <!--@on-money-blur="on_money_blur">-->
-    <!--</h-edit-gird>-->
+    <h1>editGird</h1>
+    <h-edit-gird ref="repoEditGrid" border height="400" size="small" showEditInput
+                 :columns="columnsEdit" :data="dataEdit" :disabled-hover="true" :highlight-row="true"
+                 @on-money-blur="on_money_blur">
+    </h-edit-gird>
   </div>
 </template>
 <script>
@@ -840,8 +840,8 @@
         }
       },
       selectKeyup(val, e) {
-        console.log(val)
-        console.log(e)
+//        console.log(val)
+//        console.log(e)
       },
       handleTabRemove1(name){
         console.log(this.tabs)
@@ -970,6 +970,7 @@
         console.log(status)
       },
       on_money_blur(data, x, y) {
+        console.log(data)
         if (typeof (this.$refs.repoEditGrid.rebuildData[y].mortgage_amount) == "number") {
           data = data + '';
         } else {

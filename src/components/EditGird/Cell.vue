@@ -260,6 +260,7 @@ export default {
       columnArea: this.row[this.column.key],
       columnNumber: this.row[this.column.key],
       columnMoney: this.row[this.column.key],
+      columnMoneyVal: '',
       columnCard: this.row[this.column.key],
       columnDate: this.row[this.column.key],
       columnTime: this.row[this.column.key],
@@ -450,7 +451,7 @@ export default {
         !this.column.type ||
         this.column.type === 'html' ||
         this.column.type === 'index' ||
-        this.column.type === 'selection' || 
+        this.column.type === 'selection' ||
         this.column.viewValue
       ) {
         return false
@@ -630,6 +631,7 @@ export default {
       }
     },
     typefieldChange(val) {
+      this.columnMoneyVal = val
       if (this.column.divided) {
         let value = this.$refs.money.inputValue
         this.columnMoney = value
@@ -641,7 +643,7 @@ export default {
       this.syncRebuildData()
       this.$emit(
         'on-typefield-blur',
-        this.columnMoney,
+        this.columnMoneyVal,
         this.columnIndex,
         this.index
       )
@@ -673,13 +675,13 @@ export default {
       }
     },
     /**
-     * 格式化数据 
+     * 格式化数据
      */
     formatNum(value, integerNum, suffixNum) {
       value = value.trim().replace(/,/g, "");
       value = value.replace(/[^0-9\.-]/g, "") || "";
       var firstChar = value.substring(0, 1) || "";
-    
+
       if (firstChar == "-") {
         value = value.substring(1) || "";
       }
@@ -946,7 +948,7 @@ export default {
         // 格式化 type=money的千分符显示
         if (this.column.type == 'money' && this.renderType =='normal' && (this.column.divided || this.column.immeDivided)) {
           this.initMoneyViewValue()
-        } else 
+        } else
         if (this.column.type == 'select' && this.renderType =='normal' && (this.column.singleShowLabel || this.column.multiple)) {
         // 格式化 select
           this.initValToLabel()
@@ -963,7 +965,7 @@ export default {
     } else {
       if (
         // _disEdit 优先级高于showEditInput
-        this.row._disEdit || 
+        this.row._disEdit ||
         (!this.showEditInput &&
         this.column.type !== 'index' &&
         this.column.type !== 'selection' &&
