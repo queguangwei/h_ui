@@ -8,11 +8,13 @@
       :disabled-hover="true"
       :highlight-row="true"
       @on-current-change="click1"
-      :showEditInput="true"
+      :showEditInput="false"
       height="200"
       :loading="false"
       :option="options1"
       :treeOption="treeOption"
+      @on-editinput-enter="onEnter"
+      @on-money-enter="moneyChange"
     ></h-edit-gird>
     <h-button @click="addDate">新增一行</h-button>
     <h-button @click="getDate">获取数据</h-button>
@@ -134,6 +136,7 @@ export default {
           width: 200,
           key: "city",
           multiple: false,
+          transfer: true,
           option: [
             { value: "北京" },
             { value: "上海" },
@@ -249,7 +252,7 @@ export default {
   },
   methods: {
     click1(s) {
-      console.log(s);
+      // console.log(s);
     },
     addDate() {
       tData = this.data1.push({
@@ -266,6 +269,12 @@ export default {
     },
     getDate() {
       console.log(this.$refs.editGird.cloneData)
+    },
+    onEnter(a ,b ,c) {
+      console.log('on-enter', a ,b ,c)
+    },
+    moneyChange(a ,b ,c) {
+      console.log('moneyEnter', a ,b ,c)
     }
   }
 };

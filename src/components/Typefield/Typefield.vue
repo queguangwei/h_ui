@@ -14,6 +14,7 @@
       @blur="blurValue"
       @input="valChange"
       @change="valChange"
+      @keyup="keyup"
       @focus="focusValue($event)"
       ref="input"
     />
@@ -393,10 +394,14 @@ export default {
       const isValueChange = this.formatNumber !== val  // 判断format后数据是否变化
       this.formatNumber = val
       // this.$refs.input.blur();
-      his.$emit("input", this.cardFormatValue(val.replace(/,/g, '')))
+      this.$emit("input", this.cardFormatValue(val.replace(/,/g, '')))
       this.$emit("on-blur", e, isValueChange);
       isValueChange && this.$emit('on-change', val.replace(/,/g, ''))
       this.dispatch("FormItem", "on-form-blur", val.replace(/,/g, ''));
+      if (e.keyCode === 13) this.$emit('on-enter', val.replace(/,/g, ''))
+    },
+    keyup(e) {
+      if (e.keyCode === 13) this.blurValue(e)
     },
     cardFormatValue(val) {
       if (!this.cardFormat && this.type == "cardNo") {
