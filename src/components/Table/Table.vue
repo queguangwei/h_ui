@@ -971,7 +971,7 @@ export default {
       // }
 
       // keep-alive时，页面改变大小会不断触发resize【非本组件页面】
-      if (this.notSetWidth) {
+      if (this.notSetWidth && this.data.length > 0) {
         if (!this.autoHeadWidth) {
           this.columnsWidth = {}
           this.tableWidth = 0
@@ -1056,15 +1056,15 @@ export default {
         // }, 0)
         return
       }
-
       this.$nextTick(() => {
         // tab 中 $el 报错问题
-        if (this.$refs.tbody.$el.offsetParent === null) return
+        if (this.$refs.tbody.$el.offsetParent === null && this.tableWidth !== 0) return
 
         if (this.cloneColumns.length == 0) return
         const allWidth = !this.cloneColumns.some(
           cell => !cell.width && cell.width !== 0
         ) // each column set a width
+        // console.log('allWirdth---->', allWidth)
         if (allWidth) {
           this.tableWidth = this.cloneColumns
             .map(cell => cell.width)
@@ -1084,7 +1084,7 @@ export default {
           if (allWidth)
             autoWidthIndex = findInx(this.cloneColumns, cell => !cell.width)
           if (this.data.length && this.$refs.tbody) {
-            if (this.$refs.tbody.$el.offsetParent === null) return
+            if (this.$refs.tbody.$el.offsetParent === null && this.tableWidth !== 0 ) return
             const $td = this.$refs.tbody.$el
               .querySelectorAll('tbody tr')[0]
               .querySelectorAll('td')
