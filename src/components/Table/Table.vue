@@ -1056,7 +1056,6 @@ export default {
         // }, 0)
         return
       }
-      console.log('this.tableWidth--->', this.tableWidth)
       this.$nextTick(() => {
         // tab 中 $el 报错问题
         if (this.$refs.tbody.$el.offsetParent === null && this.tableWidth !== 0) return
