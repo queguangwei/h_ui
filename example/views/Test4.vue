@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h-table  border :columns="columns1" :data="data" ref="table"></h-table>
+    <h-table notSetWidth  border :columns="columns1" :data="data" ref="table"></h-table>
   </div>
 </template>
 <script>
@@ -212,7 +212,11 @@ export default {
           key: "current_cost_fa",
           ellipsis: true,
           hiddenCol: false
-        }
+        },
+        { title: "产品名称", key: "fund_name", width: 300, ellipsis: true },
+        { title: "产品名称", key: "fund_name", width: 300, ellipsis: true },
+        { title: "产品名称", key: "fund_name", width: 300, ellipsis: true },
+        { title: "产品名称", key: "fund_name", width: 300, ellipsis: true },
       ],
       data7: [
         {
