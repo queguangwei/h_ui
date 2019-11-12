@@ -659,18 +659,7 @@ export default {
       }
     },
     showdrop() {
-      if (this.isSingleSelect) {
-        if (this.disabled || !this.editable || this.readonly) {
-          return false;
-        }
-        this.isInputFocus = true;
-        this.$nextTick(() => {
-          this.select();
-        });
-      }
-      if (!this.isSingleSelect) {
-        this.toggleMenu();
-      }
+      this.toggleMenu()
     },
     arrowClick() {
       this.toggleMenu();
