@@ -1144,31 +1144,32 @@ export default {
       this.isInputFocus = false
       this.$emit('on-blur');
       if (this.showBottom) return false;
-      setTimeout(() => {
-        const model = this.model;
-        if (this.multiple) {
-          this.query = '';
-        } else {
-          if (model !== '') {
-              let found = false;
-              this.findChild((child) => {
-                if (child.value === model) {
-                  found = true;
-                  this.query = child.label === undefined ? child.searchLabel : child.label;
-                  this.query = this.query.trim();
-                }
-              });
-              // 如果删除了搜索词，下拉列表也清空了，所以强制调用一次remoteMethod
-              if ((this.remote || this.enableCreate) && !found && this.query !== this.lastQuery) {
-                  this.$nextTick(() => {
-                      this.query = this.lastQuery.trim();
-                  });
-              }
-          } else {
-            this.query = '';
-          }
-        }
-      }, 300);
+      // 场外提出筛选情况下，鼠标点选按住不松开会导致输入框内容被清空下拉项刷新无法选择想要的项
+//      setTimeout(() => {
+//        const model = this.model;
+//        if (this.multiple) {
+//          this.query = '';
+//        } else {
+//          if (model !== '') {
+//              let found = false;
+//              this.findChild((child) => {
+//                if (child.value === model) {
+//                  found = true;
+//                  this.query = child.label === undefined ? child.searchLabel : child.label;
+//                  this.query = this.query.trim();
+//                }
+//              });
+//              // 如果删除了搜索词，下拉列表也清空了，所以强制调用一次remoteMethod
+//              if ((this.remote || this.enableCreate) && !found && this.query !== this.lastQuery) {
+//                  this.$nextTick(() => {
+//                      this.query = this.lastQuery.trim();
+//                  });
+//              }
+//          } else {
+//            this.query = '';
+//          }
+//        }
+//      }, 300);
     },
     resetInputState () {
       this.inputLength = this.$refs.input.value.length * 12 + 56;
