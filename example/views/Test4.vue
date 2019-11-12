@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h-table notSetWidth  border :columns="columns1" :data="data" ref="table"></h-table>
+    <h-table notSetWidth  border :columns="columns8" :data="data" ref="table"></h-table>
   </div>
 </template>
 <script>

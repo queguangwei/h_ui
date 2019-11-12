@@ -1,7 +1,6 @@
 <template>
   <div>
     <h-simple-table 
-      showHeader
       highlightRow
       border
       :columns="columns1"

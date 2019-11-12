@@ -334,6 +334,12 @@ export default {
     buttonToTop: {
       type: Boolean,
       default: false
+    },
+    // 改变初始化vlaue值的类型，考虑到初始化取值时，value和对应的option值类型不同（e.g: Number 1 和 Strign 1）
+    // 该属性表示初始化value值是转化成String类型
+    initValueTypeToString: {
+      type: Boolean, 
+      default: false,
     }
   },
   data () {
@@ -1188,9 +1194,11 @@ export default {
       this.query = query;
     },
     modelToQuery() {
+      console.log('modelToQuery', this.model)
       if (!this.multiple && this.filterable && this.model !== undefined &&!this.showBottom) {
+        console.log(11111)
         this.findChild((child) => {   
-          if (this.model.toString() === child.value) {
+          if (this.model === child.value) {
               if (child.label) {
                   this.query = child.label.trim();
               } else if (child.searchLabel) {
@@ -1300,7 +1308,7 @@ export default {
     }
   },
   mounted () {
-    (typeof this.value === 'number'  && !this.multiple)&& (this.model = this.value.toString())
+    (this.initValueTypeToString && typeof this.value === 'number'  && !this.multiple)&& (this.model = this.value.toString())
 
     if (!this.multiple && this.setDefSelect && this.value == ''){
       this.isfirstSelect = true;
@@ -1320,7 +1328,7 @@ export default {
         });
       } else {
         this.findChild(child => {
-            child.selected = this.multiple ? findInx(this.model, v => v == child.value) > -1 : this.model === child.value;
+            child.selected = this.multiple ? findInx(this.model, v => v == child.value) > -1 : this.model == child.value;
         });
       }
       this.slotChange();

@@ -1,29 +1,54 @@
 <template>
-  <h-typefield placeholder="焦点事件" @on-blur="bChange" @on-focus="fChange" @on-keyup="kChange" @on-change="change" @on-enter="enter"></h-typefield>
+  <div>
+    {{model1}}
+         <h-select v-model="model1" style="width:300px" initValueTypeToString>
+        <h-option v-for="(item,index) in cityList"
+                  :value="item.value"
+                  :key="index">{{ item.label }}</h-option>
+      </h-select>
+  </div>
 </template>
 <script>
     export default {
         data () {
             return {
-                spinShow: true
+                cityList: [],
+                model1: 3
             }
         },
-        methods:{
-            bChange(){
-              console.log('输入框已失去焦点');
-            },
-            fChange(){
-              console.log('输入框已获得焦点');
-            },
-            kChange(val){
-              console.log('按钮事件已触发'+val);
-            },
-            change(val, oldval) {
-              console.log(val, oldval)
-            },
-            enter(){
-              console.log('enter')
-            }
+        created() {
+           this.cityList = [
+                    {
+                        value: 'beijing',
+                        label: '北京市'
+                    },
+                    {
+                        value: 'shanghai',
+                        label: '上海市'
+                    },
+                    {
+                        value: 'shenzhen',
+                        label: '深圳市'
+                    },
+                    {
+                        value: 'hangzhou',
+                        label: '杭州市'
+                    },
+                    {
+                        value: "1",
+                        label: '南京市'
+                    },
+                    {
+                        value: "2",
+                        label: '重庆市'
+                    },
+                    {
+                        value: '3',
+                        label: '天津市'
+                    }
+
+
+    ]
         }
     }
 </script>
