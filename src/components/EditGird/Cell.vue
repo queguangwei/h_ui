@@ -545,7 +545,7 @@ export default {
       // parent.$emit( 'on-editinput-enter', this.columnArea, this.columnIndex, this.index )
       this.$emit(
         'on-editinput-enter', 
-        this.columnArea,
+        this.columnText,
         this.columnIndex,
         this.index
       )
