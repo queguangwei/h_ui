@@ -72,7 +72,6 @@
                    @on-enter="typefieldEnter"
                    transfer
                    class="canEdit"></Typefield>     
-                   <!-- @on-enter="typefieldEnter" -->
       </template>
       <template v-if="renderType === 'card'">
         <Typefield v-model="columnCard"
@@ -669,7 +668,7 @@ export default {
     typefieldEnter() {
       this.$emit(
         'on-typefield-enter', 
-        this.columnArea,
+        this.columnText,
         this.columnIndex,
         this.index
       )

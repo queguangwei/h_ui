@@ -108,9 +108,9 @@ export default {
           fixed: "right",
           align: "center",
           width: 150,
-          render: (h, params) => {
-            return h("div", 'xiangqing');
-          }
+          // render: (h, params) => {
+          //   return h("div", 'xiangqing');
+          // }
         }
       ],
       data1: [
@@ -466,6 +466,10 @@ export default {
 
   mounted(){
     this.hiddenColIndex = this.columns.length -1
+    let me = this
+    me.columns.map((v, index) => {
+        me.$set(me.columns[index], 'hiddenCol', false)
+    })
   }
 };
 </script>
