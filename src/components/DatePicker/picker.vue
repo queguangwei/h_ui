@@ -521,6 +521,7 @@ export default {
       this.$refs.input.select()
     },
     handleBlur() {
+      console.log('handleBlur----')
       this.visible = false
       this.onSelectionModeChange(this.type)
 

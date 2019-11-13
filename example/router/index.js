@@ -78,6 +78,9 @@ import Schedule from '../views/Schedule.vue'
 import DownLoad from '../views/DownLoad.vue'
 
 import Test from '../views/Test.vue'
+import Test2 from '../views/Test2.vue'
+import Test3 from '../views/Test3.vue'
+import Test4 from '../views/Test4.vue'
 
 // const hyh = resolve=>{
 //     import(xxx.js).then(module=>{//import 实现异步加载
@@ -793,7 +796,22 @@ const router = new Router({
         name: 'Test',
         path: '/test',
         component: Test,
-      }
+      },
+      {
+        name: 'Test2',
+        path: '/test2',
+        component: Test2,
+      },
+      {
+        name: 'Test3',
+        path: '/test3',
+        component: Test3,
+      },
+      {
+        name: 'Test4',
+        path: '/test4',
+        component: Test4,
+      },
   ]
 })
 

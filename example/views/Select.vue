@@ -23,9 +23,9 @@
                 @on-focus="fo"
                 @on-blur="bl"
                 >
-        <h-option value="index">
-          <a href=http://www.google.com/>link1214121111111111111111111111</a>
-        </h-option>
+        <!-- <h-option value="index">
+          <a href=http://www.google.com/>1111111</a>
+        </h-option> -->
         <h-option v-for="(item,index) in cityList"
                   :value="item.value"
                   :key="index">{{ item.label }}</h-option>
@@ -600,7 +600,7 @@ export default {
       canPage: true,
       isComputed: false,
       cityList: [],
-      model34: '',
+      model34: 2,
       model44: [],
       mode224: '',
       model1: ['beijing'],
@@ -701,6 +701,10 @@ export default {
         {
           value: 'shenzhen',
           label: '深圳市'
+        },
+        {
+          value: '1111',
+          label: '1111'
         }
       ],
       cityList2: [

@@ -29,7 +29,7 @@
              :readonly="!editable || readonly"
              :name="name"
              :value="currentValue"
-             :title="type!=='password'?currentValue:null"
+             :title="type!=='password' && titleShow ? currentValue:null"
              :number="number"
              :autofocus="autofocus"
              :spellcheck="spellcheck"
@@ -247,6 +247,10 @@ export default {
         let num = parseInt(value);
         return num <= 32767 && num >= -1;
       }
+    },
+    titleShow: {
+      type: Boolean,
+      default: false,
     }
   },
   data() {

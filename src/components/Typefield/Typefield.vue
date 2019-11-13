@@ -14,6 +14,7 @@
       @blur="blurValue"
       @input="valChange"
       @change="valChange"
+      @keyup="keyup"
       @focus="focusValue($event)"
       ref="input"
     />
@@ -87,7 +88,8 @@ export default {
       currentValue: String(this.value),
       prepend: true,
       append: true,
-      viewValue: ""
+      viewValue: "",
+      formatValue: '',
     };
   },
   mixins: [Emitter, Locale],
@@ -365,13 +367,7 @@ export default {
         this.dispatch("FormItem", "on-form-change", val);
       });
     },
-    // keyup,focus,blur
-    blurValue(e) {
-      this.havefocused = false;
-      this.focused = false;
-      if (this.type == "money") {
-        this.tipShow = false;
-      }
+    formatVModel(e) {
       let val = this.inputValue ? this.inputValue.trim() : this.inputValue;
       if (val && val !== "") {
         if (!this.notFormat) {
@@ -389,10 +385,33 @@ export default {
           e.target.value = this.inputValue = val
         }
       }
+      return val;
+    },
+    // keyup,focus,blur
+    blurValue(e) {
+      this.havefocused = false
+      this.focused = false;
+      if (this.type == "money") this.tipShow = false;
+      let val = this.formatVModel(e)
+      
+      const isValueChange = this.formatValue !== val  // 判断format后数据是否变化
       // this.$refs.input.blur();
       this.$emit("input", this.cardFormatValue(val.replace(/,/g, '')))
-      this.$emit("on-blur", e);
-      this.dispatch("FormItem", "on-form-blur", val.replace(/,/g, ''))
+      this.$emit("on-blur", e, isValueChange);
+      isValueChange && this.$emit('on-change',val, this.formatValue)
+      this.dispatch("FormItem", "on-form-blur", val.replace(/,/g, ''));
+      this.formatValue = val  //val值赋值oldvalue, 存储 oldval值 ，用于新老val值对比。
+    },
+    keyup(e) {
+      if (e.keyCode === 13) {
+        if (this.type == "money") this.tipShow = false;
+        let val = this.formatVModel(e)
+        const isValueChange = this.formatValue !== val  // 判断format后数据是否变化
+        this.$emit("input", this.cardFormatValue(val.replace(/,/g, '')))
+        this.$emit('on-enter', e)
+        isValueChange && this.$emit('on-change',val, this.formatValue)
+        this.formatValue = val
+      } 
     },
     cardFormatValue(val) {
       if (!this.cardFormat && this.type == "cardNo") {
