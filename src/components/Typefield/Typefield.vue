@@ -395,22 +395,24 @@ export default {
       let val = this.formatVModel(e)
       
       const isValueChange = this.formatValue !== val  // 判断format后数据是否变化
+      const vModelValue = this.cardFormatValue(val.replace(/,/g, ''))
       // this.$refs.input.blur();
-      this.$emit("input", this.cardFormatValue(val.replace(/,/g, '')))
+      this.$emit("input", vModelValue)
       this.$emit("on-blur", e, isValueChange);
-      isValueChange && this.$emit('on-change',val, this.formatValue)
+      isValueChange && this.$emit('on-change',vModelValue, this.formatValue)
       this.dispatch("FormItem", "on-form-blur", val.replace(/,/g, ''));
-      this.formatValue = val  //val值赋值oldvalue, 存储 oldval值 ，用于新老val值对比。
+      this.formatValue = vModelValue  //val值赋值oldvalue, 存储 oldval值 ，用于新老val值对比。
     },
     keyup(e) {
       if (e.keyCode === 13) {
         if (this.type == "money") this.tipShow = false;
         let val = this.formatVModel(e)
         const isValueChange = this.formatValue !== val  // 判断format后数据是否变化
-        this.$emit("input", this.cardFormatValue(val.replace(/,/g, '')))
+        const vModelValue = this.cardFormatValue(val.replace(/,/g, ''))
+        this.$emit("input", vModelValue)
         this.$emit('on-enter', e)
-        isValueChange && this.$emit('on-change',val, this.formatValue)
-        this.formatValue = val
+        isValueChange && this.$emit('on-change',vModelValue, this.formatValue)
+        this.formatValue = vModelValue
       } 
     },
     cardFormatValue(val) {
