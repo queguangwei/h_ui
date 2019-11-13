@@ -17,7 +17,7 @@
     <h-page :total="100" show-total></h-page>
     <p>迷你型</p>
     <h-page :total="40" size="small"></h-page>
-    <h-page :total="40" size="small" show-elevator show-sizer></h-page>
+    <h-page :total="40" size="small" show-elevator show-sizer isLoadAll></h-page>
     <h-page :total="40" size="small" show-total></h-page>
     <p>简洁版</p>
     <h-page :current="2" :total="50" simple show-sizer showSizerLabel fastArrival></h-page>
