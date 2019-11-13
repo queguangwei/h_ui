@@ -1,7 +1,7 @@
 <template>
   <div>
     {{model1}}
-         <h-select v-model="model1" style="width:300px" initValueTypeToString>
+        <h-select v-model="model1" style="width:300px" initValueTypeToString>
         <h-option v-for="(item,index) in cityList"
                   :value="item.value"
                   :key="index">{{ item.label }}</h-option>

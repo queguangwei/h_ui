@@ -1194,9 +1194,7 @@ export default {
       this.query = query;
     },
     modelToQuery() {
-      console.log('modelToQuery', this.model)
       if (!this.multiple && this.filterable && this.model !== undefined &&!this.showBottom) {
-        console.log(11111)
         this.findChild((child) => {   
           if (this.model === child.value) {
               if (child.label) {
