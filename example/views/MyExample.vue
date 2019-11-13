@@ -76,7 +76,7 @@
           {{formValidate.stockCode}}
         </h-form-item>
         <h-form-item label="simpleSelect" prop="stockName" required>
-          <h-simple-select v-model="formValidate.stockName" class="curItemClass" :tabindex="2" filterable multiple >
+          <h-simple-select v-model="formValidate.stockName" class="curItemClass" :tabindex="11" filterable multiple >
             <h-select-block :data="bigData"></h-select-block>
           </h-simple-select>
         </h-form-item>

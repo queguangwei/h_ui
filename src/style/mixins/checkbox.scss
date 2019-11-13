@@ -222,6 +222,7 @@
     }
   }
   .#{$checkbox-prefix-cls}-large {
+    height: 16px;
     .#{$checkbox-prefix-cls}-indeterminate {
       .#{$checkbox-inner-prefix-cls}:after {
         width: 10px;
@@ -230,6 +231,7 @@
     }
   }
   .#{$checkbox-prefix-cls}-small {
+    height: 12px;
     .#{$checkbox-prefix-cls}-indeterminate {
       .#{$checkbox-inner-prefix-cls}:after {
         width: 6px;
@@ -241,8 +243,9 @@
   .#{$checkbox-prefix-cls}-wrapper {
     cursor: pointer;
     font-size: $font-size-small;
-    display: inline;
+    display: inline-block;
     margin-left: 3px;
+    line-height: 1;
     &-disabled {
       cursor: $cursor-disabled;
     }
