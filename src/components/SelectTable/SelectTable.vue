@@ -548,9 +548,11 @@ export default {
       if(this.filterable && this.multiple) {
         let style =  {}
         if(!this.isInputFocus && this.selectedMultiple.length !== 0) {
+          style.width = '1px'
           style.height = '1px'
           style.position = 'absolute'
-          style.bottom = 0
+          style.top = 0
+          style.right = 0
           style.opacity = 0
         }else {
           style.height =  '29px'
