@@ -668,7 +668,7 @@ export default {
     typefieldEnter() {
       this.$emit(
         'on-typefield-enter', 
-        this.columnText,
+        this.columnMoney,
         this.columnIndex,
         this.index
       )
