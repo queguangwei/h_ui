@@ -673,7 +673,8 @@ export default{
     },
     handleInputDelete() {
       if (this.multiple && this.model.length && this.query === '') {
-        this.removeTag(this.model.length - 1)
+        // 无匹配方法，故先注释
+        // this.removeTag(this.model.length - 1)
       }
     },
     handleKeydown(e) {
@@ -815,6 +816,8 @@ export default{
     },
     query(val) {
       let query = val || this.lastquery
+      // 输入框的长度需要与query同步增长--多选
+      this.inputLength = val.length * 5 + 20
       //  query改变时触发remote，兼容check选中后（lastquery有值）重复触发
       if (this.remote && this.remoteMethod && (!this.model || this.model.length == 0)) {
         this.remoteMethod(query)
