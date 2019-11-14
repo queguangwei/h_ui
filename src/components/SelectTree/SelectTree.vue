@@ -621,7 +621,7 @@ export default{
     },
     handleBlur() {
       // 单选，回填input值
-      if (this.query !== this.viewValue && !this.showCheckbox && !this.showBottom) {
+      if (this.viewValue && this.query !== this.viewValue && !this.showCheckbox && !this.showBottom) {
         if (this.query === '') {
           this.model = ''
           if (this.remote) {
