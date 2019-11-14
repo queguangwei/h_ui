@@ -156,6 +156,9 @@ export default {
     isNotValid: {
       type: Boolean,
       default: false
+    },
+    dependencies: {
+      type: Array
     }
   },
   data() {
@@ -336,7 +339,7 @@ export default {
        *}
        */
       // 是否对当前项校验，默认false-校验
-      if (this.isNotValid) return 
+      if (this.isNotValid) return
       let isString = is('String', rule)
       let isObj = is('Object', rule)
       if (isString) {
@@ -426,7 +429,7 @@ export default {
     },
     resetField(isResetReadonlyOrDisabled = false) {
       // 是否对当前项校验，默认false-校验
-      if (this.isNotValid) return 
+      if (this.isNotValid) return
       this.validateState = ''
       this.validateMessage = ''
       let model = this.form.model
@@ -466,7 +469,7 @@ export default {
      */
     resetValidate(cb) {
       // 是否对当前项重置，默认false-重置
-      if (this.isNotValid) return 
+      if (this.isNotValid) return
       this.validateState = ''
       this.validateMessage = ''
       if (cb) cb()
@@ -481,7 +484,7 @@ export default {
       if(this.form.showTipsOnlyFocus || window.isO45) {
         this.forcePass = true
       }
-      if (this.isNotValid) return 
+      if (this.isNotValid) return
       this.validate('blur', () => {})
     },
     onFieldChange(val) {
@@ -490,7 +493,7 @@ export default {
         return
       }
       if (this.isOnlyBlurRequire) return
-      if (this.isNotValid) return 
+      if (this.isNotValid) return
       this.validate('change', () => {})
     },
     commonRule(str) {

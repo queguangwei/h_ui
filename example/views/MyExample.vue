@@ -66,7 +66,7 @@
           </h-multi-select>
           {{formValidate.stockInfo}}
         </h-form-item>
-        <h-form-item label="stockCode" prop="stockCode" required>
+        <h-form-item label="stockCode" prop="stockCode" required >
           <h-single-select ref="stockCode" v-model="formValidate.stockCode" class="curItemClass"
                            remote :loading="isLoading" :remote-method="remoteMethod1" transfer autoPlacement
                            widthAdaption :width="200" :dropWidth="220" :maxDropWidth="250">
@@ -74,7 +74,7 @@
           </h-single-select>
           {{formValidate.stockCode}}
         </h-form-item>
-        <h-form-item label="simpleSelect" prop="stockName" required>
+        <h-form-item label="simpleSelect" prop="stockName" required dependencies="['stockInfo', 'stockCode']">
           <h-simple-select v-model="formValidate.stockName" class="curItemClass" :tabindex="11" filterable multiple >
             <h-select-block :data="bigData"></h-select-block>
           </h-simple-select>
