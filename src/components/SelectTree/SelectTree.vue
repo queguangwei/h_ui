@@ -621,6 +621,7 @@ export default{
     },
     handleBlur() {
       // 单选，回填input值
+      // 添加对viewValue是否为null 的判断
       if (this.viewValue && this.query !== this.viewValue && !this.showCheckbox && !this.showBottom) {
         if (this.query === '') {
           this.model = ''
