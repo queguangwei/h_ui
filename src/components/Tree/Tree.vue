@@ -384,8 +384,12 @@ export default {
             // 显示所有子节点
             node.children.forEach(item => {
               this.$set(item, 'hidden', false)
+              if (val == '') { // 下拉树依赖tree, 当搜索值为空时，需要显示所有的节点[遍历所有节点将hidden置为false]
+                secNode(val, item)
+              }
             })
-            resultList = resultList.concat(node.children)
+            // 搜索值不为空时，将当前搜索到的节点的子节点显示
+            if (val !== '') resultList = resultList.concat(node.children)
             return 
           }
         } else {
