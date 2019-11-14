@@ -366,6 +366,10 @@ export default {
       type: Boolean,
       default: false
     },
+    sortChangeIndex: {
+      type: Boolean,
+      default: false
+    },
     summationData: {
       type: Array,
       default: () => []
@@ -1280,6 +1284,12 @@ export default {
           this.rebuildData = this.sortData(this.rebuildData, type, index)
         }
       }
+//      if(this.sortChangeIndex) {
+//        for(let key in this.rebuildData){
+//          this.rebuildData[key]._index = parseInt(key)
+//        }
+//      }
+
       this.cloneColumns[index]._sortType = type
 
       this.$emit('on-sort-change', {

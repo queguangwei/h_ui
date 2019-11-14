@@ -641,12 +641,11 @@ export default {
     },
     typefieldBlur() {
       this.syncRebuildData()
-      this.$emit(
-        'on-typefield-blur',
-        this.columnMoneyVal,
-        this.columnIndex,
-        this.index
-      )
+      let index = this.index
+      if(this.$parent.$parent.$parent.sortChangeIndex) {
+        index = this.naturalIndex
+      }
+      this.$emit('on-typefield-blur', this.columnMoneyVal, this.columnIndex, index)
     },
     /**
      * 同步单元格编辑内容到rebuildData

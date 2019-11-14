@@ -164,7 +164,7 @@ export default {
       const status = !this.isSelectAll;
       if (this.$parent.typeName == "treeGird"){
         this.$parent.selectAllTreeNode(status)
-      } 
+      }
       else {
         this.$parent.selectAll(status);
       }
@@ -182,7 +182,7 @@ export default {
     },
     handleSort (index, type) {
       if (this.columns[index]._sortType === type) {
-          type = 'normal';
+        type = 'normal';
       }
       let _index = this.columns[index]._index;
       this.$parent.handleSort(_index, type);
