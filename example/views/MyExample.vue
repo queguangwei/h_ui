@@ -260,6 +260,8 @@ for(let i=0;i<2000;i++){
 }
 var num = 0;
 
+
+
 import { enterHandler1 } from "../../src/util/tools.js"
 export default {
   data () {
@@ -487,6 +489,16 @@ export default {
           title: '城市',
           key: 'city',
           render: (h, params) => {
+//            return h('h-select',{
+//              props:{
+//                filterable: true,
+//                transfer: true,
+//              }
+//            },[h('h-option', {
+//              props: {
+//                value: '上海'
+//              }
+//            }, '上海')])
             return h('h-simple-select', {
                 props: {
                   filterable: true,

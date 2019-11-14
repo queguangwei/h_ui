@@ -19,19 +19,21 @@
                  :key="index">
           </colgroup>
           <thead>
-            <tr v-if="multiLevel"
-                v-for="(colItem,inx) in multiData"
-                :key="inx">
-              <th v-for="(multi, index) in colItem"
-                  :colspan="multi.cols||1"
-                  :rowspan="multi.rows||1"
-                  :key="index"
-                  :class="aliCls(multi)">
-                <div :class="[prefixCls+'-cell']">
-                  <span>{{multi.title}}</span>
-                </div>
-              </th>
-            </tr>
+            <template v-if="multiLevel">
+              <tr
+                  v-for="(colItem,inx) in multiData"
+                  :key="inx">
+                <th v-for="(multi, index) in colItem"
+                    :colspan="multi.cols||1"
+                    :rowspan="multi.rows||1"
+                    :key="index"
+                    :class="aliCls(multi)">
+                  <div :class="[prefixCls+'-cell']">
+                    <span>{{multi.title}}</span>
+                  </div>
+                </th>
+              </tr>
+            </template>
             <tr class="cur-th">
               <th v-for="(column, index) in cloneColumns"
                   :key="index"
@@ -303,7 +305,7 @@
 <script>
 import renderHeader from './header'
 import Spin from '../Spin/Spin.vue'
-import { oneOf, getStyle, deepCopy, getScrollBarSize, findInx, getBarBottomS, addClass, removeClass, typeOf, getScrollBarSizeHeight, debounceWithImmediate} from '../../util/tools'
+import { oneOf, getStyle, deepCopy, getScrollBarSize, findInx, getBarBottomS, addClass, removeClass, typeOf, getScrollBarSizeHeight, debounceWithImmediate, deepCopySome} from '../../util/tools'
 import { on, off } from '../../util/dom'
 import Locale from '../../mixins/locale'
 import Mixin from './mixin'
@@ -313,6 +315,7 @@ import TableTr from './Table-tr.vue'
 import TableCell from './Table-cell.vue'
 import Cell from './Cell.vue'
 import Checkbox from '../Checkbox/Checkbox.vue'
+import elementResizeDetectorMaker from "element-resize-detector";
 const prefixCls = 'h-table'
 let rowKey = 1
 let columnKey = 1
@@ -2007,6 +2010,8 @@ export default {
     handleBodyScroll(event) {
       // 修复：拖动滚动条时，无法隐藏显示过滤项
       if (this.curShowFiltersIdx !== null) this.cloneColumns[this.curShowFiltersIdx]._filterVisible = false
+      // 性能优化，横向滚动不更新数据
+      if (event.target.scrolltop === this.lastScrollTop) return
       if (window.requestAnimationFrame) { // 该特性有浏览器限制
         this.updateVisibleAnimate(event)
       } else {
@@ -2026,6 +2031,8 @@ export default {
         )
         if (oldBottomNum !== null && this.buttomNum !== null) {
           this.$emit('on-scroll', this.buttomNum, scrolltop !== this.lastScrollTop ? 'y' : 'x')
+          // 性能优化，横向滚动不更新数据
+          if (scrolltop === this.lastScrollTop) return
         }
         this.lastScrollTop = scrolltop
         let curtop = Math.floor(scrolltop / this.itemHeight) * this.itemHeight
@@ -2229,7 +2236,9 @@ export default {
     makeObjData() {
       let data = {}
       this.data.forEach((row, index) => {
-        const newRow = deepCopy(row) // todo 直接替换
+        // const newRow = deepCopy(row) // todo 直接替换
+        // 仅复制_index,_rowKey属性
+        const newRow = deepCopySome(row, ['_index','_rowKey'])
         newRow._isHover = false
         if (newRow._disabled) {
           newRow._isDisabled = newRow._disabled

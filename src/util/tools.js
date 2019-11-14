@@ -376,6 +376,30 @@ function deepCopyEx(data, exAttr) {
   return o
 }
 export { deepCopyEx }
+
+function deepCopySome(data, someAttr) {
+  const t = typeOf(data)
+  let o
+  if (t === 'array') {
+    o = []
+  } else if (t === 'object') {
+    o = {}
+  } else {
+    return data
+  }
+
+  if (t === 'array') {
+    for (let i = 0; i < data.length; i++) {
+      o.push(deepCopy(data[i]))
+    }
+  } else if (t === 'object') {
+    for (let i in data) {
+      if (someAttr.indexOf(i) >= 0) o[i] = deepCopySome(data[i], someAttr)
+    }
+  }
+  return o
+}
+export { deepCopySome }
 // deepCopy
 function deepCopy(data) {
   const t = typeOf(data)

@@ -18,7 +18,7 @@ $tag-close-prefix-cls: h-icon-ios-close-empty;
     cursor: pointer;
     //transition: all @transition-time @ease-in-out;
     > i {
-        display: inline-block;
+        display: inline;
         font-size: $tag-font-size;
         margin-left: $tag-i-margin-left;
     }
