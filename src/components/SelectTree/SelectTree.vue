@@ -79,6 +79,7 @@
                   @on-select-change="selectChange"
                   @on-check-change="checkChange"
                   @on-toggle-expand="toggleExpand"
+                  :filter-node-method="handleTreeFilter" 
                   v-show="remote && !loading || !remote"
                   isFormSelect
                   :render="render">
@@ -235,7 +236,11 @@ export default{
       type:Boolean,
       default:false
     },
-    render: Function
+    render: Function,
+    isTreeFilter: { // 是否进行下拉树过滤，不能与remote同时使用,需配置filterable,placement=bottom
+      type:Boolean,
+      default:false
+    }
   },
   data(){
     return{
@@ -368,6 +373,10 @@ export default{
     }
   },
   methods:{
+    /* 下拉树输入时进行过滤 */
+    handleTreeFilter (val,data,node) {
+      return val == '' || node.title.indexOf(val)!==-1
+    },
     handleclick(e){
       e.stopPropagation()
     },
@@ -455,6 +464,8 @@ export default{
       return idx
     },
     nodeSelect(node) {
+      // 如果node 不存在，直接返回（当前节点disable的情况）
+      if (!node) return 
       if (this.showCheckbox) {
         this.$refs.tree.handleCheck({
           checked: !node.checked,
@@ -807,6 +818,8 @@ export default{
       //  query改变时触发remote，兼容check选中后（lastquery有值）重复触发
       if (this.remote && this.remoteMethod && (!this.model || this.model.length == 0)) {
         this.remoteMethod(query)
+      } else if (this.isTreeFilter) {
+        this.$refs.tree.filter(val, true)
       }
       this.$nextTick(()=>{
         let firstItem = this.$refs.tree.$el.querySelectorAll('.h-tree-title-filterable')[0]
