@@ -20,14 +20,14 @@
     <!--</h-row>-->
     <br>
     <h1>tabs</h1>
-    <!--<h-tabs ref="remove" type="line" @on-tab-remove="handleTabRemove1" showArrow arrowOnRight closable :iconLeftClassName="'icon-left icon-arrow'">-->
-      <!--<h-spin size="large"></h-spin>-->
-      <!--<h-tab-pane v-for="tab in tabs" :key="tab" :name="'标签' + tab" :label="'标签' + tab">-->
-        <!--标签{{ tab }}的内容-->
-      <!--</h-tab-pane>-->
-    <!--</h-tabs>-->
-    <!--<h-button type="ghost" @click="handleTabsAdd(true)" size="small" slot="extra">增加</h-button>-->
-    <!--<h-button type="ghost" @click="handleTabsAdd(false)" size="small" slot="extra">减少</h-button>-->
+    <h-tabs ref="remove" type="line" @on-tab-remove="handleTabRemove1" showArrow arrowOnRight closable :iconLeftClassName="'icon-left icon-arrow'">
+      <h-spin size="large"></h-spin>
+      <h-tab-pane v-for="tab in tabs" :key="tab" :name="'标签' + tab" :label="'标签' + tab">
+        标签{{ tab }}的内容
+      </h-tab-pane>
+    </h-tabs>
+    <h-button type="ghost" @click="handleTabsAdd(true)" size="small" slot="extra">增加</h-button>
+    <h-button type="ghost" @click="handleTabsAdd(false)" size="small" slot="extra">减少</h-button>
     <br>
     <h1>buttonGroup</h1>
     <h-button-group>
@@ -69,9 +69,8 @@
         <h-form-item label="stockCode" prop="stockCode" required>
           <h-single-select ref="stockCode" v-model="formValidate.stockCode" class="curItemClass"
                            remote :loading="isLoading" :remote-method="remoteMethod1" transfer autoPlacement
-                           widthAdaption :width="200" :dropWidth="220" :maxDropWidth="250"
-                           @on-keydown="handlekeydown" @on-change="handlevaluechange">
-            <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth" @on-scroll="onscroll"></h-select-block>
+                           widthAdaption :width="200" :dropWidth="220" :maxDropWidth="250">
+            <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
           </h-single-select>
           {{formValidate.stockCode}}
         </h-form-item>
@@ -81,7 +80,7 @@
           </h-simple-select>
         </h-form-item>
         <h-form-item label="select" prop="city" required>
-          <h-select v-model="formValidate.city" class="curItemClass" filterable multiple transfer @on-keyup="selectKeyup">
+          <h-select v-model="formValidate.city" class="curItemClass" filterable multiple transfer>
             <h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>
           </h-select>
         </h-form-item>
@@ -260,11 +259,9 @@ for(let i=0;i<2000;i++){
 }
 var num = 0;
 
-
-
-import { enterHandler1 } from "../../src/util/tools.js"
+import { enterHandler1 } from '../../src/util/tools.js'
 export default {
-  data () {
+  data() {
     const validateMoney = (rule, value, callback) => {
       console.log('face_balance validator', value)
       if (value === '') {
@@ -323,14 +320,14 @@ export default {
       tabs:15,
       value:'value0',
       cityList: [
-      {value: 'beijing', label: '北京市'},
-      {value: 'shanghai', label: '上海市'},
-      {value: 'shenzhen', label: '深圳市'},
-      {value: 'hangzhou', label: '杭州市'},
-      {value: 'nanjing', label: '南京市'},
-      {value: 'chongqing', label: '重庆市'},
-      {value: 'chengdu', label: '成都'},
-      {value: 'xiamen', label: '厦门'},
+        {value: 'beijing', label: '北京市'},
+        {value: 'shanghai', label: '上海市'},
+        {value: 'shenzhen', label: '深圳市'},
+        {value: 'hangzhou', label: '杭州市'},
+        {value: 'nanjing', label: '南京市'},
+        {value: 'chongqing', label: '重庆市'},
+        {value: 'chengdu', label: '成都'},
+        {value: 'xiamen', label: '厦门'},
         {value: '379134', label: '内蒙古自治区农联社'},
         {value: '382217', label: '广州证券王炽东'},
         {value: '380870', label: '广州证券穗利5号'},
@@ -345,7 +342,7 @@ export default {
         {value: '382297', label: '广州证券红棉安心回报半年盈6'},
       ],
       formValidate: {
-        stockCode: "",
+        stockCode: '',
         stockInfo: '',
         stockName: [],
         selecttree: '',
@@ -479,7 +476,19 @@ export default {
         {
           title: '年龄',
           key: 'age',
-          sortable: true
+          sortable: true,
+          render: (h, params) => {
+            return h('h-select',{
+              props:{
+                filterable: true,
+                transfer: true,
+              }
+            },[h('h-option', {
+              props: {
+                value: params.row.age
+              }
+            }, params.row.age)])
+          }
         },
         {
           title: '地址',
@@ -489,28 +498,18 @@ export default {
           title: '城市',
           key: 'city',
           render: (h, params) => {
-//            return h('h-select',{
-//              props:{
-//                filterable: true,
-//                transfer: true,
-//              }
-//            },[h('h-option', {
-//              props: {
-//                value: '上海'
-//              }
-//            }, '上海')])
             return h('h-simple-select', {
-                props: {
-                  filterable: true,
-                  transfer: true,
-                  autoPlacement: true
-                }
-              },
-              [h('h-select-block', {
-                props: {
-                  data: this.cityList
-                }
-              })])
+              props: {
+                filterable: true,
+                transfer: true,
+                autoPlacement: true
+              }
+            },
+            [h('h-select-block', {
+              props: {
+                data: this.cityList
+              }
+            })])
           }
         },
         {
@@ -814,17 +813,10 @@ export default {
     }
   },
   methods: {
-    onscroll(x,y,z) {
-//        console.log(x)
-//        console.log(y)
-//        console.log(z)
-
-    },
     handleShowBox() {
       this.showBox = true
 //        this.curValue = 'value1'
       this.$refs.singlesel.focus()
-
     },
     remoteMethod(query, done) {
       let reqTime = new Date().getTime();
@@ -862,10 +854,6 @@ export default {
         this.$refs.select.blur();
       }
     },
-    selectKeyup(val, e) {
-//        console.log(val)
-//        console.log(e)
-    },
     handleTabRemove1(name){
       console.log(this.tabs)
     },
@@ -882,9 +870,7 @@ export default {
       console.log(e)
     },
     scrollchange(x, y, z) {
-//        console.log(x)
-//        console.log(y)
-//        console.log(z)
+      console.log(x, y, z)
     },
     handleSubmit(name) {
       this.$refs[name].validate((valid) => {
@@ -895,7 +881,7 @@ export default {
         }
       })
     },
-    handleReset (name) {
+    handleReset(name) {
 //      this.$refs.single.clearSingleSelect()
 //      this.$refs.datepicker.fold()
       this.$refs[name].resetFields();
@@ -920,20 +906,12 @@ export default {
       }
       done()
     },
-    handlekeydown(val, e) {
-//      console.log(val)
-//      console.log(e)
-    },
-    handlevaluechange(val) {
-      console.log('v-model:::'+this.formValidate.stockCode)
-      console.log('onchange:::'+val)
-    },
     changeShow(){
       this.$refs.formValidate.resetFields()
       this.show=true
 //      this.formValidate.stockCode = 'value1'
       this.$refs.formValidate.firstNodeFocused()
-      this.formValidate.stockInfo = '1,11'
+//      this.formValidate.stockInfo = '1,11'
       this.firstValue = ['child1-1-1','child1-1-2','child1-2-1']
     },
     focusFirst() {
