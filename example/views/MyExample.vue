@@ -74,7 +74,7 @@
           </h-single-select>
           {{formValidate.stockCode}}
         </h-form-item>
-        <h-form-item label="simpleSelect" prop="stockName" required dependencies="['stockInfo', 'stockCode']">
+        <h-form-item label="simpleSelect" prop="stockName" required :dependencies="['stockInfo', 'stockCode']">
           <h-simple-select v-model="formValidate.stockName" class="curItemClass" :tabindex="11" filterable multiple >
             <h-select-block :data="bigData"></h-select-block>
           </h-simple-select>

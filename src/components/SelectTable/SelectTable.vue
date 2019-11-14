@@ -1158,10 +1158,12 @@ export default {
       e.target.selectionEnd = this.query.length;
       this.isInputFocus = true
       this.$emit("on-focus");
+      this.dispatch('FormItem', 'on-form-focus')
     },
     handleBlur() {
       this.isInputFocus = false
       this.$emit("on-blur");
+      this.dispatch('FormItem', 'on-form-blur')
     },
     resetInputState(e) {
       this.inputLength = this.$refs.input.value.length * 12 + 56;

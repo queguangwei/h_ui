@@ -376,14 +376,12 @@ export default {
       }
       // --自定义封装规则
       formRules = formRules ? formRules[this.prop] : []
-
       return []
         .concat(this.reqRules)
         .concat(cuRules || selfRules || formRules || [])
     },
     getFilteredRule(trigger) {
       const rules = this.getRules()
-
       return rules.filter(
         rule => !rule.trigger || rule.trigger.indexOf(trigger) !== -1
       )
@@ -475,6 +473,12 @@ export default {
       if (cb) cb()
     },
     onFieldFocus() {
+      if(this.dependencies != undefined) {
+        for(let key of this.dependencies) {
+          console.log(key)
+        }
+
+      }
       if(this.form.showTipsOnlyFocus || window.isO45) {
         this.forcePass = false
         this.dispatch('Form', 'on-form-item-hide-tip', this)
