@@ -21,7 +21,12 @@
     <br>
     <h1>tabs</h1>
     <h-tabs ref="remove" type="line" @on-tab-remove="handleTabRemove1" showArrow arrowOnRight closable :iconLeftClassName="'icon-left icon-arrow'">
-      <h-spin size="large"></h-spin>
+      <!--<h-tab-pane label="macOS" icon="social-apple">标签一的内容</h-tab-pane>-->
+      <!--<h-tab-pane label="Windows" icon="social-windows">标签二的内容</h-tab-pane>-->
+      <!--<h-tab-pane label="Google" icon="social-googleplus">标签二的内容</h-tab-pane>-->
+      <!--<h-tab-pane label="Card" icon="card">标签三的内容</h-tab-pane>-->
+      <!--<h-tab-pane label="Close" icon="close">标签三的内容</h-tab-pane>-->
+      <!--<h-tab-pane label="Laptop" icon="laptop">标签三的内容</h-tab-pane>-->
       <h-tab-pane v-for="tab in tabs" :key="tab" :name="'标签' + tab" :label="'标签' + tab">
         标签{{ tab }}的内容
       </h-tab-pane>

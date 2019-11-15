@@ -55,7 +55,7 @@ $tabs-prefix-cls: "#{$css-prefix}tabs";
   &-enter{
     float: right;
     height: $tabs-enter-height;
-    padding:$tabs-enter-padding; 
+    padding:$tabs-enter-padding;
   }
   &-return,&-enter:hover{
     cursor: pointer;
@@ -105,7 +105,7 @@ $tabs-prefix-cls: "#{$css-prefix}tabs";
       display: inline-block;
       height:$tabs-tab-height;
       padding:$tabs-tab-padding;
-      margin-right:$tabs-tab-margin-right;
+      margin:$tabs-tab-margin;
       box-sizing: border-box;
       cursor: pointer;
       text-decoration: none;
@@ -137,7 +137,7 @@ $tabs-prefix-cls: "#{$css-prefix}tabs";
     .#{$tabs-prefix-cls}-tab-disabled {
       pointer-events: none;
       cursor: default;
-      
+
       font-family: MicrosoftYaHei;
       font-size: $tabs-tab-font-size;
       color: $tabs-tab-disabled-color;
