@@ -474,6 +474,7 @@ export default {
     },
     onFieldFocus() {
       if(this.dependencies != undefined) {
+        this.dispatch('Form', '', this.dependencies)
         for(let key of this.dependencies) {
           console.log(key)
         }

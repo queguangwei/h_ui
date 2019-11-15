@@ -1024,7 +1024,6 @@ export default {
               col => !col._isChecked
             )
           }
-
           const selection = _this.getGroupSelection()
           _this.$emit(
             status ? 'on-select' : 'on-select-cancel',
@@ -1040,16 +1039,13 @@ export default {
             }
           }
           const status = !data._isChecked
-
           if (!this.isGroupSeparated) {
             //如果父子行不是分离的，则判断父亲是否被选中
             data.item.forEach((col, inx) => {
               col._isChecked = status
             })
           }
-
           _this.objData[_index]._isChecked = status
-
           const selection = _this.getGroupSelection()
           _this.$emit(
             status ? 'on-select' : 'on-select-cancel',
@@ -1071,7 +1067,8 @@ export default {
         this.$emit(
           status ? 'on-select' : 'on-select-cancel',
           selection,
-          JSON.parse(JSON.stringify(this.cloneData[_index]))
+          JSON.parse(JSON.stringify(this.cloneData[_index])),
+          _index
         )
         this.$emit(
           'on-selection-change',
@@ -1284,6 +1281,7 @@ export default {
           this.rebuildData = this.sortData(this.rebuildData, type, index)
         }
       }
+
 //      if(this.sortChangeIndex) {
 //        for(let key in this.rebuildData){
 //          this.rebuildData[key]._index = parseInt(key)
@@ -1291,11 +1289,8 @@ export default {
 //      }
 
       this.cloneColumns[index]._sortType = type
-
       this.$emit('on-sort-change', {
-        column: JSON.parse(
-          JSON.stringify(this.columns[this.cloneColumns[index]._index])
-        ),
+        column: JSON.parse(JSON.stringify(this.columns[this.cloneColumns[index]._index])),
         key: key,
         order: type
       })

@@ -352,7 +352,11 @@ export default {
       this.showSlot = true
     },
     toggleSelect() {
-      this.parent.toggleSelect(this.index)
+      let index = this.index
+      if(this.$parent.$parent.$parent.sortChangeIndex) {
+        index = this.naturalIndex
+      }
+      this.parent.toggleSelect(index)
     },
     toggleExpand(e) {
       if (this.typeName == 'groupTable') {
