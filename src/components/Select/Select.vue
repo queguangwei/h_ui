@@ -1138,6 +1138,7 @@ export default {
     handleFocus() {
       this.isInputFocus = true
       this.$emit('on-focus')
+      this.dispatch('FormItem', 'on-form-focus')
     },
     handleBlur() {
       if (this.multiple && this.filterable) this.$refs.reference.scrollTop = 0

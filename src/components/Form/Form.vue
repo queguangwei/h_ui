@@ -291,6 +291,22 @@ export default {
       })
       thisField.resetErrorTip()
     })
+    this.$on('on-form-item-focus-validate', dependencies => {
+      let dep = dependencies.split(',')
+      let upss = []
+      for(let key of dep) {
+        this.fields.forEach(field => {
+          if(key === field.prop) {
+            field.validate('', errors => {
+              if (errors) {
+                upss.push(field.prop)
+              }
+            })
+          }
+        })
+      }
+      this.$emit('on-check-failed', upss)
+    })
     if (this.placement != 'null') {
       this.setPlacement()
     }

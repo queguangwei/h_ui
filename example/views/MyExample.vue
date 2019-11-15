@@ -58,7 +58,7 @@
       </h-stock-select>
     </h-msg-box>
     <h-msg-box v-model="show" escClose :mask-closable="false" isOriginal maximize width="600" height="400">
-      <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80" showTipsOnlyFocus>
+      <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80" showTipsOnlyFocus @on-check-failed="onCheckFailed">
 
         <h-form-item label="multiSelect" prop="stockInfo" required>
           <h-multi-select ref="stockInfo" class="curItemClass" v-model="formValidate.stockInfo">
@@ -919,6 +919,9 @@ export default {
 //        this.$refs.stockCode.focus()
       this.formValidate.stockInfo = '1,11'
       this.$refs.stockInfo.focus()
+    },
+    onCheckFailed(arr) {
+      console.log(arr)
     },
     submit() {
       let _this = this

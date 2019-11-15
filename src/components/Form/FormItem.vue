@@ -474,11 +474,7 @@ export default {
     },
     onFieldFocus() {
       if(this.dependencies != undefined) {
-        this.dispatch('Form', '', this.dependencies)
-        for(let key of this.dependencies) {
-          console.log(key)
-        }
-
+        this.dispatch('Form', 'on-form-item-focus-validate', this.dependencies.join(','))
       }
       if(this.form.showTipsOnlyFocus || window.isO45) {
         this.forcePass = false
