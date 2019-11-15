@@ -482,7 +482,9 @@ export default {
         this.forcePass = true
       }
       if (this.isNotValid) return 
-      this.validate('blur', () => {})
+      this.$nextTick(() => {
+        this.validate('blur', () => {})
+      })
     },
     onFieldChange(val) {
       if (this.validateDisabled) {
