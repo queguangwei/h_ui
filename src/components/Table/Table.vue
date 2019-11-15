@@ -1464,7 +1464,8 @@ export default {
       this.$emit(
         'on-expand',
         JSON.parse(JSON.stringify(this.cloneData[_index])),
-        status
+        status,
+        _index
       )
       this.$nextTick(() => {
         if (this.$refs.fixedRightBody) {

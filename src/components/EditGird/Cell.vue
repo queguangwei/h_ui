@@ -33,12 +33,15 @@
       </template>
       <template v-if="renderType === 'text'">
         <h-input v-model="columnText"
+                  ref="input-edit-gird"
                  :placeholder="column.placeholder"
                  :icon="column.icon"
                  :filterRE="column.filterRE"
                  class="canEdit"
                  @on-change="editinputChange"
-                 @on-blur="editinputBlur"></h-input>
+                 @on-blur="editinputBlur"
+                 @on-enter="editinputEnter"
+                 ></h-input>
       </template>
       <template v-if="renderType === 'textArea'">
         <textarea :value="columnArea"
@@ -66,8 +69,9 @@
                    :immeDivided="column.immeDivided"
                    @input="typefieldChange"
                    @on-blur="typefieldBlur"
+                   @on-enter="typefieldEnter"
                    transfer
-                   class="canEdit"></Typefield>
+                   class="canEdit"></Typefield>     
       </template>
       <template v-if="renderType === 'card'">
         <Typefield v-model="columnCard"
@@ -201,7 +205,8 @@ import {
   getHMS,
   typeOf,
   cutNum,
-  divideNum
+  divideNum,
+  findComponentParent
 } from '../../util/tools.js'
 import Emitter from '../../mixins/emitter'
 
@@ -336,6 +341,7 @@ export default {
     }
   },
   methods: {
+    // test() {console.log('test')},
     handleClose() {
       if (this.showEditInput || this.validateState == 'error') return
       if (
@@ -532,6 +538,19 @@ export default {
         this.index
       )
     },
+    editinputEnter() {
+      // let parent= findComponentParent(this, 'EditGird')
+      // console.log('parentFormItem---->', parent)
+      // parent.$emit( 'on-editinput-enter', this.columnArea, this.columnIndex, this.index )
+      this.$emit(
+        'on-editinput-enter', 
+        this.columnText,
+        this.columnIndex,
+        this.index
+      )
+      this.renderType = 'normal'
+      this.editinputBlur()
+    },
     editAreaChange(event) {
       let value = event.target.value
       if (this.column.filterRE) {
@@ -645,6 +664,16 @@ export default {
         this.columnIndex,
         this.index
       )
+    },
+    typefieldEnter() {
+      this.$emit(
+        'on-typefield-enter', 
+        this.columnMoney,
+        this.columnIndex,
+        this.index
+      )
+      this.renderType = 'normal'
+      this.typefieldBlur()
     },
     /**
      * 同步单元格编辑内容到rebuildData
