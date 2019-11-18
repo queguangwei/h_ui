@@ -660,7 +660,10 @@ export default {
           let ind = curlabel.indexOf(' ')
           curlabel = curlabel.substring(0, ind)
         }else {
-//          this.query = curlabel
+          this.selectToChangeQuery = true
+          this.$nextTick(() => {
+            this.query = curlabel
+          })
         }
         this.selected = curlabel
         //o45 证券代码控件 模糊输入，不匹配下拉项保留输入值
