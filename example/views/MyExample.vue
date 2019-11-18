@@ -979,9 +979,10 @@ export default {
       console.log(status)
     },
     on_select(selection, row, index) {
-      console.log(index)
+      console.log('on_select selection:::', selection)
+      console.log('on_select index:::', index)
       this.$nextTick(() => {
-        this.$refs.repoEditGrid.toggleSelect(0)
+//        this.$refs.repoEditGrid.cancelSelect(0)
       })
     },
     on_money_blur(data, x, y) {

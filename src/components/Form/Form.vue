@@ -215,7 +215,6 @@ export default {
         }
         this.changeObj[item] = status
       }
-      // console.log('this.fields------>', this.fields)
       this.fields.forEach(col => {
         col.modeChanged = this.changeObj[col.prop]
       })

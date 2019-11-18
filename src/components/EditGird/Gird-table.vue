@@ -1009,6 +1009,10 @@ export default {
       }
       return JSON.parse(JSON.stringify(groupSelection))
     },
+    cancelSelect(index) {
+      console.log(index)
+      console.log(this.objData)
+    },
     toggleSelect(_index) {
       let _this = this
       if (_this.typeName == 'groupTable') {
@@ -1281,12 +1285,42 @@ export default {
           this.rebuildData = this.sortData(this.rebuildData, type, index)
         }
       }
-
-//      if(this.sortChangeIndex) {
+      console.log(this.rebuildData)
+      // 重新排序objData否则排序后selection勾选位置不正确
+      console.log(this.objData)
+      if(this.sortChangeIndex) {
 //        for(let key in this.rebuildData){
 //          this.rebuildData[key]._index = parseInt(key)
 //        }
-//      }
+        let data = {}
+        this.rebuildData.forEach((row, index) => {
+          const newRow = deepCopy(row)
+            newRow._isHover = false
+            if (newRow._disabled) {
+              newRow._isDisabled = newRow._disabled
+            } else {
+              newRow._isDisabled = false
+            }
+            if (newRow._checked) {
+              newRow._isChecked = newRow._checked
+            } else {
+              newRow._isChecked = false
+            }
+            if (newRow.expanded) {
+              newRow._isExpanded = newRow.expanded
+            } else {
+              newRow._isExpanded = false
+            }
+            if (newRow._highlight) {
+              newRow._isHighlight = newRow._highlight
+            } else {
+              newRow._isHighlight = false
+            }
+            data[index] = newRow
+
+        })
+        return data
+      }
 
       this.cloneColumns[index]._sortType = type
       this.$emit('on-sort-change', {
