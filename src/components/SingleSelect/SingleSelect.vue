@@ -139,7 +139,6 @@ export default {
       this.updateSingleSelected()
     },
     selected(val) {
-      debugger
       this.$emit('input', this.model)
       this.$emit('on-change', this.model)
       if (!this.isQuerySelect) {// 选中内容是点选而非模糊匹配到的
@@ -153,7 +152,6 @@ export default {
       this.setSingleSelect()
     },
     query(val) {
-      debugger
       if(val === '' ) {
 //        this.$emit('input', val)
         this.$emit('on-change', val)
@@ -303,7 +301,6 @@ export default {
       this.fold()
       if (this.isInputFocus) {
         let flag = false
-        debugger
         if (this.model === '' && this.query !== '') {
           // 先选值，左右键切换，再删除一个字符仍然有匹配项时
           for(let i in this.availableOptions) {
@@ -613,7 +610,6 @@ export default {
       }
     },
     setSingleSelect() {
-      debugger
       let curlabel = ''
       let index = 0
       //焦点在输入框内

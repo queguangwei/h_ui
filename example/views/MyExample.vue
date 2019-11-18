@@ -188,7 +188,7 @@
     <h1>editGird</h1>
     <h-edit-gird ref="repoEditGrid" border height="400" size="small" showEditInput sortChangeIndex
                  :columns="columnsEdit" :data="dataEdit" :disabled-hover="true" :highlight-row="true"
-                 @on-money-blur="on_money_blur" @on-select="on_select">
+                 @on-money-blur="on_money_blur" @on-select="on_select" @on-select-cancel="on_select_cancel">
     </h-edit-gird>
   </div>
 </template>
@@ -982,8 +982,12 @@ export default {
       console.log('on_select selection:::', selection)
       console.log('on_select index:::', index)
       this.$nextTick(() => {
-//        this.$refs.repoEditGrid.cancelSelect(0)
+        this.$refs.repoEditGrid.cancelSelect(0)
       })
+    },
+    on_select_cancel(selection, row, index) {
+      console.log('on_select_cancel selection:::', selection)
+      console.log('on_select_cancel index:::', index)
     },
     on_money_blur(data, x, y) {
       console.log(data, x, y)

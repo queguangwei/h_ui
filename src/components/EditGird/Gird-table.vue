@@ -980,14 +980,21 @@ export default {
       for (let i in this.objData) {
         if (this.objData[i]._isChecked) selectionIndexes.push(parseInt(i))
       }
-      return str != 'transfer'
-        ? JSON.parse(
-          JSON.stringify(
-            this.cloneData.filter(
+      if(this.sortChangeIndex) {
+        return str != 'transfer'
+          ? JSON.parse(JSON.stringify(
+            this.rebuildData.filter(
               (data, index) => selectionIndexes.indexOf(index) > -1
             )
+          ))
+          : selectionIndexes
+      }
+      return str != 'transfer'
+        ? JSON.parse(JSON.stringify(
+          this.cloneData.filter(
+            (data, index) => selectionIndexes.indexOf(index) > -1
           )
-        )
+        ))
         : selectionIndexes
     },
     getGroupSelection() {
@@ -1010,8 +1017,10 @@ export default {
       return JSON.parse(JSON.stringify(groupSelection))
     },
     cancelSelect(index) {
-      console.log(index)
-      console.log(this.objData)
+      this.objData[index]._isChecked = false
+      const selection = this.getSelection()
+      this.$emit('on-select-cancel',
+        selection, JSON.parse(JSON.stringify(this.cloneData[index])), index)
     },
     toggleSelect(_index) {
       let _this = this
@@ -1029,11 +1038,8 @@ export default {
             )
           }
           const selection = _this.getGroupSelection()
-          _this.$emit(
-            status ? 'on-select' : 'on-select-cancel',
-            selection,
-            JSON.parse(JSON.stringify(_this.getGroupData(k, m)))
-          )
+          _this.$emit(status ? 'on-select' : 'on-select-cancel',
+            selection, JSON.parse(JSON.stringify(_this.getGroupData(k, m))))
           _this.$emit('on-selection-change', selection)
         } else {
           let data = {}
@@ -1051,11 +1057,8 @@ export default {
           }
           _this.objData[_index]._isChecked = status
           const selection = _this.getGroupSelection()
-          _this.$emit(
-            status ? 'on-select' : 'on-select-cancel',
-            selection,
-            JSON.parse(JSON.stringify(_this.cloneData[_index]))
-          )
+          _this.$emit(status ? 'on-select' : 'on-select-cancel',
+            selection, JSON.parse(JSON.stringify(_this.cloneData[_index])))
           _this.$emit('on-selection-change', selection)
         }
       } else {
@@ -1068,17 +1071,10 @@ export default {
         const status = !data._isChecked
         _this.objData[_index]._isChecked = status
         const selection = this.getSelection()
-        this.$emit(
-          status ? 'on-select' : 'on-select-cancel',
-          selection,
-          JSON.parse(JSON.stringify(this.cloneData[_index])),
-          _index
-        )
-        this.$emit(
-          'on-selection-change',
-          selection,
-          this.getSelection('transfer')
-        )
+        this.$emit(status ? 'on-select' : 'on-select-cancel',
+          selection, JSON.parse(JSON.stringify(this.cloneData[_index])), _index)
+        this.$emit('on-selection-change',
+          selection, this.getSelection('transfer'))
       }
     },
     toggleExpand(_index) {
@@ -1120,14 +1116,6 @@ export default {
       }
     },
     selectAll(status) {
-      // this.rebuildData.forEach((data) => {
-      //     if(this.objData[data._index]._isDisabled){
-      //         this.objData[data._index]._isChecked = false;
-      //     }else{
-      //         this.objData[data._index]._isChecked = status;
-      //     }
-
-      // });
       for (let data of this.rebuildData) {
         if (this.objData[data._index]._isDisabled) {
           continue
@@ -1143,11 +1131,7 @@ export default {
       const selection = this.getSelection()
       // 添加全选、反选
       this.$emit('on-select-all', selection)
-      this.$emit(
-        'on-selection-change',
-        selection,
-        this.getSelection('transfer')
-      )
+      this.$emit('on-selection-change', selection, this.getSelection('transfer'))
     },
     fixedHeader() {
       if (this.height) {
@@ -1227,6 +1211,7 @@ export default {
     makeData() {
       let data = deepCopy(this.data)
       data.forEach((row, index) => {
+        row._sortId = index
         row._index = index
         row._rowKey = rowKey++
         if (row.item && typeof row.item == 'object') {
@@ -1243,6 +1228,7 @@ export default {
     makeSortData() {
       let data = deepCopy(this.cloneData)
       data.forEach((row, index) => {
+        row._sortId = index
         row._index = index
         row._rowKey = rowKey++
         if (row.item && typeof row.item == 'object') {
@@ -1285,43 +1271,28 @@ export default {
           this.rebuildData = this.sortData(this.rebuildData, type, index)
         }
       }
-      console.log(this.rebuildData)
       // 重新排序objData否则排序后selection勾选位置不正确
-      console.log(this.objData)
       if(this.sortChangeIndex) {
-//        for(let key in this.rebuildData){
-//          this.rebuildData[key]._index = parseInt(key)
-//        }
+        let order = []
+        for(let key in this.rebuildData){
+          this.rebuildData[key]._index = parseInt(key)
+          order.push(this.rebuildData[key]._sortId)
+        }
         let data = {}
-        this.rebuildData.forEach((row, index) => {
-          const newRow = deepCopy(row)
-            newRow._isHover = false
-            if (newRow._disabled) {
-              newRow._isDisabled = newRow._disabled
-            } else {
-              newRow._isDisabled = false
-            }
-            if (newRow._checked) {
-              newRow._isChecked = newRow._checked
-            } else {
-              newRow._isChecked = false
-            }
-            if (newRow.expanded) {
-              newRow._isExpanded = newRow.expanded
-            } else {
-              newRow._isExpanded = false
-            }
-            if (newRow._highlight) {
-              newRow._isHighlight = newRow._highlight
-            } else {
-              newRow._isHighlight = false
-            }
-            data[index] = newRow
-
+        let list = []
+        // 将[object object]转成数组对象用于排序
+        for(let k = 0; k < Object.keys(this.objData).length; k ++) {
+          list.push(this.objData[k])
+        }
+        list = list.sort((a, b) => {
+          return order.indexOf(a._sortId) - order.indexOf(b._sortId)
         })
-        return data
+        list.forEach((row, index) => {
+          const newRow = deepCopy(row)
+          data[index] = newRow
+        })
+        this.objData = data
       }
-
       this.cloneColumns[index]._sortType = type
       this.$emit('on-sort-change', {
         column: JSON.parse(JSON.stringify(this.columns[this.cloneColumns[index]._index])),
@@ -1442,6 +1413,7 @@ export default {
               newRow.indeterminate = false
             }
           }
+          newRow._sortId = index
           data[index] = newRow
         }
       })
@@ -1528,11 +1500,11 @@ export default {
     // selectAllTreeNode (status) {
     //   this.updateTreeGridChild(this.rebuildData, status)
     // },
-    selectAllTreeNode (status) {
+    selectAllTreeNode(status) {
       this.$refs.tbody.updateAllTreeStatus(status)
       this.selectChange()
     },
-    selectChange () {
+    selectChange() {
       this.$emit('on-select-change', this.getTreeSelection())
     },
     editselectChange(val, i, j) {
