@@ -18,6 +18,9 @@ $transfer-no-max-height: "#{$css-prefix}transfer-no-max-height";
     &-transfer{
         z-index: $zindex-transfer;
     }
+    &-inpoptip {
+      z-index: $zindex-inpoptip;
+    }
     &.#{$transfer-no-max-height} {
         max-height: none;
     }

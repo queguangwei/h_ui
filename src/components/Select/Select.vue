@@ -334,6 +334,10 @@ export default {
     buttonToTop: {
       type: Boolean,
       default: false
+    },
+    selectInPoptip: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -399,11 +403,12 @@ export default {
         [`${prefixCls}-hideMultHead-select`]:this.isSelectAll,
       }
     },
-    dropdownCls () {
+    dropdownCls() {
       return {
         [prefixCls + '-dropdown-transfer']: this.transfer,
         [prefixCls + '-multiple']: this.multiple && this.transfer,
         ['h-auto-complete']: this.autoComplete,
+        [prefixCls + '-dropdown-inpoptip']: this.selectInPoptip
       };
     },
     content(){

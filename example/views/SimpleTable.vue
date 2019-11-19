@@ -71,7 +71,7 @@ import TexpandRow from './Texpand-row.vue'
 let jsonData=[]
 let tData =require('../assets/aa.json')
 for (let i = 0; i < 1; i++) {
-  jsonData =tData.slice(0,45)
+  jsonData =tData.slice(0,5)
 }
 let ind = 1
 export default {
@@ -581,6 +581,8 @@ export default {
       }
     },
     rowClassName (row, index) {
+      console.log(row)
+      console.log(index)
       if (index === 1) {
         return 'demo-table-info-row';
       } else if (index === 3) {

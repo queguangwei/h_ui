@@ -2236,9 +2236,9 @@ export default {
     makeObjData() {
       let data = {}
       this.data.forEach((row, index) => {
-        // const newRow = deepCopy(row) // todo 直接替换
-        // 仅复制_index,_rowKey属性
-        const newRow = deepCopySome(row, ['_index','_rowKey'])
+        const newRow = deepCopy(row)
+        // 仅复制_index,_rowKey属性（场外使用rowClassName方法需要里面的data数据）
+//        const newRow = deepCopySome(row, ['_index','_rowKey'])
         newRow._isHover = false
         if (newRow._disabled) {
           newRow._isDisabled = newRow._disabled

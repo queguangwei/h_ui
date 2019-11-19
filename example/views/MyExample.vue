@@ -1,23 +1,23 @@
 <template>
   <div>
     <h1>Grid</h1>
-    <!--<h-row>-->
-      <!--<h-col span="12" style="background:red">col-12</h-col>-->
-      <!--<h-col span="12" style="background:blue">col-12</h-col>-->
-    <!--</h-row>-->
-    <!--<br>-->
-    <!--<h-row>-->
-      <!--<h-col span="8" style="background:yellow">col-8</h-col>-->
-      <!--<h-col span="8" style="background:green">col-8</h-col>-->
-      <!--<h-col span="8" style="background:pink">col-8</h-col>-->
-    <!--</h-row>-->
-    <!--<br>-->
-    <!--<h-row>-->
-      <!--<h-col span="6" style="background:gray">col-6</h-col>-->
-      <!--<h-col span="6" style="background:black">col-6</h-col>-->
-      <!--<h-col span="6" style="background:grey">col-6</h-col>-->
-      <!--<h-col span="6" style="background:black">col-6</h-col>-->
-    <!--</h-row>-->
+    <h-row>
+      <h-col span="12" style="background:red">col-12</h-col>
+      <h-col span="12" style="background:blue">col-12</h-col>
+    </h-row>
+    <br>
+    <h-row>
+      <h-col span="8" style="background:yellow">col-8</h-col>
+      <h-col span="8" style="background:green">col-8</h-col>
+      <h-col span="8" style="background:pink">col-8</h-col>
+    </h-row>
+    <br>
+    <h-row>
+      <h-col span="6" style="background:gray">col-6</h-col>
+      <h-col span="6" style="background:black">col-6</h-col>
+      <h-col span="6" style="background:grey">col-6</h-col>
+      <h-col span="6" style="background:black">col-6</h-col>
+    </h-row>
     <br>
     <h1>tabs</h1>
     <h-tabs ref="remove" type="line" @on-tab-remove="handleTabRemove1" showArrow arrowOnRight closable :iconLeftClassName="'icon-left icon-arrow'">
@@ -175,7 +175,7 @@
     <!--</h-calendar>-->
     <h1>table</h1>
     <h-table ref="table" :columns="columnsMulti" :data="dataMulti" :multiLevel="multiTitle"
-             canDrag border :loading="loading" clickHeadSort isMulitSort height="300"
+             canDrag canMove border :loading="loading" clickHeadSort isMulitSort height="300"
              highlight-row :lastColWidth="150" :minDragWidth="40" :minColWidth="60"
              @on-sort-change="sortchange" @on-scroll="scrollchange"></h-table>
     <h-button @click="resetSort">重置排序</h-button>
@@ -351,16 +351,16 @@ export default {
         stockInfo: '',
         stockName: [],
         selecttree: '',
-        name: "",
-        mail: "",
+        name: '',
+        mail: '',
         city: [],
-        gender: "",
+        gender: '',
         interest: [],
         tree: '',
-        date: "",
-        fastDate: "",
-        time: "",
-        desc: "",
+        date: '',
+        fastDate: '',
+        time: '',
+        desc: '',
         valueRemote1: [],
       },
       colWidth:['120','120'],
@@ -477,11 +477,14 @@ export default {
         {
           title: '姓名',
           key: 'name',
+          width: 100,
+          fixed: 'left'
         },
         {
           title: '年龄',
           key: 'age',
           sortable: true,
+          width: 100,
           render: (h, params) => {
             return h('h-select',{
               props:{
@@ -497,11 +500,13 @@ export default {
         },
         {
           title: '地址',
-          key: 'address'
+          key: 'address',
+          width: 150
         },
         {
           title: '城市',
           key: 'city',
+          width: 150,
           render: (h, params) => {
             return h('h-simple-select', {
               props: {
@@ -520,6 +525,7 @@ export default {
         {
           title: '日期',
           key: 'date',
+          width: 150,
           render: (h, params) => {
             return h('h-date-picker', {
               props: {
@@ -531,7 +537,57 @@ export default {
         },
         {
           title: '备注',
-          key: 'status'
+          key: 'status',
+          width: 300
+        },
+        {
+          title: '宽度60',
+          key: 'width60',
+          width: 60,
+          fixed: 'left'
+        },{
+          title: '宽度70',
+          key: 'width70',
+          width: 70
+        },{
+          title: '宽度80',
+          key: 'width80',
+          width: 80
+        },{
+          title: '宽度90',
+          key: 'width90',
+          width: 90
+        },{
+          title: '宽度100',
+          key: 'width100',
+          width: 100
+        },{
+          title: '宽度110',
+          key: 'width110',
+          width: 110
+        },{
+          title: '宽度120',
+          key: 'width120',
+          width: 120
+        },{
+          title: '宽度130',
+          key: 'width130',
+          width: 130
+        },{
+          title: '宽度140',
+          key: 'width140',
+          width: 140
+        },{
+          title: '宽度150',
+          key: 'width150',
+          width: 150
+        },{
+          title: '宽度160',
+          key: 'width160',
+          width: 160
+        },{
+          title: '宽度不设',
+          key: 'notset'
         }
       ],
       dataMulti: [
@@ -541,12 +597,28 @@ export default {
           address: '北京市朝阳区\r芍药居',
           // _disabled:true,
           status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
+          width60: 'width60',
+          width70: 'width70',
+          width80: 'width80',
+          width90: 'width90',
+          width100: 'width100',
+          width110: 'width110',
+          width120: 'width120',
+          notset: 'notset',
         },
         {
           name: '张小刚',
           age: 25,
           address: '北京市海淀区西二旗',
           status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
+          width60: 'width60',
+          width70: 'width70',
+          width80: 'width80',
+          width90: 'width90',
+          width100: 'width100',
+          width110: 'width110',
+          width120: 'width120',
+          notset: 'notset',
         },
         {
           name: '李小红',
@@ -813,6 +885,28 @@ export default {
           dating:'2018-03-07',
           timing:'16:00:00.00',
           tree:'leaf1'
+        },
+        {
+          name: '蒋小林',
+          age: 30,
+          address: '深圳市南山区深南大道',
+          money: '150.00',
+          cardId: '6223 5678 1234 5678',
+          city: '北京',
+          dating:'2018-03-07',
+          timing:'16:00:00.00',
+          tree:'leaf1'
+        },
+        {
+          name: '姚小军',
+          age: 31,
+          address: '深圳市南山区深南大道',
+          money: '150.00',
+          cardId: '6223 5678 1234 5678',
+          city: '北京',
+          dating:'2018-03-07',
+          timing:'16:00:00.00',
+          tree:'leaf1'
         }
       ]
     }
@@ -980,9 +1074,10 @@ export default {
     },
     on_select(selection, row, index) {
       console.log('on_select selection:::', selection)
+      console.log('on_select row:::', row)
       console.log('on_select index:::', index)
       this.$nextTick(() => {
-        this.$refs.repoEditGrid.cancelSelect(0)
+//        this.$refs.repoEditGrid.cancelSelect(0)
       })
     },
     on_select_cancel(selection, row, index) {
@@ -991,15 +1086,15 @@ export default {
     },
     on_money_blur(data, x, y) {
       console.log(data, x, y)
-      if (typeof (this.$refs.repoEditGrid.rebuildData[y].mortgage_amount) == "number") {
+      if (typeof (this.$refs.repoEditGrid.rebuildData[y].mortgage_amount) == 'number') {
         data = data + '';
       } else {
         data = Number(data);
       }
       if(x === 1){
-        this.$set(this.$refs.repoEditGrid.rebuildData[y], "mortgage_amount", data)
+        this.$set(this.$refs.repoEditGrid.rebuildData[y], 'mortgage_amount', data)
       }else if(x === 2){
-        this.$set(this.$refs.repoEditGrid.rebuildData[y], "mortgage_ratio", data)
+        this.$set(this.$refs.repoEditGrid.rebuildData[y], 'mortgage_ratio', data)
       }
     },
     disableDate(date) {

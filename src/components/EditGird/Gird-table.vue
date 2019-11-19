@@ -983,19 +983,18 @@ export default {
       if(this.sortChangeIndex) {
         return str != 'transfer'
           ? JSON.parse(JSON.stringify(
-            this.rebuildData.filter(
+            this.rebuildData.filter((data, index) => selectionIndexes.indexOf(index) > -1)
+          ))
+          : selectionIndexes
+      }else {
+        return str != 'transfer'
+          ? JSON.parse(JSON.stringify(
+            this.cloneData.filter(
               (data, index) => selectionIndexes.indexOf(index) > -1
             )
           ))
           : selectionIndexes
       }
-      return str != 'transfer'
-        ? JSON.parse(JSON.stringify(
-          this.cloneData.filter(
-            (data, index) => selectionIndexes.indexOf(index) > -1
-          )
-        ))
-        : selectionIndexes
     },
     getGroupSelection() {
       var _this = this
@@ -1019,8 +1018,9 @@ export default {
     cancelSelect(index) {
       this.objData[index]._isChecked = false
       const selection = this.getSelection()
+      let row = this.sortChangeIndex ? this.objData[index] : this.cloneData[index]
       this.$emit('on-select-cancel',
-        selection, JSON.parse(JSON.stringify(this.cloneData[index])), index)
+        selection, JSON.parse(JSON.stringify(row)), index)
     },
     toggleSelect(_index) {
       let _this = this
@@ -1071,8 +1071,9 @@ export default {
         const status = !data._isChecked
         _this.objData[_index]._isChecked = status
         const selection = this.getSelection()
+        let row = this.sortChangeIndex ? _this.objData[_index] : _this.cloneData[_index]
         this.$emit(status ? 'on-select' : 'on-select-cancel',
-          selection, JSON.parse(JSON.stringify(this.cloneData[_index])), _index)
+          selection, JSON.parse(JSON.stringify(row)), _index)
         this.$emit('on-selection-change',
           selection, this.getSelection('transfer'))
       }
