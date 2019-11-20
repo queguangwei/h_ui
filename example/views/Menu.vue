@@ -1,56 +1,55 @@
 <template>
 	<div>
-	    <h1>基本用法</h1>
-      <h-menu mode="horizontal" :theme="theme1" active-name="1" @on-select="s" @on-open-change="openChange">
-        <h-menu-item name="1">
-            <h-icon name="accessory"></h-icon>
-            内容管理
-        </h-menu-item>
-        <h-menu-item name="2">
-            <h-icon name="activity"></h-icon>
-            用户管理
-        </h-menu-item>
-        <h-submenu name="3">
-            <template slot="title">
-                <h-icon name="activity"></h-icon>
-                统计分析
-            </template>
-            <h-menu-group title="使用">
-                <h-menu-item name="3-1">新增和启动</h-menu-item>
-                <h-menu-item name="3-2">活跃分析</h-menu-item>
-                <h-menu-item name="3-3">时段分析</h-menu-item>
-            </h-menu-group>
-            <h-menu-group title="留存">
-                <h-menu-item name="3-4">用户留存</h-menu-item>
-                <h-menu-item name="3-5">流失用户</h-menu-item>
-            </h-menu-group>
-        </h-submenu>
-        <h-menu-item name="4">
-          <h-icon name="activity"></h-icon>
-          综合设置
-        </h-menu-item>
-      </h-menu>
+    <h1>基本用法</h1>
+    <!--<h-menu mode="horizontal" :theme="theme1" active-name="1" @on-select="s" @on-open-change="openChange">-->
+      <!--<h-menu-item name="1">-->
+          <!--<h-icon name="accessory"></h-icon>-->
+          <!--内容管理-->
+      <!--</h-menu-item>-->
+      <!--<h-menu-item name="2">-->
+          <!--<h-icon name="activity"></h-icon>-->
+          <!--用户管理-->
+      <!--</h-menu-item>-->
+      <!--<h-submenu name="3">-->
+          <!--<template slot="title">-->
+              <!--<h-icon name="activity"></h-icon>-->
+              <!--统计分析-->
+          <!--</template>-->
+          <!--<h-menu-group title="使用">-->
+              <!--<h-menu-item name="3-1">新增和启动</h-menu-item>-->
+              <!--<h-menu-item name="3-2">活跃分析</h-menu-item>-->
+              <!--<h-menu-item name="3-3">时段分析</h-menu-item>-->
+          <!--</h-menu-group>-->
+          <!--<h-menu-group title="留存">-->
+              <!--<h-menu-item name="3-4">用户留存</h-menu-item>-->
+              <!--<h-menu-item name="3-5">流失用户</h-menu-item>-->
+          <!--</h-menu-group>-->
+      <!--</h-submenu>-->
+      <!--<h-menu-item name="4">-->
+        <!--<h-icon name="activity"></h-icon>-->
+        <!--综合设置-->
+      <!--</h-menu-item>-->
+    <!--</h-menu>-->
 
-      <br>
-      <p>切换主题</p>
-      <h-radio-group v-model="theme1">
-          <h-radio label="light"></h-radio>
-          <h-radio label="dark"></h-radio>
-          <h-radio label="primary"></h-radio>
-      </h-radio-group>
-      <br>
-      <br>
-      <h1>侧栏导航</h1>
-      <p>垂直导航菜单，可以内嵌子菜单<br>
-      设置 active-name 可以选中指定的菜单，设置 open-names 可以展开指定的子菜单。<br>
-      设置属性 accordion 可以开启手风琴模式，每次只能展开一个子菜单。<br>
-      通过设置属性 theme 为 light、dark 可以选择主题，侧栏菜单不支持 primary 主题。</p>
-      <br>
-      <h-row>
-
-
+    <br>
+    <p>切换主题</p>
+    <!--<h-radio-group v-model="theme1">-->
+        <!--<h-radio label="light"></h-radio>-->
+        <!--<h-radio label="dark"></h-radio>-->
+        <!--<h-radio label="primary"></h-radio>-->
+    <!--</h-radio-group>-->
+    <br>
+    <br>
+    <h1>侧栏导航</h1>
+    <p>垂直导航菜单，可以内嵌子菜单<br>
+    设置 active-name 可以选中指定的菜单，设置 open-names 可以展开指定的子菜单。<br>
+    设置属性 accordion 可以开启手风琴模式，每次只能展开一个子菜单。<br>
+    通过设置属性 theme 为 light、dark 可以选择主题，侧栏菜单不支持 primary 主题。</p>
+    <br>
+    <h-row>
       <h-col span="8">
-        <h-menu  mode="vertical" :theme="theme2"  :active-name="activedName" @updateActiveName="updateActiveNameTest" :open-names="openName" :accordion="true" @on-open-change="openChangeActived" :width="120" @on-select="s">
+        <h-menu  mode="vertical" :theme="theme2"  :active-name="activedName" @updateActiveName="updateActiveNameTest"
+                 :open-names="openName" :accordion="true" @on-open-change="openChangeActived" :width="120" @on-select="s">
           <div>
           <h-submenu name="1">
               <template slot="title">
@@ -91,55 +90,54 @@
           <Button @on-click="updateActiveNameTest('2-1')">动态设置openName</Button>
       </h-col>
 
-
+      <!--<h-col span="8">-->
+          <!--<h-menu :theme="theme2" :open-names="['1']">-->
+              <!--<h-submenu name="1">-->
+                  <!--<template slot="title">-->
+                      <!--<h-icon name="ios-paper"></h-icon>-->
+                      <!--内容管理-->
+                  <!--</template>-->
+                  <!--<h-menu-item name="1-1">文章管理</h-menu-item>-->
+                  <!--<h-menu-item name="1-2">评论管理</h-menu-item>-->
+                  <!--&lt;!&ndash; <h-menu-item name="1-3"> &ndash;&gt;-->
+                  <!--<h-submenu name="1-3">-->
+                  <!--<template slot="title">-->
+                      <!--<h-icon name="ios-paper"></h-icon>-->
+                      <!--举报管理-->
+                  <!--</template>-->
+                  <!--<h-menu-item name="1-3-1">举报管理1</h-menu-item>-->
+                  <!--<h-menu-item name="1-3-2">举报管理2</h-menu-item>-->
+                <!--</h-submenu>-->
+                  <!--&lt;!&ndash; </h-menu-item> &ndash;&gt;-->
+              <!--</h-submenu>-->
+              <!--<h-submenu name="2">-->
+                  <!--<template slot="title">-->
+                      <!--<h-icon name="ios-people"></h-icon>-->
+                      <!--用户管理-->
+                  <!--</template>-->
+                  <!--<h-menu-item name="2-1">新增用户</h-menu-item>-->
+                  <!--<h-menu-item name="2-2">活跃用户</h-menu-item>-->
+              <!--</h-submenu>-->
+              <!--<h-submenu name="3">-->
+                  <!--<template slot="title">-->
+                      <!--<h-icon name="stats-bars"></h-icon>-->
+                      <!--统计分析-->
+                  <!--</template>-->
+                  <!--<h-menu-group title="使用">-->
+                      <!--<h-menu-item name="3-1">新增和启动</h-menu-item>-->
+                      <!--<h-menu-item name="3-2">活跃分析</h-menu-item>-->
+                      <!--<h-menu-item name="3-3">时段分析</h-menu-item>-->
+                  <!--</h-menu-group>-->
+                  <!--<h-menu-group title="留存">-->
+                      <!--<h-menu-item name="3-4">用户留存</h-menu-item>-->
+                      <!--<h-menu-item name="3-5">流失用户</h-menu-item>-->
+                  <!--</h-menu-group>-->
+              <!--</h-submenu>-->
+          <!--</h-menu>-->
+      <!--</h-col>-->
 
       <h-col span="8">
-          <h-menu :theme="theme2" active-name="1-2" :open-names="['1']">
-              <h-submenu name="1">
-                  <template slot="title">
-                      <h-icon name="ios-paper"></h-icon>
-                      内容管理
-                  </template>
-                  <h-menu-item name="1-1">文章管理</h-menu-item>
-                  <h-menu-item name="1-2">评论管理</h-menu-item>
-                  <!-- <h-menu-item name="1-3"> -->
-                  <h-submenu name="1-3">
-                  <template slot="title">
-                      <h-icon name="ios-paper"></h-icon>
-                      举报管理
-                  </template> 
-                  <h-menu-item name="1-3-1">举报管理1</h-menu-item>
-                  <h-menu-item name="1-3-2">举报管理2</h-menu-item>
-                </h-submenu>
-                  <!-- </h-menu-item> -->
-              </h-submenu>
-              <h-submenu name="2">
-                  <template slot="title">
-                      <h-icon name="ios-people"></h-icon>
-                      用户管理
-                  </template>
-                  <h-menu-item name="2-1">新增用户</h-menu-item>
-                  <h-menu-item name="2-2">活跃用户</h-menu-item>
-              </h-submenu>
-              <h-submenu name="3">
-                  <template slot="title">
-                      <h-icon name="stats-bars"></h-icon>
-                      统计分析
-                  </template>
-                  <h-menu-group title="使用">
-                      <h-menu-item name="3-1">新增和启动</h-menu-item>
-                      <h-menu-item name="3-2">活跃分析</h-menu-item>
-                      <h-menu-item name="3-3">时段分析</h-menu-item>
-                  </h-menu-group>
-                  <h-menu-group title="留存">
-                      <h-menu-item name="3-4">用户留存</h-menu-item>
-                      <h-menu-item name="3-5">流失用户</h-menu-item>
-                  </h-menu-group>
-              </h-submenu>
-          </h-menu>
-      </h-col>
-      <h-col span="8">
-          <h-menu :theme="theme2" :open-names="['1']" accordion>
+          <h-menu ref="menu" :theme="theme2"  :open-names="openNames" :active-name="activeName" accordion>
               <h-submenu name="1">
                   <template slot="title">
                       <h-icon name="ios-paper"></h-icon>
@@ -173,6 +171,7 @@
                   </h-menu-group>
               </h-submenu>
           </h-menu>
+        <Button @on-click="checkOption">动态选中</Button>
       </h-col>
       </h-row>
       <br>
@@ -411,7 +410,9 @@ export default {
       cdata:cData,
       csName:'',
       openName:[],
-      activedName: '4'
+      activedName: '4',
+      openNames: ['1'],
+      activeName: ''
     }
   },
   watch: {
@@ -420,7 +421,7 @@ export default {
   methods: {
     s (s) {
       console.log(s)
-    //   this.updateActiveNameTest(s)
+//       this.updateActiveNameTest(s)
     },
     updateActiveNameTest(val) {
         this.$nextTick(()=>{
@@ -461,6 +462,12 @@ export default {
     },
     setOpen(){
         this.openName = ['1','3'];
+    },
+    checkOption() {
+      this.openNames = ['3']
+      this.$nextTick(() => {
+        this.activeName = '3-2'
+      })
     }
   }
 }

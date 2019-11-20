@@ -4,10 +4,9 @@
   </h-menu-collapse-transition>
 </template>
 <script>
-import { oneOf, findComponentsDownward, hasClass, addClass, removeClass} from '../../util/tools';
-import Emitter from '../../mixins/emitter';
-
-const prefixCls = 'h-menu';
+import { oneOf, findComponentsDownward, hasClass, addClass, removeClass} from '../../util/tools'
+import Emitter from '../../mixins/emitter'
+const prefixCls = 'h-menu'
 
 export default {
   name: 'Menu',
@@ -66,14 +65,14 @@ export default {
   },
   props: {
     mode: {
-      validator (value) {
-          return oneOf(value, ['horizontal', 'vertical']);
+      validator(value) {
+        return oneOf(value, ['horizontal', 'vertical'])
       },
       default: 'vertical'
     },
     theme: {
-      validator (value) {
-          return oneOf(value, ['light', 'dark', 'primary']);
+      validator(value) {
+        return oneOf(value, ['light', 'dark', 'primary'])
       },
       default: 'light'
     },
@@ -84,8 +83,8 @@ export default {
     // 展开的 Submenu 的 name 集合
     openNames: {
       type: Array,
-      default () {
-          return [];
+      default() {
+        return []
       }
     },
     // 手风琴模式，开启后每次至多展开一个子菜单
@@ -120,17 +119,16 @@ export default {
       default: 0,
     },
   },
-  data () {
+  data() {
     return {
       currentActiveName: this.activeName,
       openName:this.openNames
-    };
+    }
   },
   computed: {
-    classes () {
-      let theme = this.theme;
-      if (this.mode === 'vertical' && this.theme === 'primary') theme = 'light';
-
+    classes() {
+      let theme = this.theme
+      if (this.mode === 'vertical' && this.theme === 'primary') theme = 'light'
       return [
         `${prefixCls}`,
         `${prefixCls}-${theme}`,
@@ -139,46 +137,49 @@ export default {
           [`${prefixCls}-collapse`]: this.collapse,
           [`${prefixCls}-verti-side`]: this.vertiSide && !this.collapse,
         }
-      ];
+      ]
     },
-    styles () {
-      let style = {};
-
-      if (this.mode === 'vertical' && !this.collapse) style.width = this.width+'px';
-
-      return style;
+    styles() {
+      let style = {}
+      if (this.mode === 'vertical' && !this.collapse) style.width = this.width+'px'
+      return style
     }
   },
   methods: {
-    updateActiveName () {
+    updateActiveName() {
       if (this.currentActiveName === undefined) {
-          this.currentActiveName = -1;
+        this.currentActiveName = -1
       }
-      this.broadcast('Submenu', 'on-update-active-name', false);
-      this.broadcast('MenuItem', 'on-update-active-name', this.currentActiveName);
+      this.broadcast('Submenu', 'on-update-active-name', false)
+      this.broadcast('MenuItem', 'on-update-active-name', this.currentActiveName)
+//      if(name === undefined) {
+//      }else {
+//        this.broadcast('MenuItem', 'on-update-active-name', name)
+//      }
     },
-    updateOpenKeys (name, submenuList = []) {
+    updateOpenKeys(name, submenuList = []) {
       // 侧边展开时，鼠标滑过保留二级菜单
       let openNameList = this.openName
-      const index = openNameList.indexOf(name);
-        if (index > -1) {
-          openNameList.splice(index, 1);
-          if (submenuList.length > 0) this.openName = openNameList.concat(submenuList)
-        } else {
+      const index = openNameList.indexOf(name)
+      if (index > -1) {
+        openNameList.splice(index, 1)
+        if (submenuList.length > 0)
+          this.openName = openNameList.concat(submenuList)
+      } else {
+        // this.openName.push(name);
+        if (this.accordion) {
+          // 考虑嵌套一层及三级侧边展开的情况--理财5.0 三级侧边展开时需要保存当前二级展开情况
+          this.openName = [].concat(submenuList).concat([name])
+          // this.openName.splice(0, this.openName.length);
           // this.openName.push(name);
-          if (this.accordion) {
-            // 考虑嵌套一层及三级侧边展开的情况--理财5.0 三级侧边展开时需要保存当前二级展开情况
-            this.openName = [].concat(submenuList).concat([name])
-            // this.openName.splice(0, this.openName.length);
-            // this.openName.push(name);
-          } else {
-            this.openName.push(name);
-          }
+        } else {
+          this.openName.push(name)
         }
+      }
     },
-    updateOpened () {
-      const items = findComponentsDownward(this, 'Submenu');
-      if(this.collapse) return;
+    updateOpened() {
+      const items = findComponentsDownward(this, 'Submenu')
+      if(this.collapse) return
       if (items.length) {
         items.forEach(item => {
           if (this.openName.indexOf(item.name) > -1) {
@@ -186,53 +187,52 @@ export default {
           } else {
             if (this.accordion) item.opened = false
           }
-
-        });
+        })
       }
     }
   },
-  mounted () {
-    this.updateActiveName();
-    this.updateOpened();
+  mounted() {
+    this.updateActiveName()
+    this.updateOpened()
     this.$on('on-menu-item-select', (name) => {
-      this.currentActiveName = name;
-       // --collapse--为true时，openedMenu置空
+      this.currentActiveName = name
+      // --collapse--为true时，openedMenu置空
       if(this.collapse) this.openedMenu = []
       // --collapse--
-      this.$emit('on-select', name);
-    });
+      this.$emit('on-select', name)
+    })
     if (this.collapse) {
-      this.openName = [];
+      this.openName = []
     }
   },
   watch: {
-    openName () {
-      this.$emit('on-open-change',this.openName);
+    openName() {
+      this.$emit('on-open-change',this.openName)
     },
     openNames:{
       deep:true,
       handler(){
-        this.openName = this.openNames;
-        this.updateOpened();
+        this.openName = this.openNames
+        this.updateOpened()
       }
     },
-    activeName (val) {
-      this.currentActiveName = val;
+    activeName(val) {
+      this.currentActiveName = val
     },
-    currentActiveName () {
-      this.updateActiveName();
+    currentActiveName() {
+      this.updateActiveName()
     },
     // --collapse--
     collapse(value) {
       if (value) {
-        this.openedMenu = [];
-        this.openName = [];
+        this.openedMenu = []
+        this.openName = []
         if(value && this.shrinkClose){
-          this.broadcast("Submenu", 'on-collapse-close');
+          this.broadcast('Submenu', 'on-collapse-close')
         }
       }
     }
     // --collapse--
   }
-};
+}
 </script>

@@ -79,7 +79,7 @@ export default {
         return 'left'
       } else {
         return 'bottom'
-      } 
+      }
     },
     collapse () {
       return this.parent.collapse;
@@ -102,25 +102,25 @@ export default {
     }
   },
   methods: {
-    handleMouseenter () {
+    handleMouseenter() {
       // if (this.parent.) {}
       if (this.disabled) return;
       // if (this.mode === 'vertical') return;
       // collapse为true时，可以鼠标经过
       if (this.mode === 'vertical' && !this.collapse&&!this.showSlide) return;
-      
+
       clearTimeout(this.timeout);
       this.parent.updateOpenKeys(this.name);
       this.timeout = setTimeout(() => {
         this.opened = true;
       }, 250);
     },
-    handleMouseleave () {
+    handleMouseleave() {
       if (this.disabled) return;
       // if (this.mode === 'vertical') return;
       // collapse为true时，可以鼠标经过
       if (this.mode === 'vertical' && !this.collapse&&!this.showSlide) return;
-       // 考虑嵌套一层及三级侧边展开的情况--理财5.0 三级侧边展开时需要保存当前二级展开情况
+      // 考虑嵌套一层及三级侧边展开的情况--理财5.0 三级侧边展开时需要保存当前二级展开情况
       let submenuList = []
       if (this.parent.vertiSide && this.showSlide) {
         function findSubmenu (context, componentName) {
@@ -139,10 +139,10 @@ export default {
       this.parent.updateOpenKeys(this.name, submenuList);
       clearTimeout(this.timeout);
       this.timeout = setTimeout(() => {
-          this.opened = false;
+        this.opened = false;
       }, 150);
     },
-    handleClick () {
+    handleClick() {
       if (this.disabled||this.showSlide) return;
       // collapse为true时，触发鼠标经过，因此忽略点击
       if (this.mode === 'horizontal' || this.collapse ) return;
@@ -165,24 +165,24 @@ export default {
               if (item.$children && item.$children[0].$options.name === 'Submenu') item.$children[0].opened = false;
             });
           }
-        } 
+        }
       }
       // if (this.accordion && this.$parent.$options.name !== 'Submenu') {
       //   this.parent.$children.forEach(item => {
       //       if (item.$options.name === 'Submenu') item.opened = false;
       //   });
-      // } 
+      // }
       this.opened = !opened;
       this.parent.updateOpenKeys(this.name);
     }
   },
   watch: {
-    mode (val) {
+    mode(val) {
       if (val === 'horizontal') {
         this.$refs.drop.update();
       }
     },
-    opened (val) {
+    opened(val) {
       if (this.mode === 'vertical') return;
       if (val) {
         // set drop a width to fixed when menu has fixed position
@@ -193,7 +193,7 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
     this.$on('on-menu-item-select', (name) => {
       if (this.mode === 'horizontal') this.opened = false;
       this.dispatch('Menu', 'on-menu-item-select', name);
