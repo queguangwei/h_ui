@@ -865,10 +865,6 @@ export default {
     rowClsName(index) {
       return this.rowClassName(this.data[index], index)
     },
-    /**
-     * @description handleResize
-     * @todo refactoring but tricky
-     */
     changeWidth(width, key, lastWidth, lastInx) {
       var that = this
       var totalWidth = 0
@@ -983,10 +979,9 @@ export default {
           let $th = null
           let curTh = null
           let num = 0
-          if (
-            this.autoHeadWidth ||
-            this.data.length == 0 ||
-            this.$refs.tbody.$el.offsetParent === null
+          if (this.autoHeadWidth || this.data.length == 0 ||
+            this.$refs.tbody.$el.offsetParent === null// yyc's modify location
+//            !this.$refs.tbody
           ) {
             num = 30
             if (!this.$refs.thead) return
@@ -999,14 +994,13 @@ export default {
                 .querySelectorAll('thead .cur-th')[0]
                 .querySelectorAll('.h-table-cell>.span-cell')
             }
-            if(this.$refs.tbody.$el.offsetParent) {
+            if(this.$refs.tbody.$el.offsetParent) { //  yyc's modify location
               $td = this.$refs.tbody.$el
                 .querySelectorAll('tbody tr')[0]
                 .querySelectorAll('td')
             }
           }
           if (!$td || $td.length < 1) return
-
           for (let i = 0; i < $td.length; i++) {
             // can not use forEach in Firefox
             const column = this.cloneColumns[i]
@@ -1035,7 +1029,6 @@ export default {
             parseInt(getStyle(this.$refs.tbody.$el, 'height')) || 0
           this.headerRealHeight =
             parseInt(getStyle(this.$refs.header, 'height')) || 0
-          
           let lastInx = this.cloneColumns[$td.length - 1]._index
           let scrollWidth =
             this.bodyHeight < this.bodyRealHeight ? this.scrollBarWidth : 0
@@ -1058,13 +1051,13 @@ export default {
       }
       this.$nextTick(() => {
         // tab 中 $el 报错问题
-        if (this.$refs.tbody.$el.offsetParent === null && this.tableWidth !== 0) return
+//        if (this.$refs.tbody.$el.offsetParent === null && this.tableWidth !== 0) return // yyc's modify location
+        if (!this.$refs.tbody) return
 
         if (this.cloneColumns.length == 0) return
         const allWidth = !this.cloneColumns.some(
           cell => !cell.width && cell.width !== 0
         ) // each column set a width
-        // console.log('allWirdth---->', allWidth)
         if (allWidth) {
           this.tableWidth = this.cloneColumns
             .map(cell => cell.width)
@@ -1084,7 +1077,8 @@ export default {
           if (allWidth)
             autoWidthIndex = findInx(this.cloneColumns, cell => !cell.width)
           if (this.data.length && this.$refs.tbody) {
-            if (this.$refs.tbody.$el.offsetParent === null && this.tableWidth !== 0 ) return
+            if (this.$refs.tbody.$el.offsetParent === null && this.tableWidth !== 0 ) return // yyc's modify location
+//            if (!this.$refs.tbody.$el) return
             const $td = this.$refs.tbody.$el
               .querySelectorAll('tbody tr')[0]
               .querySelectorAll('td')
@@ -1220,7 +1214,7 @@ export default {
     },
     highlightCurrentRow(_index) {
       if (!this.highlightRow) return
-      if (this.objData[_index]._isDisabled) return 
+      if (this.objData[_index]._isDisabled) return
       const curStatus = this.objData[_index]._isHighlight
       if (this.objData[_index]._isChecked && this.rowSelectOnly) {
         return

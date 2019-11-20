@@ -475,180 +475,215 @@ export default {
       },
       columnsMulti: [
         {
-          title: '姓名',
-          key: 'name',
-          width: 100,
-          fixed: 'left'
+          align: "left",
+          ellipsis: true,
+          fixed: "left",
+          key: "rule_id",
+          title: "序号",
+          width: 60
         },
         {
-          title: '年龄',
-          key: 'age',
-          sortable: true,
-          width: 100,
-          render: (h, params) => {
-            return h('h-select',{
-              props:{
-                filterable: true,
-                transfer: true,
-              }
-            },[h('h-option', {
-              props: {
-                value: params.row.age
-              }
-            }, params.row.age)])
-          }
-        },
-        {
-          title: '地址',
-          key: 'address',
-          width: 150
-        },
-        {
-          title: '城市',
-          key: 'city',
-          width: 150,
-          render: (h, params) => {
-            return h('h-simple-select', {
-              props: {
-                filterable: true,
-                transfer: true,
-                autoPlacement: true
-              }
-            },
-            [h('h-select-block', {
-              props: {
-                data: this.cityList
-              }
-            })])
-          }
-        },
-        {
-          title: '日期',
-          key: 'date',
-          width: 150,
-          render: (h, params) => {
-            return h('h-date-picker', {
-              props: {
-                transfer: true,
-                autoPlacement: true
-              }
-            })
-          }
-        },
-        {
-          title: '备注',
-          key: 'status',
+          ellipsis: true,
+          fixed: "left",
+          key: "complianceIndex",
+          title: "指标",
           width: 300
         },
         {
-          title: '宽度60',
-          key: 'width60',
-          width: 60,
-          fixed: 'left'
-        },{
-          title: '宽度70',
-          key: 'width70',
-          width: 70
-        },{
-          title: '宽度80',
-          key: 'width80',
-          width: 80
-        },{
-          title: '宽度90',
-          key: 'width90',
-          width: 90
-        },{
-          title: '宽度100',
-          key: 'width100',
-          width: 100
-        },{
-          title: '宽度110',
-          key: 'width110',
-          width: 110
-        },{
-          title: '宽度120',
-          key: 'width120',
-          width: 120
-        },{
-          title: '宽度130',
-          key: 'width130',
-          width: 130
-        },{
-          title: '宽度140',
-          key: 'width140',
+          key: "asset_before_0",
+          title: "试算前",
+          width: 140
+        },
+        {
+          key: "asset_after_0",
+          title: "试算后",
+          width: 140
+        },
+        {
+          key: "left_amout_before_0",
+          title: "试算前",
+          width: 140
+        },
+        {
+          key: "left_amout_after_0",
+          title: "试算后",
+          width: 140
+        },
+        {
+          key: "asset_before_1",
+          title: "试算前",
           width: 140
         },{
-          title: '宽度150',
-          key: 'width150',
-          width: 150
+          key: "asset_after_1",
+          title: "试算后",
+          width: 140
         },{
-          title: '宽度160',
-          key: 'width160',
-          width: 160
+          key: "left_amout_before_1",
+          title: "试算前",
+          width: 140
         },{
-          title: '宽度不设',
-          key: 'notset'
+          key: "left_amout_after_1",
+          title: "试算后",
+          width: 140
+        },{
+          key: "asset_before_2",
+          title: "试算前",
+          width: 140
+        },{
+          key: "asset_after_2",
+          title: "试算后",
+          width: 140
+        },{
+          key: "left_amout_before_2",
+          title: "试算前",
+          width: 140
+        },{
+          key: "left_amout_after_2",
+          title: "试算后",
+          width: 140
+        },{
+          key: "asset_before_3",
+          title: "试算前",
+          width: 140
+        },{
+          key: "asset_after_3",
+          title: "试算后",
+          width: 140
+        },{
+          key: "left_amout_before_3",
+          title: "试算前",
+          width: 140
+        },{
+          key: "left_amout_after_3",
+          title: "试算后",
+          width: 140
+        },{
+          key: "asset_before_4",
+          title: "试算前",
+          width: 140
+        },{
+          key: "asset_after_4",
+          title: "试算后",
+          width: 140
+        },{
+          key: "left_amout_before_4",
+          title: "试算前",
+          width: 140
+        },{
+          key: "left_amout_after_4",
+          title: "试算后",
+          width: 140
+        },{
+          key: "asset_before_5",
+          title: "试算前",
+          width: 140
+        },{
+          key: "asset_after_5",
+          title: "试算后",
+          width: 140
+        },{
+          key: "left_amout_before_5",
+          title: "试算前",
+          width: 140
+        },{
+          key: "left_amout_after_5",
+          title: "试算后",
+          width: 140
+        },{
+          key: "asset_before_6",
+          title: "试算前",
+          width: 140
+        },{
+          key: "asset_after_6",
+          title: "试算后",
+          width: 140
+        },{
+          key: "left_amout_before_6",
+          title: "试算前",
+          width: 140
+        },{
+          key: "left_amout_after_6",
+          title: "试算后",
+          width: 140
         }
       ],
       dataMulti: [
-        {
-          name: '王小明',
-          age: 18,
-          address: '北京市朝阳区\r芍药居',
-          // _disabled:true,
-          status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
-          width60: 'width60',
-          width70: 'width70',
-          width80: 'width80',
-          width90: 'width90',
-          width100: 'width100',
-          width110: 'width110',
-          width120: 'width120',
-          notset: 'notset',
-        },
-        {
-          name: '张小刚',
-          age: 25,
-          address: '北京市海淀区西二旗',
-          status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
-          width60: 'width60',
-          width70: 'width70',
-          width80: 'width80',
-          width90: 'width90',
-          width100: 'width100',
-          width110: 'width110',
-          width120: 'width120',
-          notset: 'notset',
-        },
-        {
-          name: '李小红',
-          age: 30,
-          address: '上海市浦东新区世纪大道',
-          status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
-        },
-        {
-          name: '周小伟',
-          age: 26,
-          address: '深圳市南山区深南大道',
-          status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
-        },
-        {
-          name: '周小伟',
-          age: 26,
-          address: '深圳市南山区深南大道',
-          status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
-        },
-        {
-          name: '周小伟',
-          age: 26,
-          address: '深圳市南山区深南大道',
-          status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
-        }
+//        {
+//          name: '张小刚',
+//          age: 25,
+//          address: '北京市海淀区西二旗',
+//          status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
+//          width60: 'width60',
+//          width70: 'width70',
+//          width80: 'width80',
+//          width90: 'width90',
+//          width100: 'width100',
+//          width110: 'width110',
+//          width120: 'width120',
+//          notset: 'notset',
+//        },
+//        {
+//          name: '李小红',
+//          age: 30,
+//          address: '上海市浦东新区世纪大道',
+//          status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
+//        },
+//        {
+//          name: '周小伟',
+//          age: 26,
+//          address: '深圳市南山区深南大道',
+//          status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
+//        },
+//        {
+//          name: '周小伟',
+//          age: 26,
+//          address: '深圳市南山区深南大道',
+//          status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
+//        },
+//        {
+//          name: '周小伟',
+//          age: 26,
+//          address: '深圳市南山区深南大道',
+//          status:"hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快",
+//        }
       ],
       multiTitle:[
-        {title:'姓名信息',cols:1,rows:1,align:'center',hiddenCol:false},
-        {title:'基本信息',cols:3,align:'center'},
-        {title:'详情',cols:1,align:'center'},
+        [
+          {title:'序号',col:1,rows:3,align:'center',className:'rule_id',fixed:'left'},
+          {title:'指标',col:1,rows:3,align:'center',className:'complianceIndex',fixed:'left'},
+          {title:'2009/01/09',cols:4,align:'center',className:'multi'},
+          {title:'2009/01/10',cols:4,align:'center',className:'multi'},
+          {title:'2009/01/11',cols:4,align:'center',className:'multi'},
+          {title:'2009/01/12',cols:4,align:'center',className:'multi'},
+          {title:'2009/01/13',cols:4,align:'center',className:'multi'},
+          {title:'2009/01/14',cols:4,align:'center',className:'multi'},
+          {title:'2009/01/15',cols:4,align:'center',className:'multi'},
+        ],
+        [
+          {align: "center",cols: 2,title: "存量资产(元)"}, {align: "center",cols: 2,title: "剩余额度/缺口(元)"},
+          {align: "center",cols: 2,title: "存量资产(元)"}, {align: "center",cols: 2,title: "剩余额度/缺口(元)"},
+          {align: "center",cols: 2,title: "存量资产(元)"}, {align: "center",cols: 2,title: "剩余额度/缺口(元)"},
+          {align: "center",cols: 2,title: "存量资产(元)"}, {align: "center",cols: 2,title: "剩余额度/缺口(元)"},
+          {align: "center",cols: 2,title: "存量资产(元)"}, {align: "center",cols: 2,title: "剩余额度/缺口(元)"},
+          {align: "center",cols: 2,title: "存量资产(元)"}, {align: "center",cols: 2,title: "剩余额度/缺口(元)"},
+          {align: "center",cols: 2,title: "存量资产(元)"}, {align: "center",cols: 2,title: "剩余额度/缺口(元)"},
+        ],
+        [
+          {align: "center",key: "asset_before_0",title: "试算前"},{align: "center",key: "asset_after_0",title: "试算后"},
+          {align: "center",key: "left_amout_before_0",title: "试算前"},{align: "center",key: "left_amout_after_0",title: "试算后"},
+          {align: "center",key: "asset_before_1",title: "试算前"},{align: "center",key: "asset_after_1",title: "试算后"},
+          {align: "center",key: "left_amout_before_1",title: "试算前"},{align: "center",key: "left_amout_after_1",title: "试算后"},
+          {align: "center",key: "asset_before_2",title: "试算前"},{align: "center",key: "asset_after_2",title: "试算后"},
+          {align: "center",key: "left_amout_before_2",title: "试算前"},{align: "center",key: "left_amout_after_2",title: "试算后"},
+          {align: "center", key: "asset_before_3", title: "试算前"},{align: "center", key: "asset_after_3", title: "试算后"},
+          {align: "center", key: "left_amout_before_3", title: "试算前"},{align: "center", key: "left_amout_after_3", title: "试算后"},
+          {align: "center", key: "asset_before_4", title: "试算前"},{align: "center", key: "asset_after_4", title: "试算后"},
+          {align: "center", key: "left_amout_before_4", title: "试算前"},{align: "center", key: "left_amout_after_4", title: "试算后"},
+          {align: "center", key: "asset_before_5", title: "试算前"},{align: "center", key: "asset_after_5", title: "试算后"},
+          {align: "center", key: "left_amout_before_5", title: "试算前"},{align: "center", key: "left_amout_after_5", title: "试算后"},
+          {align: "center", key: "asset_before_6", title: "试算前"},{align: "center", key: "asset_after_6", title: "试算后"},
+          {align: "center", key: "left_amout_before_6", title: "试算前"},{align: "center", key: "left_amout_after_6", title: "试算后"}
+        ]
       ],
       baseData: [{
         expand: true,
@@ -1043,7 +1078,67 @@ export default {
       this.$hMessage.info('点击了取消');
     },
     resetSort() {
-      this.$refs.table.resetAllSort()
+//      this.$refs.table.resetAllSort()
+      let newArr = this.columnsMulti.filter(item => item.title !== '试算后')
+      this.columnsMulti = []
+      this.multiTitle = []
+      this.$nextTick(()=> {
+        this.columnsMulti = newArr
+        this.multiTitle = [
+          [
+            {title:'序号',col:1,rows:3,align:'center',className:'rule_id',fixed:'left'},
+            {title:'指标',col:1,rows:3,align:'center',className:'complianceIndex',fixed:'left'},
+            {title:'2009/01/09',cols:2,align:'center',className:'multi'},
+            {title:'2009/01/10',cols:2,align:'center',className:'multi'},
+            {title:'2009/01/11',cols:2,align:'center',className:'multi'},
+            {title:'2009/01/12',cols:2,align:'center',className:'multi'},
+            {title:'2009/01/13',cols:2,align:'center',className:'multi'},
+            {title:'2009/01/14',cols:2,align:'center',className:'multi'},
+            {title:'2009/01/15',cols:2,align:'center',className:'multi'},
+          ],
+          [
+            {align: "center",cols: 1,title: "存量资产(元)"}, {align: "center",cols: 1,title: "剩余额度/缺口(元)"},
+            {align: "center",cols: 1,title: "存量资产(元)"}, {align: "center",cols: 1,title: "剩余额度/缺口(元)"},
+            {align: "center",cols: 1,title: "存量资产(元)"}, {align: "center",cols: 1,title: "剩余额度/缺口(元)"},
+            {align: "center",cols: 1,title: "存量资产(元)"}, {align: "center",cols: 1,title: "剩余额度/缺口(元)"},
+            {align: "center",cols: 1,title: "存量资产(元)"}, {align: "center",cols: 1,title: "剩余额度/缺口(元)"},
+            {align: "center",cols: 1,title: "存量资产(元)"}, {align: "center",cols: 1,title: "剩余额度/缺口(元)"},
+            {align: "center",cols: 1,title: "存量资产(元)"}, {align: "center",cols: 1,title: "剩余额度/缺口(元)"},
+          ],
+          [
+            {align: "center",key: "asset_before_0",title: "试算前"},
+            {align: "center",key: "left_amout_before_0",title: "试算前"},
+            {align: "center",key: "asset_before_1",title: "试算前"},
+            {align: "center",key: "left_amout_before_1",title: "试算前"},
+            {align: "center",key: "asset_before_2",title: "试算前"},
+            {align: "center",key: "left_amout_before_2",title: "试算前"},
+            {align: "center", key: "asset_before_3", title: "试算前"},
+            {align: "center", key: "left_amout_before_3", title: "试算前"},
+            {align: "center", key: "asset_before_4", title: "试算前"},
+            {align: "center", key: "left_amout_before_4", title: "试算前"},
+            {align: "center", key: "asset_before_5", title: "试算前"},
+            {align: "center", key: "left_amout_before_5", title: "试算前"},
+            {align: "center", key: "asset_before_6", title: "试算前"},
+            {align: "center", key: "left_amout_before_6", title: "试算前"}
+          ]
+        ]
+//        this.dataMulti = [{
+//          rule_id: 1,
+//          complianceIndex: 'hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快',
+//          asset_before_0: 18,
+//          asset_after_0: '北京市朝阳区\n芍药居',
+//          left_amout_before_0:123,
+//          left_amout_after_0: 3441234,
+//          asset_before_1: 1232144,
+//          asset_after_1: 54685464,
+//          left_amout_before_1: 'width90',
+//          left_amout_after_1: 'width100',
+//          asset_before_2: 'width110',
+//          asset_after_2: 'width120',
+//          left_amout_before_2: 'notset',
+//          left_amout_after_2: 'notset',
+//        },]
+      })
     },
     convertTreeData(rows, attributes) {
       var keyNodes = {}, parentKeyNodes = {};
