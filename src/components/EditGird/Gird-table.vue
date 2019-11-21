@@ -1018,7 +1018,7 @@ export default {
     cancelSelect(index) {
       this.objData[index]._isChecked = false
       const selection = this.getSelection()
-      let row = this.sortChangeIndex ? this.objData[index] : this.cloneData[index]
+      let row = this.sortChangeIndex ? this.rebuildData[index] : this.cloneData[index]
       this.$emit('on-select-cancel',
         selection, JSON.parse(JSON.stringify(row)), index)
     },
@@ -1071,7 +1071,7 @@ export default {
         const status = !data._isChecked
         _this.objData[_index]._isChecked = status
         const selection = this.getSelection()
-        let row = this.sortChangeIndex ? _this.objData[_index] : _this.cloneData[_index]
+        let row = this.sortChangeIndex ? _this.rebuildData[_index] : _this.cloneData[_index]
         this.$emit(status ? 'on-select' : 'on-select-cancel',
           selection, JSON.parse(JSON.stringify(row)), _index)
         this.$emit('on-selection-change',

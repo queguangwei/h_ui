@@ -190,6 +190,7 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
     &-expand{
       cursor: pointer;
       transition: transform $transition-time $ease-in-out;
+      display: inline-block;
       i{
         font-size: $font-size-base;
       }

@@ -85,7 +85,7 @@
                   </td>
                   <td :colspan="columns[0].type=='selection'?columns.length-1:columns.length" :style="groupStyle">
                     <div :class="prefixCls+'-cell-group'" @click="handleToggleExpand(row)">
-                      <span :class="groupCls(Boolean(row.expand))">
+                      <span :class="groupCls(Boolean(row._isExpand))">
                         <Icon name="enter"></Icon>
                       </span>
                       <span :class="prefixCls+'-cell-title'">{{row.title}}</span>
@@ -226,7 +226,7 @@
                     </td>
                     <td :colspan="columns[0].type=='selection'?columns.length-1:columns.length">
                       <div :class="prefixCls+'-cell-group'" @click="handleToggleExpand(row)">
-                        <span :class="groupCls(Boolean(row.expand))">
+                        <span :class="groupCls(Boolean(row._isExpand))">
                           <Icon name="enter"></Icon>
                         </span>
                         <span :class="prefixCls+'-cell-title'">{{row.title}}</span>
@@ -777,16 +777,16 @@ export default {
     }
   },
   methods: {
-    groupCls (expanded) {
+    groupCls(expanded) {
       return [
         `${this.prefixCls}-cell-expand`,
         {
           [`${this.prefixCls}-cell-expand-expanded`]: expanded
         }
-      ];
+      ]
     },
     // group row clsaa
-    groupRowClasses (row) {
+    groupRowClasses(row) {
       let _title = Number(row._index) % 2 == 0 ? false : true
       return {
         [`${this.prefixCls}-title-stripe`]: _title,
@@ -794,7 +794,7 @@ export default {
       }
     },
     // 单元格点击
-    handleCellClick (event,value, rowIndex, column) {
+    handleCellClick(event,value, rowIndex, column) {
       if (this.cellClick && column.type != 'index' && column.type != 'selection') {
         if (this.curCellCheck.length > 0 && (this.curCellCheck[0] !== rowIndex || this.curCellCheck[1] !== column.key)) {
           this.cellCheckObj[this.curCellCheck[0]][this.curCellCheck[1]] = false
@@ -834,20 +834,28 @@ export default {
         // 更新滚动条高度，最后一个主表收起时会空白
         curScrollTop = curScrollTop - this.itemHeight * Number(row.childNum) > 0 ? curScrollTop - this.itemHeight * Number(row.childNum) : 0
       } else {
-          this.realRebuildData.splice(realIndex + 1, 0, ...this.hideData[row._rowIndex])
+        this.realRebuildData.splice(realIndex + 1, 0, ...this.hideData[row._rowIndex])
       }
-      // 更新可视数据visibleData
-      this.updateVisibleData(curScrollTop)
       // 展开或收缩
       this.objData[row._index]._isExpand = !this.objData[row._index]._isExpand
+      this.realRebuildData.map((item)=>{
+        if(item._index === row._index) {
+          item._isExpand = !item._isExpand
+        }
+      })
+      // 更新可视数据visibleData
+      this.updateVisibleData(curScrollTop)
+      this.$emit('on-expand',
+        JSON.parse(JSON.stringify(this.rebuildData[row._index])),
+        this.objData[row._index]._isExpand)
     },
     calcCheckboxSize(size) {
       return size || 'large'
     },
-    toggleIsCurrent (val) {
+    toggleIsCurrent(val) {
       this.isCurrent = val
     },
-    cellClasses (column) {
+    cellClasses(column) {
       return [
         `${this.prefixCls}-cell`,
       ];
@@ -860,10 +868,10 @@ export default {
         }
       ]
     },
-    rowClsName (index) {
+    rowClsName(index) {
       return this.rowClassName(this.data[index], index);
     },
-    classesTd (column) {
+    classesTd(column) {
       return [
         `${this.prefixCls}-cell`,
         {
@@ -871,7 +879,7 @@ export default {
         }
       ];
     },
-    rowChecked (_index) {
+    rowChecked(_index) {
       if(!this.objData[_index]){
         return false;
       }else{
@@ -914,7 +922,7 @@ export default {
         this.$emit('on-drag', width, key);
       })
     },
-    getLeftWidth (){
+    getLeftWidth(){
       this.$nextTick(()=>{
         const columns = this.cloneColumns;
         for (let i = 0; i < columns.length; i++) {
@@ -992,7 +1000,7 @@ export default {
 
             document.body.style.cursor = '';
             _this.dragging = false;
-             _this.draggingColumn = false;
+            _this.draggingColumn = false;
             _this.dragState = {};
 
             table.resizeProxyVisible = false;
@@ -1129,7 +1137,7 @@ export default {
       if (this.$isServer) return;
       document.body.style.cursor = '';
     },
-    sortCloumn (curIndex,insertIndex,_index){
+    sortCloumn(curIndex,insertIndex,_index){
       if (this.cloneColumns[insertIndex].fixed) return;
       const item = this.cloneColumns[curIndex];
       this.cloneColumns.splice(curIndex,1);
@@ -1143,7 +1151,7 @@ export default {
       }
       return obj;
     },
-    handleResize () {
+    handleResize() {
       this.$nextTick(() => {
         this.$refs.content.style.transform = `translate3d(0, ${this.$refs.body.scrollTop}px, 0)`;
         if (this.$refs.leftContent) {
@@ -1181,14 +1189,14 @@ export default {
                 width = width - 1;
               }
               if (column.width) {
-                  width = column.width||'';
+                width = column.width||'';
               } else {
-                  if (width < 100) width = 100;
+                if (width < 100) width = 100;
               }
               this.cloneColumns[i]._width = width||'';
               this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b);
               columnsWidth[column._index] = {
-                  width: width
+                width: width
               };
             }
             this.columnsWidth = columnsWidth;
@@ -1200,16 +1208,16 @@ export default {
               if (i === autoWidthIndex) {
                 width = parseInt(getStyle($th[i], 'width')) - 1;
               }
-             // 自适应列在表格宽度较小时显示异常，为自适应列设置最小宽度100（拖拽后除外）
+              // 自适应列在表格宽度较小时显示异常，为自适应列设置最小宽度100（拖拽后除外）
               if (column.width) {
-                  width = column.width||'';
+                width = column.width||'';
               } else {
-                  if (width < 100) width = 100;
+                if (width < 100) width = 100;
               }
               this.cloneColumns[i]._width = width||'';
               this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b);
               columnsWidth[column._index] = {
-                  width: width
+                width: width
               };
             }
             // this.tableWidth = this.cloneColumns.map(cell => cell._width).reduce((a, b) => a + b);
@@ -1258,7 +1266,7 @@ export default {
     },
     handleClick(){
     },
-    handleClickTr (event,rowIndex,status) {
+    handleClickTr(event,rowIndex,status) {
       if (event.shiftKey&&rowIndex) {
         this.getshiftSelect(rowIndex);
       }else if(!status){
@@ -1268,50 +1276,50 @@ export default {
         this.shiftSelect=[]
       }
     },
-    handleMouseIn (_index) {
-        if (this.disabledHover) return;
-        if (this.objData[_index]._isHover) return;
-        // this.objData[_index]._isHover = true;
-        this.hoverIndex = _index
+    handleMouseIn(_index) {
+      if (this.disabledHover) return;
+      if (this.objData[_index]._isHover) return;
+      // this.objData[_index]._isHover = true;
+      this.hoverIndex = _index
     },
-    handleMouseOut (_index) {
-        if (this.disabledHover) return;
-        // this.objData[_index]._isHover = false;
-        this.hoverIndex = -1
+    handleMouseOut(_index) {
+      if (this.disabledHover) return;
+      // this.objData[_index]._isHover = false;
+      this.hoverIndex = -1
     },
     highlightCurrentRow (_index) {
-        if (!this.highlightRow) return;
-        const curStatus = this.objData[_index] && this.objData[_index].hasOwnProperty('_isHighlight') ? this.objData[_index]._isHighlight : false;
-        let oldIndex = -1;
-        for (let i in this.objData) {
-          this.objData[i]._isChecked = false;//单选时取消多选项，估值6.0专用
-            if (this.objData[i]._isHighlight && this.objData[_index].hasOwnProperty('_isHighlight')) {
-              oldIndex = parseInt(i);
-              this.objData[i]._isHighlight = false;//单选是上一项取消选中
-            }
+      if (!this.highlightRow) return;
+      const curStatus = this.objData[_index] && this.objData[_index].hasOwnProperty('_isHighlight') ? this.objData[_index]._isHighlight : false;
+      let oldIndex = -1;
+      for (let i in this.objData) {
+        this.objData[i]._isChecked = false;//单选时取消多选项，估值6.0专用
+        if (this.objData[i]._isHighlight && this.objData[_index].hasOwnProperty('_isHighlight')) {
+          oldIndex = parseInt(i);
+          this.objData[i]._isHighlight = false;//单选是上一项取消选中
         }
-        if (curStatus && !this.selectOption) {
-          this.objData[_index]._isHighlight = false;
-          this.objData[_index]._isChecked = false;
-          // this.$emit('on-current-change-cancle',JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
-          this.$nextTick(()=>{
-            this.$emit('on-current-change', null,null);
-          })
-        }else{
-          if (this.objData[_index] && this.objData[_index].hasOwnProperty('_isHighlight')) this.objData[_index]._isHighlight = true;
-          if (this.objData[_index] && this.objData[_index].hasOwnProperty('_isChecked')) this.objData[_index]._isChecked = true;
-          // this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
-          this.$nextTick(()=>{
-            if(this.cloneData[_index]) {
-              this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])),_index);
-            } else {
-              this.$emit('on-current-change', null, null);
-            }
-          })
-        }
+      }
+      if (curStatus && !this.selectOption) {
+        this.objData[_index]._isHighlight = false;
+        this.objData[_index]._isChecked = false;
+        // this.$emit('on-current-change-cancle',JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
         this.$nextTick(()=>{
-          this.$emit('on-selection-change',this.getSelection(),this.getSelection(true), _index);
+          this.$emit('on-current-change', null,null);
         })
+      }else{
+        if (this.objData[_index] && this.objData[_index].hasOwnProperty('_isHighlight')) this.objData[_index]._isHighlight = true;
+        if (this.objData[_index] && this.objData[_index].hasOwnProperty('_isChecked')) this.objData[_index]._isChecked = true;
+        // this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])), oldData);
+        this.$nextTick(()=>{
+          if(this.cloneData[_index]) {
+            this.$emit('on-current-change', JSON.parse(JSON.stringify(this.cloneData[_index])),_index);
+          } else {
+            this.$emit('on-current-change', null, null);
+          }
+        })
+      }
+      this.$nextTick(()=>{
+        this.$emit('on-selection-change',this.getSelection(),this.getSelection(true), _index);
+      })
     },
     clickCurrentRowTr (event,_index) {
       if (!this.cellClick) {
@@ -1370,7 +1378,7 @@ export default {
     getSelection (status=false) {
       let selectionIndexes = [];
       for (let i in this.objData) {
-          if (this.objData[i]._isChecked) selectionIndexes.push(parseInt(i));
+        if (this.objData[i]._isChecked) selectionIndexes.push(parseInt(i));
       }
       // return status?selectionIndexes:JSON.parse(JSON.stringify(this.data.filter((data, index) => selectionIndexes.indexOf(index) > -1)));
       // 考虑addData模式
@@ -1429,9 +1437,9 @@ export default {
     },
     clearAllRow(){
       for (let i in this.objData) {
-          if (this.objData[i]._isHighlight) {
-            this.objData[i]._isHighlight = false;
-          }
+        if (this.objData[i]._isHighlight) {
+          this.objData[i]._isHighlight = false;
+        }
       }
     },
     toggleMached(arr){
@@ -1449,7 +1457,7 @@ export default {
         this.objData[index]._isChecked = status;
       }
     },
-    selectAll (status) {
+    selectAll(status) {
       this.allclick=true;
       for(const data of this.visibleData){
         this.objData[data._index]._isHighlight=false;
@@ -1465,7 +1473,7 @@ export default {
           if(this.objData[data._index]._isDisabled){
             continue;
           }else{
-           this.objData[data._index]._isChecked = status;
+            this.objData[data._index]._isChecked = status;
           }
         }
         this.$nextTick(()=>{
@@ -1486,25 +1494,25 @@ export default {
         this.$emit('on-selection-change', this.getSelection(),this.getSelection(true), this.curShiftIndex);
       })
     },
-    fixedHeader () {
+    fixedHeader() {
       if (this.height) {
         this.$nextTick(() => {
-            const titleHeight = parseInt(getStyle(this.$refs.title, 'height')) || 0;
-            if (titleHeight>0) {
-              if(this.$refs.leftF)this.$refs.leftF.style.marginTop=titleHeight+'px';
-              if(this.$refs.rightF)this.$refs.rightF.style.marginTop=titleHeight+'px';
-            }
+          const titleHeight = parseInt(getStyle(this.$refs.title, 'height')) || 0;
+          if (titleHeight>0) {
+            if(this.$refs.leftF)this.$refs.leftF.style.marginTop=titleHeight+'px';
+            if(this.$refs.rightF)this.$refs.rightF.style.marginTop=titleHeight+'px';
+          }
 
-            // 兼容 columns 异步生成
-            const headerHeight = this.headerRealHeight || parseInt(getStyle(this.$refs.header, 'height')) || 0;
-            const footerHeight = parseInt(getStyle(this.$refs.footer, 'height')) || 0;
-            this.bodyHeight = this.height - titleHeight - headerHeight - footerHeight;
+          // 兼容 columns 异步生成
+          const headerHeight = this.headerRealHeight || parseInt(getStyle(this.$refs.header, 'height')) || 0;
+          const footerHeight = parseInt(getStyle(this.$refs.footer, 'height')) || 0;
+          this.bodyHeight = this.height - titleHeight - headerHeight - footerHeight;
         });
       } else {
         this.bodyHeight = 0;
       }
     },
-    handleBodyScroll (event) {
+    handleBodyScroll(event) {
       if (window.requestAnimationFrame) { // 该特性有浏览器限制
         this.updateVisibleAnimate(event)
       } else {
@@ -1530,7 +1538,7 @@ export default {
     /**
     * @description 使用requestAnimationFrame根据动画帧更新visibleData，原理同setTimeout，更贴近浏览器重绘原理
     */
-    updateVisibleAnimate (event) {
+    updateVisibleAnimate(event) {
       if (this.scheduledAnimationFrame) { return }
       this.scheduledAnimationFrame = true
       this.animationFrame = window.requestAnimationFrame((num) => {
@@ -1567,37 +1575,37 @@ export default {
     handleFixedMousewheel(event) {
       let deltaY = event.deltaY;
       if(!deltaY && event.detail){
-          deltaY = event.detail * this.itemHeight;
+        deltaY = event.detail * this.itemHeight;
       }
       if(!deltaY && event.wheelDeltaY){
-          deltaY = -event.wheelDeltaY;
+        deltaY = -event.wheelDeltaY;
       }
       if(!deltaY && event.wheelDelta){
-          deltaY = -event.wheelDelta;
+        deltaY = -event.wheelDelta;
       }
       if(!deltaY) return;
       const body = this.$refs.body;
       const currentScrollTop = body.scrollTop;
       if (deltaY < 0 && currentScrollTop !== 0) {
-          event.preventDefault();
+        event.preventDefault();
       }
       if (deltaY > 0 && body.scrollHeight - body.clientHeight > currentScrollTop) {
-          event.preventDefault();
+        event.preventDefault();
       }
       //body.scrollTop += deltaY;
       let step = 0;
       let timeId = setInterval(()=>{
-          step += this.itemHeight;
-          if(deltaY>0){
-              body.scrollTop += this.itemHeight;
-          }
-          else{
-              body.scrollTop -= this.itemHeight;
-          }
-          if(step >= Math.abs(deltaY)){
-              clearInterval(timeId);
-          }
-      }, 1);
+        step += this.itemHeight;
+        if(deltaY>0){
+          body.scrollTop += this.itemHeight;
+        }
+        else{
+          body.scrollTop -= this.itemHeight;
+        }
+        if(step >= Math.abs(deltaY)){
+          clearInterval(timeId);
+        }
+    }, 1);
     },
     updateVisibleData(scrollTop) {
       scrollTop = scrollTop || (this.$refs.body ? this.$refs.body.scrollTop : 0) || 0
@@ -1611,7 +1619,7 @@ export default {
       //   this.$refs.leftContent.style.transform = `translate3d(0, ${curtop}px, 0)`;
       // }
     },
-    handleMouseWheel (event) {
+    handleMouseWheel(event) {
       const deltaX = event.deltaX;
       const $body = this.$refs.body;
       if (deltaX > 0) {
@@ -1630,7 +1638,7 @@ export default {
       return index;
     },//rightFixed index error
     // 转换数据，仅有一层子节点
-    makeData () {
+    makeData() {
       let i = 0
       let newData = []
       this.hideData = {}
@@ -1679,7 +1687,7 @@ export default {
       });
       return newData;
     },
-    makeObjData () {
+    makeObjData() {
       let data = {}
       let cellObj = {} // 单元格点击状态
       if (this.columns && this.columns.length > 0 && this.cellClick) {
@@ -1693,19 +1701,19 @@ export default {
           const newRow = deepCopy(row);// todo 直接替换
           newRow._isHover = false;
           if (newRow._disabled) {
-              newRow._isDisabled = newRow._disabled;
+            newRow._isDisabled = newRow._disabled;
           } else {
-              newRow._isDisabled = false;
+            newRow._isDisabled = false;
           }
           if (newRow._checked) {
-              newRow._isChecked = newRow._checked;
+            newRow._isChecked = newRow._checked;
           } else {
-              newRow._isChecked = false;
+            newRow._isChecked = false;
           }
           if (newRow._highlight) {
-              newRow._isHighlight = newRow._highlight;
+            newRow._isHighlight = newRow._highlight;
           } else {
-              newRow._isHighlight = false;
+            newRow._isHighlight = false;
           }
           data[index] = newRow
           if (this.cellClick) newCellObj[index] = JSON.parse(JSON.stringify(cellObj))
@@ -1714,7 +1722,7 @@ export default {
       }
       return data
     },
-    makeColumns () {
+    makeColumns() {
       var that = this;
       let columns = deepCopy(this.columns);
       let left = [];
@@ -1734,21 +1742,21 @@ export default {
         column._filterChecked = [];
 
         if ('filterMultiple' in column) {
-            column._filterMultiple = column.filterMultiple;
+          column._filterMultiple = column.filterMultiple;
         } else {
-            column._filterMultiple = true;
+          column._filterMultiple = true;
         }
         if ('filteredValue' in column) {
-            column._filterChecked = column.filteredValue;
-            column._isFiltered = true;
+          column._filterChecked = column.filteredValue;
+          column._isFiltered = true;
         }
         if (!column.hiddenCol || column.hiddenCol=='false') {
           if (column.fixed && column.fixed === 'left') {
-              left.push(column);
+            left.push(column);
           } else if (column.fixed && column.fixed === 'right') {
-              right.push(column);
+            right.push(column);
           } else {
-              center.push(column);
+            center.push(column);
           }
         }
       });
@@ -1762,10 +1770,10 @@ export default {
         this.initWidth =parseInt(getStyle(this.$refs.tableWrap, 'width')) || 0;
       });
     },
-    exportCsv (params={}) {
+    exportCsv(params={}) {
       if (params.filename) {
         if (params.filename.indexOf('.csv') === -1) {
-            params.filename += params.format?'.'+params.format:'.csv';
+          params.filename += params.format?'.'+params.format:'.csv';
         }
       } else {
         params.filename = params.format?'simpleTable.'+params.format:'simpleTable.csv';
@@ -1773,12 +1781,12 @@ export default {
       let columns = [];
       let datas = [];
       if (params.columns && params.data) {
-          columns = params.columns;
-          datas = params.data;
+        columns = params.columns;
+        datas = params.data;
       } else {
-          columns = this.columns;
-          if (!('original' in params)) params.original = true;
-          datas = params.original ? this.data : this.rebuildData;
+        columns = this.columns;
+        if (!('original' in params)) params.original = true;
+        datas = params.original ? this.data : this.rebuildData;
       }
       let noHeader = false;
       if ('noHeader' in params) noHeader = params.noHeader;
@@ -1810,7 +1818,7 @@ export default {
         }
       }
     },
-    navigateOptions (direction) {
+    navigateOptions(direction) {
       if (this.isFocusSelect && this.objData[this.focusIndex]) {
         if (this.objData[this.focusIndex].hasOwnProperty('_isChecked')) this.objData[this.focusIndex]._isChecked = false
         if (this.objData[this.focusIndex].hasOwnProperty('_isHighlight')) this.objData[this.focusIndex]._isHighlight = false;
@@ -1860,7 +1868,7 @@ export default {
         }
       }
     },
-    handleKeyup (e) {
+    handleKeyup(e) {
       if (this.isCurrent) {
         this.isFocusSelect = true
         if (e.keyCode === 40 || e.keyCode === 38) {
@@ -1871,13 +1879,13 @@ export default {
       }
     }
   },
-  created () {
-      if (!this.context) this.currentContext = this.$parent;
-      this.showSlotHeader = this.$slots.header !== undefined;
-      this.showSlotFooter = this.$slots.footer !== undefined;
-      // this.rebuildData = this.makeData();
+  created() {
+    if (!this.context) this.currentContext = this.$parent;
+    this.showSlotHeader = this.$slots.header !== undefined;
+    this.showSlotFooter = this.$slots.footer !== undefined;
+    // this.rebuildData = this.makeData();
   },
-  mounted () {
+  mounted() {
     this.handleResize();
     this.fixedHeader();
     this.getLeftWidth();
@@ -1890,7 +1898,6 @@ export default {
       this.updateVisibleData();
       // this.focusIndex = this.defaultFocusIndex
     });
-    //window.addEventListener('resize', this.handleResize, false);
     on(window, 'resize', this.handleResize);
     on(window, 'resize', this.initResize);
     on(window, 'resize', this.getLeftWidth);
@@ -1902,104 +1909,102 @@ export default {
       }
     });
   },
-  beforeDestroy () {
-      //window.removeEventListener('resize', this.handleResize, false);
-      off(window, 'resize', this.handleResize);
-      off(window, 'resize', this.initResize);
-      off(window, 'resize', this.getLeftWidth);
-      off(document,'keydown',this.handleKeydown)
-      off(document,'keyup', this.handleKeyup);
-      window.cancelAnimationFrame(this.animationFrame)
-
+  beforeDestroy() {
+    off(window, 'resize', this.handleResize);
+    off(window, 'resize', this.initResize);
+    off(window, 'resize', this.getLeftWidth);
+    off(document,'keydown',this.handleKeydown)
+    off(document,'keyup', this.handleKeyup);
+    window.cancelAnimationFrame(this.animationFrame)
   },
   watch: {
-      // rebuildData: {
-      //   handler () {
-      //     this.realRebuildData = this.rebuildData.filter(item => {
-      //       return item._isShow
-      //     })
-      //   },
-      //   deep: true
-      // },
-      toScrollTop () {
-        this.privateToScrollTop = this.toScrollTop
-      },
-      privateToScrollTop (val) {
-        if (val) {
-          this.$refs.body.scrollTop = this.scrollTopSet
-          this.$nextTick(() => {
-            this.clickCurrentRow(0)
-          })
-        }
-      },
-      data: {
-        handler () {
-          // const oldDataLen = this.rebuildData.length;
-          this.rebuildData = this.makeData();
-          // this.initCellClickStatus()
-          this.objData = this.makeObjData();
-          this.updateVisibleData(0);
-          this.handleResize();
-          // here will trigger before clickCurrentRow, so use async
-          this.$nextTick(()=>{
-            this.cloneData = deepCopy(this.rebuildData);
-          })
-        },
-        deep: true,
-        immediate: true
-      },
-      columns: {
-        handler () {
-          // this.initCellClickStatus()
-          // todo 这里有性能问题，可能是左右固定计算属性影响的
-          this.cloneColumns = this.makeColumns();
-          // this.rebuildData = this.makeData();
-          this.handleResize();
-          this.buttomNum = null;
-          this.topNum = null;
-          this.$nextTick(()=>{
-            this.updateVisibleData();
-          });
-        },
-        deep: true
-      },
-      cloneColumns: {
-        deep: true,
-        handler() {
-          this.getLeftWidth();
-        }
-      },
-      height () {
-          this.fixedHeader();
-          this.$nextTick(()=>{
-            this.visibleCount = Math.ceil(this.height / this.itemHeight) - (this.showHeader ? 0 : -1);
-            this.updateVisibleData();
-          });
-      },
-      buttomNum(val,oldvalue){
-        if(val==null || oldvalue == null) return;
+    // rebuildData: {
+    //   handler () {
+    //     this.realRebuildData = this.rebuildData.filter(item => {
+    //       return item._isShow
+    //     })
+    //   },
+    //   deep: true
+    // },
+    toScrollTop() {
+      this.privateToScrollTop = this.toScrollTop
+    },
+    privateToScrollTop(val) {
+      if (val) {
+        this.$refs.body.scrollTop = this.scrollTopSet
+        this.$nextTick(() => {
+          this.clickCurrentRow(0)
+        })
+      }
+    },
+    data: {
+      handler() {
+        // const oldDataLen = this.rebuildData.length;
+        this.rebuildData = this.makeData();
+        // this.initCellClickStatus()
+        this.objData = this.makeObjData();
+        this.updateVisibleData(0);
+        this.handleResize();
+        // here will trigger before clickCurrentRow, so use async
         this.$nextTick(()=>{
-          this.$emit('on-scroll',this.buttomNum);
+          this.cloneData = deepCopy(this.rebuildData);
         })
       },
-      shiftSelect(val){
-        if (val.length==2) {
-          this.selectRange();
-        }
+      deep: true,
+      immediate: true
+    },
+    columns: {
+      handler() {
+        // this.initCellClickStatus()
+        // todo 这里有性能问题，可能是左右固定计算属性影响的
+        this.cloneColumns = this.makeColumns();
+        // this.rebuildData = this.makeData();
+        this.handleResize();
+        this.buttomNum = null;
+        this.topNum = null;
+        this.$nextTick(()=>{
+          this.updateVisibleData();
+        });
       },
-      defaultFocusIndex (val) {
-        if (val !== null) {
-          this.focusIndex = val
-          if (val >= 0) {
-            this.$nextTick(() => {
-              this.highlightCurrentRow(val)
-            })
-          }
-        } else {
-          this.focusIndex = -1
-          this.curPageFirstIndex = 0
-        }
+      deep: true
+    },
+    cloneColumns: {
+      deep: true,
+      handler() {
+        this.getLeftWidth();
       }
+    },
+    height() {
+      this.fixedHeader();
+      this.$nextTick(()=>{
+        this.visibleCount = Math.ceil(this.height / this.itemHeight) - (this.showHeader ? 0 : -1);
+        this.updateVisibleData();
+      });
+    },
+    buttomNum(val,oldvalue){
+      if(val==null || oldvalue == null) return;
+      this.$nextTick(()=>{
+        this.$emit('on-scroll',this.buttomNum);
+      })
+    },
+    shiftSelect(val){
+      if (val.length==2) {
+        this.selectRange();
+      }
+    },
+    defaultFocusIndex(val) {
+      if (val !== null) {
+        this.focusIndex = val
+        if (val >= 0) {
+          this.$nextTick(() => {
+            this.highlightCurrentRow(val)
+          })
+        }
+      } else {
+        this.focusIndex = -1
+        this.curPageFirstIndex = 0
+      }
+    }
   },
   activated() {
     if (this.keepAliveFlag) {
@@ -2015,5 +2020,5 @@ export default {
       off(window, 'resize', this.handleResize);
     }
   },
-};
+}
 </script>

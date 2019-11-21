@@ -540,7 +540,9 @@ export default {
       }
     },
     setLoading(){
-      this.$set(this.bigData[0],'fundId','sheishi')
+//      this.$set(this.bigData[0],'fundId','sheishi')
+      this.$set(this.bigData[2],'_checked',true)
+      this.bigData[2]._checked = true
       // this.loading = !this.loading;
     },
     delSelected() {
