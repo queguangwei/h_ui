@@ -393,11 +393,9 @@ export default {
       const obj = this.$refs.content
       const width = parseInt(this.curWidth)
       if (this.allHeight >= this.WindosInnerHeight) {
-        if(!this.$refs.wrap)
-          this.$refs.wrap.style.display = 'block'
+        this.$refs.wrap.style.display = 'block'
       } else if (Number(this.top) <= 0) {
-        if(!this.$refs.wrap)
-          this.$refs.wrap.style.display = 'flex'
+        this.$refs.wrap.style.display = 'flex'
       }
       if (this.isMax) {
         obj.style.top = '0px'
