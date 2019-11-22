@@ -83,15 +83,7 @@
                       <Checkbox :value="rowChecked(row._index)" @on-change="toggleSelect(row._index)"></Checkbox>
                     </div>
                   </td>
-                  <td v-if="titleFix" :colspan="columns[0].type=='selection'?columns.length-1:columns.length" :style="titleFixStyle">
-                    <div :class="prefixCls+'-cell-group'" @click="handleToggleExpand(row)">
-                      <span :class="groupCls(Boolean(row._isExpand))">
-                        <Icon name="enter"></Icon>
-                      </span>
-                      <span :class="prefixCls+'-cell-title'">{{row.title}}</span>
-                    </div>
-                  </td>
-                  <td v-else :colspan="columns[0].type=='selection'?columns.length-1:columns.length" :style="groupStyle">
+                  <td :colspan="columns[0].type=='selection'?columns.length-1:columns.length" :style="groupStyle">
                     <div :class="prefixCls+'-cell-group'" @click="handleToggleExpand(row)">
                       <span :class="groupCls(Boolean(row._isExpand))">
                         <Icon name="enter"></Icon>
@@ -232,15 +224,7 @@
                         <Checkbox :value="rowChecked(row._index)" @on-change="toggleSelect(row._index)"></Checkbox>
                       </div>
                     </td>
-                    <td v-if="titleFix" :colspan="columns[0].type=='selection'?columns.length-1:columns.length">
-                      <div :class="prefixCls+'-cell-group'">
-                        <!--<span :class="groupCls(Boolean(row._isExpand))">-->
-                        <!--<Icon name="enter"></Icon>-->
-                        <!--</span>-->
-                        <!--<span :class="prefixCls+'-cell-title'">{{row.title}}</span>-->
-                      </div>
-                    </td>
-                    <td v-else :colspan="columns[0].type=='selection'?columns.length-1:columns.length">
+                    <td :colspan="columns[0].type=='selection'?columns.length-1:columns.length">
                       <div :class="prefixCls+'-cell-group'" @click="handleToggleExpand(row)">
                         <span :class="groupCls(Boolean(row._isExpand))">
                           <Icon name="enter"></Icon>
@@ -460,7 +444,7 @@ export default {
       type: Boolean,
       default: false
     },
-    titleFix: {
+    fixNotShadow: {
       type: Boolean,
       default: false
     }
@@ -524,16 +508,6 @@ export default {
     }
   },
   computed: {
-    titleFixStyle() {
-      // 固定主表的头，padding-left = 滚动条左侧滚动距离+冻结列宽度
-      let width = 0
-      this.leftFixedColumns.forEach((col) => {
-        if (col.fixed && col.fixed === 'left') width += col._width
-      })
-      return {
-        paddingLeft: this.scrollLeft + width + 'px'
-      }
-    },
     groupStyle () {
       // 固定主表的头，padding-left == 滚动条左侧滚动距离-非冻结滚动时也固定
       return {
@@ -686,7 +660,7 @@ export default {
       return [
         `${prefixCls}-fixed-body`,
         {
-          [`${prefixCls}-fixed-body-shadow`]:this.data.length!=0
+          [`${prefixCls}-fixed-body-shadow`]:this.data.length!=0&&!this.fixNotShadow
         }
       ]
     },

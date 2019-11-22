@@ -9,7 +9,7 @@
     <Button @click="scroll20">scrollTo0</Button>
     <h-simple-table :columns="columnsBig1" :data="bigData" :addData="addData"  :summationData="summationData"
                     :loading="loading" :row-class-name="rowClassName" bodyAlgin="left" height="500"
-                    canDrag border stripe rowSelectOnly :toScrollTop="scrollTop" :scrollTopSet="200"
+                    canDrag canMove border stripe rowSelectOnly :toScrollTop="scrollTop" :scrollTopSet="200"
                     @on-select="select" @on-select-cancel="select" @on-drag="onDrag"
                     @on-select-all='change' @on-selection-change="change">
       <span slot="loading">我是自定义加载！！！</span>
@@ -149,9 +149,12 @@ export default {
         {
           title: '邀请人数',
           key: 'investType',
-//          width: 200,
+          width: 200,
 //          fixed:'left'
         },
+        {
+          title: ' '
+        }
       ],
       multiTitle:[
         {title:'信息',cols:2,rows:1,align:'center'},

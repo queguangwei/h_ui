@@ -988,6 +988,10 @@ export default {
       if (!column) return
       if (!this.canDrag && !this.canMove) return
       let _this = this
+      // o45特殊情况在表格最后添加空白列不可拖动拖宽
+      if(column.title === ' ' && index === column._index) {
+        return
+      }
       if (this.draggingColumn) {
         this.dragging = true
         this.resizeProxyVisible = true
