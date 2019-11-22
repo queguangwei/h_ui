@@ -14,7 +14,7 @@
     <h-group-table :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" :rowSelect="true" @on-selection-change="selsetChange" :loading="loading"></h-group-table>
     <!--<h-group-table :columns="columns4" :data="data1" @on-select-all="allSelect" @on-select="select" @on-selection-change="selsetChange" :loading="loading"></h-group-table>-->
     <h3>simpleGroupTable</h3>
-    <h-simple-group-table :columns="columns1" :data="data1" highlight-row @on-row-click="handleClick" @on-expand="expand"></h-simple-group-table>
+    <h-simple-group-table :columns="columns1" :data="data1" highlight-row titleFix @on-row-click="handleClick" @on-expand="expand"></h-simple-group-table>
   </div>
 </template>
 
@@ -319,12 +319,6 @@ export default {
     return {
       loading:false,
       columns1: [
-//         {
-//           key: 'index',
-//           type: 'selection',
-//           width: 50,
-//           fixed:'left',
-//         },
          {
            title: '姓名',
            key: 'name',
