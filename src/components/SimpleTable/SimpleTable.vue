@@ -559,6 +559,7 @@ export default {
       beginLocation: {},
       isCtrlDown: false,
       curShowFiltersIdx: null,// 当前展示filter的列，防止拖拽滚动条时不隐藏filter poptip
+      keepAliveFlag: false, // 页面是否缓存
     }
   },
   computed: {
@@ -1751,7 +1752,17 @@ export default {
       })
       return filters
     },
-    handleSort(index, type) {
+    handleSort(_index, type) {
+      // 传入cloneColumns的_index,考虑hiddenCol时与实际的index不匹配，导致有hiddenCol时，排序错乱（作用于另外一个列）
+      let index = 0
+      if (this.cloneColumns && this.cloneColumns.length > 0) {
+        this.cloneColumns.some((item, idx) => {
+          if (item._index == _index) {
+            index = idx 
+            return true
+          }
+        })
+      }
       if (this.cloneColumns[index]._sortType === type) {
         type = 'normal'
       }
@@ -1766,7 +1777,7 @@ export default {
         this.cloneColumns[index]._sortType = type
         return
       }
-      let _index = this.cloneColumns[index]._index
+      // let _index = this.cloneColumns[index]._index
       //【TS:201907290144-资管业委会（资管）_孔磊-【需求类型】需求【需求描述】表格1、勾选框列可以排序，选中的在上面】
       const columnType = this.cloneColumns[index].type
       const key = this.cloneColumns[index].key
@@ -2029,6 +2040,8 @@ export default {
     handleBodyScroll(event) {
       // 修复：拖动滚动条时，无法隐藏显示过滤项
       if (this.curShowFiltersIdx !== null) this.cloneColumns[this.curShowFiltersIdx]._filterVisible = false
+      // 性能优化，横向滚动不更新数据,后续需要开启横向滚动时，在此进行判断
+      if (event.target.scrollTop === this.lastScrollTop) return 
       if (window.requestAnimationFrame) { // 该特性有浏览器限制
         this.updateVisibleAnimate(event)
       } else {
@@ -2048,6 +2061,8 @@ export default {
         )
         if (oldBottomNum !== null && this.buttomNum !== null) {
           this.$emit('on-scroll', this.buttomNum, scrolltop !== this.lastScrollTop ? 'y' : 'x')
+          // 性能优化，横向滚动不更新数据
+          if (scrolltop === this.lastScrollTop) return 
         }
         this.lastScrollTop = scrolltop
         let curtop = Math.floor(scrolltop / this.itemHeight) * this.itemHeight
