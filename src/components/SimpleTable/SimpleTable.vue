@@ -391,8 +391,8 @@ export default {
       type: Boolean,
       default: false
     },
-    rowSelect: {
-      type: Boolean, //多选时是否支持点击行选中
+    rowSelect: { // 多选时是否支持点击行选中
+      type: Boolean,
       default: false
     },
     loading: {
@@ -455,7 +455,7 @@ export default {
         return []
       }
     },
-    switchEmpty: {  //上下键盘切换选项时清空选项
+    switchEmpty: {  // 上下键盘切换选项时清空选项
       type: Boolean,
       default: false
     },
@@ -475,21 +475,25 @@ export default {
       type:Boolean,
       default:true
     },
-    rowSelectOnly: { //多选时是否支持点击行只选中，再次点击不进行反选
+    rowSelectOnly: { // 多选时是否支持点击行只选中，再次点击不进行反选
       type:Boolean,
       default:false
     },
-    clickHeadToSort: { //点击单元格头部触发排序
+    clickHeadToSort: { // 点击单元格头部触发排序
       type: Boolean,
       default: false
     },
-    isMulitSort: { //多列排序
+    isMulitSort: { // 多列排序
       type:Boolean,
       default:false,
     },
     titleEllipsis: {
       type: Boolean,
       default:true
+    },
+    allowLastColBlank: { // 允许最后一列设置空白列，最后一列表头不可拖拽，其他列拖到最后只能放在它前面
+      type: Boolean,
+      default: false
     },
     // 会在冻结列的表格中渲染所有的列（隐藏），影响性能，当每列设置宽度并...显示时，设置该属性可以提升性能，不能保证每列不换行时，不设置该属性
     noNeedOtherCol: {
@@ -934,10 +938,25 @@ export default {
           that.$set(col, 'width', width)
           that.$set(col, '_width', width)
         }
-        // 缩短当前列增宽最后一列
-        if(index != lastInx ) {
-          if (i == lastInx && !that.notAdaptive) {
-            let sum
+        // 缩短当前列增宽最后一列,增加当前列缩短最后一列
+        if(index !== lastInx && i === lastInx && !that.notAdaptive) {
+          let sum
+          if(that.allowLastColBlank) {
+            if(dragWidth < 0) {
+              let visualWidth = parseInt(getStyle(this.$refs.header, 'width'))
+              let leftWidth = visualWidth - totalWidth
+              sum = col._width + Math.abs(dragWidth) > leftWidth ? leftWidth : col._width + Math.abs(dragWidth)
+            }else {
+              // 判断是否有纵向滚动条
+              let blankWidth = 0
+              if(this.isScrollY) {
+                blankWidth = this.scrollBarWidth
+              }
+              sum = col._width - Math.abs(dragWidth) < blankWidth ? blankWidth : col._width - Math.abs(dragWidth)
+            }
+            that.$set(col, 'width', sum)
+            that.$set(col, '_width', sum)
+          }else {
             // 当最后一列宽度不够缩小时
             if(lastWidth >= that.lastColWidth) {
               if(dragWidth < 0) {
@@ -950,7 +969,7 @@ export default {
             }
           }
         }
-        var colWidth = col._width
+        let colWidth = col._width
         totalWidth = totalWidth + colWidth
       })
       if (this.rebuildData.length != 0 && !that.notAdaptive) {
@@ -989,7 +1008,7 @@ export default {
       if (!this.canDrag && !this.canMove) return
       let _this = this
       // o45特殊情况在表格最后添加空白列不可拖动拖宽
-      if(column.title === ' ' && index === column._index) {
+      if(this.allowLastColBlank && column.title === ' ' && index === column._index) {
         return
       }
       if (this.draggingColumn) {
@@ -1137,6 +1156,9 @@ export default {
 
         const handleMouseUp = () => {
           if (_this.moving) {
+            if(this.allowLastColBlank && resizeIndex === this.columns.length - 1) {
+              resizeIndex = resizeIndex - 1
+            }
             _this.sortCloumn(index, resizeIndex, column._index)
             document.body.style.cursor = ''
             removeClass(document.body, 'useSelect')
@@ -1159,7 +1181,7 @@ export default {
         document.addEventListener('mouseup', handleMouseUp)
       }
     },
-    mousemove(event, column, index,isLeft) {
+    mousemove(event, column, index, isLeft) {
       if (!this.canDrag || !column||(isLeft&&this.isRightFixed)) return
       if (this.splitIndex && column.type == 'index') return
       if (column.children && column.children.length > 0) return
