@@ -150,6 +150,7 @@ export default {
             if (hasClass(this.fields[i].$el, 'h-form-item-error')) {
               // 当formItem中有slot label时，输入类型组件是label总个数之后的children
               let realFocusCom =  this.fields[i].$slots.label && this.fields[i].$slots.label.length > 0 ? this.fields[i].$slots.label.length : 0
+              console.log('this.fields[i]--->', i, '--->', this.fields[i], realFocusCom)
               if (this.fields[i].$children[realFocusCom] && this.fields[i].$children[realFocusCom].focus)this.fields[i].$children[realFocusCom].focus()
               break
             }
@@ -215,7 +216,6 @@ export default {
         }
         this.changeObj[item] = status
       }
-      // console.log('this.fields------>', this.fields)
       this.fields.forEach(col => {
         col.modeChanged = this.changeObj[col.prop]
       })

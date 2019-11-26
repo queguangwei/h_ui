@@ -327,7 +327,7 @@ export default {
       const bottomPlaced = this.fPlacement.match(/^bottom/)
       return bottomPlaced ? 'slide-up' : 'slide-down'
     },
-    visualValue() {
+    visualValue(val) {
       this.viewValue = this.formatDate(this.internalValue)
       return this.formatDate(this.internalValue)
     },
@@ -521,7 +521,6 @@ export default {
       this.$refs.input.select()
     },
     handleBlur() {
-      console.log('handleBlur----')
       this.visible = false
       this.onSelectionModeChange(this.type)
 
@@ -583,6 +582,11 @@ export default {
       }
     },
     handleInputChange(event) {
+      // 解决当用户手动输入时间时，input时间过滤自动计算，但第二次输入时间过滤后的时间跟上次一样，h-input控件内部响应不到其变化，导致不能及时响应
+      // 第一次输入00：00：00  第二次输入24：00：00 由于过滤后为00：00：00，h-input内部watch监听不到value的变化，所以依旧显示24：00：00
+      this.$nextTick(() => {
+        this.$refs.input.setCurrentValue(this.visualValue)
+      })
       const isArrayValue =
         this.type.indexOf('range') > -1 ? true : false || this.multiple
       const oldValue = this.visualValue
