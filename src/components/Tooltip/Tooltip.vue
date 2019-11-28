@@ -74,7 +74,7 @@
       return {
           prefixCls: prefixCls,
           visible:false,
-          textWrapStyles: 'max-width: 250px; max-height: 72px; white-space: normal;overflow: auto;'
+          textWrapStyles: 'max-width: 250px; max-height: 72px; white-space: normal; overflow-wrap: break-word; overflow: auto; '
       };
     },
     methods: {

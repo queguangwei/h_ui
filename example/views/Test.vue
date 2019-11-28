@@ -22,7 +22,7 @@
 var tData = [
   {
     name: "",
-    age: 18,
+    age: "1",
     address: "",
     money: "120.00",
     cardId: "6223 5678 1234 5678",
@@ -34,7 +34,7 @@ var tData = [
   },
   {
     name: "张小刚",
-    age: 25,
+    age: "2",
     address: "北京市海淀区西二旗",
     money: "130.00",
     cardId: "6223 5678 1234 5678",
@@ -45,7 +45,7 @@ var tData = [
   },
   {
     name: "李小红",
-    age: 30,
+    age: "3",
     address: "上海市浦东新区世纪大道",
     money: "140.00",
     cardId: "6223 5678 1234 5678",
@@ -56,7 +56,7 @@ var tData = [
   },
   {
     name: "周小伟",
-    age: 26,
+    age: "4",
     address: "深圳市南山区深南大道",
     money: "150.00",
     cardId: "6223 5678 1234 5678",
@@ -96,11 +96,12 @@ export default {
           ]
         },
         {
-          type: "text",
+          type: "select",
           title: "年龄",
           width: 200,
           key: "age",
-          hiddenCol: false,
+           multiple: false,
+          transfer: true,
           rule: { required: true, message: "年龄不能为空" }
         },
         {
@@ -239,6 +240,12 @@ export default {
       { value: "Alabama", label: "Alabama" },
       { value: "beijing", label: "北京" },
       { value: "Delaware", label: "Delaware" }
+    ];
+    this.options1[1] = [
+      { value: "1", label: "1" },
+      { value: "2", label: "2" },
+      { value: "3", label: "3" },
+      { value: "4", label: "4" }
     ];
   },
   methods: {
