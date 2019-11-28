@@ -74,7 +74,16 @@
       return {
           prefixCls: prefixCls,
           visible:false,
-          textWrapStyles: 'max-width: 250px; max-height: 72px; white-space: normal; overflow-wrap: break-word; overflow: auto; '
+          // textWrapStyles: 'max-width: 250px; max-height: 72px; white-space: normal; overflow-wrap: break-word; overflow: auto; ',
+          textWrapStyles: {
+            maxWidth: '250px',
+            maxHeight: '72px',
+            whiteSpace: 'normal',
+            overflowWrap: 'break-word',
+            overflow: 'auto',
+            wordWrap: 'break-word',
+          }
+
       };
     },
     methods: {

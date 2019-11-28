@@ -477,6 +477,7 @@ export default {
       showSlotFooter: true,
       bodyHeight: 0,
       noDataBodyHeight: 0, //数据为空的body height (主要用于用户自定义表格高度)
+      noDataAdaptiveBodyHeight: 0, //数据为空的body height 自适应高度
       bodyRealHeight: 0,
       scrollBarWidth: getScrollBarSize(),
       currentContext: this.context,
@@ -611,8 +612,8 @@ export default {
             : bodyStyleHeight 
       }
       if (this.data.length == 0 && !this.height && !this.maxHeight) {
-        if (this.noDataHeight >0 ) bodyStyleHeight = this.noDataHeight
-        if (this.adaptiveNoDataHeight)  bodyStyleHeight = this.noDataBodyHeight
+        if (this.noDataHeight >0 ) bodyStyleHeight = this.noDataBodyHeight
+        if (this.adaptiveNoDataHeight)  bodyStyleHeight = this.noDataAdaptiveBodyHeight
       }
       return bodyStyleHeight
     },
@@ -1515,8 +1516,9 @@ export default {
     },
     fixedHeader() {
       // height与maxHeight不可同时存在，若同时存在则以height为准
-      if (this.height || this.maxHeight ) {
+      if (this.height || this.maxHeight || this.noDataHeight ) {
         let setHeight = parseInt(this.height) || parseInt(this.maxHeight);
+        let setNoDataHeight = parseInt(this.noDataHeight)
         this.$nextTick(() => {
           const titleHeight =
             parseInt(getStyle(this.$refs.title, 'height')) || 0
@@ -1532,8 +1534,8 @@ export default {
           const footerHeight =
             parseInt(getStyle(this.$refs.footer, 'height')) || 0
           // this.bodyHeight = this.height - titleHeight - headerHeight - footerHeight;
-          this.bodyHeight =
-            setHeight - titleHeight - headerHeight - footerHeight
+          this.bodyHeight = setHeight - titleHeight - headerHeight - footerHeight
+          this.noDataBodyHeight = setNoDataHeight - titleHeight - headerHeight - footerHeight
         })
       } else {
         this.bodyHeight = 0
@@ -2139,7 +2141,7 @@ export default {
   updated: function () {
     this.$nextTick(function () {
       // console.log(this.$refs['no-data-tiptext'].clientHeight)
-      this.noDataBodyHeight = this.$refs['no-data-tiptext'].clientHeight
+      this.noDataAdaptiveBodyHeight = this.$refs['no-data-tiptext'].clientHeight
     })
   },
   created() {

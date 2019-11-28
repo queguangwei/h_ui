@@ -4,7 +4,7 @@
     <h-button @click="data = []">reset数据</h-button> 
     <h-button @click="isSimpleText =true">{{!isSimpleText ? '设置简单文本' : '自定义图片等'}}</h-button> 
     <p>	设置height=600，maxHeight=350 ，adaptiveNoDataHeight，noDataHeight=500</p>
-    <h-table  border height=600 maxHeight=350  noDataHeight=500 adaptiveNoDataHeight :columns="columns8" :data="data" ref="table">
+    <h-table  border height=200 maxHeight=350  noDataHeight=500 adaptiveNoDataHeight :columns="columns8" :data="data" ref="table">
       <div slot="nodata">
         <p v-if="isSimpleText">没有数据了.....</p>
         <img v-else width="300" src="https://img-blog.csdnimg.cn/20190927102900242.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjI2Mjc4,size_16,color_FFFFFF,t_70" alt="">
