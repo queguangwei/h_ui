@@ -470,8 +470,9 @@ $table-select-item-prefix-cls: "#{$table-prefix-cls}-filter-select-item";
   }
   &-tiptext {
     position:absolute;
-    pointer-events: none;
+    // pointer-events: none;
     text-align:center;
+    overflow-y: auto;
     min-height: $table-tiptext-height;
     // height:$table-tiptext-height;
     line-height:$table-tiptext-line-height;

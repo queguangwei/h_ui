@@ -29,7 +29,8 @@ var tData = [
     city: "北京",
     dating: "2018-01-09T16:00:00.000Z",
     timing: "16:00:00.00",
-    tree: "leaf1"
+    tree: "leaf1",
+    _disEdit: true,
     // _highlight: true//默认选择当前项
   },
   {
@@ -262,7 +263,8 @@ export default {
         city: "",
         dating: "",
         timing: "",
-        tree: ""
+        tree: "",
+        _disEdit: true
       });
     },
     validate() {
