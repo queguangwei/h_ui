@@ -29,14 +29,14 @@
       </slot>
     </div>
     <transition :name="transition">
-      <Drop @click.native="handleTransferClick"
+      <Drop @click.native.stop="handleTransferClick"
             v-show="opened"
             :class="{ [prefixCls + '-transfer']: transfer }"
             :placement="fPlacement"
             ref="drop"
             :data-transfer="transfer"
             v-transfer-dom>
-        <div @click="handleclick">
+        <div @click.native.stop="handleclick">
           <component :is="panel"
                      ref="pickerPanel"
                      :visible="visible"
@@ -521,7 +521,10 @@ export default {
       this.$refs.input.select()
     },
     handleBlur() {
-      this.visible = false
+      // IE下点击滚动条会触发失焦事件
+      if (!(navigator.userAgent.indexOf("MSIE") >= 0 || navigator.userAgent.indexOf("Trident") >= 0)) {
+        this.visible = false
+      }
       this.onSelectionModeChange(this.type)
 
       this.internalValue = this.internalValue.slice() // trigger panel watchers to reset views
