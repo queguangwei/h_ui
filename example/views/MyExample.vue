@@ -1,24 +1,5 @@
 <template>
   <div>
-    <h1>Grid</h1>
-    <h-row>
-      <h-col span="12" style="background:red">col-12</h-col>
-      <h-col span="12" style="background:blue">col-12</h-col>
-    </h-row>
-    <br>
-    <h-row>
-      <h-col span="8" style="background:yellow">col-8</h-col>
-      <h-col span="8" style="background:green">col-8</h-col>
-      <h-col span="8" style="background:pink">col-8</h-col>
-    </h-row>
-    <br>
-    <h-row>
-      <h-col span="6" style="background:gray">col-6</h-col>
-      <h-col span="6" style="background:black">col-6</h-col>
-      <h-col span="6" style="background:grey">col-6</h-col>
-      <h-col span="6" style="background:black">col-6</h-col>
-    </h-row>
-    <br>
     <h1>tabs</h1>
     <h-tabs ref="remove" type="line" @on-tab-remove="handleTabRemove1" showArrow arrowOnRight closable :iconLeftClassName="'icon-left icon-arrow'">
       <!--<h-tab-pane label="macOS" icon="social-apple">标签一的内容</h-tab-pane>-->
@@ -34,25 +15,10 @@
     <h-button type="ghost" @click="handleTabsAdd(true)" size="small" slot="extra">增加</h-button>
     <h-button type="ghost" @click="handleTabsAdd(false)" size="small" slot="extra">减少</h-button>
     <br>
-    <h1>buttonGroup</h1>
     <h-button-group>
       <h-button @on-click="handleShowBox" style="margin-right: 10px;">打开弹窗</h-button>
       <h-button type="primary" @on-click="changeShow">打开弹框</h-button>
     </h-button-group>
-    <h1>checkboxGroup</h1>
-    <h-checkbox-group v-model="btncheck">
-      <h-checkbtn value="twitter" label="Twitter" disabled>
-      </h-checkbtn>
-      <h-checkbtn value="facebook" label="facebook">
-        <span>Facebook</span>
-      </h-checkbtn>
-      <h-checkbtn value="github" label="github" icon="close">
-        <span>Github</span>
-      </h-checkbtn>
-      <h-checkbtn value="snapchat" label="snapchat">
-        <span>Snapchat</span>
-      </h-checkbtn>
-    </h-checkbox-group>
     <h-msg-box v-model="showBox" title="普通的Modal对话框标题" :mask-closable="false"
       @on-ok="ok" @on-cancel="cancel">
       <p>{{curValue}}</p>
@@ -86,7 +52,7 @@
         </h-form-item>
         <h-form-item label="select" prop="city" required>
           <h-select v-model="formValidate.city" class="curItemClass" filterable multiple transfer>
-            <h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>
+            <h-option v-for="item in cityList1" :value="item.value" :key="item.value">{{ item.label }}</h-option>
           </h-select>
         </h-form-item>
         <h-form-item prop="time" label="time" required upward>
@@ -107,7 +73,7 @@
 
         <h-form-item label="selecttree" prop="selecttree">
           <h-select-tree v-model="formValidate.selecttree" :data="selectTreeData" ref="selecttree"
-                         checkIndeter filterable	showCheckbox :firstValue="firstValue">
+                         checkIndeter filterable showCheckbox :firstValue="firstValue">
           </h-select-tree>
         </h-form-item>
         <h-form-item label="radio" prop="gender">
@@ -127,6 +93,7 @@
 
       </h-form>
       <div slot="footer">
+        <h-button @click="clearAdd">options</h-button>
         <h-button type="primary" @click="focusFirst">聚焦第一项输入框</h-button>
         <h-button type="ghost" @click="reset">重置</h-button>
         <h-button type="primary" @click="submit">提交</h-button>
@@ -134,32 +101,25 @@
     </h-msg-box>
     <br>
     <h1>form</h1>
-    <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
-      <h-form-item label="股票代码" prop="stockCode">
-        <h-single-select class="curItemClass" v-model="formCustom.stockCode" placeholder="请选择..."
-                         widthAdaption autoPlacement :animated="false" keepInputValue
-                         ref="single">
-          <h-select-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
-        </h-single-select>
-        {{formCustom.stockCode}}
+    <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80" @on-check-failed="checkf">
+      <h-form-item label="密码" prop="passwd">
+        <h-input type="password" v-model="formCustom.passwd"></h-input>
       </h-form-item>
-      <h-form-item label="金额框" prop="face_balance">
-        <h-typefield class="curItemClass" v-model="formCustom.face_balance"
-                     nonNegative divided focusAllSelect :min="0" :max="1000000"
-                     integerNum="10" suffixNum="2"  type="money" :step="10">
-        </h-typefield>
+      <h-form-item label="确认密码" prop="passwdCheck" :dependencies="['passwd','age']">
+        <h-input type="password" v-model="formCustom.passwdCheck"></h-input>
       </h-form-item>
-
-      <h-form-item label="密码" prop="passwd" required>
-        <h-poptip trigger="focus" title="提示标题" content="提示内容">
-        <h-input class="curItemClass" type="password" v-model="formCustom.passwd"></h-input>
-        </h-poptip>
-      </h-form-item>
-      <h-form-item label="确认密码" prop="passwdCheck" required>
-        <h-input class="curItemClass" type="password" v-model="formCustom.passwdCheck"></h-input>
-      </h-form-item>
-      <h-form-item label="年龄" prop="age" required>
+      <h-form-item label="年龄" prop="age">
         <h-input type="text" v-model="formCustom.age" number></h-input>
+      </h-form-item>
+      <h-form-item label="simpleselect" prop="city" >
+        <h-simple-select v-model="formCustom.city" filterable multiple >
+          <h-select-block :data="bigData"></h-select-block>
+        </h-simple-select>
+      </h-form-item>
+      <h-form-item label="select" prop="city1" >
+        <h-select v-model="formCustom.city1" filterable multiple transfer>
+          <h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>
+        </h-select>
       </h-form-item>
       <h-form-item label="日期">
         <h-date-picker type="daterange" ref="datepicker" placeholder="选择日期" :pickMode="'move'"
@@ -167,21 +127,23 @@
       </h-form-item>
       <h-form-item>
         <h-button type="primary" @click="handleSubmit('formCustom')">提交</h-button>
-        <h-button type="ghost" @click="handleReset('formCustom')" style="margin-left: 8px;">重置</h-button>
+        <h-button type="ghost" @click="handleReset('formCustom')" style="margin-left: 8px">重置</h-button>
       </h-form-item>
     </h-form>
     <h1>calendar</h1>
     <!--<h-calendar ref="calendar" :disableDate="disableDate" @on-select-change="getSelectDate">-->
     <!--</h-calendar>-->
     <h1>table</h1>
-    <h-table ref="table" :columns="columnsMulti" :data="dataMulti" :multiLevel="multiTitle"
-             canDrag canMove border :loading="loading" clickHeadSort isMulitSort height="300"
-             highlight-row :lastColWidth="150" :minDragWidth="40" :minColWidth="60"
-             @on-sort-change="sortchange" @on-scroll="scrollchange"></h-table>
-    <h-button @click="resetSort">重置排序</h-button>
-    <!--<h1>tree</h1>-->
-    <!--<h-tree :data="baseData" show-checkbox></h-tree>-->
-    <!--<h1>simpleTreeGrid</h1>-->
+    <!--<h-table ref="table" :columns="columnsMulti" :data="dataMulti" :multiLevel="multiTitle"-->
+             <!--canDrag canMove border :loading="loading" clickHeadSort isMulitSort height="300"-->
+             <!--highlight-row :lastColWidth="150" :minDragWidth="40" :minColWidth="60"-->
+             <!--@on-sort-change="sortchange" @on-scroll="scrollchange"></h-table>-->
+    <!--<h-button @click="resetSort">重置排序</h-button>-->
+    <h1>simpleTable</h1>
+    <!--<h-simple-table ref="simpletable" :columns="columns1" :data="treedata" :addData="addData"-->
+                    <!--:loading="loading" height="380" canDrag canMove border stripe rowSelectOnly>-->
+    <!--</h-simple-table>-->
+    <h1>simpleTreeGrid</h1>
     <!--<h-button type="primary" @click="expandAll">展开</h-button>-->
     <!--<h-button @click="fold">收起</h-button>-->
     <!--<h-simple-tree-gird :columns="columns1" ref="treeGrid" :data="treedata" canDrag :height="400" @on-expand="expand"></h-simple-tree-gird>-->
@@ -264,11 +226,10 @@ for(let i=0;i<2000;i++){
 }
 var num = 0;
 
-import { enterHandler1 } from '../../src/util/tools.js'
+import { enterHandler1, keyboardOperation } from '../../src/util/tools.js'
 export default {
   data() {
     const validateMoney = (rule, value, callback) => {
-      console.log('face_balance validator', value)
       if (value === '') {
         callback(new Error('请输入金额'));
       } else {
@@ -296,7 +257,6 @@ export default {
       }
     };
     const validateAge = (rule, value, callback) => {
-      console.log('age', value)
       if (!value) {
         return callback(new Error('年龄不能为空'));
       }
@@ -311,19 +271,19 @@ export default {
             callback();
           }
         }
-      }, 1000);
+      }, 200);
     };
 
     return {
       curValue: '',
       dataList: [],
-      btncheck:[],
       loading: false,
       showBox: false,
       show:false,
       isLoading: false,
       tabs:15,
       value:'value0',
+      cityList1: [],
       cityList: [
         {value: 'beijing', label: '北京市'},
         {value: 'shanghai', label: '上海市'},
@@ -403,11 +363,11 @@ export default {
       list: [],
       formCustom: {
         date: '',
-        face_balance: '',
         passwd: '',
         passwdCheck: '',
         age: '',
-        stockCode: '',
+        city: [],
+        city1: []
       },
       selectTreeData: [
         {
@@ -448,18 +408,6 @@ export default {
       ],
       firstValue: [],
       ruleCustom: {
-        face_balance: [{
-          validator: (rule, value, callback)=>{
-            console.log('face_balance validator', value)
-            let tmpVal = parseFloat(value);
-            // let tmpVal = parseFloat((this.formItem.face_balance+'').replace(',', ''));
-            if(isNaN(tmpVal) || tmpVal == 0 || tmpVal % 10 != 0) {
-
-            } else {
-              callback();
-            }
-          }, trigger:'blur,change'}
-        ],
         money: [
           { validator: validateMoney, triggger: 'blur'}
         ],
@@ -685,50 +633,29 @@ export default {
           {align: "center", key: "left_amout_before_6", title: "试算前"},{align: "center", key: "left_amout_after_6", title: "试算后"}
         ]
       ],
-      baseData: [{
-        expand: true,
-        checked: true,
-        title: 'parent 1',
-        children: [{
-          title: 'parent 1-0',
-          expand: true,
-          disabled: true,
-          children: [{
-            expand: true,
-            checked: true,
-            disabled: true,
-            title: 'leaf',
-            disableCheckbox: true
-          }, {
-            title: 'leaf',
-          }]
-        }, {
-          title: 'parent 1-1',
-          expand: true,
-          checked: true,
-          children: [{
-            title: '<span style="color: red">leaf</span>',
-          }, {
-            title: 'leaf2',
-          }]
-        }]
-      }],
       columns1: [
         {
           title: '姓名',
           key: 'name',
-          width: 300,
+          width: 100,
           ellipsis:true,
           // hiddenCol:true,
         },
         {
           title: '年龄',
-          width: 200,
+          width: 150,
           key: 'age',
           align: 'center',
+          render: (h, params) => {
+            return h('h-input', {
+              props: {
+                value: params.row.age
+              }
+            })
+          }
         },
         {
-          width: 100,
+          width: 150,
           title: '地址',
           ellipsis: true,
           key: 'address',
@@ -738,6 +665,13 @@ export default {
           title: '金额',
           width: 200,
           key: 'money',
+          render: (h, params) => {
+            return h('h-typefield', {
+              props: {
+                value: params.row.money
+              }
+            })
+          }
         },
         {
           title: '卡号',
@@ -748,7 +682,28 @@ export default {
           title: '地区',
           width: 200,
           key: 'city',
-          multiple:false,
+          render: (h, params) => {
+            return h('div', [
+              h('h-single-select', {
+                props: {
+                  transfer: true,
+                  filterable: true,
+                },
+                on: {
+                  'on-change': (e) => {
+                    console.log(e)
+                  },
+                  'on-blur': (e) => {
+                    console.log(e)
+                  },
+                }
+              }, [h('h-select-block', {
+                props: {
+                  data:this.cityList
+                }
+              })])
+            ]);
+          }
         },
         {
           title: '下拉树',
@@ -756,6 +711,7 @@ export default {
           key: 'tree',
         }
       ],
+      addData: [],
       baseTreeData: [],
       treedata: [],
       columns2: [],
@@ -803,20 +759,20 @@ export default {
           title: '姓名',
           key: 'name',
           width: 200,
-          filterRE:/[^\d]/g,
+//          filterRE:/[^\d]/g,
           sortable:true,
           rule: { required: true, message: '姓名不能为空'},
         },
         {
           width:220,
           title: '年龄',
-          key: 'age',
           render: (h, params) => {
             return h('div', [
               h('h-simple-select', {
                 props: {
                   transfer: true,
                   filterable: true,
+                  value: params.row.age
                 },
                 on: {
                   'on-change': (e) => {
@@ -865,6 +821,7 @@ export default {
           rule:{ required: true, message: '请选择时间', trigger: 'blur,change' }
         }
       ],
+      selectList: [{label: 17, value: 17},{label:18,value:18},{label:19,value:19}],
       dataEdit: [
         {
           name: '王小明',
@@ -1007,7 +964,8 @@ export default {
       console.log(x, y, z)
     },
     handleSubmit(name) {
-      this.$refs[name].validate((valid) => {
+      this.$refs[name].validate((valid, unpass) => {
+        console.log(unpass)
         if (valid) {
           this.$Message.success('提交成功!');
         } else {
@@ -1053,6 +1011,12 @@ export default {
 //        this.$refs.stockCode.focus()
       this.formValidate.stockInfo = '1,11'
       this.$refs.stockInfo.focus()
+    },
+    clearAdd() {
+      this.cityList1 = []
+      setTimeout(() => {
+        this.cityList1 = this.cityList
+      },500)
     },
     onCheckFailed(arr) {
       console.log(arr)
@@ -1122,22 +1086,6 @@ export default {
             {align: "center", key: "left_amout_before_6", title: "试算前"}
           ]
         ]
-//        this.dataMulti = [{
-//          rule_id: 1,
-//          complianceIndex: 'hui让业务开发变得简单，给程序猿带来更快、更炫、更灵活、更轻松的开发体验；它更 让系统页面加载速度更快',
-//          asset_before_0: 18,
-//          asset_after_0: '北京市朝阳区\n芍药居',
-//          left_amout_before_0:123,
-//          left_amout_after_0: 3441234,
-//          asset_before_1: 1232144,
-//          asset_after_1: 54685464,
-//          left_amout_before_1: 'width90',
-//          left_amout_after_1: 'width100',
-//          asset_before_2: 'width110',
-//          asset_after_2: 'width120',
-//          left_amout_before_2: 'notset',
-//          left_amout_after_2: 'notset',
-//        },]
       })
     },
     convertTreeData(rows, attributes) {
@@ -1201,16 +1149,19 @@ export default {
     },
     getSelectDate(e) {
       console.log(e)
-    }
+    },
+    checkf(a){
+      console.log("------------",a);
+    },
   },
   created() {
     window.isO45 = false
-    window.isOIS = true
   },
   mounted() {
     document.addEventListener("keydown", event => {
       enterHandler1(this.$refs.formValidate, event);
 //      enterHandler1(this.$refs.formCustom, event);
+      keyboardOperation(this.$refs.simpletable, event)
     })
     let attributes = {
       keyField: 'id',

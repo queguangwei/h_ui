@@ -1021,6 +1021,8 @@ export default {
       let row = this.sortChangeIndex ? this.rebuildData[index] : this.cloneData[index]
       this.$emit('on-select-cancel',
         selection, JSON.parse(JSON.stringify(row)), index)
+      this.$emit('on-selection-change',
+        selection, this.getSelection('transfer'))
     },
     toggleSelect(_index) {
       let _this = this

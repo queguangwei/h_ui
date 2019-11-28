@@ -268,7 +268,7 @@ export default {
     handleclick() {},
     handleBodyScroll(event) {
       const direction = this.lastScollTop !== event.target.scrollTop ? "y" : "x";
-      
+
       if (direction === "y" && this.lastScollBottom) {
         this.updateVisibleData(event.target.scrollTop)
       }

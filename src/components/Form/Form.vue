@@ -293,6 +293,7 @@ export default {
     this.$on('on-form-item-focus-validate', dependencies => {
       let dep = dependencies.split(',')
       let upss = []
+      let count = 0
       for(let key of dep) {
         this.fields.forEach(field => {
           if(key === field.prop) {
@@ -300,11 +301,13 @@ export default {
               if (errors) {
                 upss.push(field.prop)
               }
+              if (++count === dep.length) {
+                this.$emit('on-check-failed', upss)
+              }
             })
           }
         })
       }
-      this.$emit('on-check-failed', upss)
     })
     if (this.placement != 'null') {
       this.setPlacement()

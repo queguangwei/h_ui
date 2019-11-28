@@ -1008,7 +1008,7 @@ export default {
       if (!this.canDrag && !this.canMove) return
       let _this = this
       // o45特殊情况在表格最后添加空白列不可拖动拖宽
-      if(this.allowLastColBlank && column.title === ' ' && index === column._index) {
+      if(this.allowLastColBlank && column.title === ' ' && index === this.cloneColumns.length -1) {
         return
       }
       if (this.draggingColumn) {
@@ -1156,7 +1156,7 @@ export default {
 
         const handleMouseUp = () => {
           if (_this.moving) {
-            if(this.allowLastColBlank && resizeIndex === this.columns.length - 1) {
+            if(this.allowLastColBlank && resizeIndex === this.cloneColumns.length - 1) {
               resizeIndex = resizeIndex - 1
             }
             _this.sortCloumn(index, resizeIndex, column._index)

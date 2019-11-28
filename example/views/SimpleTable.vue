@@ -8,7 +8,8 @@
     <Button @click="adddata">添加数据</Button>
     <Button @click="scroll20">scrollTo0</Button>
     <h-simple-table :columns="columnsBig1" :data="bigData" :addData="addData"  :summationData="summationData"
-                    :loading="loading" :row-class-name="rowClassName" bodyAlgin="left" height="500"
+                    :loading="loading" :row-class-name="rowClassName" bodyAlgin="left" height="400"
+                    :lastColWidth="60" allowLastColBlank
                     canDrag canMove border stripe rowSelectOnly :toScrollTop="scrollTop" :scrollTopSet="200"
                     @on-select="select" @on-select-cancel="select" @on-drag="onDrag"
                     @on-select-all='change' @on-selection-change="change">
@@ -71,7 +72,7 @@ import TexpandRow from './Texpand-row.vue'
 let jsonData=[]
 let tData =require('../assets/aa.json')
 for (let i = 0; i < 1; i++) {
-  jsonData =tData.slice(0,5)
+  jsonData =tData.slice(0,10)
 }
 let ind = 1
 export default {
@@ -86,54 +87,54 @@ export default {
       bigData:[],
       bigData2:[],
       columnsBig1:[
-        {
-          type: 'index',
-          align: 'center',
+//        {
+//          type: 'index',
+//          align: 'center',
 //          fixed:'left',
-          width: 100
-        },
-        {
-          type: 'selection',
-          align: 'center',
-          key:'select',
-          width: 100,
-          sortable: true
-        },
-        {
-          title: '姓名姓名姓名姓名姓名姓名姓名姓名',
-          key: 'fundId',
-          width: 300,
-          showTitle:true,
-          ellipsis:true,
-        },
-        {
-          title: '今日开盘价(元)',
-          key: 'tradeDate',
-          width: 200,
-          sortable:true,
-          ellipsis:true,
-        },
-        {
-          title: '地址',
-          ellipsis:true,
-          key: 'securityCode',
-          width: 200,
-          showTitle: true,
-          align:'right',
-          sortable:true,
-          render: (h, params) => {
-            if(params.row.securityCode === '600000') {
-              this.$set(this.bigData[params.index], '_disabled', true)
-            }
-            return h('span',params.row.securityCode)
-          },
-        },
-        {
-          title: '银行',
-          key: 'securityName',
-          width:200,
-          showTitle:true
-        },
+//          width: 100
+//        },
+//        {
+//          type: 'selection',
+//          align: 'center',
+//          key:'select',
+//          width: 100,
+//          sortable: true
+//        },
+//        {
+//          title: '姓名姓名姓名姓名姓名姓名姓名姓名',
+//          key: 'fundId',
+//          width: 300,
+//          showTitle:true,
+//          ellipsis:true,
+//        },
+//        {
+//          title: '今日开盘价(元)',
+//          key: 'tradeDate',
+//          width: 200,
+//          sortable:true,
+//          ellipsis:true,
+//        },
+//        {
+//          title: '地址',
+//          ellipsis:true,
+//          key: 'securityCode',
+//          width: 200,
+//          showTitle: true,
+//          align:'right',
+//          sortable:true,
+//          render: (h, params) => {
+//            if(params.row.securityCode === '600000') {
+//              this.$set(this.bigData[params.index], '_disabled', true)
+//            }
+//            return h('span',params.row.securityCode)
+//          },
+//        },
+//        {
+//          title: '银行',
+//          key: 'securityName',
+//          width:200,
+//          showTitle:true
+//        },
         {
           title: '年龄',
           key: 'tradeDir',
@@ -150,7 +151,6 @@ export default {
           title: '邀请人数',
           key: 'investType',
           width: 200,
-//          fixed:'left'
         },
         {
           title: ' '
@@ -586,8 +586,6 @@ export default {
       }
     },
     rowClassName (row, index) {
-      console.log(row)
-      console.log(index)
       if (index === 1) {
         return 'demo-table-info-row';
       } else if (index === 3) {
