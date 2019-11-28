@@ -4,12 +4,10 @@
       @keyup="keyup" @keydown="keydown" @click="showdrop">
       <span v-if="showTotal" :class="[prefixCls + '-selected-num']">共选择 {{selectedMultiple.length}} 项</span>
       <!-- 多选时输入框内选中值模拟 -->
-      <div>
-        <div class="h-tag" v-for="(item, index) in selectedMultiple" v-show="item.label&&!showTotal" :key="index">
-          <span class="h-tag-text" v-if="!showValue">{{ item.label }}</span>
-          <span class="h-tag-text" v-if="showValue">{{ item.value }}</span>
-          <Icon name="close" @click.native.stop="removeTag(index, item)"></Icon>
-        </div>
+      <div class="h-tag" v-for="(item, index) in selectedMultiple" v-show="item.label&&!showTotal" :key="index">
+        <span class="h-tag-text" v-if="!showValue">{{ item.label }}</span>
+        <span class="h-tag-text" v-if="showValue">{{ item.value }}</span>
+        <Icon name="close" @click.native.stop="removeTag(index, item)"></Icon>
       </div>
       <!-- 下拉输入框模拟（非远程搜索时渲染） -->
       <span
