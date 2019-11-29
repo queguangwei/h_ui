@@ -14,56 +14,6 @@
     </h-tabs>
     <h-button type="ghost" @click="handleTabsAdd(true)" size="small" slot="extra">增加</h-button>
     <h-button type="ghost" @click="handleTabsAdd(false)" size="small" slot="extra">减少</h-button>
-    <br>
-    <h2>poptip</h2>
-    <div>
-      <div style="width:120px; margin:100px auto">
-        <h-single-select ref="select" v-model="value" width-adaption >
-          <h-select-block :showCol="['label1']" :data="bigData111"/>
-        </h-single-select>
-      </div>
-      <h-poptip title="提示标题" content="提示内容" placement="top-start" :v-model="true">
-        <h-button>click 激活</h-button>
-        <div class="api" slot="content">
-
-          <h-form>
-            <h-form-item>
-              <h-select style="width:200px" transfer>
-                <h-option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</h-option>
-              </h-select>
-            </h-form-item>
-          </h-form>
-
-          <table>
-            <thead>
-            <tr>
-              <th>版本号</th>
-              <th>更新时间</th>
-              <th>说明</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td>0.9.5</td>
-              <td>2016-10-26</td>
-              <td>新增信息提示组件 <code>Tooltip</code>和<code>Poptip</code></td>
-            </tr>
-            <tr>
-              <td>0.9.4</td>
-              <td>2016-10-25</td>
-              <td>新增对话框组件 <code>Modal</code></td>
-            </tr>
-            <tr>
-              <td>0.9.2</td>
-              <td>2016-09-28</td>
-              <td>新增选择器组件 <code>Select</code></td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-      </h-poptip>
-    </div>
-
     <h-button-group>
       <h-button @on-click="handleShowBox" style="margin-right: 10px;">打开弹窗</h-button>
       <h-button type="primary" @on-click="changeShow">打开弹框</h-button>
@@ -148,7 +98,6 @@
         <h-button type="primary" @click="submit">提交</h-button>
       </div>
     </h-msg-box>
-    <br>
     <h1>form</h1>
     <h-form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80" @on-check-failed="checkf">
       <h-form-item label="密码" prop="passwd">

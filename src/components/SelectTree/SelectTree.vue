@@ -383,6 +383,16 @@ export default{
       if (event.keyCode == 9) {
         this.hideMenu()
       }
+      if(this.showCheckbox) {
+        if(event.keyCode === 65 && event.ctrlKey) {
+          let treeNodes = this.$refs.tree.getAllNodes()
+          let nodes = []
+          for(let node of treeNodes) {
+            nodes.push(node.title)
+          }
+          this.setInit(this.baseDate, nodes)
+        }
+      }
     },
     handleArrowUp() {
       this.focusIndex = this.findFocus('prev')

@@ -232,6 +232,9 @@ export default {
         this.$set(node, 'autoLoad', true)
       })
     },
+    getAllNodes() {
+      return this.flatState.map(obj => obj.node)
+    },
     getSelectedNodes() {
       return this.flatState
         .filter(obj => obj.node.selected)

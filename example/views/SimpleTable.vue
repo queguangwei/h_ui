@@ -87,54 +87,54 @@ export default {
       bigData:[],
       bigData2:[],
       columnsBig1:[
-//        {
-//          type: 'index',
-//          align: 'center',
-//          fixed:'left',
-//          width: 100
-//        },
-//        {
-//          type: 'selection',
-//          align: 'center',
-//          key:'select',
-//          width: 100,
-//          sortable: true
-//        },
-//        {
-//          title: '姓名姓名姓名姓名姓名姓名姓名姓名',
-//          key: 'fundId',
-//          width: 300,
-//          showTitle:true,
-//          ellipsis:true,
-//        },
-//        {
-//          title: '今日开盘价(元)',
-//          key: 'tradeDate',
-//          width: 200,
-//          sortable:true,
-//          ellipsis:true,
-//        },
-//        {
-//          title: '地址',
-//          ellipsis:true,
-//          key: 'securityCode',
-//          width: 200,
-//          showTitle: true,
-//          align:'right',
-//          sortable:true,
-//          render: (h, params) => {
-//            if(params.row.securityCode === '600000') {
-//              this.$set(this.bigData[params.index], '_disabled', true)
-//            }
-//            return h('span',params.row.securityCode)
-//          },
-//        },
-//        {
-//          title: '银行',
-//          key: 'securityName',
-//          width:200,
-//          showTitle:true
-//        },
+        {
+          type: 'index',
+          align: 'center',
+          fixed:'left',
+          width: 100
+        },
+        {
+          type: 'selection',
+          align: 'center',
+          key:'select',
+          width: 100,
+          sortable: true
+        },
+        {
+          title: '姓名姓名姓名姓名姓名姓名姓名姓名',
+          key: 'fundId',
+          width: 300,
+          showTitle:true,
+          ellipsis:true,
+        },
+        {
+          title: '今日开盘价(元)',
+          key: 'tradeDate',
+          width: 200,
+          sortable:true,
+          ellipsis:true,
+        },
+        {
+          title: '地址',
+          ellipsis:true,
+          key: 'securityCode',
+          width: 200,
+          showTitle: true,
+          align:'right',
+          sortable:true,
+          render: (h, params) => {
+            if(params.row.securityCode === '600000') {
+              this.$set(this.bigData[params.index], '_disabled', true)
+            }
+            return h('span',params.row.securityCode)
+          },
+        },
+        {
+          title: '银行',
+          key: 'securityName',
+          width:200,
+          showTitle:true
+        },
         {
           title: '年龄',
           key: 'tradeDir',
