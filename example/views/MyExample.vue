@@ -14,35 +14,31 @@
     </h-tabs>
     <h-button type="ghost" @click="handleTabsAdd(true)" size="small" slot="extra">增加</h-button>
     <h-button type="ghost" @click="handleTabsAdd(false)" size="small" slot="extra">减少</h-button>
-    <h-button-group>
-      <h-button @on-click="handleShowBox" style="margin-right: 10px;">打开弹窗</h-button>
-      <h-button type="primary" @on-click="changeShow">打开弹框</h-button>
-    </h-button-group>
-    <h-msg-box v-model="showBox" title="普通的Modal对话框标题" :mask-closable="false"
-      @on-ok="ok" @on-cancel="cancel">
-      <p>{{curValue}}</p>
-      <h-stock-select ref="singlesel" v-model="curValue" :dropWidth="230" :maxDropWidth="300"
-                       widthAdaption filterable remote :remote-method="remoteMethod"
-                       @on-keydown="handleKeyDown">
-        <h-select-block :data="dataList" :showCol="showCol" :colWidth="colWidth"></h-select-block>
-      </h-stock-select>
-    </h-msg-box>
+    <h1>msgBox</h1>
+    <h-button type="primary" @on-click="changeShow">打开弹框</h-button>
     <h-msg-box v-model="show" escClose :mask-closable="false" isOriginal maximize width="600" height="400">
       <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80" showTipsOnlyFocus @on-check-failed="onCheckFailed">
-
+        <h-form-item label="stockSelect" prop="curValue">
+          <h-stock-select ref="singlesel" v-model="formValidate.curValue" :dropWidth="230" :maxDropWidth="300"
+                          widthAdaption filterable remote :remote-method="remoteMethod"
+                          @on-keydown="handleKeyDown">
+            <h-select-block :data="dataList" :showCol="showCol" :colWidth="colWidth"></h-select-block>
+          </h-stock-select>
+          {{formValidate.curValue}}
+        </h-form-item>
+        <h-form-item label="singleSelect" prop="stockCode" required >
+          <h-single-select ref="stockCode" v-model="formValidate.stockCode" class="curItemClass"
+                           remote :loading="isLoading" :remote-method="remoteMethod1" transfer autoPlacement
+                           widthAdaption :width="200" :dropWidth="220" :maxDropWidth="250" :accuFilter="true">
+            <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
+          </h-single-select>
+          {{formValidate.stockCode}}
+        </h-form-item>
         <h-form-item label="multiSelect" prop="stockInfo" required>
           <h-multi-select ref="stockInfo" class="curItemClass" v-model="formValidate.stockInfo">
             <h-multi-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-multi-block>
           </h-multi-select>
           {{formValidate.stockInfo}}
-        </h-form-item>
-        <h-form-item label="stockCode" prop="stockCode" required >
-          <h-single-select ref="stockCode" v-model="formValidate.stockCode" class="curItemClass"
-                           remote :loading="isLoading" :remote-method="remoteMethod1" transfer autoPlacement
-                           widthAdaption :width="200" :dropWidth="220" :maxDropWidth="250">
-            <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
-          </h-single-select>
-          {{formValidate.stockCode}}
         </h-form-item>
         <h-form-item label="simpleSelect" prop="stockName" required :dependencies="['stockInfo', 'stockCode']">
           <h-simple-select v-model="formValidate.stockName" class="curItemClass" :tabindex="11" filterable multiple >
@@ -224,7 +220,7 @@ for(let i=0;i<2000;i++){
 }
 var num = 0;
 
-import { enterHandler1, keyboardOperation } from '../../src/util/tools.js'
+import { enterHandler1 } from '../../src/util/tools.js'
 export default {
   data() {
     const validateMoney = (rule, value, callback) => {
@@ -280,14 +276,13 @@ export default {
         {label:'C', label1:'error', value:'3'},
         {label:'D', label1:'success', value:'4'},
       ],
-      curValue: '',
+
       dataList: [],
       loading: false,
-      showBox: false,
       show:false,
       isLoading: false,
       tabs:15,
-      value:'value0',
+      value: 'value0',
       cityList1: [],
       cityList: [
         {value: 'beijing', label: '北京市'},
@@ -312,6 +307,7 @@ export default {
         {value: '382297', label: '广州证券红棉安心回报半年盈6'},
       ],
       formValidate: {
+        curValue: '',
         stockCode: '',
         stockInfo: '',
         stockName: [],
@@ -909,11 +905,6 @@ export default {
     }
   },
   methods: {
-    handleShowBox() {
-      this.showBox = true
-//        this.curValue = 'value1'
-      this.$refs.singlesel.focus()
-    },
     remoteMethod(query, done) {
       let reqTime = new Date().getTime();
       this.reqTime = reqTime;
@@ -939,7 +930,7 @@ export default {
             }];
             done();
             this.$nextTick(()=>{
-              this.curValue = '110002';
+              this.formValidate.curValue = '110002'
             })
           }, 600)
         })
@@ -1166,7 +1157,6 @@ export default {
     document.addEventListener("keydown", event => {
       enterHandler1(this.$refs.formValidate, event);
 //      enterHandler1(this.$refs.formCustom, event);
-      keyboardOperation(this.$refs.simpletable, event)
     })
     let attributes = {
       keyField: 'id',

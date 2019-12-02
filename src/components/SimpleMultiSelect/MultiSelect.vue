@@ -171,7 +171,8 @@ export default {
     magicString(newVal) {
       if (this.isKeyDown) {
         const { keyboardEvent: e } = this;
-        if (!_.isKeyMatch(e, "Tab") && !_.isKeyMatch(e, "Esc") && !_.isKeyMatch(e, "Enter")) {
+        if (!_.isKeyMatch(e, "Tab") && !_.isKeyMatch(e, "Esc") && !_.isKeyMatch(e, "Enter")
+            && !_.isKeyMatch(e, "Up") && !_.isKeyMatch(e, "Down")) {
           this.isDropdownVisible = true;
         }
         if (_.isKeyMatch(e, "Space") || (_.isKeyMatch(e, "A") && e.ctrlKey) || (_.isKeyMatch(e, "D") && e.ctrlKey)) _.noop();
