@@ -100,6 +100,7 @@ import TransferDom from '../../directives/transfer-dom'
 import { oneOf, findComponentChildren,getScrollBarSize, getStyle,hasClass,typeOf,scrollAnimate,deepCopy} from '../../util/tools'
 import Emitter from '../../mixins/emitter'
 import Locale from '../../mixins/locale'
+import { on, off } from '../../util/dom'
 const prefixCls = 'h-selectTree'
 export default{
   name:'SelectTree',
@@ -382,16 +383,6 @@ export default{
     keydown(event){
       if (event.keyCode == 9) {
         this.hideMenu()
-      }
-      if(this.showCheckbox) {
-        if(event.keyCode === 65 && event.ctrlKey) {
-          let treeNodes = this.$refs.tree.getAllNodes()
-          let nodes = []
-          for(let node of treeNodes) {
-            nodes.push(node.title)
-          }
-          this.setInit(this.baseDate, nodes)
-        }
       }
     },
     handleArrowUp() {
@@ -684,6 +675,16 @@ export default{
           this.hideMenu()
         }
       }
+      if(this.showCheckbox) {
+        if(event.keyCode === 65 && event.ctrlKey) {
+          let treeNodes = this.$refs.tree.getAllNodes()
+          let nodes = []
+          for(let node of treeNodes) {
+            nodes.push(node.title)
+          }
+          this.setInit(this.baseDate, nodes)
+        }
+      }
     },
     strtoArr(val){
       if (this.showCheckbox && this.isString) {
@@ -919,14 +920,15 @@ export default{
       this.offsetArrow()
       this.searchStyle()
     })
-    document.addEventListener('keydown', this.handleKeydown)
+//    document.addEventListener('keydown', this.handleKeydown)
     if (this.disabled) {
       this.tabIndex = -1
     }
-
+    on(this.$refs.select, 'keydown', this.handleKeydown)
   },
   beforeDestroy(){
-    document.removeEventListener('keydown', this.handleKeydown)
+    off(this.$refs.select, 'keydown', this.handleKeydown)
+//    document.removeEventListener('keydown', this.handleKeydown)
     this.broadcast('Drop', 'on-destroy-popper')
   }
 }

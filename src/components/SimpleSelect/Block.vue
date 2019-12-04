@@ -217,9 +217,14 @@ export default {
         //        if(hidden){
         //          hidden=!new RegExp(parsedQuery, 'i').test(col.value)
         //        }
-        this.$set(col, "hidden", hidden);
         if (status && !hidden) {
-          status = false;
+          status = false
+        }
+        // singleSelect开启远程搜索后前端不过滤选项
+        if(!(this.$parent.$parent.isSingleSelect || this.$parent.$parent.isStockSelect) && !this.$parent.$parent.remote) {
+          this.$set(col, "hidden", hidden)
+        }else {
+          status = false
         }
         if (this.$parent.$parent.accuFilter) {
           if (parsedQuery === targetLabel && !selected && !states) {
@@ -237,15 +242,14 @@ export default {
           }
         }
       })
-      if (this.$parent.$parent.accuFilter) {
-        if(val===''&&this.$parent.$parent.isSingleSelect&&!isEffective&&!states){// 清空query值情况下
-          this.$parent.$parent.selectBlockSingle('', true, '', true)
-        }else if(val !==''&&this.$parent.$parent.isSingleSelect&&!isEffective&&!states) {//query不为空但未匹配到任何项
-          this.$parent.$parent.selectBlockSingle('', true)
-        }
+      if(val===''&&this.$parent.$parent.isSingleSelect&&!isEffective&&!states){// 清空query值情况下
+        this.$parent.$parent.selectBlockSingle('', true, '', true)
+      }else if(val !==''&&this.$parent.$parent.isSingleSelect&&!isEffective&&!states) {//query不为空但未匹配到任何项
+        this.$parent.$parent.selectBlockSingle('', true)
       }
       if(this.$parent.$parent.isSingleSelect) {
         this.dispatch('SingleSelect', 'on-options-visible-change', { data: this.cloneData })
+      }else if(this.$parent.$parent.isStockSelect) {
         this.dispatch('StockSelect', 'on-options-visible-change', { data: this.cloneData })
       }else {
         let options = this.cloneData.filter(d => !d.group)
@@ -255,7 +259,6 @@ export default {
       if (val) {
         this.dispatch('Drop', 'on-update-popper')
       }
-      this.showEmpty = status;
       this.$nextTick(() => {
         if (val) {
           this.updateVisibleData(0);

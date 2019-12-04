@@ -51,7 +51,7 @@ export default {
       type: Boolean,
       default: false
     },
-    isSingleSelect:{
+    isStockSelect:{
       type:Boolean,
       default:true,
     },
@@ -141,7 +141,6 @@ export default {
       query: '',// 输入框内的值
       querySingle: '',
       selected: '',// 已选记录
-      isQuerySelect: false, // 是否点选选中 false点选 true模糊匹配选中
       selectToChangeQuery: false, // 选择一个值后执行过滤，false: 不执行 true: 执行
       scrollBarWidth: getScrollBarSize(),
     }
@@ -254,11 +253,7 @@ export default {
         }
       })
       this.focusIndex = index
-
-      this.$nextTick(() => {
-        this.query = curlabel
-        this.selectToChangeQuery = true
-      })
+      this.query = curlabel
     },
     query(newVal) {
       this.querySingle = newVal
@@ -368,6 +363,7 @@ export default {
       this.$refs.input.blur()
       this.visible = false
       this.isInputFocus = false
+      this.selectToChangeQuery = true
       let flag = false
       if(this.query !== '') {
         for(let i in this.availableOptions) {
@@ -380,6 +376,9 @@ export default {
         if(!flag) {
           if(!this.keepInputValue) {
             if (this.availableOptions.length > 0) {
+              if(this.model === this.availableOptions[0].value) {
+                this.query = this.availableOptions[0].label
+              }
               this.model = this.availableOptions[0].value
             }else {
               this.query = ''
@@ -398,7 +397,6 @@ export default {
     },
     handleClose() {
       this.fold()
-      this.selectToChangeQuery = false
       if (this.isInputFocus) {
         let flag = false
         if (this.query !== '') {
@@ -413,6 +411,9 @@ export default {
           if(!flag) {
             if(!this.keepInputValue) {
               if (this.availableOptions.length > 0) {
+                if(this.model === this.availableOptions[0].value) {
+                  this.query = this.availableOptions[0].label
+                }
                 this.model = this.availableOptions[0].value
               }else {
                 this.query = ''
@@ -425,6 +426,7 @@ export default {
           this.model = ''
         }
         this.isInputFocus = false
+        this.selectToChangeQuery = true
         this.$nextTick(() => {
           this.dispatch('FormItem', 'on-form-blur', this.model)
         })
@@ -441,6 +443,7 @@ export default {
       this.isInputFocus = true
       e.target.selectionStart = 0
       e.target.selectionEnd = this.query.length
+      this.selectToChangeQuery = false
       this.$emit('on-focus')
       this.$emit('on-input-focus')
       this.dispatch('FormItem', 'on-form-focus')
@@ -543,13 +546,14 @@ export default {
       if(!this.isInputFocus) {
         this.availableOptions = this.options
       }
-//      this.selectToChangeQuery = true
+      this.selectToChangeQuery = true
       if (this.model !== value) {
         this.model = value
       }
       if (str === 'click') {
         this.fold()
-        this.blur()
+//        this.blur()
+        this.$refs.input.blur()
         // o45要求点选完焦点不移开与formitem焦点所在位置显示errorTip冲突，当前次为空重新选值时如果不失焦下errorTip会显示
         this.$nextTick(() => {
           this.focus()

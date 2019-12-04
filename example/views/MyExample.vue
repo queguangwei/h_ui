@@ -19,50 +19,52 @@
     <h-msg-box v-model="show" escClose :mask-closable="false" isOriginal maximize width="600" height="400">
       <h-form ref="formValidate" :model="formValidate" cols="2" :label-width="80" showTipsOnlyFocus @on-check-failed="onCheckFailed">
         <h-form-item label="stockSelect" prop="curValue">
-          <h-stock-select ref="singlesel" v-model="formValidate.curValue" :dropWidth="230" :maxDropWidth="300"
-                          widthAdaption filterable remote :remote-method="remoteMethod"
+          <h-stock-select ref="singlesel" class="curItemClass" v-model="formValidate.curValue"
+                          :dropWidth="230" :maxDropWidth="300" widthAdaption
+                          filterable remote :remote-method="remoteMethod1"
                           @on-keydown="handleKeyDown">
-            <h-select-block :data="dataList" :showCol="showCol" :colWidth="colWidth"></h-select-block>
+            <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
           </h-stock-select>
           {{formValidate.curValue}}
         </h-form-item>
-        <h-form-item label="singleSelect" prop="stockCode" required >
-          <h-single-select ref="stockCode" v-model="formValidate.stockCode" class="curItemClass"
-                           remote :loading="isLoading" :remote-method="remoteMethod1" transfer autoPlacement
-                           widthAdaption :width="200" :dropWidth="220" :maxDropWidth="250" :accuFilter="true">
-            <h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>
-          </h-single-select>
-          {{formValidate.stockCode}}
-        </h-form-item>
+        <!--<h-form-item label="singleSelect" prop="stockCode" required >-->
+          <!--<h-single-select ref="stockCode" v-model="formValidate.stockCode" class="curItemClass"-->
+                           <!--remote :loading="isLoading" :remote-method="remoteMethod1" transfer autoPlacement-->
+                           <!--widthAdaption :width="200" :dropWidth="220" :maxDropWidth="250"-->
+                           <!--showFirstLabelOnly :accuFilter="true">-->
+            <!--<h-select-block :data="remoteData" :showCol="showCol" :colWidth="colWidth"></h-select-block>-->
+          <!--</h-single-select>-->
+          <!--{{formValidate.stockCode}}-->
+        <!--</h-form-item>-->
         <h-form-item label="multiSelect" prop="stockInfo" required>
           <h-multi-select ref="stockInfo" class="curItemClass" v-model="formValidate.stockInfo">
             <h-multi-block :data="bigData" :showCol="showCol" :colWidth="colWidth"></h-multi-block>
           </h-multi-select>
           {{formValidate.stockInfo}}
         </h-form-item>
-        <h-form-item label="simpleSelect" prop="stockName" required :dependencies="['stockInfo', 'stockCode']">
-          <h-simple-select v-model="formValidate.stockName" class="curItemClass" :tabindex="11" filterable multiple >
-            <h-select-block :data="bigData"></h-select-block>
-          </h-simple-select>
-        </h-form-item>
-        <h-form-item label="select" prop="city" required>
-          <h-select v-model="formValidate.city" class="curItemClass" filterable multiple transfer>
-            <h-option v-for="item in cityList1" :value="item.value" :key="item.value">{{ item.label }}</h-option>
-          </h-select>
-        </h-form-item>
-        <h-form-item prop="time" label="time" required upward>
-          <h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time" class="curItemClass" ></h-time-picker>
-        </h-form-item>
-        <h-form-item prop="date" label="date" required>
-          <h-date-picker type="date" placeholder="选择日期" autoPlacement showToday v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>
-        </h-form-item>
-        <h-form-item label="fastdate" prop="fastdate" required>
-          <h-fast-date class="curItemClass" v-model="formValidate.fastdate" format="yyyy-MM-dd"></h-fast-date>
-        </h-form-item>
-        <h-form-item label="input" prop="name" required :tipWidth="200">
-          <h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>
-        </h-form-item>
-        <h-form-item label="typefield" prop="mail" required>
+        <!--<h-form-item label="simpleSelect" prop="stockName" required :dependencies="['stockInfo', 'stockCode']">-->
+          <!--<h-simple-select v-model="formValidate.stockName" class="curItemClass" :tabindex="11" filterable multiple >-->
+            <!--<h-select-block :data="bigData"></h-select-block>-->
+          <!--</h-simple-select>-->
+        <!--</h-form-item>-->
+        <!--<h-form-item label="select" prop="city" required>-->
+          <!--<h-select v-model="formValidate.city" class="curItemClass" filterable multiple transfer>-->
+            <!--<h-option v-for="item in cityList1" :value="item.value" :key="item.value">{{ item.label }}</h-option>-->
+          <!--</h-select>-->
+        <!--</h-form-item>-->
+        <!--<h-form-item prop="time" label="time" required upward>-->
+          <!--<h-time-picker type="time" placeholder="选择时间" v-model="formValidate.time" class="curItemClass" ></h-time-picker>-->
+        <!--</h-form-item>-->
+        <!--<h-form-item prop="date" label="date" required>-->
+          <!--<h-date-picker type="date" placeholder="选择日期" autoPlacement showToday v-model="formValidate.date" class="curItemClass" iconVisible></h-date-picker>-->
+        <!--</h-form-item>-->
+        <!--<h-form-item label="fastdate" prop="fastdate" required>-->
+          <!--<h-fast-date class="curItemClass" v-model="formValidate.fastdate" format="yyyy-MM-dd"></h-fast-date>-->
+        <!--</h-form-item>-->
+        <!--<h-form-item label="input" prop="name" required :tipWidth="200">-->
+          <!--<h-input v-model="formValidate.name" placeholder="请输入姓名" class="curItemClass" ></h-input>-->
+        <!--</h-form-item>-->
+        <h-form-item label="typefield" prop="mail">
           <h-typefield v-model="formValidate.mail" placeholder="请输入邮箱" class="curItemClass" ></h-typefield >
         </h-form-item>
 
@@ -337,6 +339,21 @@ export default {
         { value: "22", label: "lab22",label1: "多列22"},
         { value: "23", label: "lab23",label1: "多列23"},
         { value: "30", label: "lab30",label1: "多列30"},
+        {value:1035,
+          label:"00001",
+          label1:"长和(沪港通)"},
+        {value:1036,
+          label:"00001",
+          label1:"长和(深港通)",},
+        {value:10001,
+          label:"000010",
+          label1:"上证180 (上海)"},
+        {value:11001,
+          label:"000011",
+          label1:"基金指数(上海)"},
+        {value:12001,
+          label:"000012",
+          label1:"国债指数(上海)"},
         { value: "value1", label: "label1",label1: "恒生电子" },
         { value: "value2", label: "label2",label1: "大华股份" },
         { value: "value3", label: "label3",label1: "海康威视" },
@@ -938,7 +955,7 @@ export default {
     },
     handleKeyDown(e) {
       if(window.event.keyCode == 13) {
-        this.$refs.select.blur();
+        this.$refs.singlesel.blur();
       }
     },
     handleTabRemove1(name){
@@ -997,9 +1014,10 @@ export default {
     changeShow(){
       this.$refs.formValidate.resetFields()
       this.show=true
-//      this.formValidate.stockCode = 'value1'
       this.$refs.formValidate.firstNodeFocused()
-//      this.formValidate.stockInfo = '1,11'
+      this.formValidate.stockCode = 'value1'
+      let stockInfo = sessionStorage.getItem('multiSelect')
+      if(stockInfo) this.formValidate.stockInfo = stockInfo
       this.firstValue = ['child1-1-1','child1-1-2','child1-2-1']
     },
     focusFirst() {
@@ -1022,7 +1040,9 @@ export default {
       this.$refs.formValidate.validate((valid, unpass) => {
         console.log(unpass)
         if (valid) {
-          _this.$hMessage.success('提交成功!');
+          _this.$hMessage.success('提交成功!')
+          this.show = false
+          sessionStorage.setItem('multiSelect', this.formValidate.stockInfo)
         } else {
           _this.$hMessage.error('表单验证失败!');
         }
