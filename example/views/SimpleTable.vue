@@ -9,7 +9,7 @@
     <Button @click="scroll20">scrollTo0</Button>
     <h-simple-table :columns="columnsBig1" :data="bigData" :addData="addData"  :summationData="summationData"
                     :loading="loading" :row-class-name="rowClassName" bodyAlgin="left" height="400"
-                    :lastColWidth="60" allowLastColBlank
+                    :lastColWidth="60" allowLastColBlank clickHeadToSort
                     canDrag canMove border stripe rowSelectOnly :toScrollTop="scrollTop" :scrollTopSet="200"
                     @on-select="select" @on-select-cancel="select" @on-drag="onDrag"
                     @on-select-all='change' @on-selection-change="change">
@@ -123,7 +123,7 @@ export default {
           align:'right',
           sortable:true,
           render: (h, params) => {
-            if(params.row.securityCode === '600000') {
+            if(params.row.securityCode === '00001') {
               this.$set(this.bigData[params.index], '_disabled', true)
             }
             return h('span',params.row.securityCode)

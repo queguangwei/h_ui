@@ -1793,18 +1793,12 @@ export default {
       this.handleSortT(_index, type)
     },
     sortDataBySelect(checkData, data, type) {
-      //勾选排上面
-      let d = []
-      if(type === 'asc') {
-        for(let i of checkData) {
-          for(let j in data) {
-            if(data[j]._index === i) {
-              d.push(data[j])
-              data.splice(j, 1)
-            }
-          }
-        }
-        data = d.concat(data)
+      let unCheckArr = data.filter(item => checkData.indexOf(item._index) === -1)
+      let checkArr = data.filter(item => checkData.indexOf(item._index) !== -1)
+      if(type === 'asc') {  //勾选排上面
+        data = checkArr.concat(unCheckArr)
+      }else if(type === 'desc') {
+        data = unCheckArr.concat(checkArr)
       }else {
         data.sort((a, b) => {
           if(a._index > b._index) {
